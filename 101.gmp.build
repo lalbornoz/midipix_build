@@ -1,0 +1,69 @@
+libelf_install_post() {
+	echo EXPORTS >| lib/libelf.def || return 1;
+	perk -e lib/libelf.so >> lib/libelf.def || return 2;
+	"${HOST_NATIVE}-dlltool"			\
+		--output-lib lib/libelf.lib.a	\
+		--dllname libelf.so		\
+		--input-def lib/libelf.def || return 3;
+	cp lib/libelf.lib.a "${PREFIX}/lib" || return 4;
+};
+
+parse_with_pkg_name "${2}" 										\
+	"https://gmplib.org/download/gmp/gmp-${GMP_VERSION}.tar.bz2"					\
+		"_configure_extra_args=--disable-assembly:_prefix_extra=${PREFIX_TARGET}"		\
+	"ftp://ftp.gnu.org/gnu/mpfr/mpfr-${MPFR_VERSION}.tar.bz2"					\
+		"_configure_extra_args=--with-gmp=${PREFIX_NATIVE}:_prefix_extra=${PREFIX_TARGET}"	\
+	"ftp://ftp.gnu.org/gnu/mpc/mpc-${MPC_VERSION}.tar.gz"						\
+		"_configure_extra_args=--with-gmp=${PREFIX_NATIVE},--with-mpfr=${PREFIX_NATIVE}:_prefix_extra=${PREFIX_TARGET}"\
+	"http://www.mr511.de/software/libelf-${LIBELF_VERSION}.tar.gz"					\
+		"_no_libtool_midipix=1:_prefix=${PREFIX_NATIVE}:CC=${HOST_NATIVE}-gcc:DESTDIR="		\
+	"ftp://sourceware.org/pub/binutils/snapshots/binutils-${BINUTILS_VERSION}.tar.bz2"		\
+		"_configure_extra_args=--with-libelf=${PREFIX_NATIVE},--with-gmp=${PREFIX_NATIVE},--with-mpc=${PREFIX_NATIVE},--with-mpfr=${PREFIX_NATIVE},--with-sysroot=/";
+
+if is_build_script_done finished; then
+        exit 212;
+else
+	fetch "${_pkg_url}";
+fi;
+if ! is_build_script_done extracted; then
+	rm_if_exists "${_pkg_subdir}";
+	tar -axf "${_pkg_fname}";
+	set_build_script_done extracted -patched;
+fi;
+if ! is_build_script_done patched; then
+	patch -d "${_pkg_subdir}" -p1		\
+		< "portage/${_pkg_subdir}.midipix.patch";
+	if [ ${_no_libtool_midipix:-0} -eq 0 ]; then
+		cp portage/libtool.midipix "${_pkg_subdir}/";
+	fi;
+	set_build_script_done patched -configured;
+fi;
+if ! is_build_script_done configured; then
+	rm_if_exists -c -m "${_pkg_subdir}-build-native${3:+-${3}}";
+	run_configure_with_extra_args		\
+	"../${_pkg_subdir}/configure"		\
+		"${_configure_extra_args}"	\
+		--host="${HOST_NATIVE}"		\
+		--prefix=${_prefix:-/}		\
+		--target="${TARGET}";
+	set_build_script_done configured -built;
+else
+	cd "${_pkg_subdir}-build-native${3:+-${3}}";
+fi;
+if ! is_build_script_done built; then
+	make;
+	set_build_script_done configured built -installed1;
+fi;
+if ! is_build_script_done installed1; then
+	make DESTDIR="${PREFIX_NATIVE}" install;
+	set_build_script_done configured installed1 -installed2 -finished;
+fi;
+if [ -n "${_prefix_extra}" ]; then
+	if ! is_build_script_done installed2; then
+		make DESTDIR="${_prefix_extra}" install;
+		set_build_script_done configured installed2 -finished;
+	fi;
+fi;
+set_build_script_done finished;
+
+# vim:filetype=sh

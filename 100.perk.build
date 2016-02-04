@@ -1,0 +1,38 @@
+if is_build_script_done finished; then
+        exit 212;
+else
+	fetch_git perk "${GITROOT}/perk";
+fi;
+if ! is_build_script_done configured1; then
+	rm_if_exists -m -c perk-build;
+	../perk/configure;
+	set_build_script_done configured1 -built1;
+else
+	cd perk-build;
+fi;
+if ! is_build_script_done built1; then
+	make;
+	set_build_script_done built1 -installed1;
+fi;
+if ! is_build_script_done installed1; then
+	make DESTDIR="${PREFIX}" install;
+	set_build_script_done installed1 -configured2;
+fi;
+if ! is_build_script_done configured2; then
+	rm_if_exists -m "../perk-build-${TARGET}";
+	cd "../perk-build-${TARGET}";
+	../perk/configure --target="${TARGET}";
+	set_build_script_done configured2 -built2;
+else
+	cd "../perk-build-${TARGET}";
+fi;
+if ! is_build_script_done built2; then
+	make;
+	set_build_script_done built2 -installed2;
+fi;
+if ! is_build_script_done installed2; then
+	make DESTDIR="${PREFIX_NATIVE}" install;
+	set_build_script_done installed2 finished;
+fi;
+
+# vim:filetype=sh
