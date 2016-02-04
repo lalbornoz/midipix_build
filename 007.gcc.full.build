@@ -1,0 +1,133 @@
+# Order: stage1, runtime, full, native
+
+if is_build_script_done finished; then
+        exit 212;
+elif [ "x${3}" = "xruntime" ]\
+||   [ "x${3}" = "xfull" ]; then
+	export CFLAGS="${GCCFLAGS}" CXXFLAGS="${GCCFLAGS}";
+	set_build_dir "cbb-gcc-${GCC_VERSION}" "${TARGET}";
+	cd "${_build_dir}";
+	if [ "x${3}" = "xruntime" ]; then
+		# GCC, compiler runtime.
+		if ! is_build_script_done built; then
+			make ${MAKEFLAGS} all-target-libgcc;
+			set_build_script_done built -installed;
+		fi;
+		if ! is_build_script_done installed; then
+			make ${MAKEFLAGS} install-target-libgcc;
+			set_build_script_done installed finished;
+		fi;
+	elif [ "x${3}" = "xfull" ]; then
+		# GCC, everything else.
+		if ! is_build_script_done built1; then
+			make ${MAKEFLAGS} all-target-libstdc++-v3;
+			set_build_script_done built1 -installed1;
+		fi;
+		if ! is_build_script_done installed1; then
+			make ${MAKEFLAGS} install-target-libstdc++-v3;
+			set_build_script_done installed1 -built2;
+		fi;
+		if ! is_build_script_done built2; then
+			make ${MAKEFLAGS};
+			set_build_script_done built2 -installed2;
+		fi;
+		if ! is_build_script_done installed2; then
+			make ${MAKEFLAGS} install;
+			set_build_script_done installed2 finished;
+		fi;
+	fi;
+else
+	if [ "x${3}" = "xstage1" ]; then
+		# GCC, stage1.
+		set_build_dir "cbb-gcc-${GCC_VERSION}" "${TARGET}";
+		export	cbb_ldflags_for_target="--sysroot=${PREFIX_TARGET}"	\
+			cbb_sysroot_for_libgcc="${PREFIX_TARGET}"		\
+			cbb_target="${TARGET}"					\
+			cbb_neutral_libiberty="no"				\
+			cbb_xgcc_for_specs="${WORKDIR}/${_build_dir}/gcc/xgcc";
+		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_TARGET}";
+	elif [ "x${3}" = "xnative" ]; then
+		# GCC, native.
+		set_build_dir "cbb-gcc-${GCC_VERSION}" "native";
+		export 	cbb_ldflags_for_target="--sysroot=${PREFIX_NATIVE}"	\
+			cbb_sysroot_for_libgcc="${PREFIX_NATIVE}"		\
+			cbb_target="${TARGET}"					\
+			cbb_xgcc_for_specs="${TARGET}-gcc";
+		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_NATIVE}";
+	fi;
+	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${GCC_VERSION}/libc/cbb-musl-pe.h)";
+	set_env_vars "${GCCFLAGS}" CFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS CXXFLAGS_FOR_BUILD;
+	set_env_vars "${CFLAGS_FOR_BUILD}" cbb_cflags_for_stage1 cbb_cflags_for_stage2 cbb_cflags_for_stage3 cbb_cflags_for_stage4;
+	set_env_vars "${GCCTARGET_FLAGS}" CFLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET;
+	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
+	if ! is_build_script_done configured; then
+		if [ "x${3}" = "xstage1" ]; then
+			mkdir -p "${PREFIX_TARGET}/include";
+			[ \! -d "${PREFIX_TARGET}/usr" ] &&		\
+				ln -s . "${PREFIX_TARGET}/usr";
+			_configure_args="--prefix=${PREFIX} --with-sysroot=${PREFIX_TARGET}";
+		elif [ "x${3}" = "xnative" ]; then
+			mkdir -p "${PREFIX_NATIVE}/${TARGET}";
+			if [ \! -d "${PREFIX_NATIVE}/${TARGET}/usr" ]; then
+				ln -s . "${PREFIX_NATIVE}/${TARGET}/usr";
+			fi;
+			_configure_args="			\
+				--host=x86_64-nt64-midipix	\
+				--prefix=/			\
+				--with-elf=${PREFIX_NATIVE}	\
+				--with-gmp=${PREFIX_NATIVE}	\
+				--with-mpc=${PREFIX_NATIVE}	\
+				--with-mpfr=${PREFIX_NATIVE}	\
+				--with-sysroot=";
+		fi;
+		rm_if_exists -m -c "${_build_dir}";
+		"../cbb-gcc-${GCC_VERSION}/configure"		\
+			--disable-bootstrap			\
+			--disable-libmudflap			\
+			--disable-multilib			\
+			--disable-nls				\
+			--disable-obsolete			\
+			--disable-sjlj-exceptions		\
+			--disable-symvers			\
+			--enable-canonical-system-headers	\
+			--enable-__cxa_atexit			\
+			--enable-debug				\
+			--enable-gnu-indirect-function		\
+			--enable-gnu-unique-object		\
+			--enable-initfini-array			\
+			--enable-languages=c,c++,objc,lto	\
+			--enable-libstdcxx-debug		\
+			--enable-lto				\
+			--enable-multiarch			\
+			--enable-secureplt			\
+			--enable-shared				\
+			--enable-threads=posix			\
+			--target=${TARGET}			\
+			--with-fpmath=sse			\
+			${_configure_args};
+		set_build_script_done configured -built;
+	else
+		cd "${_build_dir}";
+	fi;
+	if ! is_build_script_done built; then
+		if [ "x${3}" = "xstage1" ]; then
+			make ${MAKEFLAGS} all-gcc;
+		elif [ "x${3}" = "xnative" ]; then
+			make -j18 all-gcc;
+			make -j18 all-target-libgcc;
+			make -j18 all-target-libstdc++-v3;
+			make -j18 all;
+		fi;
+		set_build_script_done built -installed;
+	fi;
+	if ! is_build_script_done installed; then
+		if [ "x${3}" = "xstage1" ]; then
+			make ${MAKEFLAGS} install-gcc;
+		elif [ "x${3}" = "xnative" ]; then
+			make -j18 DESTDIR="${PREFIX_NATIVE}" install;
+		fi;
+		set_build_script_done installed finished;
+	fi;
+fi;
+
+# vim:filetype=sh
