@@ -1,5 +1,14 @@
 TIMESTAMP_FMT="${TIMESTAMP_FMT:-"%Y/%m/%d %H:%M:%S"}";
 
+check_prereqs() {
+	for _cmd in "$@"; do
+		if ! command -v "${_cmd}" >/dev/null; then
+			echo "Error: missing prerequisite command \`${_cmd}" >&2;
+			exit 1;
+		fi;
+	done; unset _cmd;
+};
+
 date() {
 	command date +"${TIMESTAMP_FMT}";
 };
@@ -9,33 +18,39 @@ fetch() {
 };
 
 fetch_git() {
-	local _subdir="${1}" _repo="${2}";
-	if [ -d "${_subdir}" ]; then
-		(cd "${_subdir}" && git pull origin main);
+	if [ -d "${1}" ]; then
+		(cd "${1}" && git pull origin main);
 	else
-		git clone "${_repo}" "${_subdir}";
+		git clone "${2}" "${1}";
 	fi;
 };
 
 is_build_script_done() {
-	local _op="${1}" _script_fname="${SCRIPT_FNAME##*/}";
-	[ -f "${WORKDIR}/.${_script_fname%.build}.${_op}" ];
+	_script_fname="${SCRIPT_FNAME##*/}";
+	if [ -f "${WORKDIR}/.${_script_fname%.build}.${1}" ]; then
+		unset script_fname;
+		return 0;
+	else
+		unset script_fname;
+		return 1;
+	fi;
 };
 set_build_script_done() {
-	local _script_fname="${SCRIPT_FNAME##*/}" _done_fname;
+	_script_fname="${SCRIPT_FNAME##*/}";
 	_done_fname="${WORKDIR}/.${_script_fname%.build}";
 	while [ $# -ge 1 ]; do
 		if [ "x${1#-}" != "x${1}" ]; then
 			rm -f "${_done_fname}.${1#-}";
 		else
-			printf "" >| "${_done_fname}.${1}";
+			touch "${_done_fname}.${1}";
 			log_msg info "Finished build step ${1} of build script \`${_script_fname}'.";
 		fi; shift;
 	done;
+	unset _script_fname _done_fname;
 };
 
 log_msg() {
-	local _lvl="${1}"; shift;
+	_lvl="${1}"; shift;
 	case "${_lvl}" in
 		fail) printf "\033[91m"; ;;
 		info) printf "\033[97m"; ;;
@@ -46,40 +61,45 @@ log_msg() {
 	else
 		printf "==> %s %s\033[0m\n" "$(date +"${TIMESTAMP_FMT}")" "${1}";
 	fi;
+	unset _lvl;
 };
 
 parse_with_pkg_name() {
-	_pkg_name="${1}"; local _envvs _envv; shift;
+	_pkg_name="${1}"; shift;
 	while [ $# -ge 0 ]; do
 		_pkg_url="${1}"; _envvs="${2}"; _pkg_fname="${_pkg_url##*/}";
 		if [ "x${_pkg_fname%%-*}" = "x${_pkg_name}" ]; then
-			IFS=:; for _envv in ${_envvs}; do
+			_IFS="${IFS}"; IFS=:;
+			for _envv in ${_envvs}; do
 				export ${_envv};
-			done;
+			done; IFS="${_IFS}";
 			_pkg_subdir="${_pkg_fname%%.tar*}";
+			unset _envvs _envv;
 			return;
 		fi; shift 2;
-	done; exit 1;
+	done;
+	unset _pkg_name _pkg_url _envvs _pkg_fname _envv _IFS _pkg_subdir;
 };
 
 rm_if_exists() {
 	while [ $# -gt 1 ]; do [ "x${1%[a-z]}" = "x-" ] &&\
-		eval local _${1#-}flag=1; shift; done;
-	local _dir="${1}";
-	if [ -d "${_dir}" ]; then
-		rm -rf "${_dir}" || return 1;
+		eval _${1#-}flag=1; shift; done;
+	_dir="${1}";
+	if [ -d "${1}" ]; then
+		rm -rf "${1}" || return 1;
 	fi;
 	if [ ${_mflag:-0} -eq 1 ]; then
-		mkdir "${_dir}" || return 2;
+		unset _mflag; mkdir "${1}" || return 2;
 	fi;
 	if [ ${_cflag:-0} -eq 1 ]; then
-		cd "${_dir}" || return 3;
+		unset _cflag; cd "${1}" || return 3;
 	fi;
 };
 
 run_configure_with_extra_args() {
-	local IFS="," _script="${1}" _extra_args="${2}";
-	shift 2; "${_script}" "${@}" ${_extra_args};
+	_IFS="${IFS}"; IFS=","; _script="${1}"; _extra_args="${2}";
+	shift 2; "${_script}" "${@}" ${_extra_args}; IFS="${_IFS}";
+	unset _script _extra_args;
 };
 
 set_build_dir() {
@@ -87,15 +107,15 @@ set_build_dir() {
 };
 
 set_env_vars() {
-	local _val="${1}"; shift;
+	_val="${1}"; shift;
 	while [ $# -ge 1 ]; do
 		export "${1}=${_val}"; shift;
-	done;
+	done; unset _val;
 };
 
 split() {
-	local _IFS="${IFS}" IFS="${1}" _txt="${2}";
-	set -- ${_txt}; IFS="${_IFS}"; echo "${*}";
+	_IFS="${IFS}"; IFS="${1}"; set -- ${2};
+	IFS="${_IFS}"; echo "${*}"; unset _IFS;
 };
 
 # vim:filetype=sh

@@ -1,11 +1,12 @@
 libelf_install_post() {
-	echo EXPORTS >| lib/libelf.def || return 1;
-	perk -e lib/libelf.so >> lib/libelf.def || return 2;
+	rm -f lib/libelf.def || return 1;
+	echo EXPORTS > lib/libelf.def || return 2;
+	perk -e lib/libelf.so >> lib/libelf.def || return 3;
 	"${HOST_NATIVE}-dlltool"			\
 		--output-lib lib/libelf.lib.a	\
 		--dllname libelf.so		\
-		--input-def lib/libelf.def || return 3;
-	cp lib/libelf.lib.a "${PREFIX}/lib" || return 4;
+		--input-def lib/libelf.def || return 4;
+	cp lib/libelf.lib.a "${PREFIX}/lib" || return 5;
 };
 
 parse_with_pkg_name "${2}" 										\
