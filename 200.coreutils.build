@@ -1,4 +1,3 @@
-export CFLAGS="${CFLAGS_PACKAGES}";
 parse_with_pkg_name ${2}			\
 	coreutils diffutils findutils patch	\
 	gawk bash make grep sed binutils;
@@ -30,7 +29,7 @@ fi;
 if ! is_build_script_done configured; then
 	rm_if_exists -m -c ${_build_dir};
 	[ ${_no_config_cache:-0} -eq 0 ] &&\
-		cp -a ../portage/config.cache .;
+		cp ../portage/config.cache .;
 	../${_pkg_subdir}/configure		\
 		${_configure_args} --target=${TARGET};
 	set_build_script_done configured -built;

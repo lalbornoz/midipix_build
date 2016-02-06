@@ -4,17 +4,31 @@
 
 TIMESTAMP_FMT="${TIMESTAMP_FMT:-"%Y/%m/%d %H:%M:%S"}";
 
+check_path_vars() {
+	while [ $# -gt 0 ]; do
+		if [ -z "${_val:=$(eval echo \${${1}})}" ]; then
+			log_msg fail "Error: variable \`${1}' is empty or unset.";
+			exit 1;
+		elif [ "x${_val#* }" != "x${_val}" ]; then
+			log_msg fail "Error: variable \`${1}' contains one or more whitespace characters.";
+			exit 1;
+		else
+			shift;
+		fi;
+	done; unset _val;
+};
+
 check_prereqs() {
 	for _cmd in "$@"; do
 		if ! command -v ${_cmd} >/dev/null; then
-			log_msg fail "Error: missing prerequisite command \`${_cmd}";
+			log_msg fail "Error: missing prerequisite command \`${_cmd}.";
 			exit 1;
 		fi;
 	done; unset _cmd;
 };
 
 date() {
-	command date +"${TIMESTAMP_FMT}";
+	command date +"${1:-${TIMESTAMP_FMT}}";
 };
 
 fetch() {
@@ -71,9 +85,9 @@ log_msg() {
 		succ) printf "\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
 	esac;
 	if [ $# -gt 1 ]; then
-		printf "==> %s %s %s\033[0m\n" "$(date +"${TIMESTAMP_FMT}")" "${1}" "$*";
+		printf "==> %s %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}" "$*";
 	else
-		printf "==> %s %s\033[0m\n" "$(date +"${TIMESTAMP_FMT}")" "${1}";
+		printf "==> %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}";
 	fi;
 	unset _lvl;
 };
@@ -83,16 +97,18 @@ parse_with_pkg_name() {
 	while [ $# -ge 0 ]; do
 		if [ "x${_pkg_name}" = "x${1}" ]; then
 			_pkg_NAME=$(echo "${_pkg_name}" | tr a-z A-Z);
-			eval	_pkg_configure_extra_args=\"\${PKG_${_pkg_NAME}_CONFIGURE_EXTRA_ARGS}\"\
-				_pkg_no_libtool_midipix=\${PKG_${_pkg_NAME}_NO_LIBTOOL_MIDIPIX}\
-				_pkg_prefix=\${PKG_${_pkg_NAME}_PREFIX}\
-				_pkg_prefix_extra=\${PKG_${_pkg_NAME}_PREFIX_EXTRA}\
-				_pkg_sha256sum=\${PKG_${_pkg_NAME}_SHA256SUM}\
-				_pkg_url=\${PKG_${_pkg_NAME}_URL}\
-				_pkg_version=\${PKG_${_pkg_NAME}_VERSION}\
-				_pkg_CC=\${PKG_${_pkg_NAME}_CC}\
-				_pkg_CFLAGS=\${PKG_${_pkg_NAME}_CFLAGS}\
-				_pkg_DESTDIR=\${PKG_${_pkg_NAME}_DESTDIR};
+			for _vname in							\
+					configure_extra_args no_libtool_midipix		\
+					prefix prefix_extra sha256sum url version	\
+					CC CFLAGS LDFLAGS DESTDIR; do
+				_vNAME=$(echo "${_vname}" | tr a-z A-Z);
+				if [ -n "${_vval:=$(eval echo \${PKG_${_pkg_NAME}_${_vNAME}})}" ]; then
+					export _pkg_${_vname}="${_vval}";
+					if [ "x${_vname#[A-Z]}" != "x${_vname}" ]; then
+						export ${_vname}="${_vval}";
+					fi;
+				fi; unset _vval;
+			done; unset _pkg_NAME _vname _vNAME;
 			_pkg_fname=${_pkg_url##*/};
 			_pkg_subdir=${_pkg_fname%%.tar*};
 			return 0;

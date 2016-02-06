@@ -1,27 +1,18 @@
+parse_with_pkg_name ${2} libz gzip;
 if is_build_script_done finished; then
         exit 212;
-elif [ "x${2}" = "xlibz" ]; then
-	_pkg_url=https://sortix.org/libz/release/libz-${PKG_LIBZ_VERSION}.tar.gz;
-	_pkg_fname=${_pkg_url##*/};
-	_pkg_sha256sum=${PKG_LIBZ_SHA256SUM};
-	_pkg_subdir=${2}-${PKG_LIBZ_VERSION};
-elif [ "x${2}" = "xgzip" ]; then
-	_pkg_url=https://ftp.gnu.org/gnu/gzip/gzip-${PKG_GZIP_VERSION}.tar.gz;
-	_pkg_fname=${_pkg_url##*/};
-	_pkg_sha256sum=${PKG_GZIP_SHA256SUM};
-	_pkg_subdir=${2}-${PKG_GZIP_VERSION};
+else
+	fetch ${_pkg_url} ${_pkg_sha256sum};
 fi;
-fetch ${_pkg_url} ${_pkg_sha256sum};
 if ! is_build_script_done extracted; then
 	rm_if_exists ${_pkg_fname%%.tar*};
 	tar -axf ${_pkg_fname};
-	set_build_script_done extracted -patched;
+	set_build_script_done extracted -configured;
 fi;
 if ! is_build_script_done configured; then
 	set_build_dir ${_pkg_fname%%-*} native;
 	rm_if_exists -c -m ${_build_dir};
-	cp -a ../portage/config.cache .;
-	CFLAGS="${CFLAGS_PACKAGES}"		\
+	cp ../portage/config.cache .;
 	../${_pkg_subdir}/configure		\
 		--host=${HOST_NATIVE}		\
 		--prefix=			\
@@ -31,19 +22,19 @@ else
 	cd ${_build_dir};
 fi;
 if ! is_build_script_done built; then
-	if [ "x${3}" = "xlibz" ]; then
+	if [ "x${2}" = "xlibz" ]; then
 		make -j18;
-	elif [ "x${3}" = "xgzip" ]; then
+	elif [ "x${2}" = "xgzip" ]; then
 		make clean;
-		make CFLAGS="-g3 -O0 -I${PREFIX_NATIVE}/include" LDFLAGS=--sysroot=${PREFIX_NATIVE};
+		make;
 	fi;
 	set_build_script_done built -installed;
 fi;
 if ! is_build_script_done installed; then
-	if [ "x${3}" = "xlibz" ]; then
+	if [ "x${2}" = "xlibz" ]; then
 		make -j18 DESTDIR=${PREFIX_NATIVE} install;
-	elif [ "x${3}" = "xgzip" ]; then
-		cp -a gunzip gzip zcat ${PREFIX_NATIVE}/bin;
+	elif [ "x${2}" = "xgzip" ]; then
+		cp gunzip gzip zcat ${PREFIX_NATIVE}/bin;
 	fi;
 	set_build_script_done installed finished;
 fi;
