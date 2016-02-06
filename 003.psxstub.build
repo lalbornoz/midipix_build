@@ -1,9 +1,9 @@
 if is_build_script_done finished; then
         exit 212;
-elif [ "${TARGET}" = "i686-nt32-midipix" ]\
-|| [ "${TARGET}" = "x86_64-nt64-midipix" ]; then
+elif [ "x${TARGET}" = "xi686-nt32-midipix" ]\
+|| [ "x${TARGET}" = "xx86_64-nt64-midipix" ]; then
 	cd psxstub;
-	make ${MAKEFLAGS} DESTDIR="${PREFIX_TARGET}" TARGET="${TARGET}" install;
+	make ${MAKEFLAGS} DESTDIR=${PREFIX_TARGET} TARGET=${TARGET} install;
 	set_build_script_done finished;
 fi;
 
