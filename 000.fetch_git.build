@@ -1,5 +1,5 @@
 # Git clone what we need.
-fetch_git cbb-gcc-${GCC_VERSION}	"${GITROOT}/cbb/cbb-gcc-${GCC_VERSION}";
+fetch_git cbb-gcc-${PKG_GCC_VERSION}	"${GITROOT}/cbb/cbb-gcc-${PKG_GCC_VERSION}";
 fetch_git lazy				"${GITROOT}/lazy";
 fetch_git mmglue			"${GITROOT}/mmglue";
 fetch_git portage			"${GITROOT}/ports/portage";

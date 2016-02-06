@@ -5,23 +5,24 @@ if is_build_script_done finished; then
 elif [ "x${3}" = "xno-complex" ]; then
 	# Musl: build (no-complex)
 	_install="install_no_complex";
-	set_build_dir "musl-${MUSL_VERSION}" "${TARGET}-${3}";
-	fetch "http://www.musl-libc.org/releases/musl-${MUSL_VERSION}.tar.gz";
+	set_build_dir "musl-${PKG_MUSL_VERSION}" "${TARGET}-${3}";
+	fetch "http://www.musl-libc.org/releases/musl-${PKG_MUSL_VERSION}.tar.gz"	\
+		"${PKG_MUSL_SHA256SUM}";
 	if ! is_build_script_done extracted; then
-		rm_if_exists "musl-${MUSL_VERSION}";
-		tar -xf "musl-${MUSL_VERSION}.tar.gz";
-		cp -R mmglue/* "musl-${MUSL_VERSION}/";
+		rm_if_exists "musl-${PKG_MUSL_VERSION}";
+		tar -xf "musl-${PKG_MUSL_VERSION}.tar.gz";
+		cp -R mmglue/* "musl-${PKG_MUSL_VERSION}/";
 		set_build_script_done extracted -configured;
 	fi;
 elif [ "x${3}" = "xnative" ]; then
 	# Musl: build (full)
 	_destdir="${PREFIX_NATIVE}";
 	_install="install";
-	set_build_dir "musl-${MUSL_VERSION}" "${3}";
+	set_build_dir "musl-${PKG_MUSL_VERSION}" "${3}";
 else
 	# Musl: build (full)
 	_install="install";
-	set_build_dir "musl-${MUSL_VERSION}" "${TARGET}";
+	set_build_dir "musl-${PKG_MUSL_VERSION}" "${TARGET}";
 fi;
 if ! is_build_script_done configured; then
 	rm_if_exists -m -c "${_build_dir}";
@@ -30,7 +31,7 @@ if ! is_build_script_done configured; then
 		-c gcc					\
 		-f "${_destdir:-${PREFIX_TARGET}}"	\
 		-n musl					\
-		-p "../musl-${MUSL_VERSION}"		\
+		-p "../musl-${PKG_MUSL_VERSION}"	\
 		-t "${lz_target}"			\
 		-x config;
 	set_build_script_done configured -built;
