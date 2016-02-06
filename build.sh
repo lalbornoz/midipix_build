@@ -3,7 +3,7 @@
 {
 unset AR ARFLAGS CC CFLAGS CXX CXXFLAGS LD LDFLAGS;
 . ./build.vars; . ./build.subr;
-check_prereqs git make sed tar wget;
+check_prereqs git make openssl sed tar wget;
 log_msg info "Build started by ${USER}@$(hostname).";
 #trap
 (set -o errexit; mkdir -p "${PREFIX}" "${WORKDIR}");
