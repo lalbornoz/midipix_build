@@ -3,8 +3,9 @@
 {
 unset AR ARFLAGS CC CFLAGS CXX CXXFLAGS LD LDFLAGS;
 . ./build.vars; . ./build.subr;
+check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
 check_prereqs git make openssl sed tar tr wget;
-log_msg info "Build started by ${USER}@$(hostname).";
+log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE:=$(date %Y-%m-%d-%H-%M-%S)}.";
 #trap
 (set -o errexit; mkdir -p ${PREFIX} ${WORKDIR});
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${_nbuild:=0}}};
@@ -20,6 +21,7 @@ for BUILD_LVL in 0 1 2; do
 			log_msg info "Invoking build script \`${BUILD_SCRIPT_FNAME}'";
 			(set -o errexit -- $(split . ${BUILD_SCRIPT_FNAME%.build});	\
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME}; _pwd=$(pwd);		\
+			 export CFLAGS="$(eval echo \${CFLAGS_LVL${BUILD_LVL}})";	\
 			 cd ${WORKDIR}; . ${_pwd}/build.subr;				\
 			 . ${_pwd}/${BUILD_SCRIPT_FNAME});
 			case ${BUILD_SCRIPT_RC:=${?}} in
@@ -37,6 +39,28 @@ for BUILD_LVL in 0 1 2; do
 	fi;
 done;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${_nbuild} build script(s).";
+if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]\
+&& [ ${BUILD_NFAIL} -eq 0 ]; then
+	log_msg info "Building distribution tarball.";
+	(cd ${PREFIX};
+	DISTRIB_FNAME=midipix.${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE}.tar.bz2;
+	rm_if_exists -m ${PREFIX_NATIVE##*/}/lib.bak; rm_if_exists ${DISTRIB_FNAME};
+	tar -C ${PREFIX_NATIVE##*/}/lib -cpf - . |\
+	tar -C ${PREFIX_NATIVE##*/}/lib.bak -xpf -;
+	(cd native/lib &&
+	 find . -maxdepth 1 -type l				\
+		-exec sh -c 'dest=$(readlink -- "$0") && rm -- "$0" && ln -- "$dest" "$0"' {} \;);
+	wait;
+	find .	-maxdepth 2 -type d				\
+		-not -path .					\
+		-not -path ./${WORKDIR##*/}			\
+		-not -path ./${WORKDIR##*/}/\*			\
+		-not -path ./${PREFIX_NATIVE##*/}		\
+		-not -path ./${PREFIX_NATIVE##*/}/lib.bak	|\
+	tar -T - -cpf - | bzip2 -9c - > ${DISTRIB_FNAME}
+	rm -rf ${PREFIX_NATIVE##*/}/lib;
+	mv ${PREFIX_NATIVE##*/}/lib.bak ${PREFIX_NATIVE##*/}/lib);
+fi;
 exit ${BUILD_SCRIPT_RC};
 } 2>&1 | tee build.log;
 

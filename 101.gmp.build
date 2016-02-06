@@ -1,6 +1,4 @@
 parse_with_pkg_name ${2} gmp mpfr mpc libelf binutils;
-[ -n "${_pkg_CC}" ] && export CC="${_pkg_CC}";
-[ -n "${_pkg_CFLAGS}" ] && export CFLAGS="${_pkg_CFLAGS}";
 if is_build_script_done finished; then
         exit 212;
 else
@@ -16,7 +14,7 @@ if ! is_build_script_done patched; then
 	patch -d ${_pkg_subdir} -p1		\
 		< portage/${_pkg_subdir}.midipix.patch;
 	if [ ${_pkg_no_libtool_midipix:-0} -eq 0 ]; then
-		cp -a portage/libtool.midipix ${_pkg_subdir}/;
+		cp portage/libtool.midipix ${_pkg_subdir}/;
 	fi;
 	set_build_script_done patched -configured;
 fi;
