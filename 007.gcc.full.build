@@ -5,7 +5,7 @@ if is_build_script_done finished; then
 elif [ "x${3}" = "xruntime" ]\
 ||   [ "x${3}" = "xfull" ]; then
 	export CFLAGS="${GCCFLAGS}" CXXFLAGS="${GCCFLAGS}";
-	set_build_dir cbb-gcc-${PKG_GCC_VERSION} ${TARGET};
+	set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
 	cd ${_build_dir};
 	if [ "x${3}" = "xruntime" ]; then
 		# GCC, compiler runtime.
@@ -39,7 +39,7 @@ elif [ "x${3}" = "xruntime" ]\
 else
 	if [ "x${3}" = "xstage1" ]; then
 		# GCC, stage1.
-		set_build_dir cbb-gcc-${PKG_GCC_VERSION} ${TARGET};
+		set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
 		export	cbb_ldflags_for_target=--sysroot=${PREFIX_TARGET}	\
 			cbb_sysroot_for_libgcc=${PREFIX_TARGET}			\
 			cbb_target=${TARGET}					\

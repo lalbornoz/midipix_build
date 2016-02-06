@@ -1,30 +1,11 @@
-libelf_install_post() {
-	rm -f lib/libelf.def || return 1;
-	echo EXPORTS > lib/libelf.def || return 2;
-	perk -e lib/libelf.so >> lib/libelf.def || return 3;
-	${HOST_NATIVE}-dlltool			\
-		--output-lib lib/libelf.lib.a	\
-		--dllname libelf.so		\
-		--input-def lib/libelf.def || return 4;
-	cp lib/libelf.lib.a ${PREFIX}/lib || return 5;
-};
-
-parse_with_pkg_name ${2} 										\
-	https://gmplib.org/download/gmp/gmp-${PKG_GMP_VERSION}.tar.bz2					\
-		_configure_extra_args=--disable-assembly:_prefix_extra=${PREFIX_TARGET}			\
-	ftp://ftp.gnu.org/gnu/mpfr/mpfr-${PKG_MPFR_VERSION}.tar.bz2					\
-		_configure_extra_args=--with-gmp=${PREFIX_NATIVE}:_prefix_extra=${PREFIX_TARGET}	\
-	ftp://ftp.gnu.org/gnu/mpc/mpc-${PKG_MPC_VERSION}.tar.gz						\
-		_configure_extra_args=--with-gmp=${PREFIX_NATIVE},--with-mpfr=${PREFIX_NATIVE}:_prefix_extra=${PREFIX_TARGET}\
-	http://www.mr511.de/software/libelf-${PKG_LIBELF_VERSION}.tar.gz				\
-		_no_libtool_midipix=1:_prefix=${PREFIX_NATIVE}:CC=${HOST_NATIVE}-gcc:DESTDIR=		\
-	ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_VERSION}.tar.bz2		\
-		_configure_extra_args=--with-libelf=${PREFIX_NATIVE},--with-gmp=${PREFIX_NATIVE},--with-mpc=${PREFIX_NATIVE},--with-mpfr=${PREFIX_NATIVE},--with-sysroot=/;
-
+parse_with_pkg_name ${2} gmp mpfr mpc libelf binutils;
+[ -n "${_pkg_CC}" ] && export CC="${_pkg_CC}";
+[ -n "${_pkg_CFLAGS}" ] && export CFLAGS="${_pkg_CFLAGS}";
 if is_build_script_done finished; then
         exit 212;
 else
 	fetch ${_pkg_url} ${_pkg_sha256sum};
+	set_build_dir ${_pkg_subdir} native;
 fi;
 if ! is_build_script_done extracted; then
 	rm_if_exists ${_pkg_subdir};
@@ -34,22 +15,21 @@ fi;
 if ! is_build_script_done patched; then
 	patch -d ${_pkg_subdir} -p1		\
 		< portage/${_pkg_subdir}.midipix.patch;
-	if [ ${_no_libtool_midipix:-0} -eq 0 ]; then
-		cp portage/libtool.midipix ${_pkg_subdir}/;
+	if [ ${_pkg_no_libtool_midipix:-0} -eq 0 ]; then
+		cp -a portage/libtool.midipix ${_pkg_subdir}/;
 	fi;
 	set_build_script_done patched -configured;
 fi;
 if ! is_build_script_done configured; then
-	rm_if_exists -c -m ${_pkg_subdir}-build-native${3:+-${3}};
-	run_configure_with_extra_args		\
+	rm_if_exists -m -c ${_build_dir};
 	../${_pkg_subdir}/configure		\
-		"${_configure_extra_args}"	\
+		${_pkg_configure_extra_args}	\
 		--host=${HOST_NATIVE}		\
-		--prefix=${_prefix:-/}		\
+		--prefix=${_pkg_prefix:-/}	\
 		--target=${TARGET};
 	set_build_script_done configured -built;
 else
-	cd ${_pkg_subdir}-build-native${3:+-${3}};
+	cd ${_build_dir};
 fi;
 if ! is_build_script_done built; then
 	make;
@@ -59,9 +39,21 @@ if ! is_build_script_done installed1; then
 	make DESTDIR=${PREFIX_NATIVE} install;
 	set_build_script_done configured installed1 -installed2 -finished;
 fi;
-if [ -n ${_prefix_extra} ]; then
+if [ -n "${_pkg_prefix_extra}" ]; then
 	if ! is_build_script_done installed2; then
-		make DESTDIR=${_prefix_extra} install;
+		make DESTDIR=${_pkg_prefix_extra} install;
+		set_build_script_done configured installed2 -finished;
+	fi;
+elif [ "x${_pkg_name}" = "xlibelf" ]; then
+	if ! is_build_script_done installed2; then
+		rm -f lib/libelf.def;
+		echo EXPORTS > lib/libelf.def;
+		perk -e lib/libelf.so >> lib/libelf.def;
+		${HOST_NATIVE}-dlltool			\
+			--output-lib lib/libelf.lib.a	\
+			--dllname libelf.so		\
+			--input-def lib/libelf.def;
+		cp lib/libelf.lib.a ${PREFIX}/lib;
 		set_build_script_done configured installed2 -finished;
 	fi;
 fi;

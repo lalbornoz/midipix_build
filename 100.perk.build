@@ -2,13 +2,14 @@ if is_build_script_done finished; then
         exit 212;
 else
 	fetch_git perk ${GITROOT}/perk;
+	set_build_dir ${2} native;
 fi;
 if ! is_build_script_done configured1; then
-	rm_if_exists -m -c perk-build;
+	rm_if_exists -m -c ${_build_dir};
 	../perk/configure;
 	set_build_script_done configured1 -built1;
 else
-	cd perk-build;
+	cd ${_build_dir};
 fi;
 if ! is_build_script_done built1; then
 	make;
@@ -18,12 +19,13 @@ if ! is_build_script_done installed1; then
 	make DESTDIR=${PREFIX} install;
 	set_build_script_done installed1 -configured2;
 fi;
+set_build_dir ${2} cross;
 if ! is_build_script_done configured2; then
-	rm_if_exists -m -c ../perk-build-${TARGET};
+	rm_if_exists -m -c ../${_build_dir};
 	../perk/configure --target=${TARGET};
 	set_build_script_done configured2 -built2;
 else
-	cd ../perk-build-${TARGET};
+	cd ../${_build_dir};
 fi;
 if ! is_build_script_done built2; then
 	make;

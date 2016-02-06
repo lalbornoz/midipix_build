@@ -18,7 +18,7 @@ if ! is_build_script_done extracted; then
 	set_build_script_done extracted -patched;
 fi;
 if ! is_build_script_done configured; then
-	set_build_dir ${_pkg_fname%%-*} ${TARGET};
+	set_build_dir ${_pkg_fname%%-*} native;
 	rm_if_exists -c -m ${_build_dir};
 	cp -a ../portage/config.cache .;
 	CFLAGS="${CFLAGS_PACKAGES}"		\
@@ -27,6 +27,8 @@ if ! is_build_script_done configured; then
 		--prefix=			\
 		--target=${TARGET};
 	set_build_script_done configured -built;
+else
+	cd ${_build_dir};
 fi;
 if ! is_build_script_done built; then
 	if [ "x${3}" = "xlibz" ]; then
