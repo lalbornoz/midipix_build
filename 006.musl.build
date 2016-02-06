@@ -5,7 +5,7 @@ if is_build_script_done finished; then
 elif [ "x${3}" = "xno-complex" ]; then
 	# Musl: build (no-complex)
 	_install=install_no_complex;
-	set_build_dir musl-${PKG_MUSL_VERSION} ${TARGET}-${3};
+	set_build_dir musl-${PKG_MUSL_VERSION}-${3} cross;
 	fetch http://www.musl-libc.org/releases/musl-${PKG_MUSL_VERSION}.tar.gz	\
 		${PKG_MUSL_SHA256SUM};
 	if ! is_build_script_done extracted; then
@@ -22,7 +22,7 @@ elif [ "x${3}" = "xnative" ]; then
 else
 	# Musl: build (full)
 	_install=install;
-	set_build_dir musl-${PKG_MUSL_VERSION} ${TARGET};
+	set_build_dir musl-${PKG_MUSL_VERSION} cross;
 fi;
 if ! is_build_script_done configured; then
 	rm_if_exists -m -c ${_build_dir};
