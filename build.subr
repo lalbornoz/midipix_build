@@ -1,5 +1,5 @@
 #
-# set -o errexit is assumed.
+# . ./build.vars and set -o errexit are assumed.
 #
 
 TIMESTAMP_FMT="${TIMESTAMP_FMT:-"%Y/%m/%d %H:%M:%S"}";
@@ -66,9 +66,9 @@ set_build_script_done() {
 log_msg() {
 	_lvl=${1}; shift;
 	case ${_lvl} in
-		fail) printf "\033[91m"; ;;
-		info) printf "\033[97m"; ;;
-		succ) printf "\033[92m"; ;;
+		fail) printf "\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
+		info) printf "\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		succ) printf "\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
 	esac;
 	if [ $# -gt 1 ]; then
 		printf "==> %s %s %s\033[0m\n" "$(date +"${TIMESTAMP_FMT}")" "${1}" "$*";
