@@ -5,7 +5,7 @@ if is_build_script_done finished; then
 elif [ "x${3}" = "xruntime" ]\
 ||   [ "x${3}" = "xfull" ]; then
 	export CFLAGS="${GCCFLAGS}" CXXFLAGS="${GCCFLAGS}";
-	set_build_dir "cbb-gcc-${GCC_VERSION}" "${TARGET}";
+	set_build_dir "cbb-gcc-${PKG_GCC_VERSION}" "${TARGET}";
 	cd "${_build_dir}";
 	if [ "x${3}" = "xruntime" ]; then
 		# GCC, compiler runtime.
@@ -39,7 +39,7 @@ elif [ "x${3}" = "xruntime" ]\
 else
 	if [ "x${3}" = "xstage1" ]; then
 		# GCC, stage1.
-		set_build_dir "cbb-gcc-${GCC_VERSION}" "${TARGET}";
+		set_build_dir "cbb-gcc-${PKG_GCC_VERSION}" "${TARGET}";
 		export	cbb_ldflags_for_target="--sysroot=${PREFIX_TARGET}"	\
 			cbb_sysroot_for_libgcc="${PREFIX_TARGET}"		\
 			cbb_target="${TARGET}"					\
@@ -48,14 +48,14 @@ else
 		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_TARGET}";
 	elif [ "x${3}" = "xnative" ]; then
 		# GCC, native.
-		set_build_dir "cbb-gcc-${GCC_VERSION}" "native";
+		set_build_dir "cbb-gcc-${PKG_GCC_VERSION}" "native";
 		export 	cbb_ldflags_for_target="--sysroot=${PREFIX_NATIVE}"	\
 			cbb_sysroot_for_libgcc="${PREFIX_NATIVE}"		\
 			cbb_target="${TARGET}"					\
 			cbb_xgcc_for_specs="${TARGET}-gcc";
 		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_NATIVE}";
 	fi;
-	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${GCC_VERSION}/libc/cbb-musl-pe.h)";
+	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${PKG_GCC_VERSION}/libc/cbb-musl-pe.h)";
 	set_env_vars "${GCCFLAGS}" CFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS CXXFLAGS_FOR_BUILD;
 	set_env_vars "${CFLAGS_FOR_BUILD}" cbb_cflags_for_stage1 cbb_cflags_for_stage2 cbb_cflags_for_stage3 cbb_cflags_for_stage4;
 	set_env_vars "${GCCTARGET_FLAGS}" CFLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET;
@@ -81,7 +81,7 @@ else
 				--with-sysroot=";
 		fi;
 		rm_if_exists -m -c "${_build_dir}";
-		"../cbb-gcc-${GCC_VERSION}/configure"		\
+		"../cbb-gcc-${PKG_GCC_VERSION}/configure"	\
 			--disable-bootstrap			\
 			--disable-libmudflap			\
 			--disable-multilib			\

@@ -1,15 +1,17 @@
 if is_build_script_done finished; then
         exit 212;
 elif [ "x${2}" = "xlibz" ]; then
-	_pkg_url="https://sortix.org/libz/release/libz-${LIBZ_VERSION}.tar.gz";
+	_pkg_url="https://sortix.org/libz/release/libz-${PKG_LIBZ_VERSION}.tar.gz";
 	_pkg_fname="${_pkg_url##*/}";
-	_pkg_subdir="${2}-${LIBZ_VERSION}";
+	_pkg_sha256sum="${PKG_LIBZ_SHA256SUM}";
+	_pkg_subdir="${2}-${PKG_LIBZ_VERSION}";
 elif [ "x${2}" = "xgzip" ]; then
-	_pkg_url="https://ftp.gnu.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.gz";
+	_pkg_url="https://ftp.gnu.org/gnu/gzip/gzip-${PKG_GZIP_VERSION}.tar.gz";
 	_pkg_fname="${_pkg_url##*/}";
-	_pkg_subdir="${2}-${GZIP_VERSION}";
+	_pkg_sha256sum="${PKG_GZIP_SHA256SUM}";
+	_pkg_subdir="${2}-${PKG_GZIP_VERSION}";
 fi;
-fetch "${_pkg_url}";
+fetch "${_pkg_url}" "${_pkg_sha256sum}";
 if ! is_build_script_done extracted; then
 	rm_if_exists "${_pkg_fname%%.tar*}";
 	tar -axf "${_pkg_fname}";

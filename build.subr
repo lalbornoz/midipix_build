@@ -3,7 +3,7 @@ TIMESTAMP_FMT="${TIMESTAMP_FMT:-"%Y/%m/%d %H:%M:%S"}";
 check_prereqs() {
 	for _cmd in "$@"; do
 		if ! command -v "${_cmd}" >/dev/null; then
-			echo "Error: missing prerequisite command \`${_cmd}" >&2;
+			log_msg fail "Error: missing prerequisite command \`${_cmd}";
 			exit 1;
 		fi;
 	done; unset _cmd;
@@ -14,7 +14,12 @@ date() {
 };
 
 fetch() {
-	wget --no-check-certificate -N "${@}";
+	wget --no-check-certificate -N "${1}";
+	if [ $# -eq 2 ]\
+	&& ! printf "${2} ${1##*/}\n" | sha256sum -c --status; then
+		log_msg fail "Error: sha256sum mismatch for URL \`${1##*/}'.";
+		exit 1;
+	fi;
 };
 
 fetch_git() {
@@ -72,9 +77,10 @@ parse_with_pkg_name() {
 			_IFS="${IFS}"; IFS=:;
 			for _envv in ${_envvs}; do
 				export ${_envv};
-			done; IFS="${_IFS}";
+			done; IFS="${_IFS}"; unset _envvs _envv;
 			_pkg_subdir="${_pkg_fname%%.tar*}";
-			unset _envvs _envv;
+			eval _pkg_sha256sum=\""\${PKG_$(echo "${_pkg_name}" |\
+				tr a-z A-Z)_SHA256SUM}"\";
 			return;
 		fi; shift 2;
 	done;

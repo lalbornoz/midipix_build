@@ -1,23 +1,22 @@
 export CFLAGS="${CFLAGS_PACKAGES}";
 parse_with_pkg_name "${2}"								\
-	"https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz" ""	\
-	"https://ftp.gnu.org/gnu/diffutils/diffutils-${DIFFUTILS_VERSION}.tar.xz" ""	\
-	"https://alpha.gnu.org/gnu/findutils/findutils-${FINDUTILS_VERSION}.tar.gz"	\
-		"CFLAGS=${CFLAGS:+${CFLAGS} }-Dendpwent=setpwent"			\
-	"https://ftp.gnu.org/gnu/patch/patch-${PATCH_VERSION}.tar.gz" ""		\
-	"https://ftp.gnu.org/gnu/gawk/gawk-${GAWK_VERSION}.tar.xz" ""			\
-	"https://ftp.gnu.org/gnu/bash/bash-${BASH_VERSION}.tar.gz"			\
-		"_configure_extra_args=--without-bash-malloc"				\
-	"https://ftp.gnu.org/gnu/make/make-${MAKE_VERSION}.tar.bz2" ""			\
-	"https://ftp.gnu.org/gnu/grep/grep-${GREP_VERSION}.tar.xz" ""			\
-	"https://ftp.gnu.org/gnu/grep/grep-${GREP_VERSION}.tar.xz" ""			\
-	"https://ftp.gnu.org/gnu/sed/sed-${SED_VERSION}.tar.bz2" ""			\
-	"ftp://sourceware.org/pub/binutils/snapshots/binutils-${BINUTILS_VERSION}.tar.bz2" "";
+	"https://ftp.gnu.org/gnu/coreutils/coreutils-${PKG_COREUTILS_VERSION}.tar.xz" ""	\
+	"https://ftp.gnu.org/gnu/diffutils/diffutils-${PKG_DIFFUTILS_VERSION}.tar.xz" ""	\
+	"http://alpha.gnu.org/gnu/findutils/findutils-${PKG_FINDUTILS_VERSION}.tar.gz"		\
+		"CFLAGS=${CFLAGS:+${CFLAGS} }-Dendpwent=setpwent"				\
+	"https://ftp.gnu.org/gnu/patch/patch-${PKG_PATCH_VERSION}.tar.gz" ""			\
+	"https://ftp.gnu.org/gnu/gawk/gawk-${PKG_GAWK_VERSION}.tar.xz" ""			\
+	"https://ftp.gnu.org/gnu/bash/bash-${PKG_BASH_VERSION}.tar.gz"				\
+		"_configure_extra_args=--without-bash-malloc"					\
+	"https://ftp.gnu.org/gnu/make/make-${PKG_MAKE_VERSION}.tar.bz2" ""			\
+	"https://ftp.gnu.org/gnu/grep/grep-${PKG_GREP_VERSION}.tar.xz" ""			\
+	"https://ftp.gnu.org/gnu/sed/sed-${PKG_SED_VERSION}.tar.bz2" ""				\
+	"ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_VERSION}.tar.bz2" "";
 
 if is_build_script_done finished; then
         exit 212;
 else
-	fetch "${_pkg_url}";
+	fetch "${_pkg_url}" "${_pkg_sha256sum}";
 	if [ "${_pkg_name}" = "binutils" ]\
 	&& [ "${3}" = "host" ]; then
 		_configure_args="--disable-werror,--prefix=${PREFIX},--with-sysroot=${PREFIX_TARGET}";
