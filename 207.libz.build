@@ -5,7 +5,7 @@ elif [ "x${2}" = "xlibz" ]; then
 	_pkg_fname="${_pkg_url##*/}";
 	_pkg_subdir="${2}-${LIBZ_VERSION}";
 elif [ "x${2}" = "xgzip" ]; then
-	_pkg_url="ftp://ftp.gnu.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.gz";
+	_pkg_url="https://ftp.gnu.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.gz";
 	_pkg_fname="${_pkg_url##*/}";
 	_pkg_subdir="${2}-${GZIP_VERSION}";
 fi;
