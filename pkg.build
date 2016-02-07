@@ -12,7 +12,9 @@ else
 	else
 		_configure_args=${PKG_CONFIGURE_ARGS:--C --host=${HOST_NATIVE} --prefix=};
 	fi;
-	: ${DESTDIR:=${PREFIX_NATIVE}};
+	if [ ${PKG_NO_DESTDIR:-0} -eq 0 ]; then
+		: ${DESTDIR:=${PREFIX_NATIVE}};
+	fi;
 	set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
 fi;
 if ! is_build_script_done extracted; then
