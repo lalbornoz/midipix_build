@@ -8,23 +8,30 @@ else
 	fetch_git ${PKG_SUBDIR} ${PKG_URL};
 	set_build_dir ${PKG_SUBDIR} cross;
 fi;
-if ! is_build_script_done configured; then
-	rm_if_exists -m -c ${BUILD_DIR};
-	../${PKG_SUBDIR}/configure		\
-		--prefix=${PREFIX_NATIVE}	\
-		--host=${HOST_NATIVE};
-       set_build_script_done configured -built;
+if [ "x${PKG_NAME}" = "xpsxtypes" ]; then
+	if ! is_build_script_done installed; then
+		make -C ${PKG_SUBDIR} ${MAKEFLAGS} DESTDIR=${PREFIX_TARGET};
+		set_build_script_done installed finished;
+	fi;
 else
-	cd ${BUILD_DIR};
-fi;
-if ! is_build_script_done built; then
-	make ${MAKEFLAGS};
-	set_build_script_done built -installed;
-fi;
-if ! is_build_script_done installed; then
-	make ${MAKEFLAGS} install;
-	make ${MAKEFLAGS} DESTDIR=${PREFIX_NATIVE};
-	set_build_script_done installed finished;
+	if ! is_build_script_done configured; then
+		rm_if_exists -m -c ${BUILD_DIR};
+		../${PKG_SUBDIR}/configure		\
+			--prefix=${PREFIX_TARGET}	\
+			--host=${HOST_NATIVE};
+	       set_build_script_done configured -built;
+	else
+		cd ${BUILD_DIR};
+	fi;
+	if ! is_build_script_done built; then
+		make ${MAKEFLAGS};
+		set_build_script_done built -installed;
+	fi;
+	if ! is_build_script_done installed; then
+		make ${MAKEFLAGS} install;
+		make ${MAKEFLAGS} DESTDIR=${PREFIX_TARGET};
+		set_build_script_done installed finished;
+	fi;
 fi;
 
 # vim:filetype=sh
