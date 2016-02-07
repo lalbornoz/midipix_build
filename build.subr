@@ -93,10 +93,10 @@ log_msg() {
 };
 
 parse_with_pkg_name() {
-	_pkg_name=${1}; shift;
+	PKG_NAME=${1}; shift;
 	while [ $# -ge 0 ]; do
-		if [ "x${_pkg_name}" = "x${1}" ]; then
-			_pkg_NAME=$(echo "${_pkg_name}" | tr a-z A-Z);
+		if [ "x${PKG_NAME}" = "x${1}" ]; then
+			_pkg_NAME=$(echo "${PKG_NAME}" | tr a-z A-Z);
 			for _vname in							\
 					configure_extra_args no_libtool_midipix		\
 					patches_extra prefix prefix_extra sha256sum	\

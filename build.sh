@@ -9,7 +9,7 @@ log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)
 #trap
 (set -o errexit; mkdir -p ${PREFIX} ${WORKDIR});
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
-for BUILD_LVL in 0 1 2; do
+for BUILD_LVL in 0 1 2 3; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${DEBUG_SCRIPT}" ]\
 		&& [ "x${DEBUG_SCRIPT}" != "x${BUILD_SCRIPT_FNAME}" ]; then
@@ -23,6 +23,8 @@ for BUILD_LVL in 0 1 2; do
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME}; _pwd=$(pwd);		\
 			 export CFLAGS="$(eval echo \${CFLAGS_LVL${BUILD_LVL}})";	\
 			 cd ${WORKDIR}; . ${_pwd}/build.subr;				\
+			 [ -f ${_pwd}/${SCRIPT_FNAME%.build}.vars ] &&			\
+			 	. ${_pwd}/${SCRIPT_FNAME%.build}.vars;			\
 			 . ${_pwd}/${BUILD_SCRIPT_FNAME});
 			case ${BUILD_SCRIPT_RC:=${?}} in
 			0) log_msg succ "Finished build script \`${BUILD_SCRIPT_FNAME}'.";

@@ -1,0 +1,31 @@
+# Order: dalist ntapi pemagine psxtypes psxscl ntctty
+
+parse_with_pkg_name ${2}				\
+	dalist ntapi ntctty pemagine psxscl psxtypes;
+if is_build_script_done finished; then
+        exit 212;
+else
+	fetch_git ${PKG_SUBDIR} ${PKG_URL};
+	set_build_dir ${PKG_SUBDIR} cross;
+fi;
+if ! is_build_script_done configured; then
+	rm_if_exists -m -c ${BUILD_DIR};
+	../${PKG_SUBDIR}/configure			\
+		--prefix=${PREFIX_NATIVE}		\
+		--host=${HOST_NATIVE}			\
+		--target=${TARGET}			\
+		--sysroot=/;
+	set_build_script_done configured -built;
+else
+	cd ${BUILD_DIR};
+fi;
+if ! is_build_script_done built; then
+	make ${MAKEFLAGS};
+	set_build_script_done built -installed;
+fi;
+if ! is_build_script_done installed; then
+	make ${MAKEFLAGS} install;
+	set_build_script_done installed finished;
+fi;
+
+# vim:filetype=sh

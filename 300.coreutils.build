@@ -7,11 +7,11 @@ else
 	fetch ${PKG_URL} ${PKG_SHA256SUM};
 	if [ "x${PKG_NAME}" = "xbinutils" ]\
 	&& [ "x${3}" = "xhost" ]; then
-		_no_config_cache=$(_no_destdir:=1);
+		_no_config_cache=${_no_destdir:=1};
 		_configure_args="--disable-werror --prefix=${PREFIX} --with-sysroot=${PREFIX_TARGET}";
 		set_build_dir ${PKG_SUBDIR} cross;
 	else
-		_no_config_cache=$(_no_destdir:=1);
+		_no_config_cache=${_no_destdir:=1};
 		_configure_args="-C --host=${HOST_NATIVE} --prefix=";
 		set_build_dir ${PKG_SUBDIR} native;
 	fi;
@@ -25,11 +25,18 @@ fi;
 if ! is_build_script_done patched; then
 	if [ -n "${PKG_PATCHES_EXTRA}" ]; then
 		(rm_if_exists -m -c ${PKG_SUBDIR}-patches-extra;
-		wget -c -nd -np -r -R \*.htm\* ${PKG_PATCHES_EXTRA}
+		wget -c -nd -np -r -R \*.htm\* -R \*.sig ${PKG_PATCHES_EXTRA}
 		for _patch_fname in			\
 				$(find . -type f -not -iname \*.sig | sort); do
 			patch -d ../${PKG_SUBDIR} -p0	\
 				< ${_patch_fname};
+		done;
+		for _patch_fname in ${PKG_PATCHES_EXTRA_MANIFEST}; do
+			_patch_sha256sum=${2}; shift;
+			if ! compare_hash ${_patch_fname} ${_patch_sha256sum}; then
+				log_msg fail "Error: hash mismatch for patch file \`${_patch_fname}'.";
+				exit 1;
+			fi;
 		done); wait;
 	fi;
 	patch -d ${PKG_SUBDIR} -p1			\
