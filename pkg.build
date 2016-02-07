@@ -1,0 +1,76 @@
+parse_with_pkg_name ${2}				\
+	bash binutils binutils_host coreutils diffutils	\
+	findutils gawk gmp grep libelf make mpc mpfr	\
+	patch sed;
+if is_build_script_done finished; then
+        exit 212;
+else
+	fetch ${PKG_URL} ${PKG_SHA256SUM};
+	if [ "x${SCRIPT_FNAME%[0-9][0-9]*}" = "x1" ]; then
+		_configure_args="--host=${HOST_NATIVE} --prefix=${PKG_PREFIX:-/}";
+		PKG_NO_CONFIG_CACHE=1;
+	else
+		_configure_args=${PKG_CONFIGURE_ARGS:--C --host=${HOST_NATIVE} --prefix=};
+	fi;
+	: ${DESTDIR:=${PREFIX_NATIVE}};
+	set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
+fi;
+if ! is_build_script_done extracted; then
+	rm_if_exists ${PKG_SUBDIR};
+	tar -axf ${PKG_FNAME};
+	set_build_script_done extracted -patched;
+fi;
+if ! is_build_script_done patched; then
+	if [ -n "${PKG_PATCHES_EXTRA}" ]; then
+		(rm_if_exists -m -c ${PKG_SUBDIR}-patches-extra;
+		wget -c -nd -np -r -R \*.htm\* -R \*.sig ${PKG_PATCHES_EXTRA}
+		for _patch_fname in			\
+				$(find . -type f -not -iname \*.sig | sort); do
+			patch -d ../${PKG_SUBDIR} -p0	\
+				< ${_patch_fname};
+		done;
+		for _patch_fname in ${PKG_PATCHES_EXTRA_MANIFEST}; do
+			_patch_sha256sum=${2}; shift;
+			if ! compare_hash ${_patch_fname} ${_patch_sha256sum}; then
+				log_msg fail "Error: hash mismatch for patch file \`${_patch_fname}'.";
+				exit 1;
+			fi;
+		done); wait;
+	fi;
+	patch -d ${PKG_SUBDIR} -p1			\
+		< portage/${PKG_SUBDIR}.midipix.patch;
+	if [ ${PKG_NO_LIBTOOL_MIDIPIX:-0} -eq 0 ]; then
+		cp portage/libtool.midipix ${PKG_SUBDIR}/;
+	fi;
+	set_build_script_done patched -configured;
+fi;
+if ! is_build_script_done configured; then
+	rm_if_exists -m -c ${BUILD_DIR};
+	[ ${PKG_NO_CONFIG_CACHE:-0} -eq 0 ] &&\
+		cp ../portage/config.cache .;
+	../${PKG_SUBDIR}/configure			\
+		${_configure_args}			\
+		--target=${TARGET}			\
+		${PKG_CONFIGURE_EXTRA_ARGS};
+	set_build_script_done configured -built;
+else
+	cd ${BUILD_DIR};
+fi;
+if ! is_build_script_done built; then
+	make ${MAKEFLAGS};
+	set_build_script_done built -installed;
+fi;
+if ! is_build_script_done installed1; then
+	make ${MAKEFLAGS} ${DESTDIR:+DESTDIR=${DESTDIR}} install;
+	set_build_script_done installed1 -installed2 -finished;
+fi;
+if [ -n "${PKG_PREFIX_EXTRA}" ]\
+&& ! is_build_script_done installed2; then
+	make DESTDIR=${PKG_PREFIX_EXTRA} install;
+	set_build_script_done installed2 -finished;
+elif command -v pkg_${PKG_NAME}_install_post >/dev/null; then
+	pkg_${PKG_NAME}_install_post;
+fi;
+set_build_script_done finished;
+
+# vim:filetype=sh
