@@ -146,7 +146,11 @@ set_build_dir() {
 set_env_vars() {
 	_val=${1}; shift;
 	while [ $# -ge 1 ]; do
-		export "${1}=${_val}"; shift;
+		if [ -z "${_val}" ]; then
+			unset ${1};
+		else
+			export "${1}=${_val}";
+		fi; shift;
 	done; unset _val;
 };
 
