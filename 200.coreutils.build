@@ -4,46 +4,47 @@ parse_with_pkg_name ${2}				\
 if is_build_script_done finished; then
         exit 212;
 else
-	fetch ${_pkg_url} ${_pkg_sha256sum};
-	if [ "x${_pkg_name}" = "xbinutils" ]\
+	fetch ${PKG_URL} ${PKG_SHA256SUM};
+	if [ "x${PKG_NAME}" = "xbinutils" ]\
 	&& [ "x${3}" = "xhost" ]; then
-		_no_config_cache=1; _no_destdir=1;
+		_no_config_cache=$(_no_destdir:=1);
 		_configure_args="--disable-werror --prefix=${PREFIX} --with-sysroot=${PREFIX_TARGET}";
-		set_build_dir ${_pkg_subdir} cross;
+		set_build_dir ${PKG_SUBDIR} cross;
 	else
+		_no_config_cache=$(_no_destdir:=1);
 		_configure_args="-C --host=${HOST_NATIVE} --prefix=";
-		set_build_dir ${_pkg_subdir} native;
+		set_build_dir ${PKG_SUBDIR} native;
 	fi;
-	_configure_args="${_configure_args}${_pkg_configure_extra_args:+ ${_pkg_configure_extra_args}}";
+	_configure_args="${_configure_args}${PKG_CONFIGURE_EXTRA_ARGS:+ ${PKG_CONFIGURE_EXTRA_ARGS}}";
 fi;
 if ! is_build_script_done extracted; then
-	rm_if_exists ${_pkg_subdir};
-	tar -axf ${_pkg_fname};
+	rm_if_exists ${PKG_SUBDIR};
+	tar -axf ${PKG_FNAME};
 	set_build_script_done extracted -patched;
 fi;
 if ! is_build_script_done patched; then
-	if [ -n "${_pkg_patches_extra}" ]; then
-		(rm_if_exists -m -c ${_pkg_subdir}-patches-extra;
-		wget -c -nd -np -r -R \*.htm\* ${_pkg_patches_extra}
+	if [ -n "${PKG_PATCHES_EXTRA}" ]; then
+		(rm_if_exists -m -c ${PKG_SUBDIR}-patches-extra;
+		wget -c -nd -np -r -R \*.htm\* ${PKG_PATCHES_EXTRA}
 		for _patch_fname in			\
 				$(find . -type f -not -iname \*.sig | sort); do
-			patch -d ../${_pkg_subdir} -p0	\
+			patch -d ../${PKG_SUBDIR} -p0	\
 				< ${_patch_fname};
 		done); wait;
 	fi;
-	patch -d ${_pkg_subdir} -p1			\
-		< portage/${_pkg_subdir}.midipix.patch;
+	patch -d ${PKG_SUBDIR} -p1			\
+		< portage/${PKG_SUBDIR}.midipix.patch;
 	set_build_script_done patched -configured;
 fi;
 if ! is_build_script_done configured; then
-	rm_if_exists -m -c ${_build_dir};
+	rm_if_exists -m -c ${BUILD_DIR};
 	[ ${_no_config_cache:-0} -eq 0 ] &&\
 		cp ../portage/config.cache .;
-	../${_pkg_subdir}/configure			\
+	../${PKG_SUBDIR}/configure			\
 		${_configure_args} --target=${TARGET};
 	set_build_script_done configured -built;
 else
-	cd ${_build_dir};
+	cd ${BUILD_DIR};
 fi;
 if ! is_build_script_done built; then
 	make ${MAKEFLAGS};

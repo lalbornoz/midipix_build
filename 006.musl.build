@@ -4,6 +4,7 @@ if is_build_script_done finished; then
         exit 212;
 elif [ "x${3}" = "xno-complex" ]; then
 	# Musl: build (no-complex)
+	unset _destdir;
 	_install=install_no_complex;
 	set_build_dir musl-${PKG_MUSL_VERSION}-${3} cross;
 	fetch http://www.musl-libc.org/releases/musl-${PKG_MUSL_VERSION}.tar.gz	\
@@ -21,11 +22,12 @@ elif [ "x${3}" = "xnative" ]; then
 	set_build_dir musl-${PKG_MUSL_VERSION} ${3};
 else
 	# Musl: build (full)
+	unset _destdir;
 	_install=install;
 	set_build_dir musl-${PKG_MUSL_VERSION} cross;
 fi;
 if ! is_build_script_done configured; then
-	rm_if_exists -m -c ${_build_dir};
+	rm_if_exists -m -c ${BUILD_DIR};
 	../lazy/lazy					\
 		-a ${ARCH}				\
 		-c gcc					\
@@ -36,7 +38,7 @@ if ! is_build_script_done configured; then
 		-x config;
 	set_build_script_done configured -built;
 else
-	cd ${_build_dir};
+	cd ${BUILD_DIR};
 fi;
 if ! is_build_script_done built; then
 	./lazy	-e ${_install}				\

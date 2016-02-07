@@ -4,9 +4,8 @@ if is_build_script_done finished; then
         exit 212;
 elif [ "x${3}" = "xruntime" ]\
 ||   [ "x${3}" = "xfull" ]; then
-	export CFLAGS="${GCCFLAGS}" CXXFLAGS="${GCCFLAGS}";
 	set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
-	cd ${_build_dir};
+	cd ${BUILD_DIR};
 	if [ "x${3}" = "xruntime" ]; then
 		# GCC, compiler runtime.
 		if ! is_build_script_done built; then
@@ -44,7 +43,7 @@ else
 			cbb_sysroot_for_libgcc=${PREFIX_TARGET}			\
 			cbb_target=${TARGET}					\
 			cbb_neutral_libiberty=no				\
-			cbb_xgcc_for_specs=${WORKDIR}/${_build_dir}/gcc/xgcc;
+			cbb_xgcc_for_specs=${WORKDIR}/${BUILD_DIR}/gcc/xgcc;
 		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_TARGET}";
 	elif [ "x${3}" = "xnative" ]; then
 		# GCC, native.
@@ -80,7 +79,7 @@ else
 				--with-mpfr=${PREFIX_NATIVE}	\
 				--with-sysroot=";
 		fi;
-		rm_if_exists -m -c ${_build_dir};
+		rm_if_exists -m -c ${BUILD_DIR};
 		../cbb-gcc-${PKG_GCC_VERSION}/configure		\
 			--disable-bootstrap			\
 			--disable-libmudflap			\
@@ -107,7 +106,7 @@ else
 			${_configure_args};
 		set_build_script_done configured -built;
 	else
-		cd ${_build_dir};
+		cd ${BUILD_DIR};
 	fi;
 	if ! is_build_script_done built; then
 		if [ "x${3}" = "xstage1" ]; then
