@@ -8,7 +8,7 @@ check_prereqs git make openssl sed sort tar tr wget;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE:=$(date %Y-%m-%d-%H-%M-%S)}.";
 #trap
 (set -o errexit; mkdir -p ${PREFIX} ${WORKDIR});
-BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${_nbuild:=0}}};
+BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
 for BUILD_LVL in 0 1 2; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${DEBUG_SCRIPT}" ]\
@@ -17,7 +17,7 @@ for BUILD_LVL in 0 1 2; do
 		elif [ ! -f ${BUILD_SCRIPT_FNAME} ]; then
 			continue;
 		else
-			unset BUILD_SCRIPT_RC; : $((_nbuild+=1));
+			unset BUILD_SCRIPT_RC; : $((BUILD_NBUILT+=1));
 			log_msg info "Invoking build script \`${BUILD_SCRIPT_FNAME}'";
 			(set -o errexit -- $(split . ${BUILD_SCRIPT_FNAME%.build});	\
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME}; _pwd=$(pwd);		\
@@ -38,7 +38,7 @@ for BUILD_LVL in 0 1 2; do
 		break;
 	fi;
 done;
-log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${_nbuild} build script(s).";
+log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]\
 && [ ${BUILD_NFAIL} -eq 0 ]; then
 	log_msg info "Building distribution tarball.";
@@ -59,7 +59,7 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]\
 		-not -path ./${PREFIX_NATIVE##*/}/lib.bak	|\
 	tar -T - -cpf - | bzip2 -9c - > ${DISTRIB_FNAME}
 	rm -rf ${PREFIX_NATIVE##*/}/lib;
-	mv ${PREFIX_NATIVE##*/}/lib.bak ${PREFIX_NATIVE##*/}/lib);
+	mv ${PREFIX_NATIVE##*/}/lib.bak ${PREFIX_NATIVE##*/}/lib); wait;
 fi;
 exit ${BUILD_SCRIPT_RC};
 } 2>&1 | tee build.log;
