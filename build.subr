@@ -99,10 +99,10 @@ parse_with_pkg_name() {
 			_pkg_NAME=$(echo "${PKG_NAME}" | tr a-z A-Z);
 			for _vname in							\
 					build_type configure_args configure_extra_args	\
-					no_config_cache no_libtool_midipix		\
+					no_config_cache no_destdir no_libtool_midipix	\
 					patches_extra prefix prefix_extra sha256sum	\
 					url version					\
-					CC CFLAGS DESTDIR LDFLAGS; do
+					CC CFLAGS LDFLAGS; do
 				_vNAME=$(echo "${_vname}" | tr a-z A-Z);
 				if [ -n "${_vval:=$(eval echo \${PKG_${_pkg_NAME}_${_vNAME}})}" ]; then
 					export PKG_${_vNAME}="${_vval}";
