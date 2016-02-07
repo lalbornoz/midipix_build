@@ -11,7 +11,7 @@ else
 		_configure_args="--disable-werror --prefix=${PREFIX} --with-sysroot=${PREFIX_TARGET}";
 		set_build_dir ${PKG_SUBDIR} cross;
 	else
-		_no_config_cache=${_no_destdir:=1};
+		_no_config_cache=${_no_destdir:=0};
 		_configure_args="-C --host=${HOST_NATIVE} --prefix=";
 		set_build_dir ${PKG_SUBDIR} native;
 	fi;
