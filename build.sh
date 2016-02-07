@@ -4,7 +4,7 @@
 unset AR ARFLAGS CC CFLAGS CXX CXXFLAGS LD LDFLAGS;
 . ./build.vars; . ./build.subr;
 check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
-check_prereqs git make openssl sed tar tr wget;
+check_prereqs git make openssl sed sort tar tr wget;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE:=$(date %Y-%m-%d-%H-%M-%S)}.";
 #trap
 (set -o errexit; mkdir -p ${PREFIX} ${WORKDIR});
