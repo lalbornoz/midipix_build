@@ -32,9 +32,9 @@ if ! is_build_script_done built; then
 fi;
 if ! is_build_script_done installed; then
 	if [ "x${2}" = "xlibz" ]; then
-		make -j18 DESTDIR=${PREFIX_NATIVE} install;
+		make -j18 DESTDIR=${PREFIX_LVL} install;
 	elif [ "x${2}" = "xgzip" ]; then
-		cp gunzip gzip zcat ${PREFIX_NATIVE}/bin;
+		cp gunzip gzip zcat ${PREFIX_LVL}/bin;
 	fi;
 	set_build_script_done installed finished;
 fi;

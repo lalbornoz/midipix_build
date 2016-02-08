@@ -39,20 +39,20 @@ else
 	if [ "x${3}" = "xstage1" ]; then
 		# GCC, stage1.
 		set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
-		export	cbb_ldflags_for_target=--sysroot=${PREFIX_TARGET}	\
-			cbb_sysroot_for_libgcc=${PREFIX_TARGET}			\
-			cbb_target=${TARGET}					\
-			cbb_neutral_libiberty=no				\
+		export	cbb_ldflags_for_target=--sysroot=${PREFIX_LVL}	\
+			cbb_sysroot_for_libgcc=${PREFIX_LVL}		\
+			cbb_target=${TARGET}				\
+			cbb_neutral_libiberty=no			\
 			cbb_xgcc_for_specs=${WORKDIR}/${BUILD_DIR}/gcc/xgcc;
-		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_TARGET}";
+		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_LVL}";
 	elif [ "x${3}" = "xnative" ]; then
 		# GCC, native.
 		set_build_dir cbb-gcc-${PKG_GCC_VERSION} native;
-		export 	cbb_ldflags_for_target=--sysroot=${PREFIX_NATIVE}	\
-			cbb_sysroot_for_libgcc=${PREFIX_NATIVE}			\
-			cbb_target=${TARGET}					\
+		export 	cbb_ldflags_for_target=--sysroot=${PREFIX_LVL}	\
+			cbb_sysroot_for_libgcc=${PREFIX_LVL}		\
+			cbb_target=${TARGET}				\
 			cbb_xgcc_for_specs=${TARGET}-gcc;
-		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_NATIVE}";
+		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_LVL}";
 	fi;
 	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${PKG_GCC_VERSION}/libc/cbb-musl-pe.h)";
 	set_env_vars "${GCCFLAGS}" CFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS CXXFLAGS_FOR_BUILD;
@@ -61,22 +61,22 @@ else
 	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
 	if ! is_build_script_done configured; then
 		if [ "x${3}" = "xstage1" ]; then
-			mkdir -p ${PREFIX_TARGET}/include;
-			[ \! -d ${PREFIX_TARGET}/usr ] &&		\
-				ln -s . ${PREFIX_TARGET}/usr;
-			_configure_args="--prefix=${PREFIX} --with-sysroot=${PREFIX_TARGET}";
+			mkdir -p ${PREFIX_LVL}/include;
+			[ \! -d ${PREFIX_LVL}/usr ] &&			\
+				ln -s . ${PREFIX_LVL}/usr;
+			_configure_args="--prefix=${PREFIX} --with-sysroot=${PREFIX_LVL}";
 		elif [ "x${3}" = "xnative" ]; then
-			mkdir -p ${PREFIX_NATIVE}/${TARGET};
-			if [ \! -d ${PREFIX_NATIVE}/${TARGET}/usr ]; then
-				ln -s . ${PREFIX_NATIVE}/${TARGET}/usr;
+			mkdir -p ${PREFIX_LVL}/${TARGET};
+			if [ \! -d ${PREFIX_LVL}/${TARGET}/usr ]; then
+				ln -s . ${PREFIX_LVL}/${TARGET}/usr;
 			fi;
 			_configure_args="			\
 				--host=x86_64-nt64-midipix	\
 				--prefix=/			\
-				--with-elf=${PREFIX_NATIVE}	\
-				--with-gmp=${PREFIX_NATIVE}	\
-				--with-mpc=${PREFIX_NATIVE}	\
-				--with-mpfr=${PREFIX_NATIVE}	\
+				--with-elf=${PREFIX_LVL}	\
+				--with-gmp=${PREFIX_LVL}	\
+				--with-mpc=${PREFIX_LVL}	\
+				--with-mpfr=${PREFIX_LVL}	\
 				--with-sysroot=";
 		fi;
 		rm_if_exists -m -c ${BUILD_DIR};
@@ -123,7 +123,7 @@ else
 		if [ "x${3}" = "xstage1" ]; then
 			make ${MAKEFLAGS} install-gcc;
 		elif [ "x${3}" = "xnative" ]; then
-			make -j18 DESTDIR=${PREFIX_NATIVE} install;
+			make -j18 DESTDIR=${PREFIX_LVL} install;
 		fi;
 		set_build_script_done installed finished;
 	fi;

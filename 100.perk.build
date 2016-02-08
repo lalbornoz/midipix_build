@@ -32,7 +32,7 @@ if ! is_build_script_done built2; then
 	set_build_script_done built2 -installed2;
 fi;
 if ! is_build_script_done installed2; then
-	make DESTDIR=${PREFIX_NATIVE} install;
+	make DESTDIR=${PREFIX_LVL} install;
 	set_build_script_done installed2 finished;
 fi;
 

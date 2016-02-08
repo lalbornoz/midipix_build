@@ -1,6 +1,7 @@
 #!/bin/sh
 
 {
+#clear_env_with_except HOME PATH SHELL TERM USER;
 unset AR ARFLAGS CC CFLAGS CXX CXXFLAGS LD LDFLAGS;
 . ./build.vars; . ./build.subr;
 check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
@@ -24,6 +25,7 @@ for BUILD_LVL in 0 1 2 3; do
 			(set -o errexit -- $(split . ${BUILD_SCRIPT_FNAME%.build});	\
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME}; _pwd=$(pwd);		\
 			 export CFLAGS="$(eval echo \${CFLAGS_LVL${BUILD_LVL}})";	\
+			 export PREFIX_LVL="$(eval echo \${PREFIX_LVL${BUILD_LVL}})";	\
 			 cd ${WORKDIR}; . ${_pwd}/build.subr;				\
 			 [ -f ${_pwd}/${SCRIPT_FNAME%.build}.vars ] &&			\
 			 	. ${_pwd}/${SCRIPT_FNAME%.build}.vars;			\
