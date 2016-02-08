@@ -45,7 +45,7 @@ if [ ${PKG_NO_PATCH:-0} -eq 0 ] &&\
 	patch -d ${PKG_SUBDIR} -p1			\
 		< portage/${PKG_SUBDIR}.midipix.patch;
 	[ ${PKG_NO_CONFIG_CACHE:-0} -eq 0 ] &&\
-		cp ../portage/config.cache .;
+		cp portage/config.cache ${PKG_SUBDIR}/;
 	[ ${PKG_NO_LIBTOOL_MIDIPIX:-0} -eq 0 ] &&	\
 		cp portage/libtool.midipix ${PKG_SUBDIR}/;
 	set_build_script_done patched -configured;
