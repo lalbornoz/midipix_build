@@ -61,7 +61,7 @@ else
 fi;
 if ! is_build_script_done built; then
 	make ${MAKEFLAGS};
-	set_build_script_done built -installed;
+	set_build_script_done built -installed1;
 fi;
 if ! is_build_script_done installed1; then
 	if [ ${PKG_NO_DESTDIR:-0} -eq 0 ]; then
