@@ -1,86 +1,149 @@
 #
 # . ./build.vars and set -o errexit are assumed.
+# See warning at the top of build.vars.
 #
 
-TIMESTAMP_FMT="${TIMESTAMP_FMT:-"%Y/%m/%d %H:%M:%S"}";
+date() { command date +"${1:-${TIMESTAMP_FMT}}"; };
+fetch_git() { [ -d ${1} ] && (cd ${1} && git pull origin main) || git clone ${3} ${2} ${1}; };
+get_basename() { set -- $(get_name_without_slash ${1}); echo "${1##*/}"; };
+get_var() { eval echo \${${1}}; }; # XXX
+set_var() { eval ${1}=\"${2}\"; }; # XXX
+get_name_without_slash() { while [ "x${1%/}" != "x${1}" ]; do set -- ${1%/}; done; echo ${1}; };
+get_postfix_lrg() { echo "${1##*${2}}"; };
+get_prefix_lrg() { echo "${1%%${2}*}"; };
+get_postfix() { echo "${1#*${2}}"; };
+get_prefix() { echo "${1%${2}*}"; };
+match_any() { [ "x${1#*${2}*}" != "x${1}" ]; };
+match_start() { [ "x${1#${2}}" != "x${1}" ]; };
+push_IFS() { _IFS="${IFS}"; IFS="${1}"; };
+pop_IFS() { IFS="${_IFS}"; unset _IFS; };
+set_build_dir() { BUILD_DIR=${1}-${2}-${TARGET}; };
+split() { push_IFS "${1}"; set -- ${2}; pop_IFS; echo "${*}"; };
+unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
 
+
+rm_if_exists() {
+	set_flag_vars_from_args "$@"; shift ${_nshift:-0};
+	[ -d ${1} ] && rm -rf ${1}; [ -f ${1} ] && rm -f ${1};
+	[ ${_arg_m:-0} -eq 1 ] && mkdir ${1};
+	[ ${_arg_c:-0} -eq 1 ] && cd ${1};
+	unset_flag_vars_from_args;
+};
+
+set_flag_vars_from_args() {
+	unset _flag_vars _nshift;
+	while [ ${#} -gt 1 ]; do
+		if [ "x${1%[a-z]}" = "x-" ]; then
+			set_var _arg_${1#-} 1;
+			_flag_vars="${_flag_vars:+${_flag_vars} }_arg_${1#-}";
+			: $((_nshift+=1));
+		fi; shift;
+	done;
+};
+unset_flag_vars_from_args() {
+	set -- ${_flag_vars}; while [ ${#} -gt 0 ]; do
+		unset ${1}; shift; done; unset _flag_vars _nshift;
+};
+
+set_env_vars() {
+	_val_new="${1}"; shift;
+	while [ ${#} -gt 1 ]; do
+		[ -z "${_val_new}" ] && unset ${1} ||\
+			export "${1}=${_val_new}"; shift;
+	done; unset _val_new;
+};
+
+
+# Download GNU bash-style patch sets into ${2}-patches-extra and
+# apply them to ${2} in the correct order.
 apply_patches() {
-	(rm_if_exists -m -c ${2};
+	(rm_if_exists -m -c ${2}-patches-extra;
 	wget -c -nd -np -r -R \*.htm\* -R \*.sig ${1};
-	for _patch_fname in			\
+	for _patch_fname in		\
 			$(find . -type f -not -iname \*.sig | sort); do
-		patch -d ../${PKG_SUBDIR} -p0	\
+		patch -b -d ../${2} -p0	\
 			< ${_patch_fname};
 	done; unset _patch_fname);
 };
 
+# Check whether all supplied arguments contain non-empty valid values.
 check_path_vars() {
-	while [ $# -gt 0 ]; do
-		if [ -z "${_val:=$(eval echo \${${1}})}" ]; then
-			log_msg fail "Error: variable \`${1}' is empty or unset.";
-			exit 1;
-		elif [ "x${_val#* }" != "x${_val}" ]; then
-			log_msg fail "Error: variable \`${1}' contains one or more whitespace characters.";
-			exit 1;
+	while [ ${#} -gt 0 ]; do
+		unset _val;
+		if [ -z "${_val:=$(get_var "${1}")}" ]; then
+			log_msg failexit "Error: variable \`${1}' is empty or unset.";
+		elif match_any "${_val}" " "; then
+			log_msg failexit "Error: variable \`${1}' contains one or more whitespace characters.";
 		else
 			shift;
 		fi;
 	done; unset _val;
 };
 
+# Check whether all supplied command names resolve.
 check_prereqs() {
-	for _cmd in "$@"; do
-		if ! command -v ${_cmd} >/dev/null; then
-			log_msg fail "Error: missing prerequisite command \`${_cmd}.";
-			exit 1;
-		fi;
-	done; unset _cmd;
+	while [ ${#} -gt 0 ]; do
+		if ! command -v ${1} >/dev/null; then
+			log_msg failexit "Error: missing prerequisite command \`${1}'.";
+		fi; shift;
+	done;
 };
 
-date() {
-	command date +"${1:-${TIMESTAMP_FMT}}";
+# Clear the environment by unsetting each exported variable except
+# for those named by the caller. 
+clear_env_with_except() {
+	_vfilter="${*}"; _unset_cmds="$(mktemp -q)";
+	export | while read _vspec; do
+		set -- ${_vspec}; shift;
+		if ! match_list "${_vfilter}" " "	\
+				$(get_prefix_lrg ${1} =); then
+			echo unset $(get_prefix_lrg ${1} =) >> ${_unset_cmds};
+		fi;
+	done; . "${_unset_cmds}"; rm -f "${_unset_cmds}" 2>/dev/null;
+	unset _vfilter _vspec;
 };
 
 fetch() {
-	wget --no-check-certificate -N ${1};
-	if [ $# -eq 2 ] && ! compare_hash ${1##*/} ${2}; then
-		log_msg fail "Error: hash mismatch for URL \`${1##*/}'.";
-		exit 1;
-	fi;
-};
-
-fetch_git() {
-	if [ -d ${1} ]; then
-		(cd ${1} && git pull origin main);
-	else
-		git clone ${2} ${1};
+	wget ${WGET_ARGS} ${1};
+	if [ ${#} -eq 2 ]; then
+		set -- $(get_basename ${1}) "$(compare_hash $(get_basename ${1}) ${2})" ${2};
+		if [ -n "${2}" ]; then
+			log_msg failexit "Error: hash mismatch for URL \`${1}' (is: ${2}, should be: ${3}.)";
+		fi;
 	fi;
 };
 
 compare_hash() {
-	_hash_cmp=${2}; set -- $(openssl dgst -sha256 ${1});
-	shift $((${#}-1)); set -- ${1} ${_hash_cmp}; unset _hash_cmp;
-	[ "x${1}" = "x${2}" ];
+	# Push the output of dgst(1SSL) and the caller-supplied hash
+	# value to compare the former with on the pseudo-stack and
+	# shift off# all but the last two positional parameters.
+	# This corresponds to the hash output and caller-supplied
+	# hash values.
+	set -- $(openssl dgst -sha256 ${1}) ${2}; shift $((${#}-2));
+	[ "x${1}" = "x${2}" ] || echo "${1}";
 };
 compare_hash_manifest() {
-	while [ $# -gt 0 ]; do
+	while [ ${#} -gt 0 ]; do
 		if ! compare_hash ${1} ${2}; then
-			log_msg fail "Error: hash mismatch for patch file \`${1}'.";
-			exit 1;
-		else
-			shift;
-		fi;
+			log_msg failexit "Error: hash mismatch for patch file \`${1}'.";
+		fi; shift;
 	done; return 0;
 };
 
 is_build_script_done() {
-	_script_fname=${SCRIPT_FNAME##*/};
-	if [ -f ${WORKDIR}/.${_script_fname%.build}.${1} ]; then
-		unset script_fname;
-		return 0;
+	if [ -n "${ARG_BUILD_STEPS}" ]; then
+		if [ "${ARG_BUILD_STEPS}" = "finish" ]\
+		|| [ -z "${ARG_BUILD_STEPS#ALL}" ]; then
+			return 1;	# Build
+		elif ! match_list ${ARG_BUILD_STEPS} , ${1}; then
+			return 0;	# Skip
+		else
+			return 1;	# Build
+		fi;
+	elif [ -f ${WORKDIR}/.${2:-$(get_basename ${SCRIPT_FNAME%.build})}.${1} ]; then
+		return 0;		# Skip
 	else
-		unset script_fname;
-		return 1;
+		return 1;		# Build
 	fi;
 };
 set_build_script_done() {
@@ -97,9 +160,25 @@ set_build_script_done() {
 	unset _script_fname _done_fname;
 };
 
+log_env_vars() {
+	log_msg info "Variables for this build:";
+	while [ ${_nvar:=0} -lt ${#} ]; do
+		_arg="$(eval echo \${${_nvar}})"; _arg="${_arg%%=*}";
+		if [ ${#_arg} -gt ${_arg_len_max:=0} ]; then
+			_arg_len_max=${#_arg};
+		fi; : $((_nvar+=1));
+	done; unset _nvar _arg;
+	while [ ${#} -gt 0 ]; do
+		log_msg info "$(printf				\
+			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
+			"${1%%=*}" "$(get_var ${1#*=})")";
+		shift;
+	done; unset _arg_len_max;
+};
 log_msg() {
 	_lvl=${1}; shift;
 	case ${_lvl} in
+		failexit) printf "\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		fail) printf "\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		info) printf "\033[${LOG_MSG_INFO_COLOUR}m"; ;;
 		succ) printf "\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
@@ -108,8 +187,38 @@ log_msg() {
 		printf "==> %s %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}" "$*";
 	else
 		printf "==> %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}";
-	fi;
-	unset _lvl;
+	fi; [ ${_lvl} = failexit ] && exit 1 || unset _lvl;
+};
+
+match_list() {
+	_cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
+	while [ ${#} -gt 0 ]; do
+		if [ "x${1}" = "x${_cmp}" ]; then
+			unset _cmp; return 0;
+		fi; shift;
+	done; unset _cmp; return 1;
+};
+
+parse_args_into_vars() {
+	_arg0="${1}"; _args_valid="${2}"; shift 2;
+	while [ $# -gt 0 ]; do
+		case "${1}" in
+		--*)	_aname="${1#--}";
+			if ! match_list "${_args_valid}" , "${_aname%%=*}"; then
+				log_msg failexit "Unknown parameter --${_aname%%=*} specified.";
+			elif match_start "${_aname}" "*="; then
+				_aval="$(get_postfix "${_aname}" =)";
+				_aname="$(get_prefix_lrg "${_aname}" =)";
+			else
+				_aval=1;
+			fi;
+			set_var $(echo arg_${_aname} | tr a-z- A-Z_) "${_aval}";
+			shift; ;;
+		*=*)	set_var "$(get_prefix_lrg "${1}" =)"\
+				"$(get_postfix "${1}" =)"; shift; ;;
+		*)	log_msg failexit "Invalid or unknown command line argument \`${1}'."; ;;
+		esac;
+	done; unset _arg0 _args_valid _aname _aval;
 };
 
 parse_with_pkg_name() {
@@ -117,14 +226,9 @@ parse_with_pkg_name() {
 	while [ $# -ge 0 ]; do
 		if [ "x${PKG_NAME}" = "x${1}" ]; then
 			_pkg_NAME=$(echo "${PKG_NAME}" | tr a-z A-Z);
-			for _vname in							\
-					build_type configure_args configure_extra_args	\
-					no_config_cache no_destdir no_libtool_midipix	\
-					patches_extra_url prefix prefix_extra sha256sum	\
-					url version					\
-					CC CFLAGS LDFLAGS; do
+			for _vname in ${PKG_VARS}; do
 				_vNAME=$(echo "${_vname}" | tr a-z A-Z);
-				if [ -n "${_vval:=$(eval echo \${PKG_${_pkg_NAME}_${_vNAME}})}" ]; then
+				if [ -n "${_vval:=$(get_var PKG_${_pkg_NAME}_${_vNAME})}" ]; then
 					export PKG_${_vNAME}="${_vval}";
 					if [ "x${_vname#[A-Z]}" != "x${_vname}" ]; then
 						export ${_vname}="${_vval}";
@@ -136,47 +240,12 @@ parse_with_pkg_name() {
 			if [ -z "${PKG_URL}" ]; then
 				return 1;
 			else
-				PKG_FNAME=${PKG_URL##*/};
-				PKG_SUBDIR=${PKG_FNAME%%.tar*};
+				[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
+				[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
 				return 0;
 			fi;
 		fi; shift;
 	done; return 1;
-};
-
-rm_if_exists() {
-	while [ $# -gt 1 ]; do [ "x${1%[a-z]}" = "x-" ] &&\
-		eval _${1#-}flag=1; shift; done;
-	_dir=${1};
-	if [ -d ${1} ]; then
-		rm -rf ${1} || return 1;
-	fi;
-	if [ ${_mflag:-0} -eq 1 ]; then
-		unset _mflag; mkdir ${1} || return 2;
-	fi;
-	if [ ${_cflag:-0} -eq 1 ]; then
-		unset _cflag; cd ${1} || return 3;
-	fi;
-};
-
-set_build_dir() {
-	BUILD_DIR=${1}-${2}-${TARGET};
-};
-
-set_env_vars() {
-	_val=${1}; shift;
-	while [ $# -ge 1 ]; do
-		if [ -z "${_val}" ]; then
-			unset ${1};
-		else
-			export "${1}=${_val}";
-		fi; shift;
-	done; unset _val;
-};
-
-split() {
-	_IFS="${IFS}"; IFS="${1}"; set -- ${2};
-	IFS="${_IFS}"; echo "${*}"; unset _IFS;
 };
 
 # vim:filetype=sh

@@ -1,39 +1,51 @@
-if is_build_script_done finished; then
-        exit 212;
-else
+#
+# . ./build.vars and set -o errexit are assumed.
+#
+
+if ! is_build_script_done fetch; then
+	rm_if_exists perk;
 	fetch_git perk ${GITROOT}/perk;
-	set_build_dir ${2} native;
+	set_build_script_done fetch -configure1;
 fi;
-if ! is_build_script_done configured1; then
+set_build_dir ${2} native;
+if ! is_build_script_done configure1; then
 	rm_if_exists -m -c ${BUILD_DIR};
 	../perk/configure;
-	set_build_script_done configured1 -built1;
+	set_build_script_done configure1 clean1 -build1;
 else
 	cd ${BUILD_DIR};
 fi;
-if ! is_build_script_done built1; then
-	make;
-	set_build_script_done built1 -installed1;
+if ! is_build_script_done clean1; then
+	make ${MAKEFLAGS} clean;
+	set_build_script_done clean1 -build1;
 fi;
-if ! is_build_script_done installed1; then
+if ! is_build_script_done build1; then
+	make;
+	set_build_script_done build1 -install1;
+fi;
+if ! is_build_script_done install1; then
 	make DESTDIR=${PREFIX} install;
-	set_build_script_done installed1 -configured2;
+	set_build_script_done install1 -configure2;
 fi;
 set_build_dir ${2} cross;
-if ! is_build_script_done configured2; then
+if ! is_build_script_done configure2; then
 	rm_if_exists -m -c ../${BUILD_DIR};
 	../perk/configure --target=${TARGET};
-	set_build_script_done configured2 -built2;
+	set_build_script_done configure2 clean2 -build2;
 else
 	cd ../${BUILD_DIR};
 fi;
-if ! is_build_script_done built2; then
-	make;
-	set_build_script_done built2 -installed2;
+if ! is_build_script_done clean2; then
+	make ${MAKEFLAGS} clean;
+	set_build_script_done clean2 -build2;
 fi;
-if ! is_build_script_done installed2; then
+if ! is_build_script_done build2; then
+	make;
+	set_build_script_done build2 -install2;
+fi;
+if ! is_build_script_done install2; then
 	make DESTDIR=${PREFIX_LVL} install;
-	set_build_script_done installed2 finished;
+	set_build_script_done install2 finish;
 fi;
 
 # vim:filetype=sh

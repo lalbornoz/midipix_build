@@ -1,8 +1,12 @@
-# Git clone what we need.
-fetch_git cbb-gcc-${PKG_GCC_VERSION}	${GITROOT}/cbb/cbb-gcc-${PKG_GCC_VERSION};
-fetch_git lazy				${GITROOT}/lazy;
-fetch_git mmglue			${GITROOT}/mmglue;
-fetch_git portage			${GITROOT}/ports/portage;
-fetch_git psxstub			${GITROOT}/psxstub;
+#
+# . ./build.vars and set -o errexit are assumed.
+#
+
+if ! is_build_script_done fetch; then
+	# Git clone what we need.
+	fetch_git lazy				${GITROOT}/lazy;
+	fetch_git portage			${GITROOT}/ports/portage;
+	set_build_script_done fetch finish;
+fi;
 
 # vim:filetype=sh

@@ -1,29 +1,39 @@
+#
+# . ./build.vars and set -o errexit are assumed.
+#
+
+# Order: no-complex, native
+
 export lz_arch=${ARCH} lz_cflags_debug=-O2 lz_target=${TARGET};
 
-if is_build_script_done finished; then
-        exit 212;
-elif [ "x${3}" = "xno-complex" ]; then
+if [ "x${3}" = "xno-complex" ]; then
 	# Musl: build (no-complex)
 	_install=install_no_complex;
 	set_build_dir musl-${PKG_MUSL_VERSION}-${3} cross;
-	fetch http://www.musl-libc.org/releases/musl-${PKG_MUSL_VERSION}.tar.gz	\
-		${PKG_MUSL_SHA256SUM};
-	if ! is_build_script_done extracted; then
+	if ! is_build_script_done fetch; then
+		rm_if_exists musl-${PKG_MUSL_VERSION}.tar.gz;
+		fetch http://www.musl-libc.org/releases/musl-${PKG_MUSL_VERSION}.tar.gz	\
+			${PKG_MUSL_SHA256SUM};
+		rm_if_exists mmglue;
+		fetch_git mmglue ${GITROOT}/mmglue;
+		set_build_script_done fetch -extract;
+	fi;
+	if ! is_build_script_done extract; then
 		rm_if_exists musl-${PKG_MUSL_VERSION};
 		tar -xf musl-${PKG_MUSL_VERSION}.tar.gz;
 		cp -R mmglue/* musl-${PKG_MUSL_VERSION}/;
-		set_build_script_done extracted -configured;
+		set_build_script_done extract -configure;
 	fi;
 elif [ "x${3}" = "xnative" ]; then
 	# Musl: build (full)
 	_install=install;
 	set_build_dir musl-${PKG_MUSL_VERSION} ${3};
-else
+elif [ "x${3}" = "xfull" ]; then
 	# Musl: build (full)
 	_install=install;
 	set_build_dir musl-${PKG_MUSL_VERSION} cross;
 fi;
-if ! is_build_script_done configured; then
+if ! is_build_script_done configure; then
 	rm_if_exists -m -c ${BUILD_DIR};
 	../lazy/lazy				\
 		-a ${ARCH}			\
@@ -33,14 +43,18 @@ if ! is_build_script_done configured; then
 		-p ../musl-${PKG_MUSL_VERSION}	\
 		-t ${lz_target}			\
 		-x config;
-	set_build_script_done configured -built;
+	set_build_script_done configure clean -build;
 else
 	cd ${BUILD_DIR};
 fi;
-if ! is_build_script_done built; then
+if ! is_build_script_done clean; then
+	make ${MAKEFLAGS} clean;
+	set_build_script_done clean -build;
+fi;
+if ! is_build_script_done build; then
 	./lazy	-e ${_install}			\
 		-x build;
-	set_build_script_done built finished;
+	set_build_script_done build finish;
 fi;
 
 # vim:filetype=sh

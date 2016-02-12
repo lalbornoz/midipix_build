@@ -1,0 +1,67 @@
+diff --git a/include/ntapi/nt_mount.h b/include/ntapi/nt_mount.h
+index 8a7258a..cf2deac 100644
+--- a/include/ntapi/nt_mount.h
++++ b/include/ntapi/nt_mount.h
+@@ -10,6 +10,10 @@
+ #define __DEVICE_PATH_PREFIX_LEN	(8 * sizeof(wchar16_t))
+ #define __DEVICE_PATH_PREFIX_HASH	(0xDA6FA40B)
+ 
++/* {'\\','D','e','v','i','c','e','\\',M','u','p','\\'} */
++#define __DEVICE_MUP_PATH_PREFIX_LEN	(12 * sizeof(wchar16_t))
++#define __DEVICE_MUP_PATH_PREFIX_HASH	(0x0CEBB5F6)
++
+ /* {'\\','?','?','\\','V','o','l','u','m','e','{'} */
+ #define __VOLUME_PATH_PREFIX_LEN	(11 * sizeof(wchar16_t))
+ #define __VOLUME_PATH_PREFIX_HASH	(0xFEBA8529)
+diff --git a/src/fs/ntapi_tt_statfs.c b/src/fs/ntapi_tt_statfs.c
+index 114cc8e..8bc43e2 100644
+--- a/src/fs/ntapi_tt_statfs.c
++++ b/src/fs/ntapi_tt_statfs.c
+@@ -23,7 +23,7 @@ int32_t __stdcall __ntapi_tt_statfs(
+ 	nt_oa			oa;
+ 	nt_iosb			iosb;
+ 	nt_unicode_string *	sdev;
+-	uint32_t		hash;
++	uint32_t		hash,hash_mup;
+ 	wchar16_t *		wch;
+ 	wchar16_t *		wch_mark;
+ 	uint32_t		offset;
+@@ -156,6 +156,14 @@ int32_t __stdcall __ntapi_tt_statfs(
+ 	if (hash != __DEVICE_PATH_PREFIX_HASH)
+ 		return NT_STATUS_INVALID_HANDLE;
+ 
++	hash_mup = __ntapi->tt_buffer_crc32(
++			0,
++			sdev->buffer,
++			__DEVICE_MUP_PATH_PREFIX_LEN);
++
++	if (hash_mup == __DEVICE_MUP_PATH_PREFIX_HASH)
++		sdev->buffer[__DEVICE_MUP_PATH_PREFIX_LEN - 1] = 0;
++
+ 	wch_mark = sdev->buffer + __DEVICE_PATH_PREFIX_LEN/sizeof(wchar16_t);
+ 	wch = wch_mark;
+ 	while (*wch != '\\') wch++;
+@@ -190,6 +198,9 @@ int32_t __stdcall __ntapi_tt_statfs(
+ 	statfs->nt_control_flags = 0;
+ 	statfs->nt_padding = 0;
+ 
++	if (hash_mup == __DEVICE_MUP_PATH_PREFIX_HASH)
++		return NT_STATUS_SUCCESS;
++
+ 	if (!(flags & NT_STATFS_VOLUME_GUID)) {
+ 		statfs->nt_drive_letter = 0;
+ 		pguid = (uint64_t *)&(statfs->nt_volume_guid);
+diff --git a/src/fs/ntapi_tt_open_physical_parent_directory.c b/src/fs/ntapi_tt_open_physical_parent_directory.c
+index 68d282b..742607d 100644
+--- a/src/fs/ntapi_tt_open_physical_parent_directory.c
++++ b/src/fs/ntapi_tt_open_physical_parent_directory.c
+@@ -37,6 +37,9 @@ int32_t __stdcall __ntapi_tt_open_physical_parent_directory(
+ 		return NT_STATUS_BAD_FILE_TYPE;
+ 
+ 	wch = path->buffer + (path->strlen / sizeof(uint16_t));
++	if ((&wch[-1] >= path->buffer) && (wch[-1] == '\\') &&
++			(&wch[-2] >= path->buffer))
++		wch = &wch[-1];
+ 	while ((--wch >= path->buffer) && (*wch != '\\'));
+ 
+ 	if (wch == path->buffer )
