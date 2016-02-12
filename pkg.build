@@ -6,8 +6,8 @@
 parse_with_pkg_name ${2}					\
 	bash binutils binutils_host bzip2 coreutils		\
 	dalist dash diffutils findutils gawk gmp		\
-	grep gzip less libelf libz make mpc mpfr ncurses	\
-	ntapi ntcon ntctty patch pemagine popt psxscl		\
+	grep gzip less libelf libressl libz make mpc mpfr	\
+	ncurses	ntapi ntcon ntctty patch pemagine popt psxscl	\
 	psxstub	psxtypes rsync sed tar util_linux which xz;
 case "${SCRIPT_FNAME%[0-9][0-9]*}" in
 1)	_configure_args="--host=${HOST_NATIVE} --prefix=${PKG_PREFIX:-/} --target=${TARGET}";
@@ -15,7 +15,7 @@ case "${SCRIPT_FNAME%[0-9][0-9]*}" in
 2)
 	_configure_args="--prefix=${PREFIX_LVL} --host=${HOST_NATIVE}";
 	PKG_BUILD_TYPE=cross; PKG_URL_TYPE=git;
-	PKG_NO_CONFIG_CACHE=${PKG_NO_DESTDIR:=${PKG_NO_EXTRACT:=1}};
+	PKG_NO_CONFIG_CACHE=${PKG_NO_DESTDIR:=${PKG_NO_EXTRACT:=${PKG_NO_LIBTOOL_MIDIPIX:=1}}};
 	PKG_UNSET_VARS_BUILD="CC LD CFLAGS LDFLAGS PREFIX";
 	export CFLAGS_PATH=-I${PREFIX_LVL}/include;
 	export LDFLAGS_PATH=-L${PREFIX_LVL}/lib;
