@@ -7,8 +7,9 @@ parse_with_pkg_name ${2}					\
 	bash binutils binutils_host bzip2 coreutils		\
 	dalist dash diffutils findutils gawk git gmp		\
 	grep gzip less libelf libressl libz make mpc mpfr	\
-	ncurses	ntapi ntcon ntctty patch pemagine popt psxscl	\
-	psxstub	psxtypes rsync sed tar util_linux which xz;
+	ncurses	ntapi ntcon ntctty openssh patch pemagine	\
+	popt psxscl psxstub psxtypes rsync sed tar util_linux	\
+	which xz;
 case "${SCRIPT_FNAME%[0-9][0-9]*}" in
 1)	_configure_args="--host=${HOST_NATIVE} --prefix=${PKG_PREFIX:-/} --target=${TARGET}";
 	PKG_NO_CONFIG_CACHE=1; ;;
@@ -110,7 +111,8 @@ if ! is_build_script_done install1; then
 			${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
 			${LD:+LD=${LD}} ${LDFLAGS:+"LDFLAGS=${LDFLAGS}"}\
 			${RANLIB:+RANLIB=${RANLIB}}			\
-			DESTDIR=${PREFIX_LVL} install;
+			DESTDIR=${PREFIX_LVL}				\
+			${PKG_INSTALL_TARGET:-install};
 	else
 		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_BUILD_EXTRA}}\
 			${MAKEFLAGS}					\
@@ -118,7 +120,8 @@ if ! is_build_script_done install1; then
 			${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
 			${LD:+LD=${LD}} ${LDFLAGS:+"LDFLAGS=${LDFLAGS}"}\
 			${PREFIX:+PREFIX=${PREFIX}}			\
-			${RANLIB:+RANLIB=${RANLIB}} install;
+			${RANLIB:+RANLIB=${RANLIB}}			\
+			${PKG_INSTALL_TARGET:-install};
 	fi;
 	set_build_script_done install1 -install2 -finish;
 fi;
