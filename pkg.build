@@ -5,7 +5,7 @@
 # Order for build level 2 (runtime:) psxtypes pemagine dalist ntapi psxscl ntcon ntctty
 parse_with_pkg_name ${2}					\
 	bash binutils binutils_host bzip2 coreutils		\
-	dalist dash diffutils findutils gawk gmp		\
+	dalist dash diffutils findutils gawk git gmp		\
 	grep gzip less libelf libressl libz make mpc mpfr	\
 	ncurses	ntapi ntcon ntctty patch pemagine popt psxscl	\
 	psxstub	psxtypes rsync sed tar util_linux which xz;
