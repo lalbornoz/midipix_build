@@ -1,43 +1,51 @@
+#
+# . ./build.vars and set -o errexit are assumed.
+#
+
 # Order: stage1, runtime, full, native
 
-if is_build_script_done finished; then
-        exit 212;
-elif [ "x${3}" = "xruntime" ]\
+if [ "x${3}" = "xruntime" ]\
 ||   [ "x${3}" = "xfull" ]; then
 	set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
 	cd ${BUILD_DIR};
 	if [ "x${3}" = "xruntime" ]; then
 		# GCC, compiler runtime.
-		if ! is_build_script_done built; then
+		if ! is_build_script_done build; then
 			make ${MAKEFLAGS} all-target-libgcc;
-			set_build_script_done built -installed;
+			set_build_script_done build -install;
 		fi;
-		if ! is_build_script_done installed; then
+		if ! is_build_script_done install; then
 			make ${MAKEFLAGS} install-target-libgcc;
-			set_build_script_done installed finished;
+			set_build_script_done install finish;
 		fi;
 	elif [ "x${3}" = "xfull" ]; then
 		# GCC, everything else.
-		if ! is_build_script_done built1; then
+		if ! is_build_script_done build1; then
 			make ${MAKEFLAGS} all-target-libstdc++-v3;
-			set_build_script_done built1 -installed1;
+			set_build_script_done build1 -install1;
 		fi;
-		if ! is_build_script_done installed1; then
+		if ! is_build_script_done install1; then
 			make ${MAKEFLAGS} install-target-libstdc++-v3;
-			set_build_script_done installed1 -built2;
+			set_build_script_done install1 -build2;
 		fi;
-		if ! is_build_script_done built2; then
+		if ! is_build_script_done build2; then
 			make ${MAKEFLAGS};
-			set_build_script_done built2 -installed2;
+			set_build_script_done build2 -install2;
 		fi;
-		if ! is_build_script_done installed2; then
+		if ! is_build_script_done install2; then
 			make ${MAKEFLAGS} install;
-			set_build_script_done installed2 finished;
+			set_build_script_done install2 finish;
 		fi;
 	fi;
 else
 	if [ "x${3}" = "xstage1" ]; then
 		# GCC, stage1.
+		if ! is_build_script_done fetch; then
+			rm_if_exists cbb-gcc-${PKG_GCC_VERSION};
+			fetch_git cbb-gcc-${PKG_GCC_VERSION}		\
+			${GITROOT}/cbb/cbb-gcc-${PKG_GCC_VERSION};
+			set_build_script_done fetch -configure;
+		fi;
 		set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
 		export	cbb_ldflags_for_target=--sysroot=${PREFIX_LVL}	\
 			cbb_sysroot_for_libgcc=${PREFIX_LVL}		\
@@ -56,10 +64,10 @@ else
 	fi;
 	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${PKG_GCC_VERSION}/libc/cbb-musl-pe.h)";
 	set_env_vars "${GCCFLAGS}" CFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS CXXFLAGS_FOR_BUILD;
-	set_env_vars "${CFLAGS_FOR_BUILD}" cbb_cflags_for_stage1 cbb_cflags_for_stage2 cbb_cflags_for_stage3 cbb_cflags_for_stage4;
 	set_env_vars "${GCCTARGET_FLAGS}" CFLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET;
+	set_env_vars "${CFLAGS_FOR_BUILD}" cbb_cflags_for_stage1 cbb_cflags_for_stage2 cbb_cflags_for_stage3 cbb_cflags_for_stage4;
 	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
-	if ! is_build_script_done configured; then
+	if ! is_build_script_done configure; then
 		if [ "x${3}" = "xstage1" ]; then
 			mkdir -p ${PREFIX_LVL}/include;
 			[ \! -d ${PREFIX_LVL}/usr ] &&			\
@@ -104,28 +112,32 @@ else
 			--target=${TARGET}			\
 			--with-fpmath=sse			\
 			${_configure_args};
-		set_build_script_done configured -built;
+		set_build_script_done configure clean -build;
 	else
 		cd ${BUILD_DIR};
 	fi;
-	if ! is_build_script_done built; then
+	if ! is_build_script_done clean; then
+		make ${MAKEFLAGS} clean;
+		set_build_script_done clean -build;
+	fi;
+	if ! is_build_script_done build; then
 		if [ "x${3}" = "xstage1" ]; then
 			make ${MAKEFLAGS} all-gcc;
 		elif [ "x${3}" = "xnative" ]; then
-			make -j18 all-gcc;
-			make -j18 all-target-libgcc;
-			make -j18 all-target-libstdc++-v3;
-			make -j18 all;
+			make ${MAKEFLAGS} all-gcc;
+			make ${MAKEFLAGS} all-target-libgcc;
+			make ${MAKEFLAGS} all-target-libstdc++-v3;
+			make ${MAKEFLAGS} all;
 		fi;
-		set_build_script_done built -installed;
+		set_build_script_done build -install;
 	fi;
-	if ! is_build_script_done installed; then
+	if ! is_build_script_done install; then
 		if [ "x${3}" = "xstage1" ]; then
 			make ${MAKEFLAGS} install-gcc;
 		elif [ "x${3}" = "xnative" ]; then
-			make -j18 DESTDIR=${PREFIX_LVL} install;
+			make ${MAKEFLAGS} DESTDIR=${PREFIX_LVL} install;
 		fi;
-		set_build_script_done installed finished;
+		set_build_script_done install finish;
 	fi;
 fi;
 

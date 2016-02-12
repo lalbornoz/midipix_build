@@ -1,0 +1,22 @@
+usage: ./build.sh
+	[--build-scripts=ALL|fname[,fname...]] [--build-steps=ALL|step[,step...]]
+	[--help] [--tarball] [VAR=VAL...]
+	 --build-scripts=...	Only invoke all or the specified build script(s).
+	 --build-steps=...	Forcibly invoke build scripts at all or only the
+				specified build steps. Currently defined build steps
+				are: fetch extract patch configure clean build install
+				configure1 configure2 build1 build2 install1 install2
+				install3 finish.
+	 --help			Show this screen.
+	 --tarball		Produce a distribution tarball containing $PREFIX
+				sans $WORKDIR at the end of a build with zero failures.
+
+	Packages that are built by pkg.build will apply local patches in $WORKDIR
+	named ${PKG_SUBDIR}.local.patch.
+
+	Examples:
+	./build.sh GITROOT_HEAD=... --build-scripts=204.psxscl.build --build-steps=ALL PKG_PSXSCL_CFLAGS=-DPSX_INTERNAL_STRACE
+	Build psxscl from the internal repository with strace enabled.
+
+	./build.sh GITROOT_HEAD=... --build-scripts=ALL --build-steps=ALL
+	Forcibly rebuild everything.

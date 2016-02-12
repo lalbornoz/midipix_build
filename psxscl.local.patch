@@ -1,0 +1,150 @@
+diff --git a/src/init/psx_init_cwd.c b/src/init/psx_init_cwd.c
+index 924b1b8..02846ba 100644
+--- a/src/init/psx_init_cwd.c
++++ b/src/init/psx_init_cwd.c
+@@ -17,7 +17,7 @@
+ #ifndef __PSX_DEFAULT_ROOT_DIRECTORY
+ #define __PSX_DEFAULT_ROOT_DIRECTORY { \
+ 				'\\','?','?','\\', \
+-				'C',':','\\','m','i','d','i','p','i','x'}
++				'Z',':','\\'}
+ #endif
+ 
+ int32_t __psx_init_cwd(void)
+diff --git a/src/iofn/psx_iofn_fsdir.c b/src/iofn/psx_iofn_fsdir.c
+index 53b3380..8bdd7d8 100644
+--- a/src/iofn/psx_iofn_fsdir.c
++++ b/src/iofn/psx_iofn_fsdir.c
+@@ -52,10 +52,34 @@ static int32_t __fastcall __psx_iofn_fsdir_open_next(
+ 		path.buffer++;
+ 	}
+ 
++	/* XXX */
++	uint32_t		status;
++	static char		name_buffer[1024];
++	nt_unicode_string *	dev_name,full_path;
++	
++	iosb.info = 0;
++	if ((status = __ntapi->zw_query_object(
++			path_info->hat,NT_OBJECT_NAME_INFORMATION,
++			name_buffer,sizeof(name_buffer),(uint32_t *)&iosb.info)))
++		return status;
++	else {
++		dev_name = (nt_unicode_string *)name_buffer;
++		if ((dev_name->strlen > 2) && 
++			(dev_name->buffer[(dev_name->strlen - 1) / 2] != '\\')) {
++			dev_name->buffer[dev_name->strlen / 2] = '\\';
++			dev_name->strlen += 2;
++		}
++		__ntapi->tt_generic_memcpy(&dev_name->buffer[dev_name->strlen / 2],
++			path.buffer,path.strlen);
++		dev_name->strlen += path.strlen;
++		full_path.maxlen = (full_path.strlen = dev_name->strlen) + 2;
++		full_path.buffer = dev_name->buffer;
++	}
++
+ 	/* oa */
+ 	oa.len = sizeof(nt_oa);
+-	oa.root_dir = path_info->hat;
+-	oa.obj_name = &path;
++	oa.root_dir = 0;
++	oa.obj_name = &full_path;
+ 	oa.obj_attr = path_info->ntobjattr;
+ 	oa.sec_desc = 0;
+ 	oa.sec_qos  = 0;
+@@ -73,6 +97,45 @@ static int32_t __fastcall __psx_iofn_fsdir_open_next(
+ 		0,0);
+ }
+ 
++static int32_t __stdcall __psx_iofn_fsdir_open_parent_directory(
++	void **		hparent,
++	void *		hdir,
++	uintptr_t *	buffer,
++	uint32_t	buffer_size,
++	uint32_t	desired_access,
++	uint32_t	open_options,
++	int32_t *	type)
++{
++	uint32_t			status;
++	nt_io_status_block		iosb;
++	nt_file_internal_information	fii_hdir,fii_hroot;
++	struct __psx_tlca *		tlca;
++
++	tlca = __tlca_self();
++	status = __ntapi->zw_query_information_file(
++			hdir,&iosb,&fii_hdir,sizeof(fii_hdir),
++			NT_FILE_INTERNAL_INFORMATION);
++	if (status)
++		return status;
++	status = __ntapi->zw_query_information_file(
++			tlca->ctx->root.hfile,&iosb,&fii_hroot,sizeof(fii_hroot),
++			NT_FILE_INTERNAL_INFORMATION);
++	if (status)
++		return status;
++	if (fii_hdir.index_number.quad == fii_hroot.index_number.quad) {
++		*hparent = hdir;
++		*type = PSX_FD_OS_FS_ROOT;
++		status = NT_STATUS_SUCCESS;
++	} else
++		status = __ntapi->tt_open_physical_parent_directory(
++			hparent,hdir,
++			buffer,
++			buffer_size,
++			desired_access,
++			open_options,type);
++	return status;
++}
++
+ int32_t	__stdcall __psx_iofn_fsdir_getvents(
+ 	void *			hfile,
+ 	void *			hevent,
+@@ -133,6 +196,6 @@ void __fastcall __psx_iofn_fsdir_init(struct __iovtbl * iovtbl)
+ 	iovtbl->getdents		= __ntapi->zw_query_directory_file;
+ 	iovtbl->getvents		= __psx_iofn_fsdir_getvents;
+ 
+-	iovtbl->open_logical_parent  = __ntapi->tt_open_logical_parent_directory;
+-	iovtbl->open_physical_parent = __ntapi->tt_open_physical_parent_directory;
++	iovtbl->open_logical_parent  = __psx_iofn_fsdir_open_parent_directory;
++	iovtbl->open_physical_parent = __psx_iofn_fsdir_open_parent_directory;
+ }
+diff --git a/src/path/psx_path_parse.c b/src/path/psx_path_parse.c
+index ff4d933..08431b6 100644
+--- a/src/path/psx_path_parse.c
++++ b/src/path/psx_path_parse.c
+@@ -48,8 +48,8 @@ int32_t __fastcall __psx_parse_normalized_path_utf8(
+ 			ch,
+ 			++(path_info->depth));
+ 
+-		if (*(++ch)=='/') {
+-			ch++;
++		if (ch[1]=='/') {
++			ch+=2;
+ 		}
+ 	}
+ 
+diff --git a/src/path/psx_path_resolve.c b/src/path/psx_path_resolve.c
+index 2bd615c..705e646 100644
+--- a/src/path/psx_path_resolve.c
++++ b/src/path/psx_path_resolve.c
+@@ -260,7 +260,7 @@ static int __fastcall __path_swap_at(
+ 	int32_t			status;
+ 
+ 	/* swap */
+-	if (path_info->pathflags & PSX_PATH_CLOSE_AT)
++	if ((path_info->pathflags & PSX_PATH_CLOSE_AT) && (path_info->hat != path_info->hfile))
+ 		if ((status = __iovtbl[path_info->fdtypeat].close(path_info->hat)))
+ 			return status;
+
+diff --git a/src/process/_execve.c b/src/process/_execve.c
+index a623d2a..80dd4a9 100644
+--- a/src/process/_execve.c
++++ b/src/process/_execve.c
+@@ -232,7 +232,7 @@ intptr_t __sys_execve(const unsigned char * path, const char ** argv, const char
+ 			NT_SECTION_QUERY|NT_SECTION_MAP_EXECUTE,
+ 			&oa,&ssize,
+ 			NT_PAGE_EXECUTE,
+-			NT_SEC_IMAGE,
++			NT_SEC_RESERVE,
+ 			image->info.hfile)))
+ 		return __execve_return(tlca,0,target,-ENOEXEC);
+ 

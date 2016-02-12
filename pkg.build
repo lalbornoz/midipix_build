@@ -1,86 +1,137 @@
-# Order for build level 2 (runtime:) psxtypes pemagine dalist ntapi psxscl ntcon ntctty
+#
+# . ./build.vars and set -o errexit are assumed.
+#
 
-parse_with_pkg_name ${2}				\
-	bash binutils binutils_host coreutils dalist	\
-	diffutils findutils gawk gmp grep libelf make	\
-	mpc mpfr ntapi ntcon ntctty patch pemagine	\
-	psxscl psxtypes sed;
-if is_build_script_done finished; then
-        exit 212;
-else
-	case "${SCRIPT_FNAME%[0-9][0-9]*}" in
-	1)	_configure_args="--host=${HOST_NATIVE} --prefix=${PKG_PREFIX:-/} --target=${TARGET}";
-		PKG_NO_CONFIG_CACHE=1; ;;
-	2)
-		_configure_args="--prefix=${PREFIX_LVL} --host=${HOST_NATIVE}";
-		PKG_BUILD_TYPE=cross; PKG_URL_TYPE=git;
-		PKG_NO_CONFIG_CACHE=${PKG_NO_DESTDIR:=${PKG_NO_EXTRACT:=${PKG_NO_PATCH:=1}}};
-		export CFLAGS_PATH=-I${PREFIX_LVL}/include;
-		export LDFLAGS_PATH=-L${PREFIX_LVL}/lib; ;;
-	*)	_configure_args=${PKG_CONFIGURE_ARGS:--C --host=${HOST_NATIVE} --prefix= --target=${TARGET}}; ;;
-	esac;
+# Order for build level 2 (runtime:) psxtypes pemagine dalist ntapi psxscl ntcon ntctty
+parse_with_pkg_name ${2}					\
+	bash binutils binutils_host bzip2 coreutils		\
+	dalist dash diffutils findutils gawk gmp		\
+	grep gzip less libelf libz make mpc mpfr ncurses	\
+	ntapi ntcon ntctty patch pemagine popt psxscl		\
+	psxstub	psxtypes rsync sed tar util_linux which xz;
+case "${SCRIPT_FNAME%[0-9][0-9]*}" in
+1)	_configure_args="--host=${HOST_NATIVE} --prefix=${PKG_PREFIX:-/} --target=${TARGET}";
+	PKG_NO_CONFIG_CACHE=1; ;;
+2)
+	_configure_args="--prefix=${PREFIX_LVL} --host=${HOST_NATIVE}";
+	PKG_BUILD_TYPE=cross; PKG_URL_TYPE=git;
+	PKG_NO_CONFIG_CACHE=${PKG_NO_DESTDIR:=${PKG_NO_EXTRACT:=1}};
+	PKG_UNSET_VARS_BUILD="CC LD CFLAGS LDFLAGS PREFIX";
+	export CFLAGS_PATH=-I${PREFIX_LVL}/include;
+	export LDFLAGS_PATH=-L${PREFIX_LVL}/lib;
+	;;
+*)	_configure_args=${PKG_CONFIGURE_ARGS:--C --host=${HOST_NATIVE} --prefix= --target=${TARGET}}; ;;
+esac;
+if ! is_build_script_done fetch; then
 	if [ "x${PKG_URL_TYPE:-wget}" = "xwget" ]; then
+		rm_if_exists $(get_basename ${PKG_URL});
 		fetch ${PKG_URL} ${PKG_SHA256SUM};
 	else
-		fetch_git ${PKG_SUBDIR} ${PKG_URL};
+		rm_if_exists ${PKG_SUBDIR};
+		fetch_git ${PKG_SUBDIR} ${PKG_URL} "${PKG_GIT_ARGS_EXTRA}";
+		PKG_NO_EXTRACT=1;
 	fi;
-	set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
+	set_build_script_done fetch -extract;
+else
+	[ "x${PKG_URL_TYPE:-wget}" = "xwget" ] || PKG_NO_EXTRACT=1;
 fi;
 if command -v pkg_${PKG_NAME}_finish >/dev/null; then
 	pkg_${PKG_NAME}_finish; exit 0;
 elif [ ${PKG_NO_EXTRACT:-0} -eq 0 ] &&\
-! is_build_script_done extracted; then
+! is_build_script_done extract; then
 	rm_if_exists ${PKG_SUBDIR};
 	tar -axf ${PKG_FNAME};
-	set_build_script_done extracted -patched;
+	set_build_script_done extract -build_dir;
 fi;
-if [ ${PKG_NO_PATCH:-0} -eq 0 ] &&\
-! is_build_script_done patched; then
+if [ -n "${PKG_BUILD_DIR}" ]; then
+	BUILD_DIR=${PKG_BUILD_DIR};
+else
+	set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
+fi;
+if ! is_build_script_done build_dir; then
+	[ ${PKG_SUBDIR} != ${BUILD_DIR} ] &&\
+		rm_if_exists -m ${BUILD_DIR};
+	set_build_script_done build_dir -patch;
+fi;
+if ! is_build_script_done patch; then
+	[ -f portage/${PKG_SUBDIR}.midipix.patch ] &&		\
+		patch -b -d ${PKG_SUBDIR} -p1			\
+			< portage/${PKG_SUBDIR}.midipix.patch;
+	[ ${PKG_NO_PATCH_LOCAL:-0} -eq 0 ] &&			\
+	[ -f ${_PWD}/${PKG_SUBDIR}.local.patch ] &&		\
+		patch -b -d ${PKG_SUBDIR} -p1			\
+			< ${_PWD}/${PKG_SUBDIR}.local.patch;
 	if [ -n "${PKG_PATCHES_EXTRA_URL}" ]; then
-		apply_patches ${PKG_PATCHES_EXTRA_URL} ${PKG_SUBDIR}-patches-extra;
+		apply_patches ${PKG_PATCHES_EXTRA_URL} ${PKG_SUBDIR};
 		if [ -n "${PKG_PATCHES_EXTRA_MANIFEST}" ]; then
 			compare_hash_manifest ${PKG_PATCHES_EXTRA_MANIFEST};
 		fi;
 	fi;
-	patch -d ${PKG_SUBDIR} -p1			\
-		< portage/${PKG_SUBDIR}.midipix.patch;
 	[ ${PKG_NO_CONFIG_CACHE:-0} -eq 0 ] &&\
-		cp portage/config.cache ${PKG_SUBDIR}/;
-	[ ${PKG_NO_LIBTOOL_MIDIPIX:-0} -eq 0 ] &&	\
+		cp portage/config.cache ${BUILD_DIR}/;
+	[ ${PKG_NO_LIBTOOL_MIDIPIX:-0} -eq 0 ] &&		\
 		cp portage/libtool.midipix ${PKG_SUBDIR}/;
-	set_build_script_done patched -configured;
+	set_build_script_done patch -configure;
 fi;
-if ! is_build_script_done configured; then
-	rm_if_exists -m -c ${BUILD_DIR};
-	../${PKG_SUBDIR}/configure			\
-		${_configure_args}			\
-		${PKG_CONFIGURE_EXTRA_ARGS};
-	set_build_script_done configured -built;
+cd ${BUILD_DIR};
+if [ ${PKG_NO_CONFIGURE:-0} -eq 0 ]\
+&& ! is_build_script_done configure; then
+	../${PKG_SUBDIR}/configure				\
+		${_configure_args}				\
+		${PKG_CONFIGURE_ARGS_EXTRA};
+	set_build_script_done configure clean -build;
 else
-	cd ${BUILD_DIR};
+	set_build_script_done clean;
 fi;
-if ! is_build_script_done built; then
-	make ${MAKEFLAGS};
-	set_build_script_done built -installed1;
+if [ ${PKG_NO_CLEAN:-0} -eq 0 ]\
+&& ! is_build_script_done clean; then
+	make ${MAKEFLAGS} clean;
+	set_build_script_done clean -build;
 fi;
-if ! is_build_script_done installed1; then
-	if [ ${PKG_NO_DESTDIR:-0} -eq 0 ]; then
-		make ${MAKEFLAGS} DESTDIR=${PREFIX_LVL} install;
-	else
-		make ${MAKEFLAGS} install;
+if ! is_build_script_done build; then
+	if [ -n "${PKG_UNSET_VARS_BUILD}" ]; then
+		unset ${PKG_UNSET_VARS_BUILD}
 	fi;
-	set_build_script_done installed1 -installed2 -finished;
+	make	${PKG_MAKEFLAGS_BUILD_EXTRA:+${PKG_MAKEFLAGS_BUILD_EXTRA}}\
+		${MAKEFLAGS}					\
+		${AR:+AR=${AR}}					\
+		${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
+		${LD:+LD=${LD}} ${LDFLAGS:+"LDFLAGS=${LDFLAGS}"}\
+		${RANLIB:+RANLIB=${RANLIB}};
+	set_build_script_done build -install1;
 fi;
-if ! is_build_script_done installed2; then
-	[ -n "${PKG_PREFIX_EXTRA}" ] &&\
+if ! is_build_script_done install1; then
+	if command -v pkg_${PKG_NAME}_install >/dev/null; then
+		pkg_${PKG_NAME}_install;
+	elif [ ${PKG_NO_DESTDIR:-0} -eq 0 ]; then
+		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_BUILD_EXTRA}}\
+			${MAKEFLAGS}					\
+			${AR:+AR=${AR}}					\
+			${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
+			${LD:+LD=${LD}} ${LDFLAGS:+"LDFLAGS=${LDFLAGS}"}\
+			${RANLIB:+RANLIB=${RANLIB}}			\
+			DESTDIR=${PREFIX_LVL} install;
+	else
+		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_BUILD_EXTRA}}\
+			${MAKEFLAGS}					\
+			${AR:+AR=${AR}}					\
+			${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
+			${LD:+LD=${LD}} ${LDFLAGS:+"LDFLAGS=${LDFLAGS}"}\
+			${PREFIX:+PREFIX=${PREFIX}}			\
+			${RANLIB:+RANLIB=${RANLIB}} install;
+	fi;
+	set_build_script_done install1 -install2 -finish;
+fi;
+if [ -n "${PKG_PREFIX_EXTRA}" ]\
+&& ! is_build_script_done install2; then
 		make DESTDIR=${PKG_PREFIX_EXTRA} install;
-	set_build_script_done installed2 -installed3 -finished;
+	set_build_script_done install2 -install3 -finish;
 fi;
-if ! is_build_script_done installed3; then
-	command -v pkg_${PKG_NAME}_install_post		\
-		>/dev/null && pkg_${PKG_NAME}_install_post;
-	set_build_script_done installed3 -finished;
+if command -v pkg_${PKG_NAME}_install_post >/dev/null\
+&& ! is_build_script_done install3; then
+	pkg_${PKG_NAME}_install_post;
+	set_build_script_done install3 -finish;
 fi;
-set_build_script_done finished;
+set_build_script_done finish;
 
 # vim:filetype=sh
