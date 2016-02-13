@@ -11,6 +11,7 @@ log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)
 log_env_vars ${LOG_ENV_VARS};
 (mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
+BUILD_SECS=$(command date +%s);
 for BUILD_LVL in 0 1 2 3; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${ARG_BUILD_SCRIPTS}" ]\
@@ -54,6 +55,11 @@ for BUILD_LVL in 0 1 2 3; do
 	fi;
 done;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
+: $((BUILD_SECS=$(command date +%s)-${BUILD_SECS}));
+: $((BUILD_HOURS=${BUILD_SECS}/3600));
+: $((BUILD_MINUTES=(${BUILD_SECS}%3600)/60));
+: $((BUILD_SECS=(${BUILD_SECS}%3600)%60));
+log_msg info "Build time: ${BUILD_HOURS} hour(s), ${BUILD_MINUTES} minute(s), and ${BUILD_SECS} second(s).";
 if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]\
 && [ ${BUILD_NFAIL} -eq 0 ]\
 && [ ${ARG_TARBALL:-0} -eq 1 ]; then
