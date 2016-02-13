@@ -1,0 +1,11 @@
+--- apk-tools-2.6.6/Make.rules.orig	2016-02-09 14:57:53.000000000 +0000
++++ apk-tools-2.6.6/Make.rules	2016-02-13 19:04:27.012687754 +0000
+@@ -70,7 +70,7 @@
+ INSTALLDIR	:= $(INSTALL) -d
+ 
+ CFLAGS		?= -g -O2
+-CFLAGS_ALL	:= -Werror -Wall -Wstrict-prototypes -D_GNU_SOURCE -std=gnu99 -fPIC
++CFLAGS_ALL	:= -Wall -Wstrict-prototypes -D_GNU_SOURCE -std=gnu99 -fPIC
+ CFLAGS_ALL	+= $(CFLAGS)
+ 
+ LDFLAGS		?= -g

@@ -4,7 +4,7 @@
 
 # Order for build level 2 (runtime:) psxtypes pemagine dalist ntapi psxscl ntcon ntctty
 parse_with_pkg_name ${2}					\
-	bash binutils binutils_host bzip2 coreutils		\
+	apk_tools bash binutils binutils_host bzip2 coreutils	\
 	dalist dash diffutils findutils gawk git gmp		\
 	grep gzip less libelf libressl libz make mpc mpfr	\
 	ncurses	ntapi ntcon ntctty openssh patch pemagine	\
@@ -77,6 +77,8 @@ fi;
 cd ${BUILD_DIR};
 if [ ${PKG_NO_CONFIGURE:-0} -eq 0 ]\
 && ! is_build_script_done configure; then
+	command -v pkg_${PKG_NAME}_configure_pre >/dev/null	\
+		&& pkg_${PKG_NAME}_configure_pre;
 	../${PKG_SUBDIR}/configure				\
 		${_configure_args}				\
 		${PKG_CONFIGURE_ARGS_EXTRA};
@@ -105,7 +107,7 @@ if ! is_build_script_done install1; then
 	if command -v pkg_${PKG_NAME}_install >/dev/null; then
 		pkg_${PKG_NAME}_install;
 	elif [ ${PKG_NO_DESTDIR:-0} -eq 0 ]; then
-		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_BUILD_EXTRA}}\
+		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_INSTALL_EXTRA}}\
 			${MAKEFLAGS}					\
 			${AR:+AR=${AR}}					\
 			${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
@@ -114,7 +116,7 @@ if ! is_build_script_done install1; then
 			DESTDIR=${PREFIX_LVL}				\
 			${PKG_INSTALL_TARGET:-install};
 	else
-		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_BUILD_EXTRA}}\
+		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_INSTALL_EXTRA}}\
 			${MAKEFLAGS}					\
 			${AR:+AR=${AR}}					\
 			${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
