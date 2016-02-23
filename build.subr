@@ -15,15 +15,25 @@ get_postfix() { echo "${1#*${2}}"; };
 get_prefix() { echo "${1%${2}*}"; };
 match_any() { [ "x${1#*${2}*}" != "x${1}" ]; };
 match_start() { [ "x${1#${2}}" != "x${1}" ]; };
-push_IFS() { _IFS="${IFS}"; IFS="${1}"; };
-pop_IFS() { IFS="${_IFS}"; unset _IFS; };
-set_build_dir() { BUILD_DIR=${1}-${2}-${TARGET}; };
+push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
+pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
+set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${TARGET}; };
 split() { push_IFS "${1}"; set -- ${2}; pop_IFS; echo "${*}"; };
+test_cmd() { command -v "${1}" >/dev/null; };
 unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
 
 
+export_vars_subst() {
+	_evs_pfx=${1}; _evs_pfx_new=${2}; shift 2;
+	while [ ${#} -gt 0 ]; do
+		if [ -n "${_evs_vval:=$(get_var ${_evs_pfx}${1})}" ]; then
+			export "${_evs_pfx_new}${1}=${_evs_vval}";
+		fi; unset _evs_vval; shift;
+	done; unset _evs_pfx _evs_pfx_new;
+};
+
 rm_if_exists() {
-	set_flag_vars_from_args "$@"; shift ${_nshift:-0};
+	set_flag_vars_from_args "$@"; shift ${_sfvfa_nshift:-0};
 	[ -d ${1} ] && rm -rf ${1}; [ -f ${1} ] && rm -f ${1};
 	[ ${_arg_m:-0} -eq 1 ] && mkdir ${1};
 	[ ${_arg_c:-0} -eq 1 ] && cd ${1};
@@ -31,26 +41,26 @@ rm_if_exists() {
 };
 
 set_flag_vars_from_args() {
-	unset _flag_vars _nshift;
+	unset _sfvfa_flag_vars _sfvfa_nshift;
 	while [ ${#} -gt 1 ]; do
 		if [ "x${1%[a-z]}" = "x-" ]; then
 			set_var _arg_${1#-} 1;
-			_flag_vars="${_flag_vars:+${_flag_vars} }_arg_${1#-}";
-			: $((_nshift+=1));
+			_sfvfa_flag_vars="${_sfvfa_flag_vars:+${_sfvfa_flag_vars} }_arg_${1#-}";
+			: $((_sfvfa_nshift+=1));
 		fi; shift;
 	done;
 };
 unset_flag_vars_from_args() {
-	set -- ${_flag_vars}; while [ ${#} -gt 0 ]; do
-		unset ${1}; shift; done; unset _flag_vars _nshift;
+	set -- ${_sfvfa_flag_vars}; while [ ${#} -gt 0 ]; do
+		unset ${1}; shift; done; unset _sfvfa_flag_vars _sfvfa_nshift;
 };
 
 set_env_vars() {
-	_val_new="${1}"; shift;
+	_sev_val_new="${1}"; shift;
 	while [ ${#} -gt 1 ]; do
-		[ -z "${_val_new}" ] && unset ${1} ||\
-			export "${1}=${_val_new}"; shift;
-	done; unset _val_new;
+		[ -z "${_sev_val_new}" ] && unset ${1} ||\
+			export "${1}=${_sev_val_new}"; shift;
+	done; unset _sev_val_new;
 };
 
 
@@ -59,25 +69,24 @@ set_env_vars() {
 apply_patches() {
 	(rm_if_exists -m -c ${2}-patches-extra;
 	wget -c -nd -np -r -R \*.htm\* -R \*.sig ${1};
-	for _patch_fname in		\
+	for _ap_patch_fname in		\
 			$(find . -type f -not -iname \*.sig | sort); do
-		patch -b -d ../${2} -p0	\
-			< ${_patch_fname};
-	done; unset _patch_fname);
+		patch -b -d ../${2} -p0 < ${_ap_patch_fname};
+	done; unset _ap_patch_fname);
 };
 
 # Check whether all supplied arguments contain non-empty valid values.
 check_path_vars() {
 	while [ ${#} -gt 0 ]; do
-		unset _val;
-		if [ -z "${_val:=$(get_var "${1}")}" ]; then
+		if [ -z "${_cpv_val:=$(get_var "${1}")}" ]; then
 			log_msg failexit "Error: variable \`${1}' is empty or unset.";
-		elif match_any "${_val}" " "; then
+		elif match_any "${_cpv_val}" " "; then
 			log_msg failexit "Error: variable \`${1}' contains one or more whitespace characters.";
 		else
 			shift;
 		fi;
-	done; unset _val;
+		unset _cpv_val;
+	done;
 };
 
 # Check whether all supplied command names resolve.
@@ -92,15 +101,15 @@ check_prereqs() {
 # Clear the environment by unsetting each exported variable except
 # for those named by the caller. 
 clear_env_with_except() {
-	_vfilter="${*}"; _unset_cmds="$(mktemp -q)";
-	export | while read _vspec; do
-		set -- ${_vspec}; shift;
-		if ! match_list "${_vfilter}" " "	\
+	_cewe_vfilter="${*}"; _cewe_unset_cmds="$(mktemp -q)";
+	export | while read _cewe_vspec; do
+		set -- ${_cewe_vspec}; shift;
+		if ! match_list "${_cewe_vfilter}" " "	\
 				$(get_prefix_lrg ${1} =); then
-			echo unset $(get_prefix_lrg ${1} =) >> ${_unset_cmds};
+			echo unset $(get_prefix_lrg ${1} =) >> ${_cewe_unset_cmds};
 		fi;
-	done; . "${_unset_cmds}"; rm -f "${_unset_cmds}" 2>/dev/null;
-	unset _vfilter _vspec;
+	done; . "${_cewe_unset_cmds}"; rm -f "${_cewe_unset_cmds}" 2>/dev/null;
+	unset _cewe_vfilter _cewe_vspec;
 };
 
 fetch() {
@@ -147,37 +156,37 @@ is_build_script_done() {
 	fi;
 };
 set_build_script_done() {
-	_script_fname=${SCRIPT_FNAME##*/};
-	_done_fname=${WORKDIR}/.${_script_fname%.build};
+	_sbsd_script_fname=${SCRIPT_FNAME##*/};
+	_sbsd_done_fname=${WORKDIR}/.${_sbsd_script_fname%.build};
 	while [ $# -ge 1 ]; do
 		if [ "x${1#-}" != "x${1}" ]; then
-			rm -f ${_done_fname}.${1#-};
+			rm -f ${_sbsd_done_fname}.${1#-};
 		else
-			touch ${_done_fname}.${1};
-			log_msg info "Finished build step ${1} of build script \`${_script_fname}'.";
+			touch ${_sbsd_done_fname}.${1};
+			log_msg info "Finished build step ${1} of build script \`${_sbsd_script_fname}'.";
 		fi; shift;
-	done;
-	unset _script_fname _done_fname;
+	done; unset _sbsd_script_fname _sbsd_done_fname;
 };
 
 log_env_vars() {
 	log_msg info "Variables for this build:";
-	while [ ${_nvar:=0} -lt ${#} ]; do
-		_arg="$(eval echo \${${_nvar}})"; _arg="${_arg%%=*}";
-		if [ ${#_arg} -gt ${_arg_len_max:=0} ]; then
-			_arg_len_max=${#_arg};
-		fi; : $((_nvar+=1));
-	done; unset _nvar _arg;
+	while [ ${_lev_nvar:=0} -lt ${#} ]; do
+		_lev_arg="$(eval echo \${${_lev_nvar}})";
+		_lev_arg="${_lev_arg%%=*}";
+		if [ ${#_lev_arg} -gt ${_lev_arg_len_max:=0} ]; then
+			_lev_arg_len_max=${#_lev_arg};
+		fi; : $((_lev_nvar+=1));
+	done; unset _lev_nvar _lev_arg;
 	while [ ${#} -gt 0 ]; do
-		log_msg info "$(printf				\
-			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
+		log_msg info "$(printf					\
+			"%${_lev_arg_len_max}.${_lev_arg_len_max}s=%s"	\
 			"${1%%=*}" "$(get_var ${1#*=})")";
 		shift;
-	done; unset _arg_len_max;
+	done; unset _lev_arg_len_max;
 };
 log_msg() {
-	_lvl=${1}; shift;
-	case ${_lvl} in
+	_lm_lvl=${1}; shift;
+	case ${_lm_lvl} in
 		failexit) printf "\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		fail) printf "\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		info) printf "\033[${LOG_MSG_INFO_COLOUR}m"; ;;
@@ -187,65 +196,64 @@ log_msg() {
 		printf "==> %s %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}" "$*";
 	else
 		printf "==> %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}";
-	fi; [ ${_lvl} = failexit ] && exit 1 || unset _lvl;
+	fi; [ ${_lm_lvl} = failexit ] && exit 1 || unset _lm_lvl;
 };
 
 match_list() {
-	_cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
+	_ml_cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
 	while [ ${#} -gt 0 ]; do
-		if [ "x${1}" = "x${_cmp}" ]; then
-			unset _cmp; return 0;
+		if [ "x${1}" = "x${_ml_cmp}" ]; then
+			unset _ml_cmp; return 0;
 		fi; shift;
-	done; unset _cmp; return 1;
+	done; unset _ml_cmp; return 1;
 };
 
 parse_args_into_vars() {
-	_arg0="${1}"; _args_valid="${2}"; shift 2;
+	_paiv_arg0="${1}"; _paiv_args_valid="${2}"; shift 2;
 	while [ $# -gt 0 ]; do
 		case "${1}" in
-		--*)	_aname="${1#--}";
-			if ! match_list "${_args_valid}" , "${_aname%%=*}"; then
-				log_msg failexit "Unknown parameter --${_aname%%=*} specified.";
-			elif match_start "${_aname}" "*="; then
-				_aval="$(get_postfix "${_aname}" =)";
-				_aname="$(get_prefix_lrg "${_aname}" =)";
+		--*)	_paiv_aname="${1#--}";
+			if ! match_list "${_paiv_args_valid}" , "${_paiv_aname%%=*}"; then
+				log_msg failexit "Unknown parameter --${_paiv_aname%%=*} specified.";
+			elif match_start "${_paiv_aname}" "*="; then
+				_paiv_aval="$(get_postfix "${_paiv_aname}" =)";
+				_paiv_aname="$(get_prefix_lrg "${_paiv_aname}" =)";
 			else
-				_aval=1;
+				_paiv_aval=1;
 			fi;
-			set_var $(echo arg_${_aname} | tr a-z- A-Z_) "${_aval}";
+			set_var $(echo arg_${_paiv_aname} | tr a-z- A-Z_) "${_paiv_aval}";
 			shift; ;;
 		*=*)	set_var "$(get_prefix_lrg "${1}" =)"\
 				"$(get_postfix "${1}" =)"; shift; ;;
 		*)	log_msg failexit "Invalid or unknown command line argument \`${1}'."; ;;
 		esac;
-	done; unset _arg0 _args_valid _aname _aval;
+	done; unset _paiv_arg0 _paiv_args_valid _paiv_aname _paiv_aval;
 };
 
 parse_with_pkg_name() {
-	PKG_NAME=${1}; shift;
-	while [ $# -ge 0 ]; do
+	PKG_LVL=${1}; PKG_NAME=${2}; shift 2;
+	while [ ${#} -ge 0 ]; do
 		if [ "x${PKG_NAME}" = "x${1}" ]; then
-			_pkg_NAME=$(echo "${PKG_NAME}" | tr a-z A-Z);
-			for _vname in ${PKG_VARS}; do
-				_vNAME=$(echo "${_vname}" | tr a-z A-Z);
-				if [ -n "${_vval:=$(get_var PKG_${_pkg_NAME}_${_vNAME})}" ]; then
-					export PKG_${_vNAME}="${_vval}";
-					if [ "x${_vname#[A-Z]}" != "x${_vname}" ]; then
-						export ${_vname}="${_vval}";
-					fi;
-				else
-					unset PKG_${_vNAME};
-				fi; unset _vval;
-			done; unset _pkg_NAME _vname _vNAME;
-			if [ -z "${PKG_URL}" ]; then
-				return 1;
-			else
-				[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
-				[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
-				return 0;
-			fi;
+			export_vars_subst PKG_LVL${PKG_LVL}_ PKG_ ${PKG_BUILD_VARS};
+			export_vars_subst PKG_$(echo ${PKG_NAME} | tr a-z A-Z)_ PKG_ ${PKG_BUILD_VARS};
+			[ -z "${PKG_URL}" ] && return 1;
+			[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
+			[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
+			[ -n "${PKG_ENV_VARS_EXTRA}" ] && export ${PKG_ENV_VARS_EXTRA};
+			return 0;
 		fi; shift;
 	done; return 1;
+};
+
+run_cmd_unsplit() {
+	_rcu_cmd=${1}; shift;
+	while [ ${#} -gt 0 ]; do
+		[ -n "${1}" ] &&\
+			_rcu_cmdline="${_rcu_cmdline:+${_rcu_cmdline},}${1}";
+		shift;
+	done;
+	push_IFS ,; ${_rcu_cmd} ${_rcu_cmdline}; _rcu_rc=$?; pop_IFS;
+	unset _rcu_cmd _rcu_cmdline; return ${_rcu_rc};
 };
 
 # vim:filetype=sh

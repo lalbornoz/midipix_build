@@ -8,6 +8,7 @@ clear_env_with_except HOME PATH SHELL TERM USER;
 check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
 check_prereqs git make mktemp openssl sed sort tar tr wget;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE:=$(date %Y-%m-%d-%H-%M-%S)}.";
+touch ${PREFIX}/BUILD_IN_PROGRESS;
 log_env_vars ${LOG_ENV_VARS};
 (mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
@@ -83,6 +84,8 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]\
 	 rm -rf ${PREFIX_BASENAME}/lib;
 	 mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib); wait;
 fi;
+[ -f ${PREFIX}/BUILD_IN_PROGRESS ] &&\
+	rm -f ${PREFIX}/BUILD_IN_PROGRESS;
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee build.log;
 
 # vim:filetype=sh
