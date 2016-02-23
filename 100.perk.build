@@ -9,11 +9,11 @@ if ! is_build_script_done fetch; then
 fi;
 set_build_dir ${2} native;
 if ! is_build_script_done configure1; then
-	rm_if_exists -m -c ${BUILD_DIR};
+	rm_if_exists -m -c ${PKG_BUILD_DIR};
 	../perk/configure;
 	set_build_script_done configure1 clean1 -build1;
 else
-	cd ${BUILD_DIR};
+	cd ${PKG_BUILD_DIR};
 fi;
 if ! is_build_script_done clean1; then
 	make ${MAKEFLAGS} clean;
@@ -29,11 +29,11 @@ if ! is_build_script_done install1; then
 fi;
 set_build_dir ${2} cross;
 if ! is_build_script_done configure2; then
-	rm_if_exists -m -c ../${BUILD_DIR};
+	rm_if_exists -m -c ../${PKG_BUILD_DIR};
 	../perk/configure --target=${TARGET};
 	set_build_script_done configure2 clean2 -build2;
 else
-	cd ../${BUILD_DIR};
+	cd ../${PKG_BUILD_DIR};
 fi;
 if ! is_build_script_done clean2; then
 	make ${MAKEFLAGS} clean;
