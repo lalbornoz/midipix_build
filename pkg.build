@@ -115,6 +115,11 @@ if ! is_build_script_done install1; then
 			${RANLIB:+RANLIB=${RANLIB}}			\
 			DESTDIR=${PREFIX_LVL}				\
 			${PKG_INSTALL_TARGET:-install};
+	elif [ -n "${PKG_MAKEFLAGS}" ]; then
+		make	${PKG_MAKEFLAGS}				\
+			${CC:+CC=${CC}} ${CFLAGS:+"CFLAGS=${CFLAGS}"}	\
+			${LD:+LD=${LD}} ${LDFLAGS:+"LDFLAGS=${LDFLAGS}"}\
+			${PKG_INSTALL_TARGET:-install};
 	else
 		make	${PKG_MAKEFLAGS_INSTALL_EXTRA:+${PKG_MAKEFLAGS_INSTALL_EXTRA}}\
 			${MAKEFLAGS}					\

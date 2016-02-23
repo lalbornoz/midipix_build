@@ -19,55 +19,6 @@
  	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
  	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
  	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
---- libressl-2.2.6/configure.orig	2016-01-28 19:18:06.000000000 +0100
-+++ libressl-2.2.6/configure	2016-02-12 17:46:12.545206600 +0100
-@@ -690,6 +690,8 @@
- HOST_NETBSD_TRUE
- HOST_LINUX_FALSE
- HOST_LINUX_TRUE
-+HOST_MIDIPIX_FALSE
-+HOST_MIDIPIX_TRUE
- HOST_HPUX_FALSE
- HOST_HPUX_TRUE
- HOST_FREEBSD_FALSE
-@@ -11902,6 +11904,11 @@
- 		HOST_ABI=elf
- 		CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_SOURCE -D_GNU_SOURCE"
- 		;;
-+	*midipix*)
-+		HOST_OS=midipix
-+		HOST_ABI=pe
-+		CFLAGS="$CFLAGS -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_SOURCE -D_GNU_SOURCE"
-+		;;
- 	*netbsd*)
- 		HOST_OS=netbsd
- 		CPPFLAGS="$CPPFLAGS -D_OPENBSD_SOURCE"
-@@ -11981,6 +11988,14 @@
-   HOST_LINUX_FALSE=
- fi
- 
-+ if test x$HOST_OS = xmidipix; then
-+  HOST_MIDIPIX_TRUE=
-+  HOST_MIDIPIX_FALSE='#'
-+else
-+  HOST_MIDIPIX_TRUE='#'
-+  HOST_MIDIPIX_FALSE=
-+fi
-+
-  if test x$HOST_OS = xnetbsd; then
-   HOST_NETBSD_TRUE=
-   HOST_NETBSD_FALSE='#'
-@@ -13422,6 +13437,10 @@
-   as_fn_error $? "conditional \"HOST_LINUX\" was never defined.
- Usually this means the macro was only invoked conditionally." "$LINENO" 5
- fi
-+if test -z "${HOST_MIDIPIX_TRUE}" && test -z "${HOST_MIDIPIX_FALSE}"; then
-+  as_fn_error $? "conditional \"HOST_MIDIPIX\" was never defined.
-+Usually this means the macro was only invoked conditionally." "$LINENO" 5
-+fi
- if test -z "${HOST_NETBSD_TRUE}" && test -z "${HOST_NETBSD_FALSE}"; then
-   as_fn_error $? "conditional \"HOST_NETBSD\" was never defined.
- Usually this means the macro was only invoked conditionally." "$LINENO" 5
 --- libressl-2.2.6/crypto/compat/arc4random.h.orig	2015-10-15 23:18:44.000000000 +0200
 +++ libressl-2.2.6/crypto/compat/arc4random.h	2016-02-12 17:19:40.815245600 +0100
 @@ -12,7 +12,7 @@
@@ -203,3 +154,77 @@
  #include <endian.h>
  
  #elif defined(__sun) || defined(_AIX) || defined(__hpux)
+--- libressl-2.2.6/configure.orig	2016-01-28 18:18:06.000000000 +0000
++++ libressl-2.2.6/configure	2016-02-23 13:25:30.689963257 +0000
+@@ -690,6 +690,8 @@
+ HOST_NETBSD_TRUE
+ HOST_LINUX_FALSE
+ HOST_LINUX_TRUE
++HOST_MIDIPIX_FALSE
++HOST_MIDIPIX_TRUE
+ HOST_HPUX_FALSE
+ HOST_HPUX_TRUE
+ HOST_FREEBSD_FALSE
+@@ -10824,7 +10826,7 @@
+   ;;
+ 
+ # This must be glibc/ELF.
+-linux* | k*bsd*-gnu | kopensolaris*-gnu)
++linux* | k*bsd*-gnu | kopensolaris*-gnu | midipix*)
+   version_type=linux # correct to gnu/linux during the next big refactor
+   need_lib_prefix=no
+   need_version=no
+@@ -11902,6 +11904,11 @@
+ 		HOST_ABI=elf
+ 		CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_SOURCE -D_GNU_SOURCE"
+ 		;;
++	*midipix*)
++		HOST_OS=midipix
++		HOST_ABI=pe
++		CFLAGS="$CFLAGS -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_SOURCE -D_GNU_SOURCE"
++		;;
+ 	*netbsd*)
+ 		HOST_OS=netbsd
+ 		CPPFLAGS="$CPPFLAGS -D_OPENBSD_SOURCE"
+@@ -11981,6 +11988,14 @@
+   HOST_LINUX_FALSE=
+ fi
+ 
++ if test x$HOST_OS = xmidipix; then
++  HOST_MIDIPIX_TRUE=
++  HOST_MIDIPIX_FALSE='#'
++else
++  HOST_MIDIPIX_TRUE='#'
++  HOST_MIDIPIX_FALSE=
++fi
++
+  if test x$HOST_OS = xnetbsd; then
+   HOST_NETBSD_TRUE=
+   HOST_NETBSD_FALSE='#'
+@@ -13422,6 +13437,10 @@
+   as_fn_error $? "conditional \"HOST_LINUX\" was never defined.
+ Usually this means the macro was only invoked conditionally." "$LINENO" 5
+ fi
++if test -z "${HOST_MIDIPIX_TRUE}" && test -z "${HOST_MIDIPIX_FALSE}"; then
++  as_fn_error $? "conditional \"HOST_MIDIPIX\" was never defined.
++Usually this means the macro was only invoked conditionally." "$LINENO" 5
++fi
+ if test -z "${HOST_NETBSD_TRUE}" && test -z "${HOST_NETBSD_FALSE}"; then
+   as_fn_error $? "conditional \"HOST_NETBSD\" was never defined.
+ Usually this means the macro was only invoked conditionally." "$LINENO" 5
+@@ -15584,3 +15603,15 @@
+ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
+ fi
+ 
++# a transitional workaround...
++case $host_os in
++		midipix*)
++			cp $ac_confdir/libtool.midipix libtool || exit 2
++
++			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
++				-e 's/@cbb_build_alias@/'$build_alias'/g' \
++				-e 's/@cbb_build_os@/'$build_os'/g' \
++				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
++			;;
++esac
++
