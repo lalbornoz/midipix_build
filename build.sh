@@ -76,6 +76,8 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]\
 	 wait;
 	 find .	-maxdepth 2 -type d				\
 	 	-not -path .					\
+	 	-not -path ./src/midipix_build			\
+	 	-not -path ./src/midipix_build/\*		\
 	 	-not -path ./${WORKDIR_BASENAME}		\
 	 	-not -path ./${WORKDIR_BASENAME}/\*		\
 	 	-not -path ./${PREFIX_BASENAME}			\
