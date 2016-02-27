@@ -6,7 +6,7 @@
 
 export lz_arch=${ARCH} lz_cflags_debug=-O2 lz_target=${TARGET};
 
-if [ "x${3}" = "xno-complex" ]; then
+if [ "${3}" = no-complex ]; then
 	# Musl: build (no-complex)
 	_install=install_no_complex;
 	set_build_dir musl-${PKG_MUSL_VERSION}-${3} cross;
@@ -24,11 +24,11 @@ if [ "x${3}" = "xno-complex" ]; then
 		cp -R mmglue/* musl-${PKG_MUSL_VERSION}/;
 		set_build_script_done extract -configure;
 	fi;
-elif [ "x${3}" = "xnative" ]; then
+elif [ "${3}" = native ]; then
 	# Musl: build (full)
 	_install=install;
-	set_build_dir musl-${PKG_MUSL_VERSION} ${3};
-elif [ "x${3}" = "xfull" ]; then
+	set_build_dir musl-${PKG_MUSL_VERSION} "${3}";
+elif [ "${3}" = full ]; then
 	# Musl: build (full)
 	_install=install;
 	set_build_dir musl-${PKG_MUSL_VERSION} cross;

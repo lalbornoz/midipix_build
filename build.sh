@@ -6,9 +6,9 @@
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
-	[ "x${2%%:*}" != "x${2}" ]							\
-		&& { ARG_RESTART_SCRIPT=${2%%:*}; ARG_RESTART_SCRIPT_AT=${2##*:}; }	\
-		|| { ARG_RESTART_SCRIPT=${2}; ARG_RESTART_SCRIPT_AT=ALL; };
+	match_any "${2}" :								\
+		&& { ARG_RESTART_SCRIPT="${2%%:*}"; ARG_RESTART_SCRIPT_AT="${2##*:}"; }	\
+		|| { ARG_RESTART_SCRIPT="${2}"; ARG_RESTART_SCRIPT_AT=ALL; };
 	shift; ;;
 -t)	[ ${ARG_TARBALL:-0} -eq 1 ] && exec cat build.usage;
 	ARG_TARBALL=1; ;;
@@ -38,7 +38,7 @@ for BUILD_LVL in 0 1 2 3; do
 			continue;
 		else
 			unset BUILD_SCRIPT_RC; : $((BUILD_NBUILT+=1));
-			if [ "x${ARG_RESTART_SCRIPT}" != "xALL" ]\
+			if [ "${ARG_RESTART_SCRIPT}" != ALL ]\
 			&& is_build_script_done finish "${BUILD_SCRIPT_FNAME%.build}"; then
 				log_msg info "Skipped build script \`${BUILD_SCRIPT_FNAME}' (already built.)";
 					: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;

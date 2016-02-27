@@ -4,11 +4,11 @@
 
 # Order: stage1, runtime, full, native
 
-if [ "x${3}" = "xruntime" ]\
-||   [ "x${3}" = "xfull" ]; then
+if [ "${3}" = runtime ]\
+||   [ "${3}" = full ]; then
 	set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
 	cd ${PKG_BUILD_DIR};
-	if [ "x${3}" = "xruntime" ]; then
+	if [ "${3}" = runtime ]; then
 		# GCC, compiler runtime.
 		if ! is_build_script_done build; then
 			make ${MAKEFLAGS} all-target-libgcc;
@@ -18,7 +18,7 @@ if [ "x${3}" = "xruntime" ]\
 			make ${MAKEFLAGS} install-target-libgcc;
 			set_build_script_done install finish;
 		fi;
-	elif [ "x${3}" = "xfull" ]; then
+	elif [ "${3}" = full ]; then
 		# GCC, everything else.
 		if ! is_build_script_done build1; then
 			make ${MAKEFLAGS} all-target-libstdc++-v3;
@@ -38,7 +38,7 @@ if [ "x${3}" = "xruntime" ]\
 		fi;
 	fi;
 else
-	if [ "x${3}" = "xstage1" ]; then
+	if [ "${3}" = stage1 ]; then
 		# GCC, stage1.
 		if ! is_build_script_done fetch; then
 			rm_if_exists cbb-gcc-${PKG_GCC_VERSION};
@@ -53,7 +53,7 @@ else
 			cbb_neutral_libiberty=no			\
 			cbb_xgcc_for_specs=${WORKDIR}/${PKG_BUILD_DIR}/gcc/xgcc;
 		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_LVL}";
-	elif [ "x${3}" = "xnative" ]; then
+	elif [ "${3}" = native ]; then
 		# GCC, native.
 		set_build_dir cbb-gcc-${PKG_GCC_VERSION} native;
 		export 	cbb_ldflags_for_target=--sysroot=${PREFIX_LVL}	\
@@ -68,12 +68,12 @@ else
 	set_env_vars "${CFLAGS_FOR_BUILD}" cbb_cflags_for_stage1 cbb_cflags_for_stage2 cbb_cflags_for_stage3 cbb_cflags_for_stage4;
 	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
 	if ! is_build_script_done configure; then
-		if [ "x${3}" = "xstage1" ]; then
+		if [ "${3}" = stage1 ]; then
 			mkdir -p ${PREFIX_LVL}/include;
 			[ \! -d ${PREFIX_LVL}/usr ] &&			\
 				ln -s . ${PREFIX_LVL}/usr;
 			_configure_args="--prefix=${PREFIX} --with-sysroot=${PREFIX_LVL}";
-		elif [ "x${3}" = "xnative" ]; then
+		elif [ "${3}" = native ]; then
 			mkdir -p ${PREFIX_LVL}/${TARGET};
 			if [ \! -d ${PREFIX_LVL}/${TARGET}/usr ]; then
 				ln -s . ${PREFIX_LVL}/${TARGET}/usr;
@@ -121,9 +121,9 @@ else
 		set_build_script_done clean -build;
 	fi;
 	if ! is_build_script_done build; then
-		if [ "x${3}" = "xstage1" ]; then
+		if [ "${3}" = stage1 ]; then
 			make ${MAKEFLAGS} all-gcc;
-		elif [ "x${3}" = "xnative" ]; then
+		elif [ "${3}" = native ]; then
 			make ${MAKEFLAGS} all-gcc;
 			make ${MAKEFLAGS} all-target-libgcc;
 			make ${MAKEFLAGS} all-target-libstdc++-v3;
@@ -132,9 +132,9 @@ else
 		set_build_script_done build -install;
 	fi;
 	if ! is_build_script_done install; then
-		if [ "x${3}" = "xstage1" ]; then
+		if [ "${3}" = stage1 ]; then
 			make ${MAKEFLAGS} install-gcc;
-		elif [ "x${3}" = "xnative" ]; then
+		elif [ "${3}" = native ]; then
 			make ${MAKEFLAGS} DESTDIR=${PREFIX_LVL} install;
 		fi;
 		set_build_script_done install finish;
