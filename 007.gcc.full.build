@@ -133,6 +133,10 @@ else
 	if ! is_build_script_done install; then
 		if [ "${3}" = stage1 ]; then
 			make ${MAKEFLAGS} install-gcc;
+			if match_uname_any CYGWIN\*; then
+				ln -s ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.dll.a	\
+					ln -s ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.so;
+			fi;
 		elif [ "${3}" = native ]; then
 			make ${MAKEFLAGS} DESTDIR=${PREFIX_LVL} install;
 		fi;
