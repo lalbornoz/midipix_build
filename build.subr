@@ -4,7 +4,6 @@
 #
 
 date() { command date +"${1:-${TIMESTAMP_FMT}}"; };
-fetch_git() { [ -d ${1} ] && (cd ${1} && git pull origin main) || git clone ${3} ${2} ${1}; };
 get_basename() { set -- $(get_name_without_slash ${1}); echo "${1##*/}"; };
 get_var_dyn() { ${1}; };
 get_var_unsafe() { eval echo \${${1}}; };
@@ -24,6 +23,22 @@ test_cmd() { command -v "${1}" >/dev/null; };
 unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
 
 
+build_times_init() { BUILD_TIMES_SECS=$(command date +%s); };
+build_times_get() {
+	: $((BUILD_TIMES_SECS=$(command date +%s)-${BUILD_TIMES_SECS}));
+	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
+	: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
+	: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
+};
+
+clean_prefix() {
+	log_msg info "-c specified, cleaning prefix...";
+	set -- bin include lib lib64 libexec native share x86_64-nt64-midipix;
+	while [ ${#} -gt 0 ]; do rm -rf ${PREFIX}/${1}; shift; done;
+	find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -not -iname \*.tar\* -exec rm -rf {} \;
+	find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -type f -iname .\* -exec rm -rf {} \;
+};
+
 export_vars_subst() {
 	_evs_pfx=${1}; _evs_pfx_new=${2}; shift 2;
 	while [ ${#} -gt 0 ]; do
@@ -33,6 +48,12 @@ export_vars_subst() {
 	done; unset _evs_pfx _evs_pfx_new;
 };
 
+fetch_git() {
+	rm_if_exists ${1};
+	[ -d ${1} ] && (cd ${1} && git pull origin main)\
+		|| git clone ${3} ${2} ${1};
+};
+
 rm_if_exists() {
 	[ -z "${1#-m}" ] && { _rie_arg_m=1; shift; };
 	[ -z "${1#-c}" ] && { _rie_arg_c=1; shift; };
@@ -40,6 +61,14 @@ rm_if_exists() {
 	[ ${_rie_arg_m:-0} -eq 1 ] && { mkdir ${1}; unset _rie_arg_m; };
 	[ ${_rie_arg_c:-0} -eq 1 ] && { cd ${1}; unset _rie_arg_c; };
 	return 0;
+};
+
+rotate_files() {
+	set -- $(find ${PREFIX} -mindepth 1 -maxdepth 1 -type f -iname "${1}" |\
+			sort | sed -n $((${2}+1)),\$p);
+	while [ ${#} -gt 0 ]; do
+		rm -f "${1}"; shift;
+	done;
 };
 
 set_env_vars() {
@@ -101,6 +130,8 @@ clear_env_with_except() {
 };
 
 fetch() {
+	[ ${ARG_NO_DOWNLOAD:-0} -eq 0 ] &&\
+		rm_if_exists $(get_basename ${1});
 	wget ${WGET_ARGS} ${1};
 	if [ ${#} -eq 2 ]; then
 		set -- $(get_basename ${1}) "$(compare_hash $(get_basename ${1}) ${2})" ${2};
@@ -129,7 +160,10 @@ compare_hash_manifest() {
 
 is_build_script_done() {
 	if [ -n "${ARG_RESTART_SCRIPT_AT}" ]; then
-		if [ "${1}" = "finish" ]\
+		if [ "${1}" = clean ]\
+		&& [ -z "${ARG_RESTART_SCRIPT_AT#ALL}" ]; then
+			return 0;	# Skip
+		elif [ "${1}" = finish ]\
 		|| [ -z "${ARG_RESTART_SCRIPT_AT#ALL}" ]; then
 			return 1;	# Build
 		elif ! match_list ${ARG_RESTART_SCRIPT_AT} , ${1}; then
@@ -220,6 +254,34 @@ run_cmd_unsplit() {
 	done;
 	push_IFS ,; ${_rcu_cmd} ${_rcu_cmdline}; _rcu_rc=$?; pop_IFS;
 	unset _rcu_cmd _rcu_cmdline; return ${_rcu_rc};
+};
+
+update_build_status() {
+	while [ ${#} -gt 0 ]; do
+	case ${1} in
+	build_start)
+		touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
+		touch ${BUILD_STATUS_PROGRESS_FNAME:=${PREFIX}/BUILD_STARTED_AT_${BUILD_DATE_START:=$(date %Y-%m-%d-%H-%M-%S)}};
+		;;
+	build_finish)
+		[ -f ${BUILD_STATUS_PROGRESS_FNAME} ] &&\
+			rm -f ${BUILD_STATUS_PROGRESS_FNAME};
+		touch ${BUILD_STATUS_FINISHED_AT_FNAME:=${PREFIX}/BUILD_FINISHED_AT_$(date ${TIMESTAMP_FMT_STATUS_FILES})};
+		rotate_files BUILD_FINISHED_AT_\* 8;
+		ln -sf ${BUILD_STATUS_FINISHED_AT_FNAME}\
+			${BUILD_STATUS_FINISHED_AT_CURRENT_FNAME}; ;;
+	tarball_start)
+		rotate_files midipix.\*.tar.bz2 8;
+		touch ${BUILD_STATUS_TARBALL_PROGRESS_FNAME:=${PREFIX}/TARBALL_STARTED_AT_$(date ${TIMESTAMP_FMT_STATUS_FILES})};
+		;;
+	tarball_finish)
+		[ -f ${BUILD_STATUS_TARBALL_PROGRESS_FNAME} ] &&\
+			rm -f ${BUILD_STATUS_TARBALL_PROGRESS_FNAME}; ;;
+	finish)
+		[ -f ${BUILD_STATUS_IN_PROGRESS_FNAME} ] &&\
+			rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME}; ;;
+	esac; shift;
+	done;
 };
 
 # vim:filetype=sh

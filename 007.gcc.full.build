@@ -41,9 +41,8 @@ else
 	if [ "${3}" = stage1 ]; then
 		# GCC, stage1.
 		if ! is_build_script_done fetch; then
-			rm_if_exists cbb-gcc-${PKG_GCC_VERSION};
 			fetch_git cbb-gcc-${PKG_GCC_VERSION}		\
-			${GITROOT}/cbb/cbb-gcc-${PKG_GCC_VERSION};
+				${GITROOT}/cbb/cbb-gcc-${PKG_GCC_VERSION};
 			set_build_script_done fetch -configure;
 		fi;
 		set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;

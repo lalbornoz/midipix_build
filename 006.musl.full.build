@@ -11,10 +11,10 @@ if [ "${3}" = no-complex ]; then
 	_install=install_no_complex;
 	set_build_dir musl-${PKG_MUSL_VERSION}-${3} cross;
 	if ! is_build_script_done fetch; then
-		rm_if_exists musl-${PKG_MUSL_VERSION}.tar.gz;
 		fetch http://www.musl-libc.org/releases/musl-${PKG_MUSL_VERSION}.tar.gz	\
 			${PKG_MUSL_SHA256SUM};
-		rm_if_exists mmglue;
+		[ ${ARG_NO_DOWNLOAD:-0} -eq 0 ] &&\
+			rm_if_exists mmglue;
 		fetch_git mmglue ${GITROOT}/mmglue;
 		set_build_script_done fetch -extract;
 	fi;

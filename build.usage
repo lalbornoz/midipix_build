@@ -1,4 +1,6 @@
-usage: ./build.sh [-r ALL|name[:step]] [-h] [-t]
+usage: ./build.sh [-c] [-nd] [-r ALL|name[:step]] [-h] [-t]
+         -c                     Clean $PREFIX before processing build scripts.
+         -nd                    Don't rm(1) and re-download tarballs when not required.
          -r ALL|name[:step]     Restart all or the specified build script(s) completely
                                 or at the optionally specified build step. Currently defined
                                 build steps are: fetch extract patch configure clean build
@@ -13,8 +15,8 @@ usage: ./build.sh [-r ALL|name[:step]] [-h] [-t]
         named ${PKG_SUBDIR}.local.patch.
 
         Examples:
-        ./build.sh -r psxscl -- GITROOT_HEAD=... PKG_PSXSCL_CFLAGS=-DPSX_INTERNAL_STRACE
+        ./build.sh -r psxscl GITROOT_HEAD=... PKG_PSXSCL_CFLAGS=-DPSX_INTERNAL_STRACE
         Build psxscl from the internal repository with strace enabled.
 
-        ./build.sh -r ALL -- GITROOT_HEAD=...
-        Forcibly rebuild everything.
+        ./build.sh -c -r ALL GITROOT_HEAD=...
+        Clean $PREFIX and forcibly rebuild everything.
