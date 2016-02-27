@@ -10,12 +10,12 @@ get_var_dyn() { ${1}; };
 get_var_unsafe() { eval echo \${${1}}; };
 set_var_dyn() { eval ${1}\(\) \{ echo \"${2}\"\; \}; };
 set_var_unsafe() { eval ${1}=\"${2}\"; };
-get_name_without_slash() { while [ "x${1%/}" != "x${1}" ]; do set -- ${1%/}; done; echo ${1}; };
+get_name_without_slash() { while [ "${1%/}" != ${1} ]; do set -- ${1%/}; done; echo ${1}; };
 get_postfix_lrg() { echo "${1##*${2}}"; };
 get_prefix_lrg() { echo "${1%%${2}*}"; };
 get_postfix() { echo "${1#*${2}}"; };
 get_prefix() { echo "${1%${2}*}"; };
-match_any() { [ "x${1#*${2}*}" != "x${1}" ]; };
+match_any() { [ "${1#*${2}*}" != "${1}" ]; };
 push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
 set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${TARGET}; };
@@ -91,7 +91,7 @@ clear_env_with_except() {
 	_cewe_vfilter="${*}"; _cewe_unset_cmds="$(mktemp -q)";
 	export | while read _cewe_vspec; do
 		set -- ${_cewe_vspec}; shift;
-		[ "x${1#*[^\"\'=a-zA-Z0-9_]}" != "x${1}" ] && continue;
+		[ "${1#*[^\"\'=a-zA-Z0-9_]}" != "${1}" ] && continue;
 		if ! match_list "${_cewe_vfilter}" " "	\
 				$(get_prefix_lrg ${1} =); then
 			echo unset $(get_prefix_lrg ${1} =) >> ${_cewe_unset_cmds};
@@ -117,7 +117,7 @@ compare_hash() {
 	# This corresponds to the hash output and caller-supplied
 	# hash values.
 	set -- $(openssl dgst -sha256 ${1}) ${2}; shift $((${#}-2));
-	[ "x${1}" = "x${2}" ] || echo "${1}";
+	[ "${1}" = "${2}" ] || echo "${1}";
 };
 compare_hash_manifest() {
 	while [ ${#} -gt 0 ]; do
@@ -147,7 +147,7 @@ set_build_script_done() {
 	_sbsd_script_fname=${SCRIPT_FNAME##*/};
 	_sbsd_done_fname=${WORKDIR}/.${_sbsd_script_fname%.build};
 	while [ $# -ge 1 ]; do
-		if [ "x${1#-}" != "x${1}" ]; then
+		if [ "${1#-}" != "${1}" ]; then
 			rm -f ${_sbsd_done_fname}.${1#-};
 		else
 			touch ${_sbsd_done_fname}.${1};
@@ -190,7 +190,7 @@ log_msg() {
 match_list() {
 	_ml_cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
 	while [ ${#} -gt 0 ]; do
-		if [ "x${1}" = "x${_ml_cmp}" ]; then
+		if [ "${1}" = "${_ml_cmp}" ]; then
 			unset _ml_cmp; return 0;
 		fi; shift;
 	done; unset _ml_cmp; return 1;
@@ -199,7 +199,7 @@ match_list() {
 parse_with_pkg_name() {
 	PKG_LVL=${1}; PKG_NAME=${2}; shift 2;
 	while [ ${#} -ge 0 ]; do
-		if [ "x${PKG_NAME}" = "x${1}" ]; then
+		if [ "${PKG_NAME}" = ${1} ]; then
 			export_vars_subst PKG_LVL${PKG_LVL}_ PKG_ ${PKG_BUILD_VARS};
 			export_vars_subst PKG_$(echo ${PKG_NAME} | tr a-z A-Z)_ PKG_ ${PKG_BUILD_VARS};
 			[ -z "${PKG_URL}" ] && return 1;
