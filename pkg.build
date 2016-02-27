@@ -29,7 +29,8 @@ if ! is_build_script_done build_dir; then
 fi;
 if ! is_build_script_done patch; then
 	for PATCH_FNAME in portage/${PKG_SUBDIR}.midipix.patch	\
-			${_PWD}/${PKG_SUBDIR}.local.patch; do
+			${_PWD}/${PKG_SUBDIR}.local.patch	\
+			${_PWD}/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
 		[ -r ${PATCH_FNAME} ] &&\
 			patch -b -d ${PKG_SUBDIR} -p1 < ${PATCH_FNAME};
 	done; unset PATCH_FNAME;

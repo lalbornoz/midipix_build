@@ -1,0 +1,23 @@
+#
+# . ./build.vars and set -o errexit are assumed.
+#
+
+if ! is_build_script_done install; then
+	IFS=""; cat <<EOF > ${PREFIX}/midipix.sh;
+#!/bin/sh
+MIDIPIX_DRIVE=\${1:-z};
+MIDIPIX_DNAME="\${2:-}";
+MIDIPIX_PATH="/\${MIDIPIX_DRIVE}\${MIDIPIX_DNAME:+/\${MIDIPIX_DNAME}}";
+mintty -h always -e /bin/sh -c "
+	set -o errexit; stty raw -echo;
+	mount --change-cygdrive-prefix /;
+	cd \"\${MIDIPIX_PATH}/native/bin\";
+	export PATH=\"\${MIDIPIX_PATH}/native/bin:\${MIDIPIX_PATH}/native/lib\";
+	./ntctty.exe -e chroot /native /bin/bash";
+fi;
+EOF
+	chmod +x ${PREFIX}/midipix.sh;
+	set_build_script_done install finish;
+fi;
+
+# vim:filetype=sh
