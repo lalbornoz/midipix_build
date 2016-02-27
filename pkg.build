@@ -41,8 +41,11 @@ if ! is_build_script_done patch; then
 	fi;
 	[ -x ${PKG_SUBDIR}/configure ] &&			\
 		cp portage/config.cache ${PKG_BUILD_DIR}/;
-	[ ${PKG_LIBTOOL_MIDIPIX:-0} -eq 1 ] &&			\
+	if [ ${PKG_LIBTOOL_MIDIPIX:-0} -eq 1 ]; then
 		cp portage/libtool.midipix ${PKG_SUBDIR}/;
+		sed -i.orig -e "/^libdir=/s/libdir='/libdir='\$PKG_PREFIX\//"\
+			${PKG_SUBDIR}/libtool.midipix;
+	fi;
 	set_build_script_done patch -configure;
 fi;
 cd ${PKG_BUILD_DIR};

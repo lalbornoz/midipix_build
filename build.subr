@@ -248,7 +248,7 @@ parse_with_pkg_name() {
 			[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
 			[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
 			[ -n "${PKG_ENV_VARS_EXTRA}" ] && export ${PKG_ENV_VARS_EXTRA};
-			return 0;
+			export PKG_PREFIX=$(get_var_unsafe PREFIX_LVL${PKG_LVL}); return 0;
 		fi; shift;
 	done; return 1;
 };
