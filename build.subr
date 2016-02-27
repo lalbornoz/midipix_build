@@ -39,6 +39,14 @@ clean_prefix() {
 	find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -type f -iname .\* -exec rm -rf {} \;
 };
 
+clean_build_status() {
+	set -- BUILD_STATUS_IN_PROGRESS_FNAME BUILD_STATUS_PROGRESS_FNAME BUILD_STATUS_TARBALL_PROGRESS_FNAME;
+	while [ ${#} -gt 0 ]; do
+		unset ${1}; shift;
+	done; touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
+	log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
+};
+
 export_vars_subst() {
 	_evs_pfx=${1}; _evs_pfx_new=${2}; shift 2;
 	while [ ${#} -gt 0 ]; do

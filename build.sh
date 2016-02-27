@@ -14,17 +14,20 @@ case ${1} in
 		|| { ARG_RESTART_SCRIPT="${2}"; ARG_RESTART_SCRIPT_AT=ALL; };
 	shift; ;;
 -t)	[ ${ARG_TARBALL:-0} -eq 1 ] && exec cat build.usage || ARG_TARBALL=1; ;;
+-x)	set -o xtrace; ;;
+-X)	set -o xtrace; ARG_DEBUG_TARBALL=1; ;;
 *=*)	set_var_unsafe "$(get_prefix_lrg "${1}" =)"					\
 			"$(get_postfix "${1}" =)"; ;;
 *)	exec cat build.usage; ;;
 esac; shift; done;
 
-{
 . ./build.vars;
-clear_env_with_except HOME PATH SHELL TERM USER;
-check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
-check_prereqs git make mktemp openssl patch sed sort tar tr wget;
-(mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
+clear_env_with_except ${CLEAR_ENV_VARS_EXCEPT};
+check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${PREREQ_CMDS};
+mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
+trap clean_build_status HUP INT TERM USR1 USR2;
+
+{(
 update_build_status build_start; build_times_init;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 log_env_vars ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
@@ -63,6 +66,22 @@ for BUILD_LVL in 0 1 2 3; do
 			0) log_msg succ "Finished build script \`${BUILD_SCRIPT_FNAME}'.";
 				: $((BUILD_NFINI+=1)); continue; ;;
 			*) log_msg fail "Build failed in build script \`${BUILD_SCRIPT_FNAME}' (last return code ${BUILD_SCRIPT_RC}.).";
+				if [ ${ARG_DEBUG_TARBALL:-0} -eq 1 ]; then
+					log_msg info "-X specified, creating debug tarball.";
+					SCRIPT_NAME=${BUILD_SCRIPT_FNAME%%.build};
+					SCRIPT_NAME=${SCRIPT_NAME#*.};
+					SCRIPT_NAME=$(echo "${SCRIPT_NAME}" | tr a-z A-Z);
+					if [ -z ${PKG_SUBDIR=$(get_var_unsafe PKG_${SCRIPT_NAME}_SUBDIR)} ]; then
+						PKG_URL=$(get_var_unsafe PKG_${SCRIPT_NAME}_URL);
+						PKG_FNAME=${PKG_URL##*/};
+					 	PKG_SUBDIR=${PKG_FNAME%%.tar*};
+					fi;
+					BUILD_DEBUG_TARBALL_FNAME=${PREFIX}/midipix-debug-${BUILD_USER}@${BUILD_HNAME}_$(date %Y-%m-%d-%H-%M-%S);
+					tar -C ${PREFIX} -cpf - build.log ${WORKDIR#${PREFIX}/}/${PKG_SUBDIR} |\
+						bzip2 -c - > ${BUILD_DEBUG_TARBALL_FNAME};
+					log_msg info "Please upload ${BUILD_DEBUG_TARBALL_FNAME} and provide an URL to it in <irc://irc.freenode.net/midipix>.";
+					exit 1;
+				fi;
 				: $((BUILD_NFAIL+=1)); break; ;;
 			esac;
 		fi;
@@ -96,6 +115,6 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	update_build_status tarball_finish;
 fi;
 update_build_status finish;
-exit ${BUILD_SCRIPT_RC})} 2>&1 | tee build.log;
+exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${PREFIX}/build.log;
 
 # vim:filetype=sh
