@@ -19,7 +19,7 @@ while [ ${#} -gt 0 ]; do
 done; . ./build.vars;
 clear_env_with_except HOME PATH SHELL TERM USER;
 check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
-check_prereqs git make mktemp openssl sed sort tar tr wget;
+check_prereqs git make mktemp openssl patch sed sort tar tr wget;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE:=$(date %Y-%m-%d-%H-%M-%S)}.";
 log_env_vars ${LOG_ENV_VARS};
 (mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
