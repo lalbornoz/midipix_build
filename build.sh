@@ -76,8 +76,8 @@ for BUILD_LVL in 0 1 2 3; do
 						PKG_FNAME=${PKG_URL##*/};
 					 	PKG_SUBDIR=${PKG_FNAME%%.tar*};
 					fi;
-					BUILD_DEBUG_TARBALL_FNAME=${PREFIX}/midipix-debug-${BUILD_USER}@${BUILD_HNAME}_$(date %Y-%m-%d-%H-%M-%S);
-					tar -C ${PREFIX} -cpf - build.log ${WORKDIR#${PREFIX}/}/${PKG_SUBDIR} |\
+					BUILD_DEBUG_TARBALL_FNAME=${PREFIX}/midipix-debug-${BUILD_USER}@${BUILD_HNAME}_$(date %Y-%m-%d-%H-%M-%S).tar.bz2;
+					tar -C ${PREFIX} -cpf - build.log $(cd ${PREFIX} && find ${WORKDIR#${PREFIX}/} -mindepth 1 -maxdepth 1 -type d -iname ${PKG_SUBDIR}-*) |\
 						bzip2 -c - > ${BUILD_DEBUG_TARBALL_FNAME};
 					log_msg info "Please upload ${BUILD_DEBUG_TARBALL_FNAME} and provide an URL to it in <irc://irc.freenode.net/midipix>.";
 					exit 1;
