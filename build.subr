@@ -128,11 +128,11 @@ compare_hash_manifest() {
 };
 
 is_build_script_done() {
-	if [ -n "${ARG_BUILD_STEPS}" ]; then
-		if [ "${ARG_BUILD_STEPS}" = "finish" ]\
-		|| [ -z "${ARG_BUILD_STEPS#ALL}" ]; then
+	if [ -n "${ARG_RESTART_SCRIPT_AT}" ]; then
+		if [ "${1}" = "finish" ]\
+		|| [ -z "${ARG_RESTART_SCRIPT_AT#ALL}" ]; then
 			return 1;	# Build
-		elif ! match_list ${ARG_BUILD_STEPS} , ${1}; then
+		elif ! match_list ${ARG_RESTART_SCRIPT_AT} , ${1}; then
 			return 0;	# Skip
 		else
 			return 1;	# Build
