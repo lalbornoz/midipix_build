@@ -14,7 +14,6 @@ mintty -h always -e /bin/sh -c "
 	cd \"\${MIDIPIX_PATH}/native/bin\";
 	export PATH=\"\${MIDIPIX_PATH}/native/bin:\${MIDIPIX_PATH}/native/lib\";
 	./ntctty.exe -e chroot /native /bin/bash";
-fi;
 EOF
 	chmod +x ${PREFIX}/midipix.sh;
 	set_build_script_done install finish;
