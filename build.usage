@@ -1,22 +1,20 @@
-usage: ./build.sh
-	[--build-scripts=ALL|fname[,fname...]] [--build-steps=ALL|step[,step...]]
-	[--help] [--tarball] [VAR=VAL...]
-	 --build-scripts=...	Only invoke all or the specified build script(s).
-	 --build-steps=...	Forcibly invoke build scripts at all or only the
-				specified build steps. Currently defined build steps
-				are: fetch extract patch configure clean build install
-				configure1 configure2 build1 build2 install1 install2
-				install3 finish.
-	 --help			Show this screen.
-	 --tarball		Produce a distribution tarball containing $PREFIX
-				sans $WORKDIR at the end of a build with zero failures.
+usage: ./build.sh [-r ALL|name[:step]] [-h] [-t]
+         -r ALL|name[:step]     Restart all or the specified build script(s) completely
+                                or at the optionally specified build step. Currently defined
+                                build steps are: fetch extract patch configure clean build
+                                install configure1 configure2 build1 build2 install1 install2
+                                install3.
+         -h                     Show this screen.
+         -t                     Produce a distribution tarball containing $PREFIX
+                                sans $WORKDIR and $PREFIX/src/midipix_build at the end of a
+                                build with zero failures.
 
-	Packages that are built by pkg.build will apply local patches in $WORKDIR
-	named ${PKG_SUBDIR}.local.patch.
+        Packages that are built by pkg.build will apply local patches in $WORKDIR
+        named ${PKG_SUBDIR}.local.patch.
 
-	Examples:
-	./build.sh GITROOT_HEAD=... --build-scripts=204.psxscl.build --build-steps=ALL PKG_PSXSCL_CFLAGS=-DPSX_INTERNAL_STRACE
-	Build psxscl from the internal repository with strace enabled.
+        Examples:
+        ./build.sh -r psxscl -- GITROOT_HEAD=... PKG_PSXSCL_CFLAGS=-DPSX_INTERNAL_STRACE
+        Build psxscl from the internal repository with strace enabled.
 
-	./build.sh GITROOT_HEAD=... --build-scripts=ALL --build-steps=ALL
-	Forcibly rebuild everything.
+        ./build.sh -r ALL -- GITROOT_HEAD=...
+        Forcibly rebuild everything.
