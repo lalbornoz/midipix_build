@@ -1,30 +1,34 @@
 #!/bin/sh
+# Copyright (c) 2016 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 #
 
-{
 . ./build.subr;
+
 while [ ${#} -gt 0 ]; do
 case ${1} in
+-c)	ARG_CLEAN=1; ;;
+-nd)	ARG_NO_DOWNLOAD=1; ;;
 -r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
 	match_any "${2}" :								\
 		&& { ARG_RESTART_SCRIPT="${2%%:*}"; ARG_RESTART_SCRIPT_AT="${2##*:}"; }	\
 		|| { ARG_RESTART_SCRIPT="${2}"; ARG_RESTART_SCRIPT_AT=ALL; };
 	shift; ;;
--t)	[ ${ARG_TARBALL:-0} -eq 1 ] && exec cat build.usage;
-	ARG_TARBALL=1; ;;
+-t)	[ ${ARG_TARBALL:-0} -eq 1 ] && exec cat build.usage || ARG_TARBALL=1; ;;
 *=*)	set_var_unsafe "$(get_prefix_lrg "${1}" =)"					\
 			"$(get_postfix "${1}" =)"; ;;
 *)	exec cat build.usage; ;;
-esac; shift; done; . ./build.vars;
+esac; shift; done;
+
+{
+. ./build.vars;
 clear_env_with_except HOME PATH SHELL TERM USER;
 check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
 check_prereqs git make mktemp openssl patch sed sort tar tr wget;
-log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE:=$(date %Y-%m-%d-%H-%M-%S)}.";
-log_env_vars ${LOG_ENV_VARS};
 (mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
-touch ${PREFIX}/BUILD_IN_PROGRESS ${BUILD_PROGRESS_FNAME:=${PREFIX}/BUILD_STARTED_AT_${BUILD_DATE}};
+update_build_status build_start; build_times_init;
+log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
+log_env_vars ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
-BUILD_SECS=$(command date +%s);
 for BUILD_LVL in 0 1 2 3; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${ARG_RESTART_SCRIPT}" ]					\
@@ -68,44 +72,30 @@ for BUILD_LVL in 0 1 2 3; do
 	fi;
 done;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
-: $((BUILD_SECS=$(command date +%s)-${BUILD_SECS}));
-: $((BUILD_HOURS=${BUILD_SECS}/3600));
-: $((BUILD_MINUTES=(${BUILD_SECS}%3600)/60));
-: $((BUILD_SECS=(${BUILD_SECS}%3600)%60));
-log_msg info "Build time: ${BUILD_HOURS} hour(s), ${BUILD_MINUTES} minute(s), and ${BUILD_SECS} second(s).";
-[ -f ${BUILD_PROGRESS_FNAME} ] && rm -f ${BUILD_PROGRESS_FNAME};
-touch ${BUILD_FINISH_FNAME:=${PREFIX}/BUILD_FINISHED_AT_$(date %Y-%m-%d-%H-%M-%S)}	\
-	${TARBALL_PROGRESS_FNAME:=${PREFIX}/TARBALL_STARTED_AT_$(date %Y-%m-%d-%H-%M-%S)};
-ln -sf ${BUILD_FINISH_FNAME} ${PREFIX}/BUILD_FINISHED_AT;
-# rotate BUILD_FINISH_FNAME files
+build_times_get; log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
+update_build_status build_finish tarball_start;
 if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
-&& [ ${BUILD_NFAIL} -eq 0 ]\
+&& [ ${BUILD_NFAIL} -eq 0 ]								\
 && [ ${ARG_TARBALL:-0} -eq 1 ]; then
-	log_msg info "Building distribution tarball.";
-	(cd ${PREFIX};
-	DISTRIB_FNAME=midipix.${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE}.tar.bz2;
-	PREFIX_BASENAME=${PREFIX_NATIVE##*/}; WORKDIR_BASENAME=${WORKDIR##*/};
-	rm_if_exists -m ${PREFIX_BASENAME}/lib.bak; rm_if_exists ${DISTRIB_FNAME};
+	log_msg info "Building distribution tarball...";
+	(cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
+	rm_if_exists -m ${PREFIX_BASENAME}/lib.bak;
 	tar -C ${PREFIX_BASENAME}/lib -cpf - . | tar -C ${PREFIX_BASENAME}/lib.bak -xpf -;
+	log_msg info "Backed up ${PREFIX_BASENAME}/lib.";
 	(cd native/lib &&
 	 find . -maxdepth 1 -type l							\
-	 	-exec sh -c 'dest=$(readlink -- "$0") && rm -- "$0" && ln -- "$dest" "$0"' {} \;);
-	 wait;
-	 find .	-maxdepth 2 -type d							\
-	 	-not -path .								\
-	 	-not -path ./src/midipix_build						\
-	 	-not -path ./src/midipix_build/\*					\
-	 	-not -path ./${WORKDIR_BASENAME}					\
-	 	-not -path ./${WORKDIR_BASENAME}/\*					\
-	 	-not -path ./${PREFIX_BASENAME}						\
-	 	-not -path ./${PREFIX_BASENAME}/lib.bak					|\
-	 tar -T - -cpf - | bzip2 -9c - > ${DISTRIB_FNAME}
-	 rm -rf ${PREFIX_BASENAME}/lib;
-	 mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib); wait;
-	# rotate tarballs
+	 	-exec sh -c 'DEST=$(readlink -- "${0}") &&				\
+			rm -f -- "${0}" && ln -- "${DEST}" "${0}"' {} \;); wait;
+	 log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
+	 tar -cpf - $(find .								\
+		-mindepth 1 -maxdepth 1 -type d						\
+		$(echo ${TARBALL_EXCLUDE_PATHS} lib | sed 's/\(^\| \)/ -not -path /g'))	|\
+	 bzip2 -9c - > ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}${TARBALL_FNAME_SUFFIX};
+	 rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib);
+	wait; log_msg info "Finished building distribution tarball.";
+	update_build_status tarball_finish;
 fi;
-[ -f ${TARBALL_PROGRESS_FNAME} ] && rm -f ${TARBALL_PROGRESS_FNAME};
-[ -f BUILD_IN_PROGRESS ] && rm -f BUILD_IN_PROGRESS;
+update_build_status finish;
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee build.log;
 
 # vim:filetype=sh

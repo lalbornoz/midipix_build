@@ -3,7 +3,6 @@
 #
 
 if ! is_build_script_done fetch; then
-	rm_if_exists perk;
 	fetch_git perk ${GITROOT}/perk;
 	set_build_script_done fetch -configure1;
 fi;
