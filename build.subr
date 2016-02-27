@@ -15,6 +15,7 @@ get_prefix_lrg() { echo "${1%%${2}*}"; };
 get_postfix() { echo "${1#*${2}}"; };
 get_prefix() { echo "${1%${2}*}"; };
 match_any() { [ "${1#*${2}*}" != "${1}" ]; };
+match_uname_any() { set -- ${1} $(uname -s); [ "${2#*${1}*}" != "${2}" ]; };
 push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
 set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${TARGET}; };
