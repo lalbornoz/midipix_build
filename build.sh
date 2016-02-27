@@ -3,34 +3,33 @@
 
 {
 . ./build.subr;
-while getopts hr:t CURRENT_ARG; do
-case ${CURRENT_ARG} in
-r)	ARG_BUILD_SCRIPTS="${OPTARG%%:*}";
-	[ -z "${ARG_BUILD_STEPS:="${ARG_BUILD_SCRIPTS##*:}"}" ] &&\
-		ARG_BUILD_STEPS=ALL; ;;
-t)	ARG_TARBALL=1; ;;
-h|\?)	exec cat build.usage; ;;
-esac; done; shift $((${OPTIND} - 1));
 while [ ${#} -gt 0 ]; do
-	if [ "x${1#*=*}" != "x${1}" ]; then
-		set_var_unsafe "$(get_prefix_lrg "${1}" =)"				\
-			"$(get_postfix "${1}" =)"; shift;
-	fi;
-done; . ./build.vars;
+case ${1} in
+-r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
+	[ "x${2%%:*}" != "x${2}" ]							\
+		&& { ARG_RESTART_SCRIPT=${2%%:*}; ARG_RESTART_SCRIPT_AT=${2##*:}; }	\
+		|| { ARG_RESTART_SCRIPT=${2}; ARG_RESTART_SCRIPT_AT=ALL; };
+	shift; ;;
+-t)	[ ${ARG_TARBALL:-0} -eq 1 ] && exec cat build.usage;
+	ARG_TARBALL=1; ;;
+*=*)	set_var_unsafe "$(get_prefix_lrg "${1}" =)"					\
+			"$(get_postfix "${1}" =)"; ;;
+*)	exec cat build.usage; ;;
+esac; shift; done; . ./build.vars;
 clear_env_with_except HOME PATH SHELL TERM USER;
 check_path_vars PREFIX PREFIX_NATIVE WORKDIR;
 check_prereqs git make mktemp openssl patch sed sort tar tr wget;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE:=$(date %Y-%m-%d-%H-%M-%S)}.";
 log_env_vars ${LOG_ENV_VARS};
 (mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
-touch BUILD_IN_PROGRESS ${BUILD_PROGRESS_FNAME:=${PREFIX}/BUILD_STARTED_AT_${BUILD_DATE}};
+touch ${PREFIX}/BUILD_IN_PROGRESS ${BUILD_PROGRESS_FNAME:=${PREFIX}/BUILD_STARTED_AT_${BUILD_DATE}};
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
 BUILD_SECS=$(command date +%s);
 for BUILD_LVL in 0 1 2 3; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
-		if [ -n "${ARG_BUILD_SCRIPTS}" ]					\
-		&& [ "${ARG_BUILD_SCRIPTS}" != "ALL" ]					\
-		&& ! match_list "${ARG_BUILD_SCRIPTS}"					\
+		if [ -n "${ARG_RESTART_SCRIPT}" ]					\
+		&& [ "${ARG_RESTART_SCRIPT}" != "ALL" ]					\
+		&& ! match_list "${ARG_RESTART_SCRIPT}"					\
 				, "${BUILD_SCRIPT_FNAME}"; then
 			log_msg info "Skipped build script \`${BUILD_SCRIPT_FNAME}' (--build-scripts policy.)";
 			continue;
@@ -39,12 +38,12 @@ for BUILD_LVL in 0 1 2 3; do
 			continue;
 		else
 			unset BUILD_SCRIPT_RC; : $((BUILD_NBUILT+=1));
-			if [ "x${ARG_BUILD_SCRIPTS}" != "xALL" ]\
+			if [ "x${ARG_RESTART_SCRIPT}" != "xALL" ]\
 			&& is_build_script_done finish "${BUILD_SCRIPT_FNAME%.build}"; then
 				log_msg info "Skipped build script \`${BUILD_SCRIPT_FNAME}' (already built.)";
 					: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 			fi;
-			log_msg info "Invoking build script${ARG_BUILD_SCRIPTS:+ (forcibly)} \`${BUILD_SCRIPT_FNAME}'${ARG_BUILD_STEPS:+ at build step ${ARG_BUILD_STEPS}}.";
+			log_msg info "Invoking build script${ARG_RESTART_SCRIPT:+ (forcibly)} \`${BUILD_SCRIPT_FNAME}'${ARG_RESTART_SCRIPT_AT:+ at build step ${ARG_RESTART_SCRIPT_AT}}.";
 			(set -o errexit -- $(split . ${BUILD_SCRIPT_FNAME%%.build*});	\
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME};				\
 			 SCRIPT_NAME=${SCRIPT_FNAME%%.build*};				\
