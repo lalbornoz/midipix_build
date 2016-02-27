@@ -92,10 +92,10 @@ for BUILD_LVL in 0 1 2 3; do
 done;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 build_times_get; log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
-update_build_status build_finish tarball_start;
 if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 && [ ${BUILD_NFAIL} -eq 0 ]								\
 && [ ${ARG_TARBALL:-0} -eq 1 ]; then
+	update_build_status build_finish tarball_start;
 	log_msg info "Building distribution tarball...";
 	(cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
 	rm_if_exists -m ${PREFIX_BASENAME}/lib.bak;
