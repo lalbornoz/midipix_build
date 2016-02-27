@@ -6,15 +6,16 @@
 date() { command date +"${1:-${TIMESTAMP_FMT}}"; };
 fetch_git() { [ -d ${1} ] && (cd ${1} && git pull origin main) || git clone ${3} ${2} ${1}; };
 get_basename() { set -- $(get_name_without_slash ${1}); echo "${1##*/}"; };
-get_var() { eval echo \${${1}}; }; # XXX
-set_var() { eval ${1}=\"${2}\"; }; # XXX
+get_var_dyn() { ${1}; };
+get_var_unsafe() { eval echo \${${1}}; };
+set_var_dyn() { eval ${1}\(\) \{ echo \"${2}\"\; \}; };
+set_var_unsafe() { eval ${1}=\"${2}\"; };
 get_name_without_slash() { while [ "x${1%/}" != "x${1}" ]; do set -- ${1%/}; done; echo ${1}; };
 get_postfix_lrg() { echo "${1##*${2}}"; };
 get_prefix_lrg() { echo "${1%%${2}*}"; };
 get_postfix() { echo "${1#*${2}}"; };
 get_prefix() { echo "${1%${2}*}"; };
 match_any() { [ "x${1#*${2}*}" != "x${1}" ]; };
-match_start() { [ "x${1#${2}}" != "x${1}" ]; };
 push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
 set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${TARGET}; };
@@ -26,33 +27,19 @@ unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
 export_vars_subst() {
 	_evs_pfx=${1}; _evs_pfx_new=${2}; shift 2;
 	while [ ${#} -gt 0 ]; do
-		if [ -n "${_evs_vval:=$(get_var ${_evs_pfx}${1})}" ]; then
+		if [ -n "${_evs_vval:=$(get_var_unsafe ${_evs_pfx}${1})}" ]; then
 			export "${_evs_pfx_new}${1}=${_evs_vval}";
 		fi; unset _evs_vval; shift;
 	done; unset _evs_pfx _evs_pfx_new;
 };
 
 rm_if_exists() {
-	set_flag_vars_from_args "$@"; shift ${_sfvfa_nshift:-0};
-	[ -d ${1} ] && rm -rf ${1}; [ -f ${1} ] && rm -f ${1};
-	[ ${_arg_m:-0} -eq 1 ] && mkdir ${1};
-	[ ${_arg_c:-0} -eq 1 ] && cd ${1};
-	unset_flag_vars_from_args;
-};
-
-set_flag_vars_from_args() {
-	unset _sfvfa_flag_vars _sfvfa_nshift;
-	while [ ${#} -gt 1 ]; do
-		if [ "x${1%[a-z]}" = "x-" ]; then
-			set_var _arg_${1#-} 1;
-			_sfvfa_flag_vars="${_sfvfa_flag_vars:+${_sfvfa_flag_vars} }_arg_${1#-}";
-			: $((_sfvfa_nshift+=1));
-		fi; shift;
-	done;
-};
-unset_flag_vars_from_args() {
-	set -- ${_sfvfa_flag_vars}; while [ ${#} -gt 0 ]; do
-		unset ${1}; shift; done; unset _sfvfa_flag_vars _sfvfa_nshift;
+	[ -z "${1#-m}" ] && { _rie_arg_m=1; shift; };
+	[ -z "${1#-c}" ] && { _rie_arg_c=1; shift; };
+	[ -d ${1} -o -f ${1} ] && rm -rf ${1};
+	[ ${_rie_arg_m:-0} -eq 1 ] && { mkdir ${1}; unset _rie_arg_m; };
+	[ ${_rie_arg_c:-0} -eq 1 ] && { cd ${1}; unset _rie_arg_c; };
+	return 0;
 };
 
 set_env_vars() {
@@ -78,7 +65,7 @@ apply_patches() {
 # Check whether all supplied arguments contain non-empty valid values.
 check_path_vars() {
 	while [ ${#} -gt 0 ]; do
-		if [ -z "${_cpv_val:=$(get_var "${1}")}" ]; then
+		if [ -z "${_cpv_val:=$(get_var_unsafe "${1}")}" ]; then
 			log_msg failexit "Error: variable \`${1}' is empty or unset.";
 		elif match_any "${_cpv_val}" " "; then
 			log_msg failexit "Error: variable \`${1}' contains one or more whitespace characters.";
@@ -104,6 +91,7 @@ clear_env_with_except() {
 	_cewe_vfilter="${*}"; _cewe_unset_cmds="$(mktemp -q)";
 	export | while read _cewe_vspec; do
 		set -- ${_cewe_vspec}; shift;
+		[ "x${1#*[^\"\'=a-zA-Z0-9_]}" != "x${1}" ] && continue;
 		if ! match_list "${_cewe_vfilter}" " "	\
 				$(get_prefix_lrg ${1} =); then
 			echo unset $(get_prefix_lrg ${1} =) >> ${_cewe_unset_cmds};
@@ -180,7 +168,7 @@ log_env_vars() {
 	while [ ${#} -gt 0 ]; do
 		log_msg info "$(printf					\
 			"%${_lev_arg_len_max}.${_lev_arg_len_max}s=%s"	\
-			"${1%%=*}" "$(get_var ${1#*=})")";
+			"${1%%=*}" "$(get_var_unsafe ${1#*=})")";
 		shift;
 	done; unset _lev_arg_len_max;
 };
@@ -206,28 +194,6 @@ match_list() {
 			unset _ml_cmp; return 0;
 		fi; shift;
 	done; unset _ml_cmp; return 1;
-};
-
-parse_args_into_vars() {
-	_paiv_arg0="${1}"; _paiv_args_valid="${2}"; shift 2;
-	while [ $# -gt 0 ]; do
-		case "${1}" in
-		--*)	_paiv_aname="${1#--}";
-			if ! match_list "${_paiv_args_valid}" , "${_paiv_aname%%=*}"; then
-				log_msg failexit "Unknown parameter --${_paiv_aname%%=*} specified.";
-			elif match_start "${_paiv_aname}" "*="; then
-				_paiv_aval="$(get_postfix "${_paiv_aname}" =)";
-				_paiv_aname="$(get_prefix_lrg "${_paiv_aname}" =)";
-			else
-				_paiv_aval=1;
-			fi;
-			set_var $(echo arg_${_paiv_aname} | tr a-z- A-Z_) "${_paiv_aval}";
-			shift; ;;
-		*=*)	set_var "$(get_prefix_lrg "${1}" =)"\
-				"$(get_postfix "${1}" =)"; shift; ;;
-		*)	log_msg failexit "Invalid or unknown command line argument \`${1}'."; ;;
-		esac;
-	done; unset _paiv_arg0 _paiv_args_valid _paiv_aname _paiv_aval;
 };
 
 parse_with_pkg_name() {
