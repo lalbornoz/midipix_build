@@ -46,6 +46,11 @@ if ! is_build_script_done patch; then
 		cp portage/libtool.midipix ${PKG_SUBDIR}/;
 		sed -i.orig -e "/^libdir=/s/libdir='/libdir='\$PKG_PREFIX\//"\
 			${PKG_SUBDIR}/libtool.midipix;
+		if [ ${PKG_LIBTOOL_MIDIPIX_FIX:-0} -eq 1 ]; then
+			sed -i.orig.orig									\
+				-e '/^\s\+test \"\$inst_prefix_dir\" = \"\$destdir\" && \\$/{s/^/#/;n;s/^/#/}'	\
+				${PKG_SUBDIR}/libtool.midipix;
+		fi;
 	fi;
 	set_build_script_done patch -configure;
 fi;
