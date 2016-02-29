@@ -18,6 +18,15 @@ usage: ./build.sh [-c] [-nd] [-r ALL|name[:step]] [-h] [-t]
         named ${PKG_SUBDIR}.local.patch.
 
         Examples:
+        ./build.sh -r ALL
+        Forcibly restart the entire build.
+
+        ./build.sh -r 301.coreutils.build
+        Completely restart the coreutils build.
+
+        ./build.sh -r 301.coreutils.build:configure,build,install
+        Restart the configure, build, and install steps of the coreutils build script.
+
         ./build.sh -r 205.psxscl.build GITROOT_HEAD=... PKG_PSXSCL_CFLAGS_CONFIGURE_EXTRA=-DPSX_INTERNAL_STRACE
         Build psxscl from the internal repository with strace enabled.
 
