@@ -76,9 +76,13 @@ for BUILD_LVL in 0 1 2 3; do
 						PKG_FNAME=${PKG_URL##*/};
 					 	PKG_SUBDIR=${PKG_FNAME%%.tar*};
 					fi;
-					BUILD_DEBUG_TARBALL_FNAME=${PREFIX}/midipix-debug-${BUILD_USER}@${BUILD_HNAME}_$(date %Y-%m-%d-%H-%M-%S).tar.bz2;
-					tar -C ${PREFIX} -cpf - build.log $(cd ${PREFIX} && find ${WORKDIR#${PREFIX}/} -mindepth 1 -maxdepth 1 -type d -iname ${PKG_SUBDIR}-*) |\
-						bzip2 -c - > ${BUILD_DEBUG_TARBALL_FNAME};
+					BUILD_DEBUG_TARBALL_FNAME=${PREFIX}/midipix-debug-${BUILD_USER}@${BUILD_HNAME}_$(date %Y-%m-%d-%H-%M-%S).tar.xz;
+					tar -C ${PREFIX} -cJp				\
+						-f ${BUILD_DEBUG_TARBALL_FNAME}		\
+						build.log $(cd ${PREFIX} &&		\
+							find ${WORKDIR#${PREFIX}/}	\
+								-mindepth 1 -maxdepth 1	\
+								-type d -iname ${PKG_SUBDIR}-*);
 					log_msg info "Please upload ${BUILD_DEBUG_TARBALL_FNAME} and provide an URL to it in <irc://irc.freenode.net/midipix>.";
 				fi;
 				: $((BUILD_NFAIL+=1)); break; ;;
@@ -105,10 +109,10 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	 	-exec sh -c 'DEST=$(readlink -- "${0}") &&				\
 			rm -f -- "${0}" && ln -- "${DEST}" "${0}"' {} \;); wait;
 	 log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
-	 tar -cpf - $(find .								\
-		-mindepth 1 -maxdepth 1 -type d						\
-		$(echo ${TARBALL_EXCLUDE_PATHS} lib | sed 's/\(^\| \)/ -not -path /g'))	|\
-	 bzip2 -9c - > ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}${TARBALL_FNAME_SUFFIX};
+	TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz;
+	tar -cJpf ${TARBALL_FNAME}							\
+		$(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
+			-mindepth 1 -maxdepth 2 -type d);
 	 rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib);
 	wait; log_msg info "Finished building distribution tarball.";
 	update_build_status tarball_finish;
