@@ -58,9 +58,18 @@ export_vars_subst() {
 };
 
 fetch_git() {
-	rm_if_exists ${1};
+	[ ${ARG_NO_DOWNLOAD:-0} -eq 0 ] &&\
+		rm_if_exists ${1};
 	[ -d ${1} ] && (cd ${1} && git pull origin main)\
 		|| git clone ${3} ${2} ${1};
+};
+
+find_with_no_paths() {
+	for _fwnp_not_path in ${1}; do
+		_fwnp_args="${_fwnp_args:+${_fwnp_args} }-not -path ./${_fwnp_not_path} -not -path ./${_fwnp_not_path}/*";
+	done; shift;
+	set -f; find "${@}" ${_fwnp_args}; _rc=${?}; set +f;
+	unset _fwnp_args _fwnp_not_path; return ${_rc};
 };
 
 rm_if_exists() {
