@@ -1,0 +1,118 @@
+--- bash-4.3/configure.orig	2014-02-11 15:38:00.000000000 +0000
++++ bash-4.3/configure	2016-03-02 10:32:54.098832248 +0000
+@@ -2870,6 +2870,7 @@
+ *-opennt*|*-interix*)	opt_bash_malloc=no ;;	# Interix, now owned by Microsoft
+ *-nsk*)		opt_bash_malloc=no ;;	# HP NonStop
+ *-haiku*)	opt_bash_malloc=no ;;	# Haiku OS
++*-midipix*)	opt_bash_malloc=no ;;	# Midipix
+ esac
+ 
+ # memory scrambling on free()
+@@ -5167,13 +5168,13 @@
+ if test "x$ac_cv_lib_curses_tgetent" = xyes; then :
+   bash_cv_termcap_lib=libcurses
+ else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for tgetent in -lncurses" >&5
+-$as_echo_n "checking for tgetent in -lncurses... " >&6; }
+-if ${ac_cv_lib_ncurses_tgetent+:} false; then :
++  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for tgetent in -lncursesw" >&5
++$as_echo_n "checking for tgetent in -lncursesw... " >&6; }
++if ${ac_cv_lib_ncursesw_tgetent+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lncurses  $LIBS"
++LIBS="-lncursesw  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -5193,18 +5194,18 @@
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_ncurses_tgetent=yes
++  ac_cv_lib_ncursesw_tgetent=yes
+ else
+-  ac_cv_lib_ncurses_tgetent=no
++  ac_cv_lib_ncursesw_tgetent=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_tgetent" >&5
+-$as_echo "$ac_cv_lib_ncurses_tgetent" >&6; }
+-if test "x$ac_cv_lib_ncurses_tgetent" = xyes; then :
+-  bash_cv_termcap_lib=libncurses
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncursesw_tgetent" >&5
++$as_echo "$ac_cv_lib_ncursesw_tgetent" >&6; }
++if test "x$ac_cv_lib_ncursesw_tgetent" = xyes; then :
++  bash_cv_termcap_lib=libncursesw
+ else
+   bash_cv_termcap_lib=gnutermcap
+ fi
+@@ -5235,8 +5236,8 @@
+ elif test $bash_cv_termcap_lib = libtinfo; then
+ TERMCAP_LIB=-ltinfo
+ TERMCAP_DEP=
+-elif test $bash_cv_termcap_lib = libncurses; then
+-TERMCAP_LIB=-lncurses
++elif test $bash_cv_termcap_lib = libncursesw; then
++TERMCAP_LIB=-lncursesw
+ TERMCAP_DEP=
+ elif test $bash_cv_termcap_lib = libc; then
+ TERMCAP_LIB=
+@@ -15708,13 +15709,13 @@
+ if test "x$ac_cv_lib_curses_tgetent" = xyes; then :
+   bash_cv_termcap_lib=libcurses
+ else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for tgetent in -lncurses" >&5
+-$as_echo_n "checking for tgetent in -lncurses... " >&6; }
+-if ${ac_cv_lib_ncurses_tgetent+:} false; then :
++  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for tgetent in -lncursesw" >&5
++$as_echo_n "checking for tgetent in -lncursesw... " >&6; }
++if ${ac_cv_lib_ncursesw_tgetent+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lncurses  $LIBS"
++LIBS="-lncursesw  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -15734,18 +15735,18 @@
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_ncurses_tgetent=yes
++  ac_cv_lib_ncursesw_tgetent=yes
+ else
+-  ac_cv_lib_ncurses_tgetent=no
++  ac_cv_lib_ncursesw_tgetent=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_tgetent" >&5
+-$as_echo "$ac_cv_lib_ncurses_tgetent" >&6; }
+-if test "x$ac_cv_lib_ncurses_tgetent" = xyes; then :
+-  bash_cv_termcap_lib=libncurses
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncursesw_tgetent" >&5
++$as_echo "$ac_cv_lib_ncursesw_tgetent" >&6; }
++if test "x$ac_cv_lib_ncursesw_tgetent" = xyes; then :
++  bash_cv_termcap_lib=libncursesw
+ else
+   bash_cv_termcap_lib=gnutermcap
+ fi
+@@ -15776,8 +15777,8 @@
+ elif test $bash_cv_termcap_lib = libtinfo; then
+ TERMCAP_LIB=-ltinfo
+ TERMCAP_DEP=
+-elif test $bash_cv_termcap_lib = libncurses; then
+-TERMCAP_LIB=-lncurses
++elif test $bash_cv_termcap_lib = libncursesw; then
++TERMCAP_LIB=-lncursesw
+ TERMCAP_DEP=
+ elif test $bash_cv_termcap_lib = libc; then
+ TERMCAP_LIB=
