@@ -75,8 +75,22 @@ find_with_no_paths() {
 rm_if_exists() {
 	[ -z "${1#-m}" ] && { _rie_arg_m=1; shift; };
 	[ -z "${1#-c}" ] && { _rie_arg_c=1; shift; };
-	[ -d ${1} -o -f ${1} ] && rm -rf ${1};
-	[ ${_rie_arg_m:-0} -eq 1 ] && { mkdir ${1}; unset _rie_arg_m; };
+	if [ -d ${1} -o -f ${1} ]; then
+		log_msg warn "Removing directory or file \`${1}'.";
+		if [ ${ARG_PEDANTIC:-0} -eq 1 ]; then
+			printf "Confirm deletion (y|N) ";
+			read _rie_prompt; case "${_rie_prompt}" in
+				[yY])	rm -rf ${1}; ;;
+				*)	log_msg warn "Skipping removal of \`${1}'.";
+					_rie_arg_m=0; ;;
+			esac;
+		else 
+			rm -rf ${1};
+		fi;
+	fi;
+	[ ${_rie_arg_m:-0} -eq 1 ] && {
+		log_msg warn "Making directory \`${1}'.";
+		mkdir ${1}; unset _rie_arg_m; };
 	[ ${_rie_arg_c:-0} -eq 1 ] && { cd ${1}; unset _rie_arg_c; };
 	return 0;
 };
@@ -231,6 +245,7 @@ log_msg() {
 		fail) printf "\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		info) printf "\033[${LOG_MSG_INFO_COLOUR}m"; ;;
 		succ) printf "\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
+		warn) printf "\033[${LOG_MSG_WARN_COLOUR}m"; ;;
 	esac;
 	if [ $# -gt 1 ]; then
 		printf "==> %s %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}" "$*";
