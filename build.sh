@@ -8,6 +8,7 @@ while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
 -nd)	ARG_NO_DOWNLOAD=1; ;;
+-pt)	ARG_PEDANTIC=1; ;;
 -r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
 	match_any "${2}" :								\
 		&& { ARG_RESTART_SCRIPT="${2%%:*}"; ARG_RESTART_SCRIPT_AT="${2##*:}"; }	\
