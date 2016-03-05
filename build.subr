@@ -46,8 +46,11 @@ clean_build_status() {
 	set -- BUILD_STATUS_IN_PROGRESS_FNAME BUILD_STATUS_PROGRESS_FNAME BUILD_STATUS_TARBALL_PROGRESS_FNAME;
 	while [ ${#} -gt 0 ]; do
 		rm -f $(get_var_unsafe ${1}); shift;
-	done; touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
-	log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
+	done;
+	if [ "${1}" = abort ]; then
+		touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
+		log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
+	fi;
 };
 
 export_vars_subst() {
@@ -60,8 +63,8 @@ export_vars_subst() {
 };
 
 fetch_git() {
-	[ ${ARG_NO_DOWNLOAD:-0} -eq 0 ] &&\
-		rm_if_exists ${1};
+	[ ${ARG_NO_DOWNLOAD:-0} -eq 1 ] && return;
+	rm_if_exists ${1};
 	[ -d ${1} ] && (cd ${1} && git pull origin main)\
 		|| git clone ${3} ${2} ${1};
 };
@@ -171,8 +174,8 @@ clear_env_with_except() {
 };
 
 fetch() {
-	[ ${ARG_NO_DOWNLOAD:-0} -eq 0 ] &&\
-		rm_if_exists $(get_basename ${1});
+	[ ${ARG_NO_DOWNLOAD:-0} -eq 1 ] && return;
+	rm_if_exists $(get_basename ${1});
 	wget ${WGET_ARGS} ${1};
 	if [ ${#} -eq 2 ]; then
 		set -- $(get_basename ${1}) "$(compare_hash $(get_basename ${1}) ${2})" ${2};

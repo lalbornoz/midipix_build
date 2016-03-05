@@ -26,10 +26,8 @@ esac; shift; done;
 clear_env_with_except ${CLEAR_ENV_VARS_EXCEPT};
 check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${PREREQ_CMDS};
 mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
-update_build_status build_start; build_times_init;
-trap clean_build_status HUP INT TERM USR1 USR2;
-
 {(
+update_build_status build_start; build_times_init; trap clean_build_status\ abort HUP INT TERM USR1 USR2;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 log_env_vars ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
@@ -118,7 +116,8 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	wait; log_msg info "Finished building distribution tarball.";
 	update_build_status tarball_finish;
 fi;
-update_build_status finish;
-exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${PREFIX}/build.log;
+update_build_status finish; clean_build_status;
+exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${PREFIX}/build.log &
+trap "kill -INT $!" HUP INT TERM USR1 USR2; wait;
 
 # vim:filetype=sh
