@@ -54,6 +54,8 @@ fi;
 if ! is_build_script_done build; then
 	./lazy	-e ${_install}			\
 		-x build;
+	[ "${3}" = native ] &&			\
+		ln -sf ../lib/libc.so ${PREFIX_LVL}/bin/ldd;
 	set_build_script_done build finish;
 fi;
 
