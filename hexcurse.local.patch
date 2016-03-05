@@ -20,3 +20,21 @@
  	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
  	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
  	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+--- hexcurse/src/Makefile.in.orig	2016-03-05 13:45:43.656822716 +0000
++++ hexcurse/src/Makefile.in	2016-03-05 13:47:34.832820248 +0000
+@@ -258,7 +258,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-AM_CPPFLAGS = -I$(top_srcdir)/include -Wall -Werror -Wextra
++AM_CPPFLAGS = -I$(top_srcdir)/include -Wall -Wextra
+ hexcurse_SOURCES = file.c llist.c screen.c hexcurse.c stack.c getopt.c acceptch.c color.c
+ all: all-am
+ 
+--- hexcurse/src/Makefile.am.orig	2016-03-05 13:48:01.896819648 +0000
++++ hexcurse/src/Makefile.am	2016-03-05 13:48:58.960818381 +0000
+@@ -1,3 +1,3 @@
+ bin_PROGRAMS = hexcurse 
+-AM_CPPFLAGS = -I$(top_srcdir)/include -Wall -Werror -Wextra
++AM_CPPFLAGS = -I$(top_srcdir)/include -Wall -Wextra
+ hexcurse_SOURCES = file.c llist.c screen.c hexcurse.c stack.c getopt.c acceptch.c color.c
