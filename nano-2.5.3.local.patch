@@ -1,0 +1,22 @@
+--- nano-2.5.3/config.sub.orig	2013-08-11 11:49:21.000000000 +0000
++++ nano-2.5.3/config.sub	2016-03-02 14:34:35.702510395 +0000
+@@ -789,6 +789,10 @@
+ 	microblaze*)
+ 		basic_machine=microblaze-xilinx
+ 		;;
++	midipix)
++		basic_machine=x86_64-pc
++		os=-midipix
++		;;
+ 	mingw64)
+ 		basic_machine=x86_64-pc
+ 		os=-mingw64
+@@ -1365,7 +1369,7 @@
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -chorusos* | -chorusrdb* | -cegcc* \
+ 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
++	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
+ 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
+ 	      | -uxpv* | -beos* | -mpeix* | -udk* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \

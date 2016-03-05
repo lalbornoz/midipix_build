@@ -111,6 +111,13 @@ set_env_vars() {
 	done; unset _sev_val_new;
 };
 
+set_env_vars_with_sep() {
+	_sevws_sep=${1}; shift; push_IFS ${_sevws_sep}; set -- ${1};
+	while [ ${#} -gt 0 ]; do
+		export "${1}"; shift;
+	done; unset _sevws_sep; pop_IFS;
+};
+
 
 # Download GNU bash-style patch sets into ${2}-patches-extra and
 # apply them to ${2} in the correct order.
@@ -272,7 +279,7 @@ parse_with_pkg_name() {
 			[ -z "${PKG_URL}" ] && return 1;
 			[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
 			[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
-			[ -n "${PKG_ENV_VARS_EXTRA}" ] && export ${PKG_ENV_VARS_EXTRA};
+			[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep , "${PKG_ENV_VARS_EXTRA}";
 			export PKG_PREFIX=$(get_var_unsafe PREFIX_LVL${PKG_LVL}); return 0;
 		fi; shift;
 	done; return 1;
