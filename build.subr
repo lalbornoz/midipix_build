@@ -45,7 +45,7 @@ clean_prefix() {
 clean_build_status() {
 	set -- BUILD_STATUS_IN_PROGRESS_FNAME BUILD_STATUS_PROGRESS_FNAME BUILD_STATUS_TARBALL_PROGRESS_FNAME;
 	while [ ${#} -gt 0 ]; do
-		rm -f ${1}; shift;
+		rm -f $(get_var_unsafe ${1}); shift;
 	done; touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
 	log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
 };
@@ -306,8 +306,12 @@ update_build_status() {
 		touch ${BUILD_STATUS_PROGRESS_FNAME:=${PREFIX}/BUILD_STARTED_AT_${BUILD_DATE_START:=$(date %Y-%m-%d-%H-%M-%S)}};
 		;;
 	build_finish)
-		[ -f ${BUILD_STATUS_PROGRESS_FNAME} ] &&\
-			rm -f ${BUILD_STATUS_PROGRESS_FNAME};
+		if [ -f ${BUILD_STATUS_PROGRESS_FNAME} ]; then
+			_ubs_bsp_fname=${BUILD_STATUS_PROGRESS_FNAME};
+			unset BUILD_STATUS_PROGRESS_FNAME;
+			rm -f ${_ubs_bsp_fname}; 
+			unset _ubs_bsp_fname;
+		fi;
 		touch ${BUILD_STATUS_FINISHED_AT_FNAME:=${PREFIX}/BUILD_FINISHED_AT_$(date ${TIMESTAMP_FMT_STATUS_FILES})};
 		rotate_files BUILD_FINISHED_AT_\* 8;
 		ln -sf ${BUILD_STATUS_FINISHED_AT_FNAME}\
