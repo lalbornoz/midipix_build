@@ -36,14 +36,16 @@ clean_prefix() {
 	log_msg info "-c specified, cleaning prefix...";
 	set -- bin include lib lib64 libexec native share x86_64-nt64-midipix;
 	while [ ${#} -gt 0 ]; do rm -rf ${PREFIX}/${1}; shift; done;
-	find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -not -iname \*.tar\* -exec rm -rf {} \;
-	find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -type f -iname .\* -exec rm -rf {} \;
+	for _cp_pname in $(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -not -iname \*.tar\*)	\
+			$(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -type f -iname .\*); do
+		rm_if_exists ${_cp_pname};
+	done;
 };
 
 clean_build_status() {
 	set -- BUILD_STATUS_IN_PROGRESS_FNAME BUILD_STATUS_PROGRESS_FNAME BUILD_STATUS_TARBALL_PROGRESS_FNAME;
 	while [ ${#} -gt 0 ]; do
-		unset ${1}; shift;
+		rm -f ${1}; shift;
 	done; touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
 	log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
 };
