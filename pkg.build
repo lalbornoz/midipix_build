@@ -122,6 +122,23 @@ if ! is_build_script_done install; then
 		fi;
 	fi;
 	find ${PKG_PREFIX}/lib -type f -name \*.la -exec rm -f {} \;
+	if [ ${PKG_LIBFILES_FIX:-0} -eq 1 ]; then
+		find . \( -name '*.so' -or -name '*.so.[0-9]'	\
+			-or -name '*.so.[0-9].[0-9]' -or	\
+			-name '*.so.[0-9].[0-9].[0-9]' \)	\
+			-exec sh -c '				\
+		SO_PNAME={}; SO_PNAME=${SO_PNAME#./};		\
+		if [ "${SO_PNAME##*.}" = "so" ]; then		\
+			SO_NAME=${SO_PNAME%%.*};		\
+		else	SO_NAME=${SO_PNAME}; fi;		\
+		echo perk -epdlltool ${SO_PNAME} \> ${SO_NAME}.def;					\
+		perk -epdlltool ${SO_PNAME} > ${SO_NAME}.def;						\
+		echo x86_64-nt64-midipix-dlltool -l ${SO_NAME}.lib.a -D ${SO_PNAME} -d ${SO_NAME}.def;	\
+		x86_64-nt64-midipix-dlltool -l ${SO_NAME}.lib.a -D ${SO_PNAME} -d ${SO_NAME}.def;	\
+		echo cp ${SO_NAME}.lib.a '"${PKG_PREFIX}/lib"';						\
+		cp ${SO_NAME}.lib.a '"${PKG_PREFIX}/lib" \;;
+
+	fi;
 	set_build_script_done install -finish;
 fi;
 set_build_script_done finish;

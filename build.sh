@@ -104,8 +104,8 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	tar -C ${PREFIX_BASENAME}/lib -cpf - . | tar -C ${PREFIX_BASENAME}/lib.bak -xpf -;
 	log_msg info "Backed up ${PREFIX_BASENAME}/lib.";
 	find native/lib -maxdepth 1 -type l						\
-	 	-exec sh -c '[ -f "${DEST:=$(readlink -- "${0}")}" ] &&			\
-			rm -f -- "${0}" && ln -- "${DEST}" "${0}"' {} \;;
+	 	-exec sh -c '[ -f "${DEST:=native/lib/$(readlink -- "${0}")}" ] &&	\
+			rm -f -- "${0}" && ln -f -- "${DEST}" "${0}"' {} \;;
 	log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
 	tar -cJpf ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
 		$(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
