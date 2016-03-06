@@ -1,0 +1,181 @@
+--- glib-2.46.2/config.sub.orig	2016-01-18 17:21:43.000000000 +0000
++++ glib-2.46.2/config.sub	2016-03-06 17:24:27.478613857 +0000
+@@ -810,6 +810,10 @@
+ 	microblaze*)
+ 		basic_machine=microblaze-xilinx
+ 		;;
++	midipix)
++		basic_machine=x86_64-pc
++		os=-midipix
++		;;
+ 	mingw64)
+ 		basic_machine=x86_64-pc
+ 		os=-mingw64
+@@ -1390,7 +1394,7 @@
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -chorusos* | -chorusrdb* | -cegcc* \
+ 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
++	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
+ 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
+ 	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+--- glib-2.46.2/configure.orig	2015-11-06 22:28:54.000000000 +0000
++++ glib-2.46.2/configure	2016-03-06 18:55:06.490493143 +0000
+@@ -21737,33 +21737,7 @@
+ if ${glib_cv_stack_grows+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+-
+-        if test "$cross_compiling" = yes; then :
+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-	volatile int *a = 0, *b = 0;
+-	void f (int i) { volatile int x = 5; if (i == 0) b = &x; else f (i - 1); }
+-	int main () { volatile int y = 7; a = &y; f (100); return b > a ? 0 : 1; }
+-
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
+   glib_cv_stack_grows=yes
+-
+-else
+-  glib_cv_stack_grows=no
+-
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-
+ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $glib_cv_stack_grows" >&5
+ $as_echo "$glib_cv_stack_grows" >&6; }
+@@ -25142,37 +25116,7 @@
+ if ${glib_cv_uscore+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+-
+-		if test "$cross_compiling" = yes; then :
+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-#include <dlfcn.h>
+-                int glib_underscore_test (void) { return 42; }
+-		int main() {
+-		  void *f1 = (void*)0, *f2 = (void*)0, *handle;
+-		  handle = dlopen ((void*)0, 0);
+-		  if (handle) {
+-		    f1 = dlsym (handle, "glib_underscore_test");
+-		    f2 = dlsym (handle, "_glib_underscore_test");
+-		  } return (!f2 || f1);
+-		}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
+   glib_cv_uscore=yes
+-else
+-  glib_cv_uscore=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-		rm -f plugin.c plugin.$ac_objext plugin.lo
+-
+ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $glib_cv_uscore" >&5
+ $as_echo "$glib_cv_uscore" >&6; }
+@@ -26503,37 +26447,7 @@
+ if ${ac_cv_func_posix_getpwuid_r+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+-  if test "$cross_compiling" = yes; then :
+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-#include <errno.h>
+-#include <pwd.h>
+-int main () {
+-    char buffer[10000];
+-    struct passwd pwd, *pwptr = &pwd;
+-    int error;
+-    errno = 0;
+-    error = getpwuid_r (0, &pwd, buffer,
+-                        sizeof (buffer), &pwptr);
+-   return (error < 0 && errno == ENOSYS)
+-	   || error == ENOSYS;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
+   ac_cv_func_posix_getpwuid_r=yes
+-else
+-  ac_cv_func_posix_getpwuid_r=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_func_posix_getpwuid_r" >&5
+ $as_echo "$ac_cv_func_posix_getpwuid_r" >&6; }
+@@ -26594,37 +26508,7 @@
+ if ${ac_cv_func_posix_getgrgid_r+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+-  if test "$cross_compiling" = yes; then :
+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-#include <errno.h>
+-#include <grp.h>
+-int main () {
+-    char buffer[10000];
+-    struct group grp, *grpptr = &grp;
+-    int error;
+-    errno = 0;
+-    error = getgrgid_r (0, &grp, buffer,
+-                        sizeof (buffer), &grpptr);
+-   return (error < 0 && errno == ENOSYS)
+-	   || error == ENOSYS;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
+   ac_cv_func_posix_getgrgid_r=yes
+-else
+-  ac_cv_func_posix_getgrgid_r=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_func_posix_getgrgid_r" >&5
+ $as_echo "$ac_cv_func_posix_getgrgid_r" >&6; }
+@@ -27053,7 +26937,7 @@
+ }
+ _ACEOF
+ if ac_fn_c_try_compile "$LINENO"; then :
+-  glib_cv_eventfd=yes
++  glib_cv_eventfd=no
+ else
+   glib_cv_eventfd=no
+ fi
