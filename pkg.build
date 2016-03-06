@@ -121,6 +121,7 @@ if ! is_build_script_done install; then
 			pkg_${PKG_NAME}_install_post;
 		fi;
 	fi;
+	find ${PKG_PREFIX}/lib -type f -name \*.la -exec rm -f {} \;
 	set_build_script_done install -finish;
 fi;
 set_build_script_done finish;

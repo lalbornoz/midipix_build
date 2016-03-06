@@ -43,11 +43,12 @@ clean_prefix() {
 };
 
 clean_build_status() {
+	[ "${1}" = abort ] && _cbs_abort=1;
 	set -- BUILD_STATUS_IN_PROGRESS_FNAME BUILD_STATUS_PROGRESS_FNAME BUILD_STATUS_TARBALL_PROGRESS_FNAME;
 	while [ ${#} -gt 0 ]; do
 		rm -f $(get_var_unsafe ${1}); shift;
 	done;
-	if [ "${1}" = abort ]; then
+	if [ ${_cbs_abort:-0} -eq 1 ]; then
 		touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
 		log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
 	fi;
