@@ -174,10 +174,11 @@ clear_env_with_except() {
 	unset _cewe_vfilter _cewe_vspec;
 };
 
+# N.B.	URLs ($1) may contain `?' or '&' characters.
 fetch() {
 	[ ${ARG_NO_DOWNLOAD:-0} -eq 1 ] && return;
 	rm_if_exists $(get_basename ${1});
-	wget ${WGET_ARGS} ${1};
+	wget ${WGET_ARGS} "${1}";
 	if [ ${#} -eq 2 ]; then
 		set -- $(get_basename ${1}) "$(compare_hash $(get_basename ${1}) ${2})" ${2};
 		if [ -n "${2}" ]; then
