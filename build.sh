@@ -109,7 +109,7 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
 	tar -cJpf ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
 		$(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
-			-mindepth 1 -maxdepth 2 -type d -not -path ./native);
+			-mindepth 1 -maxdepth 2 -type d -not -path ./native) midipix.sh;
 	log_msg info "Finished building distribution tarball.";
 	rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
 	log_msg info "Restored ${PREFIX_BASENAME}/lib.";
