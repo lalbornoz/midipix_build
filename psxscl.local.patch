@@ -134,17 +134,4 @@ index a623d2a..80dd4a9 100644
 +			NT_SEC_RESERVE,
  			image->info.hfile)))
  		return __execve_return(tlca,0,target,-ENOEXEC);
- 
---- psxscl/src/mman/_mmap.c.orig	2016-03-07 14:29:56.539765500 +0100
-+++ psxscl/src/mman/_mmap.c	2016-03-07 14:37:21.460223800 +0100
-@@ -95,7 +95,9 @@
- 		return (void *)__psx_sig_epilog(m.tlca,-EINVAL,EPSXONLY);
- 
- 	/* protection */
--	if (__psx_convert_flags_to_native(
-+	if (!prot)
-+		m.cprot = NT_PAGE_NOACCESS;
-+	else if (__psx_convert_flags_to_native(
- 			__mmap_section_prot,
- 			prot,&m.cprot,0))
- 		return (void *)__psx_sig_epilog(m.tlca,-EINVAL,EPSXONLY);
+
