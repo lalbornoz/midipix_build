@@ -1,0 +1,22 @@
+--- zsh-5.2/config.sub.orig	2014-12-13 23:55:54.000000000 +0000
++++ zsh-5.2/config.sub	2016-03-07 19:53:49.936497358 +0000
+@@ -735,6 +735,10 @@
+         microblaze)
+ 		basic_machine=microblaze-xilinx
+ 		;;
++	midipix)
++		basic_machine=x86_64-pc
++		os=-midipix
++		;;
+ 	mingw32)
+ 		basic_machine=i386-pc
+ 		os=-mingw32
+@@ -1294,7 +1298,7 @@
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -chorusos* | -chorusrdb* | -cegcc* \
+ 	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -linux-gnu* | -linux-newlib* | -linux-uclibc* \
++	      | -midipix* | -mingw32* | -linux-gnu* | -linux-newlib* | -linux-uclibc* \
+ 	      | -uxpv* | -beos* | -mpeix* | -udk* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+ 	      | -openstep* | -oskit* | -conix* | -pw32* | -nonstopux* \
