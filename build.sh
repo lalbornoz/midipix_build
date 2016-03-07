@@ -110,9 +110,15 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	tar -cJpf ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
 		$(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
 			-mindepth 1 -maxdepth 2 -type d -not -path ./native);
-	rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
-	cd ${OLDPWD};
 	log_msg info "Finished building distribution tarball.";
+	rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
+	log_msg info "Restored ${PREFIX_BASENAME}/lib.";
+	log_msg info "Building source tarball...";
+	tar -cJpf ${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
+		$(find tmp -mindepth 1 -maxdepth 1 -type d				\
+			\( -name \*-native-\* -or -name \*-cross-\* \));
+	log_msg info "Finished building source tarball.";
+	cd ${OLDPWD};
 	update_build_status tarball_finish;
 fi;
 update_build_status finish; clean_build_status;
