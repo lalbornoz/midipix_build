@@ -20,3 +20,23 @@
  	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
  	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
  	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+diff --git a/configure b/configure
+index c2baab4..932f09a 100755
+--- a/configure
++++ b/configure
+@@ -2664,13 +2664,13 @@ _ACEOF
+ 
+ # Some tools Automake needs.
+ 
+-ACLOCAL=${ACLOCAL-"${am_missing_run}aclocal-${am__api_version}"}
++ACLOCAL=true
+ 
+ 
+ AUTOCONF=${AUTOCONF-"${am_missing_run}autoconf"}
+ 
+ 
+-AUTOMAKE=${AUTOMAKE-"${am_missing_run}automake-${am__api_version}"}
++AUTOMAKE=true
+ 
+ 
+ AUTOHEADER=${AUTOHEADER-"${am_missing_run}autoheader"}
