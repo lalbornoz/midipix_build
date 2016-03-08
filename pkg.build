@@ -32,8 +32,10 @@ if ! is_build_script_done build_dir; then
 	set_build_script_done build_dir -patch;
 fi;
 if ! is_build_script_done patch; then
-	if test_cmd pkg_${PKG_NAME}_patch_pre; then
-		pkg_${PKG_NAME}_patch_pre;
+	if [ ${PKG_AUTOGEN:-0} -eq 1 ]; then
+		cd ${PKG_SUBDIR} &&				\
+		install -m 0700 ${_PWD}/config.sub build-aux/ &&\
+				./autogen.sh && cd ${OLDPWD};
 	fi;
 	for PATCH_FNAME in portage/${PKG_SUBDIR}.midipix.patch	\
 			${_PWD}/${PKG_SUBDIR}.local.patch	\
