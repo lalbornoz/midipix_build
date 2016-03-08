@@ -20,3 +20,40 @@
  	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
  	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
  	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+--- curl-7.47.1/configure.orig	2016-02-07 15:43:48.000000000 +0100
++++ curl-7.47.1/configure	2016-03-08 11:33:24.125711200 +0100
+@@ -14297,6 +14297,18 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec="\${libname}\${release}\${shared_ext}\$versuffix \${libname}\${release}\${shared_ext}\$major \$libname\${shared_ext}"
++  soname_spec="\${libname}\${release}\${shared_ext}\$major"
++  shlibpath_var=LD_LIBRARY_PATH
++  shlibpath_overrides_runpath=no
++  hardcode_into_libs=no
++  dynamic_linker='GNU/Linux ld.so'
++  ;;
++
+ netbsdelf*-gnu)
+   version_type=linux
+   need_lib_prefix=no
+@@ -42993,3 +43005,15 @@
+ 
+ fi
+ 
++# a transitional workaround...
++case $host_os in
++		midipix*)
++			cp $ac_confdir/libtool.midipix libtool || exit 2
++
++			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
++				-e 's/@cbb_build_alias@/'$build_alias'/g' \
++				-e 's/@cbb_build_os@/'$build_os'/g' \
++				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
++			;;
++esac
++
