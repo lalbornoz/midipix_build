@@ -21,6 +21,9 @@ elif [ "${PKG_URL_TYPE:-wget}" = wget ] &&\
 ! is_build_script_done extract; then
 	rm_if_exists ${PKG_SUBDIR};
 	tar -axf ${PKG_FNAME};
+	if test_cmd pkg_${PKG_NAME}_extract_post; then
+		pkg_${PKG_NAME}_extract_post;
+	fi;
 	set_build_script_done extract -build_dir;
 fi;
 if [ -z "${PKG_BUILD_DIR}" ]; then
