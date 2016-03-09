@@ -1,5 +1,66 @@
---- apk-tools-2.6.6/Make.rules.orig	2016-02-09 14:57:53.000000000 +0000
-+++ apk-tools-2.6.6/Make.rules	2016-02-13 19:04:27.012687754 +0000
+--- apk-tools-2.6.6/src/apk.c.orig	2016-02-09 15:57:53.000000000 +0100
++++ apk-tools-2.6.6/src/apk.c	2016-03-09 10:24:39.763540600 +0100
+@@ -425,12 +425,15 @@
+ 
+ static void apk_applet_register_builtin(void)
+ {
++#if 0
+ 	extern apk_init_func_t __start_initapplets[], __stop_initapplets[];
+ 	apk_init_func_t *p;
+ 
+ 	list_init(&apk_applet_list);
+ 	for (p = __start_initapplets; p < __stop_initapplets; p++)
+ 		(*p)();
++#endif
++	list_init(&apk_applet_list);
+ }
+ 
+ int main(int argc, char **argv)
+--- apk-tools-2.6.6/src/Makefile.orig	2016-02-09 15:57:53.000000000 +0100
++++ apk-tools-2.6.6/src/Makefile	2016-03-09 10:28:09.862286100 +0100
+@@ -1,26 +1,20 @@
+ PKGDEPS := openssl zlib
+-PKG_CONFIG ?= pkg-config
+ LUAAPK ?= yes
+ 
+ # lua module
+ ifneq ($(LUAAPK),)
+ LUA_VERSION		?= 5.2
+ LUA_PC			?= lua$(LUA_VERSION)
+-LUA_LIBDIR		?= /usr/lib/lua/$(LUA_VERSION)
++LUA_LIBDIR		?= $(PREFIX)/lib/lua/$(LUA_VERSION)
+ LIBAPK			:= YesPlease
+ shlibs-y		+= apk.so
+ apk.so-objs		:= lua-apk.o
+-CFLAGS_lua-apk.o	:= -DAPK_VERSION=\"$(FULL_VERSION)\" \
+-			   $(shell $(PKG_CONFIG) $(LUA_PC) --cflags)
++CFLAGS_lua-apk.o	:= -DAPK_VERSION=\"$(FULL_VERSION)\"
+ LUA_LIB-y		:= $(obj)/apk.so
+ install-LUA_LIB-y	:= $(INSTALLDIR) $(DESTDIR)$(LUA_LIBDIR) && \
+ 			   $(INSTALL) $(LUA_LIB-y) $(DESTDIR)$(LUA_LIBDIR)
+ endif
+ 
+-ifeq ($(shell $(PKG_CONFIG) --print-errors --exists $(PKGDEPS) || echo fail),fail)
+-$(error Build dependencies are not met)
+-endif
+-
+ progs-y			+= apk
+ apk-objs		:= apk.o add.o del.o fix.o update.o info.o \
+ 			   search.o upgrade.o cache.o ver.o index.o fetch.o \
+@@ -65,10 +59,8 @@
+ LDFLAGS_apk		+= -L$(obj)
+ LDFLAGS_apk-test	+= -L$(obj)
+ 
+-CFLAGS_ALL		+= $(shell $(PKG_CONFIG) --cflags $(PKGDEPS))
+-LIBS			:=  /usr/lib/libfetch.a \
++LIBS			:=  $(PREFIX)/lib/libfetch.a \
+ 			   -Wl,--as-needed \
+-				$(shell $(PKG_CONFIG) --libs $(PKGDEPS)) \
+ 			   -Wl,--no-as-needed
+ 
+ $(obj)/apk: $(LIBAPK-y)
+--- apk-tools-2.6.6/Make.rules.orig	2016-02-09 15:57:53.000000000 +0100
++++ apk-tools-2.6.6/Make.rules	2016-03-09 10:44:12.457459300 +0100
 @@ -70,7 +70,7 @@
  INSTALLDIR	:= $(INSTALL) -d
  
@@ -9,3 +70,12 @@
  CFLAGS_ALL	+= $(CFLAGS)
  
  LDFLAGS		?= -g
+@@ -225,7 +225,7 @@
+ quiet_cmd_ld	= LD      $@
+       cmd_ld	= $(CC) $(ld_flags) -o $@ \
+ 			  $(addprefix $(obj)/,$($(@F)-objs)) \
+-			  $(LIBS) $(LIBS_$(@F))
++			  $(LIBS) $(LIBS_$(@F)) $(LDFLAGS_LIBS)
+ 
+ $(__progs): override local-target-prereqs=$(addprefix $(obj)/,$($(*F)-objs))
+ 

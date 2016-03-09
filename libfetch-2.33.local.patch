@@ -1,0 +1,31 @@
+--- libfetch-2.33/Makefile.orig	2016-03-09 09:49:37.000000000 +0100
++++ libfetch-2.33/Makefile	2016-03-09 10:10:17.701283800 +0100
+@@ -22,7 +22,7 @@
+ 
+ ifeq ($(strip $(FETCH_WITH_OPENSSL)), true)
+ CFLAGS+=	-DWITH_SSL
+-LDFLAGS=	-lssl -lcrypto
++LDFLAGS_LIBS+=	-lssl -lcrypto
+ endif
+ 
+ ifeq ($(strip $(DEBUG)), true)
+@@ -65,7 +65,7 @@
+ libfetch.so: $(GEN) $(INCS) $(OBJS)
+ 	$(E) "  build     " $@
+ 	$(Q) rm -f $@
+-	$(Q) $(LD) $(LDFLAGS) *.o -shared -o $@
++	$(Q) $(LD) $(LDFLAGS) *.o -shared -o $@ $(LDFLAGS_LIBS)
+ 
+ libfetch.a: $(GEN) $(INCS) $(OBJS)
+ 	$(E) "  build     " $@
+--- libfetch-2.33/common.h.orig	2010-08-23 22:40:48.000000000 +0200
++++ libfetch-2.33/common.h	2016-03-09 10:01:24.270907600 +0100
+@@ -47,7 +47,7 @@
+ 
+ #if !defined(__sun) && !defined(__hpux) && !defined(__INTERIX) && \
+     !defined(__digital__) && !defined(__linux) && !defined(__MINT__) && \
+-    !defined(__sgi)
++    !defined(__sgi) && !defined(__midipix__)
+ #define HAVE_SA_LEN
+ #endif
+ 
