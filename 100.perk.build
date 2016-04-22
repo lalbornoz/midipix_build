@@ -9,7 +9,7 @@ fi;
 set_build_dir ${2} native;
 if ! is_build_script_done configure1; then
 	rm_if_exists -m -c ${PKG_BUILD_DIR};
-	../perk/configure;
+	../perk/configure --prefix=/usr;
 	set_build_script_done configure1 clean1 -build1;
 else
 	cd ${PKG_BUILD_DIR};
@@ -29,7 +29,7 @@ fi;
 set_build_dir ${2} cross;
 if ! is_build_script_done configure2; then
 	rm_if_exists -m -c ../${PKG_BUILD_DIR};
-	../perk/configure --target=${TARGET};
+	../perk/configure --prefix=/usr --target=${TARGET};
 	set_build_script_done configure2 clean2 -build2;
 else
 	cd ../${PKG_BUILD_DIR};
