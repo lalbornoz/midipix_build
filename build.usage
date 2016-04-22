@@ -8,8 +8,8 @@ usage: ./build.sh [-c] [-nd] [-r ALL|name[:step]] [-h] [-t]
                                This currently only includes rm_if_exists().
         -r ALL|name[:step]     Restart all or the specified build script(s) completely
                                or at the optionally specified build step. Currently defined
-                               build steps are: fetch extract patch configure clean build
-                               install configure1 configure2 build1 build2 install1 install2.
+                               build steps are: fetch extract build_dir patch configure clean
+                               build install configure1 configure2 build1 build2 install1 install2.
         -t                     Produce a distribution tarball containing $PREFIX
                                sans $WORKDIR and $PREFIX/src/midipix_build at the end of a
                                build with zero failures.
