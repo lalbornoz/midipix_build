@@ -27,6 +27,10 @@ esac; shift; done;
 . ./build.vars;
 clear_env_with_except ${CLEAR_ENV_VARS_EXCEPT};
 check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${PREREQ_CMDS};
+{(
+update_build_status build_start; build_times_init; trap "clean_build_status abort; exit 1" HUP INT TERM USR1 USR2;
+log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
+log_env_vars ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
 mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
 if [ -d ${PREFIX}/usr -o -f ${PREFIX}/usr -o -L ${PREFIX}/usr ]; then
 	rm -rf ${PREFIX}/usr;
@@ -36,10 +40,6 @@ if [ -d ${PREFIX_NATIVE}/usr -o -f ${PREFIX_NATIVE}/usr -o -L ${PREFIX_NATIVE}/u
 	rm -rf ${PREFIX_NATIVE}/usr;
 fi;
 ln -sf . ${PREFIX_NATIVE}/usr;
-{(
-update_build_status build_start; build_times_init; trap "clean_build_status abort; exit 1" HUP INT TERM USR1 USR2;
-log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
-log_env_vars ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
 for BUILD_LVL in 0 1 2 3; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
