@@ -35,6 +35,7 @@ elif [ "${3}" = full ]; then
 fi;
 if ! is_build_script_done configure; then
 	rm_if_exists -m -c ${PKG_BUILD_DIR};
+	env lz_cflags_cmdline="${PKG_MUSL_CFLAGS_CONFIGURE_EXTRA}"\
 	../lazy/lazy				\
 		-a ${ARCH}			\
 		-c gcc				\

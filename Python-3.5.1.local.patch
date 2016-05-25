@@ -137,6 +137,14 @@
  $(GRAMMAR_C): $(GRAMMAR_H)
  		touch $(GRAMMAR_C)
  
+@@ -1415,6 +1419,7 @@
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
++	_PYTHON_HOST_PLATFORM='$(_PYTHON_HOST_PLATFORM)' \
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
+ 	   	--prefix=$(prefix) \
+ 		--install-scripts=$(BINDIR) \
 --- Python-3.5.1/Modules/socketmodule.c.orig	2015-12-07 01:39:10.000000000 +0000
 +++ Python-3.5.1/Modules/socketmodule.c	2016-04-23 12:30:40.854961004 +0000
 @@ -1313,7 +1313,7 @@
