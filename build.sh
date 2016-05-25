@@ -30,7 +30,7 @@ check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${PREREQ_CMDS};
 {(
 update_build_status build_start; build_times_init; trap "clean_build_status abort; exit 1" HUP INT TERM USR1 USR2;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
-log_env_vars ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
+log_env_vars "build (global)" ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
 mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
 if [ -d ${PREFIX}/usr -o -f ${PREFIX}/usr -o -L ${PREFIX}/usr ]; then
 	rm -rf ${PREFIX}/usr;
@@ -63,7 +63,6 @@ for BUILD_LVL in 0 1 2 3; do
 			(set -o errexit -- $(split . ${BUILD_SCRIPT_FNAME%%.build*});	\
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME};				\
 			 SCRIPT_NAME=${SCRIPT_FNAME%%.build*};				\
-			 export CFLAGS="$(eval echo \${CFLAGS_LVL${BUILD_LVL}})";	\
 			 export PREFIX_LVL="$(eval echo \${PREFIX_LVL${BUILD_LVL}})";	\
 			 _PWD=$(pwd); cd ${WORKDIR};					\
 			 for SCRIPT_SOURCE in build.subr ${SCRIPT_NAME}.vars		\
@@ -120,7 +119,8 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	
 	tar -cJpf ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
 		$(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
-			-mindepth 1 -maxdepth 2 -type d -not -path ./native) midipix.sh;
+			-mindepth 1 -maxdepth 2 -type d -not -path ./native)		\
+		"Create \`Midipix mintty shell' shortcut.vbs" midipix.sh;
 	log_msg info "Finished building distribution tarball.";
 	sha256sum ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
 		> ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.sha256sum;

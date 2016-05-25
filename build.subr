@@ -39,7 +39,7 @@ clean_prefix() {
 	for _cp_pname in $(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -not -iname \*.tar\*)	\
 			$(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -type f -iname .\*); do
 		rm_if_exists ${_cp_pname};
-	done;
+	done; unset _cp_pname;
 };
 
 clean_build_status() {
@@ -49,9 +49,10 @@ clean_build_status() {
 		rm -f $(get_var_unsafe ${1}); shift;
 	done;
 	if [ ${_cbs_abort:-0} -eq 1 ]; then
+		unset _cbs_abort;
 		touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
 		log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
-	fi;
+	fi; unset _cbs_abort;
 };
 
 export_vars_subst() {
@@ -237,7 +238,7 @@ set_build_script_done() {
 };
 
 log_env_vars() {
-	log_msg info "Variables for this build:";
+	log_msg info "Variables for this ${1:-build}:"; shift;
 	while [ ${_lev_nvar:=0} -lt ${#} ]; do
 		_lev_arg="$(eval echo \${${_lev_nvar}})";
 		_lev_arg="${_lev_arg%%=*}";
@@ -286,8 +287,17 @@ parse_with_pkg_name() {
 			[ -z "${PKG_URL}" ] && return 1;
 			[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
 			[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
-			[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep , "${PKG_ENV_VARS_EXTRA}";
-			export PKG_PREFIX=$(get_var_unsafe PREFIX_LVL${PKG_LVL}); return 0;
+			[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
+			export PKG_PREFIX=$(get_var_unsafe PREFIX_LVL${PKG_LVL});
+			for _pwpn_env_var in $(export); do
+				if [ "${_pwpn_env_var#PKG_}" != "${_pwpn_env_var}" ]; then
+					_pwpn_env_vars="${_pwpn_env_vars:+${_pwpn_env_vars} }${_pwpn_env_var%%=*}";
+				fi;
+			done;
+			if [ -n "${_pwpn_env_vars}" ]; then
+				log_env_vars "build script" ${_pwpn_env_vars};
+			fi; unset _pwpn_env_var _pwpn_env_vars;
+			return 0;
 		fi; shift;
 	done; return 1;
 };
@@ -296,10 +306,10 @@ run_cmd_unsplit() {
 	_rcu_cmd=${1}; shift;
 	while [ ${#} -gt 0 ]; do
 		[ -n "${1}" ] &&\
-			_rcu_cmdline="${_rcu_cmdline:+${_rcu_cmdline},}${1}";
+			_rcu_cmdline="${_rcu_cmdline:+${_rcu_cmdline}:}${1}";
 		shift;
 	done;
-	push_IFS ,; ${_rcu_cmd} ${_rcu_cmdline}; _rcu_rc=$?; pop_IFS;
+	push_IFS :; ${_rcu_cmd} ${_rcu_cmdline}; _rcu_rc=$?; pop_IFS;
 	unset _rcu_cmd _rcu_cmdline; return ${_rcu_rc};
 };
 
