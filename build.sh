@@ -122,8 +122,12 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 			-mindepth 1 -maxdepth 2 -type d -not -path ./native)		\
 		"Create \`Midipix mintty shell' shortcut.vbs" midipix.sh;
 	log_msg info "Finished building distribution tarball.";
-	sha256sum ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
-		> ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.sha256sum;
+	if [ -x $(which gpg 2>/dev/null) -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
+				gpg --list-keys "${TARBALL_SRC_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+		gpg --armor --passphrase-file /dev/null					\
+			--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign		\
+			${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz;
+	fi;
 	rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
 	log_msg info "Restored ${PREFIX_BASENAME}/lib.";
 	log_msg info "Building source tarball...";
@@ -131,8 +135,12 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 		$(find tmp -mindepth 1 -maxdepth 1 -type d				\
 			\( -name \*-native-\* -or -name \*-cross-\* \));
 	log_msg info "Finished building source tarball.";
-	sha256sum ${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
-		> ${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.sha256sum;
+	if [ -x $(which gpg 2>/dev/null) -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
+				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+		gpg --armor --passphrase-file /dev/null					\
+			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign			\
+			${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz;
+	fi;
 	cd ${OLDPWD};
 	update_build_status tarball_finish;
 fi;

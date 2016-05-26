@@ -4,7 +4,7 @@
 
 if ! is_build_script_done install; then
 	(cd ${MIDIPIX_BUILD_PWD};
-	tar -cpf - midipix.sh						\
+	tar -cpf - midipix.sh README					\
 			'Create `Midipix mintty shell'\'' shortcut.vbs'	|\
 		tar -C ${PREFIX} -xpf -);
 	chmod +x ${PREFIX}/midipix.sh;
