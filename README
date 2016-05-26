@@ -1,0 +1,138 @@
+
+                  Obtaining and installing a Midipix distribution
+                   Last update: Sun, 24 Apr 2016 09:42:40 +0000
+
+A Midipix distribution consists of the following:
+a) the native Midipix toolchain, consisting of perk, gcc, its dependencies,
+   and binutils,
+b) musl, a lightweight, fast, simple, and free libc[1] used by Midipix,
+c) the Midipix runtime components that bridge the gap between the libc and the
+   executive subsystems of all Windows NT-derived Windows OS starting with and
+   including Windows XP, and
+d) a steadily increasing number of 3rd party open source packages, as expected in
+   any modern POSIX-compliant *nix environment, including GNU coreutils, shells,
+   libraries such as ncurses, libressl, as well as Perl and Python.
+
+Compressed Midipix distribution tarballs and, separately, source tarballs are,
+at present, produced every four (4) hours UTC after each successful build and
+subsequently signed. This process is fully automated by a portable Bourne shell
+script; all of the above mentioned components are cross-compiled.
+
+Thus, the most hassle-free way to get started with Midipix is to simply download
+the most recent distribution tarball and follow the instructions below. It is,
+however, recommended to anyone intending to use Midipix as a development platform
+to familiarise themselves with the build process. Other reasons to prefer building
+a Midipix distribution yourself include integrating new 3rd party software or local
+runtime component patches. At present, a full build from scratch takes about 30
+(thirty) minutes to finish on an 8-core host with eight simultaneous make jobs,
+minus the generation of the tarballs. The build script can be obtained from the
+following GitHub repository: <https://github.com/lalbornoz/midipix_build>.
+
+If you obtained a Midipix distribution tarball, extract it into a directory and
+drive of your choice, henceforth referred to as target directory; the drive can
+be a network drive. Do _not_ use anything but a true UNIX environment tar(1), as
+e.g. WinRAR or WinZip handle extracting hard links incorrectly.
+If you built Midipix yourself, the target directory is equivalent to the ${PREFIX}
+configured in build.vars, which defaults to ${HOME}/midipix.
+
+At present, providing an interactive Midipix environment still requires the Cygwin
+terminal emulator Mintty and a shell; this does not include pseudoterminals, which
+are entirely handled by Midipix. Both can be installed via the 64-bit Cygwin setup
+program at <https://www.cygwin.com/setup-x86_64.exe>.
+
+Once installed, launching a Midipix shell is accomplished by the `midipix.sh' shell
+script provided in the target directory from within a Cygwin shell prompt in Mintty
+and the target directory. This may either simply be done manually each time, or
+automated by a shortcut. As shortcuts cannot be distributed, it can be created by
+either:
+a) Opening (executing) the VBScript script in the target directory from within the
+   latter cscript.exe, providing the fully qualified pathname to Mintty, if it differs
+   from the default value of C:\cygwin64\bin\mintty.exe or
+b) manually creating a shortcut to Mintty with `Start in:' set to the target directory
+   and the following command line:
+   [ ... ]\mintty.exe -i /Cygwin-Terminal.ico -e sh midipix.sh, or
+
+References:
+Sun, 24 Apr 2016 09:04:08 +0000 [1] musl FAQ <http://www.musl-libc.org/faq.html>
+
+                  Midipix status report
+                   Last update: Tue, 26 Apr 2016 10:16:16 +0000
+
+The following build status codes are defined:
+C -- Complete build w/ at least the default configuration,
+B -- Broken, e.g. doesn't work at all or only minimally,
+I -- Integrated (e.g. linked against) with other packages,
+E -- Extensively tested and confirmed to work by multiple sources, possibly via a testsuite,
+P -- Patches needed to build that haven't been committed upstream yet, and
+U -- Update to latest stable version or HEAD pending.
+
+Component type      Name        Version           Status  Comments
+Host toolchain      binutils    2.24.51           C--EPU
+Host toolchain      gcc         4.6.4             ---EPU  Excludes libstdc++
+Host toolchain      musl        1.1.12            C-IEPU
+Native toolchain    binutils    2.24.51           C--EPU
+Native toolchain    gcc         4.6.4             ---EPU  Excludes libstdc++
+Native toolchain    gmp         5.1.3             C-IEPU
+Native toolchain    libelf      0.8.13            C-IEP-
+Native toolchain    mpc         1.0.1             C-IEPU
+Native toolchain    mpfr        3.1.2             C-IEPU
+Native toolchain    musl        1.1.12            C-IEPU
+Native toolchain    perk        HEAD              C-IE--
+Runtime components  dalist      HEAD              C-IE--
+Runtime components  ntapi       HEAD              C-IE--
+Runtime components  ntcon       HEAD              C-IE--
+Runtime components  ntctty      HEAD              C-IE--
+Runtime components  pemagine    HEAD              C-IE--
+Runtime components  psxscl      HEAD              C-IE--  Excludes clone(2) and dlopen(3)
+Runtime components  psxtypes    HEAD              C-IE--
+3rd party packages  apk_tools   2.6.6             C---P-
+3rd party packages  bash        4.3               C-I-P-  Linked against ncursesw
+3rd party packages  bzip2       1.0.6             C-----
+3rd party packages  coreutils   8.23              C---P-  Needs extensive testing
+3rd party packages  curl        7.47.1            C---P-
+3rd party packages  dash        0.5.8             C---P-
+3rd party packages  diffutils   3.3               C---P-
+3rd party packages  findutils   4.5.14            C---P-
+3rd party packages  gawk        4.1.3             C---P-
+3rd party packages  git         2.7.1             C-----
+3rd party packages  glib        2.46.2            C---P-
+3rd party packages  grep        2.22              C---P-
+3rd party packages  gzip        1.2.4             C-----
+3rd party packages  hexcurse    1.60.0            C-I-P-  Linked against ncursesw
+3rd party packages  irssi       0.8.18            CB--P-  DNS requires clone(2) due to pthreads (see psxscl)
+3rd party packages  less        481               C-I---  Linked against ncursesw
+3rd party packages  libarchive  3.1.2             C---P-
+3rd party packages  libfetch    2.33              C---P-
+3rd party packages  libffi      3.2.1             C---P-
+3rd party packages  libressl    2.2.6             C-I-P-
+3rd party packages  libz        1.2.8.2015.05.20  C-----
+3rd party packages  make        3.81              C---P-
+3rd party packages  mksh        R52c              C---P-
+3rd party packages  nano        2.5.3             C-I-P-  Linked against ncursesw
+3rd party packages  ncurses     6.0               C-IEP-  ncurses, ncursestw, and ncursesw built
+3rd party packages  openssh     7.1p2             C-I-P-  Linked against libressl
+3rd party packages  pacman      5.0.1             C-----
+3rd party packages  patch       2.7               C---P-
+3rd party packages  perl        5.22.1            ----P-  No dlopen(3) (see psxscl,) modules missing
+3rd party packages  python      3.5.1             -B--P-  No dlopen(3) (see psxscl,) modules missing
+3rd party packages  rsync       3.1.2             C---P-
+3rd party packages  sed         4.2.2             C---P-
+3rd party packages  tar         1.28              C---P-
+3rd party packages  tcsh        6.19.00           C-I-P-
+3rd party packages  util_linux  2.27.1            C---P-  Needs extensive testing
+3rd party packages  which       2.21              C-----
+3rd party packages  xz          5.2.2             C---P-
+3rd party packages  zsh         5.2               C-I-P-  Linked against ncursesw
+
+                  Midipix roadmap/TODO list
+                   Last update: Tue, 26 Apr 2016 10:41:37 +0000
+
+1) slibtool,
+2) psxscl: clone(2) system call implementation.
+   This is required by all 3rd party packages that make use of threads such as Irssi.
+3) psxscl: dlopen(3) system call implementation.
+   This is required by all 3rd party packages that have runtime modules such as Perl and Python.
+4) gdb: native port,
+5) [ ... ]
+
+vim:expandtab sw=8 ts=8 tw=0 nowrap
