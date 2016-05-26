@@ -64,11 +64,11 @@ for BUILD_LVL in 0 1 2 3; do
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME};				\
 			 SCRIPT_NAME=${SCRIPT_FNAME%%.build*};				\
 			 export PREFIX_LVL="$(eval echo \${PREFIX_LVL${BUILD_LVL}})";	\
-			 _PWD=$(pwd); cd ${WORKDIR};					\
+			 export MIDIPIX_BUILD_PWD=$(pwd); cd ${WORKDIR};		\
 			 for SCRIPT_SOURCE in build.subr ${SCRIPT_NAME}.vars		\
 					${BUILD_SCRIPT_FNAME}; do			\
-			 	[ -f ${_PWD}/${SCRIPT_SOURCE} ] &&			\
-					 . ${_PWD}/${SCRIPT_SOURCE};			\
+			 	[ -f ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE} ] &&		\
+					 . ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE};		\
 			 done);
 			case ${BUILD_SCRIPT_RC:=${?}} in
 			0) log_msg succ "Finished build script \`${BUILD_SCRIPT_FNAME}'.";
