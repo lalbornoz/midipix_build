@@ -1,0 +1,159 @@
+--- tcsh-6.19.00/config.sub.orig	2014-07-20 09:14:34.000000000 +0000
++++ tcsh-6.19.00/config.sub	2016-05-26 11:49:50.223735101 +0000
+@@ -789,6 +789,10 @@
+ 	microblaze*)
+ 		basic_machine=microblaze-xilinx
+ 		;;
++	midipix)
++		basic_machine=x86_64-pc
++		os=-midipix
++		;;
+ 	mingw64)
+ 		basic_machine=x86_64-pc
+ 		os=-mingw64
+@@ -1365,7 +1369,7 @@
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -chorusos* | -chorusrdb* | -cegcc* \
+ 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
++	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
+ 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
+ 	      | -uxpv* | -beos* | -mpeix* | -udk* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+--- tcsh-6.19.00/configure.orig	2015-05-21 21:41:48.000000000 +0000
++++ tcsh-6.19.00/configure	2016-05-26 11:51:44.823732557 +0000
+@@ -2975,6 +2975,11 @@
+     tcsh_config_file=qnx6
+   ;;
+ 
++  ## midipix
++  *-midipix*)
++    tcsh_config_file=midipix
++  ;;
++
+   * )
+     as_fn_error $? "Tcsh can't guess the configuration file name
+ for \`${host}' systems.
+--- tcsh-6.19.00/config/midipix.orig	2016-05-26 11:54:37.763728719 +0000
++++ tcsh-6.19.00/config/midipix	2016-05-26 11:56:37.751726056 +0000
+@@ -0,0 +1,90 @@
++/*
++ * config.h -- configure various defines for tcsh
++ *
++ * All source files should #include this FIRST.
++ *
++ * This is the config file for midipix systems
++ */
++
++#ifndef _h_config
++#define _h_config
++/****************** System dependant compilation flags ****************/
++/*
++ * POSIX	This system supports IEEE Std 1003.1-1988 (POSIX).
++ */
++#define POSIX
++
++/*
++ * POSIXJOBS	This system supports the optional IEEE Std 1003.1-1988 (POSIX)
++ *		job control facilities.
++ */
++#define POSIXJOBS
++
++/*
++ * VFORK	This machine has a vfork().  
++ *		It used to be that for job control to work, this define
++ *		was mandatory. This is not the case any more.
++ *		If you think you still need it, but you don't have vfork, 
++ *		define this anyway and then do #define vfork fork.  
++ *		I do this anyway on a Sun because of yellow pages brain damage,
++ *		[should not be needed under 4.1]
++ *		and on the iris4d cause	SGI's fork is sufficiently "virtual" 
++ *		that vfork isn't necessary.  (Besides, SGI's vfork is weird).
++ *		Note that some machines eg. rs6000 have a vfork, but not
++ *		with the berkeley semantics, so we cannot use it there either.
++ */
++#undef VFORK
++
++/*
++ * BSDJOBS	You have BSD-style job control (both process groups and
++ *		a tty that deals correctly
++ */
++#define BSDJOBS
++
++/*
++ * BSDTIMES	You have BSD-style process time stuff (like rusage)
++ *		This may or may not be true.  For example, Apple Unix
++ *		(OREO) has BSDJOBS but not BSDTIMES.
++ */
++#undef BSDTIMES
++
++/*
++ * BSDLIMIT	You have BSD-style resource limit stuff (getrlimit/setrlimit)
++ */
++#define BSDLIMIT
++
++/*
++ * TERMIO	You have struct termio instead of struct sgttyb.
++ * 		This is usually the case for SVID systems, where
++ *		BSD uses sgttyb. POSIX systems should define this
++ *		anyway, even though they use struct termios.
++ */
++#define TERMIO
++
++/*
++ * SYSVREL	Your machine is SYSV based (HPUX, A/UX)
++ *		NOTE: don't do this if you are on a Pyramid -- tcsh is
++ *		built in a BSD universe.
++ *		Set SYSVREL to 1, 2, 3, or 4, depending the version of System V
++ *		you are running. Or set it to 0 if you are not SYSV based
++ *
++ *		Note: Linux should work with any SYSVREL < 3.
++ */
++#define SYSVREL	0
++
++/*
++ * YPBUGS	Work around Sun YP bugs that cause expansion of ~username
++ *		to send command output to /dev/null
++ */
++#undef YPBUGS
++
++/****************** local defines *********************/
++#ifndef _PATH_TCSHELL
++#define _PATH_TCSHELL "/bin/tcsh"
++#endif
++#define ECHO_STYLE      BOTH_ECHO
++
++/* midipix allows paths prepended with double slashes (network paths). */
++#define HAVE_SLASHSLASH 1
++
++#endif /* _h_config */
+--- tcsh-6.19.00/sh.h.orig	2015-05-10 13:29:28.000000000 +0000
++++ tcsh-6.19.00/sh.h	2016-05-26 12:16:19.303699832 +0000
+@@ -333,7 +333,7 @@
+ #endif /* POSIX && !WINNT_NATIVE */
+ #include <limits.h>
+ 
+-#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__)
++#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) || defined(__midipix__)
+ # if !defined(pyr) && !defined(stellar)
+ #  include <time.h>
+ #  ifdef _MINIX
+--- tcsh-6.19.00/Makefile.in.orig	2014-07-24 22:52:13.000000000 +0000
++++ tcsh-6.19.00/Makefile.in	2016-05-26 12:43:28.099663682 +0000
+@@ -24,6 +24,7 @@
+ CF=-c
+ 
+ CPPFLAGS=-I. -I$(srcdir)
++CPPFLAGS_FOR_GETHOST=-I. -I$(srcdir)
+ 
+ LFLAGS=
+ # hpux lint
+@@ -449,7 +450,7 @@
+ 
+ gethost:  gethost.c sh.err.h tc.const.h sh.h
+ 	rm -f gethost
+-	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS} ${CFLAGS} $(srcdir)/gethost.c
++	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS_FOR_GETHOST} ${CFLAGS_FOR_GETHOST} $(srcdir)/gethost.c
+ 
+ tc.defs.c:	gethost host.defs
+ 	@rm -f $@.tmp

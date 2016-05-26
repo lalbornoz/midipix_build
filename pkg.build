@@ -87,15 +87,19 @@ if [ ${PKG_NO_CLEAN:-0} -eq 0 ]\
 	set_build_script_done clean -build;
 fi;
 if ! is_build_script_done build; then
-	run_cmd_unsplit make					\
-		${PKG_MAKEFLAGS_BUILD}				\
-		${PKG_MAKEFLAGS_BUILD_EXTRA}			\
-		"${PKG_AR_BUILD:+AR=${PKG_AR_BUILD}}"		\
-		"${PKG_CC_BUILD:+CC=${PKG_CC_BUILD}}"		\
-		"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"\
-		"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"\
-		"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"\
-		"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
+	if test_cmd pkg_${PKG_NAME}_build; then
+		pkg_${PKG_NAME}_build;
+	else
+		run_cmd_unsplit make					\
+			${PKG_MAKEFLAGS_BUILD}				\
+			${PKG_MAKEFLAGS_BUILD_EXTRA}			\
+			"${PKG_AR_BUILD:+AR=${PKG_AR_BUILD}}"		\
+			"${PKG_CC_BUILD:+CC=${PKG_CC_BUILD}}"		\
+			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"\
+			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"\
+			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"\
+			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
+	fi;
 	set_build_script_done build -install;
 fi;
 if ! is_build_script_done install; then
