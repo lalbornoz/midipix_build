@@ -122,16 +122,3 @@ index 2bd615c..705e646 100644
  		if ((status = __iovtbl[path_info->fdtypeat].close(path_info->hat)))
  			return status;
 
-diff --git a/src/process/_execve.c b/src/process/_execve.c
-index a623d2a..80dd4a9 100644
---- a/src/process/_execve.c
-+++ b/src/process/_execve.c
-@@ -232,7 +232,7 @@ intptr_t __sys_execve(const unsigned char * path, const char ** argv, const char
- 			NT_SECTION_QUERY|NT_SECTION_MAP_EXECUTE,
- 			&oa,&ssize,
- 			NT_PAGE_EXECUTE,
--			NT_SEC_IMAGE,
-+			NT_SEC_RESERVE,
- 			image->info.hfile)))
- 		return __execve_return(tlca,0,target,-ENOEXEC);
-
