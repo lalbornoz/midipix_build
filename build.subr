@@ -178,14 +178,22 @@ clear_env_with_except() {
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 fetch() {
 	[ ${ARG_NO_DOWNLOAD:-0} -eq 1 ] && return;
-	rm_if_exists $(get_basename ${1});
-	wget ${WGET_ARGS} "${1}";
-	if [ ${#} -eq 2 ]; then
-		set -- $(get_basename ${1}) "$(compare_hash $(get_basename ${1}) ${2})" ${2};
-		if [ -n "${2}" ]; then
-			log_msg failexit "Error: hash mismatch for URL \`${1}' (is: ${2}, should be: ${3}.)";
-		fi;
+	_f_url="${1}"; _f_sha256sum_src="${2}";
+	_f_url_dst="$(get_basename "${_f_url}")";
+	rm_if_exists ${_f_url_dst};
+	if match_any "${_f_url}" "/downloads.sourceforge.net/" ; then
+		_f_url="$(wget ${WGET_ARGS} "${_f_url}" -qO- |\
+			sed -n '/class="direct-download"/s,^.*href="\([^"]\+\)".*$,\1,p')";
 	fi;
+	wget ${WGET_ARGS} -O ${_f_url_dst} "${_f_url}";
+	if [ -n "${_f_sha256sum_src}" ]; then
+		_f_sha256sum_dst="$(compare_hash ${_f_url_dst} ${_f_sha256sum_src})";
+		if [ -n "${_f_sha256sum_dst}" ]; then
+			set -- "${_f_url}" ${_f_sha256sum_dst} ${_f_sha256sum_src};
+			unset _f_url _f_url_dst _f_sha256sum_src _f_sha256sum_dst;
+			log_msg failexit "Error: hash mismatch for URL \`${1}' (is: ${2}, should be: ${3}.)";
+		fi; unset _f_sha256sum_dst;
+	fi; unset _f_url _f_url_dst _f_sha256sum_src;
 };
 
 compare_hash() {
