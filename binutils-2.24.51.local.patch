@@ -1,0 +1,11 @@
+--- binutils-2.24.51/intl/libgnuintl.h.orig	2014-07-03 05:37:48.000000000 +0000
++++ binutils-2.24.51/intl/libgnuintl.h	2016-05-30 19:56:21.701967351 +0000
+@@ -105,7 +105,7 @@
+ #endif
+ /* Auxiliary macros.  */
+ #ifdef _INTL_REDIRECT_ASM
+-# define _INTL_ASM(cname) __asm__ (_INTL_ASMNAME (__USER_LABEL_PREFIX__, #cname))
++# define _INTL_ASM(cname) __asm__ (#cname)
+ # define _INTL_ASMNAME(prefix,cnamestring) _INTL_STRINGIFY (prefix) cnamestring
+ # define _INTL_STRINGIFY(prefix) #prefix
+ #else

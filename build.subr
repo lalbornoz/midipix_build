@@ -34,7 +34,7 @@ build_times_get() {
 
 clean_prefix() {
 	log_msg info "-c specified, cleaning prefix...";
-	set -- bin include lib lib64 libexec native share x86_64-nt64-midipix;
+	set -- bin i686-nt32-midipix include lib lib64 libexec native share x86_64-nt64-midipix;
 	while [ ${#} -gt 0 ]; do rm -rf ${PREFIX}/${1}; shift; done;
 	for _cp_pname in $(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -not -iname \*.tar\*)	\
 			$(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -type f -iname .\*); do
