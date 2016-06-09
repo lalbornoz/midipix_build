@@ -124,7 +124,7 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	log_msg info "Finished building distribution tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
 				gpg --list-keys "${TARBALL_SRC_SIGN_GPG_KEY}" >/dev/null 2>&1; then
-		gpg --passphrase-file /dev/null						\
+		gpg --armor --passphrase-file /dev/null					\
 			--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign		\
 			${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz;
 	fi;
@@ -136,7 +136,7 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	log_msg info "Finished building source tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
 				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then
-		gpg --passphrase-file /dev/null						\
+		gpg --armor --passphrase-file /dev/null					\
 			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign			\
 			${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz;
 	fi;
