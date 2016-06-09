@@ -20,7 +20,21 @@ if test_cmd pkg_${PKG_NAME}_finish; then
 elif [ "${PKG_URL_TYPE:-wget}" = wget ] &&\
 ! is_build_script_done extract; then
 	rm_if_exists ${PKG_SUBDIR};
-	tar -axf ${PKG_FNAME};
+	if [ "${PKG_FNAME##*.tar.}" = "bz2" ]; then
+		bunzip2 -d < ${PKG_FNAME} | tar -xf -;
+	elif [ "${PKG_FNAME##*.tar.}" = "gz" ]; then
+		gunzip -d < ${PKG_FNAME} | tar -xf -;
+	elif [ "${PKG_FNAME##*.tar.}" = "xz" ]; then
+		xz -d < ${PKG_FNAME} | tar -xf -;
+	elif [ "${PKG_FNAME##*.t}" = "bz2" ]; then
+		bunzip2 -d < ${PKG_FNAME} | tar -xf -;
+	elif [ "${PKG_FNAME##*.t}" = "gz" ]; then
+		gunzip -d < ${PKG_FNAME} | tar -xf -;
+	elif [ "${PKG_FNAME##*.t}" = "xz" ]; then
+		xz -d < ${PKG_FNAME} | tar -xf -;
+	else
+		tar -xf ${PKG_FNAME};
+	fi;
 	if test_cmd pkg_${PKG_NAME}_extract_post; then
 		pkg_${PKG_NAME}_extract_post;
 	fi;
