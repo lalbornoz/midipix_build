@@ -116,3 +116,14 @@
  TERMCAP_DEP=
  elif test $bash_cv_termcap_lib = libc; then
  TERMCAP_LIB=
+--- bash-4.3/lib/intl/libgnuintl.h.in.orig	2009-01-04 19:32:30.000000000 +0000
++++ bash-4.3/lib/intl/libgnuintl.h.in	2016-05-30 22:03:02.589798655 +0000
+@@ -107,7 +107,7 @@
+ #endif
+ /* Auxiliary macros.  */
+ #ifdef _INTL_REDIRECT_ASM
+-# define _INTL_ASM(cname) __asm__ (_INTL_ASMNAME (__USER_LABEL_PREFIX__, #cname))
++# define _INTL_ASM(cname) __asm__ (#cname)
+ # define _INTL_ASMNAME(prefix,cnamestring) _INTL_STRINGIFY (prefix) cnamestring
+ # define _INTL_STRINGIFY(prefix) #prefix
+ #else

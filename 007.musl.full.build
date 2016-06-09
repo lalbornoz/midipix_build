@@ -22,7 +22,12 @@ if [ "${3}" = no-complex ]; then
 		rm_if_exists musl-${PKG_MUSL_VERSION};
 		tar -xf musl-${PKG_MUSL_VERSION}.tar.gz;
 		cp -R mmglue/* musl-${PKG_MUSL_VERSION}/;
-		set_build_script_done extract -configure;
+		set_build_script_done extract -patch;
+	fi;
+	if ! is_build_script_done patch; then
+		patch -b -d musl-${PKG_MUSL_VERSION} -p1	\
+			< ${MIDIPIX_BUILD_PWD}/musl-${PKG_MUSL_VERSION}.local.patch;
+		set_build_script_done patch -configure;
 	fi;
 elif [ "${3}" = native ]; then
 	# Musl: build (full)

@@ -31,7 +31,7 @@ check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${PREREQ_CMDS};
 update_build_status build_start; build_times_init; trap "clean_build_status abort; exit 1" HUP INT TERM USR1 USR2;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 log_env_vars "build (global)" ${LOG_ENV_VARS}; [ ${ARG_CLEAN:-0} -eq 1 ] && clean_prefix;
-mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${WORKDIR};
+mkdir -p ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_TARGET} ${PREFIX_TARGET}/lib ${WORKDIR};
 if [ -d ${PREFIX}/usr -o -f ${PREFIX}/usr -o -L ${PREFIX}/usr ]; then
 	rm -rf ${PREFIX}/usr;
 fi;
@@ -132,8 +132,7 @@ if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
 	log_msg info "Restored ${PREFIX_BASENAME}/lib.";
 	log_msg info "Building source tarball...";
 	tar -cJpf ${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
-		$(find tmp -mindepth 1 -maxdepth 1 -type d				\
-			\( -name \*-native-\* -or -name \*-cross-\* \));
+		$(find tmp -mindepth 1 -maxdepth 1 -type d);
 	log_msg info "Finished building source tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
 				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then

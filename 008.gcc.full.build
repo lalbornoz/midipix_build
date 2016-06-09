@@ -77,8 +77,12 @@ else
 			if [ \! -d ${PREFIX_LVL}/${TARGET}/usr ]; then
 				ln -s . ${PREFIX_LVL}/${TARGET}/usr;
 			fi;
-			_configure_args="			\
-				--host=x86_64-nt64-midipix	\
+			if [ "${ARCH}" = nt32 ]; then
+				_configure_args="--host=i686-nt32-midipix";
+			else
+				_configure_args="--host=x86_64-nt64-midipix";
+			fi;
+			_configure_args="${_configure_args}	\
 				--prefix=/			\
 				--with-elf=${PREFIX_LVL}	\
 				--with-gmp=${PREFIX_LVL}	\

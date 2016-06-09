@@ -1,0 +1,90 @@
+--- libffi-3.2.1/src/x86/win32.S.orig2	2016-05-31 09:21:19.120895425 +0000
++++ libffi-3.2.1/src/x86/win32.S	2016-05-31 09:22:19.252894091 +0000
+@@ -529,7 +529,9 @@
+  
+         # This assumes we are using gas.
+         .balign 16
++#ifndef __midipix__
+ FFI_HIDDEN(ffi_call_win32)
++#endif
+         .globl	USCORE_SYMBOL(ffi_call_win32)
+ #if defined(X86_WIN32) && !defined(__OS2__)
+         .def	_ffi_call_win32;	.scl	2;	.type	32;	.endef
+@@ -712,7 +714,9 @@
+         ret
+ .ffi_call_win32_end:
+         .balign 16
++#ifndef __midipix__
+ FFI_HIDDEN(ffi_closure_THISCALL)
++#endif
+         .globl	USCORE_SYMBOL(ffi_closure_THISCALL)
+ #if defined(X86_WIN32) && !defined(__OS2__)
+         .def	_ffi_closure_THISCALL;	.scl	2;	.type	32;	.endef
+@@ -725,7 +729,9 @@
+         jmp	.ffi_closure_STDCALL_internal
+ 
+         .balign 16
++#ifndef __midipix__
+ FFI_HIDDEN(ffi_closure_FASTCALL)
++#endif
+         .globl	USCORE_SYMBOL(ffi_closure_FASTCALL)
+ #if defined(X86_WIN32) && !defined(__OS2__)
+         .def	_ffi_closure_FASTCALL;	.scl	2;	.type	32;	.endef
+@@ -737,7 +743,9 @@
+         push	%edx
+         push	%ecx
+         jmp	.ffi_closure_STDCALL_internal
++#ifndef __midipix__
+ FFI_HIDDEN(ffi_closure_REGISTER)
++#endif
+         .globl	USCORE_SYMBOL(ffi_closure_REGISTER)
+ #if defined(X86_WIN32) && !defined(__OS2__)
+         .def	_ffi_closure_REGISTER;	.scl	2;	.type	32;	.endef
+@@ -754,7 +762,9 @@
+ .LFE1:
+         # This assumes we are using gas.
+         .balign 16
++#ifndef __midipix__
+ FFI_HIDDEN(ffi_closure_SYSV)
++#endif
+ #if defined(X86_WIN32)
+         .globl	USCORE_SYMBOL(ffi_closure_SYSV)
+ #if defined(X86_WIN32) && !defined(__OS2__)
+@@ -898,7 +908,9 @@
+ 
+ #ifdef X86_WIN32
+         .balign 16
++#ifndef __midipix__
+ FFI_HIDDEN(ffi_closure_raw_THISCALL)
++#endif
+         .globl	USCORE_SYMBOL(ffi_closure_raw_THISCALL)
+ #if defined(X86_WIN32) && !defined(__OS2__)
+         .def	_ffi_closure_raw_THISCALL;	.scl	2;	.type	32;	.endef
+@@ -1040,7 +1052,9 @@
+ 
+         # This assumes we are using gas.
+         .balign	16
++#ifndef __midipix__
+ FFI_HIDDEN(ffi_closure_STDCALL)
++#endif
+         .globl	USCORE_SYMBOL(ffi_closure_STDCALL)
+ #if defined(X86_WIN32) && !defined(__OS2__)
+         .def	_ffi_closure_STDCALL;	.scl	2;	.type	32;	.endef
+@@ -1345,10 +1359,17 @@
+ .LEFDE5:
+ 
+ #ifdef __midipix__
++#if defined(SYMBOL_UNDERSCORE)
++	.section .got$ffi__call_win32,"r"
++	.global __imp__ffi_call_win32
++__imp__ffi_call_win32:
++	.long	_ffi_call_win32
++#else
+ 	.section .got$ffi_call_win32,"r"
+ 	.global __imp_ffi_call_win32
+ __imp_ffi_call_win32:
+ 	.long	ffi_call_win32
++#endif
+ 	.linkonce discard
+ #endif
+ 
