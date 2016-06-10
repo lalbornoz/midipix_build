@@ -181,10 +181,6 @@ fetch() {
 	_f_url="${1}"; _f_sha256sum_src="${2}";
 	_f_url_dst="$(get_basename "${_f_url}")";
 	rm_if_exists ${_f_url_dst};
-	if match_any "${_f_url}" "/downloads.sourceforge.net/" ; then
-		_f_url="$(wget ${WGET_ARGS} "${_f_url}" -qO- |\
-			sed -n '/class="direct-download"/s,^.*href="\([^"]\+\)".*$,\1,p')";
-	fi;
 	wget ${WGET_ARGS} -O ${_f_url_dst} "${_f_url}";
 	if [ -n "${_f_sha256sum_src}" ]; then
 		_f_sha256sum_dst="$(compare_hash ${_f_url_dst} ${_f_sha256sum_src})";
