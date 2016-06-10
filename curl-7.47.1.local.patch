@@ -57,3 +57,23 @@
 +			;;
 +esac
 +
+--- curl-7.47.1/lib/Makefile.in.orig	2016-02-07 14:43:49.000000000 +0000
++++ curl-7.47.1/lib/Makefile.in	2016-06-10 00:07:28.334457112 +0000
+@@ -243,7 +243,7 @@
+ am__v_lt_1 = 
+ libcurl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libcurl_la_CFLAGS) \
+-	$(CFLAGS) $(libcurl_la_LDFLAGS) $(LDFLAGS) -o $@
++	$(CFLAGS) $(LDFLAGS) -o $@
+ libcurlu_la_LIBADD =
+ am__objects_6 = libcurlu_la-file.lo libcurlu_la-timeval.lo \
+ 	libcurlu_la-base64.lo libcurlu_la-hostip.lo \
+@@ -842,7 +842,7 @@
+ 	vtls/$(DEPDIR)/$(am__dirstamp)
+ 
+ libcurl.la: $(libcurl_la_OBJECTS) $(libcurl_la_DEPENDENCIES) $(EXTRA_libcurl_la_DEPENDENCIES) 
+-	$(AM_V_CCLD)$(libcurl_la_LINK) -rpath $(libdir) $(libcurl_la_OBJECTS) $(libcurl_la_LIBADD) $(LIBS)
++	$(AM_V_CCLD)$(libcurl_la_LINK) -rpath $(libdir) $(libcurl_la_OBJECTS) $(libcurl_la_LIBADD) $(LIBS) $(libcurl_la_LDFLAGS)
+ vtls/libcurlu_la-openssl.lo: vtls/$(am__dirstamp) \
+ 	vtls/$(DEPDIR)/$(am__dirstamp)
+ vtls/libcurlu_la-gtls.lo: vtls/$(am__dirstamp) \
