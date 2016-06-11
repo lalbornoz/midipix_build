@@ -10,9 +10,11 @@ usage: ./build.sh [-c] [-nd] [-r ALL|name[:step]] [-h] [-t]
                                or at the optionally specified build step. Currently defined
                                build steps are: fetch extract build_dir patch configure clean
                                build install configure1 configure2 build1 build2 install1 install2.
-        -t                     Produce a distribution tarball containing $PREFIX
-                               sans $WORKDIR and $PREFIX/src/midipix_build at the end of a
-                               build with zero failures.
+        -t[.gz|.bz2|.xz]       Produce binary distribution and source tarballs containing $PREFIX
+                               sans $WORKDIR and $PREFIX/src/midipix_build and $WORKDIR sans top-
+                               level regular files at the end of a build with zero failures. The
+                               tarballs will be compressed with either gzip, bzip2, or xz and signed
+                               with GPG; the default compression is xz.
         -x                     Set the xtrace sh(1)ell option for debugging purposes.
         -X                     Set the xtrace sh(1)ell option and compile a tarball containing
                                build.log and $PKG_SUBDIR. Use this option if something goes
