@@ -104,7 +104,9 @@ if ! is_build_script_done build; then
 	if test_cmd pkg_${PKG_NAME}_build; then
 		pkg_${PKG_NAME}_build;
 	else
-		export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+		if [ "${PKG_SLIBTOOL}" != "none" ]; then
+			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+		fi;
 		run_cmd_unsplit make					\
 			${PKG_MAKEFLAGS_BUILD}				\
 			${PKG_MAKEFLAGS_BUILD_EXTRA}			\
