@@ -14,7 +14,8 @@ case ${1} in
 		&& { ARG_RESTART_SCRIPT="${2%%:*}"; ARG_RESTART_SCRIPT_AT="${2##*:}"; }	\
 		|| { ARG_RESTART_SCRIPT="${2}"; ARG_RESTART_SCRIPT_AT=ALL; };
 	shift; ;;
--t)	[ ${ARG_TARBALL:-0} -eq 1 ] && exec cat build.usage || ARG_TARBALL=1; ;;
+-t*)	[ ${ARG_TARBALL:-0} -eq 1 ] && exec cat build.usage || ARG_TARBALL=1;
+	[ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
 -x)	set -o xtrace; ;;
 -X)	set -o xtrace; ARG_DEBUG_TARBALL=1; ;;
 *=*)	set_var_unsafe "$(get_prefix_lrg "${1}" =)"					\
@@ -41,7 +42,7 @@ if [ -d ${PREFIX_NATIVE}/usr -o -f ${PREFIX_NATIVE}/usr -o -L ${PREFIX_NATIVE}/u
 fi;
 ln -sf . ${PREFIX_NATIVE}/usr;
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
-for BUILD_LVL in 0 1 2 3; do
+for BUILD_LVL in 0 1 2 3 ${ARG_TARBALL:+9}; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${ARG_RESTART_SCRIPT}" ]					\
 		&& [ "${ARG_RESTART_SCRIPT}" != "ALL" ]					\
@@ -103,46 +104,6 @@ for BUILD_LVL in 0 1 2 3; do
 done;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 build_times_get; log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
-if [ $(( ${BUILD_NFINI} + ${BUILD_NSKIP} )) -ge 0 ]					\
-&& [ ${BUILD_NFAIL} -eq 0 ]								\
-&& [ ${ARG_TARBALL:-0} -eq 1 ]; then
-	update_build_status build_finish tarball_start;
-	log_msg info "Building distribution tarball...";
-	cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
-	rm_if_exists -m ${PREFIX_BASENAME}/lib.bak;
-	tar -C ${PREFIX_BASENAME}/lib -cpf - . | tar -C ${PREFIX_BASENAME}/lib.bak -xpf -;
-	log_msg info "Backed up ${PREFIX_BASENAME}/lib.";
-	find native/lib -maxdepth 1 -type l						\
-	 	-exec sh -c '[ -f "${DEST:=native/lib/$(readlink -- "${0}")}" ] &&	\
-			rm -f -- "${0}" && ln -f -- "${DEST}" "${0}"' {} \;;
-	log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
-	
-	tar -cJpf ${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
-		$(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
-			-mindepth 1 -maxdepth 2 -type d -not -path ./native)		\
-		"Create \`Midipix mintty shell' shortcut.vbs" midipix.sh;
-	log_msg info "Finished building distribution tarball.";
-	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
-				gpg --list-keys "${TARBALL_SRC_SIGN_GPG_KEY}" >/dev/null 2>&1; then
-		gpg --armor --passphrase-file /dev/null					\
-			--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign		\
-			${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz;
-	fi;
-	rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
-	log_msg info "Restored ${PREFIX_BASENAME}/lib.";
-	log_msg info "Building source tarball...";
-	tar -cJpf ${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz\
-		$(find tmp -mindepth 1 -maxdepth 1 -type d);
-	log_msg info "Finished building source tarball.";
-	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
-				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then
-		gpg --armor --passphrase-file /dev/null					\
-			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign			\
-			${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.xz;
-	fi;
-	cd ${OLDPWD};
-	update_build_status tarball_finish;
-fi;
 update_build_status finish; clean_build_status;
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${PREFIX}/${BUILD_LOG_FNAME:=build-$(date ${TIMESTAMP_FMT_STATUS_FILES}).log} &
 trap "kill -INT $!" HUP INT TERM USR1 USR2; wait;
