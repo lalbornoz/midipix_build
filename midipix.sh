@@ -48,5 +48,5 @@ else
 		set -o errexit; stty raw -echo;
 		cd ${MIDIPIX_PATH}/native/bin;
 		export PATH=/proc/cygdrive${MIDIPIX_PATH}/native/bin:/proc/cygdrive${MIDIPIX_PATH}/native/lib;
-		./ntctty.exe -e chroot //${MIDIPIX_PATH#/}/native /bin/bash";
+		./ntctty.exe -e chroot //${MIDIPIX_PATH#/}/native /bin/bash" &
 fi;
