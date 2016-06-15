@@ -38,26 +38,15 @@ else
 		cp /proc/cygdrive${MIDIPIX_PATH}/bin/libpsxscl.log	\
 			/proc/cygdrive${MIDIPIX_PATH}/bin/libpsxscl.last || exit 5;
 	fi;
-	OLD_CYGDRIVE_PREFIX="$(readlink /proc/cygdrive)" || exit 6;
 	echo "Midipix drive letter.....: ${MIDIPIX_DRIVE}";
 	echo "Midipix pathname.........: ${MIDIPIX_PNAME}";
 	echo "Absolute Midipix pathname: ${MIDIPIX_PATH}";
-	echo --------------------------------------------------------
-	echo WARNING: The cygdrive path prefix will be changed to /
-	echo whilst the Midipix shell window is running. It will be
-	echo reset to its previous value of ${OLD_CYGDRIVE_PREFIX} after it exits.
-	echo --------------------------------------------------------
 	if [ "${UNAME_OS}" = "Msys" ]; then
 		export MSYS2_ARG_CONV_EXCL="*";
 	fi;
 	mintty -h always -e /bin/sh -c "
 		set -o errexit; stty raw -echo;
-		mount --change-cygdrive-prefix /;
 		cd ${MIDIPIX_PATH}/native/bin;
-		export PATH=${MIDIPIX_PATH}/native/bin:${MIDIPIX_PATH}/native/lib;
+		export PATH=/proc/cygdrive${MIDIPIX_PATH}/native/bin:/proc/cygdrive${MIDIPIX_PATH}/native/lib;
 		./ntctty.exe -e chroot //${MIDIPIX_PATH#/}/native /bin/bash";
-	echo --------------------------------------------------------
-	echo Resetting cygdrive path prefix to ${OLD_CYGDRIVE_PREFIX}.
-	echo --------------------------------------------------------
-	mount --change-cygdrive-prefix "${OLD_CYGDRIVE_PREFIX}";
 fi;
