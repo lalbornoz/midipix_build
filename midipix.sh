@@ -33,10 +33,10 @@ if [ ! -d /proc/cygdrive${MIDIPIX_PATH} ]; then
 	echo "Error: Midipix path non-existent or invalid (\`${MIDIPIX_PATH}'.)";
 	exit 4;
 else
-	if [ -f /proc/cygdrive${MIDIPIX_PATH}/bin/libpsxscl.log ]; then
-		echo Found libpsxscl.log, copying to /proc/cygdrive${MIDIPIX_PATH}/bin/libpsxscl.last.
-		cp /proc/cygdrive${MIDIPIX_PATH}/bin/libpsxscl.log	\
-			/proc/cygdrive${MIDIPIX_PATH}/bin/libpsxscl.last || exit 5;
+	if [ -f /proc/cygdrive${MIDIPIX_PATH}/native/bin/libpsxscl.log ]; then
+		echo Found libpsxscl.log, copying to /proc/cygdrive${MIDIPIX_PATH}/native/bin/libpsxscl.last.
+		cp /proc/cygdrive${MIDIPIX_PATH}/native/bin/libpsxscl.log	\
+			/proc/cygdrive${MIDIPIX_PATH}/native/bin/libpsxscl.last || exit 5;
 	fi;
 	echo "Midipix drive letter.....: ${MIDIPIX_DRIVE}";
 	echo "Midipix pathname.........: ${MIDIPIX_PNAME}";

@@ -20,20 +20,23 @@ if test_cmd pkg_${PKG_NAME}_finish; then
 elif [ "${PKG_URL_TYPE:-wget}" = wget ] &&\
 ! is_build_script_done extract; then
 	rm_if_exists ${PKG_SUBDIR};
+	if [ ${PKG_SUBDIR_CREATE:-0} -eq 1 ]; then
+		mkdir ${PKG_SUBDIR};
+	fi;
 	if [ "${PKG_FNAME##*.tar.}" = "bz2" ]; then
-		bunzip2 -d < ${PKG_FNAME} | tar -xf -;
+		bunzip2 -d < ${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
 	elif [ "${PKG_FNAME##*.tar.}" = "gz" ]; then
-		gunzip -d < ${PKG_FNAME} | tar -xf -;
+		gunzip -d < ${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
 	elif [ "${PKG_FNAME##*.tar.}" = "xz" ]; then
-		xz -d < ${PKG_FNAME} | tar -xf -;
+		xz -d < ${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
 	elif [ "${PKG_FNAME##*.t}" = "bz2" ]; then
-		bunzip2 -d < ${PKG_FNAME} | tar -xf -;
+		bunzip2 -d < ${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
 	elif [ "${PKG_FNAME##*.t}" = "gz" ]; then
-		gunzip -d < ${PKG_FNAME} | tar -xf -;
+		gunzip -d < ${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
 	elif [ "${PKG_FNAME##*.t}" = "xz" ]; then
-		xz -d < ${PKG_FNAME} | tar -xf -;
+		xz -d < ${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
 	else
-		tar -xf ${PKG_FNAME};
+		tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf ${PKG_FNAME};
 	fi;
 	if test_cmd pkg_${PKG_NAME}_extract_post; then
 		pkg_${PKG_NAME}_extract_post;

@@ -1,0 +1,30 @@
+--- nc110/Makefile.orig	1996-03-20 03:16:06.000000000 +0000
++++ nc110/Makefile	2016-06-15 18:44:05.819382228 +0000
+@@ -109,6 +109,10 @@
+ next:
+ 	make -e $(ALL) $(MFLAGS) XFLAGS='-DNEXT' STATIC=-Bstatic
+ 
++# midipix
++midipix:
++	make -e $(ALL) $(MFLAGS) XFLAGS='-DLINUX' STATIC=-static
++
+ # start with this for a new architecture, and see what breaks.
+ generic:
+ 	make -e $(ALL) $(MFLAGS) XFLAGS='-DGENERIC' STATIC=
+--- nc110/generic.h.orig	1996-02-18 01:36:43.000000000 +0000
++++ nc110/generic.h	2016-06-15 18:44:06.379382216 +0000
+@@ -360,6 +360,14 @@
+ #undef HAVE_SELECT_X
+ #endif /* NeXTSTEP 3.2 motorola */
+ 
++/* midipix */
++#ifdef MIDIPIX
++#undef UTMPX
++#undef HAVE_SYSINFO
++#undef HAVE_SELECT_H
++#undef HAVE_TTYENT_H
++#endif /* midipix */
++
+ /* Make some "generic" assumptions if all else fails */
+ #ifdef GENERIC
+ #undef HAVE_FLOCK
