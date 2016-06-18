@@ -67,3 +67,59 @@
  	}
  	return TRUE;
  }
+--- irssi-0.8.18/src/core/network.c.orig	2016-02-08 21:20:37.000000000 +0100
++++ irssi-0.8.18/src/core/network.c	2016-06-17 16:34:16.870746400 +0200
+@@ -572,9 +572,13 @@
+ 	int data;
+ 	socklen_t len = sizeof(data);
+ 
++#ifndef __midipix__
+ 	if (getsockopt(g_io_channel_unix_get_fd(handle),
+ 		       SOL_SOCKET, SO_ERROR, (void *) &data, &len) == -1)
+ 		return -1;
++#else
++	data = 0;
++#endif
+ 
+ 	return data;
+ }
+--- irssi-0.8.18/src/core/pidwait.c.orig	2014-09-02 11:13:51.000000000 +0200
++++ irssi-0.8.18/src/core/pidwait.c	2016-06-19 00:20:33.327763200 +0200
+@@ -39,8 +39,10 @@
+ void pidwait_add(int pid)
+ {
+ 	if (g_hash_table_lookup(child_pids, GINT_TO_POINTER(pid)) == NULL) {
++#ifndef __midipix__
+ 		int id = g_child_watch_add_full(10, pid, sig_child, NULL, NULL);
+ 		g_hash_table_insert(child_pids, GINT_TO_POINTER(pid), GINT_TO_POINTER(id));
++#endif
+ 		pids = g_slist_append(pids, GINT_TO_POINTER(pid));
+ 	}
+ }
+--- irssi-0.8.18/src/fe-common/core/fe-exec.c.orig	2016-01-20 23:08:07.000000000 +0100
++++ irssi-0.8.18/src/fe-common/core/fe-exec.c	2016-06-19 01:22:40.792090300 +0200
+@@ -288,6 +288,9 @@
+ 	}
+ }
+ 
++#ifdef __midipix__
++static void sig_pidwait(void *pid, void *statusp);
++#endif
+ static void process_exec(PROCESS_REC *rec, const char *cmd)
+ {
+ 	const char *shell_args[4] = { "/bin/sh", "-c", NULL, NULL };
+@@ -535,6 +538,14 @@
+ 				    (GInputFunction) sig_exec_input_reader,
+ 				    rec);
+ 	processes = g_slist_append(processes, rec);
++#ifdef __midipix__
++	int status;
++	waitpid(rec->pid, &status, 0);
++	while (rec->read_tag != -1) {
++		sig_exec_input_reader(rec);
++	}
++	sig_pidwait((void *)rec->pid, &status);
++#endif
+ 
+ 	if (rec->target == NULL && interactive)
+ 		rec->target_item = exec_wi_create(active_win, rec);
