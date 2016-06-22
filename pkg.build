@@ -57,9 +57,11 @@ if ! is_build_script_done patch; then
 		install -m 0700 ${MIDIPIX_BUILD_PWD}/config.sub build-aux/ &&\
 				./autogen.sh && cd ${OLDPWD};
 	fi;
-	for PATCH_FNAME in portage/${PKG_SUBDIR}.midipix.patch	\
-			${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local.patch	\
-			${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
+	for PATCH_FNAME in portage/${PKG_SUBDIR}.midipix.patch				\
+			${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local.patch			\
+			${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local.patch		\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
 		[ -r ${PATCH_FNAME} ] &&\
 			patch -b -d ${PKG_SUBDIR} -p1 < ${PATCH_FNAME};
 	done; unset PATCH_FNAME;
