@@ -34,7 +34,7 @@ log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links."
 
 tar -cpf - $(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
 		-mindepth 1 -maxdepth 2 -type d -not -path ./native)		\
-	"Create \`Midipix mintty shell' shortcut.vbs" midipix.sh		|\
+	"Create \`Midipix mintty shell' shortcut.vbs" midipix.sh README		|\
 ${TARBALL_COMPRESS_CMD} -c > ${TARBALL_FNAME};
 log_msg info "Finished building binary distribution tarball.";
 if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
