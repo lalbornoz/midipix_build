@@ -26,6 +26,9 @@ esac; shift; done;
 [ -f ${HOME}/midipix_build.vars ] && . ${HOME}/midipix_build.vars;
 [ -f ../midipix_build.vars ] && . ../midipix_build.vars;
 . ./build.vars;
+if ! [ -d ${PREFIX} ]; then
+	mkdir ${PREFIX};
+fi;
 clear_env_with_except ${CLEAR_ENV_VARS_EXCEPT};
 check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${CHECK_PREREQ_CMDS};
 {(
