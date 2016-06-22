@@ -155,9 +155,12 @@ check_path_vars() {
 check_prereqs() {
 	while [ ${#} -gt 0 ]; do
 		if ! command -v ${1} >/dev/null; then
-			log_msg failexit "Error: missing prerequisite command \`${1}'.";
+			_cp_missing_list="${1}${_cp_missing_list:+ ${_cp_missing_list}}";
 		fi; shift;
 	done;
+	if [ -n "${_cp_missing_list}" ]; then
+		log_msg failexit "Error: missing prerequisite command(s): ${_cp_missing_list}.";
+	fi; unset _cp_missing_list;
 };
 
 # Clear the environment by unsetting each exported variable except
