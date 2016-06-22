@@ -27,7 +27,7 @@ esac; shift; done;
 [ -f ../midipix_build.vars ] && . ../midipix_build.vars;
 . ./build.vars;
 clear_env_with_except ${CLEAR_ENV_VARS_EXCEPT};
-check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${PREREQ_CMDS};
+check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${CHECK_PREREQ_CMDS};
 {(
 update_build_status build_start; build_times_init; trap "clean_build_status abort; exit 1" HUP INT TERM USR1 USR2;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
