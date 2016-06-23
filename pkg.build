@@ -162,7 +162,6 @@ if ! is_build_script_done install; then
 	fi;
 	find ${PKG_PREFIX}/lib -type f -name \*.la -exec rm -f {} \;
 	if [ ${PKG_LIBFILES_FIX:-0} -eq 1 ]; then
-		env TARGET="${TARGET}"				\
 		find . \( -name '*.so' -or -name '*.so.[0-9]'	\
 			-or -name '*.so.[0-9].[0-9]' -or	\
 			-name '*.so.[0-9].[0-9].[0-9]' \)	\
@@ -173,8 +172,8 @@ if ! is_build_script_done install; then
 		else	SO_NAME=${SO_PNAME}; fi;		\
 		echo perk -epdlltool ${SO_PNAME} \> ${SO_NAME}.def;					\
 		perk -epdlltool ${SO_PNAME} > ${SO_NAME}.def;						\
-		echo ${TARGET}-dlltool -l ${SO_NAME}.lib.a -D ${SO_PNAME} -d ${SO_NAME}.def;		\
-		${TARGET}-dlltool -l ${SO_NAME}.lib.a -D ${SO_PNAME} -d ${SO_NAME}.def;			\
+		echo ${PKG_TARGET}-dlltool -l ${SO_NAME}.lib.a -D ${SO_PNAME} -d ${SO_NAME}.def;		\
+		${PKG_TARGET}-dlltool -l ${SO_NAME}.lib.a -D ${SO_PNAME} -d ${SO_NAME}.def;			\
 		echo cp ${SO_NAME}.lib.a '"${PKG_PREFIX}/lib"';						\
 		cp ${SO_NAME}.lib.a '"${PKG_PREFIX}/lib" \;;
 
