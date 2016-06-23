@@ -39,3 +39,16 @@
  		if test "$DFT_LWR_MODEL" = "shared" ; then
  			LOCAL_LDFLAGS="${LD_RPATH_OPT}\$(LOCAL_LIBDIR)"
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+--- ncurses-6.0/misc/Makefile.in.orig	2015-08-05 23:15:41.000000000 +0000
++++ ncurses-6.0/misc/Makefile.in	2016-06-23 08:40:43.767712775 +0000
+@@ -110,8 +110,8 @@
+ install.libs :: $(DESTDIR)$(bindir) ncurses-config
+ 	$(INSTALL_SCRIPT) ncurses-config $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
+ 
+-@MAKE_PC_FILES@install.libs :: pc-files $(DESTDIR)$(PKG_CONFIG_LIBDIR)
+-@MAKE_PC_FILES@	$(SHELL) -c 'for name in *.pc; do $(INSTALL_DATA) $$name $(DESTDIR)$(PKG_CONFIG_LIBDIR)/$$name; done'
++@MAKE_PC_FILES@install.libs :: pc-files $(PKG_CONFIG_LIBDIR)
++@MAKE_PC_FILES@	$(SHELL) -c 'for name in *.pc; do $(INSTALL_DATA) $$name $(PKG_CONFIG_LIBDIR)/$$name; done'
+ 
+ @MAKE_PC_FILES@sources :: pc-files
+ @MAKE_PC_FILES@pc-files :

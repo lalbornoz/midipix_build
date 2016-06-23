@@ -7,6 +7,8 @@
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
+-i)	[ -z "${2}" ] && exec cat build.usage ||\
+	insert_build_script_link "${2}"; exit $?; ;;
 -nd)	ARG_NO_DOWNLOAD=1; ;;
 -pt)	ARG_PEDANTIC=1; ;;
 -r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
@@ -26,11 +28,11 @@ esac; shift; done;
 [ -f ${HOME}/midipix_build.vars ] && . ${HOME}/midipix_build.vars;
 [ -f ../midipix_build.vars ] && . ../midipix_build.vars;
 . ./build.vars;
+clear_env_with_except ${CLEAR_ENV_VARS_EXCEPT};
+check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${CHECK_PREREQ_CMDS};
 if ! [ -d ${PREFIX} ]; then
 	mkdir ${PREFIX};
 fi;
-clear_env_with_except ${CLEAR_ENV_VARS_EXCEPT};
-check_path_vars ${CHECK_PATH_VARS}; check_prereqs ${CHECK_PREREQ_CMDS};
 {(
 update_build_status build_start; build_times_init; trap "clean_build_status abort; exit 1" HUP INT TERM USR1 USR2;
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
@@ -53,7 +55,7 @@ for BUILD_LVL in 0 1 2 3 ${ARG_TARBALL:+9}; do
 				, "${BUILD_SCRIPT_FNAME}"; then
 			log_msg info "Skipped build script \`${BUILD_SCRIPT_FNAME}' (--build-scripts policy.)";
 			continue;
-		elif [ ! -f ${BUILD_SCRIPT_FNAME} ]; then
+		elif [ ! -f "${BUILD_SCRIPT_FNAME}" ]; then
 			log_msg info "Build script \`${BUILD_SCRIPT_FNAME}' non-existent or not a file.";
 			continue;
 		else
@@ -68,6 +70,7 @@ for BUILD_LVL in 0 1 2 3 ${ARG_TARBALL:+9}; do
 			 SCRIPT_FNAME=${BUILD_SCRIPT_FNAME};				\
 			 SCRIPT_NAME=${SCRIPT_FNAME%%.build*};				\
 			 export PREFIX_LVL="$(eval echo \${PREFIX_LVL${BUILD_LVL}})";	\
+			 export PKG_TARGET=${TARGET};					\
 			 export MIDIPIX_BUILD_PWD=$(pwd); cd ${WORKDIR};		\
 			 for SCRIPT_SOURCE in build.subr ${SCRIPT_NAME}.vars		\
 					${BUILD_SCRIPT_FNAME}; do			\
@@ -83,7 +86,7 @@ for BUILD_LVL in 0 1 2 3 ${ARG_TARBALL:+9}; do
 					SCRIPT_NAME=${BUILD_SCRIPT_FNAME%%.build};
 					SCRIPT_NAME=${SCRIPT_NAME#*.};
 					SCRIPT_NAME=$(echo "${SCRIPT_NAME}" | tr a-z A-Z);
-					if [ -z ${PKG_SUBDIR=$(get_var_unsafe PKG_${SCRIPT_NAME}_SUBDIR)} ]; then
+					if [ -z "${PKG_SUBDIR=$(get_var_unsafe PKG_${SCRIPT_NAME}_SUBDIR)}" ]; then
 						PKG_URL=$(get_var_unsafe PKG_${SCRIPT_NAME}_URL);
 						PKG_FNAME=${PKG_URL##*/};
 					 	PKG_SUBDIR=${PKG_FNAME%%.tar*};
