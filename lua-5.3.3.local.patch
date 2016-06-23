@@ -41,11 +41,11 @@
  BASE_O= $(CORE_O) $(LIB_O) $(MYOBJS)
  
 -LUA_T=	lua
-+LUA_T=	lua$(R)
++LUA_T=	lua$(V)
  LUA_O=	lua.o
  
 -LUAC_T=	luac
-+LUAC_T=	luac$(R)
++LUAC_T=	luac$(V)
  LUAC_O=	luac.o
  
  ALL_O= $(BASE_O) $(LUA_O) $(LUAC_O)
@@ -81,7 +81,7 @@
  	$(MAKE) "LUA_A=lua53.dll" "LUA_T=lua.exe" \
  	"AR=$(CC) -shared -o" "RANLIB=strip --strip-unneeded" \
 --- lua-5.3.3/Makefile.orig	2015-05-27 11:10:11.000000000 +0000
-+++ lua-5.3.3/Makefile	2016-06-23 10:45:39.875546404 +0000
++++ lua-5.3.3/Makefile	2016-06-23 10:59:29.519527991 +0000
 @@ -36,23 +36,25 @@
  # == END OF USER SETTINGS -- NO NEED TO CHANGE ANYTHING BELOW THIS LINE =======
  
@@ -95,8 +95,8 @@
  
  # What to install.
 -TO_BIN= lua luac
-+TO_BIN= lua$(R) luac$(R)
-+TO_BIN_LINKS= lua$(R):lua luac$(R):luac
++TO_BIN= lua$(V) luac$(V)
++TO_BIN_LINKS= lua$(V):lua luac$(V):luac
  TO_INC= lua.h luaconf.h lualib.h lauxlib.h lua.hpp
  TO_LIB= liblua.a
 +TO_LIBSO= liblua.so liblua.so.$V
@@ -119,7 +119,7 @@
  install: dummy
  	cd src && $(MKDIR) $(INSTALL_BIN) $(INSTALL_INC) $(INSTALL_LIB) $(INSTALL_MAN) $(INSTALL_LMOD) $(INSTALL_CMOD)
  	cd src && $(INSTALL_EXEC) $(TO_BIN) $(INSTALL_BIN)
-+	cd src && for FNAME in $(TO_BIN_LINKS); do echo ln -s $${FNAME%:*} $(INSTALL_BIN)/$${FNAME#*:}; done
++	cd src && for FNAME in $(TO_BIN_LINKS); do echo ln -fs $${FNAME%:*} $(INSTALL_BIN)/$${FNAME#*:}; ln -fs $${FNAME%:*} $(INSTALL_BIN)/$${FNAME#*:}; done
  	cd src && $(INSTALL_DATA) $(TO_INC) $(INSTALL_INC)
  	cd src && $(INSTALL_DATA) $(TO_LIB) $(INSTALL_LIB)
 +	cd src && $(INSTALL_EXEC) $(TO_LIBSO) $(INSTALL_LIB)
