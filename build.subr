@@ -214,15 +214,27 @@ check_path_vars() {
 };
 
 # Check whether all supplied command names resolve.
-check_prereqs() {
+check_prereq_cmds() {
 	while [ ${#} -gt 0 ]; do
 		if ! command -v ${1} >/dev/null; then
-			_cp_missing_list="${1}${_cp_missing_list:+ ${_cp_missing_list}}";
+			_cpc_missing_list="${1}${_cpc_missing_list:+ ${_cpc_missing_list}}";
 		fi; shift;
 	done;
-	if [ -n "${_cp_missing_list}" ]; then
-		log_msg failexit "Error: missing prerequisite command(s): ${_cp_missing_list}.";
-	fi; unset _cp_missing_list;
+	if [ -n "${_cpc_missing_list}" ]; then
+		log_msg failexit "Error: missing prerequisite command(s): ${_cpc_missing_list}.";
+	fi; unset _cpc_missing_list;
+};
+
+# Check whether all supplied pathnames resolve.
+check_prereq_files() {
+	while [ ${#} -gt 0 ]; do
+		if [ ! -e ${1} ]; then
+			_cpf_missing_list="${1}${_cpf_missing_list:+ ${_cpf_missing_list}}";
+		fi; shift;
+	done;
+	if [ -n "${_cpf_missing_list}" ]; then
+		log_msg failexit "Error: missing prerequisite file(s): ${_cpf_missing_list}.";
+	fi; unset _cpf_missing_list;
 };
 
 # Clear the environment by unsetting each exported variable except
