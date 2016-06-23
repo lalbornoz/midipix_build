@@ -9,7 +9,7 @@ get_var_dyn() { ${1}; };
 get_var_unsafe() { eval echo \${${1}}; };
 set_var_dyn() { eval ${1}\(\) \{ echo \"${2}\"\; \}; };
 set_var_unsafe() { eval ${1}=\"${2}\"; };
-get_name_without_slash() { while [ "${1%/}" != ${1} ]; do set -- ${1%/}; done; echo ${1}; };
+get_name_without_slash() { while [ "${1%/}" != "${1}" ]; do set -- ${1%/}; done; echo ${1}; };
 get_postfix_lrg() { echo "${1##*${2}}"; };
 get_prefix_lrg() { echo "${1%%${2}*}"; };
 get_postfix() { echo "${1#*${2}}"; };
@@ -65,6 +65,7 @@ export_vars_subst() {
 };
 
 fetch_git() {
+	[ -z "${1}" ] && return 1;
 	[ ${ARG_NO_DOWNLOAD:-0} -eq 1 ] && return;
 	rm_if_exists ${1};
 	[ -d ${1} ] && (cd ${1} && git pull origin main)\
@@ -79,9 +80,70 @@ find_with_no_paths() {
 	unset _fwnp_args _fwnp_not_path; return ${_rc};
 };
 
+insert_build_script_link() {
+	_ibsl_fname=${1};
+	_ibsl_level=${_ibsl_fname%%.*};
+	_ibsl_name=${_ibsl_fname#*.}; _ibsl_name=${_ibsl_name%.build};
+	if [ -z "${_ibsl_fname}" -o -z "${_ibsl_level}"	\
+			-o -z "${_ibsl_name}" ]		\
+			|| ! isnumber ${_ibsl_level}	\
+			|| [ ${#_ibsl_level} != 3 ]; then
+		log_msg failexit "Error: invalid or empty build script filename/level/name.";
+		return 1;
+	elif [ -z "$(find -maxdepth 1 -name ${_ibsl_level}.\* -printf '%P\n' -quit)" ]; then
+		echo ln -s pkg.build ${_ibsl_fname};
+		ln -s pkg.build ${_ibsl_fname};
+		unset _ibsl_fname _ibsl_level _ibsl_name;
+		return 0;
+	else
+		_ibsl_levels="$(find -maxdepth 1 -name		\
+			 ${_ibsl_level%[0-9][0-9]}\[0-9\]\[0-9\].\*	\
+			-printf '%P\n' | sort -nk1)";
+	fi;
+	for _ibsl_fname_cur in ${_ibsl_levels}; do
+		if [ \( ${_ibsl_changed:=0} -eq 0 \) -a	\
+				\( "${_ibsl_fname_cur%%.*}" -eq ${_ibsl_level} \) ]; then
+			echo ln -s pkg.build ${_ibsl_fname};
+			ln -s pkg.build ${_ibsl_fname};
+			_ibsl_changed=1;
+		fi;
+		if [ ${_ibsl_changed:=0} -eq 1 ]; then
+			if [ -z "$(find -maxdepth 1 -name $((${_ibsl_fname_cur%%.*}+1)).\*	\
+					-printf '%P\n' -quit)" ]; then
+				_ibsl_last=1;
+			fi;
+			echo mv ${_ibsl_fname_cur}	\
+				$((${_ibsl_fname_cur%%.*}+1)).${_ibsl_fname_cur#*.};
+			mv ${_ibsl_fname_cur}	\
+				$((${_ibsl_fname_cur%%.*}+1)).${_ibsl_fname_cur#*.};
+			if [ ${_ibsl_last:-0} -eq 1 ]; then
+				break;
+			fi;
+		fi;
+	done;
+	if [ ${_ibsl_changed:=0} -eq 0 ]; then
+		log_msg failexit "Error: build level ${_ibsl_level} not in \`${_ibsl_levels}'.";
+	else
+		unset _ibsl_levels _ibsl_fname_cur _ibsl_changed _ibsl_last;
+		unset _ibsl_fname _ibsl_level _ibsl_name;
+	fi;
+};
+
+isnumber() {
+	[ -z "${1}" ] && return 1 || _i_num=${1};
+	while [ -n "${_i_num}" ]; do
+		if [ "${_i_num#[0-9]}" = "${_i_num}" ]; then
+			return 1;
+		else
+			_i_num="${_i_num#[0-9]}";
+		fi;
+	done; unset _i_num; return 0;
+};
+
 rm_if_exists() {
 	[ -z "${1#-m}" ] && { _rie_arg_m=1; shift; };
 	[ -z "${1#-c}" ] && { _rie_arg_c=1; shift; };
+	[ -z "${1}" ] && return 1;
 	if [ -d ${1} -o -f ${1} ]; then
 		log_msg warn "Removing directory or file \`${1}'.";
 		if [ ${ARG_PEDANTIC:-0} -eq 1 ]; then
@@ -225,7 +287,7 @@ is_build_script_done() {
 		else
 			return 1;	# Build
 		fi;
-	elif [ -f ${WORKDIR}/.${2:-$(get_basename ${SCRIPT_FNAME%.build})}.${1} ]; then
+	elif [ -f "${WORKDIR}/.${2:-$(get_basename ${SCRIPT_FNAME%.build})}.${1}" ]; then
 		return 0;		# Skip
 	else
 		return 1;		# Build
@@ -287,8 +349,8 @@ match_list() {
 
 parse_with_pkg_name() {
 	PKG_LVL=${1}; PKG_NAME=${2}; shift 2;
-	while [ ${#} -ge 0 ]; do
-		if [ "${PKG_NAME}" = ${1} ]; then
+	while [ ${#} -gt 0 ]; do
+		if [ "${PKG_NAME}" = "${1}" ]; then
 			export_vars_subst PKG_LVL${PKG_LVL}_ PKG_ ${PKG_BUILD_VARS};
 			export_vars_subst PKG_$(echo ${PKG_NAME} | tr a-z A-Z)_ PKG_ ${PKG_BUILD_VARS};
 			[ -z "${PKG_URL}" ] && return 1;
@@ -306,7 +368,8 @@ parse_with_pkg_name() {
 			fi; unset _pwpn_env_var _pwpn_env_vars;
 			return 0;
 		fi; shift;
-	done; return 1;
+	done;
+	log_msg failexit "Error: package \`${PKG_NAME}' missing in \${PKG_BUILD_NAMES}.";
 };
 
 run_cmd_unsplit() {
@@ -324,7 +387,7 @@ update_build_status() {
 	while [ ${#} -gt 0 ]; do
 	case ${1} in
 	build_start)
-		if [ -f ${BUILD_STATUS_IN_PROGRESS_FNAME} ]; then
+		if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 			log_msg failexit "Error: build already in progress.";
 		else
 			touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
@@ -332,7 +395,7 @@ update_build_status() {
 		fi;
 		;;
 	build_finish)
-		if [ -f ${BUILD_STATUS_PROGRESS_FNAME} ]; then
+		if [ -f "${BUILD_STATUS_PROGRESS_FNAME}" ]; then
 			_ubs_bsp_fname=${BUILD_STATUS_PROGRESS_FNAME};
 			unset BUILD_STATUS_PROGRESS_FNAME;
 			rm -f ${_ubs_bsp_fname}; 
@@ -347,10 +410,10 @@ update_build_status() {
 		touch ${BUILD_STATUS_TARBALL_PROGRESS_FNAME:=${PREFIX}/TARBALL_STARTED_AT_$(date ${TIMESTAMP_FMT_STATUS_FILES})};
 		;;
 	tarball_finish)
-		[ -f ${BUILD_STATUS_TARBALL_PROGRESS_FNAME} ] &&\
+		[ -f "${BUILD_STATUS_TARBALL_PROGRESS_FNAME}" ] &&\
 			rm -f ${BUILD_STATUS_TARBALL_PROGRESS_FNAME}; ;;
 	finish)
-		[ -f ${BUILD_STATUS_IN_PROGRESS_FNAME} ] &&\
+		[ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ] &&\
 			rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME}; ;;
 	esac; shift;
 	done;

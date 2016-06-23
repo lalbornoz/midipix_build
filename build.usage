@@ -1,12 +1,16 @@
-usage: ./build.sh [-c] [-nd] [-r ALL|name[:step]] [-h] [-t]
+usage: ./build.sh [-c] [-nd] [-r ALL|level.name.build[:step]] [-h] [-t]
         -c                     Clean $PREFIX before processing build scripts.
+        -i level.name.build    Insert link to pkg.build for the specified build script.
+                               All consecutive scripts with higher build levels will
+                               be renamed automatically.
         -nd                    Don't rm(1) and re-download tarballs when not required.
         -h                     Show this screen.
         -pt                    Enable pedantic mode. In addition to the warnings emitted
                                whenever a potentially dangerous operation is invoked by
                                the build scripts, manual confirmation will be required.
                                This currently only includes rm_if_exists().
-        -r ALL|name[:step]     Restart all or the specified build script(s) completely
+        -r ALL|level.name.build[:step]
+                               Restart all or the specified build script(s) completely
                                or at the optionally specified build step. Currently defined
                                build steps are: fetch extract build_dir patch configure clean
                                build install configure1 configure2 build1 build2 install1 install2.

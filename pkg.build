@@ -47,7 +47,7 @@ if [ -z "${PKG_BUILD_DIR}" ]; then
 	set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
 fi;
 if ! is_build_script_done build_dir; then
-	[ ${PKG_SUBDIR} != ${PKG_BUILD_DIR} ] &&\
+	[ "${PKG_SUBDIR}" != "${PKG_BUILD_DIR}" ] &&\
 		rm_if_exists -m ${PKG_BUILD_DIR};
 	set_build_script_done build_dir -patch;
 fi;
@@ -62,7 +62,7 @@ if ! is_build_script_done patch; then
 			${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local.patch		\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
-		[ -r ${PATCH_FNAME} ] &&\
+		[ -r "${PATCH_FNAME}" ] &&\
 			patch -b -d ${PKG_SUBDIR} -p1 < ${PATCH_FNAME};
 	done; unset PATCH_FNAME;
 	if [ -n "${PKG_PATCHES_EXTRA_URL}" ]; then
