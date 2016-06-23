@@ -23,7 +23,7 @@
  #define LUA_CDIR	LUA_ROOT "lib/lua/" LUA_VDIR "/"
  #define LUA_PATH_DEFAULT  \
 --- lua-5.3.3/src/Makefile.orig	2015-05-27 11:10:11.000000000 +0000
-+++ lua-5.3.3/src/Makefile	2016-06-23 10:08:36.751595745 +0000
++++ lua-5.3.3/src/Makefile	2016-06-23 10:45:40.323546394 +0000
 @@ -26,9 +26,10 @@
  
  # == END OF USER SETTINGS -- NO NEED TO CHANGE ANYTHING BELOW THIS LINE =======
@@ -36,7 +36,16 @@
  CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o \
  	lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o \
  	ltm.o lundump.o lvm.o lzio.o
-@@ -43,7 +44,7 @@
+@@ -36,14 +37,14 @@
+ 	lmathlib.o loslib.o lstrlib.o ltablib.o lutf8lib.o loadlib.o linit.o
+ BASE_O= $(CORE_O) $(LIB_O) $(MYOBJS)
+ 
+-LUA_T=	lua
++LUA_T=	lua$(R)
+ LUA_O=	lua.o
+ 
+-LUAC_T=	luac
++LUAC_T=	luac$(R)
  LUAC_O=	luac.o
  
  ALL_O= $(BASE_O) $(LUA_O) $(LUAC_O)
@@ -71,9 +80,9 @@
  mingw:
  	$(MAKE) "LUA_A=lua53.dll" "LUA_T=lua.exe" \
  	"AR=$(CC) -shared -o" "RANLIB=strip --strip-unneeded" \
---- lua-5.3.3/Makefile.orig	2016-01-14 01:13:47.000000000 +0000
-+++ lua-5.3.3/Makefile	2016-06-23 10:14:59.643587247 +0000
-@@ -36,23 +36,24 @@
+--- lua-5.3.3/Makefile.orig	2015-05-27 11:10:11.000000000 +0000
++++ lua-5.3.3/Makefile	2016-06-23 10:45:39.875546404 +0000
+@@ -36,23 +36,25 @@
  # == END OF USER SETTINGS -- NO NEED TO CHANGE ANYTHING BELOW THIS LINE =======
  
  # Convenience platforms targets.
@@ -85,7 +94,9 @@
 +R= $V.3
  
  # What to install.
- TO_BIN= lua luac
+-TO_BIN= lua luac
++TO_BIN= lua$(R) luac$(R)
++TO_BIN_LINKS= lua$(R):lua luac$(R):luac
  TO_INC= lua.h luaconf.h lualib.h lauxlib.h lua.hpp
  TO_LIB= liblua.a
 +TO_LIBSO= liblua.so liblua.so.$V
@@ -104,8 +115,11 @@
  
  test:	dummy
  	src/lua -v
-@@ -62,6 +63,7 @@
+@@ -60,8 +62,10 @@
+ install: dummy
+ 	cd src && $(MKDIR) $(INSTALL_BIN) $(INSTALL_INC) $(INSTALL_LIB) $(INSTALL_MAN) $(INSTALL_LMOD) $(INSTALL_CMOD)
  	cd src && $(INSTALL_EXEC) $(TO_BIN) $(INSTALL_BIN)
++	cd src && for FNAME in $(TO_BIN_LINKS); do echo ln -s $${FNAME%:*} $(INSTALL_BIN)/$${FNAME#*:}; done
  	cd src && $(INSTALL_DATA) $(TO_INC) $(INSTALL_INC)
  	cd src && $(INSTALL_DATA) $(TO_LIB) $(INSTALL_LIB)
 +	cd src && $(INSTALL_EXEC) $(TO_LIBSO) $(INSTALL_LIB)
