@@ -20,3 +20,54 @@
  	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
  	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
  	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+--- tmux-2.2/configure.orig	2016-04-11 02:01:19.000000000 +0200
++++ tmux-2.2/configure	2016-06-24 12:56:52.685289900 +0200
+@@ -3664,18 +3664,6 @@
+ $as_echo "$ac_cv_prog_cc_g" >&6; }
+ if test "$ac_test_CFLAGS" = set; then
+   CFLAGS=$ac_save_CFLAGS
+-elif test $ac_cv_prog_cc_g = yes; then
+-  if test "$GCC" = yes; then
+-    CFLAGS="-g -O2"
+-  else
+-    CFLAGS="-g"
+-  fi
+-else
+-  if test "$GCC" = yes; then
+-    CFLAGS="-O2"
+-  else
+-    CFLAGS=
+-  fi
+ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CC option to accept ISO C89" >&5
+ $as_echo_n "checking for $CC option to accept ISO C89... " >&6; }
+--- tmux-2.2/Makefile.in.orig	2016-04-11 02:01:16.000000000 +0200
++++ tmux-2.2/Makefile.in	2016-06-24 12:58:45.526157800 +0200
+@@ -94,10 +94,10 @@
+ 
+ # glibc as usual does things ass-backwards and hides useful things by default,
+ # so everyone has to add this.
+-@IS_GLIBC_TRUE@am__append_1 = -D_GNU_SOURCE
++am__append_1 = -D_GNU_SOURCE
+ 
+ # Set flags for gcc.
+-@IS_GCC_TRUE@am__append_2 = -std=gnu99 -O2
++@IS_GCC_TRUE@am__append_2 = -std=gnu99
+ @IS_DEBUG_TRUE@@IS_GCC_TRUE@am__append_3 = -g -Wno-long-long -Wall -W \
+ @IS_DEBUG_TRUE@@IS_GCC_TRUE@	-Wnested-externs -Wformat=2 \
+ @IS_DEBUG_TRUE@@IS_GCC_TRUE@	-Wmissing-prototypes \
+--- tmux-2.2/tmux.c.orig	2016-03-05 18:55:49.000000000 +0100
++++ tmux-2.2/tmux.c	2016-06-24 13:00:39.079504000 +0200
+@@ -133,10 +133,12 @@
+ 		errno = ENOTDIR;
+ 		goto fail;
+ 	}
++#if 0
+ 	if (sb.st_uid != uid || (sb.st_mode & S_IRWXO) != 0) {
+ 		errno = EACCES;
+ 		goto fail;
+ 	}
++#endif
+ 
+ 	if (realpath(base, resolved) == NULL)
+ 		strlcpy(resolved, base, sizeof resolved);
