@@ -20,24 +20,6 @@
  	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
  	      | -uxpv* | -beos* | -mpeix* | -udk* \
  	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
---- libarchive-3.1.2/configure.orig	2013-02-09 18:23:08.000000000 +0100
-+++ libarchive-3.1.2/configure	2016-03-08 12:40:21.031444000 +0100
-@@ -21629,3 +21629,15 @@
- $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
- fi
- 
-+# a transitional workaround...
-+case $host_os in
-+		midipix*)
-+			cp $ac_confdir/libtool.midipix libtool || exit 2
-+
-+			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
-+				-e 's/@cbb_build_alias@/'$build_alias'/g' \
-+				-e 's/@cbb_build_os@/'$build_os'/g' \
-+				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
-+			;;
-+esac
-+
 --- libarchive-3.1.2/cpio/bsdcpio.1.orig
 +++ libarchive-3.1.2/cpio/bsdcpio.1
 @@ -156,7 +156,8 @@
