@@ -89,7 +89,8 @@ insert_build_script_link() {
 			|| ! isnumber ${_ibsl_level}	\
 			|| [ ${#_ibsl_level} != 3 ]; then
 		log_msg failexit "Error: invalid or empty build script filename/level/name.";
-		return 1;
+	elif [ -e ${_ibsl_fname} ]; then
+		log_msg failexit "Error: build script \`${_ibsl_fname}' already exists.";
 	elif [ -z "$(find -maxdepth 1 -name ${_ibsl_level}.\* -printf '%P\n' -quit)" ]; then
 		echo ln -s pkg.build ${_ibsl_fname};
 		ln -s pkg.build ${_ibsl_fname};
