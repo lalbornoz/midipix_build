@@ -1,0 +1,22 @@
+--- libevent-2.0.22-stable/config.sub.orig	2013-05-29 19:28:15.000000000 +0200
++++ libevent-2.0.22-stable/config.sub	2016-06-24 09:27:41.659295300 +0200
+@@ -791,6 +791,10 @@
+ 	microblaze)
+ 		basic_machine=microblaze-xilinx
+ 		;;
++	midipix)
++		basic_machine=x86_64-pc
++		os=-midipix
++		;;
+ 	mingw32)
+ 		basic_machine=i386-pc
+ 		os=-mingw32
+@@ -1359,7 +1363,7 @@
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -chorusos* | -chorusrdb* | -cegcc* \
+ 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -linux-gnu* | -linux-android* \
++	      | -midipix* | -mingw32* | -linux-gnu* | -linux-android* \
+ 	      | -linux-newlib* | -linux-uclibc* \
+ 	      | -uxpv* | -beos* | -mpeix* | -udk* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
