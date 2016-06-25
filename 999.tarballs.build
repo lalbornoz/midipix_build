@@ -57,7 +57,10 @@ log_msg info "Restored ${PREFIX_BASENAME}/lib.";
 
 
 log_msg info "Building source tarball...";
-tar -cpf - $(find tmp -mindepth 1 -maxdepth 1 -type d)				|\
+tar -cpf - $(find tmp -mindepth 1 -maxdepth 2					\
+	-not -path tmp/.\*							\
+	-not -path tmp/\*.tar\* -not -path tmp/\*.tgz -not -path tmp/\*.txz	\
+	-not -path tmp/ntctty/.git -not -path tmp/psxscl/.git)			|\
 ${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_SRC_FNAME};
 log_msg info "Finished building source tarball.";
 if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
