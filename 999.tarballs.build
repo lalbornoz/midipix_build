@@ -57,7 +57,7 @@ log_msg info "Restored ${PREFIX_BASENAME}/lib.";
 
 
 log_msg info "Building source tarball...";
-tar -cpf - $(find tmp -mindepth 1 -maxdepth 2					\
+tar -cpf - $(find tmp -mindepth 2 -maxdepth 2					\
 	-not -path tmp/.\*							\
 	-not -path tmp/\*.tar\* -not -path tmp/\*.tgz -not -path tmp/\*.txz	\
 	-not -path tmp/ntctty/.git -not -path tmp/psxscl/.git)			|\
