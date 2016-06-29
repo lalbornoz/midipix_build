@@ -1,0 +1,22 @@
+--- libpipeline-1.4.1/build-aux/config.sub.orig	2015-08-17 09:14:23.000000000 +0000
++++ libpipeline-1.4.1/build-aux/config.sub	2016-06-29 17:04:32.831536355 +0000
+@@ -796,6 +796,10 @@
+ 	microblaze*)
+ 		basic_machine=microblaze-xilinx
+ 		;;
++	midipix*)
++		basic_machine=x86_64-pc
++		os=-midipix
++		;;
+ 	mingw64)
+ 		basic_machine=x86_64-pc
+ 		os=-mingw64
+@@ -1376,7 +1380,7 @@
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -chorusos* | -chorusrdb* | -cegcc* \
+ 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
++	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
+ 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
+ 	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
