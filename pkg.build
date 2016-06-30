@@ -52,6 +52,11 @@ if ! is_build_script_done build_dir; then
 	set_build_script_done build_dir -patch;
 fi;
 if ! is_build_script_done patch; then
+	if [ ${PKG_CONFIG_SUB_INSTALL:-0} -eq 1 ]; then
+		find ${PKG_SUBDIR} -name config.sub					\
+			-exec mv {} {}.orig \;						\
+			-exec install -m 0700 ${MIDIPIX_BUILD_PWD}/config.sub {} \;;
+	fi;
 	if [ ${PKG_AUTOGEN:-0} -eq 1 ]; then
 		if [ -d ${PKG_SUBDIR}/build-aux ]; then
 			install -m 0700 ${MIDIPIX_BUILD_PWD}/config.sub			\
@@ -69,7 +74,7 @@ if ! is_build_script_done patch; then
 			(cd ${PKG_SUBDIR} && autoconf) || exit 1;
 		fi;
 	fi;
-	for PATCH_FNAME in portage/${PKG_SUBDIR}.midipix.patch				\
+	for PATCH_FNAME in 								\
 			${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local.patch			\
 			${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local.patch		\
@@ -84,9 +89,9 @@ if ! is_build_script_done patch; then
 		fi;
 	fi;
 	[ -x ${PKG_SUBDIR}/configure ] &&			\
-		cp portage/config.cache ${PKG_BUILD_DIR}/;
+		cp ${MIDIPIX_BUILD_PWD}/config.cache ${PKG_BUILD_DIR}/;
 	if [ ${PKG_LIBTOOL_MIDIPIX:-0} -eq 1 ]; then
-		cp portage/libtool.midipix ${PKG_SUBDIR}/;
+		cp ${MIDIPIX_BUILD_PWD}/libtool.midipix ${PKG_SUBDIR}/;
 		sed -i.orig -e "/^libdir=/s/libdir='/libdir='\$PKG_PREFIX\//"\
 			${PKG_SUBDIR}/libtool.midipix;
 		if [ ${PKG_LIBTOOL_MIDIPIX_FIX:-0} -eq 1 ]; then
