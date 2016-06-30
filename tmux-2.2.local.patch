@@ -1,25 +1,3 @@
---- tmux-2.2/etc/config.sub.orig	2016-04-11 02:01:16.000000000 +0200
-+++ tmux-2.2/etc/config.sub	2016-06-24 09:22:29.999927100 +0200
-@@ -804,6 +804,10 @@
- 	microblaze*)
- 		basic_machine=microblaze-xilinx
- 		;;
-+	midipix*)
-+		basic_machine=x86_64-pc
-+		os=-midipix
-+		;;
- 	mingw64)
- 		basic_machine=x86_64-pc
- 		os=-mingw64
-@@ -1384,7 +1388,7 @@
- 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
- 	      | -chorusos* | -chorusrdb* | -cegcc* \
- 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
--	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
-+	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
- 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
- 	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
- 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
 --- tmux-2.2/configure.orig	2016-04-11 02:01:19.000000000 +0200
 +++ tmux-2.2/configure	2016-06-24 12:56:52.685289900 +0200
 @@ -3664,18 +3664,6 @@

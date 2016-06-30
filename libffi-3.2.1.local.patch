@@ -1,3 +1,127 @@
+diff -ru --new-file a/configure b/configure
+--- a/configure	2014-11-12 06:59:57.000000000 -0500
++++ b/configure	2016-01-25 18:26:47.000000000 -0500
+@@ -17133,7 +17133,7 @@
+   i?86-*-freebsd* | i?86-*-openbsd*)
+ 	TARGET=X86_FREEBSD; TARGETDIR=x86
+ 	;;
+-  i?86-win32* | i?86-*-cygwin* | i?86-*-mingw* | i?86-*-os2* | i?86-*-interix*)
++  i?86-win32* | i?86-*-cygwin* | i?86-*-mingw* | i?86-*-os2* | i?86-*-interix* | i?86-*-midipix*)
+ 	TARGET=X86_WIN32; TARGETDIR=x86
+ 	# All mingw/cygwin/win32 builds require -no-undefined for sharedlib.
+ 	# We must also check with_cross_host to decide if this is a native
+@@ -17161,7 +17161,7 @@
+ 	TARGET=X86_DARWIN; TARGETDIR=x86
+ 	;;
+ 
+-  x86_64-*-cygwin* | x86_64-*-mingw*)
++  x86_64-*-cygwin* | x86_64-*-mingw* | x86_64-*-midipix*)
+ 	TARGET=X86_WIN64; TARGETDIR=x86
+ 	# All mingw/cygwin/win32 builds require -no-undefined for sharedlib.
+ 	# We must also check with_cross_host to decide if this is a native
+@@ -21766,3 +21766,15 @@
+ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
+ fi
+ 
++# a transitional workaround...
++case $host_os in
++		midipix*)
++			cp $ac_confdir/libtool.midipix libtool || exit 2
++
++			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
++				-e 's/@cbb_build_alias@/'$build_alias'/g' \
++				-e 's/@cbb_build_os@/'$build_os'/g' \
++				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
++			;;
++esac
++
+diff -ru --new-file a/src/closures.c b/src/closures.c
+--- a/src/closures.c	2014-11-08 07:47:24.000000000 -0500
++++ b/src/closures.c	2016-01-25 17:57:43.000000000 -0500
+@@ -26,6 +26,25 @@
+    DEALINGS IN THE SOFTWARE.
+    ----------------------------------------------------------------------- */
+ 
++#ifdef __midipix__
++
++#include <stdlib.h>
++
++void * ffi_closure_alloc (size_t size, void ** code)
++{
++	if (code)
++		return (*code = malloc(size));
++	else
++		return 0;
++}
++
++void ffi_closure_free (void * addr)
++{
++	free(addr);
++}
++
++#else
++
+ #if defined __linux__ && !defined _GNU_SOURCE
+ #define _GNU_SOURCE 1
+ #endif
+@@ -686,3 +705,4 @@
+ 
+ # endif /* ! FFI_MMAP_EXEC_WRIT */
+ #endif /* FFI_CLOSURES */
++#endif
+diff -ru --new-file a/src/x86/ffi.c b/src/x86/ffi.c
+--- a/src/x86/ffi.c	2014-11-08 07:47:24.000000000 -0500
++++ b/src/x86/ffi.c	2016-01-25 17:52:14.000000000 -0500
+@@ -31,8 +31,12 @@
+ #if !defined(__x86_64__) || defined(_WIN64) || defined(__CYGWIN__)
+ 
+ #ifdef _WIN64
++#ifdef __midipix__
++/* not needed */
++#else
+ #include <windows.h>
+ #endif
++#endif
+ 
+ #include <ffi.h>
+ #include <ffi_common.h>
+diff -ru --new-file a/src/x86/win32.S b/src/x86/win32.S
+--- a/src/x86/win32.S	2014-11-11 09:41:37.000000000 -0500
++++ b/src/x86/win32.S	2016-01-25 18:36:49.000000000 -0500
+@@ -1344,6 +1344,14 @@
+         .align 4
+ .LEFDE5:
+ 
++#ifdef __midipix__
++	.section .got$ffi_call_win32,"r"
++	.global __imp_ffi_call_win32
++__imp_ffi_call_win32:
++	.long	ffi_call_win32
++	.linkonce discard
++#endif
++
+ #endif /* !_MSC_VER */
+ 
+ #if defined __ELF__ && defined __linux__
+diff -ru --new-file a/src/x86/win64.S b/src/x86/win64.S
+--- a/src/x86/win64.S	2014-11-08 07:47:24.000000000 -0500
++++ b/src/x86/win64.S	2016-01-25 17:47:17.000000000 -0500
+@@ -516,5 +516,15 @@
+ 	pop	%rbp
+ 	retq
+ 	.seh_endproc
++
++
++#ifdef __midipix__
++	.section .got$ffi_call_win64,"r"
++	.global __imp_ffi_call_win64
++__imp_ffi_call_win64:
++	.quad	ffi_call_win64
++	.linkonce discard
++#endif
++
+ #endif /* !_MSC_VER */
+ 
 --- libffi-3.2.1/src/x86/win32.S.orig2	2016-05-31 09:21:19.120895425 +0000
 +++ libffi-3.2.1/src/x86/win32.S	2016-05-31 09:22:19.252894091 +0000
 @@ -529,7 +529,9 @@

@@ -1,0 +1,59 @@
+diff -ru --new-file a/configure b/configure
+--- a/configure	2014-07-18 18:07:39.000000000 -0400
++++ b/configure	2015-06-01 12:42:55.874926255 -0400
+@@ -66789,3 +66791,11 @@
+ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
+ fi
+ 
++# bypass dependency on help2man
++if [ x"$cross_compiling" = xyes ]; then
++	mkdir -p man;
++	for f in $srcdir/src/*.c; do src=$(basename $f); doc="${src%.*}"; echo $doc; touch man/$doc.1; done
++	for f in dir sha1sum sha224sum sha256sum sha384sum sha512sum vdir; do touch man/$f.1; done
++
++	sed -i -e 's/@cross_compiling@/'$cross_compiling'/g' Makefile || exit 2
++fi
+diff -ru --new-file a/Makefile.in b/Makefile.in
+--- a/Makefile.in	2014-07-18 18:22:24.000000000 -0400
++++ b/Makefile.in	2015-06-01 12:03:29.274957961 -0400
+@@ -4911,6 +4911,8 @@
+     $(bin_SCRIPTS) \
+     $(EXTRA_PROGRAMS)
+ 
++CROSS_COMPILE = @cross_compiling@
++
+ pm = progs-makefile
+ pr = progs-readme
+ @CROSS_COMPILING_FALSE@cu_install_program = src/ginstall
+@@ -14061,6 +14063,10 @@
+ # Include the generated man dependencies.
+ @AMDEP_TRUE@@am__include@ man/dynamic-deps.mk
+ 
++ifeq ($(CROSS_COMPILE),yes)
++.x.1:
++
++else
+ .x.1:
+ 	$(AM_V_GEN)name=`echo $@ | sed 's|.*/||; s|\.1$$||'` || exit 1;	\
+ 	case $$name in							\
+@@ -14086,6 +14092,8 @@
+ 	  && chmod a-w $@-t						\
+ 	  && mv $@-t $@
+ .PHONY: check-root
++endif
++
+ check-root:
+ 	$(MAKE) check TESTS='$(root_tests)' SUBDIRS=.
+ 
+diff -ru --new-file a/src/fs.h b/src/fs.h
+--- a/src/fs.h	2014-07-18 14:33:26.000000000 -0400
++++ b/src/fs.h	2015-06-01 10:19:57.475041184 -0400
+@@ -2,7 +2,7 @@
+    Please send additions to bug-coreutils@gnu.org and meskes@debian.org.
+    This file is generated automatically from ./src/stat.c. */
+ 
+-#if defined __linux__
++#if defined __linux__ || defined __midipix__
+ # define S_MAGIC_ADFS 0xADF5
+ # define S_MAGIC_AFFS 0xADFF
+ # define S_MAGIC_AFS 0x5346414F

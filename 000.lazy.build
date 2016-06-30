@@ -5,7 +5,6 @@
 if ! is_build_script_done fetch; then
 	# Git clone what we need.
 	fetch_git lazy				${GITROOT}/lazy;
-	fetch_git portage			${GITROOT}/ports/portage;
 	set_build_script_done fetch finish;
 fi;
 
