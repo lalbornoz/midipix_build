@@ -1,24 +1,3 @@
---- libressl-2.2.6/config.sub.orig	2016-01-28 19:18:06.000000000 +0100
-+++ libressl-2.2.6/config.sub	2016-02-12 17:19:40.807245600 +0100
-@@ -804,6 +804,9 @@
- 	microblaze*)
- 		basic_machine=microblaze-xilinx
- 		;;
-+	midipix)
-+		os=-midipix;
-+		;;
- 	mingw64)
- 		basic_machine=x86_64-pc
- 		os=-mingw64
-@@ -1384,7 +1387,7 @@
- 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
- 	      | -chorusos* | -chorusrdb* | -cegcc* \
- 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
--	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
-+	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
- 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
- 	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
- 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
 --- libressl-2.2.6/crypto/compat/arc4random.h.orig	2015-10-15 23:18:44.000000000 +0200
 +++ libressl-2.2.6/crypto/compat/arc4random.h	2016-02-12 17:19:40.815245600 +0100
 @@ -12,7 +12,7 @@
