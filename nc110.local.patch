@@ -30,7 +30,7 @@
  
 +# midipix
 +midipix:
-+	make -e $(ALL) $(MFLAGS) XFLAGS='-DLINUX' STATIC=-static
++	make -e $(ALL) $(MFLAGS) XFLAGS='-DLINUX' STATIC=
 +
  # start with this for a new architecture, and see what breaks.
  generic:
