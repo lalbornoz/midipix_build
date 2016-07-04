@@ -1,0 +1,13 @@
+--- pkg-cron.git/Makefile.orig	2016-07-04 15:39:29.482061697 +0000
++++ pkg-cron.git/Makefile	2016-07-04 15:41:34.770058916 +0000
+@@ -118,8 +118,8 @@
+ 			$(CC) $(LDFLAGS) -o crontab $(CRONTAB_OBJ) $(LIBS)
+ 
+ install		:	all
+-			$(INSTALL) -c -m  755 -o root cron    $(DESTSBIN)/
+-			$(INSTALL) -c -m 4755 -o root crontab $(DESTBIN)/
++			$(INSTALL) -c -m  755 cron    $(DESTSBIN)/
++			$(INSTALL) -c -m 4755 crontab $(DESTBIN)/
+ 			sh putman.sh crontab.1 $(DESTMAN)
+ 			sh putman.sh cron.8    $(DESTMAN)
+ 			sh putman.sh crontab.5 $(DESTMAN)
