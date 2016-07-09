@@ -1,5 +1,5 @@
 #
-# . ./build.vars and set -o errexit are assumed.
+# . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
 if ! is_build_script_done fetch; then
@@ -43,7 +43,7 @@ if ! is_build_script_done build2; then
 	set_build_script_done build2 -install2;
 fi;
 if ! is_build_script_done install2; then
-	make DESTDIR=${PREFIX_LVL} install;
+	make DESTDIR=${PKG_PREFIX} install;
 	set_build_script_done install2 finish;
 fi;
 

@@ -1,5 +1,5 @@
 #
-# . ./build.vars and set -o errexit are assumed.
+# . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
 # Order: stage1, runtime, full, native
@@ -46,20 +46,20 @@ else
 			set_build_script_done fetch -configure;
 		fi;
 		set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
-		export	cbb_ldflags_for_target=--sysroot=${PREFIX_LVL}	\
-			cbb_sysroot_for_libgcc=${PREFIX_LVL}		\
+		export	cbb_ldflags_for_target=--sysroot=${PKG_PREFIX}	\
+			cbb_sysroot_for_libgcc=${PKG_PREFIX}		\
 			cbb_target=${TARGET}				\
 			cbb_neutral_libiberty=no			\
 			cbb_xgcc_for_specs=${WORKDIR}/${PKG_BUILD_DIR}/gcc/xgcc;
-		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_LVL}";
+		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PKG_PREFIX}";
 	elif [ "${3}" = native ]; then
 		# GCC, native.
 		set_build_dir cbb-gcc-${PKG_GCC_VERSION} native;
-		export 	cbb_ldflags_for_target=--sysroot=${PREFIX_LVL}	\
-			cbb_sysroot_for_libgcc=${PREFIX_LVL}		\
+		export 	cbb_ldflags_for_target=--sysroot=${PKG_PREFIX}	\
+			cbb_sysroot_for_libgcc=${PKG_PREFIX}		\
 			cbb_target=${TARGET}				\
 			cbb_xgcc_for_specs=${TARGET}-gcc;
-		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PREFIX_LVL}";
+		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PKG_PREFIX}";
 	fi;
 	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${PKG_GCC_VERSION}/libc/cbb-musl-pe.h)";
 	set_env_vars "${GCCFLAGS}" CFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS CXXFLAGS_FOR_BUILD;
@@ -68,14 +68,14 @@ else
 	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
 	if ! is_build_script_done configure; then
 		if [ "${3}" = stage1 ]; then
-			mkdir -p ${PREFIX_LVL}/include;
-			[ \! -d ${PREFIX_LVL}/usr ] &&			\
-				ln -s . ${PREFIX_LVL}/usr;
-			_configure_args="--prefix=${PREFIX} --with-sysroot=${PREFIX_LVL}";
+			mkdir -p -- ${PKG_PREFIX}/include;
+			[ \! -d ${PKG_PREFIX}/usr ] &&			\
+				ln -s -- . ${PKG_PREFIX}/usr;
+			_configure_args="--prefix=${PREFIX} --with-sysroot=${PKG_PREFIX}";
 		elif [ "${3}" = native ]; then
-			mkdir -p ${PREFIX_LVL}/${TARGET};
-			if [ \! -d ${PREFIX_LVL}/${TARGET}/usr ]; then
-				ln -s . ${PREFIX_LVL}/${TARGET}/usr;
+			mkdir -p -- ${PKG_PREFIX}/${TARGET};
+			if [ \! -d ${PKG_PREFIX}/${TARGET}/usr ]; then
+				ln -s -- . ${PKG_PREFIX}/${TARGET}/usr;
 			fi;
 			if [ "${ARCH}" = nt32 ]; then
 				_configure_args="--host=i686-nt32-midipix";
@@ -84,10 +84,10 @@ else
 			fi;
 			_configure_args="${_configure_args}	\
 				--prefix=/			\
-				--with-elf=${PREFIX_LVL}	\
-				--with-gmp=${PREFIX_LVL}	\
-				--with-mpc=${PREFIX_LVL}	\
-				--with-mpfr=${PREFIX_LVL}	\
+				--with-elf=${PKG_PREFIX}	\
+				--with-gmp=${PKG_PREFIX}	\
+				--with-mpc=${PKG_PREFIX}	\
+				--with-mpfr=${PKG_PREFIX}	\
 				--with-sysroot=";
 		fi;
 		rm_if_exists -m -c ${PKG_BUILD_DIR};
@@ -138,11 +138,11 @@ else
 		if [ "${3}" = stage1 ]; then
 			make ${MAKEFLAGS} install-gcc;
 			if match_uname_any CYGWIN\*; then
-				ln -s ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.dll.a	\
-					ln -s ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.so;
+				ln -s -- ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.dll.a	\
+					ln -s -- ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.so;
 			fi;
 		elif [ "${3}" = native ]; then
-			make ${MAKEFLAGS} DESTDIR=${PREFIX_LVL} install;
+			make ${MAKEFLAGS} DESTDIR=${PKG_PREFIX} install;
 		fi;
 		set_build_script_done install finish;
 	fi;
