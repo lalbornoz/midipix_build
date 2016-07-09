@@ -23,7 +23,7 @@ convert_links_ask() {
 		[yY])	break; ;;
 		*)	echo "Exiting."; exit 5; ;;
 	esac;
-	for _link_name in $(find ${MIDIPIX_PATH}/native/lib \
+	for _link_name in $(find ${MIDIPIX_PATH}/native/lib	\
 			-maxdepth 1 -name \*.so -type l); do
 		_link_target="$(readlink -- "${_link_name}")";
 		if [ -f "${MIDIPIX_PATH}/native/lib/${_link_target}" ]; then
@@ -37,9 +37,9 @@ convert_links_ask() {
 
 check_prereq_files() {
 	local _fname;
-	for _fname in	native/bin/ntctty.exe	\
-			native/bin/chroot	\
-			native/bin/env		\
+	for _fname in	native/bin/ntctty.exe			\
+			native/bin/chroot			\
+			native/bin/env				\
 			native/bin/bash; do
 		if [ ! -e ${MIDIPIX_PATH}/${_fname} ]; then
 			return 1;
@@ -70,10 +70,10 @@ elif [ -n "${NATIVE_LIB_LINKS:=$(find ${MIDIPIX_PATH}/native/lib -maxdepth 1 -na
 	convert_links_ask || exit 5;
 else
 	check_prereq_files || exit 6;
-	if [ -f ${MIDIPIX_PATH}/native/bin/libpsxscl.log ]; then
-		echo Found libpsxscl.log, copying to ${MIDIPIX_PATH}/native/bin/libpsxscl.last.
-		cp ${MIDIPIX_PATH}/native/bin/libpsxscl.log	\
-			${MIDIPIX_PATH}/native/bin/libpsxscl.last || exit 7;
+	if [ -f ${MIDIPIX_PATH}/libpsxscl.log ]; then
+		echo Found libpsxscl.log, copying to ${MIDIPIX_PATH}/libpsxscl.last.
+		cp -p -- ${MIDIPIX_PATH}/libpsxscl.log		\
+			${MIDIPIX_PATH}/libpsxscl.last || exit 7;
 	fi;
 	echo "Absolute Midipix pathname: ${MIDIPIX_PATH}";
 	if [ "${UNAME_OS}" = "Msys" ]; then

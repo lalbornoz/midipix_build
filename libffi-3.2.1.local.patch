@@ -19,22 +19,6 @@ diff -ru --new-file a/configure b/configure
  	TARGET=X86_WIN64; TARGETDIR=x86
  	# All mingw/cygwin/win32 builds require -no-undefined for sharedlib.
  	# We must also check with_cross_host to decide if this is a native
-@@ -21766,3 +21766,15 @@
- $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
- fi
- 
-+# a transitional workaround...
-+case $host_os in
-+		midipix*)
-+			cp $ac_confdir/libtool.midipix libtool || exit 2
-+
-+			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
-+				-e 's/@cbb_build_alias@/'$build_alias'/g' \
-+				-e 's/@cbb_build_os@/'$build_os'/g' \
-+				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
-+			;;
-+esac
-+
 diff -ru --new-file a/src/closures.c b/src/closures.c
 --- a/src/closures.c	2014-11-08 07:47:24.000000000 -0500
 +++ b/src/closures.c	2016-01-25 17:57:43.000000000 -0500

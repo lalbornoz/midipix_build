@@ -1,36 +1,30 @@
 #
-# . ./build.vars and set -o errexit are assumed.
+# . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
-if [ ${ARG_TARBALL:-0} -eq 0 ]; then
-	log_msg "Skipping distribution tarball creation.";
-	exit 0;
-else
-	log_msg info "Building distribution tarballs...";
-	update_build_status build_finish tarball_start;
-	cd ${PREFIX};
-	if [ "${TARBALL_SUFFIX}" = "bz2" ]; then
-		if [ -n "$(which pbzip2 2>/dev/null)" ]; then
-			TARBALL_COMPRESS_CMD="pbzip2";
-		else
-			TARBALL_COMPRESS_CMD="bzip2";
-		fi;
-	elif [ "${TARBALL_SUFFIX}" = "gz" ]; then
-		if [ -n "$(which pigz 2>/dev/null)" ]; then
-			TARBALL_COMPRESS_CMD="pigz";
-		else
-			TARBALL_COMPRESS_CMD="gzip";
-		fi;
-	elif [ "${TARBALL_SUFFIX}" = "xz" ]; then
-		TARBALL_COMPRESS_CMD="xz";
-		TARBALL_COMPRESS_ARGS="-T0";
+log_msg info "Building distribution tarballs...";
+cd ${PREFIX};
+if [ "${TARBALL_SUFFIX}" = "bz2" ]; then
+	if [ -n "$(which pbzip2 2>/dev/null)" ]; then
+		TARBALL_COMPRESS_CMD="pbzip2";
 	else
-		log_msg failexit "Unknown tarball suffix \`.${TARBALL_SUFFIX}'.";
+		TARBALL_COMPRESS_CMD="bzip2";
 	fi;
-	TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
-	TARBALL_SRC_FNAME=${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};
+elif [ "${TARBALL_SUFFIX}" = "gz" ]; then
+	if [ -n "$(which pigz 2>/dev/null)" ]; then
+		TARBALL_COMPRESS_CMD="pigz";
+	else
+		TARBALL_COMPRESS_CMD="gzip";
+	fi;
+elif [ "${TARBALL_SUFFIX}" = "xz" ]; then
+	TARBALL_COMPRESS_CMD="xz";
+	TARBALL_COMPRESS_ARGS="-T0";
+else
+	log_msg failexit "Unknown tarball suffix \`.${TARBALL_SUFFIX}'.";
 fi;
 
+TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
+TARBALL_SRC_FNAME=${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};
 
 PREFIX_BASENAME=${PREFIX_NATIVE##*/};
 rm_if_exists -m ${PREFIX_BASENAME}/lib.bak;
@@ -41,8 +35,9 @@ find native/lib -maxdepth 1 -type l						\
 		rm -f -- "${0}" && ln -f -- "${DEST}" "${0}"' {} \;;
 log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
 
-tar -cpf - $(find_with_no_paths "${TARBALL_EXCLUDE_PATHS} native/lib.bak" .	\
-		-mindepth 1 -maxdepth 2 -type d -not -path ./native)		\
+tar -cpf - $(find . -maxdepth 2 -mindepth 1 -type d				\
+		-not -path ./native -not -path ./native/lib.bak			\
+		-not -path ./tmp -not -path ./tmp/\*)				\
 	"Create \`Midipix mintty shell' shortcut.vbs" midipix.sh README		|\
 ${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_FNAME};
 log_msg info "Finished building binary distribution tarball.";
@@ -52,24 +47,22 @@ if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
 		--local-user "${TARBALL_SIGN_GPG_KEY}" --sign ${TARBALL_FNAME};
 	log_msg info "Signed binary distribution tarball.";
 fi;
-rm -rf ${PREFIX_BASENAME}/lib; mv ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
+rm -rf -- ${PREFIX_BASENAME}/lib; mv -- ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
 log_msg info "Restored ${PREFIX_BASENAME}/lib.";
 
-
-log_msg info "Building source tarball...";
-tar -cpf - $(find tmp -mindepth 2 -maxdepth 2					\
-	-not -path tmp/.\*							\
-	-not -path tmp/\*.tar\* -not -path tmp/\*.tgz -not -path tmp/\*.txz	\
-	-not -path tmp/ntctty/.git -not -path tmp/psxscl/.git)			|\
-${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_SRC_FNAME};
-log_msg info "Finished building source tarball.";
-if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
-			gpg --list-keys "${TARBALL_SRC_SIGN_GPG_KEY}" >/dev/null 2>&1; then
-	gpg --armor --passphrase-file /dev/null					\
-		--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign ${TARBALL_SRC_FNAME};
-	log_msg info "Signed source tarball.";
+if [ "${BUILD}" = "debug" ]; then
+	log_msg info "Building source tarball...";
+	tar -cpf - $(find tmp -mindepth 2 -maxdepth 2					\
+		-not -path tmp/.\*							\
+		-not -path tmp/ntctty/.git -not -path tmp/psxscl/.git)			|\
+	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_SRC_FNAME};
+	log_msg info "Finished building source tarball.";
+	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
+				gpg --list-keys "${TARBALL_SRC_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+		gpg --armor --passphrase-file /dev/null					\
+			--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign ${TARBALL_SRC_FNAME};
+		log_msg info "Signed source tarball.";
+	fi;
 fi;
-
-update_build_status tarball_finish;
 
 # vim:filetype=sh

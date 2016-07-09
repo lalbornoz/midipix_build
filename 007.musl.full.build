@@ -1,5 +1,5 @@
 #
-# . ./build.vars and set -o errexit are assumed.
+# . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
 # Order: no-complex, native
@@ -13,15 +13,14 @@ if [ "${3}" = no-complex ]; then
 	if ! is_build_script_done fetch; then
 		fetch http://www.musl-libc.org/releases/musl-${PKG_MUSL_VERSION}.tar.gz	\
 			${PKG_MUSL_SHA256SUM};
-		[ ${ARG_NO_DOWNLOAD:-0} -eq 0 ] &&\
-			rm_if_exists mmglue;
+		rm_if_exists mmglue;
 		fetch_git mmglue ${GITROOT}/mmglue;
 		set_build_script_done fetch -extract;
 	fi;
 	if ! is_build_script_done extract; then
 		rm_if_exists musl-${PKG_MUSL_VERSION};
-		tar -xf musl-${PKG_MUSL_VERSION}.tar.gz;
-		cp -R mmglue/* musl-${PKG_MUSL_VERSION}/;
+		tar -xf ${DLCACHEDIR}/musl-${PKG_MUSL_VERSION}.tar.gz;
+		set +o noglob; cp -R -- mmglue/* musl-${PKG_MUSL_VERSION}/; set -o noglob;
 		set_build_script_done extract -patch;
 	fi;
 	if ! is_build_script_done patch; then
@@ -45,7 +44,7 @@ if ! is_build_script_done configure; then
 	../lazy/lazy				\
 		-a ${ARCH}			\
 		-c gcc				\
-		-f ${PREFIX_LVL}		\
+		-f ${PKG_PREFIX}		\
 		-n musl				\
 		-p ../musl-${PKG_MUSL_VERSION}	\
 		-t ${lz_target}			\
@@ -62,7 +61,7 @@ if ! is_build_script_done build; then
 	./lazy	-e ${_install}			\
 		-x build;
 	[ "${3}" = native ] &&			\
-		ln -sf ../lib/libc.so ${PREFIX_LVL}/bin/ldd;
+		ln -sf -- ../lib/libc.so ${PKG_PREFIX}/bin/ldd;
 	set_build_script_done build finish;
 fi;
 
