@@ -1,30 +1,26 @@
-usage: ./build.sh [-c] [-nd] [-r ALL|level.name.build[:step]] [-h] [-t]
-        -c                     Clean $PREFIX before processing build scripts.
+usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-h] [-i level.name.build]
+                  [-r ALL|level.name.build[:step]] [-t[.gz|.bz2|.xz] [-x]
+        -a nt32|nt64           Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release       Selects debug or release build; defaults to debug.
+                               This currently only controls CFLAGS.
+        -c                     Clean ${PREFIX} before processing build scripts.
+        -h                     Show this screen.
         -i level.name.build    Insert link to pkg.build for the specified build script.
                                All consecutive scripts with higher build levels will
                                be renamed automatically.
-        -nd                    Don't rm(1) and re-download tarballs when not required.
-        -h                     Show this screen.
-        -pt                    Enable pedantic mode. In addition to the warnings emitted
-                               whenever a potentially dangerous operation is invoked by
-                               the build scripts, manual confirmation will be required.
-                               This currently only includes rm_if_exists().
         -r ALL|level.name.build[:step]
                                Restart all or the specified build script(s) completely
                                or at the optionally specified build step. Currently defined
-                               build steps are: fetch extract build_dir patch configure clean
-                               build install configure1 configure2 build1 build2 install1 install2.
-        -t[.gz|.bz2|.xz]       Produce binary distribution and source tarballs containing $PREFIX
-                               sans $WORKDIR and $PREFIX/src/midipix_build and $WORKDIR sans top-
+                               build steps are: fetch extract build_dir autoconf patch configure
+                               clean build install configure1 configure2 build1 build2 install1 install2.
+        -t[.gz|.bz2|.xz]       Produce binary distribution and source tarballs containing ${PREFIX}
+                               sans ${WORKDIR} and ${PREFIX}/src/midipix_build and ${WORKDIR} sans top-
                                level regular files at the end of a build with zero failures. The
                                tarballs will be compressed with either gzip, bzip2, or xz and signed
                                with GPG; the default compression is xz.
         -x                     Set the xtrace sh(1)ell option for debugging purposes.
-        -X                     Set the xtrace sh(1)ell option and compile a tarball containing
-                               build.log and $PKG_SUBDIR. Use this option if something goes
-                               wrong and provide an URL to the tarball in <irc://irc.freenode.net/midipix>.
 
-        Packages that are built by pkg.build will apply local patches in $WORKDIR
+        Packages that are built by pkg.build will apply local patches in ${WORKDIR}
         named ${PKG_SUBDIR}.local.patch.
 
         Examples:
@@ -41,7 +37,7 @@ usage: ./build.sh [-c] [-nd] [-r ALL|level.name.build[:step]] [-h] [-t]
         Build psxscl from the internal repository with strace enabled.
 
         ./build.sh -c -r ALL GITROOT_HEAD=...
-        Clean $PREFIX and forcibly rebuild everything.
+        Clean ${PREFIX} and forcibly rebuild everything.
 
 This script has been tested on the following platforms:
 Arch Linux 2016.02.01 (x86_64)

@@ -19,22 +19,6 @@
  netbsdelf*-gnu)
    version_type=linux
    need_lib_prefix=no
-@@ -42993,3 +43005,15 @@
- 
- fi
- 
-+# a transitional workaround...
-+case $host_os in
-+		midipix*)
-+			cp $ac_confdir/libtool.midipix libtool || exit 2
-+
-+			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
-+				-e 's/@cbb_build_alias@/'$build_alias'/g' \
-+				-e 's/@cbb_build_os@/'$build_os'/g' \
-+				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
-+			;;
-+esac
-+
 --- curl-7.47.1/lib/Makefile.in.orig	2016-02-07 14:43:49.000000000 +0000
 +++ curl-7.47.1/lib/Makefile.in	2016-06-10 00:07:28.334457112 +0000
 @@ -243,7 +243,7 @@

@@ -1,20 +1,11 @@
 #
-# . ./build.vars and set -o errexit are assumed.
+# . ./build.vars and set -o errexit -o noglob are assumed.
 # See warning at the top of build.vars.
 #
 
 date() { command date +"${1:-${TIMESTAMP_FMT}}"; };
-get_basename() { set -- $(get_name_without_slash ${1}); echo "${1##*/}"; };
-get_var_dyn() { ${1}; };
 get_var_unsafe() { eval echo \${${1}}; };
-set_var_dyn() { eval ${1}\(\) \{ echo \"${2}\"\; \}; };
 set_var_unsafe() { eval ${1}=\"${2}\"; };
-get_name_without_slash() { while [ "${1%/}" != "${1}" ]; do set -- ${1%/}; done; echo ${1}; };
-get_postfix_lrg() { echo "${1##*${2}}"; };
-get_prefix_lrg() { echo "${1%%${2}*}"; };
-get_postfix() { echo "${1#*${2}}"; };
-get_prefix() { echo "${1%${2}*}"; };
-match_any() { [ "${1#*${2}*}" != "${1}" ]; };
 match_uname_any() { set -- ${1} $(uname -s); [ "${2#*${1}*}" != "${2}" ]; };
 push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
@@ -23,61 +14,36 @@ split() { push_IFS "${1}"; set -- ${2}; pop_IFS; echo "${*}"; };
 test_cmd() { command -v "${1}" >/dev/null; };
 unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
 
-
-build_times_init() { BUILD_TIMES_SECS=$(command date +%s); };
-build_times_get() {
-	: $((BUILD_TIMES_SECS=$(command date +%s)-${BUILD_TIMES_SECS}));
-	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
-	: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
-	: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
+compare_hash() {
+	# Push the output of dgst(1SSL) and the caller-supplied hash
+	# value to compare the former with on the pseudo-stack and
+	# shift off# all but the last two positional parameters.
+	# This corresponds to the hash output and caller-supplied
+	# hash values.
+	set -- $(openssl dgst -sha256 ${1}) ${2}; shift $((${#}-2));
+	[ "${1}" = "${2}" ] || echo "${1}";
 };
 
-clean_prefix() {
-	log_msg info "-c specified, cleaning prefix...";
-	set -- bin i686-nt32-midipix include lib lib64 libexec native share x86_64-nt64-midipix;
-	while [ ${#} -gt 0 ]; do rm -rf ${PREFIX}/${1}; shift; done;
-	for _cp_pname in $(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -not -iname \*.tar\*)	\
-			$(find ${PREFIX}/tmp -mindepth 1 -maxdepth 1 -type f -iname .\*); do
-		rm_if_exists ${_cp_pname};
-	done; unset _cp_pname;
-};
-
-clean_build_status() {
-	[ "${1}" = abort ] && _cbs_abort=1;
-	set -- BUILD_STATUS_IN_PROGRESS_FNAME BUILD_STATUS_PROGRESS_FNAME BUILD_STATUS_TARBALL_PROGRESS_FNAME;
-	while [ ${#} -gt 0 ]; do
-		rm -f $(get_var_unsafe ${1}); shift;
-	done;
-	if [ ${_cbs_abort:-0} -eq 1 ]; then
-		unset _cbs_abort;
-		touch ${PREFIX}/BUILD_ABORTED_AT_$(date %Y-%m-%d-%H-%M-%S);
-		log_msg fail "Build aborted at $(date %Y-%m-%d-%H-%M-%S).";
-	fi; unset _cbs_abort;
-};
-
-export_vars_subst() {
-	_evs_pfx=${1}; _evs_pfx_new=${2}; shift 2;
-	while [ ${#} -gt 0 ]; do
-		if [ -n "${_evs_vval:=$(get_var_unsafe ${_evs_pfx}${1})}" ]; then
-			export "${_evs_pfx_new}${1}=${_evs_vval}";
-		fi; unset _evs_vval; shift;
-	done; unset _evs_pfx _evs_pfx_new;
+# N.B.	URLs ($1) may contain `?' or '&' characters.
+fetch() {
+	_f_url="${1}"; _f_sha256sum_src="${2}";
+	_f_url_dst="${DLCACHEDIR}/$(basename "${_f_url}")";
+	wget ${WGET_ARGS} -c -O ${_f_url_dst} "${_f_url}";
+	if [ -n "${_f_sha256sum_src}" ]; then
+		_f_sha256sum_dst="$(compare_hash ${_f_url_dst} ${_f_sha256sum_src})";
+		if [ -n "${_f_sha256sum_dst}" ]; then
+			set -- "${_f_url}" ${_f_sha256sum_dst} ${_f_sha256sum_src};
+			unset _f_url _f_url_dst _f_sha256sum_src _f_sha256sum_dst;
+			log_msg failexit "Error: hash mismatch for URL \`${1}' (is: ${2}, should be: ${3}.)";
+		fi; unset _f_sha256sum_dst;
+	fi; unset _f_url _f_url_dst _f_sha256sum_src;
 };
 
 fetch_git() {
 	[ -z "${1}" ] && return 1;
-	[ ${ARG_NO_DOWNLOAD:-0} -eq 1 ] && return;
 	rm_if_exists ${1};
 	[ -d ${1} ] && (cd ${1} && git pull origin main)\
 		|| git clone ${3} ${2} ${1};
-};
-
-find_with_no_paths() {
-	for _fwnp_not_path in ${1}; do
-		_fwnp_args="${_fwnp_args:+${_fwnp_args} }-not -path ./${_fwnp_not_path} -not -path ./${_fwnp_not_path}/*";
-	done; shift;
-	set -f; find "${@}" ${_fwnp_args}; _rc=${?}; set +f;
-	unset _fwnp_args _fwnp_not_path; return ${_rc};
 };
 
 insert_build_script_link() {
@@ -92,8 +58,8 @@ insert_build_script_link() {
 	elif [ -e ${_ibsl_fname} ]; then
 		log_msg failexit "Error: build script \`${_ibsl_fname}' already exists.";
 	elif [ -z "$(find -maxdepth 1 -name ${_ibsl_level}.\* -printf '%P\n' -quit)" ]; then
-		echo ln -s pkg.build ${_ibsl_fname};
-		ln -s pkg.build ${_ibsl_fname};
+		echo ln -s -- pkg.build ${_ibsl_fname};
+		ln -s -- pkg.build ${_ibsl_fname};
 		unset _ibsl_fname _ibsl_level _ibsl_name;
 		return 0;
 	else
@@ -104,8 +70,8 @@ insert_build_script_link() {
 	for _ibsl_fname_cur in ${_ibsl_levels}; do
 		if [ \( ${_ibsl_changed:=0} -eq 0 \) -a	\
 				\( "${_ibsl_fname_cur%%.*}" -eq ${_ibsl_level} \) ]; then
-			echo ln -s pkg.build ${_ibsl_fname};
-			ln -s pkg.build ${_ibsl_fname};
+			echo ln -s -- pkg.build ${_ibsl_fname};
+			ln -s -- pkg.build ${_ibsl_fname};
 			_ibsl_changed=1;
 		fi;
 		if [ ${_ibsl_changed:=0} -eq 1 ]; then
@@ -113,9 +79,9 @@ insert_build_script_link() {
 					-printf '%P\n' -quit)" ]; then
 				_ibsl_last=1;
 			fi;
-			echo mv ${_ibsl_fname_cur}	\
+			echo mv -- ${_ibsl_fname_cur}	\
 				$((${_ibsl_fname_cur%%.*}+1)).${_ibsl_fname_cur#*.};
-			mv ${_ibsl_fname_cur}	\
+			mv -- ${_ibsl_fname_cur}	\
 				$((${_ibsl_fname_cur%%.*}+1)).${_ibsl_fname_cur#*.};
 			if [ ${_ibsl_last:-0} -eq 1 ]; then
 				break;
@@ -129,7 +95,6 @@ insert_build_script_link() {
 		unset _ibsl_fname _ibsl_level _ibsl_name;
 	fi;
 };
-
 isnumber() {
 	[ -z "${1}" ] && return 1 || _i_num=${1};
 	while [ -n "${_i_num}" ]; do
@@ -139,152 +104,6 @@ isnumber() {
 			_i_num="${_i_num#[0-9]}";
 		fi;
 	done; unset _i_num; return 0;
-};
-
-rm_if_exists() {
-	[ -z "${1#-m}" ] && { _rie_arg_m=1; shift; };
-	[ -z "${1#-c}" ] && { _rie_arg_c=1; shift; };
-	[ -z "${1}" ] && return 1;
-	if [ -d ${1} -o -f ${1} ]; then
-		log_msg warn "Removing directory or file \`${1}'.";
-		if [ ${ARG_PEDANTIC:-0} -eq 1 ]; then
-			printf "Confirm deletion (y|N) ";
-			read _rie_prompt; case "${_rie_prompt}" in
-				[yY])	rm -rf ${1}; ;;
-				*)	log_msg warn "Skipping removal of \`${1}'.";
-					_rie_arg_m=0; ;;
-			esac;
-		else 
-			rm -rf ${1};
-		fi;
-	fi;
-	[ ${_rie_arg_m:-0} -eq 1 ] && {
-		log_msg warn "Making directory \`${1}'.";
-		mkdir ${1}; unset _rie_arg_m; };
-	[ ${_rie_arg_c:-0} -eq 1 ] && { cd ${1}; unset _rie_arg_c; };
-	return 0;
-};
-
-rotate_files() {
-	set -- $(find ${PREFIX} -mindepth 1 -maxdepth 1 -type f -iname "${1}" |\
-			sort | sed -n $((${2}+1)),\$p);
-	while [ ${#} -gt 0 ]; do
-		rm -f "${1}"; shift;
-	done;
-};
-
-set_env_vars() {
-	_sev_val_new="${1}"; shift;
-	while [ ${#} -gt 1 ]; do
-		[ -z "${_sev_val_new}" ] && unset ${1} ||\
-			export "${1}=${_sev_val_new}"; shift;
-	done; unset _sev_val_new;
-};
-
-set_env_vars_with_sep() {
-	_sevws_sep=${1}; shift; push_IFS ${_sevws_sep}; set -- ${1};
-	while [ ${#} -gt 0 ]; do
-		export "${1}"; shift;
-	done; unset _sevws_sep; pop_IFS;
-};
-
-
-# Download GNU bash-style patch sets into ${2}-patches-extra and
-# apply them to ${2} in the correct order.
-apply_patches() {
-	(rm_if_exists -m -c ${2}-patches-extra;
-	wget -c -nd -np -r -R \*.htm\* -R \*.sig ${1};
-	for _ap_patch_fname in		\
-			$(find . -type f -not -iname \*.sig | sort); do
-		patch -b -d ../${2} -p0 < ${_ap_patch_fname};
-	done; unset _ap_patch_fname);
-};
-
-# Check whether all supplied arguments contain non-empty valid values.
-check_path_vars() {
-	while [ ${#} -gt 0 ]; do
-		if [ -z "${_cpv_val:=$(get_var_unsafe "${1}")}" ]; then
-			log_msg failexit "Error: variable \`${1}' is empty or unset.";
-		elif match_any "${_cpv_val}" " "; then
-			log_msg failexit "Error: variable \`${1}' contains one or more whitespace characters.";
-		else
-			shift;
-		fi;
-		unset _cpv_val;
-	done;
-};
-
-# Check whether all supplied command names resolve.
-check_prereq_cmds() {
-	while [ ${#} -gt 0 ]; do
-		if ! command -v ${1} >/dev/null; then
-			_cpc_missing_list="${1}${_cpc_missing_list:+ ${_cpc_missing_list}}";
-		fi; shift;
-	done;
-	if [ -n "${_cpc_missing_list}" ]; then
-		log_msg failexit "Error: missing prerequisite command(s): ${_cpc_missing_list}.";
-	fi; unset _cpc_missing_list;
-};
-
-# Check whether all supplied pathnames resolve.
-check_prereq_files() {
-	while [ ${#} -gt 0 ]; do
-		if [ ! -e ${1} ]; then
-			_cpf_missing_list="${1}${_cpf_missing_list:+ ${_cpf_missing_list}}";
-		fi; shift;
-	done;
-	if [ -n "${_cpf_missing_list}" ]; then
-		log_msg failexit "Error: missing prerequisite file(s): ${_cpf_missing_list}.";
-	fi; unset _cpf_missing_list;
-};
-
-# Clear the environment by unsetting each exported variable except
-# for those named by the caller. 
-clear_env_with_except() {
-	_cewe_vfilter="${*}"; _cewe_unset_cmds="$(mktemp -q)";
-	export | while read _cewe_vspec; do
-		set -- ${_cewe_vspec}; shift;
-		[ "${1#*[^\"\'=a-zA-Z0-9_]}" != "${1}" ] && continue;
-		if ! match_list "${_cewe_vfilter}" " "	\
-				$(get_prefix_lrg ${1} =); then
-			echo unset $(get_prefix_lrg ${1} =) >> ${_cewe_unset_cmds};
-		fi;
-	done; . "${_cewe_unset_cmds}"; rm -f "${_cewe_unset_cmds}" 2>/dev/null;
-	unset _cewe_vfilter _cewe_vspec;
-};
-
-# N.B.	URLs ($1) may contain `?' or '&' characters.
-fetch() {
-	[ ${ARG_NO_DOWNLOAD:-0} -eq 1 ] && return;
-	_f_url="${1}"; _f_sha256sum_src="${2}";
-	_f_url_dst="$(get_basename "${_f_url}")";
-	rm_if_exists ${_f_url_dst};
-	wget ${WGET_ARGS} -O ${_f_url_dst} "${_f_url}";
-	if [ -n "${_f_sha256sum_src}" ]; then
-		_f_sha256sum_dst="$(compare_hash ${_f_url_dst} ${_f_sha256sum_src})";
-		if [ -n "${_f_sha256sum_dst}" ]; then
-			set -- "${_f_url}" ${_f_sha256sum_dst} ${_f_sha256sum_src};
-			unset _f_url _f_url_dst _f_sha256sum_src _f_sha256sum_dst;
-			log_msg failexit "Error: hash mismatch for URL \`${1}' (is: ${2}, should be: ${3}.)";
-		fi; unset _f_sha256sum_dst;
-	fi; unset _f_url _f_url_dst _f_sha256sum_src;
-};
-
-compare_hash() {
-	# Push the output of dgst(1SSL) and the caller-supplied hash
-	# value to compare the former with on the pseudo-stack and
-	# shift off# all but the last two positional parameters.
-	# This corresponds to the hash output and caller-supplied
-	# hash values.
-	set -- $(openssl dgst -sha256 ${1}) ${2}; shift $((${#}-2));
-	[ "${1}" = "${2}" ] || echo "${1}";
-};
-compare_hash_manifest() {
-	while [ ${#} -gt 0 ]; do
-		if ! compare_hash ${1} ${2}; then
-			log_msg failexit "Error: hash mismatch for patch file \`${1}'.";
-		fi; shift;
-	done; return 0;
 };
 
 is_build_script_done() {
@@ -300,7 +119,7 @@ is_build_script_done() {
 		else
 			return 1;	# Build
 		fi;
-	elif [ -f "${WORKDIR}/.${2:-$(get_basename ${SCRIPT_FNAME%.build})}.${1}" ]; then
+	elif [ -f "${WORKDIR}/.${2:-$(basename ${SCRIPT_FNAME%.build})}.${1}" ]; then
 		return 0;		# Skip
 	else
 		return 1;		# Build
@@ -311,7 +130,7 @@ set_build_script_done() {
 	_sbsd_done_fname=${WORKDIR}/.${_sbsd_script_fname%.build};
 	while [ $# -ge 1 ]; do
 		if [ "${1#-}" != "${1}" ]; then
-			rm -f ${_sbsd_done_fname}.${1#-};
+			rm -f -- ${_sbsd_done_fname}.${1#-};
 		else
 			touch ${_sbsd_done_fname}.${1};
 			log_msg info "Finished build step ${1} of build script \`${_sbsd_script_fname}'.";
@@ -362,27 +181,55 @@ match_list() {
 
 parse_with_pkg_name() {
 	PKG_LVL=${1}; PKG_NAME=${2}; shift 2;
-	while [ ${#} -gt 0 ]; do
-		if [ "${PKG_NAME}" = "${1}" ]; then
-			export_vars_subst PKG_LVL${PKG_LVL}_ PKG_ ${PKG_BUILD_VARS};
-			export_vars_subst PKG_$(echo ${PKG_NAME} | tr a-z A-Z)_ PKG_ ${PKG_BUILD_VARS};
-			[ -z "${PKG_URL}" ] && return 1;
-			[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
-			[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
-			[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
-			export PKG_PREFIX=$(get_var_unsafe PREFIX_LVL${PKG_LVL});
-			for _pwpn_env_var in $(export); do
-				if [ "${_pwpn_env_var#PKG_}" != "${_pwpn_env_var}" ]; then
-					_pwpn_env_vars="${_pwpn_env_vars:+${_pwpn_env_vars} }${_pwpn_env_var%%=*}";
-				fi;
-			done;
-			if [ -n "${_pwpn_env_vars}" ]; then
-				log_env_vars "build script" ${_pwpn_env_vars};
-			fi; unset _pwpn_env_var _pwpn_env_vars;
-			return 0;
-		fi; shift;
+	_pwpn_pkg_NAME=$(echo ${PKG_NAME} | tr a-z A-Z);
+	if [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_URL)" ]; then
+		unset _pwpn_pkg_NAME;
+		log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
+	else
+		for _pwpn_vname in ${PKG_BUILD_VARS}; do
+			if [ -n "$(get_var_unsafe DEFAULT_${_pwpn_vname})" ]; then
+				export "PKG_${_pwpn_vname}=$(get_var_unsafe DEFAULT_${_pwpn_vname})";
+			fi;
+			if [ -n "$(get_var_unsafe PKG_LVL${PKG_LVL}_${_pwpn_vname})" ]; then
+				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_LVL${PKG_LVL}_${_pwpn_vname})";
+			fi;
+			if [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname})" ]; then
+				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname})";
+			fi;
+		done; unset _pwpn_vname;
+	fi;
+	[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
+	[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
+	[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
+	for _pwpn_env_var in $(export); do
+		if [ "${_pwpn_env_var#PKG_}" != "${_pwpn_env_var}" ]; then
+			_pwpn_env_vars="${_pwpn_env_vars:+${_pwpn_env_vars} }${_pwpn_env_var%%=*}";
+		fi;
 	done;
-	log_msg failexit "Error: package \`${PKG_NAME}' missing in \${PKG_BUILD_NAMES}.";
+	if [ -n "${_pwpn_env_vars}" ]; then
+		log_env_vars "build script" ${_pwpn_env_vars};
+	fi; unset _pwpn_pkg_NAME _pwpn_env_var _pwpn_env_vars;
+};
+set_env_vars_with_sep() {
+	_sevws_sep=${1}; shift; push_IFS ${_sevws_sep}; set -- ${1};
+	while [ ${#} -gt 0 ]; do
+		export "${1}"; shift;
+	done; unset _sevws_sep; pop_IFS;
+};
+
+rm_if_exists() {
+	[ -z "${1#-m}" ] && { _rie_arg_m=1; shift; };
+	[ -z "${1#-c}" ] && { _rie_arg_c=1; shift; };
+	[ -z "${1}" ] && return 1;
+	if [ -d ${1} -o -f ${1} ]; then
+		log_msg warn "Removing directory or file \`${1}'.";
+		rm -rf -- ${1};
+	fi;
+	[ ${_rie_arg_m:-0} -eq 1 ] && {
+		log_msg warn "Making directory \`${1}'.";
+		mkdir -- ${1}; unset _rie_arg_m; };
+	[ ${_rie_arg_c:-0} -eq 1 ] && { cd ${1}; unset _rie_arg_c; };
+	return 0;
 };
 
 run_cmd_unsplit() {
@@ -396,40 +243,12 @@ run_cmd_unsplit() {
 	unset _rcu_cmd _rcu_cmdline; return ${_rcu_rc};
 };
 
-update_build_status() {
-	while [ ${#} -gt 0 ]; do
-	case ${1} in
-	build_start)
-		if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-			log_msg failexit "Error: build already in progress.";
-		else
-			touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
-			touch ${BUILD_STATUS_PROGRESS_FNAME:=${PREFIX}/BUILD_STARTED_AT_${BUILD_DATE_START:=$(date %Y-%m-%d-%H-%M-%S)}};
-		fi;
-		;;
-	build_finish)
-		if [ -f "${BUILD_STATUS_PROGRESS_FNAME}" ]; then
-			_ubs_bsp_fname=${BUILD_STATUS_PROGRESS_FNAME};
-			unset BUILD_STATUS_PROGRESS_FNAME;
-			rm -f ${_ubs_bsp_fname}; 
-			unset _ubs_bsp_fname;
-		fi;
-		touch ${BUILD_STATUS_FINISHED_AT_FNAME:=${PREFIX}/BUILD_FINISHED_AT_$(date ${TIMESTAMP_FMT_STATUS_FILES})};
-		rotate_files BUILD_FINISHED_AT_\* 8;
-		ln -sf ${BUILD_STATUS_FINISHED_AT_FNAME}\
-			${BUILD_STATUS_FINISHED_AT_CURRENT_FNAME}; ;;
-	tarball_start)
-		rotate_files midipix.\*.tar.bz2 8;
-		touch ${BUILD_STATUS_TARBALL_PROGRESS_FNAME:=${PREFIX}/TARBALL_STARTED_AT_$(date ${TIMESTAMP_FMT_STATUS_FILES})};
-		;;
-	tarball_finish)
-		[ -f "${BUILD_STATUS_TARBALL_PROGRESS_FNAME}" ] &&\
-			rm -f ${BUILD_STATUS_TARBALL_PROGRESS_FNAME}; ;;
-	finish)
-		[ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ] &&\
-			rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME}; ;;
-	esac; shift;
-	done;
+set_env_vars() {
+	_sev_val_new="${1}"; shift;
+	while [ ${#} -gt 1 ]; do
+		[ -z "${_sev_val_new}" ] && unset ${1} ||\
+			export "${1}=${_sev_val_new}"; shift;
+	done; unset _sev_val_new;
 };
 
 # vim:filetype=sh

@@ -1,5 +1,5 @@
 #
-# . ./build.vars and set -o errexit are assumed.
+# . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
 if ! is_build_script_done install; then

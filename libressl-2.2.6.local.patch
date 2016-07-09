@@ -191,19 +191,3 @@
  if test -z "${HOST_NETBSD_TRUE}" && test -z "${HOST_NETBSD_FALSE}"; then
    as_fn_error $? "conditional \"HOST_NETBSD\" was never defined.
  Usually this means the macro was only invoked conditionally." "$LINENO" 5
-@@ -15584,3 +15603,15 @@
- $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
- fi
- 
-+# a transitional workaround...
-+case $host_os in
-+		midipix*)
-+			cp $ac_confdir/libtool.midipix libtool || exit 2
-+
-+			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
-+				-e 's/@cbb_build_alias@/'$build_alias'/g' \
-+				-e 's/@cbb_build_os@/'$build_os'/g' \
-+				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
-+			;;
-+esac
-+

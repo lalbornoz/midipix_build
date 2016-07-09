@@ -20,31 +20,3 @@ diff -ru a/configfsf.sub b/configfsf.sub
  	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
  	      | -uxpv* | -beos* | -mpeix* | -udk* \
  	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
-diff -ru a/configure b/configure
---- a/configure	2013-09-30 06:18:33.000000000 -0400
-+++ b/configure	2015-05-28 00:18:20.160345295 -0400
-@@ -28684,7 +28684,7 @@
- 
- echo "include_mpn(\`x86_64/darwin.m4')" >> $gmp_tmpconfigm4i
-  ;;
--	    *-*-mingw* | *-*-cygwin)
-+	    *-*-mingw* | *-*-cygwin | *-*-midipix)
- 
- echo "include_mpn(\`x86_64/dos64.m4')" >> $gmp_tmpconfigm4i
-  ;;
-@@ -32457,3 +32457,15 @@
-      ;;
-    esac
- fi
-+
-+# a transitional workaround...
-+case $host_os in
-+		midipix*)
-+			cp $ac_confdir/libtool.midipix libtool || exit 2
-+
-+			sed -i	-e 's/@cbb_host_os@/'$host'/g' \
-+				-e 's/@cbb_build_alias@/'$build_alias'/g' \
-+				-e 's/@cbb_build_os@/'$build_os'/g' \
-+				-e 's/@cbb_build@/'$build'/g' libtool || exit 2
-+			;;
-+esac
