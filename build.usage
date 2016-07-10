@@ -12,7 +12,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-h] [-i level.name.bui
                                Restart all or the specified build script(s) completely
                                or at the optionally specified build step. Currently defined
                                build steps are: fetch extract build_dir autoconf patch configure
-                               clean build install configure1 configure2 build1 build2 install1 install2.
+                               clean build install.
         -t[.gz|.bz2|.xz]       Produce binary distribution and source tarballs containing ${PREFIX}
                                sans ${WORKDIR} and ${PREFIX}/src/midipix_build and ${WORKDIR} sans top-
                                level regular files at the end of a build with zero failures. The
