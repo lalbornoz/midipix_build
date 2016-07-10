@@ -176,15 +176,13 @@ if ! is_build_script_done install; then
 		find ${PKG_PREFIX}/lib -type f -name \*.la -exec rm -f -- {} \;
 	fi;
 	if test_cmd perk && test_cmd ${PKG_TARGET}-dlltool; then
-		set +o noglob;
 		for __so_fname in							\
-				*.so							\
-				*.so.[0-9]						\
-				*.so.[0-9].[0-9]					\
-				*.so.[0-9].[0-9].[0-9];
+			$(find	\( -name "*.so"						\
+				-or -name "*.so.[0-9]"					\
+				-or -name "*.so.[0-9].[0-9]"				\
+				-or -name "*.so.[0-9].[0-9].[0-9]" \) -printf "%P\n");
 		do
-			if [ \( ! -e "${__so_fname}" \) -o				\
-			       -e ${__so_fname%.so}.def ];
+			if [ -e ${__so_fname%.so}.def ];
 			then
 				continue;
 			else
@@ -199,7 +197,6 @@ if ! is_build_script_done install; then
 				cp -- ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
 			fi;
 		done;
-		set -o noglob;
 	fi;
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
 		(set -- ${PKG_INSTALL_FILES};
