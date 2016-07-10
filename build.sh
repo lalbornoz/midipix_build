@@ -3,6 +3,7 @@
 #
 
 . ./build.subr;
+VALID_BUILD_LEVELS="fetch,extract,build_dir,autoconf,patch,configure,clean,build,install";
 
 #
 # Process command line arguments.
@@ -17,6 +18,16 @@ case ${1} in
 -r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
 	if [ "${2#*:*}" != "${2}" ]; then
 		ARG_RESTART_SCRIPT="${2%%:*}"; ARG_RESTART_SCRIPT_AT="${2##*:}";
+		if [ ! -e "${ARG_RESTART_SCRIPT}" ]; then
+			log_msg fail "Error: unknown build script specified.";
+			exec cat build.usage;
+		fi;
+		for __ in $(split , "${ARG_RESTART_SCRIPT_AT}"); do
+			if ! match_list "${VALID_BUILD_LEVELS}" , "${__}"; then
+				log_msg fail "Error: unknown build level specified.";
+				exec cat build.usage;
+			fi;
+		done;
 	else
 		ARG_RESTART_SCRIPT="${2}"; ARG_RESTART_SCRIPT_AT=ALL;
 	fi; shift; ;;
@@ -101,8 +112,7 @@ for BUILD_LVL in 0 1 2 3 ${ARG_TARBALL:+9}; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${ARG_RESTART_SCRIPT}" ]					\
 		&& [ "${ARG_RESTART_SCRIPT}" != "ALL" ]					\
-		&& ! match_list "${ARG_RESTART_SCRIPT}"					\
-				, "${BUILD_SCRIPT_FNAME}"; then
+		&& [ "${ARG_RESTART_SCRIPT}" != ${BUILD_SCRIPT_FNAME} ]; then
 			if [ ${ARG_XTRACE:-0} -eq 0 ]; then
 				log_msg info "Skipped build script \`${BUILD_SCRIPT_FNAME}' (--build-scripts policy.)";
 			fi;
