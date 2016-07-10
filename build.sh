@@ -22,12 +22,14 @@ case ${1} in
 			log_msg fail "Error: unknown build script specified.";
 			exec cat build.usage;
 		fi;
-		for __ in $(split , "${ARG_RESTART_SCRIPT_AT}"); do
-			if ! match_list "${VALID_BUILD_LEVELS}" , "${__}"; then
-				log_msg fail "Error: unknown build level specified.";
-				exec cat build.usage;
-			fi;
-		done;
+		if [ "${ARG_RESTART_SCRIPT_AT}" != diff ]; then
+			for __ in $(split , "${ARG_RESTART_SCRIPT_AT}"); do
+				if ! match_list "${VALID_BUILD_LEVELS}" , "${__}"; then
+					log_msg fail "Error: unknown build level specified.";
+					exec cat build.usage;
+				fi;
+			done;
+		fi;
 	else
 		ARG_RESTART_SCRIPT="${2}"; ARG_RESTART_SCRIPT_AT=ALL;
 	fi; shift; ;;
