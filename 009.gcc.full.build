@@ -5,6 +5,7 @@
 # Order: stage1, runtime, full, native
 
 if [ "${3}" = runtime ]\
+||   [ "${3}" = libstdc++-v3 ]; then
 ||   [ "${3}" = full ]; then
 	set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
 	cd ${PKG_BUILD_DIR};
@@ -18,23 +19,25 @@ if [ "${3}" = runtime ]\
 			make ${MAKEFLAGS} install-target-libgcc;
 			set_build_script_done install finish;
 		fi;
+	elif [ "${3}" = libstdc++-v3 ]; then
+		# GCC, libstdc++-v3.
+		if ! is_build_script_done build; then
+			make ${MAKEFLAGS} all-target-libstdc++-v3;
+			set_build_script_done build -install;
+		fi;
+		if ! is_build_script_done install; then
+			make ${MAKEFLAGS} install-target-libstdc++-v3;
+			set_build_script_done install finish;
+		fi;
 	elif [ "${3}" = full ]; then
 		# GCC, everything else.
-		if ! is_build_script_done build1; then
-			make ${MAKEFLAGS} all-target-libstdc++-v3;
-			set_build_script_done build1 -install1;
-		fi;
-		if ! is_build_script_done install1; then
-			make ${MAKEFLAGS} install-target-libstdc++-v3;
-			set_build_script_done install1 -build2;
-		fi;
-		if ! is_build_script_done build2; then
+		if ! is_build_script_done build; then
 			make ${MAKEFLAGS};
-			set_build_script_done build2 -install2;
+			set_build_script_done build -install;
 		fi;
-		if ! is_build_script_done install2; then
+		if ! is_build_script_done install; then
 			make ${MAKEFLAGS} install;
-			set_build_script_done install2 finish;
+			set_build_script_done install finish;
 		fi;
 	fi;
 else

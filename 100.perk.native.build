@@ -1,0 +1,53 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+#
+
+if ! is_build_script_done fetch; then
+	fetch_git perk ${GITROOT}/perk;
+	set_build_script_done fetch configure;
+fi;
+if [ "${3}" = native ]; then
+	set_build_dir ${2} native;
+	if ! is_build_script_done configure; then
+		rm_if_exists -m -c ${PKG_BUILD_DIR};
+		../perk/configure --prefix=/usr;
+		set_build_script_done configure clean -build;
+	else
+		cd ${PKG_BUILD_DIR};
+	fi;
+	if ! is_build_script_done clean; then
+		make ${MAKEFLAGS} clean;
+		set_build_script_done clean -build;
+	fi;
+	if ! is_build_script_done build; then
+		make;
+		set_build_script_done build -install;
+	fi;
+	if ! is_build_script_done install; then
+		make DESTDIR=${PREFIX} install;
+		set_build_script_done install finish;
+	fi;
+elif [ "${3}" = cross ]; then
+	set_build_dir ${2} cross;
+	if ! is_build_script_done configure; then
+		rm_if_exists -m -c ../${PKG_BUILD_DIR};
+		../perk/configure --prefix=/usr --target=${TARGET};
+		set_build_script_done configure clean -build;
+	else
+		cd ../${PKG_BUILD_DIR};
+	fi;
+	if ! is_build_script_done clean; then
+		make ${MAKEFLAGS} clean;
+		set_build_script_done clean -build;
+	fi;
+	if ! is_build_script_done build; then
+		make;
+		set_build_script_done build -install;
+	fi;
+	if ! is_build_script_done install; then
+		make DESTDIR=${PKG_PREFIX} install;
+		set_build_script_done install finish;
+	fi;
+fi;
+
+# vim:filetype=sh
