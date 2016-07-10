@@ -140,6 +140,9 @@ bash_cv_ulimit_maxfds=yes
 bash_cv_under_sys_siglist=yes
 bash_cv_unusable_rtsigs=no
 
+# libX11
+xorg_cv_malloc0_returns_null=yes
+
 # procps_ng
 ac_cv_func_realloc_0_nonnull=yes
 
