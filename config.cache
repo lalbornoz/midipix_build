@@ -140,6 +140,9 @@ bash_cv_ulimit_maxfds=yes
 bash_cv_under_sys_siglist=yes
 bash_cv_unusable_rtsigs=no
 
+# procps_ng
+ac_cv_func_realloc_0_nonnull=yes
+
 # vim
 vim_cv_bcopy_handles_overlap=yes
 vim_cv_getcwd_broken=no
