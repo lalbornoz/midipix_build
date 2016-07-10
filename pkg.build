@@ -91,21 +91,8 @@ if ! is_build_script_done patch; then
 			patch -b -d ${PKG_SUBDIR} -p1 < ${__patch_fname};
 		fi;
 	done; unset __patch_fname;
-	if [ -n "${PKG_PATCHES_EXTRA_URL}" ]; then
-		(rm_if_exists -m -c ${PKG_SUBDIR}-patches-extra;
-		wget -c -nd -np -r -R \*.htm\* -R \*.sig ${PKG_PATCHES_EXTRA_URL};
-		for __patch_fname in		\
-				$(find . -type f -not -iname \*.sig | sort); do
-			patch -b -d ../${PKG_SUBDIR} -p0 < ${__patch_fname};
-		done);
-		if [ -n "${PKG_PATCHES_EXTRA_MANIFEST}" ]; then
-			(set -- ${PKG_PATCHES_EXTRA_MANIFEST};
-			while [ ${#} -gt 0 ]; do
-				if ! compare_hash ${1} ${2}; then
-					log_msg failexit "Error: hash mismatch for patch file \`${1}'.";
-				fi; shift;
-			done);
-		fi;
+	if test_cmd pkg_${PKG_NAME}_patch_post; then
+		pkg_${PKG_NAME}_patch_post;
 	fi;
 	set_build_script_done patch -configure;
 fi;
@@ -230,7 +217,7 @@ if ! is_build_script_done install; then
 			echo mkdir -p -- ${PKG_PREFIX}/${__mkdir_fname};
 			mkdir -p -- ${PKG_PREFIX}/${__mkdir_fname};
 			;;
-		*)	
+		*)
 			__file_fname_src="${1%=*}";
 			__file_fname_dst="${1#*=}";
 			echo cp -pP -- ${__file_fname_src} ${PKG_PREFIX}/${__file_fname_dst};
