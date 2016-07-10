@@ -5,7 +5,7 @@
 # Order: stage1, runtime, full, native
 
 if [ "${3}" = runtime ]\
-||   [ "${3}" = libstdc++-v3 ]; then
+||   [ "${3}" = libstdc++-v3 ]\
 ||   [ "${3}" = full ]; then
 	set_build_dir cbb-gcc-${PKG_GCC_VERSION} cross;
 	cd ${PKG_BUILD_DIR};
