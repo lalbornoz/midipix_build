@@ -1,5 +1,5 @@
 usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-h] [-i level.name.build]
-                  [-r ALL|level.name.build[:step]] [-t[.gz|.bz2|.xz] [-x]
+                  [-r ALL|level.name.build[:diff|:step[,...]]] [-t[.gz|.bz2|.xz] [-x]
         -a nt32|nt64           Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release       Selects debug or release build; defaults to debug.
                                This currently only controls CFLAGS.
@@ -8,11 +8,13 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-h] [-i level.name.bui
         -i level.name.build    Insert link to pkg.build for the specified build script.
                                All consecutive scripts with higher build levels will
                                be renamed automatically.
-        -r ALL|level.name.build[:step]
+        -r ALL|level.name.build[:step[,...]]
                                Restart all or the specified build script(s) completely
                                or at the optionally specified build step. Currently defined
-                               build steps are: fetch extract build_dir autoconf patch configure
-                               clean build install.
+                               build steps are: fetch extract build_dir autoconf patch
+                               configure clean build install.
+        -r level.name.build:diff
+                               Automatically produce diff(1).
         -t[.gz|.bz2|.xz]       Produce binary distribution and source tarballs containing ${PREFIX}
                                sans ${WORKDIR} and ${PREFIX}/src/midipix_build and ${WORKDIR} sans top-
                                level regular files at the end of a build with zero failures. The

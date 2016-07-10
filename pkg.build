@@ -3,6 +3,21 @@
 #
 
 parse_with_pkg_name ${SCRIPT_FNAME%[0-9][0-9]*} ${2} ${PKG_BUILD_NAMES};
+if [ "${ARG_RESTART_SCRIPT_AT}" = diff ]; then
+	printf "" > ${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local.patch.new;
+	for __ in $(find ${PKG_SUBDIR} -name \*.orig); do
+		if [ -e ${__%.orig} ]; then
+			echo diff -Nru ${__} ${__%.orig};
+			set +o errexit; diff -Nru ${__} ${__%.orig}	\
+				>> ${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local.patch.new; __=${?}; set -o errexit;
+			if [ ${__} -ge 2 ]; then
+				exit 1;
+			fi;
+		fi;
+	done;
+	ls -la ${MIDIPIX_BUILD_PWD}/${PKG_SUBDIR}.local.patch.new;
+	exit 0;
+fi;
 if ! is_build_script_done fetch; then
 	if test_cmd pkg_${PKG_NAME}_fetch; then
 		pkg_${PKG_NAME}_fetch;
