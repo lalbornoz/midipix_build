@@ -18,10 +18,6 @@ case ${1} in
 -r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
 	if [ "${2#*:*}" != "${2}" ]; then
 		ARG_RESTART_SCRIPT="${2%%:*}"; ARG_RESTART_SCRIPT_AT="${2##*:}";
-		if [ ! -e "${ARG_RESTART_SCRIPT}" ]; then
-			log_msg fail "Error: unknown build script specified.";
-			exec cat build.usage;
-		fi;
 		if [ "${ARG_RESTART_SCRIPT_AT}" != diff ]; then
 			for __ in $(split , "${ARG_RESTART_SCRIPT_AT}"); do
 				if ! match_list "${VALID_BUILD_LEVELS}" , "${__}"; then
@@ -32,7 +28,12 @@ case ${1} in
 		fi;
 	else
 		ARG_RESTART_SCRIPT="${2}"; ARG_RESTART_SCRIPT_AT=ALL;
-	fi; shift; ;;
+	fi;
+	if [ ! -e "${ARG_RESTART_SCRIPT}" ]; then
+		log_msg fail "Error: unknown build script specified.";
+		exec cat build.usage;
+	fi;
+	shift; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 *)	exec cat build.usage; ;;
 esac; shift; done;
