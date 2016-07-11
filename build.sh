@@ -38,6 +38,10 @@ case ${1} in
 *)	exec cat build.usage; ;;
 esac; shift; done;
 
+if [ -e /proc/cpuinfo ]; then
+	BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
+fi;
+
 # Source the build variables file and its local overrides, if any.
 for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./build.vars; do
 	[ -e ${__} ] && . ${__};
