@@ -34,11 +34,18 @@ fetch() {
 };
 
 fetch_git() {
-	_fg_subdir="${1}"; _fg_url="${2}"; _fg_git_args_extra="${3}";
+	_fg_subdir="${1}"; _fg_url="${2}"; _fg_branch="${3}";
 	if [ -e "${DLCACHEDIR}/${_fg_subdir}" ]; then
-		(cd ${DLCACHEDIR}/${_fg_subdir} && git pull origin main);
+		cd ${DLCACHEDIR}/${_fg_subdir} &&\
+			git pull origin ${_fg_branch:-main} && cd ${OLDPWD};
 	else
-		git clone ${_fg_git_args_extra} ${_fg_url} ${DLCACHEDIR}/${_fg_subdir};
+		git clone ${_fg_url} ${DLCACHEDIR}/${_fg_subdir};
+		if [ -n "${_fg_branch}" -a		\
+		     \( -z "${_fg_branch#main}" \) -a	\
+		     \( -z "${_fg_branch#master}" \) ]; then
+			cd ${DLCACHEDIR}/${_fg_subdir} &&\
+				git checkout -b ${_fg_branch} && cd ${OLDPWD};
+		fi;
 	fi;
 	rm_if_exists ${_fg_subdir};
 	echo cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
