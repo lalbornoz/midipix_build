@@ -32,7 +32,6 @@ fetch() {
 	touch ${_f_url_dst}.fetched;
 	unset _f_url _f_url_dst _f_sha256sum_src _f_sha256sum_dst;
 };
-
 fetch_git() {
 	_fg_subdir="${1}"; _fg_url="${2}"; _fg_branch="${3}";
 	if [ -e "${DLCACHEDIR}/${_fg_subdir}" ]; then
@@ -47,7 +46,7 @@ fetch_git() {
 				git checkout -b ${_fg_branch} && cd ${OLDPWD};
 		fi;
 	fi;
-	rm_if_exists ${_fg_subdir};
+	secure_rm ${_fg_subdir};
 	echo cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
 	cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
 };
@@ -136,7 +135,7 @@ set_build_script_done() {
 	_sbsd_done_fname=${WORKDIR}/.${_sbsd_script_fname%.build};
 	while [ $# -ge 1 ]; do
 		if [ "${1#-}" != "${1}" ]; then
-			rm -f -- ${_sbsd_done_fname}.${1#-};
+			secure_rm ${_sbsd_done_fname}.${1#-};
 		else
 			touch ${_sbsd_done_fname}.${1};
 			log_msg info "Finished build step ${1} of build script \`${_sbsd_script_fname}'.";
@@ -160,6 +159,7 @@ log_env_vars() {
 		shift;
 	done; unset _lev_arg_len_max;
 };
+
 log_msg() {
 	_lm_lvl=${1}; shift;
 	case ${_lm_lvl} in
@@ -223,19 +223,51 @@ set_env_vars_with_sep() {
 	done; unset _sevws_sep; pop_IFS;
 };
 
-rm_if_exists() {
-	[ -z "${1#-m}" ] && { _rie_arg_m=1; shift; };
-	[ -z "${1#-c}" ] && { _rie_arg_c=1; shift; };
-	[ -z "${1}" ] && return 1;
-	if [ -d ${1} -o -f ${1} ]; then
-		log_msg warn "Removing directory or file \`${1}'.";
-		rm -rf -- ${1};
+secure_cd() {
+	if [ \( -z "${1}" \) -o \( ! -e "${1}" \) ]; then
+		return 1;
+	else
+		(cd "${1}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
+			return 1 || return 0);
+		if [ ${?} -eq 0 ]; then
+			log_msg warn "Changing working directory to \`${1}'.";
+			cd -- "${1}";
+		else
+			log_msg failexit "secure_cd() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
+		fi;
 	fi;
-	[ ${_rie_arg_m:-0} -eq 1 ] && {
-		log_msg warn "Making directory \`${1}'.";
-		mkdir -- ${1}; unset _rie_arg_m; };
-	[ ${_rie_arg_c:-0} -eq 1 ] && { cd ${1}; unset _rie_arg_c; };
-	return 0;
+};
+insecure_mkdir() {
+	while [ ${#} -gt 0 ]; do
+		if [ -z "${1}" ]; then
+			return 1;
+		elif [ ! -e "${1}" ]; then
+			log_msg warn "Making directory \`${1}'.";
+			mkdir -p -- "${1}";
+		fi; shift;
+	done;
+};
+secure_rm() {
+	while [ ${#} -gt 0 ]; do
+		if [ -z "${1}" ]; then
+			return 1;
+		elif [ -e "${1}" ]; then
+			if [ -d "${1}" ]; then
+				_sr_pname_check="${1}";
+			else
+				_sr_pname_check="$(dirname "${1}")";
+			fi;
+			(cd "${_sr_pname_check}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
+				return 1 || return 0);
+			if [ ${?} -eq 0 ]; then
+				unset _sr_pname_check;
+				log_msg warn "Removing directory or file \`${1}'.";
+				rm -rf -- "${1}";
+			else
+				log_msg failexit "secure_rm() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
+			fi;
+		fi; shift;
+	done;
 };
 
 run_cmd_unsplit() {
