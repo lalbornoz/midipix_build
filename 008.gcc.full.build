@@ -65,9 +65,15 @@ else
 		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PKG_PREFIX}";
 	fi;
 	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${PKG_GCC_VERSION}/libc/cbb-musl-pe.h)";
-	set_env_vars "${GCCFLAGS}" CFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS CXXFLAGS_FOR_BUILD;
-	set_env_vars "${GCCTARGET_FLAGS}" CFLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET;
-	set_env_vars "${CFLAGS_FOR_BUILD}" cbb_cflags_for_stage1 cbb_cflags_for_stage2 cbb_cflags_for_stage3 cbb_cflags_for_stage4;
+	for __ in CFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS CXXFLAGS_FOR_BUILD; do
+		export "${__}=${GCCFLAGS}";
+	done;
+	for __ in CFLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET; do
+		export "${__}=${GCCTARGET_FLAGS}";
+	done;
+	for __ in cbb_cflags_for_stage1 cbb_cflags_for_stage2 cbb_cflags_for_stage3 cbb_cflags_for_stage4; do
+		export "${__}=${CFLAGS_FOR_BUILD}" ;
+	done;
 	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
 	if ! is_build_script_done configure; then
 		if [ "${3}" = stage1 ]; then
@@ -140,7 +146,8 @@ else
 	if ! is_build_script_done install; then
 		if [ "${3}" = stage1 ]; then
 			make ${MAKEFLAGS} install-gcc;
-			if match_uname_any CYGWIN\*; then
+			__="$(uname -s)";
+			if [ "${__#*CYGWIN*}" != "${__}" ]; then
 				ln -s -- ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.dll.a	\
 					ln -s -- ${PREFIX}/libexec/gcc/${TARGET}/${PKG_GCC_VERSION}/liblto_plugin.so;
 			fi;
