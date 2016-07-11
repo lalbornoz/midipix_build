@@ -77,12 +77,12 @@ else
 	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
 	if ! is_build_script_done configure; then
 		if [ "${3}" = stage1 ]; then
-			mkdir -p -- ${PKG_PREFIX}/include;
+			insecure_mkdir ${PKG_PREFIX}/include;
 			[ \! -d ${PKG_PREFIX}/usr ] &&			\
 				ln -s -- . ${PKG_PREFIX}/usr;
 			_configure_args="--prefix=${PREFIX} --with-sysroot=${PKG_PREFIX}";
 		elif [ "${3}" = native ]; then
-			mkdir -p -- ${PKG_PREFIX}/${TARGET};
+			insecure_mkdir ${PKG_PREFIX}/${TARGET};
 			if [ \! -d ${PKG_PREFIX}/${TARGET}/usr ]; then
 				ln -s -- . ${PKG_PREFIX}/${TARGET}/usr;
 			fi;
@@ -99,7 +99,9 @@ else
 				--with-mpfr=${PKG_PREFIX}	\
 				--with-sysroot=";
 		fi;
-		rm_if_exists -m -c ${PKG_BUILD_DIR};
+		secure_rm ${PKG_BUILD_DIR};
+		insecure_mkdir ${PKG_BUILD_DIR};
+		secure_cd ${PKG_BUILD_DIR};
 		../cbb-gcc-${PKG_GCC_VERSION}/configure		\
 			--disable-bootstrap			\
 			--disable-libmudflap			\
