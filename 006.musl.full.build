@@ -4,6 +4,9 @@
 
 # Order: no-complex, native
 
+# Git clone what we need.
+fetch_git lazy ${GITROOT}/lazy;
+
 export lz_arch=${ARCH} lz_cflags_debug=-O2 lz_target=${TARGET};
 
 if [ "${3}" = no-complex ]; then
