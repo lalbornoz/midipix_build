@@ -88,16 +88,16 @@ if [ ${ARG_CLEAN:-0} -eq 1 ]; then
 	log_msg info "-c specified, cleaning prefix...";
 	for __ in ${CLEAR_PREFIX_DIRS}; do
 		if [ -e ${PREFIX}/${__} ]; then
-			rm -rf -- ${PREFIX}/${__};
+			secure_rm ${PREFIX}/${__};
 		fi;
 	done;
 fi;
 
 # Create directory hierarchy and usr -> . symlinks.
-mkdir -p -- ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
+insecure_mkdir ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
 for __ in ${PREFIX}/usr ${PREFIX_NATIVE}/usr; do
 	if [ ! -L "${__}" ]; then
-		rm -rf -- "${__}"; ln -sf -- . "${__}";
+		secure_rm "${__}"; ln -sf -- . "${__}";
 	fi;
 done;
 
@@ -169,7 +169,7 @@ log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
 
 if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-	rm -f -- ${BUILD_STATUS_IN_PROGRESS_FNAME};
+	secure_rm ${BUILD_STATUS_IN_PROGRESS_FNAME};
 fi;
 
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${BUILD_LOG_FNAME} &
