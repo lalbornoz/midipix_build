@@ -105,10 +105,7 @@ if [ -e ${BUILD_LOG_FNAME} ]; then
 	mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
 fi;
 touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
-trap "rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME}; log_msg failexit \"Build aborted.\"" HUP INT TERM USR1 USR2;
-
 {(
-trap "rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME}; log_msg failexit \"Build aborted.\"" HUP INT TERM USR1 USR2;
 BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
 BUILD_TIMES_SECS=$(command date +%s);
@@ -173,6 +170,11 @@ if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 fi;
 
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${BUILD_LOG_FNAME} &
-trap "kill -INT $!" HUP INT TERM USR1 USR2; wait;
+TEE_PID=${!};
+trap "rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME};	\
+	log_msg fail \"Build aborted.\";	\
+	echo kill ${TEE_PID};			\
+	kill ${TEE_PID}" HUP INT TERM USR1 USR2;
+wait;
 
 # vim:filetype=sh
