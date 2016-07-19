@@ -143,6 +143,9 @@ bash_cv_unusable_rtsigs=no
 # libX11
 xorg_cv_malloc0_returns_null=yes
 
+# mc
+ac_list_mounted_fs=found
+
 # procps_ng
 ac_cv_func_realloc_0_nonnull=yes
 

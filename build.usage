@@ -20,6 +20,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-h] [-i level.name.bui
                                level regular files at the end of a build with zero failures. The
                                tarballs will be compressed with either gzip, bzip2, or xz and signed
                                with GPG; the default compression is xz.
+        -v                     Be verbose; this currently only affects secure_{cd,rm}() and insecure_mkdir().
         -x                     Set the xtrace sh(1)ell option for debugging purposes.
 
         Packages that are built by pkg.build will apply local patches in ${WORKDIR}

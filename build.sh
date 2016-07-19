@@ -10,7 +10,8 @@ VALID_BUILD_LEVELS="fetch,extract,build_dir,autoconf,patch,configure,clean,build
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
--t*)	ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
+-t*)	export ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
+-v)	export ARG_VERBOSE=1; ;;
 -x)	ARG_XTRACE=1; set -o xtrace; ;;
 -a)	[ -z "${2}" ] && exec cat build.usage || ARCH="${2}"; shift; ;;
 -b)	[ -z "${2}" ] && exec cat build.usage || BUILD="${2}"; shift; ;;
@@ -94,7 +95,7 @@ if [ ${ARG_CLEAN:-0} -eq 1 ]; then
 fi;
 
 # Create directory hierarchy and usr -> . symlinks.
-insecure_mkdir ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
+insecure_mkdir ${PREFIX} ${PREFIX_MINIPIX} ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
 for __ in ${PREFIX}/usr ${PREFIX_NATIVE}/usr; do
 	if [ ! -L "${__}" ]; then
 		secure_rm "${__}"; ln -sf -- . "${__}";
@@ -112,7 +113,7 @@ BUILD_TIMES_SECS=$(command date +%s);
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 log_env_vars "build (global)" ${LOG_ENV_VARS};
 
-for BUILD_LVL in 0 1 2 3 ${ARG_TARBALL:+9}; do
+for BUILD_LVL in 0 1 2 3 9; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${ARG_RESTART_SCRIPT}" ]					\
 		&& [ "${ARG_RESTART_SCRIPT}" != "ALL" ]					\
@@ -138,7 +139,8 @@ for BUILD_LVL in 0 1 2 3 ${ARG_TARBALL:+9}; do
 			 SCRIPT_NAME=${SCRIPT_FNAME%%.build*};				\
 			 export PKG_BUILD=${BUILD};					\
 			 export PKG_TARGET=${TARGET};					\
-			 export PKG_PREFIX=$(get_var_unsafe PKG_LVL${BUILD_LVL}_PREFIX);\
+			 export PKG_PREFIX=$(get_vars_unsafe PKG_LVL${BUILD_LVL}_PREFIX	\
+					PKG_$(echo ${2} | tr a-z A-Z)_PREFIX);		\
 			 export MIDIPIX_BUILD_PWD=$(pwd); cd ${WORKDIR};		\
 			 for SCRIPT_SOURCE in build.subr ${SCRIPT_NAME}.vars		\
 					${BUILD_SCRIPT_FNAME}; do			\
