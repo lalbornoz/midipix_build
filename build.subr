@@ -51,6 +51,15 @@ fetch_git() {
 	cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
 };
 
+get_vars_unsafe() {
+	while [ ${#} -gt 0 ]; do
+		_gvu_vval="$(eval echo \${${1}})";
+		[ -z "${_gvu_vval}" ] || _gvu_vval_="${_gvu_vval}";
+		shift;
+	done; echo "${_gvu_vval_}";
+	unset _gvu_vval _gvu_vval_;
+};
+
 insert_build_script_link() {
 	_ibsl_fname=${1};
 	_ibsl_level=${_ibsl_fname%%.*};
@@ -230,7 +239,8 @@ secure_cd() {
 		(cd "${1}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
 			return 1 || return 0);
 		if [ ${?} -eq 0 ]; then
-			log_msg warn "Changing working directory to \`${1}'.";
+			[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
+				log_msg warn "Changing working directory to \`${1}'.";
 			cd -- "${1}";
 		else
 			log_msg failexit "secure_cd() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
@@ -242,7 +252,8 @@ insecure_mkdir() {
 		if [ -z "${1}" ]; then
 			return 1;
 		elif [ ! -e "${1}" ]; then
-			log_msg warn "Making directory \`${1}'.";
+			[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
+				log_msg warn "Making directory \`${1}'.";
 			mkdir -p -- "${1}";
 		fi; shift;
 	done;
@@ -261,7 +272,8 @@ secure_rm() {
 				return 1 || return 0);
 			if [ ${?} -eq 0 ]; then
 				unset _sr_pname_check;
-				log_msg warn "Removing directory or file \`${1}'.";
+				[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
+					log_msg warn "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}";
 			else
 				log_msg failexit "secure_rm() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
