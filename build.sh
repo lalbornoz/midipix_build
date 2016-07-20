@@ -95,10 +95,16 @@ if [ ${ARG_CLEAN:-0} -eq 1 ]; then
 fi;
 
 # Create directory hierarchy and usr -> . symlinks.
-insecure_mkdir ${PREFIX} ${PREFIX_MINIPIX} ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
+insecure_mkdir ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
 for __ in ${PREFIX}/usr ${PREFIX_NATIVE}/usr; do
 	if [ ! -L "${__}" ]; then
 		secure_rm "${__}"; ln -sf -- . "${__}";
+	fi;
+done;
+insecure_mkdir ${PREFIX_MINIPIX}/bin;
+for __ in lib libexec share; do
+	if [ ! -e ${PREFIX_MINIPIX}/${__} ]; then
+		ln -sf bin ${PREFIX_MINIPIX}/${__};
 	fi;
 done;
 

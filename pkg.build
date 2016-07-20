@@ -186,7 +186,7 @@ if ! is_build_script_done install; then
 					"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
 					"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
 					${PKG_INSTALL_TARGET:=install}			\
-					${__};
+					${__:+DESTDIR=${__}};
 			done;
 		fi;
 		if test_cmd pkg_${PKG_NAME}_install_post; then
