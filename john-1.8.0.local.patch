@@ -1,0 +1,101 @@
+--- john-1.8.0/src/Makefile.orig	2013-05-29 23:21:25.000000000 +0000
++++ john-1.8.0/src/Makefile	2016-07-21 16:18:58.367574437 +0000
+@@ -104,6 +104,8 @@
+ #	@echo "linux-ppc64-altivec      Linux, PowerPC 64-bit w/AltiVec"
+ 	@echo "linux-ppc64              Linux, PowerPC 64-bit"
+ 	@echo "linux-ia64               Linux, IA-64"
++	@echo "midipix-x86_64           Midipix, x86-64 with SSE2 (most common)"
++	@echo "midipix-x86-sse2         Linux, x86 32-bit with SSE2 (most common, if 32-bit)"
+ 	@echo "freebsd-x86-64           FreeBSD, x86-64 with SSE2 (best)"
+ 	@echo "freebsd-x86-sse2         FreeBSD, x86 with SSE2 (best if 32-bit)"
+ 	@echo "freebsd-x86-mmx          FreeBSD, x86 with MMX"
+@@ -306,6 +308,20 @@
+ 		CFLAGS="$(CFLAGS) -DHAVE_CRYPT" \
+ 		LDFLAGS="$(LDFLAGS) -lcrypt"
+ 
++midipix-x86_64:
++	$(LN) x86-64.h arch.h
++	$(MAKE) $(PROJ) \
++		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86-64.o" \
++		CFLAGS="$(CFLAGS) -DHAVE_CRYPT" \
++		LDFLAGS="$(LDFLAGS) -lcrypt"
++
++midipix-x86-sse2:
++	$(LN) x86-sse.h arch.h
++	$(MAKE) $(PROJ) \
++		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86.o x86-sse.o" \
++		CFLAGS="$(CFLAGS) -DHAVE_CRYPT" \
++		LDFLAGS="$(LDFLAGS) -lcrypt"
++
+ freebsd-x86-64:
+ 	$(LN) x86-64.h arch.h
+ 	$(MAKE) $(PROJ) \
+--- john-1.8.0/src/x86-64.S.orig	2012-07-21 13:08:57.000000000 +0000
++++ john-1.8.0/src/x86-64.S	2016-07-21 16:21:38.808119794 +0000
+@@ -59,9 +59,9 @@
+ .bss
+ #endif
+ 
+-.globl DES_bs_all
++.globl  __imp_DES_bs_all
+ DO_ALIGN(6)
+-DES_bs_all:
++__imp_DES_bs_all:
+ DES_bs_all_KSp:
+ DO_SPACE(nptr(0x300))
+ DES_bs_all_KS_p:
+@@ -964,8 +964,8 @@
+ .text
+ 
+ DO_ALIGN(6)
+-.globl DES_bs_init_asm
+-DES_bs_init_asm:
++.globl  __imp_DES_bs_init_asm
++__imp_DES_bs_init_asm:
+ 	pcmpeqd %xmm0,%xmm0
+ 	movdqa %xmm0,pnot
+ 	paddb %xmm0,%xmm0
+@@ -991,8 +991,8 @@
+ #define rounds_and_swapped		%eax
+ 
+ DO_ALIGN(6)
+-.globl DES_bs_crypt
+-DES_bs_crypt:
++.globl  __imp_DES_bs_crypt
++__imp_DES_bs_crypt:
+ 	cmpl $0,DES_bs_all_keys_changed(%rip)
+ 	jz DES_bs_crypt_body
+ 	pushq %rdi
+@@ -1055,8 +1055,8 @@
+ 	ret
+ 
+ DO_ALIGN(6)
+-.globl DES_bs_crypt_25
+-DES_bs_crypt_25:
++.globl  __imp_DES_bs_crypt_25
++__imp_DES_bs_crypt_25:
+ 	cmpl $0,DES_bs_all_keys_changed(%rip)
+ 	jnz DES_bs_finalize_keys_25
+ DES_bs_crypt_25_body:
+@@ -1175,8 +1175,8 @@
+ #define rounds				%eax
+ 
+ DO_ALIGN(6)
+-.globl DES_bs_crypt_LM
+-DES_bs_crypt_LM:
++.globl  __imp_DES_bs_crypt_LM
++__imp_DES_bs_crypt_LM:
+ 	movl (%rdi),%r8d
+ 	movdqa mask01,%xmm7
+ 	movdqa mask02,%xmm8
+@@ -1350,8 +1350,8 @@
+ #ifdef UNDERSCORES
+ #define CPU_detect _CPU_detect
+ #endif
+-.globl CPU_detect
+-CPU_detect:
++.globl  __imp_CPU_detect
++__imp_CPU_detect:
+ 	pushq %rbx
+ 	movl $1,%eax
+ 	cpuid
