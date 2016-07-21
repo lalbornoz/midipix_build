@@ -15,7 +15,8 @@ case ${1} in
 -x)	ARG_XTRACE=1; set -o xtrace; ;;
 -a)	[ -z "${2}" ] && exec cat build.usage || ARCH="${2}"; shift; ;;
 -b)	[ -z "${2}" ] && exec cat build.usage || BUILD="${2}"; shift; ;;
--i)	[ -z "${2}" ] && exec cat build.usage || insert_build_script_link "${2}"; exit; ;;
+-pi)	[ -z "${2}" ] && exec cat build.usage || insert_build_script_link "${2}"; exit; ;;
+-pr)	[ -z "${2}" ] && exec cat build.usage || remove_build_script_link "${2}"; exit; ;;
 -r)	[ -n "${ARG_RESTART_SCRIPT}" ] && exec cat build.usage;
 	if [ "${2#*:*}" != "${2}" ]; then
 		ARG_RESTART_SCRIPT="${2%%:*}"; ARG_RESTART_SCRIPT_AT="${2##*:}";

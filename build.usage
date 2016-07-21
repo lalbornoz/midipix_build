@@ -1,13 +1,17 @@
-usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-h] [-i level.name.build]
-                  [-r ALL|level.name.build[:diff|:step[,...]]] [-t[.gz|.bz2|.xz] [-x]
+usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-h] [-pi level.name.build]
+                  [-pr level.name.build] [-r ALL|level.name.build[:diff|:step[,...]]]
+                  [-t[.gz|.bz2|.xz] [-x]
         -a nt32|nt64           Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release       Selects debug or release build; defaults to debug.
                                This currently only controls CFLAGS.
         -c                     Clean ${PREFIX} before processing build scripts.
         -h                     Show this screen.
-        -i level.name.build    Insert link to pkg.build for the specified build script.
+        -pi level.name.build   Insert link to pkg.build for the specified build script.
                                All consecutive scripts with higher build levels will
                                be renamed automatically.
+        -pr level.name.build   Remove the specified build script. As with -pi, all con-
+                               secutive scripts with higher build levels will be renamed
+                               automatically.
         -r ALL|level.name.build[:step[,...]]
                                Restart all or the specified build script(s) completely
                                or at the optionally specified build step. Currently defined
