@@ -64,9 +64,9 @@ insert_build_script_link() {
 	_ibsl_fname=${1};
 	_ibsl_level=${_ibsl_fname%%.*};
 	_ibsl_name=${_ibsl_fname#*.}; _ibsl_name=${_ibsl_name%.build};
-	if [ -z "${_ibsl_fname}" -o -z "${_ibsl_level}"	\
-			-o -z "${_ibsl_name}" ]		\
-			|| ! isnumber ${_ibsl_level}	\
+	if [ -z "${_ibsl_fname}" -o -z "${_ibsl_level}"				\
+			-o -z "${_ibsl_name}" ]					\
+			|| ! isnumber ${_ibsl_level}				\
 			|| [ ${#_ibsl_level} != 3 ]; then
 		log_msg failexit "Error: invalid or empty build script filename/level/name.";
 	elif [ -e ${_ibsl_fname} ]; then
@@ -77,8 +77,8 @@ insert_build_script_link() {
 		unset _ibsl_fname _ibsl_level _ibsl_name;
 		return 0;
 	else
-		_ibsl_levels="$(find -maxdepth 1 -name		\
-			 ${_ibsl_level%[0-9][0-9]}\[0-9\]\[0-9\].\*	\
+		_ibsl_levels="$(find -maxdepth 1 -name	\
+			 ${_ibsl_level%[0-9][0-9]}\[0-9\]\[0-9\].\*		\
 			-printf '%P\n' | sort -nk1)";
 	fi;
 	for _ibsl_fname_cur in ${_ibsl_levels}; do
@@ -89,13 +89,14 @@ insert_build_script_link() {
 			_ibsl_changed=1;
 		fi;
 		if [ ${_ibsl_changed:=0} -eq 1 ]; then
-			if [ -z "$(find -maxdepth 1 -name $((${_ibsl_fname_cur%%.*}+1)).\*	\
+			if [ -z "$(find -maxdepth 1				\
+					-name $((${_ibsl_fname_cur%%.*}+1)).\*	\
 					-printf '%P\n' -quit)" ]; then
 				_ibsl_last=1;
 			fi;
-			echo mv -- ${_ibsl_fname_cur}	\
+			echo mv -- ${_ibsl_fname_cur}				\
 				$((${_ibsl_fname_cur%%.*}+1)).${_ibsl_fname_cur#*.};
-			mv -- ${_ibsl_fname_cur}	\
+			mv -- ${_ibsl_fname_cur}				\
 				$((${_ibsl_fname_cur%%.*}+1)).${_ibsl_fname_cur#*.};
 			if [ ${_ibsl_last:-0} -eq 1 ]; then
 				break;
@@ -118,6 +119,28 @@ isnumber() {
 			_i_num="${_i_num#[0-9]}";
 		fi;
 	done; unset _i_num; return 0;
+};
+remove_build_script_link() {
+	_rbsl_fname=${1};
+	_rbsl_level=${_rbsl_fname%%.*};
+	_rbsl_name=${_rbsl_fname#*.}; _rbsl_name=${_rbsl_name%.build};
+	if [ -z "${_rbsl_fname}" -o -z "${_rbsl_level}"				\
+			-o -z "${_rbsl_name}" ]					\
+			|| ! isnumber ${_rbsl_level}				\
+			|| [ ${#_rbsl_level} != 3 ]; then
+		log_msg failexit "Error: invalid or empty build script filename/level/name.";
+	elif [ ! -e ${_rbsl_fname} ]; then
+		log_msg failexit "Error: build script \`${_rbsl_fname}' doesn't exist.";
+	else for _rbsl_fname_cur in $(find -maxdepth 1				\
+			-name ${_rbsl_level%[0-9][0-9]}\[0-9\]\[0-9\].\*	\
+			-printf '%P\n' | sort -nk1); do
+		_rbsl_fname_cur_level=${_rbsl_fname_cur%%.*};
+		if [ ${_rbsl_fname_cur_level} -gt ${_rbsl_level} ]; then
+			echo mv ${_rbsl_fname_cur}			\
+				$(printf "%03u"				\
+					$((${_rbsl_fname_cur_level#00}-1))).${_rbsl_fname_cur#*.};
+		fi;
+	done; fi;
 };
 
 is_build_script_done() {
