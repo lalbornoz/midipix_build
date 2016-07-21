@@ -25,6 +25,7 @@ fi;
 
 PREFIX_BASENAME=${PREFIX_NATIVE##*/};
 TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
+TARBALL_CROSS_FNAME=${TARBALL_CROSS_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
 TARBALL_MINIPIX_FNAME=${TARBALL_MINIPIX_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
 TARBALL_SRC_FNAME=${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};
 
@@ -54,6 +55,16 @@ if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
 fi;
 secure_rm ${PREFIX_BASENAME}/lib; mv -- ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
 log_msg info "Restored ${PREFIX_BASENAME}/lib.";
+
+tar -cpf - bin include lib lib64 libexec share ${PKG_TARGET}			|\
+${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_CROSS_FNAME};
+log_msg info "Finished building toolchain tarball.";
+if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_CROSS_SIGN_GPG_KEY}" ] &&\
+			gpg --list-keys "${TARBALL_CROSS_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+	gpg --armor --passphrase-file /dev/null					\
+		--local-user "${TARBALL_CROSS_SIGN_GPG_KEY}" --sign ${TARBALL_CROSS_FNAME};
+	log_msg info "Signed toolchain tarball.";
+fi;
 
 tar -cpf - minipix 								\
 	"Create \`Midipix mintty shell' shortcut.vbs" midipix.sh README		|\
