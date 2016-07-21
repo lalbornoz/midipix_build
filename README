@@ -90,6 +90,7 @@ Runtime components  ntctty            HEAD             C-IE--
 Runtime components  pemagine          HEAD             C-IE--
 Runtime components  psxscl            HEAD             C-IE--  Excludes clone(2) and dlopen(3)
 Runtime components  psxtypes          HEAD             C-IE--
+Runtime components  ptycon            HEAD             C-IE--
 3rd party libraries gdbm              1.12             C-I---
 3rd party libraries glib              2.46.2           C-I-P-  Shared object not built
 3rd party libraries gzip              1.2.4            C-I---
