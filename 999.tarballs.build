@@ -2,8 +2,12 @@
 # . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
-log_msg info "Building distribution tarballs...";
-cd ${PREFIX};
+if [ ${ARG_TARBALL:-0} -eq 0 ]; then
+	exit;
+else
+	log_msg info "Building distribution tarballs...";
+	cd ${PREFIX};
+fi;
 if [ "${TARBALL_SUFFIX}" = "bz2" ]; then
 	if [ -n "$(which pbzip2 2>/dev/null)" ]; then
 		TARBALL_COMPRESS_CMD="pbzip2";
@@ -81,7 +85,9 @@ if [ "${BUILD}" = "debug" ]; then
 	log_msg info "Building source tarball...";
 	tar -cpf - $(find tmp -mindepth 2 -maxdepth 2				\
 		-not -path tmp/.\*						\
-		-not -path tmp/ntctty/.git -not -path tmp/psxscl/.git)		|\
+		-not -path tmp/ntctty/.git					\
+		-not -path tmp/psxscl/.git					\
+		-not -path tmp/ptycon/.git)					|\
 	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_SRC_FNAME};
 	log_msg info "Finished building source tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
