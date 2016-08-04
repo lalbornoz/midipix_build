@@ -18,8 +18,8 @@ convert_links_ask() {
 	echo "extracted by an application that does not support symbolic links"
 	echo "correctly. This also occurs when a binary distribution was built locally."
 	printf "Convert all shared object symbolic links to hard links? (y|N) ";
-	read _;
-	case "${_}" in
+	read __;
+	case "${__}" in
 		[yY])	break; ;;
 		*)	echo "Exiting."; exit 6; ;;
 	esac;
