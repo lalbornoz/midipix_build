@@ -1,0 +1,11 @@
+--- libevent-2.0.22-stable/configure.orig	2016-09-10 18:47:19.360327924 -0400
++++ libevent-2.0.22-stable/configure	2016-09-10 18:48:54.160396670 -0400
+@@ -12937,7 +12937,7 @@
+   BUILD_CYGWIN_FALSE=
+ fi
+ 
+- if test x$bwin32 = xtrue || test x$cygwin = xtrue; then
++ if test x$bwin32 = xtrue || test x$cygwin = xtrue || test x$ac_pe_target = xtrue; then
+   BUILD_WITH_NO_UNDEFINED_TRUE=
+   BUILD_WITH_NO_UNDEFINED_FALSE='#'
+ else
