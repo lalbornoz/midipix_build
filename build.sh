@@ -56,6 +56,7 @@ done;
 # Check whether the pathnames in build.vars contain non-empty valid values.
 # Check whether all prerequisite command names resolve.
 # Check whether all prerequisite pathnames resolve.
+# Check whether all prerequisite Perl modules exist.
 for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
 	if ! match_list "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
 		unset "${__}";
@@ -79,6 +80,12 @@ for __ in ${CHECK_PREREQ_CMDS} ${CHECK_PREREQ_FILES}; do
 			log_msg fail "Error: missing prerequisite command \`${__}'.";
 			__exit=1;
 		fi;
+	fi;
+done;
+for __ in ${CHECK_PREREQ_PERL_MODULES}; do
+	if ! perl -M"${__}" -e "" 2>/dev/null; then
+		log_msg fail "Error: missing prerequisite Perl module \`${__}'.";
+		__exit=1;
 	fi;
 done;
 if [ ${__exit:-0} = 1 ]; then
