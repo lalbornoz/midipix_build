@@ -157,3 +157,10 @@
  else
    glib_cv_eventfd=no
  fi
+--- glib-2.46.2/gio/inotify/Makefile.am.orig	2016-09-10 15:04:00.867278378 -0400
++++ glib-2.46.2/gio/inotify/Makefile.am	2016-09-10 15:04:10.803952251 -0400
+@@ -26,3 +26,4 @@
+ 	-DGIO_COMPILATION		\
+ 	-DG_DISABLE_DEPRECATED
+ 
++libinotify_la_LIBADD = -L../../glib -lglib-2.0
