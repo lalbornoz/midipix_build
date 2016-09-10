@@ -60,6 +60,26 @@ get_vars_unsafe() {
 	unset _gvu_vval _gvu_vval_;
 };
 
+disable_build_script_link() {
+	if [ -e ${1%.disabled}.disabled ]; then
+		log_msg failexit "Error: build script already disabled.";
+	elif [ ! -e ${1} ]; then
+		log_msg failexit "Error: invalid or non-existent build script filename/level/name.";
+	else
+		echo mv -- ${1} ${1}.disabled;
+		mv -- ${1} ${1}.disabled;
+	fi;
+}
+enable_build_script_link() {
+	if [ -e ${1%.disabled} ]; then
+		log_msg failexit "Error: build script already enabled.";
+	elif [ ! -e ${1%.disabled}.disabled ]; then
+		log_msg failexit "Error: invalid or non-existent build script filename/level/name.";
+	else
+		echo mv -- ${1%.disabled}.disabled ${1%.disabled};
+		mv -- ${1%.disabled}.disabled ${1%.disabled};
+	fi;
+}
 insert_build_script_link() {
 	_ibsl_fname=${1};
 	_ibsl_level=${_ibsl_fname%%.*};
