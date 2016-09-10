@@ -10,6 +10,8 @@ VALID_BUILD_LEVELS="fetch,extract,build_dir,autoconf,patch,configure,clean,build
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
+-d)	disable_build_script_link "${2}"; exit; ;;
+-e)	enable_build_script_link "${2}"; exit; ;;
 -t*)	export ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
 -v)	export ARG_VERBOSE=1; ;;
 -x)	ARG_XTRACE=1; set -o xtrace; ;;
