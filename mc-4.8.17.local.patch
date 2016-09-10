@@ -1,0 +1,20 @@
+--- mc-4.8.17/configure.orig	2016-05-07 18:13:45.000000000 +0200
++++ mc-4.8.17/configure	2016-09-06 18:16:45.987179012 +0200
+@@ -19922,7 +19922,7 @@
+ 
+ 
+ # Determine how to get the list of mounted file systems.
+-ac_list_mounted_fs=
++#ac_list_mounted_fs=
+ 
+ # If the getmntent function is available but not in the standard library,
+ # make sure LIBS contains the appropriate -l option.
+@@ -20634,7 +20634,7 @@
+ 
+ 
+ # Determine how to get the list of mounted file systems.
+-ac_list_mounted_fs=
++#ac_list_mounted_fs=
+ 
+ # If the getmntent function is available but not in the standard library,
+ # make sure LIBS contains the appropriate -l option.
