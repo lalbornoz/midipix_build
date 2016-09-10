@@ -1,0 +1,9 @@
+--- vim-7.4.1952/src/osdef2.h.in.orig	2016-06-21 23:42:20.000000000 +0200
++++ vim-7.4.1952/src/osdef2.h.in	2016-09-06 18:33:43.655518796 +0200
+@@ -92,5 +92,5 @@
+ extern int	_Xmblen(char const *, size_t);
+ #else
+ 		/* This is different from the header but matches mblen() */
+-extern int	_Xmblen(char *, size_t);
++extern int	_Xmblen(char *, int);
+ #endif
