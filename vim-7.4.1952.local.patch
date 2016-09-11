@@ -7,3 +7,14 @@
 -extern int	_Xmblen(char *, size_t);
 +extern int	_Xmblen(char *, int);
  #endif
+--- vim-7.4.1952/src/Makefile.orig	2016-06-21 23:42:20.000000000 +0200
++++ vim-7.4.1952/src/Makefile	2016-09-07 06:29:14.483862359 +0200
+@@ -2692,7 +2692,7 @@
+ 	    $(PERLLIB)/ExtUtils/typemap if_perl.xs >> $@
+ 
+ auto/osdef.h: auto/config.h osdef.sh osdef1.h.in osdef2.h.in
+-	CC="$(CC) $(OSDEF_CFLAGS)" srcdir=$(srcdir) sh $(srcdir)/osdef.sh
++	CC="$(CC) $(OSDEF_CFLAGS) -I$(PKG_PREFIX)/include" srcdir=$(srcdir) sh $(srcdir)/osdef.sh
+ 
+ auto/pathdef.c: Makefile auto/config.mk
+ 	-@echo creating $@
