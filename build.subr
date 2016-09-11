@@ -251,7 +251,13 @@ parse_with_pkg_name() {
 			if [ -n "$(get_var_unsafe PKG_LVL${PKG_LVL}_${_pwpn_vname})" ]; then
 				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_LVL${PKG_LVL}_${_pwpn_vname})";
 			fi;
-			if [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname})" ]; then
+			if [ "${BUILD}" = "debug" ]	\
+			&& [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname}_DEBUG)" ]; then
+				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname}_DEBUG)";
+			elif [ "${BUILD}" = "release" ]	\
+			&& [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname}_RELEASE)" ]; then
+				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname}_RELEASE)";
+			elif [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname})" ]; then
 				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_${_pwpn_pkg_NAME}_${_pwpn_vname})";
 			fi;
 		done; unset _pwpn_vname;

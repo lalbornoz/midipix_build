@@ -1,6 +1,6 @@
 --- nc110/Makefile.orig	1996-03-20 03:16:06.000000000 +0000
-+++ nc110/Makefile	2016-06-28 17:26:50.985424240 +0000
-@@ -9,12 +9,12 @@
++++ nc110/Makefile	2016-09-11 20:44:21.896119203 +0000
+@@ -9,13 +9,13 @@
  # pick gcc if you'd rather , and/or do -g instead of -O if debugging
  # debugging
  # DFLAGS = -DTEST -DDEBUG
@@ -11,10 +11,12 @@
  # -Bstatic for sunos,  -static for gcc, etc.  You want this, trust me.
  STATIC =
 -CC = cc $(CFLAGS)
+-LD = $(CC) -s	# linker; defaults to stripped executables
 +CC = cc ${CFLAGS}
- LD = $(CC) -s	# linker; defaults to stripped executables
++LD = $(CC) $(LDFLAGS_DEBUG)	# linker; defaults to stripped executables
  o = o		# object extension
  
+ ALL = nc
 @@ -28,7 +28,7 @@
  ### HARD TARGETS
  
