@@ -1,0 +1,18 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+#
+
+if [ "${BUILD}" != "release" ]; then
+	exit;
+else
+	for __ in $(find ${PREFIX_NATIVE}/bin -perm -0100 \( -type f -or -type l \)); do
+		set +o errexit;
+		if [ -n "$(${PKG_TARGET}-objdump -h ${__} 2>/dev/null | awk '/\.debug_info\s/{print}')" ]; then
+			echo ${PKG_TARGET}-strip ${__};
+			${PKG_TARGET}-strip ${__};
+		fi;
+		set -o errexit;
+	done;
+fi;
+
+# vim:filetype=sh
