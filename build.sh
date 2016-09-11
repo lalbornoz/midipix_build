@@ -70,7 +70,7 @@ for __ in ${CHECK_PATH_VARS}; do
 		log_msg failexit "Error: variable \`${__}' contains one or more whitespace characters.";
 	fi;
 done;
-for __ in ${CHECK_PREREQ_CMDS} ${CHECK_PREREQ_FILES}; do
+for __ in ${CHECK_PREREQ_CMDS} $(eval echo ${CHECK_PREREQ_FILES_DYNAMIC}) ${CHECK_PREREQ_FILES}; do
 	if [ "${__#/}" != "${__}" ]; then
 		if [ ! -e "${__}" ]; then
 			log_msg fail "Error: missing prerequisite file \`${__}'.";
