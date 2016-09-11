@@ -158,6 +158,9 @@ for BUILD_LVL in 0 1 2 3 9; do
 			 export PKG_TARGET=${TARGET};					\
 			 export PKG_PREFIX=$(get_vars_unsafe PKG_LVL${BUILD_LVL}_PREFIX	\
 					PKG_$(echo ${2} | tr a-z A-Z)_PREFIX);		\
+			 if [ ${BUILD_LVL} -eq 9 ]; then
+			 	export PREFIX PREFIX_CROSS PREFIX_MIDIPIX PREFIX_NATIVE PREFIX_ROOT;
+			 fi;
 			 export MIDIPIX_BUILD_PWD=$(pwd); cd ${WORKDIR};		\
 			 for SCRIPT_SOURCE in build.subr ${SCRIPT_NAME}.vars		\
 					${BUILD_SCRIPT_FNAME}; do			\
