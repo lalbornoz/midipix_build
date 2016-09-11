@@ -1,5 +1,14 @@
---- pkg-cron.git/Makefile.orig	2016-07-04 15:39:29.482061697 +0000
-+++ pkg-cron.git/Makefile	2016-07-04 15:41:34.770058916 +0000
+--- pkg-cron.git/Makefile.orig	2016-07-11 19:06:33.212362869 +0000
++++ pkg-cron.git/Makefile	2016-09-11 20:37:42.714987721 +0000
+@@ -79,7 +79,7 @@
+ #DEFS		=	-D_BSD_SIGNALS -Dconst=
+ #<<the name of the BSD-like install program>>
+ #INSTALL = installbsd
+-INSTALL = install -s
++INSTALL = install $(INSTALLFLAGS)
+ #<<any special load flags>>
+ # LDFLAGS		=	-s
+ # Let install do the strip
 @@ -118,8 +118,8 @@
  			$(CC) $(LDFLAGS) -o crontab $(CRONTAB_OBJ) $(LIBS)
  
