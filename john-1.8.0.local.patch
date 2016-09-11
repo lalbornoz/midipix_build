@@ -63,9 +63,17 @@ diff -ru a/src/DES_bs.h b/src/DES_bs.h
  
  /*
   * Another special-case version: a non-zero IV, no salts, no iterations.
-diff -ru a/src/Makefile b/src/Makefile
---- a/src/Makefile	2013-05-29 19:21:25.000000000 -0400
-+++ b/src/Makefile	2016-08-07 16:23:07.246422700 -0400
+--- john-1.8.0/src/Makefile.orig	2013-05-29 23:21:25.000000000 +0000
++++ john-1.8.0/src/Makefile	2016-09-11 21:19:18.930129331 +0000
+@@ -32,7 +32,7 @@
+ # CFLAGS for use on the main john.c file only
+ CFLAGS_MAIN = $(CFLAGS)
+ ASFLAGS = -c $(OMPFLAGS)
+-LDFLAGS = -s $(OMPFLAGS)
++LDFLAGS = $(LDFLAGS_DEBUG) $(OMPFLAGS)
+ OPT_NORMAL = -funroll-loops
+ # Remove the "-Os" if you're using an ancient version of gcc
+ OPT_INLINE = -Os -funroll-loops -finline-functions
 @@ -104,6 +104,8 @@
  #	@echo "linux-ppc64-altivec      Linux, PowerPC 64-bit w/AltiVec"
  	@echo "linux-ppc64              Linux, PowerPC 64-bit"
@@ -98,4 +106,3 @@ diff -ru a/src/Makefile b/src/Makefile
  freebsd-x86-64:
  	$(LN) x86-64.h arch.h
  	$(MAKE) $(PROJ) \
-
