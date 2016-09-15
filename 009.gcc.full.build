@@ -4,6 +4,7 @@
 
 # Order: stage1, runtime, full, native
 
+export MAKE="make LIBTOOL=slibtool";
 if [ "${3}" = runtime ]\
 ||   [ "${3}" = libstdc++-v3 ]\
 ||   [ "${3}" = full ]; then
