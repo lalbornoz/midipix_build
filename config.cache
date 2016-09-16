@@ -151,6 +151,7 @@ ac_cv_func_realloc_0_nonnull=yes
 
 # vim
 ac_cv_small_wchar_t=no
+ac_x_header_dirs=${PKG_PREFIX}/include
 vim_cv_bcopy_handles_overlap=yes
 vim_cv_getcwd_broken=no
 vim_cv_memcpy_handles_overlap=no
