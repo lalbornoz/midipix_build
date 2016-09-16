@@ -18,3 +18,30 @@
  
  auto/pathdef.c: Makefile auto/config.mk
  	-@echo creating $@
+--- vim-7.4.1952/src/auto/configure.orig	2016-06-21 23:42:20.000000000 +0200
++++ vim-7.4.1952/src/auto/configure	2016-09-16 16:37:28.147266000 +0200
+@@ -2603,7 +2603,7 @@
+ ## -------------------- ##
+ 
+ ac_ext=c
+-ac_cpp='$CPP $CPPFLAGS'
++ac_cpp='$CPP $CFLAGS $CPPFLAGS'
+ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+@@ -7607,6 +7607,7 @@
+ 
+ # Standard set of common directories for X headers.
+ # Check X11 before X11Rn because it is often a symlink to the current release.
++if test -z "$ac_x_header_dirs"; then
+ ac_x_header_dirs='
+ /usr/X11/include
+ /usr/X11R7/include
+@@ -7645,6 +7646,7 @@
+ 
+ /usr/openwin/include
+ /usr/openwin/share/include'
++fi
+ 
+ if test "$ac_x_includes" = no; then
+   # Guess where to find include files, by looking for Xlib.h.
