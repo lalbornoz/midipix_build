@@ -74,16 +74,21 @@ diff -ru a/src/DES_bs.h b/src/DES_bs.h
  OPT_NORMAL = -funroll-loops
  # Remove the "-Os" if you're using an ancient version of gcc
  OPT_INLINE = -Os -funroll-loops -finline-functions
-@@ -104,6 +104,8 @@
+@@ -104,6 +104,13 @@
  #	@echo "linux-ppc64-altivec      Linux, PowerPC 64-bit w/AltiVec"
  	@echo "linux-ppc64              Linux, PowerPC 64-bit"
  	@echo "linux-ia64               Linux, IA-64"
 +	@echo "midipix-x86-64-avx       Midipix, x86-64 with AVX (2011+ Intel CPUs)"
 +	@echo "midipix-x86-64           Midipix, x86-64 with SSE2 (most common)"
++	@echo "midipix-x86-avx          Midipix, x86 32-bit with AVX (2011+ Intel CPUs)"
++	@echo "midipix-x86-xop          Midipix, x86 32-bit with AVX and XOP (2011+ AMD CPUs)"
++	@echo "midipix-x86-sse2         Midipix, x86 32-bit with SSE2 (most common, if 32-bit)"
++	@echo "midipix-x86-mmx          Midipix, x86 32-bit with MMX (for old computers)"
++	@echo "midipix-x86-any          Midipix, x86 32-bit (for truly ancient computers)"
  	@echo "freebsd-x86-64           FreeBSD, x86-64 with SSE2 (best)"
  	@echo "freebsd-x86-sse2         FreeBSD, x86 with SSE2 (best if 32-bit)"
  	@echo "freebsd-x86-mmx          FreeBSD, x86 with MMX"
-@@ -306,6 +308,22 @@
+@@ -306,6 +313,64 @@
  		CFLAGS="$(CFLAGS) -DHAVE_CRYPT" \
  		LDFLAGS="$(LDFLAGS) -lcrypt"
  
@@ -101,6 +106,48 @@ diff -ru a/src/DES_bs.h b/src/DES_bs.h
 +	$(MAKE) $(PROJ) \
 +		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86-64.o" \
 +		CFLAGS="$(CFLAGS) -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR" \
++		LDFLAGS="$(LDFLAGS) -lcrypt"
++
++midipix-x86-avx:
++	$(LN) x86-sse.h arch.h
++	$(MAKE) $(PROJ) \
++		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86.o" \
++		CFLAGS_MAIN="$(CFLAGS) -m32 -DJOHN_AVX -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR -DUNDERSCORES" \
++		CFLAGS="$(CFLAGS) -m32 -mavx -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR -DUNDERSCORES" \
++		ASFLAGS="$(ASFLAGS) -m32 -mavx -DUNDERSCORES" \
++		LDFLAGS="$(LDFLAGS) -m32 -lcrypt"
++
++midipix-x86-xop:
++	$(LN) x86-sse.h arch.h
++	$(MAKE) $(PROJ) \
++		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86.o" \
++		CFLAGS_MAIN="$(CFLAGS) -m32 -DJOHN_XOP -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR -DUNDERSCORES" \
++		CFLAGS="$(CFLAGS) -m32 -mxop -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR -DUNDERSCORES" \
++		ASFLAGS="$(ASFLAGS) -m32 -mxop -DUNDERSCORES" \
++		LDFLAGS="$(LDFLAGS) -m32 -lcrypt"
++
++midipix-x86-sse2:
++	$(LN) x86-sse.h arch.h
++	$(MAKE) $(PROJ) \
++		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86.o x86-sse.o" \
++		CFLAGS="$(CFLAGS) -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR -DUNDERSCORES" \
++		ASFLAGS="$(ASFLAGS) -m32 -DUNDERSCORES" \
++		LDFLAGS="$(LDFLAGS) -lcrypt"
++
++midipix-x86-mmx:
++	$(LN) x86-mmx.h arch.h
++	$(MAKE) $(PROJ) \
++		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86.o x86-mmx.o" \
++		CFLAGS="$(CFLAGS) -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR -DUNDERSCORES" \
++		ASFLAGS="$(ASFLAGS) -m32 -DUNDERSCORES" \
++		LDFLAGS="$(LDFLAGS) -lcrypt"
++
++midipix-x86-any:
++	$(LN) x86-any.h arch.h
++	$(MAKE) $(PROJ) \
++		JOHN_OBJS="$(JOHN_OBJS) c3_fmt.o x86.o" \
++		CFLAGS="$(CFLAGS) -DHAVE_CRYPT -DHAVE_INTERNAL_ATTR -DUNDERSCORES" \
++		ASFLAGS="$(ASFLAGS) -m32 -DUNDERSCORES" \
 +		LDFLAGS="$(LDFLAGS) -lcrypt"
 +
  freebsd-x86-64:
