@@ -24,12 +24,7 @@ if [ "${3}" = no-complex ]; then
 		secure_rm musl-${PKG_MUSL_VERSION};
 		tar -xf ${DLCACHEDIR}/musl-${PKG_MUSL_VERSION}.tar.gz;
 		set +o noglob; cp -R -- mmglue/* musl-${PKG_MUSL_VERSION}/; set -o noglob;
-		set_build_script_done extract -patch;
-	fi;
-	if ! is_build_script_done patch; then
-		patch -b -d musl-${PKG_MUSL_VERSION} -p1	\
-			< ${MIDIPIX_BUILD_PWD}/musl-${PKG_MUSL_VERSION}.local.patch;
-		set_build_script_done patch -configure;
+		set_build_script_done extract -configure;
 	fi;
 elif [ "${3}" = native ]; then
 	# Musl: build (full)
