@@ -183,3 +183,19 @@
 +#define HAVE_SLASHSLASH 1
 +
 +#endif /* _h_config */
+--- tcsh-6.19.00/config_f.h.orig	2015-02-22 17:31:54.000000000 +0100
++++ tcsh-6.19.00/config_f.h	        2016-10-14 22:10:42.212000000 +0200
+@@ -135,11 +135,9 @@
+  *		This can be much slower and no memory statistics will be
+  *		provided.
+  */
+-#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__) || defined (__CYGWIN__) || defined(__GLIBC__) || defined(__OpenBSD__) || defined(__APPLE__)
++
++/* always use the system malloc. seriously guys. */
+ # define SYSMALLOC
+-#else
+-# undef SYSMALLOC
+-#endif
+ 
+ /*
+  * USE_ACCESS	Use access(2) rather than stat(2) when POSIX is defined.
