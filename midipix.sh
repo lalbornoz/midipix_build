@@ -13,9 +13,9 @@ m)	MIDIPIX_DNAME_DIST=minipix; ;;
 	echo "       -m: use Minipix distribution"; exit 0;
 esac; done;
 if [ -n "${1}" ]; then
-	MIDIPIX_PATH:=$(cygpath -am "${1}"); cd ${MIDIPIX_PATH} || exit 1;
+	MIDIPIX_PATH=$(cygpath -am "${1}"); cd ${MIDIPIX_PATH} || exit 1;
 else
-	MIDIPIX_PATH:=$(cygpath -am .);
+	MIDIPIX_PATH=$(cygpath -am .);
 fi;
 printf "%-35s: %s\n" "Absolute Midipix pathname" "${MIDIPIX_PATH}";
 printf "%-35s: %s\n" "Distribution name" "${MIDIPIX_DNAME_DIST:=native}";
