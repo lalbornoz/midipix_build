@@ -1,0 +1,14 @@
+--- unzip60/unix/Makefile.orig	2009-01-18 23:41:18.000000000 +0100
++++ unzip60/unix/Makefile	2016-10-17 05:23:43.308917300 +0200
+@@ -535,6 +535,11 @@
+ # INDIVIDUAL MACHINE MAKERULES #
+ ################################
+ 
++#Midipix target
++midipix:
++	$(MAKE) $(MAKEF) unzips CC="x86_64-nt64-midipix-gcc" CFLAGS="-g3 -O0 -I. -DUNIX -DNO_BZIP2_SUPPORT -DLARGE_FILE_SUPPORT -DUNICODE_SUPPORT -DUNICODE_WCHAR -DUNICODE_SUPPORT \
++	 -DUTF8_MAYBE_NATIVE -DNO_LCHMOD -DHAVE_DIRENT_H -DHAVE_TERMIOS_H -D_MBCS" CRCA_O="" AS="x86_64-nt64-midipix-gcc -c" LFLAGS1=""
++
+ #----------------------------------------------------------------------------
+ #  Generic targets using the configure script to determine configuration.
+ #----------------------------------------------------------------------------
