@@ -130,7 +130,7 @@ BUILD_TIMES_SECS=$(command date +%s);
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 log_env_vars "build (global)" ${LOG_ENV_VARS};
 
-for BUILD_LVL in 0 1 2 3 9; do
+for BUILD_LVL in 0 1 2 3 4 9; do
 	for BUILD_SCRIPT_FNAME in ${BUILD_LVL}[0-9][0-9].*.build; do
 		if [ -n "${ARG_RESTART_SCRIPT}" ]					\
 		&& [ "${ARG_RESTART_SCRIPT}" != "ALL" ]					\
