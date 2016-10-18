@@ -7,7 +7,7 @@
 +#Midipix target
 +midipix:
 +	$(MAKE) $(MAKEF) unzips CC="x86_64-nt64-midipix-gcc" CFLAGS="-g3 -O0 -I. -DUNIX -DNO_BZIP2_SUPPORT -DLARGE_FILE_SUPPORT -DUNICODE_SUPPORT -DUNICODE_WCHAR -DUNICODE_SUPPORT \
-+	 -DUTF8_MAYBE_NATIVE -DNO_LCHMOD -DHAVE_DIRENT_H -DHAVE_TERMIOS_H -D_MBCS" CRCA_O="" AS="x86_64-nt64-midipix-gcc -c" LFLAGS1=""
++	 -DUTF8_MAYBE_NATIVE -DNO_LCHMOD -DHAVE_DIRENT_H -DHAVE_TERMIOS_H -D_MBCS" CRCA_O="" AS="x86_64-nt64-midipix-gcc -c" LFLAGS1="" LF2=""
 +
  #----------------------------------------------------------------------------
  #  Generic targets using the configure script to determine configuration.

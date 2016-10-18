@@ -9,7 +9,7 @@ diff -ru zip30.orig/unix/Makefile zip30/unix/Makefile
 +midipix:
 +	$(MAKE) $(MAKEF) zips LDFLAGS1="" CC="x86_64-nt64-midipix-gcc" CPP="x86_64-nt64-midipix-gcc -E" \
 +	 CFLAGS="-g3 -O0 -DUNIX -I. -DHAVE_TERMIOS_H -DNO_BZIP2_SUPPORT -DLARGE_FILE_SUPPORT -DUNICODE_SUPPORT \
-+	 -DHAVE_DIRENT_H -DUIDGID_NOT_16BIT" OBJA="" OCRCU8="crc32_.o " OCRCTB="" LN="ln -s"
++	 -DHAVE_DIRENT_H -DUIDGID_NOT_16BIT" OBJA="" OCRCU8="crc32_.o " OCRCTB="" LN="ln -s" LFLAGS2=""
 +
  #               Generic targets:
  
