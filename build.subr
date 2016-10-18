@@ -159,8 +159,13 @@ remove_build_script_link() {
 			echo mv ${_rbsl_fname_cur}			\
 				$(printf "%03u"				\
 					$((${_rbsl_fname_cur_level#00}-1))).${_rbsl_fname_cur#*.};
+			mv ${_rbsl_fname_cur}				\
+				$(printf "%03u"				\
+					$((${_rbsl_fname_cur_level#00}-1))).${_rbsl_fname_cur#*.};
 		fi;
 	done; fi;
+	echo rm -- ${_rbsl_fname};
+	rm -- ${_rbsl_fname};
 };
 
 is_build_script_done() {
