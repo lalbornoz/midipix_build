@@ -45,6 +45,22 @@
  	}
  	return TRUE;
  }
+--- irssi-0.8.18/src/core/network.c.orig	2016-02-08 21:20:37.000000000 +0100
++++ irssi-0.8.18/src/core/network.c	2016-06-17 16:34:16.870746400 +0200
+@@ -572,9 +572,13 @@
+ 	int data;
+ 	socklen_t len = sizeof(data);
+ 
++#ifndef __midipix__
+ 	if (getsockopt(g_io_channel_unix_get_fd(handle),
+ 		       SOL_SOCKET, SO_ERROR, (void *) &data, &len) == -1)
+ 		return -1;
++#else
++	data = 0;
++#endif
+ 
+ 	return data;
+ }
 --- irssi-0.8.18/src/core/pidwait.c.orig	2014-09-02 11:13:51.000000000 +0200
 +++ irssi-0.8.18/src/core/pidwait.c	2016-06-19 00:20:33.327763200 +0200
 @@ -39,8 +39,10 @@
