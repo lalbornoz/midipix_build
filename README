@@ -55,6 +55,10 @@ b) manually creating a shortcut to Mintty with `Start in:' set to the target dir
 References:
 Sun, 24 Apr 2016 09:04:08 +0000 [1] musl FAQ <http://www.musl-libc.org/faq.html>
 
+                        Linux distribution-related errata
+
+Busybox based distributions need the gawk, gsed, and coreutils packages to build perl.
+
                   Midipix status report
                    Last update: Tue, 26 Apr 2016 10:16:16 +0000
 
