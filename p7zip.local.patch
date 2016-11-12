@@ -1,0 +1,14 @@
+diff -ru midipix_build.orig/build.vars midipix_build/build.vars
+--- midipix_build.orig/build.vars	2016-11-11 20:27:40.381427111 +0100
++++ midipix_build/build.vars	2016-11-11 23:23:58.045425113 +0100
+@@ -640,5 +640,10 @@
+ : ${PKG_ZSH_SHA256SUM:=f17916320ffaa844bbd7ce48ceeb5945fc5f3eff64b149b4229bbfbdf3795a9d};
+ : ${PKG_ZSH_URL:="https://fourdots.com/mirror/zsh/zsh-${PKG_ZSH_VERSION}.tar.xz"};
+ : ${PKG_ZSH_FNAME:=zsh-${PKG_ZSH_VERSION}.tar.xz};
++: ${PKG_P7ZIP_URL_TYPE:=git};
++: ${PKG_P7ZIP_URL:=https://github.com/Redfoxmoon3/p7zip-midipix.git};
++: ${PKG_P7ZIP_BUILD_DIR:=p7zip-midipix.git};
++: ${PKG_P7ZIP_NO_MAKE_INSTALL:=1};
++: ${PKG_P7ZIP_INSTALL_FILES:="bin/7za=bin/"};
+ 
+ # vim:filetype=sh textwidth=0
