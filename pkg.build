@@ -30,6 +30,9 @@ if ! is_build_script_done fetch; then
 			fetch_git ${PKG_SUBDIR} ${PKG_URL} ${PKG_GIT_BRANCH};
 		fi;
 	fi;
+	if test_cmd pkg_${PKG_NAME}_fetch_post; then
+		pkg_${PKG_NAME}_fetch_post;
+	fi;
 	set_build_script_done fetch -extract;
 fi;
 if test_cmd pkg_${PKG_NAME}_finish; then
@@ -119,6 +122,12 @@ if ! is_build_script_done patch; then
 	fi;
 	set_build_script_done patch -configure;
 fi;
+PKG_SUBDIR_PATH=${PWD}/${PKG_SUBDIR#/};
+if [ -z "${PKG_CONFIGURE}" ]; then
+	PKG_CONFIGURE=${PKG_SUBDIR_PATH}/configure;
+else
+	PKG_CONFIGURE=${PWD}/${PKG_CONFIGURE#/};
+fi;
 cd ${PKG_BUILD_DIR};
 if [ "${PKG_BUILD_TYPE}" = "host" ]; then
 	export AR=ar;
@@ -129,14 +138,14 @@ else
 	export CC=${PKG_TARGET}-gcc;
 	export RANLIB=${PKG_TARGET}-ranlib;
 fi;
-if [ -x ../${PKG_SUBDIR}/configure ]\
+if [ -x ${PKG_CONFIGURE} ]\
 && ! is_build_script_done configure; then
 	if test_cmd pkg_${PKG_NAME}_configure_pre; then
 		pkg_${PKG_NAME}_configure_pre;
 	fi;
 	CFLAGS="${PKG_CFLAGS_CONFIGURE}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"\
 	LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"\
-	../${PKG_SUBDIR}/configure							\
+	${PKG_CONFIGURE}								\
 		${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
 	set_build_script_done configure clean -build;
 else
