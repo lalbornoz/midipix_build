@@ -47,7 +47,6 @@ fetch_git() {
 		fi;
 	fi;
 	secure_rm ${_fg_subdir};
-	echo cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
 	cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
 };
 

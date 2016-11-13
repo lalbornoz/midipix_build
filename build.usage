@@ -1,6 +1,6 @@
-usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-c] [-d] [-e] [-h] [-pi level.name.build]
+usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-d] [-e] [-h] [-pi level.name.build]
                   [-pr level.name.build] [-r ALL|level.name.build[:diff|:step[,...]]]
-                  [-t[.gz|.bz2|.xz] [-x]
+                  [-t[.gz|.bz2|.xz]
         -a nt32|nt64           Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release       Selects debug or release build; defaults to debug.
                                This currently only controls CFLAGS.
