@@ -1,0 +1,102 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+date() { command date +"${1:-${TIMESTAMP_FMT}}"; };
+get_var_unsafe() { eval echo \${${1}}; };
+set_var_unsafe() { eval ${1}=\"${2}\"; };
+push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
+pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
+set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${TARGET}; };
+split() { push_IFS "${1}"; set -- ${2}; pop_IFS; echo "${*}"; };
+test_cmd() { command -v "${1}" >/dev/null; };
+unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
+
+get_vars_unsafe() {
+	while [ ${#} -gt 0 ]; do
+		_gvu_vval="$(eval echo \${${1}})";
+		[ -z "${_gvu_vval}" ] || _gvu_vval_="${_gvu_vval}";
+		shift;
+	done; echo "${_gvu_vval_}";
+	unset _gvu_vval _gvu_vval_;
+};
+
+log_msg() {
+	_lm_lvl=${1}; shift;
+	case ${_lm_lvl} in
+		failexit) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
+		fail) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
+		info) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		succ) printf "\033[0m\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
+		warn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
+	esac;
+	if [ $# -gt 1 ]; then
+		printf "==> %s %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}" "$*";
+	else
+		printf "==> %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}";
+	fi; [ ${_lm_lvl} = failexit ] && exit 1 || unset _lm_lvl;
+};
+
+insecure_mkdir() {
+	while [ ${#} -gt 0 ]; do
+		if [ -z "${1}" ]; then
+			return 1;
+		elif [ ! -e "${1}" ]; then
+			[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
+				log_msg warn "Making directory \`${1}'.";
+			mkdir -p -- "${1}";
+		fi; shift;
+	done;
+};
+
+match_list() {
+	_ml_cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
+	while [ ${#} -gt 0 ]; do
+		if [ "${1}" = "${_ml_cmp}" ]; then
+			unset _ml_cmp; return 0;
+		fi; shift;
+	done; unset _ml_cmp; return 1;
+};
+
+secure_cd() {
+	if [ \( -z "${1}" \) -o \( ! -e "${1}" \) ]; then
+		return 1;
+	else
+		(cd "${1}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
+			return 1 || return 0);
+		if [ ${?} -eq 0 ]; then
+			[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
+				log_msg warn "Changing working directory to \`${1}'.";
+			cd -- "${1}";
+		else
+			log_msg failexit "secure_cd() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
+		fi;
+	fi;
+};
+
+secure_rm() {
+	while [ ${#} -gt 0 ]; do
+		if [ -z "${1}" ]; then
+			return 1;
+		elif [ -e "${1}" ]; then
+			if [ -d "${1}" ]; then
+				_sr_pname_check="${1}";
+			else
+				_sr_pname_check="$(dirname "${1}")";
+			fi;
+			(cd "${_sr_pname_check}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
+				return 1 || return 0);
+			if [ ${?} -eq 0 ]; then
+				unset _sr_pname_check;
+				[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
+					log_msg warn "Removing directory or file \`${1}'.";
+				rm -rf -- "${1}";
+			else
+				log_msg failexit "secure_rm() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
+			fi;
+		fi; shift;
+	done;
+};
+
+# vim:filetype=sh
