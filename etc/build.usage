@@ -1,0 +1,49 @@
+usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-h] [-n]
+                  [-r package[,...][:step]] [-t[.gz|.bz2|.xz] [-v]
+                  [<target>[ ...]]
+        -x                      Set the xtrace sh(1)ell option for debugging purposes.
+        -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release        Selects debug or release build; defaults to debug.
+                                This currently only controls CFLAGS.
+        -c                      Clean ${PREFIX} before processing build scripts.
+        -h                      Show this screen.
+        -n                      Perform dry run.
+        -r package[,...][:step] Restart the specified comma-separated build(s) completely or at
+                                the optionally specified step. Currently defined steps are:
+                                fetch extract build_dir autoconf patch configure clean build install
+        -t[.gz|.bz2|.xz]        Produce binary distribution and source tarballs containing ${PREFIX}
+                                sans ${WORKDIR} and ${PREFIX}/src/midipix_build and ${WORKDIR} sans top-
+                                level regular files at the end of a build with zero failures. The
+                                tarballs will be compressed with either gzip, bzip2, or xz and signed
+                                with GPG; the default compression is xz.
+        -v                      Be verbose; this currently only affects secure_{cd,rm}() and insecure_mkdir().
+        <target>[ ...]          One of:
+                                host_toolchain, native_toolchain, runtime, lib_packages,
+                                leaf_packages, world, or devroot.
+
+        ${HOME}/midipix_build.vars, ../midipix_build.vars, and build.vars are sourced
+        if they exist.
+
+        Packages that are built by pkg.build will apply local patches in ${WORKDIR}
+        named ${PKG_SUBDIR}.local.patch.
+
+        Examples:
+        ./build.sh -r coreutils
+        Completely restart the coreutils build.
+
+        ./build.sh -r coreutils:configure,build,install
+        Restart the configure, build, and install steps of the coreutils build.
+
+        ./build.sh -r psxscl GITROOT_HEAD=... PKG_PSXSCL_CFLAGS_CONFIGURE_EXTRA=-DPSX_INTERNAL_STRACE
+        Build psxscl from the internal repository with strace enabled.
+
+        ./build.sh -c -r ALL GITROOT_HEAD=...
+        Clean ${PREFIX} and forcibly rebuild everything.
+
+This script has been tested on the following platforms:
+Alpine v3.4 (20160917_17:50) (x86_64)
+Arch Linux 2016.02.01 (x86_64)
+CentOS v7.2.1511 (Core) (x86_64)
+Debian GNU/Linux v8.5 (stable) (jessie) (x86_64)
+Exherbo Linux (x86_64-pc-linux-musl) (x86_64)
+openSUSE 20150612 (Tumbleweed) (x86_64)

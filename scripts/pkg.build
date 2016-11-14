@@ -1,0 +1,259 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+#
+
+parse_with_pkg_name ${1};
+if [ ${PKG_DISABLED:-0} -eq 1 ]; then
+	exit 0;
+elif ! is_build_script_done fetch; then
+	if test_cmd pkg_${PKG_NAME}_fetch; then
+		pkg_${PKG_NAME}_fetch;
+	else
+		if [ "${PKG_URL_TYPE:-wget}" = wget ]; then
+			fetch "${PKG_URL}" ${PKG_SHA256SUM};
+		else
+			fetch_git ${PKG_SUBDIR} ${PKG_URL} ${PKG_GIT_BRANCH};
+		fi;
+	fi;
+	if test_cmd pkg_${PKG_NAME}_fetch_post; then
+		pkg_${PKG_NAME}_fetch_post;
+	fi;
+	set_build_script_done fetch -extract;
+fi;
+if test_cmd pkg_${PKG_NAME}_finish; then
+	pkg_${PKG_NAME}_finish; exit 0;
+elif [ "${PKG_URL_TYPE:-wget}" = wget ] &&\
+! is_build_script_done extract; then
+	secure_rm ${PKG_SUBDIR};
+	if [ ${PKG_SUBDIR_CREATE:-0} -eq 1 ]; then
+		insecure_mkdir ${PKG_SUBDIR};
+	fi;
+	if [ "${PKG_FNAME##*.tar.}" = "bz2" ]; then
+		bunzip2 -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+	elif [ "${PKG_FNAME##*.tar.}" = "gz" ]; then
+		gunzip -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+	elif [ "${PKG_FNAME##*.tar.}" = "xz" ]; then
+		xz -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+	elif [ "${PKG_FNAME##*.t}" = "bz2" ]; then
+		bunzip2 -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+	elif [ "${PKG_FNAME##*.t}" = "gz" ]; then
+		gunzip -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+	elif [ "${PKG_FNAME##*.t}" = "xz" ]; then
+		xz -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+	else
+		tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf ${DLCACHEDIR}/${PKG_FNAME};
+	fi;
+	if test_cmd pkg_${PKG_NAME}_extract_post; then
+		pkg_${PKG_NAME}_extract_post;
+	fi;
+	set_build_script_done extract -build_dir;
+fi;
+if [ -z "${PKG_BUILD_DIR}" ]; then
+	set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
+fi;
+if ! is_build_script_done build_dir; then
+	[ "${PKG_SUBDIR}" != "${PKG_BUILD_DIR}" ] &&\
+		secure_rm ${PKG_BUILD_DIR};
+		insecure_mkdir ${PKG_BUILD_DIR};
+	set_build_script_done build_dir -patch;
+fi;
+if [ -e ${PKG_SUBDIR}/configure -o							\
+     -e ${PKG_SUBDIR}/configure.ac -o							\
+     -e ${PKG_SUBDIR}/configure.in -o							\
+     -e ${PKG_SUBDIR}/config.guess ]							\
+&& ! is_build_script_done autoconf; then
+	find ${PKG_SUBDIR} -name config.sub						\
+		-exec echo mv -- {} {}.orig \;						\
+		-exec mv -- {} {}.orig \;						\
+		-exec echo install -m 0700 ${MIDIPIX_BUILD_PWD}/etc/config.sub {} \;	\
+		-exec install -m 0700 ${MIDIPIX_BUILD_PWD}/etc/config.sub {} \;;
+	if [ -e ${PKG_SUBDIR}/configure.ac -a						\
+	   ! -e ${PKG_SUBDIR}/configure ]; then
+		if [ -x ${PKG_SUBDIR}/autogen.sh ]; then
+			for __ in ${PKG_SUBDIR}/build-aux ${PKG_SUBDIR}; do
+				if [ -e ${__} ]; then
+					echo install -m 0700				\
+						${MIDIPIX_BUILD_PWD}/etc/config.sub 	\
+						${__}/config.sub;
+					install -m 0700					\
+						${MIDIPIX_BUILD_PWD}/etc/config.sub	\
+						${__}/config.sub;
+					break;
+				fi;
+			done;
+			(cd ${PKG_SUBDIR} && ./autogen.sh) || exit 1;
+		else
+			(cd ${PKG_SUBDIR} && autoconf) || exit 1;
+		fi;
+	fi;
+	for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
+		echo cp -- ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
+		cp -- ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
+	done;
+	set_build_script_done autoconf -patch;
+fi;
+if ! is_build_script_done patch; then
+	for __patch_fname in 									\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local.patch			\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
+		if [ -r "${__patch_fname}" ]; then
+			patch -b -d ${PKG_SUBDIR} -p1 < ${__patch_fname};
+		fi;
+	done; unset __patch_fname;
+	if test_cmd pkg_${PKG_NAME}_patch_post; then
+		pkg_${PKG_NAME}_patch_post;
+	fi;
+	set_build_script_done patch -configure;
+fi;
+PKG_SUBDIR_PATH=${PWD}/${PKG_SUBDIR#/};
+if [ -z "${PKG_CONFIGURE}" ]; then
+	PKG_CONFIGURE=${PKG_SUBDIR_PATH}/configure;
+else
+	PKG_CONFIGURE=${PWD}/${PKG_CONFIGURE#/};
+fi;
+cd ${PKG_BUILD_DIR};
+if [ "${PKG_BUILD_TYPE}" = "host" ]; then
+	export AR=ar;
+	export CC=gcc;
+	export RANLIB=ranlib;
+else
+	export AR=${PKG_TARGET}-ar;
+	export CC=${PKG_TARGET}-gcc;
+	export RANLIB=${PKG_TARGET}-ranlib;
+fi;
+if [ -x ${PKG_CONFIGURE} ]\
+&& ! is_build_script_done configure; then
+	if test_cmd pkg_${PKG_NAME}_configure_pre; then
+		pkg_${PKG_NAME}_configure_pre;
+	fi;
+	CFLAGS="${PKG_CFLAGS_CONFIGURE}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"\
+	LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"\
+	${PKG_CONFIGURE}								\
+		${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
+	set_build_script_done configure clean -build;
+else
+	__no_autoconf=1;
+	set_build_script_done clean -build;
+fi;
+if [ ${PKG_NO_CLEAN:-0} -eq 0 ]\
+&& ! is_build_script_done clean; then
+	make clean;
+	set_build_script_done clean -build;
+fi;
+if ! is_build_script_done build; then
+	if test_cmd pkg_${PKG_NAME}_build; then
+		pkg_${PKG_NAME}_build;
+	elif [ -n "${PKG_BUILD_CMDLINE}" ]; then
+		${PKG_BUILD_CMDLINE};
+	else
+		if [ "${PKG_SLIBTOOL}" != "default" ]; then
+			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+		fi;
+		# N.B.	We only specify CC= here if the current package does not use GNU
+		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
+		#	instead of amending CFLAGS.
+		run_cmd_unsplit make							\
+			${PKG_MAKEFLAGS_BUILD}						\
+			${PKG_MAKEFLAGS_BUILD_EXTRA}					\
+			AR=${AR} ${__no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
+			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
+			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
+			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
+		unset __no_autoconf;
+	fi;
+	set_build_script_done build -install;
+fi;
+if ! is_build_script_done install; then
+	if test_cmd pkg_${PKG_NAME}_install; then
+		pkg_${PKG_NAME}_install;
+	else
+		if [ ${PKG_NO_MAKE_INSTALL:-0} -eq 0 ]; then
+			run_cmd_unsplit make					\
+				${PKG_MAKEFLAGS_INSTALL}			\
+				${PKG_MAKEFLAGS_INSTALL_EXTRA}			\
+				AR=${AR} CC=${CC} RANLIB=${RANLIB}		\
+				"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"				\
+				"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"		\
+				"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
+				"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"		\
+				"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
+				${PKG_INSTALL_TARGET:=install};
+			if [ -n "${PKG_PREFIX_EXTRA}" ]; then
+				run_cmd_unsplit make				\
+					${PKG_MAKEFLAGS_INSTALL}		\
+					${PKG_MAKEFLAGS_INSTALL_EXTRA}		\
+					AR=${AR} CC=${CC} RANLIB=${RANLIB}	\
+					"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
+					"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
+					"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
+					"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
+					"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
+					${PKG_INSTALL_TARGET_EXTRA:=install}	\
+					DESTDIR=${PKG_PREFIX_EXTRA};
+			fi;
+		fi;
+		if test_cmd pkg_${PKG_NAME}_install_post; then
+			pkg_${PKG_NAME}_install_post;
+		fi;
+	fi;
+	if [ -d ${PKG_PREFIX}/lib ]; then
+		for __ in $(find ${PKG_PREFIX}/lib -type f -name \*.la); do
+			secure_rm ${__};
+		done;
+	fi;
+	if [ -n "${PKG_INSTALL_FILES}" ]; then
+		(set -- ${PKG_INSTALL_FILES};
+		while [ ${#} -gt 0 ]; do
+		case "${1}" in
+		@*=*)
+			__ln_target="${1%=*}";
+			__ln_target="${__ln_target#@}";
+			__ln_fname="${1#*=}";
+			echo ln -sf -- ${__ln_target} ${PKG_PREFIX}/${__ln_fname};
+			ln -sf -- ${__ln_target} ${PKG_PREFIX}/${__ln_fname};
+			;;
+		/=*)
+			__mkdir_fname="${1#/=}";
+			insecure_mkdir ${PKG_PREFIX}/${__mkdir_fname};
+			;;
+		*)
+			__file_fname_src="${1%=*}";
+			__file_fname_dst="${1#*=}";
+			echo cp -pP -- ${__file_fname_src} ${PKG_PREFIX}/${__file_fname_dst};
+			cp -pP -- ${__file_fname_src} ${PKG_PREFIX}/${__file_fname_dst};
+			;;
+		esac; shift;
+		done);
+	fi;
+	if test_cmd perk && test_cmd ${PKG_TARGET}-dlltool; then
+		for __so_fname in							\
+			$(find	\( -name "*.so"						\
+				-or -name "*.so.[0-9]"					\
+				-or -name "*.so.[0-9].[0-9]"				\
+				-or -name "*.so.[0-9].[0-9].[0-9]" \) -printf '%P\n');
+		do
+			if [ \( -e ${__so_fname%.so}.lib.a \) -o			\
+			     \( ! -e ${PKG_PREFIX}/lib/$(basename ${__so_fname}) \) ];
+			then
+				continue;
+			else
+				__so_name="${__so_fname%.so}";
+				echo perk -epdlltool ${__so_fname} \> ${__so_fname%.so}.def;
+				perk -epdlltool ${__so_fname} > ${__so_fname%.so}.def;
+				echo ${PKG_TARGET}-dlltool -l ${__so_fname%.so}.lib.a	\
+					-D ${__so_fname} -d ${__so_fname%.so}.def;
+				${PKG_TARGET}-dlltool -l ${__so_fname%.so}.lib.a	\
+					-D ${__so_fname} -d ${__so_fname%.so}.def;
+				echo cp -- ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
+				cp -- ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
+			fi;
+		done;
+	fi;
+	set_build_script_done install -finish;
+fi;
+set_build_script_done finish;
+
+# vim:filetype=sh

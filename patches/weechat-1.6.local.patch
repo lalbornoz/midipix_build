@@ -1,0 +1,45 @@
+diff -ru weechat-1.6.orig/config.sub weechat-1.6/config.sub
+--- weechat-1.6.orig/config.sub	2016-10-19 20:51:03.610252372 +0200
++++ weechat-1.6/config.sub	2016-10-19 20:33:14.686252372 +0200
+@@ -1376,7 +1376,7 @@
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -chorusos* | -chorusrdb* | -cegcc* \
+ 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
++	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
+ 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
+ 	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+--- weechat-1.6/configure.orig	2016-11-15 19:19:45.531918300 +0100
++++ weechat-1.6/configure	2016-11-15 19:23:22.078226900 +0100
+@@ -23683,7 +23683,7 @@
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
+     GCRYPT_CFLAGS=`libgcrypt-config --cflags`
+-    GCRYPT_LFLAGS=`libgcrypt-config --libs`
++    GCRYPT_LFLAGS="-lgcrypt -lgpg-error"
+ 
+ 
+ fi
+@@ -23760,8 +23760,8 @@
+     else
+         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
+-        GNUTLS_CFLAGS=`pkg-config gnutls --cflags`
+-        GNUTLS_LFLAGS=`pkg-config gnutls --libs`
++        GNUTLS_CFLAGS=`$PKG_CONFIG gnutls --cflags`
++        GNUTLS_LFLAGS=`$PKG_CONFIG gnutls --libs`
+ 
+ 
+         $as_echo "#define HAVE_GNUTLS 1" >>confdefs.h
+@@ -23972,8 +23972,8 @@
+ else
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
+-    ZLIB_CFLAGS=`pkg-config zlib --cflags`
+-    ZLIB_LFLAGS=`pkg-config zlib --libs`
++    ZLIB_CFLAGS=`$PKG_CONFIG zlib --cflags`
++    ZLIB_LFLAGS=`$PKG_CONFIG zlib --libs`
+ 
+ 
+ fi

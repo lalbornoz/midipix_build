@@ -1,0 +1,19 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+#
+
+do_strip() {
+	if [ ${BUILD_SCRIPT_RC:-0} -eq 0 ]\
+	&& [ "${BUILD}" = release ]; then
+		for __ in $(find ${PREFIX_NATIVE}/bin -perm -0100 \( -type f -or -type l \)); do
+			if objdump -sj .debug_info >/dev/null 2>&1; then
+				if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
+					echo ${PKG_TARGET}-strip ${__};
+				fi;
+				set +o errexit; ${PKG_TARGET}-strip ${__}; set -o errexit;
+			fi;
+		done;
+	fi;
+};
+
+# vim:filetype=sh
