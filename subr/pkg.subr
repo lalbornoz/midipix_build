@@ -7,7 +7,8 @@
 fetch() {
 	_f_url="${1}"; _f_sha256sum_src="${2}";
 	_f_url_dst="${DLCACHEDIR}/$(basename "${_f_url}")";
-	if [ -e ${_f_url_dst}.fetched ]; then
+	if [ ${ARG_OFFLINE:-0} -eq 1 ]\
+	|| [ -e ${_f_url_dst}.fetched ]; then
 		unset _f_url _f_sha256sum_src _f_url_dst;
 		return 0;
 	else
@@ -25,16 +26,18 @@ fetch() {
 
 fetch_git() {
 	_fg_subdir="${1}"; _fg_url="${2}"; _fg_branch="${3}";
-	if [ -e "${DLCACHEDIR}/${_fg_subdir}" ]; then
-		cd ${DLCACHEDIR}/${_fg_subdir} &&\
-			git pull origin ${_fg_branch:-main} && cd ${OLDPWD};
-	else
-		git clone ${_fg_url} ${DLCACHEDIR}/${_fg_subdir};
-		if [ -n "${_fg_branch}" -a		\
-		     \( -z "${_fg_branch#main}" \) -a	\
-		     \( -z "${_fg_branch#master}" \) ]; then
+	if [ ${ARG_OFFLINE:-0} -eq 0 ]; then
+		if [ -e "${DLCACHEDIR}/${_fg_subdir}" ]; then
 			cd ${DLCACHEDIR}/${_fg_subdir} &&\
-				git checkout -b ${_fg_branch} && cd ${OLDPWD};
+				git pull origin ${_fg_branch:-main} && cd ${OLDPWD};
+		else
+			git clone ${_fg_url} ${DLCACHEDIR}/${_fg_subdir};
+			if [ -n "${_fg_branch}" -a		\
+			     \( -z "${_fg_branch#main}" \) -a	\
+			     \( -z "${_fg_branch#master}" \) ]; then
+				cd ${DLCACHEDIR}/${_fg_subdir} &&\
+					git checkout -b ${_fg_branch} && cd ${OLDPWD};
+			fi;
 		fi;
 	fi;
 	secure_rm ${_fg_subdir};
