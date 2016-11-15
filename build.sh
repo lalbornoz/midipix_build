@@ -93,7 +93,7 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 		break;
 	fi;
 done;
-do_strip; do_tarballs; fini_build_vars;
+copy_etc; do_strip; do_tarballs; fini_build_vars;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
 fini_build_progress_file;
