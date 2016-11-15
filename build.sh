@@ -15,6 +15,7 @@ while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	export ARG_CLEAN=1; ;;
 -n)	export ARG_DRYRUN=1 ARG_VERBOSE=1; ;;
+-N)	export ARG_OFFLINE=1; ;;
 -t*)	export ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
 -v)	export ARG_VERBOSE=1; ;;
 -x)	export ARG_XTRACE=1; set -o xtrace; ;;
