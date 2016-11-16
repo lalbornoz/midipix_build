@@ -125,13 +125,17 @@ else
 fi;
 if [ -x ${PKG_CONFIGURE} ]\
 && ! is_build_script_done configure; then
-	if test_cmd pkg_${PKG_NAME}_configure_pre; then
-		pkg_${PKG_NAME}_configure_pre;
+	if test_cmd pkg_${PKG_NAME}_configure; then
+		pkg_${PKG_NAME}_configure;
+	else
+		if test_cmd pkg_${PKG_NAME}_configure_pre; then
+			pkg_${PKG_NAME}_configure_pre;
+		fi;
+		CFLAGS="${PKG_CFLAGS_CONFIGURE}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"\
+		LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"\
+		${PKG_CONFIGURE}								\
+			${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
 	fi;
-	CFLAGS="${PKG_CFLAGS_CONFIGURE}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"\
-	LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"\
-	${PKG_CONFIGURE}								\
-		${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
 	set_build_script_done configure clean -build;
 else
 	__no_autoconf=1;
