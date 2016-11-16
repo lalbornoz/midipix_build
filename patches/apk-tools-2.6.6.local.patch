@@ -27,15 +27,9 @@
  CFLAGS_ALL	+= $(CFLAGS)
  
  LDFLAGS		?= -g
---- apk-tools-2.6.6/src/Makefile.orig	2016-02-09 14:57:53.000000000 +0000
-+++ apk-tools-2.6.6/src/Makefile	2016-06-23 08:14:37.843747529 +0000
-@@ -1,12 +1,12 @@
- PKGDEPS := openssl zlib
--PKG_CONFIG ?= pkg-config
-+PKG_CONFIG ?= $(PKG_TARGET)-pkg-config
- LUAAPK ?= yes
- 
- # lua module
+--- apk-tools-2.6.6/src/Makefile.orig	2016-02-09 15:57:53.000000000 +0100
++++ apk-tools-2.6.6/src/Makefile	2016-11-16 13:49:33.370051100 +0100
+@@ -6,7 +6,7 @@
  ifneq ($(LUAAPK),)
  LUA_VERSION		?= 5.2
  LUA_PC			?= lua$(LUA_VERSION)
