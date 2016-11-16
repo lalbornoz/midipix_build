@@ -85,27 +85,27 @@ parse_with_pkg_name() {
 	else
 		for _pwpn_vname in ${PKG_BUILD_VARS}; do
 			if [ -n "$(get_var_unsafe DEFAULT_${_pwpn_vname})" ]; then
-				export "PKG_${_pwpn_vname}=$(get_var_unsafe DEFAULT_${_pwpn_vname})";
+				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe DEFAULT_${_pwpn_vname})";
 			fi;
 			if [ -n "$(get_var_unsafe ${BUILD_TARGET}_${_pwpn_vname})" ]; then
-				export "PKG_${_pwpn_vname}=$(get_var_unsafe ${BUILD_TARGET}_${_pwpn_vname})";
+				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe ${BUILD_TARGET}_${_pwpn_vname})";
 			fi;
 			if [ "${BUILD}" = "debug" ]	\
 			&& [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_DEBUG)" ]; then
-				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_DEBUG)";
+				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_DEBUG)";
 			elif [ "${BUILD}" = "release" ]	\
 			&& [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_RELEASE)" ]; then
-				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_RELEASE)";
+				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_RELEASE)";
 			elif [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname})" ]; then
-				export "PKG_${_pwpn_vname}=$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname})";
+				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname})";
 			fi;
 		done; unset _pwpn_vname;
 	fi;
 	[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
 	[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
 	[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
-	for _pwpn_env_var in $(export); do
-		if [ "${_pwpn_env_var#PKG_}" != "${_pwpn_env_var}" ]; then
+	for _pwpn_env_var in $(set); do
+		if [ "${_pwpn_env_var#PKG_${_pwpn_pkg_name_uc}}" != "${_pwpn_env_var}" ]; then
 			_pwpn_env_vars="${_pwpn_env_vars:+${_pwpn_env_vars} }${_pwpn_env_var%%=*}";
 		fi;
 	done;
