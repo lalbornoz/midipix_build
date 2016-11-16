@@ -77,11 +77,9 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 			log_msg info "Invoking build script \`${BUILD_SCRIPT_FNAME}'${ARG_RESTART:+ (forcibly)} for package \`${BUILD_PACKAGE_LC}'.";
 		fi;
 		(set -o errexit -o noglob;
-		 export	MIDIPIX_BUILD_PWD=$(pwd)					\
-			PKG_BUILD=${BUILD} PKG_TARGET=${TARGET}				\
-			PKG_PREFIX=$(get_vars_unsafe ${BUILD_TARGET}_PREFIX		\
-				PKG_${BUILD_PACKAGE%.*}_PREFIX)				\
-			PREFIX PREFIX_CROSS PREFIX_MIDIPIX PREFIX_NATIVE PREFIX_ROOT;
+		 MIDIPIX_BUILD_PWD=$(pwd); PKG_BUILD=${BUILD}; PKG_TARGET=${TARGET};
+		 PKG_PREFIX=$(get_vars_unsafe ${BUILD_TARGET}_PREFIX			\
+			PKG_${BUILD_PACKAGE%.*}_PREFIX);				
 		 cd ${WORKDIR}; source_scripts);
 		BUILD_SCRIPT_RC=${?}; case ${BUILD_SCRIPT_RC} in
 		0) log_msg succ "Finished \`${BUILD_PACKAGE_LC}' build.";
