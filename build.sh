@@ -10,30 +10,31 @@
 for __ in subr/*.subr; do
 	. ./${__};
 done;
-check_cpuinfo; source_vars; clear_env;
+check_cpuinfo;
 while [ ${#} -gt 0 ]; do
 case ${1} in
--c)	export ARG_CLEAN=1; ;;
--n)	export ARG_DRYRUN=1 ARG_VERBOSE=1; ;;
--N)	export ARG_OFFLINE=1; ;;
--t*)	export ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
--v)	export ARG_VERBOSE=1; ;;
--x)	export ARG_XTRACE=1; set -o xtrace; ;;
--a)	[ -z "${2}" ] && exec cat etc/build.usage || export ARCH=${2}; shift; ;;
--b)	[ -z "${2}" ] && exec cat etc/build.usage || export BUILD=${2}; shift; ;;
+-c)	ARG_CLEAN=1; ;;
+-n)	ARG_DRYRUN=1 ARG_VERBOSE=1; ;;
+-N)	ARG_OFFLINE=1; ;;
+-t*)	ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
+-v)	ARG_VERBOSE=1; ;;
+-x)	ARG_XTRACE=1; set -o xtrace; ;;
+-a)	[ -z "${2}" ] && exec cat etc/build.usage || ARCH=${2}; shift; ;;
+-b)	[ -z "${2}" ] && exec cat etc/build.usage || BUILD=${2}; shift; ;;
 -r)	if [ -z "${2}" ]; then
 		exec cat build.usage;
 	elif [ "${2%:*}" = "${2}" ]; then
-		export ARG_RESTART=${2};
+		ARG_RESTART=${2};
 	else
-		export ARG_RESTART=${2%:*} ARG_RESTART_AT=${2#*:};
+		ARG_RESTART=${2%:*}; ARG_RESTART_AT=${2#*:};
 	fi; shift; ;;
 host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
-	export BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
+	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 *)	exec cat etc/build.usage; ;;
 esac; shift;
 done;
+source_vars; clear_env;
 if [ -z "${BUILD_TARGETS_META}" ]; then
 	BUILD_TARGETS_META=world;
 fi;
