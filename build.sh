@@ -68,10 +68,10 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 			fi;
 			: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 		fi;
-		if [ -e scripts/${BUILD_PACKAGE_LC}.build ]; then
-			BUILD_SCRIPT_FNAME=scripts/${BUILD_PACKAGE_LC}.build;
+		if [ -e build/${BUILD_PACKAGE_LC}.build ]; then
+			BUILD_SCRIPT_FNAME=build/${BUILD_PACKAGE_LC}.build;
 		else
-			BUILD_SCRIPT_FNAME=scripts/pkg.build;
+			BUILD_SCRIPT_FNAME=build/pkg.build;
 		fi;
 		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
 			log_msg info "Invoking build script \`${BUILD_SCRIPT_FNAME}'${ARG_RESTART:+ (forcibly)} for package \`${BUILD_PACKAGE_LC}'.";
