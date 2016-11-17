@@ -1,0 +1,77 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+check_pkg_updates() {
+	_cnpv_name="${1}"; _cnpv_version="${2}"; _cnpv_url="${3}"; _cnpv_url_type="${4}";
+	if match_list "${CHECK_UPDATES_SKIP}" " " "${_cnpv_name}"; then
+		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
+			log_msg info "Skipping \`${_cnpv_name}' (set in \${CHECK_UPDATES_SKIP}.)";
+		fi;
+		return 0;
+	elif [ "${_cnpv_url_type}" = "git" ]; then
+		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
+			log_msg info "Skipping \`${_cnpv_name}' (URL_TYPE is Git.)";
+		fi;
+		return 0;
+	elif [ -z "${_cnpv_version}" -o -z "${_cnpv_url}" ]; then
+		log_msg fail "Zero-length \${_cnpv_version} and/or \${_cnpv_url} for \`${_cnpv_name}' (ignored.)";
+		return 0;
+	else
+		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
+			log_msg info "Checking ${_cnpv_name} v${_cnpv_version} for updates.";
+		fi;
+		_cnpv_url_base="${_cnpv_url%/*}/"
+		_cnpv_url_fname="${_cnpv_url#${_cnpv_url_base}}";
+		_cnpv_url_fname_base="${_cnpv_url_fname%%-*}";
+		_cnpv_url_fname_ext="${_cnpv_url_fname#${_cnpv_url_fname_base}-${_cnpv_version}.}";
+		_cnpv_url_data="$(wget ${WGET_ARGS} -q -O- "${_cnpv_url_base}")"
+	fi;
+	_cnpv_versions="";
+	for _cnpv_fname in $(echo "${_cnpv_url_data}" |\
+			sed -n '/href="[^"]\+"/s/^.*href="\([^"]\+\)".*$/\1/p'); do
+		_cnpv_fname="${_cnpv_fname##*/}";
+		if [ "${_cnpv_fname#${_cnpv_url_fname_base}-}" = "${_cnpv_fname}" ]; then
+			continue;
+		elif [ "${_cnpv_fname%.${_cnpv_url_fname_ext}}" = "${_cnpv_fname}" ]; then
+			continue;
+		else
+			_cnpv_fname_version="${_cnpv_fname#${_cnpv_url_fname_base}-}";
+			_cnpv_fname_version="${_cnpv_fname_version%.${_cnpv_url_fname_ext}}";
+			if [ -z "${_cnpv_fname_version}" ]; then
+				if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
+					log_msg warn "Skipping \`${_cnpv_fname_version}' (empty version.)";
+				fi;
+				continue;
+		elif ! echo "${_cnpv_fname_version}" | grep -Eq '^[_.0-9a-zA-Z]+$'	\
+		||   echo "${_cnpv_fname_version}" | grep -Eq '^[_.a-zA-Z]+$'; then
+				if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
+					log_msg warn "Skipping \`${_cnpv_fname_version}' (invalid version.)";
+				fi;
+				continue;
+			else
+				_cnpv_versions="${_cnpv_versions:+${_cnpv_versions} }${_cnpv_fname_version}";
+			fi;
+		fi;
+	done;
+	if [ -z "${_cnpv_versions}" ]; then
+		log_msg warn "No versions available for \`${_cnpv_name}' (URL: ${_cnpv_url}).";
+	else
+		_cnpv_versions="$(echo "${_cnpv_versions}"	|\
+			sed 's/ /\n/g' | sort -rV | uniq	|\
+			head -n3 | paste -d" " -s)";
+		if [ "${_cnpv_versions%% *}" != "${_cnpv_version}" ]; then
+			log_msg info "New release(s) available for ${_cnpv_name} v${_cnpv_version}: ${_cnpv_versions}.";
+		else
+			log_msg info "${_cnpv_name} v${_cnpv_version} is up to date.";
+		fi;
+	fi;
+	unset	_cnpv_versions _cnpv_fname_version _cnpv_fname	\
+		_cnpv_url_data _cnpv_url_fname_ext		\
+		_cnpv_url_fname_base _cnpv_url_fname		\
+		_cnpv_url_base _cnpv_url_type _cnpv_url		\
+		_cnpv_version _cnpv_name;
+};
+
+# vim:filetype=sh
