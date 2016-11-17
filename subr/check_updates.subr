@@ -8,7 +8,7 @@ cpu_get_fnames() {
 	*://github.com/*)
 		_cpugf_uname="${cu_url#*/github.com/}";
 		_cpugf_uname="${_cpugf_uname%%/*}";
-		_cpugf_pname="${cu_url#*/github.com/${_cpu_uname}/}";
+		_cpugf_pname="${cu_url#*/github.com/${_cpugf_uname}/}";
 		_cpugf_pname="${_cpugf_pname%%/*}";
 		cu_url_index="https://github.com/${_cpugf_uname%%/*}/${_cpugf_pname%%/*}/releases/";
 		unset _cpu_uname _cpu_pname;
@@ -16,6 +16,18 @@ cpu_get_fnames() {
 			sed -n '/<span class="tag-name">/s/^.*<span class="tag-name">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\2/p')";
 		cu_fname_base="${cu_name}";
 		cu_fname_ext="${cu_fname#v${cu_version}.}";
+		;;
+	*/libgpg-error/*)
+		cu_url_index="${cu_url%/*}/";
+		cu_fnames="$(wget ${WGET_ARGS} -qO- "${cu_url_index}"	|\
+			sed -n '/href="[^"]\+"/s/^.*href="\([^"]\+\)".*$/\1/p')";
+		cu_fname_base="libgpg-error";
+		;;
+	*/util-linux/*)
+		cu_fname_base="util_linux";
+		cu_url_index="https://www.kernel.org/pub/linux/utils/util-linux/";
+		cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}		|\
+			sed -n '/href="[^"]\+"/{s/^.*href="\([^"]\+\)".*$/\1/;s/\/$//;p}')";
 		;;
 	*)
 		cu_url_index="${cu_url%/*}/";
@@ -32,6 +44,8 @@ cpu_get_version() {
 	case "${cu_url}" in
 	*://github.com/*)
 		cu_fname_version="${cu_fname}"; ;;
+	*/util-linux/*)
+		cu_fname_version="${cu_fname#v}"; ;;
 	*)	if ! [ "${cu_fname#${cu_fname_base}-}" = "${cu_fname}" ]\
 		&& ! [ "${cu_fname%.${cu_fname_ext}}" = "${cu_fname}" ]; then
 			cu_fname_version="${cu_fname#${cu_fname_base}-}";
