@@ -24,12 +24,18 @@ get_vars_unsafe() {
 
 log_msg() {
 	_lm_lvl=${1}; shift;
+	if [ "${_lm_lvl#v}" != "${_lm_lvl}" ]\
+	&& [ ${ARG_VERBOSE:-0} -eq 0 ]; then
+		return;
+	fi;
 	case ${_lm_lvl} in
 		failexit) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		fail) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		info) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		vnfo) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
 		succ) printf "\033[0m\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
 		warn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
+		varn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
 	esac;
 	if [ $# -gt 1 ]; then
 		printf "==> %s %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}" "$*";
@@ -43,8 +49,7 @@ insecure_mkdir() {
 		if [ -z "${1}" ]; then
 			return 1;
 		elif [ ! -e "${1}" ]; then
-			[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
-				log_msg warn "Making directory \`${1}'.";
+			log_msg varn "Making directory \`${1}'.";
 			mkdir -p -- "${1}";
 		fi; shift;
 	done;
@@ -66,8 +71,7 @@ secure_cd() {
 		(cd "${1}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
 			return 1 || return 0);
 		if [ ${?} -eq 0 ]; then
-			[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
-				log_msg warn "Changing working directory to \`${1}'.";
+			log_msg varn "Changing working directory to \`${1}'.";
 			cd -- "${1}";
 		else
 			log_msg failexit "secure_cd() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
@@ -89,8 +93,7 @@ secure_rm() {
 				return 1 || return 0);
 			if [ ${?} -eq 0 ]; then
 				unset _sr_pname_check;
-				[ "${ARG_VERBOSE:-0}" -eq 1 ] &&\
-					log_msg warn "Removing directory or file \`${1}'.";
+				log_msg varn "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}";
 			else
 				log_msg failexit "secure_rm() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";

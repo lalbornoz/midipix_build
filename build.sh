@@ -58,9 +58,7 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 		BUILD_PACKAGE=$(echo ${BUILD_PACKAGE_LC} | tr a-z A-Z);
 		if [ -n "${ARG_RESTART}" ]; then
 			if ! match_list ${ARG_RESTART} , ${BUILD_PACKAGE_LC}; then
-				if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-					log_msg info "Skipped \`${BUILD_PACKAGE_LC}' (-r specified.)";
-				fi;
+				log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (-r specified.)";
 				: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 			fi;
 		fi;
@@ -80,9 +78,7 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 			continue;
 		fi;
 		if is_build_script_done finish "${BUILD_PACKAGE_LC}"; then
-			if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-				log_msg info "Skipped \`${BUILD_PACKAGE_LC}' (already built.)";
-			fi;
+			log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (already built.)";
 			: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 		fi;
 		if [ -e build/${BUILD_PACKAGE_LC}.build ]; then
@@ -90,9 +86,7 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 		else
 			BUILD_SCRIPT_FNAME=build/pkg.build;
 		fi;
-		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-			log_msg info "Invoking build script \`${BUILD_SCRIPT_FNAME}'${ARG_RESTART:+ (forcibly)} for package \`${BUILD_PACKAGE_LC}'.";
-		fi;
+		log_msg vnfo "Invoking build script \`${BUILD_SCRIPT_FNAME}'${ARG_RESTART:+ (forcibly)} for package \`${BUILD_PACKAGE_LC}'.";
 		(set -o errexit -o noglob;
 		 MIDIPIX_BUILD_PWD=$(pwd); PKG_BUILD=${BUILD}; PKG_TARGET=${TARGET};
 		 PKG_PREFIX=$(get_vars_unsafe ${BUILD_TARGET}_PREFIX			\
