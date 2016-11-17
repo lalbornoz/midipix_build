@@ -3,75 +3,85 @@
 # See warning at the top of build.vars.
 #
 
+cpu_get_fnames() {
+	case "${cu_url}" in
+	*://github.com/*)
+		_cpugf_uname="${cu_url#*/github.com/}";
+		_cpugf_uname="${_cpugf_uname%%/*}";
+		_cpugf_pname="${cu_url#*/github.com/${_cpu_uname}/}";
+		_cpugf_pname="${_cpugf_pname%%/*}";
+		cu_url_index="https://github.com/${_cpugf_uname%%/*}/${_cpugf_pname%%/*}/releases/";
+		unset _cpu_uname _cpu_pname;
+		cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}	|\
+			sed -n '/<span class="tag-name">/s/^.*<span class="tag-name">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\2/p')";
+		cu_fname_base="${cu_name}";
+		cu_fname_ext="${cu_fname#v${cu_version}.}";
+		;;
+	*)
+		cu_url_index="${cu_url%/*}/";
+		cu_fnames="$(wget ${WGET_ARGS} -qO- "${cu_url_index}"	|\
+			sed -n '/href="[^"]\+"/s/^.*href="\([^"]\+\)".*$/\1/p')";
+		;;
+	esac;
+	: ${cu_fname:="${cu_url##*/}"};
+	: ${cu_fname_base:="${cu_fname%%-*}"};
+	: ${cu_fname_ext:="${cu_fname#${cu_fname_base}-${cu_version}.}"};
+};
+
+cpu_get_version() {
+	case "${cu_url}" in
+	*://github.com/*)
+		cu_fname_version="${cu_fname}"; ;;
+	*)	if ! [ "${cu_fname#${cu_fname_base}-}" = "${cu_fname}" ]\
+		&& ! [ "${cu_fname%.${cu_fname_ext}}" = "${cu_fname}" ]; then
+			cu_fname_version="${cu_fname#${cu_fname_base}-}";
+			cu_fname_version="${cu_fname_version%.${cu_fname_ext}}";
+		fi;
+		;;
+	esac;
+};
+
 check_pkg_updates() {
-	_cnpv_name="${1}"; _cnpv_version="${2}"; _cnpv_url="${3}"; _cnpv_url_type="${4}";
-	if match_list "${CHECK_UPDATES_SKIP}" " " "${_cnpv_name}"; then
-		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-			log_msg info "Skipping \`${_cnpv_name}' (set in \${CHECK_UPDATES_SKIP}.)";
-		fi;
+	cu_name="${1}"; cu_version="${2}"; cu_url="${3}"; cu_url_type="${4}";
+	if match_list "${CHECK_UPDATES_SKIP}" " " "${cu_name}"; then
+		log_msg vnfo "Skipping \`${cu_name}' (set in \${CHECK_UPDATES_SKIP}.)";
 		return 0;
-	elif [ "${_cnpv_url_type}" = "git" ]; then
-		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-			log_msg info "Skipping \`${_cnpv_name}' (URL_TYPE is Git.)";
-		fi;
+	elif [ "${cu_url_type}" = "git" ]; then
+		log_msg vnfo "Skipping \`${cu_name}' (URL_TYPE is Git.)";
 		return 0;
-	elif [ -z "${_cnpv_version}" -o -z "${_cnpv_url}" ]; then
-		log_msg fail "Zero-length \${_cnpv_version} and/or \${_cnpv_url} for \`${_cnpv_name}' (ignored.)";
+	elif [ -z "${cu_version}" -o -z "${cu_url}" ]; then
+		log_msg fail "Zero-length \${cu_version} and/or \${cu_url} for \`${cu_name}' (ignored.)";
 		return 0;
 	else
-		if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-			log_msg info "Checking ${_cnpv_name} v${_cnpv_version} for updates.";
-		fi;
-		_cnpv_url_base="${_cnpv_url%/*}/"
-		_cnpv_url_fname="${_cnpv_url#${_cnpv_url_base}}";
-		_cnpv_url_fname_base="${_cnpv_url_fname%%-*}";
-		_cnpv_url_fname_ext="${_cnpv_url_fname#${_cnpv_url_fname_base}-${_cnpv_version}.}";
-		_cnpv_url_data="$(wget ${WGET_ARGS} -q -O- "${_cnpv_url_base}")"
+		log_msg vnfo "Checking ${cu_name} v${cu_version} for updates.";
+		cpu_get_fnames; _cpu_versions="";
 	fi;
-	_cnpv_versions="";
-	for _cnpv_fname in $(echo "${_cnpv_url_data}" |\
-			sed -n '/href="[^"]\+"/s/^.*href="\([^"]\+\)".*$/\1/p'); do
-		_cnpv_fname="${_cnpv_fname##*/}";
-		if [ "${_cnpv_fname#${_cnpv_url_fname_base}-}" = "${_cnpv_fname}" ]; then
-			continue;
-		elif [ "${_cnpv_fname%.${_cnpv_url_fname_ext}}" = "${_cnpv_fname}" ]; then
-			continue;
+	for cu_fname in ${cu_fnames}; do
+		cu_fname="${cu_fname##*/}"; cpu_get_version;
+		if [ -z "${cu_fname_version}" ]					\
+		|| ! echo "${cu_fname_version}" | grep -Eq '^[-_.0-9a-zA-Z]+$'	\
+		||   echo "${cu_fname_version}" | grep -Eq '^[_.a-zA-Z]+'; then
+			log_msg varn "Skipping \`${cu_fname_version}' (empty/invalid version.)";
 		else
-			_cnpv_fname_version="${_cnpv_fname#${_cnpv_url_fname_base}-}";
-			_cnpv_fname_version="${_cnpv_fname_version%.${_cnpv_url_fname_ext}}";
-			if [ -z "${_cnpv_fname_version}" ]; then
-				if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-					log_msg warn "Skipping \`${_cnpv_fname_version}' (empty version.)";
-				fi;
-				continue;
-		elif ! echo "${_cnpv_fname_version}" | grep -Eq '^[_.0-9a-zA-Z]+$'	\
-		||   echo "${_cnpv_fname_version}" | grep -Eq '^[_.a-zA-Z]+$'; then
-				if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
-					log_msg warn "Skipping \`${_cnpv_fname_version}' (invalid version.)";
-				fi;
-				continue;
-			else
-				_cnpv_versions="${_cnpv_versions:+${_cnpv_versions} }${_cnpv_fname_version}";
-			fi;
+			_cpu_versions="${_cpu_versions:+${_cpu_versions} }${cu_fname_version}";
 		fi;
 	done;
-	if [ -z "${_cnpv_versions}" ]; then
-		log_msg warn "No versions available for \`${_cnpv_name}' (URL: ${_cnpv_url}).";
+	if [ -z "${_cpu_versions}" ]; then
+		log_msg warn "No versions available for \`${cu_name}' (Filename URL: ${cu_url}, index URL: ${cu_url_index}).";
 	else
-		_cnpv_versions="$(echo "${_cnpv_versions}"	|\
+		_cpu_versions="$(echo "${_cpu_versions}"	|\
 			sed 's/ /\n/g' | sort -rV | uniq	|\
-			head -n3 | paste -d" " -s)";
-		if [ "${_cnpv_versions%% *}" != "${_cnpv_version}" ]; then
-			log_msg info "New release(s) available for ${_cnpv_name} v${_cnpv_version}: ${_cnpv_versions}.";
+			head -n${CHECK_UPDATES_SHOW_NEW:-6}	|\
+			paste -d" " -s)";
+		if [ "${_cpu_versions%% *}" != "${cu_version}" ]; then
+			log_msg info "New release(s) available for ${cu_name} v${cu_version}: ${_cpu_versions}.";
 		else
-			log_msg info "${_cnpv_name} v${_cnpv_version} is up to date.";
+			log_msg vnfo "${cu_name} v${cu_version} is up to date.";
 		fi;
 	fi;
-	unset	_cnpv_versions _cnpv_fname_version _cnpv_fname	\
-		_cnpv_url_data _cnpv_url_fname_ext		\
-		_cnpv_url_fname_base _cnpv_url_fname		\
-		_cnpv_url_base _cnpv_url_type _cnpv_url		\
-		_cnpv_version _cnpv_name;
+	unset	cu_fname cu_fname_base cu_fname_ext cu_fnames cu_fname_version	\
+		cu_name cu_url cu_url_fname cu_url_fname_base cu_url_fname_ext	\
+		cu_url_index cu_url_type cu_version _cpu_versions;
 };
 
 # vim:filetype=sh
