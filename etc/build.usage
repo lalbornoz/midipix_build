@@ -1,11 +1,12 @@
-usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-h] [-n]
-                  [-N] [-r package[,...][:step]] [-t[.gz|.bz2|.xz] [-v]
-                  [<target>[ ...]]
+usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
+                  [-n] [-N] [-r package[,...][:step]] [-t[.gz|.bz2|.xz]
+                  [-v] [<target>[ ...]]
         -x                      Set the xtrace sh(1)ell option for debugging purposes.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
                                 This currently only controls CFLAGS.
         -c                      Clean ${PREFIX} before processing build scripts.
+        -C                      Check package(s) for updates upstream.
         -h                      Show this screen.
         -n                      Perform dry run.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
