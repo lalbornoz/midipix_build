@@ -14,6 +14,7 @@ check_cpuinfo;
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
+-C)	ARG_CHECK_UPDATES=1; ;;
 -n)	ARG_DRYRUN=1 ARG_VERBOSE=1; ;;
 -N)	ARG_OFFLINE=1; ;;
 -t*)	ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
@@ -62,7 +63,23 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 				fi;
 				: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 			fi;
-		elif is_build_script_done finish "${BUILD_PACKAGE_LC}"; then
+		fi;
+		if [ ${ARG_CHECK_UPDATES:-0} -eq 1 ]\
+		&& [ "${BUILD_PACKAGE#*.*}" = "${BUILD_PACKAGE}" ]; then
+			if [ ${ARG_DRYRUN:-0} -eq 1 ]; then
+				echo check_pkg_updates "${BUILD_PACKAGE_LC}"			\
+					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_VERSION)"	\
+					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL)"		\
+					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL_TYPE)";
+			else
+				check_pkg_updates "${BUILD_PACKAGE_LC}"			\
+					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_VERSION)"	\
+					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL)"		\
+					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL_TYPE)";
+			fi;
+			continue;
+		fi;
+		if is_build_script_done finish "${BUILD_PACKAGE_LC}"; then
 			if [ ${ARG_VERBOSE:-0} -eq 1 ]; then
 				log_msg info "Skipped \`${BUILD_PACKAGE_LC}' (already built.)";
 			fi;
