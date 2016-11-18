@@ -50,9 +50,11 @@ fi;
 check_paths; clean_prefix; create_dirs;
 init_build_log; init_build_progress_file;
 {(init_build_vars;
-log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 if [ ${ARG_CHECK_UPDATES:-0} -eq 0 ]; then
+	log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 	log_env_vars "build (global)" ${LOG_ENV_VARS};
+else
+	log_msg info "Version check run started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 fi;
 for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 	BUILD_TARGET=$(echo ${BUILD_TARGET_LC} | tr a-z A-Z);
