@@ -6,22 +6,24 @@
 cpu_get_fnames() {
 	if test_cmd pkg_${cu_name}_check_updates; then
 		pkg_${cu_name}_check_updates get_fnames;
-	elif [ "${cu_url#*://github.com/*}" != "${cu_url}" ]; then
-		_cpugf_uname="${cu_url#*/github.com/}";
-		_cpugf_uname="${_cpugf_uname%%/*}";
-		_cpugf_pname="${cu_url#*/github.com/${_cpugf_uname}/}";
-		_cpugf_pname="${_cpugf_pname%%/*}";
-		cu_url_index="https://github.com/${_cpugf_uname%%/*}/${_cpugf_pname%%/*}/releases/";
-		unset _cpu_uname _cpu_pname;
-		cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}	|\
-			sed -n '/<span class="tag-name">/s/^.*<span class="tag-name">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\2/p')";
-		cu_fname_base="${cu_name}";
-		cu_fname_ext="${cu_fname#v${cu_version}.}";
 	fi;
-	if [ -z "${cu_url_index}" ]; then
-		cu_url_index="${cu_url%/*}/";
-		cu_fnames="$(wget ${WGET_ARGS} -qO- "${cu_url_index}"	|\
-			sed -n '/[hH][rR][eE][fF]="[^"]\+"/s/^.*[hH][rR][eE][fF]="\([^"]\+\)".*$/\1/p')";
+	if [ -z "${cu_fnames}" ]; then
+		if [ "${cu_url#*://github.com/*}" != "${cu_url}" ]; then
+			_cpugf_uname="${cu_url#*/github.com/}";
+			_cpugf_uname="${_cpugf_uname%%/*}";
+			_cpugf_pname="${cu_url#*/github.com/${_cpugf_uname}/}";
+			_cpugf_pname="${_cpugf_pname%%/*}";
+			cu_url_index="https://github.com/${_cpugf_uname%%/*}/${_cpugf_pname%%/*}/releases/";
+			unset _cpu_uname _cpu_pname;
+			cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}	|\
+				sed -n '/<span class="tag-name">/s/^.*<span class="tag-name">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\2/p')";
+			cu_fname_base="${cu_name}";
+			cu_fname_ext="${cu_fname#v${cu_version}.}";
+		else
+			cu_url_index="${cu_url%/*}/";
+			cu_fnames="$(wget ${WGET_ARGS} -qO- "${cu_url_index}"	|\
+				sed -n '/[hH][rR][eE][fF]="[^"]\+"/s/^.*[hH][rR][eE][fF]="\([^"]\+\)".*$/\1/p')";
+		fi;
 	fi;
 	: ${cu_fname:="${cu_url##*/}"};
 	: ${cu_fname_base:="${cu_fname%%-*}"};
