@@ -140,6 +140,7 @@ Runtime components  ptycon              HEAD             C-IE--
 3rd party libraries xz                  5.2.2            C-IE--
 3rd party packages  apk_tools           2.6.6            C---P-
 3rd party packages  bash                4.3              C-I-P-  Linked against ncursesw
+3rd party packages  cmake               3.6.3            C-I---
 3rd party packages  coreutils           8.23             C---P-  Needs extensive testing
 3rd party packages  cparser             HEAD             C-I-P-
 3rd party packages  cron                HEAD             C---P-
