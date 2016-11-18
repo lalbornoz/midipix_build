@@ -4,53 +4,20 @@
 #
 
 cpu_get_fnames() {
-	case "${cu_name}" in
-	infounzip|infozip)
-		cu_fname="${cu_url##*/}";
-		cu_fname_base="${cu_fname%%[0-9]*}";
-		cu_fname_ext="${cu_fname#${cu_fname_base}${cu_version}.}";
-		;;
-	libgpg_error)
-		cu_url_index="${cu_url%/*}/";
-		cu_fnames="$(wget ${WGET_ARGS} -qO- "${cu_url_index}"	|\
-			sed -n '/href="[^"]\+"/s/^.*href="\([^"]\+\)".*$/\1/p')";
-		cu_fname_base="libgpg-error";
-		;;
-	libpthread_stubs)
-		cu_fname_base="libpthread-stubs";
-		;;
-	rxvt_unicode)
-		cu_fname_base="rxvt-unicode";
-		;;
-	the_silver_searcher)
-		cu_url_index="http://geoff.greer.fm/ag/";
-		cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}		|\
-			sed -n '/href="[^"]\+"/{s/^.*href="\([^"]\+\)".*$/\1/;s/\/$//;p}')";
-		;;
-	util_linux)
-		cu_fname_base="util-linux";
-		cu_url_index="https://www.kernel.org/pub/linux/utils/util-linux/";
-		cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}		|\
-			sed -n '/href="[^"]\+"/{s/^.*href="\([^"]\+\)".*$/\1/;s/\/$//;p}')";
-		;;
-	xcb_proto)
-		cu_fname_base="xcb-proto";
-		;;
-	*)
-		if [ "${cu_url#*://github.com/*}" != "${cu_url}" ]; then
-			_cpugf_uname="${cu_url#*/github.com/}";
-			_cpugf_uname="${_cpugf_uname%%/*}";
-			_cpugf_pname="${cu_url#*/github.com/${_cpugf_uname}/}";
-			_cpugf_pname="${_cpugf_pname%%/*}";
-			cu_url_index="https://github.com/${_cpugf_uname%%/*}/${_cpugf_pname%%/*}/releases/";
-			unset _cpu_uname _cpu_pname;
-			cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}	|\
-				sed -n '/<span class="tag-name">/s/^.*<span class="tag-name">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\2/p')";
-			cu_fname_base="${cu_name}";
-			cu_fname_ext="${cu_fname#v${cu_version}.}";
-		fi;
-		;;
-	esac;
+	if test_cmd pkg_${cu_name}_check_updates; then
+		pkg_${cu_name}_check_updates get_fnames;
+	elif [ "${cu_url#*://github.com/*}" != "${cu_url}" ]; then
+		_cpugf_uname="${cu_url#*/github.com/}";
+		_cpugf_uname="${_cpugf_uname%%/*}";
+		_cpugf_pname="${cu_url#*/github.com/${_cpugf_uname}/}";
+		_cpugf_pname="${_cpugf_pname%%/*}";
+		cu_url_index="https://github.com/${_cpugf_uname%%/*}/${_cpugf_pname%%/*}/releases/";
+		unset _cpu_uname _cpu_pname;
+		cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}	|\
+			sed -n '/<span class="tag-name">/s/^.*<span class="tag-name">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\2/p')";
+		cu_fname_base="${cu_name}";
+		cu_fname_ext="${cu_fname#v${cu_version}.}";
+	fi;
 	if [ -z "${cu_url_index}" ]; then
 		cu_url_index="${cu_url%/*}/";
 		cu_fnames="$(wget ${WGET_ARGS} -qO- "${cu_url_index}"	|\
@@ -62,29 +29,11 @@ cpu_get_fnames() {
 };
 
 cpu_get_version() {
-	case "${cu_name}" in
-	infounzip|infozip)
-		if [ "${cu_fname#${cu_fname_base}}" != "${cu_fname}" ]\
-		&& [ "${cu_fname%.${cu_fname_ext}}" != "${cu_fname}" ]; then
-			cu_fname_version="${cu_fname%.${cu_fname_ext}}";
-			cu_fname_version="${cu_fname_version#*zip*}";
-		fi;
-		;;
-	mksh)
-		if [ "${cu_fname#${cu_fname_base}-}" != "${cu_fname}" ]\
-		&& [ "${cu_fname%.${cu_fname_ext}}" != "${cu_fname}" ]; then
-			cu_fname_version="${cu_fname%.${cu_fname_ext}}";
-			cu_fname_version="${cu_fname_version#*-R}";
-		fi;
-		;;
-	util_linux)
-		if [ "${cu_fname#${cu_fname_base}-}" = "${cu_fname}" ]\
-		&& [ "${cu_fname%.${cu_fname_ext}}" = "${cu_fname}" ]; then
-			cu_fname_version="${cu_fname%.${cu_fname_ext}}";
-			cu_fname_version="${cu_fname_version#v}";
-		fi;
-		;;
-	*)
+	unset cu_fname_version;
+	if test_cmd pkg_${cu_name}_check_updates; then
+		pkg_${cu_name}_check_updates get_version;
+	fi;
+	if [ -z "${cu_fname_version}" ]; then
 		if [ "${cu_url#*://github.com/*}" != "${cu_url}" ]; then
 			if [ "${cu_fname#${cu_fname_base}-}" = "${cu_fname}" ]\
 			&& [ "${cu_fname%.${cu_fname_ext}}" = "${cu_fname}" ]; then
@@ -95,12 +44,12 @@ cpu_get_version() {
 			cu_fname_version="${cu_fname#${cu_fname_base}-}";
 			cu_fname_version="${cu_fname_version%.${cu_fname_ext}}";
 		fi;
-		;;
-	esac;
+	fi;
 };
 
 check_pkg_updates() {
 	cu_name="${1}"; cu_version="${2}"; cu_url="${3}"; cu_url_type="${4}";
+	. vars/check_updates.vars;
 	if match_list "${CHECK_UPDATES_SKIP}" " " "${cu_name}"; then
 		log_msg vnfo "Skipping \`${cu_name}' (set in \${CHECK_UPDATES_SKIP}.)";
 		return 0;
@@ -131,10 +80,9 @@ check_pkg_updates() {
 			sed 's/ /\n/g' | sort -rV | uniq	|\
 			head -n${CHECK_UPDATES_SHOW_NEW:-6}	|\
 			paste -d" " -s)";
-		case "${cu_name}" in
-		mksh)
-			cu_version="${cu_version#R}";
-		esac;
+		if test_cmd pkg_${cu_name}_check_updates; then
+			pkg_${cu_name}_check_updates version_fixup;
+		fi;
 		if [ "${_cpu_versions%% *}" != "${cu_version}" ]; then
 			log_msg info "New release(s) available for ${cu_name} v${cu_version}: ${_cpu_versions}.";
 		else
