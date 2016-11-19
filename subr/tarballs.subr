@@ -8,11 +8,15 @@ do_tarball_dist() {
 	insecure_mkdir ${PREFIX_BASENAME}/lib.bak;
 	tar -C ${PREFIX_BASENAME}/lib -cpf - . | tar -C ${PREFIX_BASENAME}/lib.bak -xpf -;
 	log_msg info "Backed up ${PREFIX_BASENAME}/lib.";
-	for __ in $(find native/lib \( -iname \*.so -or -iname \*.so.\* \)		\
-			-type l); do
-		___="native/lib/$(readlink -- ${__})";
-		if [ -f "${___}" ]; then
-			secure_rm ${__}; ln -f -- "${___}" "${__}";
+	for _dtd_lname in $(find native/lib \(							\
+			-iname \*.so -or -iname \*.so.\* -or -iname \*.so.\*.\* -or	\
+			-iname \*.so.\*.\*.\* \) -and \( -not -iname \*.lib.a \) -and -type l); do
+		if [ "${_dtd_lname#/}" = "${_dtd_lname}" ]; then
+			_dtd_lname="${PWD}/${_dtd_lname}";
+		fi;
+		_dtd_fname="$(readlink -f -- ${_dtd_lname})";
+		if [ -f "${_dtd_fname}" ]; then
+			secure_rm ${_dtd_lname}; ln -f -- "${_dtd_fname}" "${_dtd_lname}";
 		fi;
 	done;
 	log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
