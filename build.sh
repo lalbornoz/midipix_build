@@ -81,7 +81,8 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 			fi;
 			continue;
 		fi;
-		if is_build_script_done finish "${BUILD_PACKAGE_LC}"; then
+		if [ -z "${ARG_RESTART}" ]\
+		&& is_build_script_done finish "${BUILD_PACKAGE_LC}"; then
 			log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (already built.)";
 			: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 		fi;
