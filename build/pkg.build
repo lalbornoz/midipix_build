@@ -123,6 +123,9 @@ else
 	export CC=${PKG_TARGET}-gcc;
 	export RANLIB=${PKG_TARGET}-ranlib;
 fi;
+if [ -x ${PKG_CONFIGURE} ]; then
+	export CFLAGS_FOR_BUILD="${HOST_TOOLCHAIN_CFLAGS_CONFIGURE_DEFAULT}";
+fi;
 if [ -x ${PKG_CONFIGURE} ]\
 && ! is_build_script_done configure; then
 	if test_cmd pkg_${PKG_NAME}_configure; then
@@ -163,6 +166,7 @@ if ! is_build_script_done build; then
 			${PKG_MAKEFLAGS_BUILD_EXTRA}					\
 			AR=${AR} ${__no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
 			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
+			"${CFLAGS_FOR_BUILD:+CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}}"	\
 			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
 			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
 			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
