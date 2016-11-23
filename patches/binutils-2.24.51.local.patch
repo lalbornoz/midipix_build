@@ -248,6 +248,17 @@ diff -ru --new-file a/ld/configure.tgt b/ld/configure.tgt
   			targ_extra_ofiles="deffilep.o pe-dll.o" ;;
  i[3-7]86-*-beospe*)	targ_emul=i386beos ;;
  i[3-7]86-*-beos*)	targ_emul=elf_i386_be ;;
+@@ -825,6 +836,10 @@
+ *-*-linux*)
+   ;;
+ 
++*-*-midipix*)
++  NATIVE_LIB_DIRS=
++  ;;
++
+ *-*-netbsd*)
+   ;;
+ 
 diff -ru --new-file a/ld/Makefile.in b/ld/Makefile.in
 --- a/ld/Makefile.in	2014-07-03 01:37:48.000000000 -0400
 +++ b/ld/Makefile.in	2015-03-11 20:09:38.972773108 -0400
@@ -726,14 +737,3 @@ diff -ru a/gas/config/tc-i386.c b/gas/config/tc-i386.c
        if (ret == 0)
  	{
  	  if (exists)
---- binutils-2.24.51/intl/libgnuintl.h.orig	2014-07-03 05:37:48.000000000 +0000
-+++ binutils-2.24.51/intl/libgnuintl.h	2016-05-30 19:56:21.701967351 +0000
-@@ -105,7 +105,7 @@
- #endif
- /* Auxiliary macros.  */
- #ifdef _INTL_REDIRECT_ASM
--# define _INTL_ASM(cname) __asm__ (_INTL_ASMNAME (__USER_LABEL_PREFIX__, #cname))
-+# define _INTL_ASM(cname) __asm__ (#cname)
- # define _INTL_ASMNAME(prefix,cnamestring) _INTL_STRINGIFY (prefix) cnamestring
- # define _INTL_STRINGIFY(prefix) #prefix
- #else
