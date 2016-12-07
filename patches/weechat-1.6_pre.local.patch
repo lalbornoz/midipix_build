@@ -1,0 +1,11 @@
+--- weechat-1.6/autogen.sh.orig	2016-10-02 09:35:04.000000000 +0200
++++ weechat-1.6/autogen.sh	2016-12-07 21:16:43.722726800 +0100
+@@ -64,7 +64,7 @@
+ run "rm -rf intl"
+ 
+ # execute autoreconf cmds
+-run "autoreconf -fvi"
++run "autoreconf -vi"
+ 
+ # ending
+ rm -f $AUTOGEN_LOG
