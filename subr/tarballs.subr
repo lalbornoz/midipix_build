@@ -4,25 +4,25 @@
 
 do_tarball_dist() {
 	TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
-	secure_rm ${PREFIX_BASENAME}/lib.bak;
-	insecure_mkdir ${PREFIX_BASENAME}/lib.bak;
-	tar -C ${PREFIX_BASENAME}/lib -cpf - . | tar -C ${PREFIX_BASENAME}/lib.bak -xpf -;
-	log_msg info "Backed up ${PREFIX_BASENAME}/lib.";
-	for _dtd_lname in $(find native/lib \(						\
-			-iname \*.so -or -iname \*.so.\* -or -iname \*.so.\*.\* -or	\
-			-iname \*.so.\*.\*.\* -or -iname \*.lib.a \) -and -type l); do
-		if [ "${_dtd_lname#/}" = "${_dtd_lname}" ]; then
-			_dtd_lname="${PWD}/${_dtd_lname}";
-		fi;
+	secure_rm ${PREFIX_BASENAME}.bak;
+	insecure_mkdir ${PREFIX_BASENAME}.bak;
+	log_msg info "Converting symbolic links in ${PREFIX_BASENAME} to hard links...";
+	for _dtd_lname in $(find ${PREFIX_BASENAME} -type l); do
 		_dtd_fname="$(readlink -f -- ${_dtd_lname})";
 		if [ -f "${_dtd_fname}" ]; then
-			secure_rm ${_dtd_lname}; ln -f -- "${_dtd_fname}" "${_dtd_lname}";
+			_dtd_dname_new="${_dtd_lname%/*}";
+			_dtd_dname_new="${_dtd_dname_new%/}/";
+			_dtd_dname_new="${PREFIX_BASENAME}.bak/${_dtd_dname_new#${PREFIX_BASENAME}/}";
+			insecure_mkdir "${_dtd_dname_new}";
+			cp -P "${_dtd_lname}" "${_dtd_dname_new}";
+			secure_rm "${_dtd_lname}";
+			ln -f -- "${_dtd_fname}" "${_dtd_lname}";
 		fi;
 	done;
-	log_msg info "Converted symbolic links in ${PREFIX_BASENAME}/lib to hard links.";
-
+	log_msg info "Converted symbolic links in ${PREFIX_BASENAME} to hard links.";
 	tar -cpf - $(find . -maxdepth 2 -mindepth 1 -type d				\
-			-not -path ./native -not -path ./native/lib.bak			\
+			-not -path ./${PREFIX_BASENAME} 				\
+			-not -path ./${PREFIX_BASENAME}.bak				\
 			-not -path ./tmp -not -path ./tmp/\*)				\
 		midipix_shortcut.vbs midipix.sh	README					|\
 	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_FNAME};
@@ -33,8 +33,14 @@ do_tarball_dist() {
 			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign ${TARBALL_FNAME};
 		log_msg info "Signed binary distribution tarball.";
 	fi;
-	secure_rm ${PREFIX_BASENAME}/lib; mv -- ${PREFIX_BASENAME}/lib.bak ${PREFIX_BASENAME}/lib;
-	log_msg info "Restored ${PREFIX_BASENAME}/lib.";
+
+	for _dtd_lname in $(find ${PREFIX_BASENAME}.bak -type l); do
+		_dtd_lname_orig="${PREFIX_BASENAME}${_dtd_lname#${PREFIX_BASENAME}.bak}";
+		secure_rm "${_dtd_lname_orig}";
+		cp -P "${_dtd_lname}" "${_dtd_lname_orig}";
+	done;
+	secure_rm ${PREFIX_BASENAME}.bak;
+	log_msg info "Restored ${PREFIX_BASENAME}.";
 };
 
 do_tarball_toolchain() {
