@@ -12,7 +12,8 @@ usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
         -r package[,...][:step] Restart the specified comma-separated build(s) completely or at
                                 the optionally specified step. Currently defined steps are:
-                                fetch extract build_dir autoconf patch configure clean build install
+                                fetch extract build_dir patch_pre autoconf patch configure clean
+                                build install.
         -t[.gz|.bz2|.xz]        Produce binary distribution and source tarballs containing ${PREFIX}
                                 sans ${WORKDIR} and ${PREFIX}/src/midipix_build and ${WORKDIR} sans top-
                                 level regular files at the end of a build with zero failures. The
