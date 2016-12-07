@@ -55,7 +55,22 @@ if ! is_build_script_done build_dir; then
 	[ "${PKG_SUBDIR}" != "${PKG_BUILD_DIR}" ] &&\
 		secure_rm ${PKG_BUILD_DIR};
 		insecure_mkdir ${PKG_BUILD_DIR};
-	set_build_script_done build_dir -patch;
+	set_build_script_done build_dir -patch_pre;
+fi;
+if ! is_build_script_done patch_pre; then
+	for __ in 										\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch	\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local.patch				\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch; do
+		if [ -r "${__}" ]; then
+			patch -b -d ${PKG_SUBDIR} -p1 < ${__};
+		fi;
+	done; unset __;
+	if test_cmd pkg_${PKG_NAME}_patch_pre_post; then
+		pkg_${PKG_NAME}_patch_pre_post;
+	fi;
+	set_build_script_done patch_pre -autoconf;
 fi;
 if [ -e ${PKG_SUBDIR}/configure -o							\
      -e ${PKG_SUBDIR}/configure.ac -o							\
