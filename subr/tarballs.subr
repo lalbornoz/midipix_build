@@ -23,6 +23,7 @@ do_tarball_dist() {
 	tar -cpf - $(find . -maxdepth 2 -mindepth 1 -type d				\
 			-not -path ./${PREFIX_BASENAME} 				\
 			-not -path ./${PREFIX_BASENAME}.bak				\
+			-not -path ./${PREFIX_BASENAME}.bak/\*				\
 			-not -path ./tmp -not -path ./tmp/\*)				\
 		midipix_shortcut.vbs midipix.sh	README					|\
 	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_FNAME};
@@ -108,7 +109,7 @@ do_tarballs() {
 		*)	log_msg failexit "Unknown tarball suffix \`.${TARBALL_SUFFIX}'.";
 		esac;
 		cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
-		do_tarball_dist; do_tarball_toolchain; do_tarball_minipix;
+		do_tarball_dist; exit 1; do_tarball_toolchain; do_tarball_minipix;
 		if [ "${BUILD}" = "debug" ]; then
 			do_tarball_src;
 		fi;
