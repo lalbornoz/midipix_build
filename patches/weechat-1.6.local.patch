@@ -1,15 +1,3 @@
-diff -ru weechat-1.6.orig/config.sub weechat-1.6/config.sub
---- weechat-1.6.orig/config.sub	2016-10-19 20:51:03.610252372 +0200
-+++ weechat-1.6/config.sub	2016-10-19 20:33:14.686252372 +0200
-@@ -1376,7 +1376,7 @@
- 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
- 	      | -chorusos* | -chorusrdb* | -cegcc* \
- 	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
--	      | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
-+	      | -midipix* | -mingw32* | -mingw64* | -linux-gnu* | -linux-android* \
- 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
- 	      | -uxpv* | -beos* | -mpeix* | -udk* | -moxiebox* \
- 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
 --- weechat-1.6/configure.orig	2016-11-15 19:19:45.531918300 +0100
 +++ weechat-1.6/configure	2016-11-15 19:23:22.078226900 +0100
 @@ -23683,7 +23683,7 @@
