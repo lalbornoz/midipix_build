@@ -45,7 +45,10 @@ fetch_git() {
 };
 
 is_build_script_done() {
-	if match_list "${ARG_RESTART}" , ${BUILD_PACKAGE_LC}; then
+	if [ "${1}" != "clean" ]\
+	&& [ "${ARG_RESTART}" = "ALL" ]; then
+		return 1;		# Build
+	elif match_list "${ARG_RESTART}" , ${BUILD_PACKAGE_LC}; then
 		if [ -n "${ARG_RESTART_AT}" ]			\
 		&& [ "${ARG_RESTART_AT}" != "${1}" ]; then
 			return 0;	# Skip
