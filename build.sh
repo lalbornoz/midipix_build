@@ -61,7 +61,8 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 	for BUILD_PACKAGE_LC in $(get_var_unsafe ${BUILD_TARGET}_PACKAGES); do
 		BUILD_PACKAGE=$(echo ${BUILD_PACKAGE_LC} | tr a-z A-Z);
 		if [ -n "${ARG_RESTART}" ]; then
-			if ! match_list ${ARG_RESTART} , ${BUILD_PACKAGE_LC}; then
+			if [ "${ARG_RESTART}" != "ALL" ] &&\
+			! match_list ${ARG_RESTART} , ${BUILD_PACKAGE_LC}; then
 				log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (-r specified.)";
 				: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 			fi;
