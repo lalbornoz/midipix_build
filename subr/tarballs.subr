@@ -109,7 +109,7 @@ do_tarballs() {
 		*)	log_msg failexit "Unknown tarball suffix \`.${TARBALL_SUFFIX}'.";
 		esac;
 		cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
-		do_tarball_dist; exit 1; do_tarball_toolchain; do_tarball_minipix;
+		do_tarball_dist; do_tarball_toolchain; do_tarball_minipix;
 		if [ "${BUILD}" = "debug" ]; then
 			do_tarball_src;
 		fi;
