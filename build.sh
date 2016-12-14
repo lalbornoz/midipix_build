@@ -17,6 +17,7 @@ case ${1} in
 -C)	ARG_CHECK_UPDATES=1; ;;
 -n)	ARG_DRYRUN=1 ARG_VERBOSE=1; ;;
 -N)	ARG_OFFLINE=1; ;;
+-i)	ARG_IGNORE_SHA256SUMS=1; ;;
 -t*)	ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX=${1#-t.}; ;;
 -v)	ARG_VERBOSE=1; ;;
 -x)	ARG_XTRACE=1; set -o xtrace; ;;
@@ -28,6 +29,9 @@ case ${1} in
 		ARG_RESTART=${2};
 	else
 		ARG_RESTART=${2%:*}; ARG_RESTART_AT=${2#*:};
+	fi;
+	if [ -z "${ARG_RESTART_AT}" ]; then
+		ARG_RESTART_AT=ALL;
 	fi; shift; ;;
 host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
 	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
