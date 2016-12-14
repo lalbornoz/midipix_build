@@ -17,7 +17,11 @@ fetch() {
 	if [ -n "${_f_sha256sum_src}" ]; then
 		set -- $(openssl dgst -sha256 ${_f_url_dst}); shift $((${#}-1));
 		if [ "${_f_sha256sum_dst:=${1}}" != "${_f_sha256sum_src}" ]; then
-			log_msg failexit "Error: hash mismatch for URL \`${_f_url}' (is: ${_f_sha256sum_dst}, should be: ${_f_sha256sum_src}.)";
+			if [ ${ARG_IGNORE_SHA256SUMS:-0} -eq 0 ]; then
+				log_msg failexit "Error: hash mismatch for URL \`${_f_url}' (is: ${_f_sha256sum_dst}, should be: ${_f_sha256sum_src}.)";
+			else
+				log_msg warn "Warning: hash mismatch for URL \`${_f_url}' (is: ${_f_sha256sum_dst}, should be: ${_f_sha256sum_src}.)";
+			fi;
 		fi;
 	fi;
 	touch ${_f_url_dst}.fetched;
@@ -47,13 +51,19 @@ fetch_git() {
 is_build_script_done() {
 	if [ "${1}" != "clean" ]\
 	&& [ "${ARG_RESTART}" = "ALL" ]; then
-		return 1;		# Build
+		return 1;			# Build
 	elif match_list "${ARG_RESTART}" , ${BUILD_PACKAGE_LC}; then
-		if [ -n "${ARG_RESTART_AT}" ]			\
-		&& ! match_list "${ARG_RESTART_AT}" , "${1}"; then
-			return 0;	# Skip
+		if [ -n "${ARG_RESTART_AT}" ]; then
+			if [ "${1}" != "clean" ]\
+			&& [ "${ARG_RESTART_AT}" = "ALL" ]; then
+				return 1;	# Build
+			elif match_list "${ARG_RESTART_AT}" , "${1}"; then
+				return 1;	# Build
+			else
+				return 0;	# Skip
+			fi;
 		else
-			return 1;	# Build
+			return 1;		# Build
 		fi;
 	elif [ -f ${WORKDIR}/.${2:-${BUILD_PACKAGE_LC}}.${1} ]; then
 		return 0;		# Skip
