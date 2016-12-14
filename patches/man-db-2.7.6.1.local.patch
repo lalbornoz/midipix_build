@@ -1,0 +1,14 @@
+--- man-db-2.7.6.1/src/Makefile.in.orig	2016-12-12 13:43:52.000000000 +0100
++++ man-db-2.7.6.1/src/Makefile.in	2016-12-14 16:08:20.231601400 +0100
+@@ -2210,11 +2210,6 @@
+ all-am: apropos$(EXEEXT)
+ 
+ install-exec-hook:
+-	if [ "$(man_owner)" ] && [ "$(man_mode)" = 6755 ]; then \
+-		chown $(man_owner):$(man_owner) \
+-			$(DESTDIR)$(bindir)/$(TRANS_MAN) \
+-			$(DESTDIR)$(bindir)/$(TRANS_MANDB); \
+-	fi
+ 	chmod $(man_mode) \
+ 		$(DESTDIR)$(bindir)/$(TRANS_MAN) \
+ 		$(DESTDIR)$(bindir)/$(TRANS_MANDB)
