@@ -16,7 +16,7 @@ cpu_get_fnames() {
 			cu_url_index="https://github.com/${_cpugf_uname%%/*}/${_cpugf_pname%%/*}/releases/";
 			unset _cpu_uname _cpu_pname;
 			cu_fnames="$(wget ${WGET_ARGS} -qO- ${cu_url_index}	|\
-				sed -n '/<span class="tag-name">/s/^.*<span class="tag-name">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\2/p')";
+				sed -n '/<span class="\(tag-name\|css-truncate-target\)">/s/^.*<span class="\(tag-name\|css-truncate-target\)">\([a-zA-Z]\+-\|v\|\)\(.\+\)<\/span>.*$/\3/p')";
 			cu_fname_base="${cu_name}";
 			cu_fname_ext="${cu_fname#v${cu_version}.}";
 		else
@@ -67,10 +67,11 @@ check_pkg_updates() {
 	fi;
 	for cu_fname in ${cu_fnames}; do
 		cu_fname="${cu_fname##*/}"; cpu_get_version;
-		if [ -z "${cu_fname_version}" ]					\
-		|| ! echo "${cu_fname_version}" | grep -Eq '^[-_.0-9a-zA-Z]+$'	\
+		if [ -z "${cu_fname_version}" ]; then
+			continue;
+		elif ! echo "${cu_fname_version}" | grep -Eq '^[-_.0-9a-zA-Z]+$'	\
 		||   echo "${cu_fname_version}" | grep -Eq '^[_.a-zA-Z]+'; then
-			log_msg varn "Skipping \`${cu_fname_version}' (empty/invalid version.)";
+			log_msg varn "Skipping \`${cu_fname_version}' (invalid version.)";
 		else
 			_cpu_versions="${_cpu_versions:+${_cpu_versions} }${cu_fname_version}";
 		fi;
