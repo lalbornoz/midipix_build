@@ -1,0 +1,63 @@
+diff -ru figlet-2.2.5.old/figlet.c figlet-2.2.5/figlet.c
+--- figlet-2.2.5.old/figlet.c	2012-06-01 14:51:09.000000000 +0200
++++ figlet-2.2.5/figlet.c	2016-12-15 19:25:24.509693744 +0100
+@@ -66,10 +66,8 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>     /* Needed for get_columns */
+ 
+-#ifdef unix
+ #include <unistd.h>
+ #include <sys/ioctl.h> /* Needed for get_columns */
+-#endif
+ 
+ #ifdef TLF_FONTS
+ #include <wchar.h>
+diff -ru figlet-2.2.5.old/Makefile figlet-2.2.5/Makefile
+--- figlet-2.2.5.old/Makefile	2012-06-01 14:51:09.000000000 +0200
++++ figlet-2.2.5/Makefile	2016-12-15 20:33:51.653693744 +0100
+@@ -19,17 +19,17 @@
+ SHELL = /bin/sh
+ 
+ # The C compiler and linker to use
+-CC	= gcc
+-CFLAGS	= -g -O2 -Wall
+-LD	= gcc
+-LDFLAGS =
++CC	?= gcc
++CFLAGS	?= -g -O2 -Wall
++LD	?= gcc
++LDFLAGS ?=
+ 
+ # Feature flags:
+ #   define TLF_FONTS to use TOIlet TLF fonts
+ XCFLAGS	= -DTLF_FONTS
+ 
+ # Where to install files
+-prefix	= /usr/local
++prefix ?= 
+ 
+ # Where the executables should be put
+ BINDIR	= $(prefix)/bin
+diff -ru figlet-2.2.5.old/utf8.h figlet-2.2.5/utf8.h
+--- figlet-2.2.5.old/utf8.h	2012-06-01 14:51:10.000000000 +0200
++++ figlet-2.2.5/utf8.h	2016-12-15 19:11:35.805693744 +0100
+@@ -27,13 +27,17 @@
+ #define UTF8_IGNORE_ERROR		0x01
+ #define UTF8_SKIP_BOM			0x02
+ 
+-__BEGIN_DECLS
++#ifdef   __cplusplus
++extern "C" {
++#endif
+ 
+ size_t		utf8_to_wchar(const char *in, size_t insize, wchar_t *out,
+ 		    size_t outsize, int flags);
+ size_t		wchar_to_utf8(const wchar_t *in, size_t insize, char *out,
+ 		    size_t outsize, int flags);
+ 
+-__END_DECLS
++#ifdef   __cplusplus
++}
++#endif
+ 
+ #endif /* !_UTF8_H_ */
