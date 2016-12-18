@@ -1,0 +1,68 @@
+--- coreutils-8.26/configure.orig	2016-11-30 19:12:35.000000000 +0100
++++ coreutils-8.26/configure	2016-12-17 21:40:01.397534600 +0100
+@@ -67855,3 +67855,11 @@
+ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
+ fi
+ 
++# bypass dependency on help2man
++if [ x"$cross_compiling" = xyes ]; then
++	mkdir -p man;
++	for f in $srcdir/src/*.c; do src=$(basename $f); doc="${src%.*}"; echo $doc; touch man/$doc.1; done
++	for f in dir sha1sum sha224sum sha256sum sha384sum sha512sum vdir; do touch man/$f.1; done
++
++	sed -i -e 's/@cross_compiling@/'$cross_compiling'/g' Makefile || exit 2
++fi
+--- coreutils-8.26/src/fs.h.orig	2016-11-30 14:59:20.000000000 +0100
++++ coreutils-8.26/src/fs.h	2016-12-17 21:40:01.400534600 +0100
+@@ -2,7 +2,7 @@
+    Please send additions to bug-coreutils@gnu.org and meskes@debian.org.
+    This file is generated automatically from ./src/stat.c. */
+ 
+-#if defined __linux__
++#if defined __linux__ || defined __midipix__
+ # define S_MAGIC_ACFS 0x61636673
+ # define S_MAGIC_ADFS 0xADF5
+ # define S_MAGIC_AFFS 0xADFF
+--- coreutils-8.26/Makefile.in.orig	2016-11-30 19:34:55.000000000 +0100
++++ coreutils-8.26/Makefile.in	2016-12-18 00:35:47.375117500 +0100
+@@ -3439,7 +3439,7 @@
+ INET_PTON_LIB = @INET_PTON_LIB@
+ INSTALL = $(cu_install_program) -c
+ INSTALL_DATA = @INSTALL_DATA@
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@
++INSTALL_PROGRAM = install
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ INT32_MAX_LT_INTMAX_MAX = @INT32_MAX_LT_INTMAX_MAX@
+@@ -5018,12 +5018,14 @@
+     $(bin_SCRIPTS) \
+     $(EXTRA_PROGRAMS)
+ 
++CROSS_COMPILE = @cross_compiling@
++
+ pm = progs-makefile
+ pr = progs-readme
+ @CROSS_COMPILING_FALSE@cu_install_program = src/ginstall
+ 
+ # Use the just-built 'ginstall', when not cross-compiling.
+-@CROSS_COMPILING_TRUE@cu_install_program = @INSTALL_PROGRAM@
++@CROSS_COMPILING_TRUE@cu_install_program = install
+ info_TEXINFOS = doc/coreutils.texi
+ doc_coreutils_TEXINFOS = \
+   doc/perm.texi \
+@@ -14636,6 +14638,7 @@
+ 				$$argv$(EXEEXT))			\
+ 	&& : $${SOURCE_DATE_EPOCH=`cat $(srcdir)/.timestamp 2>/dev/null || :`} \
+ 	&& export SOURCE_DATE_EPOCH && $(run_help2man)			\
++		     --no-discard-stderr				\
+ 		     --source='$(PACKAGE_STRING)'			\
+ 		     --include=$(srcdir)/man/$$name.x			\
+ 		     --output=$$t/$$name.1				\
+@@ -14649,6 +14652,7 @@
+ 	  && chmod a-w $@-t						\
+ 	  && mv $@-t $@
+ .PHONY: check-root
++
+ check-root:
+ 	$(MAKE) check TESTS='$(root_tests)' SUBDIRS=.
+ 

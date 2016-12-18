@@ -1,6 +1,6 @@
---- curl-7.47.1/configure.orig	2016-02-07 15:43:48.000000000 +0100
-+++ curl-7.47.1/configure	2016-03-08 11:33:24.125711200 +0100
-@@ -14297,6 +14297,18 @@
+--- curl-7.51.0/configure.orig	2016-10-31 10:41:43.000000000 +0100
++++ curl-7.51.0/configure	2016-12-14 19:53:31.265092100 +0100
+@@ -14831,6 +14831,18 @@
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -19,23 +19,23 @@
  netbsdelf*-gnu)
    version_type=linux
    need_lib_prefix=no
---- curl-7.47.1/lib/Makefile.in.orig	2016-02-07 14:43:49.000000000 +0000
-+++ curl-7.47.1/lib/Makefile.in	2016-06-10 00:07:28.334457112 +0000
-@@ -243,7 +243,7 @@
+--- curl-7.51.0/lib/Makefile.in.orig	2016-10-31 10:41:45.000000000 +0100
++++ curl-7.51.0/lib/Makefile.in	2016-12-14 19:54:05.594475300 +0100
+@@ -249,7 +249,7 @@
  am__v_lt_1 = 
  libcurl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
  	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libcurl_la_CFLAGS) \
 -	$(CFLAGS) $(libcurl_la_LDFLAGS) $(LDFLAGS) -o $@
 +	$(CFLAGS) $(LDFLAGS) -o $@
  libcurlu_la_LIBADD =
- am__objects_6 = libcurlu_la-file.lo libcurlu_la-timeval.lo \
+ am__objects_7 = libcurlu_la-file.lo libcurlu_la-timeval.lo \
  	libcurlu_la-base64.lo libcurlu_la-hostip.lo \
-@@ -842,7 +842,7 @@
+@@ -889,7 +889,7 @@
  	vtls/$(DEPDIR)/$(am__dirstamp)
  
  libcurl.la: $(libcurl_la_OBJECTS) $(libcurl_la_DEPENDENCIES) $(EXTRA_libcurl_la_DEPENDENCIES) 
 -	$(AM_V_CCLD)$(libcurl_la_LINK) -rpath $(libdir) $(libcurl_la_OBJECTS) $(libcurl_la_LIBADD) $(LIBS)
 +	$(AM_V_CCLD)$(libcurl_la_LINK) -rpath $(libdir) $(libcurl_la_OBJECTS) $(libcurl_la_LIBADD) $(LIBS) $(libcurl_la_LDFLAGS)
- vtls/libcurlu_la-openssl.lo: vtls/$(am__dirstamp) \
- 	vtls/$(DEPDIR)/$(am__dirstamp)
- vtls/libcurlu_la-gtls.lo: vtls/$(am__dirstamp) \
+ vauth/libcurlu_la-vauth.lo: vauth/$(am__dirstamp) \
+ 	vauth/$(DEPDIR)/$(am__dirstamp)
+ vauth/libcurlu_la-cleartext.lo: vauth/$(am__dirstamp) \

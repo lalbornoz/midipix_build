@@ -1,0 +1,47 @@
+--- apk-tools-2.6.8/Make.rules.orig	2016-10-25 10:06:30.000000000 +0200
++++ apk-tools-2.6.8/Make.rules	2016-12-17 21:23:39.261695200 +0100
+@@ -70,7 +70,7 @@
+ INSTALLDIR	:= $(INSTALL) -d
+ 
+ CFLAGS		?= -g -O2
+-CFLAGS_ALL	:= -Werror -Wall -Wstrict-prototypes -D_GNU_SOURCE -std=gnu99 -fPIC
++CFLAGS_ALL	:= -Wall -Wstrict-prototypes -D_GNU_SOURCE -std=gnu99 -fPIC
+ CFLAGS_ALL	+= $(CFLAGS)
+ 
+ LDFLAGS		?= -g
+--- apk-tools-2.6.8/src/apk.c.orig	2016-10-25 10:06:30.000000000 +0200
++++ apk-tools-2.6.8/src/apk.c	2016-12-17 21:22:30.592520300 +0100
+@@ -428,12 +428,15 @@
+ 
+ static void apk_applet_register_builtin(void)
+ {
++#if 0
+ 	extern apk_init_func_t __start_initapplets[], __stop_initapplets[];
+ 	apk_init_func_t *p;
+ 
+ 	list_init(&apk_applet_list);
+ 	for (p = __start_initapplets; p < __stop_initapplets; p++)
+ 		(*p)();
++#endif
++	list_init(&apk_applet_list);
+ }
+ 
+ int main(int argc, char **argv)
+--- apk-tools-2.6.8/src/Makefile.orig	2016-10-25 10:06:30.000000000 +0200
++++ apk-tools-2.6.8/src/Makefile	2016-12-17 21:25:34.221413300 +0100
+@@ -7,13 +7,13 @@
+ ZLIB_CFLAGS		:= $(shell $(PKG_CONFIG) --cflags zlib)
+ ZLIB_LIBS		:= $(shell $(PKG_CONFIG) --libs zlib)
+ 
+-FETCH_LIBS		:= $(shell $(CC) -print-file-name=libfetch.a)
++FETCH_LIBS		:= $(shell $(CC) -print-file-name=$(PREFIX)/lib/libfetch.a)
+ 
+ # lua module
+ ifneq ($(LUAAPK),)
+ LUA_VERSION		?= 5.2
+ LUA_PC			?= lua$(LUA_VERSION)
+-LUA_LIBDIR		?= /usr/lib/lua/$(LUA_VERSION)
++LUA_LIBDIR		?= $(PREFIX)/lib/lua/$(LUA_VERSION)
+ LIBAPK			:= YesPlease
+ shlibs-y		+= apk.so
+ apk.so-objs		:= lua-apk.o
