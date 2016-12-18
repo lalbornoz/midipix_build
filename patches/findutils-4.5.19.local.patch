@@ -1,7 +1,6 @@
-diff -ru --new-file a/configure b/configure
---- a/configure	2014-07-19 06:24:44.000000000 -0400
-+++ b/configure	2015-05-31 23:05:19.895583486 -0400
-@@ -54948,3 +54950,23 @@
+--- findutils-4.5.19/configure.orig	2015-12-28 14:39:42.000000000 +0100
++++ findutils-4.5.19/configure	2016-12-18 00:49:18.483403200 +0100
+@@ -55251,3 +55251,23 @@
  $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
  fi
  

@@ -1,19 +1,17 @@
-Only in libgcrypt-1.7.3.orig: config.log
-diff -ru libgcrypt-1.7.3.orig/configure libgcrypt-1.7.3/configure
---- libgcrypt-1.7.3.orig/configure	2016-08-17 13:34:20.000000000 +0200
-+++ libgcrypt-1.7.3/configure	2016-10-18 22:58:40.255896688 +0200
-@@ -13067,7 +13067,9 @@
-     *-linux*)
+--- libgcrypt-1.7.4/configure.orig	2016-12-09 15:49:07.000000000 +0100
++++ libgcrypt-1.7.4/configure	2016-12-17 21:18:38.325971000 +0100
+@@ -13068,6 +13068,10 @@
          PRINTABLE_OS_NAME="GNU/Linux"
          ;;
--
+ 
 +    *-midipix*)
 +        PRINTABLE_OS_NAME="Midipix"
 +        ;;
++
      *)
          PRINTABLE_OS_NAME=`uname -s || echo "Unknown"`
          ;;
-@@ -14141,155 +14143,8 @@
+@@ -14141,155 +14145,7 @@
  # gpg-error is required.
  #
  
@@ -31,8 +29,7 @@ diff -ru libgcrypt-1.7.3.orig/configure libgcrypt-1.7.3/configure
 -  withval=$with_gpg_error_prefix; gpg_error_config_prefix="$withval"
 -fi
 -
-+    GPG_ERROR_LIBS="-lgpg-error"
- 
+-
 -  if test x"${GPG_ERROR_CONFIG}" = x ; then
 -     if test x"${gpg_error_config_prefix}" != x ; then
 -        GPG_ERROR_CONFIG="${gpg_error_config_prefix}/bin/gpg-error-config"
@@ -167,6 +164,7 @@ diff -ru libgcrypt-1.7.3.orig/configure libgcrypt-1.7.3/configure
 -  as_fn_error $? "libgpg-error is needed.
 -                See ftp://ftp.gnupg.org/gcrypt/libgpg-error/ ." "$LINENO" 5
 -fi
++    GPG_ERROR_LIBS="-lgpg-error"
  
  
  $as_echo "#define GPG_ERR_SOURCE_DEFAULT GPG_ERR_SOURCE_GCRYPT" >>confdefs.h

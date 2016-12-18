@@ -1,5 +1,18 @@
---- irssi-0.8.18/src/core/servers.c.orig	2016-01-20 22:08:07.000000000 +0000
-+++ irssi-0.8.18/src/core/servers.c	2016-06-13 11:28:49.187797037 +0000
+--- irssi-0.8.20/src/core/pidwait.c.orig	2016-08-11 14:59:21.000000000 +0200
++++ irssi-0.8.20/src/core/pidwait.c	2016-12-18 01:14:30.017866300 +0100
+@@ -39,8 +39,10 @@
+ void pidwait_add(int pid)
+ {
+ 	if (g_hash_table_lookup(child_pids, GINT_TO_POINTER(pid)) == NULL) {
++#ifndef __midipix__
+ 		int id = g_child_watch_add_full(10, pid, sig_child, NULL, NULL);
+ 		g_hash_table_insert(child_pids, GINT_TO_POINTER(pid), GINT_TO_POINTER(id));
++#endif
+ 		pids = g_slist_append(pids, GINT_TO_POINTER(pid));
+ 	}
+ }
+--- irssi-0.8.20/src/core/servers.c.orig	2016-09-14 13:46:13.000000000 +0200
++++ irssi-0.8.20/src/core/servers.c	2016-12-18 01:17:03.451031500 +0100
 @@ -407,6 +407,36 @@
  		/* connect with unix socket */
  		server_real_connect(server, NULL, server->connrec->address);
@@ -45,21 +58,8 @@
  	}
  	return TRUE;
  }
---- irssi-0.8.18/src/core/pidwait.c.orig	2014-09-02 11:13:51.000000000 +0200
-+++ irssi-0.8.18/src/core/pidwait.c	2016-06-19 00:20:33.327763200 +0200
-@@ -39,8 +39,10 @@
- void pidwait_add(int pid)
- {
- 	if (g_hash_table_lookup(child_pids, GINT_TO_POINTER(pid)) == NULL) {
-+#ifndef __midipix__
- 		int id = g_child_watch_add_full(10, pid, sig_child, NULL, NULL);
- 		g_hash_table_insert(child_pids, GINT_TO_POINTER(pid), GINT_TO_POINTER(id));
-+#endif
- 		pids = g_slist_append(pids, GINT_TO_POINTER(pid));
- 	}
- }
---- irssi-0.8.18/src/fe-common/core/fe-exec.c.orig	2016-01-20 23:08:07.000000000 +0100
-+++ irssi-0.8.18/src/fe-common/core/fe-exec.c	2016-06-19 01:22:40.792090300 +0200
+--- irssi-0.8.20/src/fe-common/core/fe-exec.c.orig	2016-09-14 13:46:13.000000000 +0200
++++ irssi-0.8.20/src/fe-common/core/fe-exec.c	2016-12-18 01:14:30.018866300 +0100
 @@ -288,6 +288,9 @@
  	}
  }
