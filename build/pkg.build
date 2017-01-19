@@ -58,7 +58,7 @@ if ! is_build_script_done build_dir; then
 	set_build_script_done build_dir -patch_pre;
 fi;
 if ! is_build_script_done patch_pre; then
-	for __ in 										\
+	for __ in 											\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local.patch			\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch	\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local.patch				\
@@ -108,6 +108,13 @@ if [ -e ${PKG_SUBDIR}/configure -o							\
 	set_build_script_done autoconf -patch;
 fi;
 if ! is_build_script_done patch; then
+	if [ -d ${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME} ]; then
+		set +o noglob;
+		for __patch_fname in ${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}/*.patch; do
+			patch -b -d ${PKG_SUBDIR} -p1 < ${__patch_fname};
+		done;
+		set -o noglob;
+	fi;
 	for __patch_fname in 									\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local.patch			\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
@@ -132,16 +139,19 @@ cd ${PKG_BUILD_DIR};
 if [ "${PKG_BUILD_TYPE}" = "host" ]; then
 	export AR=ar;
 	export CC=gcc;
+	export CXX=g++;
 	export RANLIB=ranlib;
 else
 	export AR=${PKG_TARGET}-ar;
 	export CC=${PKG_TARGET}-gcc;
+	export CXX=${PKG_TARGET}-g++;
 	export RANLIB=${PKG_TARGET}-ranlib;
 fi;
 if [ -x ${PKG_CONFIGURE} ]; then
 	export CFLAGS_FOR_BUILD="${HOST_TOOLCHAIN_CFLAGS_CONFIGURE_DEFAULT}";
 fi;
 if [ -x ${PKG_CONFIGURE} ]\
+|| test_cmd pkg_${PKG_NAME}_configure\
 && ! is_build_script_done configure; then
 	if test_cmd pkg_${PKG_NAME}_configure; then
 		pkg_${PKG_NAME}_configure;
@@ -250,7 +260,9 @@ if ! is_build_script_done install; then
 		esac; shift;
 		done);
 	fi;
-	if test_cmd perk && test_cmd ${PKG_TARGET}-dlltool; then
+	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
+	&& test_cmd perk								\
+	&& test_cmd ${PKG_TARGET}-dlltool; then
 		for __so_fname in							\
 			$(find	\( -name "*.so"						\
 				-or -name "*.so.[0-9]"					\
