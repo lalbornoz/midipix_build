@@ -1,5 +1,53 @@
+diff -ru man-db-2.7.5.orig/lib/Makefile.am man-db-2.7.5/lib/Makefile.am
+--- man-db-2.7.5.orig/lib/Makefile.am	2014-09-29 13:45:14.000000000 +0200
++++ man-db-2.7.5/lib/Makefile.am	2017-01-19 01:29:38.000000000 +0100
+@@ -60,7 +60,7 @@
+ 	xregcomp.h
+ 
+ libman_la_LIBADD = ../gnulib/lib/libgnu.la $(LTLIBOBJS) \
+-	$(LIBCOMPRESS) @LTLIBINTL@
++	$(LIBCOMPRESS) -lpipeline @LTLIBINTL@
+ 
+ libman_la_LDFLAGS = \
+ 	-avoid-version -release $(VERSION) -rpath $(pkglibdir) \
+diff -ru man-db-2.7.5.orig/lib/Makefile.in man-db-2.7.5/lib/Makefile.in
+--- man-db-2.7.5.orig/lib/Makefile.in	2017-01-19 02:49:51.105766753 +0100
++++ man-db-2.7.5/lib/Makefile.in	2017-01-19 02:48:18.390682563 +0100
+@@ -1447,7 +1447,7 @@
+ 	xregcomp.h
+ 
+ libman_la_LIBADD = ../gnulib/lib/libgnu.la $(LTLIBOBJS) \
+-	$(LIBCOMPRESS) @LTLIBINTL@
++	$(LIBCOMPRESS) -lpipeline @LTLIBINTL@
+ 
+ libman_la_LDFLAGS = \
+ 	-avoid-version -release $(VERSION) -rpath $(pkglibdir) \
+diff -ru man-db-2.7.5.orig/libdb/db_lookup.c man-db-2.7.5/libdb/db_lookup.c
+--- man-db-2.7.5.orig/libdb/db_lookup.c	2015-08-02 12:31:55.000000000 +0200
++++ man-db-2.7.5/libdb/db_lookup.c	2017-01-19 02:35:48.000000000 +0100
+@@ -50,6 +50,8 @@
+ #include "mydbm.h"
+ #include "db_storage.h"
+ 
++char *database;
++
+ /* If using ndbm or BTREE, copy the static storage before doing anything
+  * interesting with it. If using gdbm, firstkey and nextkey need to copy the
+  * storage because our ordered wrappers keep an effectively static copy.
+diff -ru man-db-2.7.5.orig/libdb/db_ver.c man-db-2.7.5/libdb/db_ver.c
+--- man-db-2.7.5.orig/libdb/db_ver.c	2015-04-08 11:23:25.000000000 +0200
++++ man-db-2.7.5/libdb/db_ver.c	2017-01-19 02:35:30.000000000 +0100
+@@ -37,6 +37,8 @@
+ 
+ #include "mydbm.h"
+ 
++char *database;
++
+ int dbver_rd (MYDBM_FILE dbfile)
+ {
+ 	datum key, content;
 --- man-db-2.7.6.1/src/Makefile.in.orig	2016-12-12 13:43:52.000000000 +0100
-+++ man-db-2.7.6.1/src/Makefile.in	2016-12-14 16:08:20.231601400 +0100
++++ man-db-2.7.6.1/src/Makefile.in	2017-01-19 18:02:40.709802500 +0100
 @@ -2210,11 +2210,6 @@
  all-am: apropos$(EXEEXT)
  
