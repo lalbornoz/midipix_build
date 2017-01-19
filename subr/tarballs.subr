@@ -4,22 +4,6 @@
 
 do_tarball_dist() {
 	TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
-	secure_rm ${PREFIX_BASENAME}.bak;
-	insecure_mkdir ${PREFIX_BASENAME}.bak;
-	log_msg info "Converting symbolic links in ${PREFIX_BASENAME} to hard links...";
-	for _dtd_lname in $(find ${PREFIX_BASENAME} -type l); do
-		_dtd_fname="$(readlink -f -- ${_dtd_lname})";
-		if [ -f "${_dtd_fname}" ]; then
-			_dtd_dname_new="${_dtd_lname%/*}";
-			_dtd_dname_new="${_dtd_dname_new%/}/";
-			_dtd_dname_new="${PREFIX_BASENAME}.bak/${_dtd_dname_new#${PREFIX_BASENAME}/}";
-			insecure_mkdir "${_dtd_dname_new}";
-			cp -P "${_dtd_lname}" "${_dtd_dname_new}";
-			secure_rm "${_dtd_lname}";
-			ln -f -- "${_dtd_fname}" "${_dtd_lname}";
-		fi;
-	done;
-	log_msg info "Converted symbolic links in ${PREFIX_BASENAME} to hard links.";
 	tar -cpf - $(find . -maxdepth 2 -mindepth 1 -type d				\
 			-not -path ./${PREFIX_BASENAME} 				\
 			-not -path ./${PREFIX_BASENAME}.bak				\
@@ -34,14 +18,6 @@ do_tarball_dist() {
 			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign ${TARBALL_FNAME};
 		log_msg info "Signed binary distribution tarball.";
 	fi;
-
-	for _dtd_lname in $(find ${PREFIX_BASENAME}.bak -type l); do
-		_dtd_lname_orig="${PREFIX_BASENAME}${_dtd_lname#${PREFIX_BASENAME}.bak}";
-		secure_rm "${_dtd_lname_orig}";
-		cp -P "${_dtd_lname}" "${_dtd_lname_orig}";
-	done;
-	secure_rm ${PREFIX_BASENAME}.bak;
-	log_msg info "Restored ${PREFIX_BASENAME}.";
 };
 
 do_tarball_toolchain() {
