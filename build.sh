@@ -33,7 +33,7 @@ case ${1} in
 	if [ -z "${ARG_RESTART_AT}" ]; then
 		ARG_RESTART_AT=ALL;
 	fi; shift; ;;
-host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
+init|host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
 	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 *)	exec cat etc/build.usage; ;;
