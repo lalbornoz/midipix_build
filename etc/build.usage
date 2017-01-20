@@ -22,7 +22,7 @@ usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
                                 with GPG; the default compression is xz.
         -v                      Be verbose; this currently only affects secure_{cd,rm}() and insecure_mkdir().
         <target>[ ...]          One of:
-                                init, host_toolchain, native_toolchain, runtime, lib_packages,
+                                host_toolchain, native_toolchain, runtime, lib_packages,
                                 leaf_packages, world, or devroot.
 
         ${HOME}/midipix_build.vars, ../midipix_build.vars, and build.vars are sourced
