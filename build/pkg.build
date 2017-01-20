@@ -59,10 +59,11 @@ if ! is_build_script_done build_dir; then
 fi;
 if ! is_build_script_done patch_pre; then
 	for __ in 											\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local.patch			\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch	\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local.patch				\
-			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch; do
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch		\
+			${WORKDIR}/chainport/${PKG_SUBDIR}_pre.midipix.patch				\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch; do
 		if [ -r "${__}" ]; then
 			patch -b -d ${PKG_SUBDIR} -p1 < ${__};
 		fi;
@@ -116,10 +117,11 @@ if ! is_build_script_done patch; then
 		set -o noglob;
 	fi;
 	for __patch_fname in 									\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local.patch			\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local.patch			\
-			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
+			${WORKDIR}/chainport/${PKG_SUBDIR}.midipix.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
 		if [ -r "${__patch_fname}" ]; then
 			patch -b -d ${PKG_SUBDIR} -p1 < ${__patch_fname};
 		fi;
@@ -178,7 +180,7 @@ if ! is_build_script_done build; then
 		pkg_${PKG_NAME}_build;
 	elif [ -n "${PKG_BUILD_CMDLINE}" ]; then
 		${PKG_BUILD_CMDLINE};
-	else
+	elif [ ${PKG_NO_MAKE_BUILD:-0} -eq 0 ]; then
 		if [ "${PKG_SLIBTOOL}" != "default" ]; then
 			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
 		fi;
