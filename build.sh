@@ -33,7 +33,7 @@ case ${1} in
 	if [ -z "${ARG_RESTART_AT}" ]; then
 		ARG_RESTART_AT=ALL;
 	fi; shift; ;;
-init|host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
+host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
 	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 *)	exec cat etc/build.usage; ;;
@@ -43,6 +43,7 @@ source_vars; clear_env;
 if [ -z "${BUILD_TARGETS_META}" ]; then
 	BUILD_TARGETS_META=world;
 fi;
+BUILD_TARGETS_META="invariants ${BUILD_TARGETS_META}";
 
 #
 # Check whether the pathnames in build.vars contain non-empty valid values.
@@ -64,7 +65,8 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 	BUILD_TARGET=$(echo ${BUILD_TARGET_LC} | tr a-z A-Z);
 	for BUILD_PACKAGE_LC in $(get_var_unsafe ${BUILD_TARGET}_PACKAGES); do
 		BUILD_PACKAGE=$(echo ${BUILD_PACKAGE_LC} | tr a-z A-Z);
-		if [ -n "${ARG_RESTART}" ]; then
+		if [ "${BUILD_TARGET}" != "INVARIANTS" ]\
+		&& [ -n "${ARG_RESTART}" ]; then
 			if [ "${ARG_RESTART}" != "ALL" ] &&\
 			! match_list ${ARG_RESTART} , ${BUILD_PACKAGE_LC}; then
 				log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (-r specified.)";
@@ -86,7 +88,8 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 			fi;
 			continue;
 		fi;
-		if [ -z "${ARG_RESTART}" ]\
+		if [ "${BUILD_TARGET}" != "INVARIANTS" ]\
+		&& [ -z "${ARG_RESTART}" ]\
 		&& is_build_script_done finish "${BUILD_PACKAGE_LC}"; then
 			log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (already built.)";
 			: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
