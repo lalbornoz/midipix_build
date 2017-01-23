@@ -76,6 +76,10 @@ create_dirs() {
 			secure_rm "${__}"; ln -sf -- . "${__}";
 		fi;
 	done;
+	if [ ! -L ${PREFIX_NATIVE}/man ]; then
+		secure_rm ${PREFIX_NATIVE}/man;
+		ln -sf share/man ${PREFIX_NATIVE}/man;
+	fi;
 	insecure_mkdir ${PREFIX_MINIPIX}/bin;
 	for __ in lib libexec share; do
 		if [ ! -e ${PREFIX_MINIPIX}/${__} ]; then
