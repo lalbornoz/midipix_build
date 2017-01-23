@@ -1,0 +1,16 @@
+diff -ru perl-5.22.1.orig/installman perl-5.22.1/installman
+--- perl-5.22.1.orig/installman	2015-10-17 14:32:14.000000000 +0200
++++ perl-5.22.1/installman	2017-01-17 16:54:06.004016000 +0100
+@@ -146,9 +146,10 @@
+ 	    next;
+ 	}
+ 
+-	if ($^O eq 'os2' || $^O eq 'amigaos' || $^O eq 'uwin' || $^O eq 'cygwin') {
++	#Fix me later?
++	#if ($^O eq 'os2' || $^O eq 'amigaos' || $^O eq 'uwin' || $^O eq 'cygwin' || $^O eq 'midipix') {
+             $manpage =~ s#::#.#g;
+-	}
++	#}
+         my $tmp = "${mandir}/${manpage}.tmp";
+ 	$manpage = "${mandir}/${manpage}.${manext}";
+ 
