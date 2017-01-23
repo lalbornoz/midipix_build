@@ -1,0 +1,88 @@
+diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
+--- bdwgc.orig/os_dep.c	2017-01-13 01:05:27.201020300 +0100
++++ bdwgc/os_dep.c	2017-01-12 22:54:52.681020300 +0100
+@@ -32,7 +32,7 @@
+ #endif
+ 
+ #if defined(UNIX_LIKE) || defined(CYGWIN32) || defined(NACL) \
+-    || defined(SYMBIAN)
++    || defined(SYMBIAN) || defined(MIDIPIX)
+ # include <fcntl.h>
+ #endif
+ 
+--- bdwgc/include/private/gcconfig.h.orig	2017-01-23 18:47:24.683963226 +0000
++++ bdwgc/include/private/gcconfig.h	2017-01-23 18:58:19.917387539 +0000
+@@ -55,6 +55,10 @@
+ #   define LINUX
+ # endif
+ 
++# if defined(__midipix__)
++#    define MIDIPIX
++# endif
++
+ /* And one for QNX: */
+ # if defined(__QNX__)
+ #    define I386
+@@ -293,6 +297,14 @@
+ #    define X86_64
+ #    define mach_type_known
+ # endif
++# if defined(MIDIPIX) && defined(__x86_64__)
++#    define X86_64
++#    define mach_type_known
++# endif
++# if defined(MIDIPIX) && defined(__i386__)
++#    define I386
++#    define mach_type_known
++# endif
+ # if defined(LINUX) && (defined(__ia64__) || defined(__ia64))
+ #    define IA64
+ #    define mach_type_known
+@@ -1426,6 +1438,12 @@
+ #         include <gnu/libc-version.h> /* for gnu_get_libc_version() */
+ #       endif
+ #   endif
++#   ifdef MIDIPIX
++#      define OS_TYPE "MIDIPIX"
++#	define DATASTART (ptr_t)NULL /* Wrong */
++#	define DATAEND (ptr_t)NULL /* Wrong */
++#	define STACKBOTTOM (ptr_t)0x000000 /* Not sure if we should be using STACKBOTTOM or LINUX_STACKBOTTOM & /proc/self/stat */
++#   endif
+ #   ifdef CYGWIN32
+ #       define OS_TYPE "CYGWIN32"
+ #       define DATASTART ((ptr_t)GC_DATASTART)  /* From gc.h */
+@@ -2439,6 +2457,12 @@
+ #         include <gnu/libc-version.h> /* for gnu_get_libc_version() */
+ #       endif
+ #   endif
++#   ifdef MIDIPIX
++#      define OS_TYPE "MIDIPIX"
++#	define DATASTART (ptr_t)NULL /* Wrong */
++#	define DATAEND (ptr_t)NULL /* Wrong */
++#	define STACKBOTTOM (ptr_t)0x000000 /* Not sure if we should be using STACKBOTTOM or LINUX_STACKBOTTOM & /proc/self/stat */
++#   endif
+ #   ifdef DARWIN
+ #     define OS_TYPE "DARWIN"
+ #     define DARWIN_DONT_PARSE_STACK
+@@ -2953,7 +2977,7 @@
+ #if defined(GC_IRIX_THREADS) && !defined(IRIX5)
+ # error --> inconsistent configuration
+ #endif
+-#if defined(GC_LINUX_THREADS) && !defined(LINUX) && !defined(NACL)
++#if defined(GC_LINUX_THREADS) && !defined(LINUX) && !defined(NACL) && !defined(MIDIPIX)
+ # error --> inconsistent configuration
+ #endif
+ #if defined(GC_NETBSD_THREADS) && !defined(NETBSD)
+--- bdwgc/pthread_stop_world.c.orig	2017-01-23 18:47:24.683963226 +0000
++++ bdwgc/pthread_stop_world.c	2017-01-23 18:59:56.449597256 +0000
+@@ -20,6 +20,10 @@
+ #if defined(GC_PTHREADS) && !defined(GC_WIN32_THREADS) && \
+     !defined(GC_DARWIN_THREADS)
+ 
++#ifdef MIDIPIX
++# include <sys/select.h>
++#endif
++
+ #ifdef NACL
+ 
+ # include <unistd.h>
