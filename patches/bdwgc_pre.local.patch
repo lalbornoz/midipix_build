@@ -1,0 +1,13 @@
+--- bdwgc/configure.ac.orig	2017-01-23 18:47:24.675963209 +0000
++++ bdwgc/configure.ac	2017-01-23 18:49:57.396295320 +0000
+@@ -194,6 +194,10 @@
+         AC_DEFINE(GC_LINUX_THREADS)
+         AC_DEFINE(_REENTRANT)
+         ;;
++     *-*-midipix*)
++        AC_DEFINE(GC_LINUX_THREADS)
++        AC_DEFINE(_REENTRANT)
++        ;;
+      *-*-aix*)
+         AC_DEFINE(GC_AIX_THREADS)
+         AC_DEFINE(_REENTRANT)
