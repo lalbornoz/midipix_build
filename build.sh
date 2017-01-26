@@ -103,7 +103,7 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 		(set -o errexit -o noglob;
 		 MIDIPIX_BUILD_PWD=$(pwd); PKG_BUILD=${BUILD}; PKG_TARGET=${TARGET};
 		 PKG_PREFIX=$(get_vars_unsafe ${BUILD_TARGET}_PREFIX			\
-			PKG_${BUILD_PACKAGE%.*}_PREFIX);				
+			PKG_${BUILD_PACKAGE%%.*}_PREFIX);				
 		 cd ${WORKDIR}; source_scripts);
 		BUILD_SCRIPT_RC=${?}; case ${BUILD_SCRIPT_RC} in
 		0) log_msg succ "Finished \`${BUILD_PACKAGE_LC}' build.";

@@ -2,6 +2,14 @@
 # . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
+if [ "${3}" = mingw_w64 ]; then
+	TARGET=x86_64-w64-mingw32;
+	if [ ! -L ${PKG_PREFIX}/mingw ]; then
+		secure_rm ${PKG_PREFIX}/mingw;
+		ln -sf . ${PKG_PREFIX}/mingw;
+	fi;
+fi;
+
 # Order: stage1, runtime, full, native
 
 export MAKE="make LIBTOOL=slibtool";
@@ -42,7 +50,8 @@ if [ "${2}" = runtime ]\
 		fi;
 	fi;
 else
-	if [ "${2}" = stage1 ]; then
+	if [ "${2}" = stage1 ]\
+	|| [ "${2}" = host ]; then
 		# GCC, stage1.
 		if ! is_build_script_done fetch; then
 			fetch_git cbb-gcc-${PKG_GCC_VERSION}		\
@@ -62,7 +71,8 @@ else
 		export 	cbb_ldflags_for_target=--sysroot=${PKG_PREFIX}	\
 			cbb_sysroot_for_libgcc=${PKG_PREFIX}		\
 			cbb_target=${TARGET}				\
-			cbb_xgcc_for_specs=${TARGET}-gcc;
+			cbb_xgcc_for_specs=${TARGET}-gcc		\
+			sysroot_headers_suffix=${PKG_PREFIX};
 		GCCTARGET_FLAGS="-DIN_TARGET_LIBRARY_BUILD --sysroot=${PKG_PREFIX}";
 	fi;
 	GCCFLAGS="${CFLAGS:+${CFLAGS} }--include $(readlink -f ${WORKDIR}/cbb-gcc-${PKG_GCC_VERSION}/libc/cbb-musl-pe.h)";
@@ -77,7 +87,8 @@ else
 	done;
 	export CFLAGS CXXFLAGS CFLAGS_FOR_BUILD CPPFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CFLAGS_FOR_TARGET XGCC_FLAGS_FOR_TARGET CPPFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET LIBCFLAGS_FOR_TARGET;
 	if ! is_build_script_done configure; then
-		if [ "${2}" = stage1 ]; then
+		if [ "${2}" = stage1 ]\
+		|| [ "${2}" = host ]; then
 			insecure_mkdir ${PKG_PREFIX}/include;
 			[ \! -d ${PKG_PREFIX}/usr ] &&			\
 				ln -s -- . ${PKG_PREFIX}/usr;
@@ -100,6 +111,23 @@ else
 				--with-mpfr=${PKG_PREFIX}	\
 				--with-sysroot=";
 		fi;
+		if [ "${TARGET#*mingw*}" != "${TARGET}" ]; then
+			_configure_args="${_configure_args}	\
+				--enable-sjlj-exceptions";
+			if [ "${2}" != host ]; then
+				_configure_args="${_configure_args}	\
+					--host=${TARGET}		\
+					--without-headers";
+				export AR=${PKG_TARGET}-ar;
+				export AS=${PKG_TARGET}-as;
+				export CC=${PKG_TARGET}-gcc;
+				export CXX=${PKG_TARGET}-c++;
+				export RANLIB=${PKG_TARGET}-ranlib;
+			fi;
+		else
+			_configure_args="${_configure_args}	\
+				--disable-sjlj-exceptions";
+		fi;
 		secure_rm ${PKG_BUILD_DIR};
 		insecure_mkdir ${PKG_BUILD_DIR};
 		secure_cd ${PKG_BUILD_DIR};
@@ -109,7 +137,6 @@ else
 			--disable-multilib			\
 			--disable-nls				\
 			--disable-obsolete			\
-			--disable-sjlj-exceptions		\
 			--disable-symvers			\
 			--enable-canonical-system-headers	\
 			--enable-__cxa_atexit			\
@@ -136,7 +163,8 @@ else
 		set_build_script_done clean -build;
 	fi;
 	if ! is_build_script_done build; then
-		if [ "${2}" = stage1 ]; then
+		if [ "${2}" = stage1 ]\
+		|| [ "${2}" = host ]; then
 			make ${MAKEFLAGS} all-gcc;
 		elif [ "${2}" = native ]; then
 			make ${MAKEFLAGS} all-gcc;
@@ -147,7 +175,8 @@ else
 		set_build_script_done build -install;
 	fi;
 	if ! is_build_script_done install; then
-		if [ "${2}" = stage1 ]; then
+		if [ "${2}" = stage1 ]\
+		|| [ "${2}" = host ]; then
 			make ${MAKEFLAGS} install-gcc;
 			__="$(uname -s)";
 			if [ "${__#*CYGWIN*}" != "${__}" ]; then
