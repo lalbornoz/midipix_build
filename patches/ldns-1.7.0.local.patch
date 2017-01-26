@@ -1,0 +1,55 @@
+--- ldns-1.7.0/Makefile.in.orig	2016-12-20 10:48:22.000000000 +0000
++++ ldns-1.7.0/Makefile.in	2017-01-26 14:37:19.980529846 +0000
+@@ -148,7 +148,7 @@
+ 	fi
+ 
+ drill/drill: $(DRILL_LOBJS) $(LIB)
+-	$(LINK_EXE) $(DRILL_LOBJS) $(LIBS) $(LIBSSL_LIBS) -lldns -o drill/drill
++	$(LINK_EXE) $(DRILL_LOBJS) -L./lib -lldns $(LIBS) $(LIBSSL_LIBS) -o drill/drill
+ 
+ drill/drill.1: $(srcdir)/drill/drill.1.in
+ 	$(edit) $(srcdir)/drill/drill.1.in > drill/drill.1
+@@ -179,21 +179,21 @@
+ 	fi
+ 
+ $(EXAMPLE_PROGS):
+-	$(LINK_EXE) $@.lo $(LIBS) -lldns -o $@
++	$(LINK_EXE) $@.lo -L./lib -lldns $(LIBS) $(LIBSSL_LIBS) -o $@
+ 
+ $(TESTNS):
+-	$(LINK_EXE) $(TESTNS_LOBJS) $(LIBS) -lldns -o $(TESTNS)
++	$(LINK_EXE) $(TESTNS_LOBJS) -L./lib -lldns $(LIBS) $(LIBSSL_LIBS) -o $(TESTNS)
+ 
+ $(LDNS_DPA):
+-	$(LINK_EXE) $(LDNS_DPA_LOBJS) $(LIBS) $(LIBPCAP_LIBS) -lldns \
++	$(LINK_EXE) $(LDNS_DPA_LOBJS) -L./lib -lldns $(LIBS) $(LIBPCAP_LIBS) \
+ 		 -o $(LDNS_DPA)
+ 
+ $(LDNS_DANE):
+-	$(LINK_EXE) $(LDNS_DANE_LOBJS) $(LIBS) $(LIBSSL_SSL_LIBS) -lldns \
++	$(LINK_EXE) $(LDNS_DANE_LOBJS) -L./lib -lldns $(LIBS) $(LIBSSL_SSL_LIBS) \
+ 		 -o $(LDNS_DANE)
+ 
+ $(EX_SSL_PROGS):
+-	$(LINK_EXE) $@.lo $(LIBS) $(LIBSSL_LIBS) -lldns -o $@
++	$(LINK_EXE) $@.lo -L./lib -lldns $(LIBS) $(LIBSSL_LIBS) -o $@
+ 
+ examples/ldns-dane.1: $(srcdir)/examples/ldns-dane.1.in
+ 	$(edit) $(srcdir)/examples/ldns-dane.1.in > examples/ldns-dane.1
+@@ -228,14 +228,14 @@
+ 
+ linktest: $(srcdir)/linktest.c libldns.la
+ 	$(COMP_LIB) $(LIBSSL_CPPFLAGS) -c $(srcdir)/linktest.c -o linktest.lo
+-	$(LINK_EXE) linktest.lo $(LIBS) $(LIBSSL_LIBS) -lldns -o linktest
++	$(LINK_EXE) linktest.lo -L./lib -lldns $(LIBS) $(LIBSSL_LIBS) -o linktest
+ 
+ lib: libldns.la
+ 
+ lib-export-all: libldns.la-export-all
+ 
+ libldns.la: $(LDNS_ALL_LOBJS)
+-	$(LINK_LIB) $(LIBSSL_LDFLAGS) $(LIBSSL_LIBS) -export-symbols-regex '^(ldns_|b32_[pn]to[pn]|mktime_from_utc|qsort_rr_compare_nsec3)' -o libldns.la $(LDNS_ALL_LOBJS) -rpath $(libdir) $(RUNTIME_PATH)
++	$(LINK_LIB) $(LIBSSL_LDFLAGS) -export-symbols-regex '^(ldns_|b32_[pn]to[pn]|mktime_from_utc|qsort_rr_compare_nsec3)' -o libldns.la $(LDNS_ALL_LOBJS) $(LIBSSL_LIBS) -rpath $(libdir) $(RUNTIME_PATH)
+ 
+ libldns.la-export-all: $(LDNS_ALL_LOBJS)
+ 	$(LINK_LIB) -o libldns.la $(LDNS_ALL_LOBJS) -rpath $(libdir) $(RUNTIME_PATH)
