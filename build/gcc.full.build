@@ -4,9 +4,9 @@
 
 if [ "${3}" = mingw_w64 ]; then
 	TARGET=x86_64-w64-mingw32;
-	if [ ! -L ${PKG_PREFIX}/mingw ]; then
-		secure_rm ${PKG_PREFIX}/mingw;
-		ln -sf . ${PKG_PREFIX}/mingw;
+	if [ ! -L ${PREFIX}/${TARGET}/mingw ]; then
+		secure_rm ${PREFIX}/${TARGET}/mingw;
+		ln -sf . ${PREFIX}/${TARGET}/mingw;
 	fi;
 fi;
 
