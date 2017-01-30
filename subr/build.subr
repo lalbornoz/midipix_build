@@ -76,6 +76,10 @@ create_dirs() {
 			secure_rm "${__}"; ln -sf -- . "${__}";
 		fi;
 	done;
+	if [ ! -L ${PREFIX}/man ]; then
+		secure_rm ${PREFIX}/man;
+		ln -sf share/man ${PREFIX}/man;
+	fi;
 	if [ ! -L ${PREFIX_NATIVE}/man ]; then
 		secure_rm ${PREFIX_NATIVE}/man;
 		ln -sf share/man ${PREFIX_NATIVE}/man;

@@ -8,7 +8,7 @@ get_var_unsafe() { eval echo \${${1}}; };
 set_var_unsafe() { eval ${1}=\"${2}\"; };
 push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
-set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${TARGET}; };
+set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${PKG_TARGET}; };
 split() { push_IFS "${1}"; set -- ${2}; pop_IFS; echo "${*}"; };
 test_cmd() { command -v "${1}" >/dev/null; };
 unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
