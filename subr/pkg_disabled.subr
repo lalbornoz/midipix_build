@@ -1,0 +1,12 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_disabled() {
+	if [ ${PKG_DISABLED:-0} -eq 1 ]; then
+		exit 0;
+	fi;
+};
+
+# vim:filetype=sh

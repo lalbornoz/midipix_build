@@ -1,0 +1,43 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_autoconf() {
+	if [ -e ${PKG_SUBDIR}/configure -o							\
+	     -e ${PKG_SUBDIR}/configure.ac -o							\
+	     -e ${PKG_SUBDIR}/configure.in -o							\
+	     -e ${PKG_SUBDIR}/config.guess ]; then
+		find ${PKG_SUBDIR} -name config.sub						\
+			-exec echo mv -- {} {}.orig \;						\
+			-exec mv -- {} {}.orig \;						\
+			-exec echo install -m 0700 ${MIDIPIX_BUILD_PWD}/etc/config.sub {} \;	\
+			-exec install -m 0700 ${MIDIPIX_BUILD_PWD}/etc/config.sub {} \;;
+		if [ -e ${PKG_SUBDIR}/configure.ac -a						\
+		   ! -e ${PKG_SUBDIR}/configure ]; then
+			if [ -e ${PKG_SUBDIR}/autogen.sh ]; then
+				for __ in ${PKG_SUBDIR}/build-aux ${PKG_SUBDIR}; do
+					if [ -e ${__} ]; then
+						echo install -m 0700				\
+							${MIDIPIX_BUILD_PWD}/etc/config.sub 	\
+							${__}/config.sub;
+						install -m 0700					\
+							${MIDIPIX_BUILD_PWD}/etc/config.sub	\
+							${__}/config.sub;
+						break;
+					fi;
+				done;
+				(cd ${PKG_SUBDIR} && ${SHELL} ./autogen.sh) || exit 1;
+			else
+				(cd ${PKG_SUBDIR} && autoconf) || exit 1;
+			fi;
+		fi;
+		for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
+			echo cp -- ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
+			cp -- ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
+		done;
+	fi;
+	set_build_script_done autoconf -patch;
+};
+
+# vim:filetype=sh

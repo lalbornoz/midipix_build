@@ -1,0 +1,11 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_clean() {
+	make clean;
+	set_build_script_done clean -build;
+};
+
+# vim:filetype=sh

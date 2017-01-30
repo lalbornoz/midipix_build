@@ -1,0 +1,30 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_patch() {
+	if [ -d ${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME} ]; then
+		set +o noglob;
+		for __patch_fname in ${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}/*.patch; do
+			patch -b -d ${PKG_SUBDIR} -p1 < ${__patch_fname};
+		done;
+		set -o noglob;
+	fi;
+	for __patch_fname in 									\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local.patch			\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}.local@${BUILD_HNAME}.patch	\
+			${WORKDIR}/chainport/${PKG_SUBDIR}.midipix.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch; do
+		if [ -r "${__patch_fname}" ]; then
+			patch -b -d ${PKG_SUBDIR} -p1 < ${__patch_fname};
+		fi;
+	done; unset __patch_fname;
+	if test_cmd pkg_${PKG_NAME}_patch_post; then
+		pkg_${PKG_NAME}_patch_post;
+	fi;
+	set_build_script_done patch -setup;
+};
+
+# vim:filetype=sh

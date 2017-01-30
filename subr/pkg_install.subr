@@ -1,0 +1,97 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_install() {
+	if test_cmd pkg_${PKG_NAME}_install; then
+		pkg_${PKG_NAME}_install;
+	else
+		if [ ${PKG_NO_MAKE_INSTALL:-0} -eq 0 ]; then
+			run_cmd_unsplit make					\
+				${PKG_MAKEFLAGS_INSTALL}			\
+				${PKG_MAKEFLAGS_INSTALL_EXTRA}			\
+				AR=${AR} CC=${CC} RANLIB=${RANLIB}		\
+				"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"				\
+				"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"		\
+				"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
+				"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"		\
+				"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
+				${PKG_INSTALL_TARGET:=install};
+			if [ -n "${PKG_PREFIX_EXTRA}" ]; then
+				run_cmd_unsplit make				\
+					${PKG_MAKEFLAGS_INSTALL}		\
+					${PKG_MAKEFLAGS_INSTALL_EXTRA}		\
+					AR=${AR} CC=${CC} RANLIB=${RANLIB}	\
+					"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
+					"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
+					"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
+					"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
+					"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
+					${PKG_INSTALL_TARGET_EXTRA:=install}	\
+					DESTDIR=${PKG_PREFIX_EXTRA};
+			fi;
+		fi;
+		if test_cmd pkg_${PKG_NAME}_install_post; then
+			pkg_${PKG_NAME}_install_post;
+		fi;
+	fi;
+	if [ -d ${PKG_PREFIX}/lib ]; then
+		for __ in $(find ${PKG_PREFIX}/lib -type f -name \*.la); do
+			secure_rm ${__};
+		done;
+	fi;
+	if [ -n "${PKG_INSTALL_FILES}" ]; then
+		(set -- ${PKG_INSTALL_FILES};
+		while [ ${#} -gt 0 ]; do
+		case "${1}" in
+		@*=*)
+			__ln_target="${1%=*}";
+			__ln_target="${__ln_target#@}";
+			__ln_fname="${1#*=}";
+			echo ln -sf -- ${__ln_target} ${PKG_PREFIX}/${__ln_fname};
+			ln -sf -- ${__ln_target} ${PKG_PREFIX}/${__ln_fname};
+			;;
+		/=*)
+			__mkdir_fname="${1#/=}";
+			insecure_mkdir ${PKG_PREFIX}/${__mkdir_fname};
+			;;
+		*)
+			__file_fname_src="${1%=*}";
+			__file_fname_dst="${1#*=}";
+			echo cp -pP -- ${__file_fname_src} ${PKG_PREFIX}/${__file_fname_dst};
+			cp -pP -- ${__file_fname_src} ${PKG_PREFIX}/${__file_fname_dst};
+			;;
+		esac; shift;
+		done);
+	fi;
+	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
+	&& test_cmd perk								\
+	&& test_cmd ${PKG_TARGET}-dlltool; then
+		for __so_fname in							\
+			$(find	\( -name "*.so"						\
+				-or -name "*.so.[0-9]"					\
+				-or -name "*.so.[0-9].[0-9]"				\
+				-or -name "*.so.[0-9].[0-9].[0-9]" \) -printf '%P\n');
+		do
+			if [ \( -e ${__so_fname%.so}.lib.a \) -o			\
+			     \( ! -e ${PKG_PREFIX}/lib/$(basename ${__so_fname}) \) ];
+			then
+				continue;
+			else
+				__so_name="${__so_fname%.so}";
+				echo perk -epdlltool ${__so_fname} \> ${__so_fname%.so}.def;
+				perk -epdlltool ${__so_fname} > ${__so_fname%.so}.def;
+				echo ${PKG_TARGET}-dlltool -l ${__so_fname%.so}.lib.a	\
+					-D ${__so_fname} -d ${__so_fname%.so}.def;
+				${PKG_TARGET}-dlltool -l ${__so_fname%.so}.lib.a	\
+					-D ${__so_fname} -d ${__so_fname%.so}.def;
+				echo cp -- ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
+				cp -- ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
+			fi;
+		done;
+	fi;
+	set_build_script_done install -finish;
+};
+
+# vim:filetype=sh
