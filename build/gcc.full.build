@@ -4,6 +4,7 @@
 
 if [ "${3}" = mingw_w64 ]; then
 	TARGET=x86_64-w64-mingw32;
+	PKG_TARGET=x86_64-w64-mingw32;
 	if [ ! -L ${PREFIX}/${TARGET}/mingw ]; then
 		secure_rm ${PREFIX}/${TARGET}/mingw;
 		ln -sf . ${PREFIX}/${TARGET}/mingw;
@@ -127,6 +128,10 @@ else
 		else
 			_configure_args="${_configure_args}	\
 				--disable-sjlj-exceptions";
+		fi;
+		if [ "${3}" = mingw_w64 ]\
+		&& [ -r ${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}.${2}.${3}.local.patch ]; then
+			patch -b -d ${PKG_SUBDIR} -p1 < ${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}.${2}.${3}.local.patch;
 		fi;
 		secure_rm ${PKG_BUILD_DIR};
 		insecure_mkdir ${PKG_BUILD_DIR};
