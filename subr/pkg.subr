@@ -92,7 +92,8 @@ log_env_vars() {
 parse_with_pkg_name() {
 	PKG_NAME=${1}; shift;
 	_pwpn_pkg_name_uc=$(echo ${PKG_NAME} | tr a-z A-Z);
-	if [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_URL)" ]; then
+	if [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_URL)" ]\
+	&& [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_VERSION)" ]; then
 		unset _pwpn_pkg_name_uc;
 		log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
 	else

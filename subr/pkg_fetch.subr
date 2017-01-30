@@ -1,0 +1,18 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_fetch() {
+	if [ "${PKG_URL_TYPE:-wget}" = wget ]; then
+		fetch "${PKG_URL}" ${PKG_SHA256SUM};
+	else
+		fetch_git ${PKG_SUBDIR} ${PKG_URL} ${PKG_GIT_BRANCH};
+	fi;
+	if test_cmd pkg_${PKG_NAME}_fetch_post; then
+		pkg_${PKG_NAME}_fetch_post;
+	fi;
+	set_build_script_done fetch -extract;
+};
+
+# vim:filetype=sh

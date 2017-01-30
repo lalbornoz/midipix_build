@@ -1,0 +1,30 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_build() {
+	if [ -n "${PKG_BUILD_CMDLINE}" ]; then
+		${PKG_BUILD_CMDLINE};
+	elif [ ${PKG_NO_MAKE_BUILD:-0} -eq 0 ]; then
+		if [ "${PKG_SLIBTOOL}" != "default" ]; then
+			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+		fi;
+		# N.B.	We only specify CC= here if the current package does not use GNU
+		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
+		#	instead of amending CFLAGS.
+		run_cmd_unsplit make							\
+			${PKG_MAKEFLAGS_BUILD}						\
+			${PKG_MAKEFLAGS_BUILD_EXTRA}					\
+			AR=${AR} ${__no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
+			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
+			"${CFLAGS_FOR_BUILD:+CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}}"	\
+			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
+			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
+		unset __no_autoconf;
+	fi;
+	set_build_script_done build -install;
+};
+
+# vim:filetype=sh

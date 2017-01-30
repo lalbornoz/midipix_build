@@ -1,0 +1,19 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_configure() {
+	if [ ${__no_autoconf:-0} -eq 0 ]; then
+		if test_cmd pkg_${PKG_NAME}_configure_pre; then
+			pkg_${PKG_NAME}_configure_pre;
+		fi;
+		CFLAGS="${PKG_CFLAGS_CONFIGURE}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"\
+		LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"\
+		${PKG_CONFIGURE}								\
+			${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
+	fi;
+	set_build_script_done configure clean -build;
+};
+
+# vim:filetype=sh

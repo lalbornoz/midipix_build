@@ -121,23 +121,6 @@ init_build_vars() {
 	BUILD_TIMES_SECS=$(command date +%s);
 };
 
-source_scripts() {
-	_ss_pkg_name="${BUILD_PACKAGE_LC%.*}";
-	_ss_arg1="${BUILD_PACKAGE_LC#*.}";
-	_ss_arg1="${_ss_arg1%%.*}";
-	_ss_arg2="${BUILD_PACKAGE_LC##*.}";
-	set -- ${_ss_pkg_name} ${_ss_arg1} ${_ss_arg2};
-	for SCRIPT_SOURCE in vars/${BUILD_PACKAGE_LC}.vars ${BUILD_SCRIPT_FNAME}; do
-		if [ -f ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE} ]; then
-			if [ ${ARG_DRYRUN:-0} -eq 1 ]; then
-				echo . ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE};
-			else
-				. ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE};
-			fi;
-		fi;
-	done;
-};
-
 source_vars() {
 	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/build.vars; do
 		[ -e ${__} ] && . ${__};
