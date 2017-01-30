@@ -1,0 +1,34 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_extract() {
+	if [ "${PKG_URL_TYPE:-wget}" = wget ]; then
+		secure_rm ${PKG_SUBDIR};
+		if [ ${PKG_SUBDIR_CREATE:-0} -eq 1 ]; then
+			insecure_mkdir ${PKG_SUBDIR};
+		fi;
+		if [ "${PKG_FNAME##*.tar.}" = "bz2" ]; then
+			bunzip2 -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+		elif [ "${PKG_FNAME##*.tar.}" = "gz" ]; then
+			gunzip -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+		elif [ "${PKG_FNAME##*.tar.}" = "xz" ]; then
+			xz -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+		elif [ "${PKG_FNAME##*.t}" = "bz2" ]; then
+			bunzip2 -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+		elif [ "${PKG_FNAME##*.t}" = "gz" ]; then
+			gunzip -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+		elif [ "${PKG_FNAME##*.t}" = "xz" ]; then
+			xz -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;
+		else
+			tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf ${DLCACHEDIR}/${PKG_FNAME};
+		fi;
+		if test_cmd pkg_${PKG_NAME}_extract_post; then
+			pkg_${PKG_NAME}_extract_post;
+		fi;
+	fi;
+	set_build_script_done extract -build_dir;
+};
+
+# vim:filetype=sh

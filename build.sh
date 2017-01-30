@@ -81,7 +81,7 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL)"		\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL_TYPE)";
 			else
-				check_pkg_updates "${BUILD_PACKAGE_LC}"			\
+				check_pkg_updates "${BUILD_PACKAGE_LC}"				\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_VERSION)"	\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL)"		\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL_TYPE)";
@@ -94,17 +94,48 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 			log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (already built.)";
 			: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
 		fi;
-		if [ -e build/${BUILD_PACKAGE_LC}.build ]; then
-			BUILD_SCRIPT_FNAME=build/${BUILD_PACKAGE_LC}.build;
-		else
-			BUILD_SCRIPT_FNAME=build/pkg.build;
+		if [ -n "${ARG_RESTART}" ]; then
+			log_msg vnfo "Forcing package \`${BUILD_PACKAGE_LC}'.";
 		fi;
-		log_msg vnfo "Invoking build script \`${BUILD_SCRIPT_FNAME}'${ARG_RESTART:+ (forcibly)} for package \`${BUILD_PACKAGE_LC}'.";
 		(set -o errexit -o noglob;
-		 MIDIPIX_BUILD_PWD=$(pwd); PKG_BUILD=${BUILD}; PKG_TARGET=${TARGET};
-		 PKG_PREFIX=$(get_vars_unsafe ${BUILD_TARGET}_PREFIX			\
-			PKG_${BUILD_PACKAGE%%.*}_PREFIX);				
-		 cd ${WORKDIR}; source_scripts);
+		MIDIPIX_BUILD_PWD=$(pwd);
+		PKG_BUILD=${BUILD};
+		PKG_PREFIX=$(get_vars_unsafe ${BUILD_TARGET}_PREFIX PKG_${BUILD_PACKAGE%%.*}_PREFIX);				
+		PKG_TARGET=${TARGET};
+		cd ${WORKDIR};
+		for SCRIPT_SOURCE in vars/${BUILD_PACKAGE_LC%.*}.vars; do
+			if [ -f ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE} ]; then
+				if [ ${ARG_DRYRUN:-0} -eq 1 ]; then
+					echo . ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE};
+				else
+					. ${MIDIPIX_BUILD_PWD}/${SCRIPT_SOURCE};
+				fi;
+			fi;
+		done;
+		parse_with_pkg_name ${BUILD_PACKAGE_LC%.*};
+		for __ in all disabled fetch extract build_dir patch_pre autoconf patch setup	\
+				configure clean build install; do
+			case ${__} in
+			all)
+				if test_cmd pkg_${PKG_NAME}_all; then
+					pkg_${PKG_NAME}_all; exit 0;
+				fi;
+				;;
+			disabled|build_dir|setup)
+				pkg_${__};
+				;;
+			*)	if ! is_build_script_done ${__}; then
+					if test_cmd pkg_${PKG_NAME}_${__}; then
+						pkg_${PKG_NAME}_${__};
+					else
+						pkg_${__};
+					fi;
+				fi;
+				;;
+			esac;
+		done;
+		set_build_script_done finish;
+		);
 		BUILD_SCRIPT_RC=${?}; case ${BUILD_SCRIPT_RC} in
 		0) log_msg succ "Finished \`${BUILD_PACKAGE_LC}' build.";
 			: $((BUILD_NFINI+=1)); continue; ;;

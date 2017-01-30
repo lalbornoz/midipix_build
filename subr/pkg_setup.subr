@@ -1,0 +1,33 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_setup() {
+	PKG_SUBDIR_PATH=${PWD}/${PKG_SUBDIR#/};
+	if [ -z "${PKG_CONFIGURE}" ]; then
+		PKG_CONFIGURE=${PKG_SUBDIR_PATH}/configure;
+	else
+		PKG_CONFIGURE=${PWD}/${PKG_CONFIGURE#/};
+	fi;
+	cd ${PKG_BUILD_DIR};
+	if [ "${PKG_BUILD_TYPE}" = "host" ]; then
+		export AR=ar;
+		export CC=gcc;
+		export CXX=g++;
+		export RANLIB=ranlib;
+	else
+		export AR=${PKG_TARGET}-ar;
+		export CC=${PKG_TARGET}-gcc;
+		export CXX=${PKG_TARGET}-g++;
+		export RANLIB=${PKG_TARGET}-ranlib;
+	fi;
+	if [ -x ${PKG_CONFIGURE} ]; then
+		export CFLAGS_FOR_BUILD="${HOST_TOOLCHAIN_CFLAGS_CONFIGURE_DEFAULT}";
+	else
+		__no_autoconf=1;
+	fi;
+	set_build_script_done setup -configure;
+};
+
+# vim:filetype=sh
