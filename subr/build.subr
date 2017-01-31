@@ -76,6 +76,14 @@ create_dirs() {
 			secure_rm "${__}"; ln -sf -- . "${__}";
 		fi;
 	done;
+	if [ ! -L ${PREFIX}/x86_64-w64-mingw32/mingw ]; then
+		secure_rm ${PREFIX}/x86_64-w64-mingw32/mingw;
+		ln -sf . ${PREFIX}/x86_64-w64-mingw32/mingw;
+	fi;
+	if [ ! -d ${PREFIX}/x86_64-w64-mingw32/mingw/include ]; then
+		secure_rm ${PREFIX}/x86_64-w64-mingw32/mingw/include;
+		insecure_mkdir ${PREFIX}/x86_64-w64-mingw32/mingw/include;
+	fi;
 	if [ ! -L ${PREFIX}/man ]; then
 		secure_rm ${PREFIX}/man;
 		ln -sf share/man ${PREFIX}/man;
