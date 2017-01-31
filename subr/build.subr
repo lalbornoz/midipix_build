@@ -70,7 +70,7 @@ copy_etc() {
 };
 
 create_dirs() {
-	insecure_mkdir ${PREFIX} ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
+	insecure_mkdir ${PREFIX} ${PREFIX}/x86_64-w64-mingw32 ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
 	for __ in ${PREFIX}/usr ${PREFIX_NATIVE}/usr; do
 		if [ ! -L "${__}" ]; then
 			secure_rm "${__}"; ln -sf -- . "${__}";
