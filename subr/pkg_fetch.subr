@@ -3,16 +3,80 @@
 # See warning at the top of build.vars.
 #
 
-pkg_fetch() {
-	if [ "${PKG_URL_TYPE:-wget}" = wget ]; then
-		fetch "${PKG_URL}" ${PKG_SHA256SUM};
+# N.B.	URLs ($1) may contain `?' or '&' characters.
+pkgp_fetch() {
+	_f_url="${1}"; _f_sha256sum_src="${2}";
+	_f_url_dst="${DLCACHEDIR}/$(basename "${_f_url}")";
+	if [ ${ARG_OFFLINE:-0} -eq 1 ]\
+	|| [ -e ${_f_url_dst}.fetched ]; then
+		unset _f_url _f_sha256sum_src _f_url_dst;
+		return 0;
 	else
-		fetch_git ${PKG_SUBDIR} ${PKG_URL} ${PKG_GIT_BRANCH};
+		wget ${WGET_ARGS} -c -O ${_f_url_dst} "${_f_url}";
 	fi;
-	if test_cmd pkg_${PKG_NAME}_fetch_post; then
-		pkg_${PKG_NAME}_fetch_post;
+	if [ -n "${_f_sha256sum_src}" ]; then
+		set -- $(openssl dgst -sha256 ${_f_url_dst}); shift $((${#}-1));
+		if [ "${_f_sha256sum_dst:=${1}}" != "${_f_sha256sum_src}" ]; then
+			if [ ${ARG_IGNORE_SHA256SUMS:-0} -eq 0 ]; then
+				log_msg failexit "Error: hash mismatch for URL \`${_f_url}' (is: ${_f_sha256sum_dst}, should be: ${_f_sha256sum_src}.)";
+			else
+				log_msg warn "Warning: hash mismatch for URL \`${_f_url}' (is: ${_f_sha256sum_dst}, should be: ${_f_sha256sum_src}.)";
+			fi;
+		fi;
 	fi;
-	set_build_script_done fetch -extract;
+	touch ${_f_url_dst}.fetched;
+	unset _f_url _f_url_dst _f_sha256sum_src _f_sha256sum_dst;
+};
+
+pkgp_fetch_git() {
+	_fg_subdir="${1}"; _fg_url="${2}"; _fg_branch="${3}";
+	if [ ${ARG_OFFLINE:-0} -eq 0 ]; then
+		if [ -e "${DLCACHEDIR}/${_fg_subdir}" ]; then
+			cd ${DLCACHEDIR}/${_fg_subdir} &&\
+				git pull origin ${_fg_branch:-main} && cd ${OLDPWD};
+		else
+			git clone ${_fg_url} ${DLCACHEDIR}/${_fg_subdir};
+			if [ -n "${_fg_branch}" -a		\
+			     \( -z "${_fg_branch#main}" \) -a	\
+			     \( -z "${_fg_branch#master}" \) ]; then
+				cd ${DLCACHEDIR}/${_fg_subdir} &&\
+					git checkout -b ${_fg_branch} && cd ${OLDPWD};
+			fi;
+		fi;
+	fi;
+	secure_rm ${_fg_subdir};
+	cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
+};
+
+pkgp_fetch_urls_git() {
+	for _ppfu_url_spec in ${1}; do
+		_ppfu_subdir=${_ppfu_url_spec%=*};
+		_ppfu_url=${_ppfu_url_spec#*=};
+		_ppfu_url=${_ppfu_url%@*};
+		if [ "${_ppfu_url_spec#*@}" != "${_ppfu_url_spec}" ]; then
+			_ppfu_git_branch=${_ppfu_url_spec#*@};
+		fi;
+		pkgp_fetch_git ${_ppfu_subdir} ${_ppfu_url} ${_ppfu_git_branch};
+	done;
+	unset _ppfu_url_spec _ppfu_subdir _ppfu_url _ppfu_git_branch;
+};
+
+pkg_fetch() {
+	if [ -n "${1}" ]; then
+		if [ "${1}" = "-git" ]; then
+			shift; pkgp_fetch_urls_git ${1};
+		else
+			pkgp_fetch ${1} ${2};
+		fi;
+	else
+		if [ -n "${PKG_URL}" ]; then
+			pkgp_fetch ${PKG_URL} ${PKG_SHA256SUM};
+		fi;
+		if [ -n "${PKG_URLS_GIT}" ]; then
+			pkgp_fetch_urls_git ${PKG_URLS_GIT};
+		fi;
+		set_build_script_done fetch -extract;
+	fi;
 };
 
 # vim:filetype=sh
