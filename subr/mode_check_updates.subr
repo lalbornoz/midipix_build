@@ -3,7 +3,7 @@
 # See warning at the top of build.vars.
 #
 
-cpu_get_fnames() {
+modep_cpu_get_fnames() {
 	if test_cmd pkg_${cu_name}_check_updates; then
 		pkg_${cu_name}_check_updates get_fnames;
 	fi;
@@ -30,7 +30,7 @@ cpu_get_fnames() {
 	: ${cu_fname_ext:="${cu_fname#${cu_fname_base}-${cu_version}.}"};
 };
 
-cpu_get_version() {
+modep_check_cpu_get_version() {
 	unset cu_fname_version;
 	if test_cmd pkg_${cu_name}_check_updates; then
 		pkg_${cu_name}_check_updates get_version;
@@ -49,7 +49,7 @@ cpu_get_version() {
 	fi;
 };
 
-check_pkg_updates() {
+mode_check_pkg_updates() {
 	cu_name="${1}"; cu_version="${2}"; cu_url="${3}"; cu_url_type="${4}";
 	. vars/check_updates.vars;
 	if match_list "${CHECK_UPDATES_SKIP}" " " "${cu_name}"; then
@@ -63,10 +63,10 @@ check_pkg_updates() {
 		return 0;
 	else
 		log_msg vnfo "Checking ${cu_name} v${cu_version} for updates.";
-		cpu_get_fnames; _cpu_versions="";
+		modep_cpu_get_fnames; _cpu_versions="";
 	fi;
 	for cu_fname in ${cu_fnames}; do
-		cu_fname="${cu_fname##*/}"; cpu_get_version;
+		cu_fname="${cu_fname##*/}"; modep_check_cpu_get_version;
 		if [ -z "${cu_fname_version}" ]; then
 			continue;
 		elif ! echo "${cu_fname_version}" | grep -Eq '^[-_.0-9a-zA-Z]+$'	\

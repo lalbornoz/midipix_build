@@ -76,12 +76,12 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 		if [ ${ARG_CHECK_UPDATES:-0} -eq 1 ]\
 		&& [ "${BUILD_PACKAGE#*.*}" = "${BUILD_PACKAGE}" ]; then
 			if [ ${ARG_DRYRUN:-0} -eq 1 ]; then
-				echo check_pkg_updates "${BUILD_PACKAGE_LC}"			\
+				echo mode_check_pkg_updates "${BUILD_PACKAGE_LC}"		\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_VERSION)"	\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL)"		\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL_TYPE)";
 			else
-				check_pkg_updates "${BUILD_PACKAGE_LC}"				\
+				mode_check_pkg_updates "${BUILD_PACKAGE_LC}"			\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_VERSION)"	\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL)"		\
 					"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL_TYPE)";
@@ -147,7 +147,10 @@ for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 		break;
 	fi;
 done;
-copy_etc; do_strip; do_tarballs; fini_build_vars;
+for __ in copy_etc strip tarballs; do
+	post_${__};
+done;
+fini_build_vars;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
 fini_build_progress_file;
