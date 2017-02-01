@@ -2,6 +2,17 @@
 # Copyright (c) 2016 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 #
 
+bp_subst_tgts() {
+	while [ ${#} -ge 1 ]; do
+	case "${1}" in
+	devroot)
+		echo ${DEVROOT_PACKAGES}; ;;
+	world)	echo ${WORLD_PACKAGES}; ;;
+	*)	echo ${1}; ;;
+	esac; shift;
+	done;
+};
+
 #
 # Clear the environment.
 # Source subroutine scripts.
@@ -10,7 +21,10 @@
 for __ in subr/*.subr; do
 	. ./${__};
 done;
-check_cpuinfo;
+if [ -z "${BUILD_CPUS}" ]	\
+&& [ -e /proc/cpuinfo ]; then
+	BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
+fi;
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
@@ -39,7 +53,20 @@ host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world
 *)	exec cat etc/build.usage; ;;
 esac; shift;
 done;
-source_vars; clear_env;
+
+#
+# Source variables.
+# Clear environment.
+#
+for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/build.vars; do
+	[ -e ${__} ] && . ${__};
+done;
+for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
+	if ! match_list "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
+		unset "${__}";
+	fi;
+done;
+
 if [ -z "${BUILD_TARGETS_META}" ]; then
 	BUILD_TARGETS_META=world;
 fi;
@@ -52,16 +79,88 @@ BUILD_TARGETS_META="invariants ${BUILD_TARGETS_META}";
 # Check whether all prerequisite Perl modules exist.
 # Clean ${PREFIX} if requested.
 # Create directory hierarchy and usr -> . symlinks.
-check_paths; clean_prefix; create_dirs;
-init_build_log; init_build_progress_file;
-{(init_build_vars;
+for __ in ${CHECK_PATH_VARS}; do
+	if [ -z "${___:=$(get_var_unsafe "${__}")}" ]; then
+		log_msg failexit "Error: variable \`${__}' is empty or unset.";
+	elif [ "${___#* *}" != "${___}" ]; then
+		log_msg failexit "Error: variable \`${__}' contains one or more whitespace characters.";
+	fi;
+done;
+for __ in ${CHECK_PREREQ_CMDS} $(eval echo ${CHECK_PREREQ_FILES_DYNAMIC}) ${CHECK_PREREQ_FILES}; do
+	if [ "${__#/}" != "${__}" ]; then
+		if [ ! -e "${__}" ]; then
+			log_msg fail "Error: missing prerequisite file \`${__}'.";
+			__exit=1;
+		fi;
+	else
+		if ! test_cmd "${__}"; then
+			log_msg fail "Error: missing prerequisite command \`${__}'.";
+			__exit=1;
+		fi;
+	fi;
+done;
+for __ in ${CHECK_PREREQ_PERL_MODULES}; do
+	if ! perl -M"${__}" -e "" 2>/dev/null; then
+		log_msg fail "Error: missing prerequisite Perl module \`${__}'.";
+		__exit=1;
+	fi;
+done;
+if [ ${__exit:-0} = 1 ]; then
+	exit 1;
+elif [ -n "${__exit}" ]; then
+	unset __exit;
+fi;
+if [ ${ARG_CLEAN:-0} -eq 1 ]; then
+	log_msg info "-c specified, cleaning prefix...";
+	for __ in ${CLEAR_PREFIX_DIRS}; do
+		if [ -e ${PREFIX}/${__} ]; then
+			secure_rm ${PREFIX}/${__};
+		fi;
+	done;
+fi;
+insecure_mkdir ${PREFIX} ${PREFIX}/x86_64-w64-mingw32 ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
+for __ in ${PREFIX}/usr ${PREFIX_NATIVE}/usr; do
+	if [ ! -L "${__}" ]; then
+		secure_rm "${__}"; ln -sf -- . "${__}";
+	fi;
+done;
+if [ ! -L ${PREFIX}/x86_64-w64-mingw32/mingw ]; then
+	secure_rm ${PREFIX}/x86_64-w64-mingw32/mingw;
+	ln -sf . ${PREFIX}/x86_64-w64-mingw32/mingw;
+fi;
+if [ ! -d ${PREFIX}/x86_64-w64-mingw32/mingw/include ]; then
+	secure_rm ${PREFIX}/x86_64-w64-mingw32/mingw/include;
+	insecure_mkdir ${PREFIX}/x86_64-w64-mingw32/mingw/include;
+fi;
+if [ ! -L ${PREFIX}/man ]; then
+	secure_rm ${PREFIX}/man;
+	ln -sf share/man ${PREFIX}/man;
+fi;
+if [ ! -L ${PREFIX_NATIVE}/man ]; then
+	secure_rm ${PREFIX_NATIVE}/man;
+	ln -sf share/man ${PREFIX_NATIVE}/man;
+fi;
+insecure_mkdir ${PREFIX_MINIPIX}/bin;
+for __ in lib libexec share; do
+	if [ ! -e ${PREFIX_MINIPIX}/${__} ]; then
+		ln -sf bin ${PREFIX_MINIPIX}/${__};
+	fi;
+done;
+if [ -e ${BUILD_LOG_FNAME} ]; then
+	mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
+fi;
+touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
+{(
+BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
+BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
+BUILD_TIMES_SECS=$(command date +%s);
 if [ ${ARG_CHECK_UPDATES:-0} -eq 0 ]; then
 	log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 	log_env_vars "build (global)" ${LOG_ENV_VARS};
 else
 	log_msg info "Version check run started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 fi;
-for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
+for BUILD_TARGET_LC in $(bp_subst_tgts ${BUILD_TARGETS_META}); do
 	BUILD_TARGET=$(echo ${BUILD_TARGET_LC} | tr a-z A-Z);
 	for BUILD_PACKAGE_LC in $(get_var_unsafe ${BUILD_TARGET}_PACKAGES); do
 		BUILD_PACKAGE=$(echo ${BUILD_PACKAGE_LC} | tr a-z A-Z);
@@ -150,10 +249,15 @@ done;
 for __ in copy_etc strip tarballs; do
 	post_${__};
 done;
-fini_build_vars;
+: $((BUILD_TIMES_SECS=$(command date +%s)-${BUILD_TIMES_SECS}));
+: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
+: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
+: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
-fini_build_progress_file;
+if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+	secure_rm ${BUILD_STATUS_IN_PROGRESS_FNAME};
+fi;
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${BUILD_LOG_FNAME} &
 TEE_PID=${!};
 trap "rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME};	\
