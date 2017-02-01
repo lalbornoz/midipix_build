@@ -2,7 +2,7 @@
 # . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
-do_tarball_dist() {
+postp_tarball_dist() {
 	TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
 	tar -cpf - $(find . -maxdepth 2 -mindepth 1 -type d				\
 			-not -path ./${PREFIX_BASENAME} 				\
@@ -20,7 +20,7 @@ do_tarball_dist() {
 	fi;
 };
 
-do_tarball_toolchain() {
+postp_tarball_toolchain() {
 	TARBALL_CROSS_FNAME=${TARBALL_CROSS_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
 	tar -cpf - bin include lib lib64 libexec share ${PKG_TARGET}			|\
 	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_CROSS_FNAME};
@@ -33,7 +33,7 @@ do_tarball_toolchain() {
 	fi;
 };
 
-do_tarball_minipix() {
+postp_tarball_minipix() {
 	TARBALL_MINIPIX_FNAME=${TARBALL_MINIPIX_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
 	tar -cpf - minipix 								\
 		midipix_shortcut.vbs midipix.sh README					|\
@@ -47,7 +47,7 @@ do_tarball_minipix() {
 	fi;
 };
 
-do_tarball_src() {
+postp_tarball_src() {
 	TARBALL_SRC_FNAME=${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};
 	log_msg info "Building source tarball...";
 	tar -cpf - $(find tmp -mindepth 2 -maxdepth 2				\
@@ -65,7 +65,7 @@ do_tarball_src() {
 	fi;
 };
 
-do_tarballs() {
+post_tarballs() {
 	if [ ${BUILD_SCRIPT_RC:-0} -eq 0 ]\
 	&& [ ${ARG_TARBALL:-0} -eq 1 ]; then
 		log_msg info "Building distribution tarballs...";
@@ -85,9 +85,9 @@ do_tarballs() {
 		*)	log_msg failexit "Unknown tarball suffix \`.${TARBALL_SUFFIX}'.";
 		esac;
 		cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
-		do_tarball_dist; do_tarball_toolchain; do_tarball_minipix;
+		post_tarball_dist; post_tarball_toolchain; post_tarball_minipix;
 		if [ "${BUILD}" = "debug" ]; then
-			do_tarball_src;
+			post_tarball_src;
 		fi;
 	fi;
 };
