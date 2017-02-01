@@ -87,7 +87,7 @@ post_tarballs() {
 		cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
 		postp_tarball_dist; postp_tarball_toolchain; postp_tarball_minipix;
 		if [ "${BUILD}" = "debug" ]; then
-			post_tarball_src;
+			postp_tarball_src;
 		fi;
 	fi;
 };
