@@ -49,7 +49,7 @@ pkgp_fetch_git() {
 };
 
 pkgp_fetch_urls_git() {
-	for _ppfu_url_spec in ${1}; do
+	for _ppfu_url_spec in "${@}"; do
 		_ppfu_subdir=${_ppfu_url_spec%=*};
 		_ppfu_url=${_ppfu_url_spec#*=};
 		_ppfu_url=${_ppfu_url%@*};
