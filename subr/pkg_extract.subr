@@ -4,7 +4,8 @@
 #
 
 pkg_extract() {
-	if [ "${PKG_URL_TYPE:-wget}" = wget ]; then
+	if [ -n "${PKG_URL}" ]\
+	&& [ "${PKG_URL_TYPE:-wget}" = wget ]; then
 		secure_rm ${PKG_SUBDIR};
 		if [ ${PKG_SUBDIR_CREATE:-0} -eq 1 ]; then
 			insecure_mkdir ${PKG_SUBDIR};
