@@ -63,12 +63,6 @@ clean_prefix() {
 	fi;
 };
 
-copy_etc() {
-	tar -C etc -cpf - midipix.sh README midipix_shortcut.vbs	|\
-	tar -C ${PREFIX} -xpf -;
-	chmod +x ${PREFIX}/midipix.sh;
-};
-
 create_dirs() {
 	insecure_mkdir ${PREFIX} ${PREFIX}/x86_64-w64-mingw32 ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
 	for __ in ${PREFIX}/usr ${PREFIX_NATIVE}/usr; do
