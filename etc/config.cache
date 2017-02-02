@@ -1,3 +1,11 @@
+# apr
+ac_cv_file__dev_zero=yes
+ac_cv_func_setpgrp_void=yes
+ac_cv_sizeof_struct_iovec=16
+ap_cv_void_ptr_lt_long=no
+apr_cv_process_shared_works=no
+apr_cv_tcp_nodelay_with_cork=no
+
 # autoconf
 ac_cv_buggy_getaddrinfo=no
 ac_cv_func_calloc_0_nonnull=yes
