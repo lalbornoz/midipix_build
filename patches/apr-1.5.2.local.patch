@@ -1,0 +1,71 @@
+diff -ru --new-file apr-1.5.2.orig/include/private/apr_escape_test_char.h apr-1.5.2/include/private/apr_escape_test_char.h
+--- apr-1.5.2.orig/include/private/apr_escape_test_char.h	1970-01-01 01:00:00.000000000 +0100
++++ apr-1.5.2/include/private/apr_escape_test_char.h	2017-01-26 04:54:14.025668783 +0100
+@@ -0,0 +1,23 @@
++/* generated natively */
++#define T_ESCAPE_SHELL_CMD     (1)
++#define T_ESCAPE_PATH_SEGMENT  (2)
++#define T_OS_ESCAPE_PATH       (4)
++#define T_ESCAPE_ECHO          (8)
++#define T_ESCAPE_URLENCODED    (16)
++#define T_ESCAPE_XML           (32)
++
++static const unsigned char test_char_table[256] = {
++    32,30,30,30,30,30,30,30,30,30,31,30,30,30,30,30,30,30,30,30,
++    30,30,30,30,30,30,30,30,30,30,30,30,6,16,63,22,17,22,49,17,
++    17,17,1,16,16,0,0,18,0,0,0,0,0,0,0,0,0,0,16,23,
++    55,16,55,23,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
++    0,0,0,0,0,0,0,0,0,0,0,23,31,23,23,0,23,0,0,0,
++    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
++    0,0,0,23,23,23,17,30,30,30,30,30,30,30,30,30,30,30,30,30,
++    30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,
++    30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,
++    30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,
++    30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,
++    30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,
++    30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30 
++};
+diff -ru --new-file apr-1.5.2.orig/Makefile.in apr-1.5.2/Makefile.in
+--- apr-1.5.2.orig/Makefile.in	2014-04-25 12:51:11.000000000 +0200
++++ apr-1.5.2/Makefile.in	2017-01-26 04:51:55.981668783 +0100
+@@ -46,8 +46,7 @@
+ 
+ CLEAN_TARGETS = apr-config.out apr.exp exports.c export_vars.c .make.dirs \
+ 	build/apr_rules.out tools/gen_test_char@EXEEXT@ \
+-	tools/gen_test_char.o tools/gen_test_char.lo \
+-	include/private/apr_escape_test_char.h
++	tools/gen_test_char.o tools/gen_test_char.lo
+ DISTCLEAN_TARGETS = config.cache config.log config.status \
+ 	include/apr.h include/arch/unix/apr_private.h \
+ 	libtool $(APR_CONFIG) build/apr_rules.mk apr.pc \
+@@ -129,18 +128,6 @@
+ etags:
+ 	etags `find . -name '*.[ch]'`
+ 
+-OBJECTS_gen_test_char = tools/gen_test_char.lo $(LOCAL_LIBS)
+-tools/gen_test_char.lo: tools/gen_test_char.c
+-	$(APR_MKDIR) tools
+-	$(LT_COMPILE)
+-
+-tools/gen_test_char@EXEEXT@: $(OBJECTS_gen_test_char)
+-	$(LINK_PROG) $(OBJECTS_gen_test_char) $(ALL_LIBS)
+-
+-include/private/apr_escape_test_char.h: tools/gen_test_char@EXEEXT@
+-	$(APR_MKDIR) include/private
+-	tools/gen_test_char@EXEEXT@ > $@
+-
+ LINK_PROG = $(LIBTOOL) $(LTFLAGS) --mode=link $(COMPILE) $(LT_LDFLAGS) \
+ 	    @LT_NO_INSTALL@ $(ALL_LDFLAGS) -o $@
+ 
+diff -ru apr-1.5.2.orig/network_io/unix/sendrecv.c apr-1.5.2/network_io/unix/sendrecv.c
+--- apr-1.5.2.orig/network_io/unix/sendrecv.c	2013-10-21 13:57:36.000000000 +0200
++++ apr-1.5.2/network_io/unix/sendrecv.c	2017-02-02 00:52:39.903022000 +0100
+@@ -252,7 +252,7 @@
+ /* Define a structure to pass in when we have a NULL header value */
+ static apr_hdtr_t no_hdtr;
+ 
+-#if (defined(__linux__) || defined(__GNU__)) && defined(HAVE_WRITEV)
++#if (defined(__linux__) || defined(__GNU__)) || defined(__midipix__) && defined(HAVE_WRITEV)
+ 
+ apr_status_t apr_socket_sendfile(apr_socket_t *sock, apr_file_t *file,
+                                  apr_hdtr_t *hdtr, apr_off_t *offset,
