@@ -7,9 +7,6 @@ pkg_build() {
 	if [ -n "${PKG_BUILD_CMDLINE}" ]; then
 		${PKG_BUILD_CMDLINE};
 	elif [ ${PKG_NO_MAKE_BUILD:-0} -eq 0 ]; then
-		if [ "${PKG_SLIBTOOL}" != "default" ]; then
-			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
-		fi;
 		# N.B.	We only specify CC= here if the current package does not use GNU
 		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
 		#	instead of amending CFLAGS.

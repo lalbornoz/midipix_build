@@ -3,44 +3,15 @@
 # See warning at the top of build.vars.
 #
 
-pkg_install() {
-	if test_cmd pkg_${PKG_NAME}_install; then
-		pkg_${PKG_NAME}_install;
-	else
-		if [ ${PKG_NO_MAKE_INSTALL:-0} -eq 0 ]; then
-			run_cmd_unsplit make					\
-				${PKG_MAKEFLAGS_INSTALL}			\
-				${PKG_MAKEFLAGS_INSTALL_EXTRA}			\
-				AR=${AR} CC=${CC} RANLIB=${RANLIB}		\
-				"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"				\
-				"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"		\
-				"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
-				"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"		\
-				"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
-				${PKG_INSTALL_TARGET:=install};
-			if [ -n "${PKG_PREFIX_EXTRA}" ]; then
-				run_cmd_unsplit make				\
-					${PKG_MAKEFLAGS_INSTALL}		\
-					${PKG_MAKEFLAGS_INSTALL_EXTRA}		\
-					AR=${AR} CC=${CC} RANLIB=${RANLIB}	\
-					"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
-					"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
-					"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
-					"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
-					"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
-					${PKG_INSTALL_TARGET_EXTRA:=install}	\
-					DESTDIR=${PKG_PREFIX_EXTRA};
-			fi;
-		fi;
-		if test_cmd pkg_${PKG_NAME}_install_post; then
-			pkg_${PKG_NAME}_install_post;
-		fi;
-	fi;
+pkgp_install_clean_lib() {
 	if [ -d ${PKG_PREFIX}/lib ]; then
 		for __ in $(find ${PKG_PREFIX}/lib -type f -name \*.la); do
 			secure_rm ${__};
 		done;
 	fi;
+};
+
+pkgp_install_files() {
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
 		(set -- ${PKG_INSTALL_FILES};
 		while [ ${#} -gt 0 ]; do
@@ -65,6 +36,9 @@ pkg_install() {
 		esac; shift;
 		done);
 	fi;
+};
+
+pkgp_install_dlltool() {
 	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
 	&& test_cmd perk								\
 	&& test_cmd ${PKG_TARGET}-dlltool; then
@@ -91,6 +65,40 @@ pkg_install() {
 			fi;
 		done;
 	fi;
+};
+
+pkg_install() {
+	if [ ${PKG_NO_MAKE_INSTALL:-0} -eq 0 ]; then
+		run_cmd_unsplit make					\
+			${PKG_MAKEFLAGS_INSTALL}			\
+			${PKG_MAKEFLAGS_INSTALL_EXTRA}			\
+			AR=${AR} CC=${CC} RANLIB=${RANLIB}		\
+			"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"				\
+			"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"		\
+			"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
+			"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"		\
+			"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
+			${PKG_INSTALL_TARGET:=install};
+		if [ -n "${PKG_PREFIX_EXTRA}" ]; then
+			run_cmd_unsplit make				\
+				${PKG_MAKEFLAGS_INSTALL}		\
+				${PKG_MAKEFLAGS_INSTALL_EXTRA}		\
+				AR=${AR} CC=${CC} RANLIB=${RANLIB}	\
+				"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
+				"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
+				"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
+				"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
+				"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
+				${PKG_INSTALL_TARGET_EXTRA:=install}	\
+				DESTDIR=${PKG_PREFIX_EXTRA};
+		fi;
+	fi;
+	if test_cmd pkg_${PKG_NAME}_install_post; then
+		pkg_${PKG_NAME}_install_post;
+	fi;
+	pkgp_install_clean_lib;
+	pkgp_install_files;
+	pkgp_install_dlltool;
 	set_build_script_done install -finish;
 };
 
