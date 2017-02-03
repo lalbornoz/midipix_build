@@ -55,6 +55,46 @@ insecure_mkdir() {
 	done;
 };
 
+install_files() {
+	if [ "${1}" = "-v" ]; then
+		_if_verbose="${1}"; shift;
+	fi;
+	while [ ${#} -gt 0 ]; do
+	case "${1}" in
+	@*=*)
+		__ln_target="${1%=*}";
+		__ln_target="${__ln_target#@}";
+		__ln_fname="${1#*=}";
+		if [ -e ${__ln_fname} ]; then
+			if [ ${_if_verbose:-0} -eq 1 ]; then
+				echo secure_rm ${__ln_fname};
+			fi;
+			secure_rm ${__ln_fname};
+		fi;
+		if [ ${_if_verbose:-0} -eq 1 ]; then
+			echo ln -sf -- ${__ln_target} ${PKG_PREFIX:+${PKG_PREFIX}/}${__ln_fname};
+		fi;
+		ln -sf -- ${__ln_target} ${PKG_PREFIX:+${PKG_PREFIX}/}${__ln_fname};
+		;;
+	/=*)
+		__mkdir_fname="${1#/=}";
+		if [ ${_if_verbose:-0} -eq 1 ]; then
+			echo insecure_mkdir ${PKG_PREFIX:+${PKG_PREFIX}/}${__mkdir_fname};
+		fi;
+		insecure_mkdir ${PKG_PREFIX:+${PKG_PREFIX}/}${__mkdir_fname};
+		;;
+	*)
+		__file_fname_src="${1%=*}";
+		__file_fname_dst="${1#*=}";
+		if [ ${_if_verbose:-0} -eq 1 ]; then
+			echo cp -pP -- ${__file_fname_src} ${PKG_PREFIX:+${PKG_PREFIX}/}${__file_fname_dst};
+		fi;
+		cp -pP -- ${__file_fname_src} ${PKG_PREFIX:+${PKG_PREFIX}/}${__file_fname_dst};
+		;;
+	esac; shift;
+	done; unset _if_verbose;
+};
+
 match_list() {
 	_ml_cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
 	while [ ${#} -gt 0 ]; do
