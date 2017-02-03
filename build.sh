@@ -118,34 +118,23 @@ if [ ${ARG_CLEAN:-0} -eq 1 ]; then
 		fi;
 	done;
 fi;
-insecure_mkdir ${PREFIX} ${PREFIX}/x86_64-w64-mingw32 ${PREFIX_NATIVE} ${PREFIX_CROSS} ${PREFIX_TARGET}/lib ${DLCACHEDIR} ${WORKDIR};
-for __ in ${PREFIX}/usr ${PREFIX_NATIVE}/usr; do
-	if [ ! -L "${__}" ]; then
-		secure_rm "${__}"; ln -sf -- . "${__}";
-	fi;
-done;
-if [ ! -L ${PREFIX}/x86_64-w64-mingw32/mingw ]; then
-	secure_rm ${PREFIX}/x86_64-w64-mingw32/mingw;
-	ln -sf . ${PREFIX}/x86_64-w64-mingw32/mingw;
-fi;
-if [ ! -d ${PREFIX}/x86_64-w64-mingw32/mingw/include ]; then
-	secure_rm ${PREFIX}/x86_64-w64-mingw32/mingw/include;
-	insecure_mkdir ${PREFIX}/x86_64-w64-mingw32/mingw/include;
-fi;
-if [ ! -L ${PREFIX}/man ]; then
-	secure_rm ${PREFIX}/man;
-	ln -sf share/man ${PREFIX}/man;
-fi;
-if [ ! -L ${PREFIX_NATIVE}/man ]; then
-	secure_rm ${PREFIX_NATIVE}/man;
-	ln -sf share/man ${PREFIX_NATIVE}/man;
-fi;
-insecure_mkdir ${PREFIX_MINIPIX}/bin;
-for __ in lib libexec share; do
-	if [ ! -e ${PREFIX_MINIPIX}/${__} ]; then
-		ln -sf bin ${PREFIX_MINIPIX}/${__};
-	fi;
-done;
+install_files 											\
+	/=${DLCACHEDIR}										\
+	/=${WORKDIR}										\
+	/=${PREFIX}										\
+	/=${PREFIX}/x86_64-w64-mingw32/mingw/include						\
+	/=${PREFIX_CROSS}									\
+	/=${PREFIX_MINIPIX}/bin									\
+	/=${PREFIX_NATIVE}									\
+	/=${PREFIX_TARGET}/lib									\
+	@.=${PREFIX}/usr									\
+	@.=${PREFIX}/x86_64-w64-mingw32/mingw							\
+	@.=${PREFIX_NATIVE}/usr									\
+	@bin=${PREFIX_MINIPIX}/lib								\
+	@bin=${PREFIX_MINIPIX}/libexec								\
+	@bin=${PREFIX_MINIPIX}/share								\
+	@share/man=${PREFIX}/man								\
+	@share/man=${PREFIX_NATIVE}/man;
 if [ -e ${BUILD_LOG_FNAME} ]; then
 	mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
 fi;
