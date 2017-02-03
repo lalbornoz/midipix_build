@@ -2,22 +2,10 @@
 # Copyright (c) 2016 Lucio Andrés Illanes Albornoz <l.illanes@gmx.de>
 #
 
-bp_subst_tgts() {
-	while [ ${#} -ge 1 ]; do
-	case "${1}" in
-	devroot)
-		echo ${DEVROOT_PACKAGES}; ;;
-	world)	echo ${WORLD_PACKAGES}; ;;
-	*)	echo ${1}; ;;
-	esac; shift;
-	done;
-};
-
 #
-# Clear the environment.
 # Source subroutine scripts.
-# Source the build variables file and its local overrides, if any.
 # Process command line arguments.
+#
 for __ in subr/*.subr; do
 	. ./${__};
 done;
@@ -55,8 +43,14 @@ esac; shift;
 done;
 
 #
-# Source variables.
+# Source the build variables file and its local overrides, if any.
 # Clear environment.
+# Check whether the pathnames in build.vars contain non-empty valid values.
+# Check whether all prerequisite command names resolve.
+# Check whether all prerequisite pathnames resolve.
+# Check whether all prerequisite Perl modules exist.
+# Clean ${PREFIX} if requested.
+# Create directory hierarchy and usr -> . symlinks.
 #
 for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/build.vars; do
 	[ -e ${__} ] && . ${__};
@@ -66,79 +60,18 @@ for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
 		unset "${__}";
 	fi;
 done;
-
 if [ -z "${BUILD_TARGETS_META}" ]; then
-	BUILD_TARGETS_META=world;
+	BUILD_TARGETS_META="invariants world";
+else
+	BUILD_TARGETS_META="invariants ${BUILD_TARGETS_META}";
 fi;
-BUILD_TARGETS_META="invariants ${BUILD_TARGETS_META}";
-
-#
-# Check whether the pathnames in build.vars contain non-empty valid values.
-# Check whether all prerequisite command names resolve.
-# Check whether all prerequisite pathnames resolve.
-# Check whether all prerequisite Perl modules exist.
-# Clean ${PREFIX} if requested.
-# Create directory hierarchy and usr -> . symlinks.
-for __ in ${CHECK_PATH_VARS}; do
-	if [ -z "${___:=$(get_var_unsafe "${__}")}" ]; then
-		log_msg failexit "Error: variable \`${__}' is empty or unset.";
-	elif [ "${___#* *}" != "${___}" ]; then
-		log_msg failexit "Error: variable \`${__}' contains one or more whitespace characters.";
-	fi;
-done;
-for __ in ${CHECK_PREREQ_CMDS} $(eval echo ${CHECK_PREREQ_FILES_DYNAMIC}) ${CHECK_PREREQ_FILES}; do
-	if [ "${__#/}" != "${__}" ]; then
-		if [ ! -e "${__}" ]; then
-			log_msg fail "Error: missing prerequisite file \`${__}'.";
-			__exit=1;
-		fi;
-	else
-		if ! test_cmd "${__}"; then
-			log_msg fail "Error: missing prerequisite command \`${__}'.";
-			__exit=1;
-		fi;
-	fi;
-done;
-for __ in ${CHECK_PREREQ_PERL_MODULES}; do
-	if ! perl -M"${__}" -e "" 2>/dev/null; then
-		log_msg fail "Error: missing prerequisite Perl module \`${__}'.";
-		__exit=1;
-	fi;
-done;
-if [ ${__exit:-0} = 1 ]; then
-	exit 1;
-elif [ -n "${__exit}" ]; then
-	unset __exit;
-fi;
-if [ ${ARG_CLEAN:-0} -eq 1 ]; then
-	log_msg info "-c specified, cleaning prefix...";
-	for __ in ${CLEAR_PREFIX_DIRS}; do
-		if [ -e ${PREFIX}/${__} ]; then
-			secure_rm ${PREFIX}/${__};
-		fi;
-	done;
-fi;
-install_files 											\
-	/=${DLCACHEDIR}										\
-	/=${WORKDIR}										\
-	/=${PREFIX}										\
-	/=${PREFIX}/x86_64-w64-mingw32/mingw/include						\
-	/=${PREFIX_CROSS}									\
-	/=${PREFIX_MINIPIX}/bin									\
-	/=${PREFIX_NATIVE}									\
-	/=${PREFIX_TARGET}/lib									\
-	@.=${PREFIX}/usr									\
-	@.=${PREFIX}/x86_64-w64-mingw32/mingw							\
-	@.=${PREFIX_NATIVE}/usr									\
-	@bin=${PREFIX_MINIPIX}/lib								\
-	@bin=${PREFIX_MINIPIX}/libexec								\
-	@bin=${PREFIX_MINIPIX}/share								\
-	@share/man=${PREFIX}/man								\
-	@share/man=${PREFIX_NATIVE}/man;
+pre_prereqs;
+pre_subdirs;
 if [ -e ${BUILD_LOG_FNAME} ]; then
 	mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
 fi;
 touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
+
 {(
 BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
 BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
@@ -149,7 +82,7 @@ if [ ${ARG_CHECK_UPDATES:-0} -eq 0 ]; then
 else
 	log_msg info "Version check run started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 fi;
-for BUILD_TARGET_LC in $(bp_subst_tgts ${BUILD_TARGETS_META}); do
+for BUILD_TARGET_LC in $(subst_tgts ${BUILD_TARGETS_META}); do
 	BUILD_TARGET=$(echo ${BUILD_TARGET_LC} | tr a-z A-Z);
 	for BUILD_PACKAGE_LC in $(get_var_unsafe ${BUILD_TARGET}_PACKAGES); do
 		BUILD_PACKAGE=$(echo ${BUILD_PACKAGE_LC} | tr a-z A-Z);
