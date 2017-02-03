@@ -262,4 +262,15 @@ set_env_vars_with_sep() {
 	done; unset _sevws_sep; pop_IFS;
 };
 
+subst_tgts() {
+	while [ ${#} -ge 1 ]; do
+	case "${1}" in
+	devroot)
+		echo ${DEVROOT_PACKAGES}; ;;
+	world)	echo ${WORLD_PACKAGES}; ;;
+	*)	echo ${1}; ;;
+	esac; shift;
+	done;
+};
+
 # vim:filetype=sh
