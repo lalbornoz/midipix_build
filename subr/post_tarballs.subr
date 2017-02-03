@@ -84,7 +84,7 @@ post_tarballs() {
 			TARBALL_COMPRESS_ARGS="-T0"; ;;
 		*)	log_msg failexit "Unknown tarball suffix \`.${TARBALL_SUFFIX}'.";
 		esac;
-		cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
+		build_fileop cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
 		postp_tarball_dist; postp_tarball_toolchain; postp_tarball_minipix;
 		if [ "${BUILD}" = "debug" ]; then
 			postp_tarball_src;

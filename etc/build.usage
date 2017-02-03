@@ -1,5 +1,5 @@
 usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
-                  [-i] [-n] [-N] [-r package[,...][:step]] [-t[.gz|.bz2|.xz]
+                  [-i] [-N] [-r package[,...][:step]] [-t[.gz|.bz2|.xz]
                   [-v] [<target>[ ...]]
         -x                      Set the xtrace sh(1)ell option for debugging purposes.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
@@ -9,7 +9,6 @@ usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
         -C                      Check package(s) for updates upstream.
         -h                      Show this screen.
         -i                      Ignore SHA256 hash mismatches when downloading files.
-        -n                      Perform dry run.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
         -r package[,...][:step] Restart the specified comma-separated build(s) completely or at
                                 the optionally specified step. Currently defined steps are:
@@ -20,7 +19,7 @@ usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
                                 level regular files at the end of a build with zero failures. The
                                 tarballs will be compressed with either gzip, bzip2, or xz and signed
                                 with GPG; the default compression is xz.
-        -v                      Be verbose; this currently only affects secure_{cd,rm}() and insecure_mkdir().
+        -v                      Be verbose.
         <target>[ ...]          One of:
                                 host_toolchain, native_toolchain, runtime, lib_packages,
                                 leaf_packages, world, or devroot.

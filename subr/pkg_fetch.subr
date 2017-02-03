@@ -32,20 +32,22 @@ pkgp_fetch_git() {
 	_fg_subdir="${1}"; _fg_url="${2}"; _fg_branch="${3}";
 	if [ ${ARG_OFFLINE:-0} -eq 0 ]; then
 		if [ -e "${DLCACHEDIR}/${_fg_subdir}" ]; then
-			cd ${DLCACHEDIR}/${_fg_subdir} &&\
-				git pull origin ${_fg_branch:-main} && cd ${OLDPWD};
+			build_fileop cd ${DLCACHEDIR}/${_fg_subdir} &&\
+				git pull origin ${_fg_branch:-main} &&\
+					build_fileop cd ${OLDPWD};
 		else
 			git clone ${_fg_url} ${DLCACHEDIR}/${_fg_subdir};
 			if [ -n "${_fg_branch}" -a		\
 			     \( -z "${_fg_branch#main}" \) -a	\
 			     \( -z "${_fg_branch#master}" \) ]; then
-				cd ${DLCACHEDIR}/${_fg_subdir} &&\
-					git checkout -b ${_fg_branch} && cd ${OLDPWD};
+				build_fileop cd ${DLCACHEDIR}/${_fg_subdir}	&&\
+					git checkout -b ${_fg_branch}		&&\	
+						build_fileop cd ${OLDPWD};
 			fi;
 		fi;
 	fi;
-	secure_rm ${_fg_subdir};
-	cp -pr ${DLCACHEDIR}/${_fg_subdir} .;
+	build_fileop rm ${_fg_subdir};
+	build_fileop cp ${DLCACHEDIR}/${_fg_subdir} .;
 };
 
 pkgp_fetch_urls_git() {

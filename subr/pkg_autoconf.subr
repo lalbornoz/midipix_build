@@ -27,14 +27,13 @@ pkg_autoconf() {
 						break;
 					fi;
 				done;
-				(cd ${PKG_SUBDIR} && ${SHELL} ./autogen.sh) || exit 1;
+				(build_fileop cd ${PKG_SUBDIR} && ${SHELL} ./autogen.sh) || exit 1;
 			else
-				(cd ${PKG_SUBDIR} && autoconf) || exit 1;
+				(build_fileop cd ${PKG_SUBDIR} && autoconf) || exit 1;
 			fi;
 		fi;
 		for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
-			echo cp -- ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
-			cp -- ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
+			build_fileop cp ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
 		done;
 	fi;
 	set_build_script_done autoconf -patch;
