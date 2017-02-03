@@ -104,7 +104,8 @@ secure_rm() {
 
 
 is_build_script_done() {
-	if [ "${1}" = "clean" ]; then
+	if [ "${1}" = "clean" ]\
+	|| [ "${1}" = distclean ]; then
 		if match_list "${ARG_RESTART}" , ${BUILD_PACKAGE_LC}	\
 		&& [ -n "${ARG_RESTART_AT}" ]				\
 		&& match_list "${ARG_RESTART_AT}" , "${1}"; then
