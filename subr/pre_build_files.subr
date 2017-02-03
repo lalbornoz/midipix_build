@@ -3,10 +3,14 @@
 #
 
 pre_build_files() {
+	if [ -e ${BUILD_STATUS_IN_PROGRESS_FNAME} ]; then
+		log_msg failexit "Error: another build targeting this architecture and build type is currently in progress.";
+	else
+		touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
+	fi;
 	if [ -e ${BUILD_LOG_FNAME} ]; then
 		mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
 	fi;
-	touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
 	BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
 	BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
 	BUILD_TIMES_SECS=$(command date +%s);
