@@ -5,9 +5,7 @@
 #
 #
 #
-for __ in subr/*.subr; do
-	. ./${__};
-done;
+for __ in subr/*.subr; do . ${__}; done;
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
@@ -33,37 +31,8 @@ host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world
 	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 *)	exec cat etc/build.usage; ;;
-esac; shift;
-done;
-
-#
-#
-#
-if [ -z "${BUILD_CPUS}" ]\
-&& [ -e /proc/cpuinfo ]; then
-	BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
-fi;
-for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/build.vars; do
-	[ -e ${__} ] && . ${__};
-done;
-for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
-	if ! match_list "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
-		unset "${__}";
-	fi;
-done;
-
-#
-#
-#
-pre_prereqs;
-pre_subdirs;
-if [ -e ${BUILD_LOG_FNAME} ]; then
-	mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
-fi;
-touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
-BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
-BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
-BUILD_TIMES_SECS=$(command date +%s);
+esac; shift; done;
+pre_setup_env; pre_prereqs; pre_subdirs; pre_build_files;
 
 #
 #
@@ -142,16 +111,9 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		break;
 	fi;
 done;
-post_copy_etc; post_strip; post_tarballs;
-: $((BUILD_TIMES_SECS=$(command date +%s)-${BUILD_TIMES_SECS}));
-: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
-: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
-: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
+post_copy_etc; post_strip; post_tarballs; post_build_files;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
-if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-	build_fileop rm ${BUILD_STATUS_IN_PROGRESS_FNAME};
-fi;
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${BUILD_LOG_FNAME} &
 
 #
