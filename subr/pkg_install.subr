@@ -11,33 +11,6 @@ pkgp_install_clean_lib() {
 	fi;
 };
 
-pkgp_install_files() {
-	if [ -n "${PKG_INSTALL_FILES}" ]; then
-		(set -- ${PKG_INSTALL_FILES};
-		while [ ${#} -gt 0 ]; do
-		case "${1}" in
-		@*=*)
-			__ln_target="${1%=*}";
-			__ln_target="${__ln_target#@}";
-			__ln_fname="${1#*=}";
-			echo ln -sf -- ${__ln_target} ${PKG_PREFIX}/${__ln_fname};
-			ln -sf -- ${__ln_target} ${PKG_PREFIX}/${__ln_fname};
-			;;
-		/=*)
-			__mkdir_fname="${1#/=}";
-			insecure_mkdir ${PKG_PREFIX}/${__mkdir_fname};
-			;;
-		*)
-			__file_fname_src="${1%=*}";
-			__file_fname_dst="${1#*=}";
-			echo cp -pP -- ${__file_fname_src} ${PKG_PREFIX}/${__file_fname_dst};
-			cp -pP -- ${__file_fname_src} ${PKG_PREFIX}/${__file_fname_dst};
-			;;
-		esac; shift;
-		done);
-	fi;
-};
-
 pkgp_install_dlltool() {
 	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
 	&& test_cmd perk								\
@@ -97,7 +70,9 @@ pkg_install() {
 		pkg_${PKG_NAME}_install_post;
 	fi;
 	pkgp_install_clean_lib;
-	pkgp_install_files;
+	if [ -n "${PKG_INSTALL_FILES}" ]; then
+		(install_files -v ${PKG_INSTALL_FILES});
+	fi;
 	pkgp_install_dlltool;
 	set_build_script_done install -finish;
 };
