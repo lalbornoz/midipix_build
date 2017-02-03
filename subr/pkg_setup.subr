@@ -27,7 +27,7 @@ pkg_setup() {
 	else
 		__no_autoconf=1;
 	fi;
-	set_build_script_done setup -configure;
+	set_build_script_done setup distclean -configure;
 };
 
 # vim:filetype=sh
