@@ -1,0 +1,14 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+# See warning at the top of build.vars.
+#
+
+pkg_distclean() {
+	if [ "${PKG_SUBDIR}" != "${PKG_BUILD_DIR}" ]; then
+		secure_rm ${PKG_BUILD_DIR};
+		insecure_mkdir ${PKG_BUILD_DIR};
+	fi;
+	set_build_script_done distclean -configure;
+};
+
+# vim:filetype=sh
