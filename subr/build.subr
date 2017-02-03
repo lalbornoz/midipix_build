@@ -22,6 +22,13 @@ get_vars_unsafe() {
 	unset _gvu_vval _gvu_vval_;
 };
 
+set_env_vars_with_sep() {
+	_sevws_sep=${1}; shift; push_IFS ${_sevws_sep}; set -- ${1};
+	while [ ${#} -gt 0 ]; do
+		export "${1}"; shift;
+	done; unset _sevws_sep; pop_IFS;
+};
+
 log_msg() {
 	_lm_lvl=${1}; shift;
 	if [ "${_lm_lvl#v}" != "${_lm_lvl}" ]\
@@ -44,21 +51,10 @@ log_msg() {
 	fi; [ ${_lm_lvl} = failexit ] && exit 1 || unset _lm_lvl;
 };
 
-insecure_mkdir() {
-	while [ ${#} -gt 0 ]; do
-		if [ -z "${1}" ]; then
-			return 1;
-		elif [ ! -e "${1}" ]; then
-			log_msg varn "Making directory \`${1}'.";
-			mkdir -p -- "${1}";
-		fi; shift;
-	done;
-};
-
 install_files() {
 	if [ "${1}" = "-v" ]; then
 		_if_verbose="${1}"; shift;
-	fi;
+	fi; _if_prefix="${1}"; shift;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
 	@*=*)
@@ -67,32 +63,23 @@ install_files() {
 		__ln_fname="${1#*=}";
 		if [ -e ${__ln_fname} ]; then
 			if [ ${_if_verbose:-0} -eq 1 ]; then
-				echo secure_rm ${__ln_fname};
+				echo build_fileop rm ${__ln_fname};
 			fi;
-			secure_rm ${__ln_fname};
+			build_fileop rm ${__ln_fname};
 		fi;
-		if [ ${_if_verbose:-0} -eq 1 ]; then
-			echo ln -sf -- ${__ln_target} ${PKG_PREFIX:+${PKG_PREFIX}/}${__ln_fname};
-		fi;
-		ln -sf -- ${__ln_target} ${PKG_PREFIX:+${PKG_PREFIX}/}${__ln_fname};
+		build_fileop ln_symbolic ${__ln_target} ${_if_prefix:+${_if_prefix}/}${__ln_fname};
 		;;
 	/=*)
 		__mkdir_fname="${1#/=}";
-		if [ ${_if_verbose:-0} -eq 1 ]; then
-			echo insecure_mkdir ${PKG_PREFIX:+${PKG_PREFIX}/}${__mkdir_fname};
-		fi;
-		insecure_mkdir ${PKG_PREFIX:+${PKG_PREFIX}/}${__mkdir_fname};
+		build_fileop mkdir ${_if_prefix:+${_if_prefix}/}${__mkdir_fname};
 		;;
 	*)
 		__file_fname_src="${1%=*}";
 		__file_fname_dst="${1#*=}";
-		if [ ${_if_verbose:-0} -eq 1 ]; then
-			echo cp -pP -- ${__file_fname_src} ${PKG_PREFIX:+${PKG_PREFIX}/}${__file_fname_dst};
-		fi;
-		cp -pP -- ${__file_fname_src} ${PKG_PREFIX:+${PKG_PREFIX}/}${__file_fname_dst};
+		build_fileop cp ${__file_fname_src} ${_if_prefix:+${_if_prefix}/}${__file_fname_dst};
 		;;
 	esac; shift;
-	done; unset _if_verbose;
+	done; unset _if_verbose _if_prefix;
 };
 
 match_list() {
@@ -104,44 +91,36 @@ match_list() {
 	done; unset _ml_cmp; return 1;
 };
 
-secure_cd() {
-	if [ \( -z "${1}" \) -o \( ! -e "${1}" \) ]; then
-		return 1;
-	else
-		(cd "${1}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
-			return 1 || return 0);
-		if [ ${?} -eq 0 ]; then
-			log_msg varn "Changing working directory to \`${1}'.";
-			cd -- "${1}";
-		else
-			log_msg failexit "secure_cd() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
-		fi;
-	fi;
-};
-
-secure_rm() {
-	while [ ${#} -gt 0 ]; do
-		if [ -z "${1}" ]; then
-			return 1;
-		elif [ -e "${1}" ]; then
-			if [ -d "${1}" ]; then
-				_sr_pname_check="${1}";
-			else
-				_sr_pname_check="$(dirname "${1}")";
-			fi;
-			(cd "${_sr_pname_check}"; [ "${PWD#${PREFIX_ROOT}}" = "${PWD}" ] &&\
-				return 1 || return 0);
-			if [ ${?} -eq 0 ]; then
-				unset _sr_pname_check;
+build_fileop() {
+	_bf_op=${1}; shift;
+	if [ "${_bf_op}" = cd ]; then
+		log_msg varn "Changing working directory to \`${1}'.";
+		[ \( -n "${1}" \) -a \( -e "${1}" \) ] && cd -- ${1};
+	elif [ "${_bf_op}" = cp ]; then
+		log_msg varn "Copying \`${1}' to \`${2}' w/ -pPR.";
+		[ ${#} -ge 2 ] && cp -pPR -- "${@}";
+	elif [ "${_bf_op}" = ln_symbolic ]; then
+		log_msg varn "Linking \`${1}' to \`${2}' w/ -fs";
+		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && ln -fs -- ${1} ${2};
+	elif [ "${_bf_op}" = mkdir ]\
+	||   [ "${_bf_op}" = rm ]; then
+		while [ ${#} -gt 0 ]; do
+			if [ -z "${1}" ]; then
+				return 1;
+			elif [ "${_bf_op}" = mkdir ]\
+			&&   [ ! -e "${1}" ]; then
+				log_msg varn "Making directory \`${1}'.";
+				mkdir -p -- "${1}";
+			elif [ "${_bf_op}" = rm ]\
+			&&   [ -e "${1}" ]; then
 				log_msg varn "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}";
-			else
-				log_msg failexit "secure_rm() called with pathname \`${1}' not below \${PREFIX_ROOT} (${PREFIX_ROOT}). This is a bug.";
-			fi;
-		fi; shift;
-	done;
+			fi; shift;
+		done;
+	else
+		log_msg failexit "Error: build_fileop() called w/ invalid parameter(s) \`${@}'.";
+	fi;
 };
-
 
 is_build_script_done() {
 	if [ "${1}" = "clean" ]\
@@ -174,6 +153,19 @@ is_build_script_done() {
 	fi;
 };
 
+set_build_script_done() {
+	_sbsd_script_fname=${BUILD_PACKAGE_LC};
+	_sbsd_done_fname=${WORKDIR}/.${_sbsd_script_fname};
+	while [ $# -ge 1 ]; do
+		if [ "${1#-}" != "${1}" ]; then
+			build_fileop rm ${_sbsd_done_fname}.${1#-};
+		else
+			touch ${_sbsd_done_fname}.${1};
+			log_msg info "Finished build step ${1} of \`${_sbsd_script_fname}'.";
+		fi; shift;
+	done; unset _sbsd_script_fname _sbsd_done_fname;
+};
+
 log_env_vars() {
 	log_msg info "Variables for this ${1:-build}:"; shift;
 	while [ ${_lev_nvar:=0} -lt ${#} ]; do
@@ -192,7 +184,11 @@ log_env_vars() {
 };
 
 parse_with_pkg_name() {
-	PKG_NAME=${1}; shift;
+	PKG_NAME=${1}; shift; PKG_TARGET=${TARGET};
+	MIDIPIX_BUILD_PWD=$(pwd); build_fileop cd ${WORKDIR};
+	for __ in vars/${PKG_NAME}.vars; do
+		[ -e ${MIDIPIX_BUILD_PWD}/${__} ] && . ${MIDIPIX_BUILD_PWD}/${__};
+	done;
 	_pwpn_pkg_name_uc=$(echo ${PKG_NAME} | tr a-z A-Z);
 	if [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_URL)" ]\
 	&& [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_URLS_GIT)" ]\
@@ -240,26 +236,6 @@ run_cmd_unsplit() {
 	done;
 	push_IFS :; ${_rcu_cmd} ${_rcu_cmdline}; _rcu_rc=$?; pop_IFS;
 	unset _rcu_cmd _rcu_cmdline; return ${_rcu_rc};
-};
-
-set_build_script_done() {
-	_sbsd_script_fname=${BUILD_PACKAGE_LC};
-	_sbsd_done_fname=${WORKDIR}/.${_sbsd_script_fname};
-	while [ $# -ge 1 ]; do
-		if [ "${1#-}" != "${1}" ]; then
-			secure_rm ${_sbsd_done_fname}.${1#-};
-		else
-			touch ${_sbsd_done_fname}.${1};
-			log_msg info "Finished build step ${1} of \`${_sbsd_script_fname}'.";
-		fi; shift;
-	done; unset _sbsd_script_fname _sbsd_done_fname;
-};
-
-set_env_vars_with_sep() {
-	_sevws_sep=${1}; shift; push_IFS ${_sevws_sep}; set -- ${1};
-	while [ ${#} -gt 0 ]; do
-		export "${1}"; shift;
-	done; unset _sevws_sep; pop_IFS;
 };
 
 subst_tgts() {
