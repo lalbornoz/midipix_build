@@ -213,7 +213,7 @@ for BUILD_TARGET_LC in $(bp_subst_tgts ${BUILD_TARGETS_META}); do
 		done;
 		parse_with_pkg_name ${BUILD_PACKAGE_LC%.*};
 		for __ in all disabled fetch extract build_dir patch_pre autoconf patch		\
-				setup distclean configure clean build install; do
+				setup_env distclean configure clean build install; do
 			case ${__} in
 			all)
 				if test_cmd pkg_${PKG_NAME}_all; then

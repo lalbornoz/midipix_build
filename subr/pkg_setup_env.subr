@@ -3,7 +3,7 @@
 # See warning at the top of build.vars.
 #
 
-pkg_setup() {
+pkg_setup_env() {
 	PKG_SUBDIR_PATH=${PWD}/${PKG_SUBDIR#/};
 	if [ -z "${PKG_CONFIGURE}" ]; then
 		PKG_CONFIGURE=${PKG_SUBDIR_PATH}/configure;
