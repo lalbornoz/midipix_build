@@ -1,0 +1,20 @@
+#
+# . ./build.vars and set -o errexit -o noglob are assumed.
+#
+
+pre_setup_env() {
+	if [ -z "${BUILD_CPUS}" ]\
+	&& [ -e /proc/cpuinfo ]; then
+		BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
+	fi;
+	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/build.vars; do
+		[ -e ${__} ] && . ${__};
+	done;
+	for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
+		if ! match_list "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
+			unset "${__}";
+		fi;
+	done;
+};
+
+# vim:filetype=sh
