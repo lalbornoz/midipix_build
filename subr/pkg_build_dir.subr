@@ -7,6 +7,9 @@ pkg_build_dir() {
 	if [ -z "${PKG_BUILD_DIR}" ]; then
 		set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
 	fi;
+	if [ ! -d "${PKG_BUILD_DIR}" ]; then
+		insecure_mkdir ${PKG_BUILD_DIR};
+	fi;
 	set_build_script_done build_dir -patch_pre;
 };
 
