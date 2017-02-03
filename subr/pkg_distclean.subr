@@ -5,8 +5,8 @@
 
 pkg_distclean() {
 	if [ "${PKG_SUBDIR}" != "${PKG_BUILD_DIR}" ]; then
-		secure_rm ${PKG_BUILD_DIR};
-		insecure_mkdir ${PKG_BUILD_DIR};
+		build_fileop rm ${PKG_BUILD_DIR};
+		build_fileop mkdir ${PKG_BUILD_DIR};
 	fi;
 	set_build_script_done distclean -configure;
 };

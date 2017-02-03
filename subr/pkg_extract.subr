@@ -6,9 +6,9 @@
 pkg_extract() {
 	if [ -n "${PKG_URL}" ]\
 	&& [ "${PKG_URL_TYPE:-wget}" = wget ]; then
-		secure_rm ${PKG_SUBDIR};
+		build_fileop rm ${PKG_SUBDIR};
 		if [ ${PKG_SUBDIR_CREATE:-0} -eq 1 ]; then
-			insecure_mkdir ${PKG_SUBDIR};
+			build_fileop mkdir ${PKG_SUBDIR};
 		fi;
 		if [ "${PKG_FNAME##*.tar.}" = "bz2" ]; then
 			bunzip2 -d < ${DLCACHEDIR}/${PKG_FNAME} | tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf -;

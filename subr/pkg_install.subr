@@ -6,7 +6,7 @@
 pkgp_install_clean_lib() {
 	if [ -d ${PKG_PREFIX}/lib ]; then
 		for __ in $(find ${PKG_PREFIX}/lib -type f -name \*.la); do
-			secure_rm ${__};
+			build_fileop rm ${__};
 		done;
 	fi;
 };
@@ -33,8 +33,7 @@ pkgp_install_dlltool() {
 					-D ${__so_fname} -d ${__so_fname%.so}.def;
 				${PKG_TARGET}-dlltool -l ${__so_fname%.so}.lib.a	\
 					-D ${__so_fname} -d ${__so_fname%.so}.def;
-				echo cp -- ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
-				cp -- ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
+				build_fileop cp ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
 			fi;
 		done;
 	fi;
@@ -71,7 +70,7 @@ pkg_install() {
 	fi;
 	pkgp_install_clean_lib;
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
-		(install_files -v ${PKG_INSTALL_FILES});
+		(install_files -v ${PKG_PREFIX} ${PKG_INSTALL_FILES});
 	fi;
 	pkgp_install_dlltool;
 	set_build_script_done install -finish;

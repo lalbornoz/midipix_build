@@ -2,31 +2,32 @@
 # . ./build.vars and set -o errexit -o noglob are assumed.
 #
 
-post_subdirs() {
+pre_subdirs() {
 	if [ ${ARG_CLEAN:-0} -eq 1 ]; then
 		log_msg info "-c specified, cleaning prefix...";
 		for __ in ${CLEAR_PREFIX_DIRS}; do
 			if [ -e ${PREFIX}/${__} ]; then
-				secure_rm ${PREFIX}/${__};
+				build_rm ${PREFIX}/${__};
 			fi;
 		done;
 	fi;
-	install_files 											\
-		/=${DLCACHEDIR}										\
-		/=${WORKDIR}										\
-		/=${PREFIX}										\
-		/=${PREFIX}/x86_64-w64-mingw32/mingw/include						\
-		/=${PREFIX_CROSS}									\
-		/=${PREFIX_MINIPIX}/bin									\
-		/=${PREFIX_NATIVE}									\
-		/=${PREFIX_TARGET}/lib									\
-		@.=${PREFIX}/usr									\
-		@.=${PREFIX}/x86_64-w64-mingw32/mingw							\
-		@.=${PREFIX_NATIVE}/usr									\
-		@bin=${PREFIX_MINIPIX}/lib								\
-		@bin=${PREFIX_MINIPIX}/libexec								\
-		@bin=${PREFIX_MINIPIX}/share								\
-		@share/man=${PREFIX}/man								\
+	install_files ""					\
+		/=${DLCACHEDIR}					\
+		/=${WORKDIR}					\
+		/=${PREFIX}					\
+		/=${PREFIX}/x86_64-w64-mingw32			\
+		/=${PREFIX_CROSS}				\
+		/=${PREFIX_MINIPIX}/bin				\
+		/=${PREFIX_NATIVE}				\
+		/=${PREFIX_TARGET}/lib				\
+		@.=${PREFIX}/usr				\
+		@.=${PREFIX}/x86_64-w64-mingw32/mingw		\
+		/=${PREFIX}/x86_64-w64-mingw32/mingw/include	\
+		@.=${PREFIX_NATIVE}/usr				\
+		@bin=${PREFIX_MINIPIX}/lib			\
+		@bin=${PREFIX_MINIPIX}/libexec			\
+		@bin=${PREFIX_MINIPIX}/share			\
+		@share/man=${PREFIX}/man			\
 		@share/man=${PREFIX_NATIVE}/man;
 };
 
