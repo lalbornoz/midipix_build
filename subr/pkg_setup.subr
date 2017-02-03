@@ -10,7 +10,6 @@ pkg_setup() {
 	else
 		PKG_CONFIGURE=${PWD}/${PKG_CONFIGURE#/};
 	fi;
-	cd ${PKG_BUILD_DIR};
 	if [ "${PKG_BUILD_TYPE}" = "host" ]; then
 		export AR=ar;
 		export CC=gcc;
@@ -27,6 +26,10 @@ pkg_setup() {
 	else
 		__no_autoconf=1;
 	fi;
+	if [ "${PKG_SLIBTOOL}" != "default" ]; then
+		export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+	fi;
+	cd ${PKG_BUILD_DIR};
 	set_build_script_done setup distclean -configure;
 };
 
