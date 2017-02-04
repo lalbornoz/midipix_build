@@ -6,7 +6,11 @@
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 pkgp_fetch() {
 	_f_url="${1}"; _f_sha256sum_src="${2}";
-	_f_url_dst="${DLCACHEDIR}/$(basename "${_f_url}")";
+	if [ -z "${3}" ]; then
+		_f_url_dst="${DLCACHEDIR}/$(basename "${_f_url}")";
+	else
+		_f_url_dst="${DLCACHEDIR}/${3}";
+	fi;
 	if [ ${ARG_OFFLINE:-0} -eq 1 ]\
 	|| [ -e ${_f_url_dst}.fetched ]; then
 		unset _f_url _f_sha256sum_src _f_url_dst;
@@ -72,7 +76,7 @@ pkg_fetch() {
 		fi;
 	else
 		if [ -n "${PKG_URL}" ]; then
-			pkgp_fetch ${PKG_URL} ${PKG_SHA256SUM};
+			pkgp_fetch ${PKG_URL} ${PKG_SHA256SUM} ${PKG_FNAME};
 		fi;
 		if [ -n "${PKG_URLS_GIT}" ]; then
 			pkgp_fetch_urls_git ${PKG_URLS_GIT};
