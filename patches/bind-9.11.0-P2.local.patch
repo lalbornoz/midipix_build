@@ -467,3 +467,18 @@ diff -ru bind-9.11.0-P2.orig/lib/samples/Makefile.in bind-9.11.0-P2/lib/samples/
  
  SUBDIRS =
  
+--- bind-9.11.0-P2/configure.in.orig	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/configure.in	2017-02-04 18:47:10.437368600 +0100
+@@ -2277,9 +2277,9 @@
+ 		esac
+ 		;;
+ 	*)
+-		if test -f "$use_libxml2/bin/xml2-config" ; then
+-			libxml2_libs=`$use_libxml2/bin/xml2-config --libs`
+-			libxml2_cflags=`$use_libxml2/bin/xml2-config --cflags`
++		if test -f "$use_libxml2" ; then
++			libxml2_libs=`$use_libxml2 --libs`
++			libxml2_cflags=`$use_libxml2 --cflags`
+ 		fi
+ 		;;
+ esac
