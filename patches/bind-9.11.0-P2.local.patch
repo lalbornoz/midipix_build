@@ -1,0 +1,469 @@
+diff -ru bind-9.11.0-P2.orig/bin/check/Makefile.in bind-9.11.0-P2/bin/check/Makefile.in
+--- bind-9.11.0-P2.orig/bin/check/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/check/Makefile.in	2017-01-25 17:07:39.385668783 +0100
+@@ -20,7 +20,7 @@
+ CDEFINES = 	-DNAMED_CONFFILE=\"${sysconfdir}/named.conf\"
+ CWARNINGS =
+ 
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ ISCCFGLIBS =	../../lib/isccfg/libisccfg.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+@@ -31,8 +31,8 @@
+ ISCDEPLIBS =	../../lib/isc/libisc.@A@
+ BIND9DEPLIBS =	../../lib/bind9/libbind9.@A@
+ 
+-LIBS =		${ISCLIBS} @LIBS@
+-NOSYMLIBS =	${ISCNOSYMLIBS} @LIBS@
++LIBS =		${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
++NOSYMLIBS =	${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ SUBDIRS =
+ 
+diff -ru bind-9.11.0-P2.orig/bin/confgen/Makefile.in bind-9.11.0-P2/bin/confgen/Makefile.in
+--- bind-9.11.0-P2.orig/bin/confgen/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/confgen/Makefile.in	2017-01-25 17:09:02.925668783 +0100
+@@ -24,7 +24,7 @@
+ ISCCCLIBS =	../../lib/isccc/libisccc.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ BIND9LIBS =	../../lib/bind9/libbind9.@A@
+ 
+ ISCCFGDEPLIBS =	../../lib/isccfg/libisccfg.@A@
+@@ -36,9 +36,9 @@
+ RNDCLIBS =	${ISCCFGLIBS} ${ISCCCLIBS} ${BIND9LIBS} ${DNSLIBS} ${ISCLIBS} @LIBS@
+ RNDCDEPLIBS =	${ISCCFGDEPLIBS} ${ISCCCDEPLIBS} ${BIND9DEPLIBS} ${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+-NOSYMLIBS =	${DNSLIBS} ${ISCNOSYMLIBS} @LIBS@
++NOSYMLIBS =	${DNSLIBS} ${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ CONFDEPLIBS =	${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+diff -ru bind-9.11.0-P2.orig/bin/delv/Makefile.in bind-9.11.0-P2/bin/delv/Makefile.in
+--- bind-9.11.0-P2.orig/bin/delv/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/delv/Makefile.in	2017-01-25 17:09:20.553668783 +0100
+@@ -19,7 +19,7 @@
+ CWARNINGS =
+ 
+ ISCCFGLIBS =	../../lib/isccfg/libisccfg.@A@
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+ IRSLIBS =	../../lib/irs/libirs.@A@
+@@ -31,8 +31,8 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${IRSDEPLIBS} ${ISCCFGDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${IRSLIBS} ${ISCCFGLIBS} ${ISCLIBS} @LIBS@
+-NOSYMLIBS =	${DNSLIBS} ${IRSLIBS} ${ISCCFGLIBS} ${ISCNOSYMLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${IRSLIBS} ${ISCCFGLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
++NOSYMLIBS =	${DNSLIBS} ${IRSLIBS} ${ISCCFGLIBS} ${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ SUBDIRS =
+ 
+diff -ru bind-9.11.0-P2.orig/bin/dig/Makefile.in bind-9.11.0-P2/bin/dig/Makefile.in
+--- bind-9.11.0-P2.orig/bin/dig/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/dig/Makefile.in	2017-01-25 17:06:52.125668783 +0100
+@@ -21,7 +21,7 @@
+ CWARNINGS =
+ 
+ ISCCFGLIBS =	../../lib/isccfg/libisccfg.@A@
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ BIND9LIBS =	../../lib/bind9/libbind9.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+@@ -37,10 +37,10 @@
+ 		${ISCCFGDEPLIBS} ${LWRESDEPLIBS}
+ 
+ LIBS =		${LWRESLIBS} ${BIND9LIBS} ${ISCCFGLIBS} \
+-		${ISCLIBS} @IDNLIBS@ @LIBS@
++		${ISCLIBS} @DNS_CRYPTO_LIBS@ @IDNLIBS@ @LIBS@
+ 
+ NOSYMLIBS =	${LWRESLIBS} ${BIND9LIBS} ${ISCCFGLIBS} \
+-		${ISCNOSYMLIBS} @IDNLIBS@ @LIBS@
++		${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @IDNLIBS@ @LIBS@
+ 
+ SUBDIRS =
+ 
+diff -ru bind-9.11.0-P2.orig/bin/dnssec/Makefile.in bind-9.11.0-P2/bin/dnssec/Makefile.in
+--- bind-9.11.0-P2.orig/bin/dnssec/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/dnssec/Makefile.in	2017-01-25 17:09:52.013668783 +0100
+@@ -20,7 +20,7 @@
+ 		@CRYPTO@ -DPK11_LIB_LOCATION=\"@PKCS11_PROVIDER@\"
+ CWARNINGS =
+ 
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+ 
+@@ -29,9 +29,9 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+-NOSYMLIBS =	${DNSLIBS} ${ISCNOSYMLIBS} @LIBS@
++NOSYMLIBS =	${DNSLIBS} ${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ # Alphabetically
+ TARGETS =	dnssec-keygen@EXEEXT@ dnssec-signzone@EXEEXT@ \
+diff -ru bind-9.11.0-P2.orig/bin/Makefile.in bind-9.11.0-P2/bin/Makefile.in
+--- bind-9.11.0-P2.orig/bin/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/Makefile.in	2017-02-03 23:57:28.674733352 +0100
+@@ -10,7 +10,7 @@
+ VPATH =		@srcdir@
+ top_srcdir =	@top_srcdir@
+ 
+-SUBDIRS =	named rndc dig delv dnssec tools tests nsupdate \
++SUBDIRS =	named rndc dig delv dnssec tools nsupdate \
+ 		check confgen @NZD_TOOLS@ @PYTHON_TOOLS@ @PKCS11_TOOLS@
+ TARGETS =
+ 
+diff -ru bind-9.11.0-P2.orig/bin/named/Makefile.in bind-9.11.0-P2/bin/named/Makefile.in
+--- bind-9.11.0-P2.orig/bin/named/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/named/Makefile.in	2017-01-25 17:10:18.269668783 +0100
+@@ -44,7 +44,7 @@
+ 
+ CWARNINGS =
+ 
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ ISCCFGLIBS =	../../lib/isccfg/libisccfg.@A@
+ ISCCCLIBS =	../../lib/isccc/libisccc.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+@@ -64,11 +64,11 @@
+ 
+ LIBS =		${LWRESLIBS} ${DNSLIBS} ${BIND9LIBS} \
+ 		${ISCCFGLIBS} ${ISCCCLIBS} ${ISCLIBS} \
+-		${DLZDRIVER_LIBS} ${DBDRIVER_LIBS} @LIBS@
++		${DLZDRIVER_LIBS} ${DBDRIVER_LIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ NOSYMLIBS =	${LWRESLIBS} ${DNSLIBS} ${BIND9LIBS} \
+ 		${ISCCFGLIBS} ${ISCCCLIBS} ${ISCNOSYMLIBS} \
+-		${DLZDRIVER_LIBS} ${DBDRIVER_LIBS} @LIBS@
++		${DLZDRIVER_LIBS} ${DBDRIVER_LIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ SUBDIRS =	unix
+ 
+diff -ru bind-9.11.0-P2.orig/bin/nsupdate/Makefile.in bind-9.11.0-P2/bin/nsupdate/Makefile.in
+--- bind-9.11.0-P2.orig/bin/nsupdate/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/nsupdate/Makefile.in	2017-01-25 17:10:44.321668783 +0100
+@@ -25,7 +25,7 @@
+ CWARNINGS =
+ 
+ LWRESLIBS =	../../lib/lwres/liblwres.@A@
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ BIND9LIBS =	../../lib/bind9/libbind9.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+@@ -39,9 +39,9 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${BIND9DEPLIBS} ${ISCDEPLIBS} ${ISCCFGDEPLIBS}
+ 
+-LIBS =		${LWRESLIBS} ${DNSLIBS} ${BIND9LIBS} ${ISCCFGLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${LWRESLIBS} ${DNSLIBS} ${BIND9LIBS} ${ISCCFGLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+-NOSYMLIBS =	${LWRESLIBS} ${DNSLIBS} ${BIND9LIBS} ${ISCCFGLIBS} ${ISCNOSYMLIBS} @LIBS@
++NOSYMLIBS =	${LWRESLIBS} ${DNSLIBS} ${BIND9LIBS} ${ISCCFGLIBS} ${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ SUBDIRS =
+ 
+diff -ru bind-9.11.0-P2.orig/bin/rndc/Makefile.in bind-9.11.0-P2/bin/rndc/Makefile.in
+--- bind-9.11.0-P2.orig/bin/rndc/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/rndc/Makefile.in	2017-01-25 17:11:14.893668783 +0100
+@@ -24,7 +24,7 @@
+ ISCCCLIBS =	../../lib/isccc/libisccc.@A@
+ ISCLIBS =	../../lib/isc/libisc.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ BIND9LIBS =	../../lib/bind9/libbind9.@A@
+ 
+ ISCCFGDEPLIBS =	../../lib/isccfg/libisccfg.@A@
+@@ -33,8 +33,8 @@
+ DNSDEPLIBS =	../../lib/dns/libdns.@A@
+ BIND9DEPLIBS =	../../lib/bind9/libbind9.@A@
+ 
+-LIBS =		${ISCLIBS} @LIBS@
+-NOSYMLIBS =	${ISCNOSYMLIBS} @LIBS@
++LIBS =		${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
++NOSYMLIBS =	${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ RNDCDEPLIBS =	${ISCCFGDEPLIBS} ${ISCCCDEPLIBS} ${BIND9DEPLIBS} ${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+diff -ru bind-9.11.0-P2.orig/bin/tests/db/Makefile.in bind-9.11.0-P2/bin/tests/db/Makefile.in
+--- bind-9.11.0-P2.orig/bin/tests/db/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/tests/db/Makefile.in	2017-01-25 17:12:06.949668783 +0100
+@@ -17,7 +17,7 @@
+ CDEFINES =
+ CWARNINGS =
+ 
+-DNSLIBS =	../../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../../lib/dns/libdns.@A@
+ ISCLIBS =	../../../lib/isc/libisc.@A@
+ ISCCFGLIBS = 	../../../lib/isccfg/libisccfg.@A@
+ 
+@@ -27,7 +27,7 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCCFGDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCCFGLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCCFGLIBS} @DNS_CRYPTO_LIBS@ ${ISCLIBS} @LIBS@
+ 
+ TLIB =		../../../lib/tests/libt_api.@A@
+ 
+diff -ru bind-9.11.0-P2.orig/bin/tests/dst/Makefile.in bind-9.11.0-P2/bin/tests/dst/Makefile.in
+--- bind-9.11.0-P2.orig/bin/tests/dst/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/tests/dst/Makefile.in	2017-01-25 17:12:23.009668783 +0100
+@@ -18,7 +18,7 @@
+ CDEFINES =	@USE_GSSAPI@
+ CWARNINGS =
+ 
+-DNSLIBS =	../../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../../lib/dns/libdns.@A@
+ ISCLIBS =	../../../lib/isc/libisc.@A@
+ 
+ DNSDEPLIBS =	../../../lib/dns/libdns.@A@
+@@ -26,7 +26,7 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ TLIB =		../../../lib/tests/libt_api.@A@
+ 
+diff -ru bind-9.11.0-P2.orig/bin/tests/master/Makefile.in bind-9.11.0-P2/bin/tests/master/Makefile.in
+--- bind-9.11.0-P2.orig/bin/tests/master/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/tests/master/Makefile.in	2017-01-25 17:12:52.229668783 +0100
+@@ -18,7 +18,7 @@
+ CWARNINGS =
+ 
+ # Note that we do not want to use libtool for libt_api
+-DNSLIBS =	../../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../../lib/dns/libdns.@A@
+ ISCLIBS =	../../../lib/isc/libisc.@A@
+ 
+ DNSDEPLIBS =	../../../lib/dns/libdns.@A@
+@@ -26,7 +26,7 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ TLIB =		../../../lib/tests/libt_api.@A@
+ 
+diff -ru bind-9.11.0-P2.orig/bin/tests/names/Makefile.in bind-9.11.0-P2/bin/tests/names/Makefile.in
+--- bind-9.11.0-P2.orig/bin/tests/names/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/tests/names/Makefile.in	2017-01-25 17:13:14.697668783 +0100
+@@ -18,7 +18,7 @@
+ CWARNINGS =
+ 
+ # Note that we do not want to use libtool for libt_api
+-DNSLIBS =	../../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../../lib/dns/libdns.@A@
+ ISCLIBS =	../../../lib/isc/libisc.@A@
+ 
+ DNSDEPLIBS =	../../../lib/dns/libdns.@A@
+@@ -26,7 +26,7 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ TLIB =		../../../lib/tests/libt_api.@A@
+ 
+diff -ru bind-9.11.0-P2.orig/bin/tests/rbt/Makefile.in bind-9.11.0-P2/bin/tests/rbt/Makefile.in
+--- bind-9.11.0-P2.orig/bin/tests/rbt/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/tests/rbt/Makefile.in	2017-01-25 17:13:30.497668783 +0100
+@@ -18,7 +18,7 @@
+ CWARNINGS =
+ 
+ # Note that we do not want to use libtool for libt_api
+-DNSLIBS =	../../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../../lib/dns/libdns.@A@
+ ISCLIBS =	../../../lib/isc/libisc.@A@
+ 
+ DNSDEPLIBS =	../../../lib/dns/libdns.@A@
+@@ -26,7 +26,7 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ TLIB =		../../../lib/tests/libt_api.@A@
+ 
+diff -ru bind-9.11.0-P2.orig/bin/tests/resolver/Makefile.in bind-9.11.0-P2/bin/tests/resolver/Makefile.in
+--- bind-9.11.0-P2.orig/bin/tests/resolver/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/tests/resolver/Makefile.in	2017-01-25 17:13:43.301668783 +0100
+@@ -18,7 +18,7 @@
+ CWARNINGS =
+ 
+ # Note that we do not want to use libtool for libt_api
+-DNSLIBS =	../../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../../lib/dns/libdns.@A@
+ ISCLIBS =	../../../lib/isc/libisc.@A@
+ 
+ DNSDEPLIBS =	../../../lib/dns/libdns.@A@
+@@ -26,7 +26,7 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ TLIB =		../../../lib/tests/libt_api.@A@
+ 
+diff -ru bind-9.11.0-P2.orig/bin/tools/Makefile.in bind-9.11.0-P2/bin/tools/Makefile.in
+--- bind-9.11.0-P2.orig/bin/tools/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/bin/tools/Makefile.in	2017-01-25 17:11:46.241668783 +0100
+@@ -18,9 +18,9 @@
+ CDEFINES =	-DVERSION=\"${VERSION}\"
+ CWARNINGS =
+ 
+-DNSLIBS =	../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../../lib/dns/libdns.@A@
+ BIND9LIBS =	../../lib/bind9/libbind9.@A@
+-ISCLIBS =	../../lib/isc/libisc.@A@ @DNS_CRYPTO_LIBS@
++ISCLIBS =	../../lib/isc/libisc.@A@
+ ISCNOSYMLIBS =	../../lib/isc/libisc-nosymtbl.@A@
+ ISCCFGLIBS = 	../../lib/isccfg/libisccfg.@A@
+ LWRESLIBS =	../../lib/lwres/liblwres.@A@
+@@ -31,8 +31,8 @@
+ ISCCFGDEPLIBS = ../../lib/isccfg/libisccfg.@A@
+ LWRESDEPLIBS =	../../lib/lwres/liblwres.@A@
+ 
+-LIBS =		${ISCLIBS} @LIBS@
+-NOSYMLIBS =	${ISCNOSYMLIBS} @LIBS@
++LIBS =		${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
++NOSYMLIBS =	${ISCNOSYMLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ SUBDIRS =
+ 
+diff -ru bind-9.11.0-P2.orig/configure bind-9.11.0-P2/configure
+--- bind-9.11.0-P2.orig/configure	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/configure	2017-01-25 15:56:50.481668000 +0100
+@@ -15756,28 +15756,6 @@
+ 	with_aes="no"
+ fi
+ 
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenSSL library" >&5
+-$as_echo_n "checking for OpenSSL library... " >&6; }
+-OPENSSL_WARNING=
+-openssldirs="/usr /usr/local /usr/local/ssl /usr/pkg /usr/sfw"
+-if test "$want_native_pkcs11" = "yes"
+-then
+-	use_openssl="native_pkcs11"
+-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: use of native PKCS11 instead" >&5
+-$as_echo "use of native PKCS11 instead" >&6; }
+-fi
+-
+-if test "$use_openssl" = "auto"
+-then
+-	for d in $openssldirs
+-	do
+-		if test -f $d/include/openssl/opensslv.h
+-		then
+-			use_openssl=$d
+-			break
+-		fi
+-	done
+-fi
+ OPENSSL_ECDSA=""
+ OPENSSL_GOST=""
+ gosttype="raw"
+diff -ru bind-9.11.0-P2.orig/lib/irs/Makefile.in bind-9.11.0-P2/lib/irs/Makefile.in
+--- bind-9.11.0-P2.orig/lib/irs/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/lib/irs/Makefile.in	2017-02-02 18:28:58.588540351 +0100
+@@ -34,7 +34,7 @@
+ 		gai_strerror.c getaddrinfo.c getnameinfo.c \
+ 		resconf.c
+ 
+-LIBS =		@LIBS@
++LIBS =		@LIBS@ -L../isc -lisc -L../dns -ldns -L../isccfg -lisccfg
+ 
+ SUBDIRS =	include
+ TARGETS =	timestamp
+diff -ru bind-9.11.0-P2.orig/lib/isc/Makefile.in bind-9.11.0-P2/lib/isc/Makefile.in
+--- bind-9.11.0-P2.orig/lib/isc/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/lib/isc/Makefile.in	2017-02-02 18:16:09.144540351 +0100
+@@ -108,9 +108,9 @@
+ 	${AR} ${ARFLAGS} $@ ${OBJS} ${SYMTBLOBJS}
+ 	${RANLIB} $@
+ 
+-libisc-nosymtbl.@SA@: ${OBJS}
+-	${AR} ${ARFLAGS} $@ ${OBJS}
+-	${RANLIB} $@
++#libisc-nosymtbl.@SA@: ${OBJS}
++#	${AR} ${ARFLAGS} $@ ${OBJS}
++#	${RANLIB} $@
+ 
+ libisc.la: ${OBJS} ${SYMTBLOBJS}
+ 	${LIBTOOL_MODE_LINK} \
+@@ -118,13 +118,13 @@
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+ 		${OBJS} ${SYMTBLOBJS} ${LIBS}
+ 
+-libisc-nosymtbl.la: ${OBJS}
+-	${LIBTOOL_MODE_LINK} \
+-		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc-nosymtbl.la -rpath ${libdir} \
+-		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+-		${OBJS} ${LIBS}
++#libisc-nosymtbl.la: ${OBJS}
++#	${LIBTOOL_MODE_LINK} \
++#		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc-nosymtbl.la -rpath ${libdir} \
++#		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
++#		${OBJS} ${LIBS}
+ 
+-timestamp: libisc.@A@ libisc-nosymtbl.@A@
++timestamp: libisc.@A@
+ 	touch timestamp
+ 
+ installdirs:
+diff -ru bind-9.11.0-P2.orig/lib/Makefile.in bind-9.11.0-P2/lib/Makefile.in
+--- bind-9.11.0-P2.orig/lib/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/lib/Makefile.in	2017-02-03 23:57:45.310733352 +0100
+@@ -14,7 +14,7 @@
+ # Attempt to disable parallel processing.
+ .NOTPARALLEL:
+ .NO_PARALLEL:
+-SUBDIRS =	isc isccc dns isccfg bind9 lwres irs tests samples
++SUBDIRS =	isc isccc dns isccfg bind9 lwres irs samples
+ TARGETS =
+ 
+ @BIND9_MAKE_RULES@
+diff -ru bind-9.11.0-P2.orig/lib/samples/Makefile.in bind-9.11.0-P2/lib/samples/Makefile.in
+--- bind-9.11.0-P2.orig/lib/samples/Makefile.in	2016-12-11 23:05:44.000000000 +0100
++++ bind-9.11.0-P2/lib/samples/Makefile.in	2017-01-25 17:34:04.613668783 +0100
+@@ -21,7 +21,7 @@
+ CWARNINGS =
+ 
+ ISCLIBS =	../isc/libisc.@A@
+-DNSLIBS =	../dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++DNSLIBS =	../dns/libdns.@A@
+ ISCCFGLIBS =	../isccfg/libisccfg.@A@
+ IRSLIBS =	../irs/libirs.@A@
+ 
+@@ -32,7 +32,7 @@
+ 
+ DEPLIBS =	${DNSDEPLIBS} ${ISCCFGDEPLIBS} ${ISCDEPLIBS}
+ 
+-LIBS =		${DNSLIBS} ${ISCCFGLIBS} ${ISCLIBS} @LIBS@
++LIBS =		${DNSLIBS} ${ISCCFGLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ @LIBS@
+ 
+ SUBDIRS =
+ 
