@@ -68,9 +68,10 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 			PKG_BUILD_STEPS="$(get_var_unsafe PKG_$(echo ${PKG_NAME} | tr a-z A-Z)_BUILD_STEPS)";
 			set -- ${PKG_BUILD_STEPS:-${BUILD_STEPS}};
 			while [ ${#} -gt 0 ]; do
-				_pkg_step_cmds="";
+				_pkg_step_cmds=""; _pkg_step_cmd_args="";
 				case "${1#*:}" in
-				abstract) _pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}"; ;;
+				abstract) _pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}";
+					  _pkg_step_cmd_args="${ARG_RESTART_AT}"; ;;
 				always)	  _pkg_step_cmds="pkg_${1%:*}"; ;;
 				main)	if [ -n "${BUILD_PACKAGES_RESTART}" ]; then
 						if [ -z "${ARG_RESTART_AT}" ]\
@@ -87,7 +88,9 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 				esac;
 				for __ in ${_pkg_step_cmds}; do
 					if test_cmd "${__}"; then
-						"${__}";
+						test_cmd "${__}_pre" && "${__}_pre";
+						"${__}" ${_pkg_step_cmd_args};
+						test_cmd "${__}_post" && "${__}_post";
 						set_build_script_done "${PKG_NAME}" "${1%:*}"	\
 							${2:+-${2%:*}}; break;
 					fi;

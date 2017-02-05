@@ -66,9 +66,6 @@ pkg_install() {
 				DESTDIR=${PKG_PREFIX_EXTRA};
 		fi;
 	fi;
-	if test_cmd pkg_${PKG_NAME}_install_post; then
-		pkg_${PKG_NAME}_install_post;
-	fi;
 	pkgp_install_clean_lib;
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
 		(install_files -v ${PKG_PREFIX} ${PKG_INSTALL_FILES});
