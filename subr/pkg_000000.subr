@@ -34,6 +34,7 @@ pkg_000000() {
 	if [ -n "${_log_env_vars}" ]; then
  		log_env_vars "build" ${_log_env_vars};
 	fi;
+	build_fileop cd "${WORKDIR}";
 };
 
 # vim:filetype=sh
