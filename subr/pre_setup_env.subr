@@ -12,7 +12,7 @@ pre_setup_env() {
 		[ -e ${__} ] && . ${__};
 	done;
 	for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
-		if ! match_list "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
+		if ! lmatch "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
 			unset "${__}";
 		fi;
 	done;
