@@ -64,6 +64,9 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		else
 			(set -o errexit -o noglob;
 			parse_with_pkg_name "${BUILD_PACKAGE_LC%.*}";
+			if is_build_script_done finish; then
+				exit 0;
+			fi;
 			for __ in ${BUILD_STEPS}; do
 				case ${__#*:} in
 				abstract)
