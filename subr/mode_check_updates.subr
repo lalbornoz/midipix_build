@@ -50,7 +50,10 @@ modep_check_cpu_get_version() {
 };
 
 mode_check_pkg_updates() {
-	cu_name="${1}"; cu_version="${2}"; cu_url="${3}"; cu_url_type="${4}";
+	cu_name="${1}"; cu_NAME="${2}";
+	cu_version="$(get_var_unsafe PKG_${cu_NAME}_VERSION)";
+	cu_url="$(get_var_unsafe PKG_${cu_NAME}_URL)";
+	cu_url_type="$(get_var_unsafe PKG_${cu_NAME}_URL_TYPE)";
 	. vars/check_updates.vars;
 	if match_list "${CHECK_UPDATES_SKIP}" " " "${cu_name}"; then
 		log_msg vnfo "Skipping \`${cu_name}' (set in \${CHECK_UPDATES_SKIP}.)";

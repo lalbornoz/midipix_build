@@ -6,6 +6,7 @@
 #
 #
 for __ in subr/*.subr; do . ${__}; done;
+set -o noglob;
 while [ ${#} -gt 0 ]; do
 case ${1} in
 -c)	ARG_CLEAN=1; ;;
@@ -24,6 +25,7 @@ case ${1} in
 	else
 		ARG_RESTART=${2%:*}; ARG_RESTART_AT=${2#*:};
 	fi;
+	BUILD_PACKAGES_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
 	if [ -z "${ARG_RESTART_AT}" ]; then
 		ARG_RESTART_AT=ALL;
 	fi; shift; ;;
@@ -46,60 +48,40 @@ else
 fi;
 for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 	BUILD_TARGET=$(echo ${BUILD_TARGET_LC} | tr a-z A-Z);
-	for BUILD_PACKAGE_LC in $(get_var_unsafe ${BUILD_TARGET}_PACKAGES); do
-		BUILD_PACKAGE=$(echo ${BUILD_PACKAGE_LC} | tr a-z A-Z);
-
+	BUILD_PACKAGES=$(get_var_unsafe ${BUILD_TARGET}_PACKAGES);
+	if [ "${BUILD_TARGET}" != "INVARIANTS" ]\
+	&& [ -n "${BUILD_PACKAGES_RESTART}" ]; then
+		BUILD_PACKAGES="$(lfilter "${BUILD_PACKAGES}" "${BUILD_PACKAGES_RESTART}")";
+	fi;
+	for BUILD_PACKAGE_LC in ${BUILD_PACKAGES}; do
 		#
 		#
 		#
-		if [ "${BUILD_TARGET}" != "INVARIANTS" ]\
-		&& [ -n "${ARG_RESTART}" ]; then
-			if [ "${ARG_RESTART}" != "ALL" ] &&\
-			! match_list ${ARG_RESTART} , ${BUILD_PACKAGE_LC}; then
-				log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (-r specified.)";
-				: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
-			fi;
-		fi;
 		if [ ${ARG_CHECK_UPDATES:-0} -eq 1 ]\
 		&& [ "${BUILD_PACKAGE#*.*}" = "${BUILD_PACKAGE}" ]; then
-			mode_check_pkg_updates "${BUILD_PACKAGE_LC}"			\
-				"$(get_var_unsafe PKG_${BUILD_PACKAGE}_VERSION)"	\
-				"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL)"		\
-				"$(get_var_unsafe PKG_${BUILD_PACKAGE}_URL_TYPE)";
+			(mode_check_pkg_updates "${BUILD_PACKAGE_LC}" "${BUILD_PACKAGE}");
 			continue;
-		fi;
-		if [ "${BUILD_TARGET}" != "INVARIANTS" ]\
-		&& [ -z "${ARG_RESTART}" ]\
-		&& is_build_script_done finish "${BUILD_PACKAGE_LC}"; then
-			log_msg vnfo "Skipped \`${BUILD_PACKAGE_LC}' (already built.)";
-			: $((BUILD_NSKIP+=1)); BUILD_SCRIPT_RC=0; continue;
-		elif [ -n "${ARG_RESTART}" ]; then
-			log_msg vnfo "Forcing package \`${BUILD_PACKAGE_LC}'.";
-		fi;
-
-		#
-		#
-		#
-		(set -o errexit -o noglob;
-		PKG_PREFIX=$(get_vars_unsafe ${BUILD_TARGET}_PREFIX PKG_${BUILD_PACKAGE%%.*}_PREFIX);				
-		parse_with_pkg_name ${BUILD_PACKAGE_LC%.*};
-		for __ in ${BUILD_STEPS}; do
-			case ${__#*:} in
-			abstract)
-				if test_cmd pkg_${PKG_NAME}_${__%:*}; then
-					pkg_${PKG_NAME}_${__%:*}; exit 0;
-				fi; ;;
-			always)	pkg_${__%:*}; ;;
-			main)	if ! is_build_script_done ${__%:*}; then
+		else
+			(set -o errexit -o noglob;
+			parse_with_pkg_name "${BUILD_PACKAGE_LC%.*}";
+			for __ in ${BUILD_STEPS}; do
+				case ${__#*:} in
+				abstract)
 					if test_cmd pkg_${PKG_NAME}_${__%:*}; then
-						pkg_${PKG_NAME}_${__%:*};
-					else
-						pkg_${__%:*};
-					fi;
-				fi; ;;
-			esac;
-		done;
-		set_build_script_done finish); BUILD_SCRIPT_RC=${?};
+						pkg_${PKG_NAME}_${__%:*}; exit 0;
+					fi; ;;
+				always)	pkg_${__%:*}; ;;
+				main)	if ! is_build_script_done ${__%:*}; then
+						if test_cmd pkg_${PKG_NAME}_${__%:*}; then
+							pkg_${PKG_NAME}_${__%:*};
+						else
+							pkg_${__%:*};
+						fi;
+					fi; ;;
+				esac;
+			done;
+			set_build_script_done finish); BUILD_SCRIPT_RC=${?};
+		fi;
 		case ${BUILD_SCRIPT_RC} in
 		0) log_msg succ "Finished \`${BUILD_PACKAGE_LC}' build.";
 			: $((BUILD_NFINI+=1)); continue; ;;
@@ -111,15 +93,12 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		break;
 	fi;
 done;
-post_copy_etc; post_strip; post_tarballs; post_build_files;
+if [ ${BUILD_SCRIPT_RC:-0} -ne 0 ]; then
+	post_copy_etc; post_strip; post_tarballs; post_build_files;
+fi;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
-exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${BUILD_LOG_FNAME} &
-
-#
-#
-#
-TEE_PID=${!};
+exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${BUILD_LOG_FNAME} & TEE_PID=${!};
 trap "rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME};	\
 	log_msg fail \"Build aborted.\";	\
 	echo kill ${TEE_PID};			\
