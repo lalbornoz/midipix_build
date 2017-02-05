@@ -1,8 +1,9 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
+# set -o errexit -o noglob are assumed.
 #
 
 pre_prereqs() {
+	local __ _exit;
 	for __ in ${CHECK_PATH_VARS}; do
 		if [ -z "${___:=$(get_var_unsafe "${__}")}" ]; then
 			log_msg failexit "Error: variable \`${__}' is empty or unset.";
@@ -14,25 +15,23 @@ pre_prereqs() {
 		if [ "${__#/}" != "${__}" ]; then
 			if [ ! -e "${__}" ]; then
 				log_msg fail "Error: missing prerequisite file \`${__}'.";
-				__exit=1;
+				_exit=1;
 			fi;
 		else
 			if ! test_cmd "${__}"; then
 				log_msg fail "Error: missing prerequisite command \`${__}'.";
-				__exit=1;
+				_exit=1;
 			fi;
 		fi;
 	done;
 	for __ in ${CHECK_PREREQ_PERL_MODULES}; do
 		if ! perl -M"${__}" -e "" 2>/dev/null; then
 			log_msg fail "Error: missing prerequisite Perl module \`${__}'.";
-			__exit=1;
+			_exit=1;
 		fi;
 	done;
-	if [ ${__exit:-0} = 1 ]; then
+	if [ ${_exit:-0} = 1 ]; then
 		exit 1;
-	elif [ -n "${__exit}" ]; then
-		unset __exit;
 	fi;
 };
 

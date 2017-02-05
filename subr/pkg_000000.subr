@@ -1,0 +1,39 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_000000() {
+	local _pkg_name_uc _vars_fname _vname _build_uc __ _log_env_vars;
+	_pkg_name_uc="$(echo ${PKG_NAME} | tr a-z A-Z)";
+	for _vars_fname in vars/${PKG_NAME}.vars; do
+		[ -e "${_vars_fname}" ] && . "${_vars_fname}";
+	done;
+	for _vname in PREFIX ${PKG_BUILD_VARS}; do
+		_build_uc="$(echo ${BUILD} | tr a-z A-Z)";
+		for __ in "DEFAULT_${_vname}"			\
+			  "${BUILD_TARGET}_${_vname}"		\
+			  "PKG_${_pkg_name_uc}_${_vname}"	\
+			  "PKG_${_pkg_name_uc}_${_vname}_${_build_uc}"; do
+			set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
+		done;
+	done;
+	if [ -z "${PKG_URL}" -a -z "${PKG_URLS_GIT}" -a -z "${PKG_VERSION}" ]; then
+		log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
+	else
+		[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
+		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
+		[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR="${PKG_FNAME%%.tar*}";
+		[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
+		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
+	fi;
+	for __ in $(set); do
+		if [ "${__#PKG_${_pkg_name_uc}}" != "${__}" ]; then
+			_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__%%=*}";
+		fi;
+	done;
+	if [ -n "${_log_env_vars}" ]; then
+ 		log_env_vars "build" ${_log_env_vars};
+	fi;
+};
+
+# vim:filetype=sh

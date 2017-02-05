@@ -1,8 +1,9 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
+# set -o errexit -o noglob are assumed.
 #
 
 post_strip() {
+	local __;
 	if [ ${BUILD_SCRIPT_RC:-0} -eq 0 ]\
 	&& [ "${BUILD}" = release ]; then
 		for __ in $(find ${PREFIX_NATIVE}/bin -perm -0100 \( -type f -or -type l \)); do

@@ -1,6 +1,5 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 pkg_build() {
@@ -21,7 +20,6 @@ pkg_build() {
 			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
 		unset __no_autoconf;
 	fi;
-	set_build_script_done build -install;
 };
 
 # vim:filetype=sh

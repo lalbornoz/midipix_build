@@ -1,6 +1,5 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 pkg_configure() {
@@ -13,7 +12,6 @@ pkg_configure() {
 		${PKG_CONFIGURE}										\
 			${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
 	fi;
-	set_build_script_done configure clean -build;
 };
 
 # vim:filetype=sh

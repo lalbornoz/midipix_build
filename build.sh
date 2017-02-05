@@ -26,9 +26,7 @@ case ${1} in
 		ARG_RESTART=${2%:*}; ARG_RESTART_AT=${2#*:};
 	fi;
 	BUILD_PACKAGES_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
-	if [ -z "${ARG_RESTART_AT}" ]; then
-		ARG_RESTART_AT=ALL;
-	fi; shift; ;;
+	shift; ;;
 host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
 	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
@@ -53,42 +51,53 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 	&& [ -n "${BUILD_PACKAGES_RESTART}" ]; then
 		BUILD_PACKAGES="$(lfilter "${BUILD_PACKAGES}" "${BUILD_PACKAGES_RESTART}")";
 	fi;
-	for BUILD_PACKAGE_LC in ${BUILD_PACKAGES}; do
+	for PKG_NAME in ${BUILD_PACKAGES}; do
 		#
 		#
 		#
 		if [ ${ARG_CHECK_UPDATES:-0} -eq 1 ]\
 		&& [ "${BUILD_PACKAGE#*.*}" = "${BUILD_PACKAGE}" ]; then
-			(mode_check_pkg_updates "${BUILD_PACKAGE_LC}" "${BUILD_PACKAGE}");
+			(mode_check_pkg_updates "${PKG_NAME}" "${BUILD_PACKAGE}");
 			continue;
 		else
-			(set -o errexit -o noglob;
-			parse_with_pkg_name "${BUILD_PACKAGE_LC%.*}";
-			if is_build_script_done finish; then
-				exit 0;
-			fi;
-			for __ in ${BUILD_STEPS}; do
-				case ${__#*:} in
-				abstract)
-					if test_cmd pkg_${PKG_NAME}_${__%:*}; then
-						pkg_${PKG_NAME}_${__%:*}; exit 0;
-					fi; ;;
-				always)	pkg_${__%:*}; ;;
-				main)	if ! is_build_script_done ${__%:*}; then
-						if test_cmd pkg_${PKG_NAME}_${__%:*}; then
-							pkg_${PKG_NAME}_${__%:*};
-						else
-							pkg_${__%:*};
+			unset BUILD_SCRIPT_RC;
+		fi;
+		(set -o errexit -o noglob; pkg_000000;
+		if [ -n "${BUILD_PACKAGES_RESTART}" ]\
+		|| ! is_build_script_done "${PKG_NAME}" finish; then
+			build_fileop cd "${WORKDIR}";
+			set -- ${PKG_BUILD_STEPS:-${BUILD_STEPS}};
+			while [ ${#} -gt 0 ]; do
+				_pkg_step_cmds="";
+				case ${1#*:} in
+				abstract) _pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}"; ;;
+				always)	  _pkg_step_cmds="pkg_${1%:*}"; ;;
+				main)	if [ -n "${BUILD_PACKAGES_RESTART}" ]; then
+						if [ -z "${ARG_RESTART_AT}" ]\
+						|| match_list "${ARG_RESTART_AT}" , "${1%:*}"; then
+							_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 						fi;
+					elif ! is_build_script_done ${PKG_NAME} ${1%:*}; then
+						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
+					fi; ;;
+				optional)
+					if match_list "${ARG_RESTART_AT}" "," "${1%:*}"; then
+						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 					fi; ;;
 				esac;
-			done;
-			set_build_script_done finish); BUILD_SCRIPT_RC=${?};
-		fi;
-		case ${BUILD_SCRIPT_RC} in
-		0) log_msg succ "Finished \`${BUILD_PACKAGE_LC}' build.";
+				for __ in ${_pkg_step_cmds}; do
+					if test_cmd ${__}; then
+						${__};
+						set_build_script_done "${PKG_NAME}" "${1%:*}" ${2:+-${2%:*}};
+						break;
+					fi;
+				done;
+			shift; done;
+		fi);
+		case ${BUILD_SCRIPT_RC:=${?}} in
+		0) log_msg succ "Finished \`${PKG_NAME}' build.";
 			: $((BUILD_NFINI+=1)); continue; ;;
-		*) log_msg fail "Build failed in \`${BUILD_PACKAGE_LC}' (last return code ${BUILD_SCRIPT_RC}.).";
+		*) log_msg fail "Build failed in \`${PKG_NAME}' (last return code ${BUILD_SCRIPT_RC}.).";
 			: $((BUILD_NFAIL+=1)); break; ;;
 		esac;
 	done;
@@ -97,8 +106,9 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 	fi;
 done;
 if [ ${BUILD_SCRIPT_RC:-0} -eq 0 ]; then
-	post_copy_etc; post_strip; post_tarballs; post_build_files;
+	post_copy_etc; post_strip; post_tarballs;
 fi;
+post_build_files;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
 exit ${BUILD_SCRIPT_RC})} 2>&1 | tee ${BUILD_LOG_FNAME} & TEE_PID=${!};

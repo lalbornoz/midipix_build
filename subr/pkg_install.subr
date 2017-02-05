@@ -1,9 +1,9 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 pkgp_install_clean_lib() {
+	local __;
 	if [ -d ${PKG_PREFIX}/lib ]; then
 		for __ in $(find ${PKG_PREFIX}/lib -type f -name \*.la); do
 			build_fileop rm ${__};
@@ -12,28 +12,29 @@ pkgp_install_clean_lib() {
 };
 
 pkgp_install_dlltool() {
+	local _so_fname _so_name;
 	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
 	&& test_cmd perk								\
 	&& test_cmd ${PKG_TARGET}-dlltool; then
-		for __so_fname in							\
+		for _so_fname in							\
 			$(find	\( -name "*.so"						\
 				-or -name "*.so.[0-9]"					\
 				-or -name "*.so.[0-9].[0-9]"				\
 				-or -name "*.so.[0-9].[0-9].[0-9]" \) -printf '%P\n');
 		do
-			if [ \( -e ${__so_fname%.so}.lib.a \) -o			\
-			     \( ! -e ${PKG_PREFIX}/lib/$(basename ${__so_fname}) \) ];
+			if [ \( -e ${_so_fname%.so}.lib.a \) -o				\
+			     \( ! -e ${PKG_PREFIX}/lib/$(basename ${_so_fname}) \) ];
 			then
 				continue;
 			else
-				__so_name="${__so_fname%.so}";
-				echo perk -epdlltool ${__so_fname} \> ${__so_fname%.so}.def;
-				perk -epdlltool ${__so_fname} > ${__so_fname%.so}.def;
-				echo ${PKG_TARGET}-dlltool -l ${__so_fname%.so}.lib.a	\
-					-D ${__so_fname} -d ${__so_fname%.so}.def;
-				${PKG_TARGET}-dlltool -l ${__so_fname%.so}.lib.a	\
-					-D ${__so_fname} -d ${__so_fname%.so}.def;
-				build_fileop cp ${__so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
+				_so_name="${_so_fname%.so}";
+				echo perk -epdlltool ${_so_fname} \> ${_so_fname%.so}.def;
+				perk -epdlltool ${_so_fname} > ${_so_fname%.so}.def;
+				echo ${PKG_TARGET}-dlltool -l ${_so_fname%.so}.lib.a	\
+					-D ${_so_fname} -d ${_so_fname%.so}.def;
+				${PKG_TARGET}-dlltool -l ${_so_fname%.so}.lib.a	\
+					-D ${_so_fname} -d ${_so_fname%.so}.def;
+				build_fileop cp ${_so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
 			fi;
 		done;
 	fi;
@@ -73,7 +74,6 @@ pkg_install() {
 		(install_files -v ${PKG_PREFIX} ${PKG_INSTALL_FILES});
 	fi;
 	pkgp_install_dlltool;
-	set_build_script_done install -finish;
 };
 
 # vim:filetype=sh
