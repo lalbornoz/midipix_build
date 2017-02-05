@@ -1,9 +1,9 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 pkg_autoconf() {
+	local __;
 	if [ -e ${PKG_SUBDIR}/configure -o							\
 	     -e ${PKG_SUBDIR}/configure.ac -o							\
 	     -e ${PKG_SUBDIR}/configure.in -o							\
@@ -36,7 +36,6 @@ pkg_autoconf() {
 			build_fileop cp ${MIDIPIX_BUILD_PWD}/etc/config.cache ${__}/;
 		done;
 	fi;
-	set_build_script_done autoconf -patch;
 };
 
 # vim:filetype=sh

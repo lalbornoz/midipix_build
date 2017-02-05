@@ -1,6 +1,5 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 pkg_build_dir() {
@@ -10,7 +9,6 @@ pkg_build_dir() {
 	if [ ! -d "${PKG_BUILD_DIR}" ]; then
 		build_fileop mkdir ${PKG_BUILD_DIR};
 	fi;
-	set_build_script_done build_dir -patch_pre;
 };
 
 # vim:filetype=sh

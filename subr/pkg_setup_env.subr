@@ -1,6 +1,5 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 pkg_setup_env() {
@@ -30,7 +29,6 @@ pkg_setup_env() {
 		export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
 	fi;
 	build_fileop cd ${PKG_BUILD_DIR};
-	set_build_script_done setup distclean -configure;
 };
 
 # vim:filetype=sh

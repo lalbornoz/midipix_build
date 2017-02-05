@@ -1,9 +1,9 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 pkg_patch_pre() {
+	local __;
 	for __ in 											\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local.patch				\
 			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch		\
@@ -13,11 +13,10 @@ pkg_patch_pre() {
 		if [ -r "${__}" ]; then
 			patch -b -d ${PKG_SUBDIR} -p1 < ${__};
 		fi;
-	done; unset __;
+	done;
 	if test_cmd pkg_${PKG_NAME}_patch_pre_post; then
 		pkg_${PKG_NAME}_patch_pre_post;
 	fi;
-	set_build_script_done patch_pre -autoconf;
 };
 
 # vim:filetype=sh

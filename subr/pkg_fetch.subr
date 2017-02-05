@@ -1,70 +1,67 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 pkgp_fetch() {
-	_f_url="${1}"; _f_sha256sum_src="${2}";
+	local _url="${1}" _sha256sum_src="${2}";
 	if [ -z "${3}" ]; then
-		_f_url_dst="${DLCACHEDIR}/$(basename "${_f_url}")";
+		_url_dst="${DLCACHEDIR}/$(basename "${_url}")";
 	else
-		_f_url_dst="${DLCACHEDIR}/${3}";
+		_url_dst="${DLCACHEDIR}/${3}";
 	fi;
 	if [ ${ARG_OFFLINE:-0} -eq 1 ]\
-	|| [ -e ${_f_url_dst}.fetched ]; then
-		unset _f_url _f_sha256sum_src _f_url_dst;
+	|| [ -e ${_url_dst}.fetched ]; then
 		return 0;
 	else
-		wget ${WGET_ARGS} -c -O ${_f_url_dst} "${_f_url}";
+		wget ${WGET_ARGS} -c -O ${_url_dst} "${_url}";
 	fi;
-	if [ -n "${_f_sha256sum_src}" ]; then
-		set -- $(openssl dgst -sha256 ${_f_url_dst}); shift $((${#}-1));
-		if [ "${_f_sha256sum_dst:=${1}}" != "${_f_sha256sum_src}" ]; then
+	if [ -n "${_sha256sum_src}" ]; then
+		set -- $(openssl dgst -sha256 ${_url_dst}); shift $((${#}-1));
+		if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
 			if [ ${ARG_IGNORE_SHA256SUMS:-0} -eq 0 ]; then
-				log_msg failexit "Error: hash mismatch for URL \`${_f_url}' (is: ${_f_sha256sum_dst}, should be: ${_f_sha256sum_src}.)";
+				log_msg failexit "Error: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			else
-				log_msg warn "Warning: hash mismatch for URL \`${_f_url}' (is: ${_f_sha256sum_dst}, should be: ${_f_sha256sum_src}.)";
+				log_msg warn "Warning: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			fi;
 		fi;
 	fi;
-	touch ${_f_url_dst}.fetched;
-	unset _f_url _f_url_dst _f_sha256sum_src _f_sha256sum_dst;
+	touch ${_url_dst}.fetched;
 };
 
 pkgp_fetch_git() {
-	_fg_subdir="${1}"; _fg_url="${2}"; _fg_branch="${3}";
+	local _subdir="${1}" _url="${2}" _branch="${3}";
 	if [ ${ARG_OFFLINE:-0} -eq 0 ]; then
-		if [ -e "${DLCACHEDIR}/${_fg_subdir}" ]; then
-			build_fileop cd ${DLCACHEDIR}/${_fg_subdir} &&\
-				git pull origin ${_fg_branch:-main} &&\
+		if [ -e "${DLCACHEDIR}/${_subdir}" ]; then
+			build_fileop cd ${DLCACHEDIR}/${_subdir} &&\
+				git pull origin ${_branch:-main} &&\
 					build_fileop cd ${OLDPWD};
 		else
-			git clone ${_fg_url} ${DLCACHEDIR}/${_fg_subdir};
-			if [ -n "${_fg_branch}" -a		\
-			     \( -z "${_fg_branch#main}" \) -a	\
-			     \( -z "${_fg_branch#master}" \) ]; then
-				build_fileop cd ${DLCACHEDIR}/${_fg_subdir}	&&\
-					git checkout -b ${_fg_branch}		&&\	
+			git clone ${_url} ${DLCACHEDIR}/${_subdir};
+			if [ -n "${_branch}" -a		\
+			     \( -z "${_branch#main}" \) -a	\
+			     \( -z "${_branch#master}" \) ]; then
+				build_fileop cd ${DLCACHEDIR}/${_subdir}	&&\
+					git checkout -b ${_branch}		&&\	
 						build_fileop cd ${OLDPWD};
 			fi;
 		fi;
 	fi;
-	build_fileop rm ${_fg_subdir};
-	build_fileop cp ${DLCACHEDIR}/${_fg_subdir} .;
+	build_fileop rm ${_subdir};
+	build_fileop cp ${DLCACHEDIR}/${_subdir} .;
 };
 
 pkgp_fetch_urls_git() {
-	for _ppfu_url_spec in "${@}"; do
-		_ppfu_subdir=${_ppfu_url_spec%=*};
-		_ppfu_url=${_ppfu_url_spec#*=};
-		_ppfu_url=${_ppfu_url%@*};
-		if [ "${_ppfu_url_spec#*@}" != "${_ppfu_url_spec}" ]; then
-			_ppfu_git_branch=${_ppfu_url_spec#*@};
+	local _url_spec _subdir _url _git_branch;
+	for _url_spec in "${@}"; do
+		_subdir=${_url_spec%=*};
+		_url=${_url_spec#*=};
+		_url=${_url%@*};
+		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
+			_git_branch=${_url_spec#*@};
 		fi;
-		pkgp_fetch_git ${_ppfu_subdir} ${_ppfu_url} ${_ppfu_git_branch};
+		pkgp_fetch_git ${_subdir} ${_url} ${_git_branch};
 	done;
-	unset _ppfu_url_spec _ppfu_subdir _ppfu_url _ppfu_git_branch;
 };
 
 pkg_fetch() {
@@ -81,7 +78,6 @@ pkg_fetch() {
 		if [ -n "${PKG_URLS_GIT}" ]; then
 			pkgp_fetch_urls_git ${PKG_URLS_GIT};
 		fi;
-		set_build_script_done fetch -extract;
 	fi;
 };
 

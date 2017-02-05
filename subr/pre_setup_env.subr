@@ -1,8 +1,9 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
+# set -o errexit -o noglob are assumed.
 #
 
 pre_setup_env() {
+	local __;
 	if [ -z "${BUILD_CPUS}" ]\
 	&& [ -e /proc/cpuinfo ]; then
 		BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
