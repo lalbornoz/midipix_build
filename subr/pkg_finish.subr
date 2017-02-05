@@ -2,8 +2,8 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkg_clean() {
-	make clean;
+pkg_finish() {
+	:;
 };
 
 # vim:filetype=sh

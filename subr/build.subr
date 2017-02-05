@@ -1,129 +1,36 @@
 #
-# . ./build.vars and set -o errexit -o noglob are assumed.
-# See warning at the top of build.vars.
+# set -o errexit -o noglob are assumed.
 #
 
-date() { command date +"${1:-${TIMESTAMP_FMT}}"; };
+date() { command date "+${1:-${TIMESTAMP_FMT}}"; };
 get_var_unsafe() { eval echo \${${1}}; };
-set_var_unsafe() { eval ${1}=\"${2}\"; };
-push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
+set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
+push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
 set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${PKG_TARGET}; };
-split() { push_IFS "${1}"; set -- ${2}; pop_IFS; echo "${*}"; };
 test_cmd() { command -v "${1}" >/dev/null; };
-unsplit() { push_IFS "${1}"; shift; set -- "${@}"; echo "${*}"; pop_IFS; };
-
-get_vars_unsafe() {
-	while [ ${#} -gt 0 ]; do
-		_gvu_vval="$(eval echo \${${1}})";
-		[ -z "${_gvu_vval}" ] || _gvu_vval_="${_gvu_vval}";
-		shift;
-	done; echo "${_gvu_vval_}";
-	unset _gvu_vval _gvu_vval_;
-};
-
-set_env_vars_with_sep() {
-	_sevws_sep=${1}; shift; push_IFS ${_sevws_sep}; set -- ${1};
-	while [ ${#} -gt 0 ]; do
-		export "${1}"; shift;
-	done; unset _sevws_sep; pop_IFS;
-};
-
-lfilter() {
-	_lf_list="${1}"; _lf_filter="${2}"; _lf_lnew="";
-	for _lf_litem in ${_lf_list}; do
-		for _lf_lfilter in ${_lf_filter}; do
-			if [ "${_lf_lfilter}" = "${_lf_litem}" ]; then
-				_lf_lnew="${_lf_lnew:+${_lf_lnew} }${_lf_litem}"; break;
-			fi; 
-		done;
-	done;
-	echo ${_lf_lnew}; unset _lf_list _lf_filter _lf_lnew _lf_litem _lf_lfilter;
-};
-
-log_msg() {
-	_lm_lvl=${1}; shift;
-	if [ "${_lm_lvl#v}" != "${_lm_lvl}" ]\
-	&& [ ${ARG_VERBOSE:-0} -eq 0 ]; then
-		return;
-	fi;
-	case ${_lm_lvl} in
-		failexit) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
-		fail) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
-		info) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
-		vnfo) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
-		succ) printf "\033[0m\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
-		warn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
-		varn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
-	esac;
-	if [ $# -gt 1 ]; then
-		printf "==> %s %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}" "$*";
-	else
-		printf "==> %s %s\033[0m\n" "$(date "${TIMESTAMP_FMT}")" "${1}";
-	fi; [ ${_lm_lvl} = failexit ] && exit 1 || unset _lm_lvl;
-};
-
-install_files() {
-	if [ "${1}" = "-v" ]; then
-		_if_verbose="${1}"; shift;
-	fi; _if_prefix="${1}"; shift;
-	while [ ${#} -gt 0 ]; do
-	case "${1}" in
-	@*=*)
-		__ln_target="${1%=*}";
-		__ln_target="${__ln_target#@}";
-		__ln_fname="${1#*=}";
-		if [ -e ${__ln_fname} ]; then
-			if [ ${_if_verbose:-0} -eq 1 ]; then
-				echo build_fileop rm ${__ln_fname};
-			fi;
-			build_fileop rm ${__ln_fname};
-		fi;
-		build_fileop ln_symbolic ${__ln_target} ${_if_prefix:+${_if_prefix}/}${__ln_fname};
-		;;
-	/=*)
-		__mkdir_fname="${1#/=}";
-		build_fileop mkdir ${_if_prefix:+${_if_prefix}/}${__mkdir_fname};
-		;;
-	*)
-		__file_fname_src="${1%=*}";
-		__file_fname_dst="${1#*=}";
-		build_fileop cp ${__file_fname_src} ${_if_prefix:+${_if_prefix}/}${__file_fname_dst};
-		;;
-	esac; shift;
-	done; unset _if_verbose _if_prefix;
-};
-
-match_list() {
-	_ml_cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
-	while [ ${#} -gt 0 ]; do
-		if [ "${1}" = "${_ml_cmp}" ]; then
-			unset _ml_cmp; return 0;
-		fi; shift;
-	done; unset _ml_cmp; return 1;
-};
 
 build_fileop() {
-	_bf_op=${1}; shift;
-	if [ "${_bf_op}" = cd ]; then
+	local _op="${1}"; shift;
+	if [ "${_op}" = cd ]; then
 		log_msg varn "Changing working directory to \`${1}'.";
 		[ \( -n "${1}" \) -a \( -e "${1}" \) ] && cd -- ${1};
-	elif [ "${_bf_op}" = cp ]; then
+	elif [ "${_op}" = cp ]; then
 		log_msg varn "Copying \`${1}' to \`${2}' w/ -pPR.";
 		[ ${#} -ge 2 ] && cp -pPR -- "${@}";
-	elif [ "${_bf_op}" = ln_symbolic ]; then
+	elif [ "${_op}" = ln_symbolic ]; then
 		log_msg varn "Linking \`${1}' to \`${2}' w/ -fs";
 		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && ln -fs -- ${1} ${2};
-	elif [ "${_bf_op}" = mkdir ]\
-	||   [ "${_bf_op}" = rm ]; then
+	elif [ "${_op}" = mkdir ]\
+	||   [ "${_op}" = rm ]; then
 		while [ ${#} -gt 0 ]; do
 			if [ -z "${1}" ]; then
 				return 1;
-			elif [ "${_bf_op}" = mkdir ]\
+			elif [ "${_op}" = mkdir ]\
 			&&   [ ! -e "${1}" ]; then
 				log_msg varn "Making directory \`${1}'.";
 				mkdir -p -- "${1}";
-			elif [ "${_bf_op}" = rm ]\
+			elif [ "${_op}" = rm ]\
 			&&   [ -e "${1}" ]; then
 				log_msg varn "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}";
@@ -134,120 +41,138 @@ build_fileop() {
 	fi;
 };
 
-is_build_script_done() {
-	if [ "${1}" = "clean" ]\
-	|| [ "${1}" = distclean ]; then
-		if match_list "${ARG_RESTART}" , ${BUILD_PACKAGE_LC}	\
-		&& [ -n "${ARG_RESTART_AT}" ]				\
-		&& match_list "${ARG_RESTART_AT}" , "${1}"; then
-			return 1;		# Build
-		else
-			return 0;		# Skip
-		fi;
-	elif [ "${ARG_RESTART}" = "ALL" ]; then
-		return 1;			# Build
-	elif match_list "${ARG_RESTART}" , ${BUILD_PACKAGE_LC}; then
-		if [ -n "${ARG_RESTART_AT}" ]; then
-			if [ "${ARG_RESTART_AT}" = "ALL" ]; then
-				return 1;	# Build
-			elif match_list "${ARG_RESTART_AT}" , "${1}"; then
-				return 1;	# Build
-			else
-				return 0;	# Skip
+install_files() {
+	local _verbose _prefix _ln_target _ln_fname _mkdir_fname	\
+		_file_fname_src _file_fname_dst;
+	if [ "${1}" = "-v" ]; then
+		_verbose="${1}"; shift;
+	fi; _prefix="${1}"; shift;
+	while [ ${#} -gt 0 ]; do
+	case "${1}" in
+	@*=*)
+		_ln_target="${1%=*}";
+		_ln_target="${_ln_target#@}";
+		_ln_fname="${1#*=}";
+		if [ -e ${_ln_fname} ]; then
+			if [ ${_verbose:-0} -eq 1 ]; then
+				echo build_fileop rm ${_ln_fname};
 			fi;
-		else
-			return 1;		# Build
+			build_fileop rm ${_ln_fname};
 		fi;
-	elif [ -f ${WORKDIR}/.${2:-${BUILD_PACKAGE_LC}}.${1} ]; then
-		return 0;		# Skip
+		build_fileop ln_symbolic ${_ln_target} ${_prefix:+${_prefix}/}${_ln_fname};
+		;;
+	/=*)
+		_mkdir_fname="${1#/=}";
+		build_fileop mkdir ${_prefix:+${_prefix}/}${_mkdir_fname};
+		;;
+	*)
+		_file_fname_src="${1%=*}";
+		_file_fname_dst="${1#*=}";
+		build_fileop cp ${_file_fname_src} ${_prefix:+${_prefix}/}${_file_fname_dst};
+		;;
+	esac; shift;
+	done;
+};
+
+is_build_script_done() {
+	local _done_fname="${WORKDIR}/.${1}.${2}";
+	if [ -e "${_done_fname}" ]; then
+		return 0;	# Skip
 	else
-		return 1;		# Build
+		return 1;	# Build
 	fi;
 };
 
 set_build_script_done() {
-	_sbsd_script_fname=${BUILD_PACKAGE_LC};
-	_sbsd_done_fname=${WORKDIR}/.${_sbsd_script_fname};
-	while [ $# -ge 1 ]; do
+	local _pkg_fname="${1}";
+	local _done_fname_pfx="${WORKDIR}/.${_pkg_fname}";
+	shift; while [ ${#} -ge 1 ]; do
 		if [ "${1#-}" != "${1}" ]; then
-			build_fileop rm ${_sbsd_done_fname}.${1#-};
+			build_fileop rm "${_done_fname_pfx}.${1#-}";
 		else
-			touch ${_sbsd_done_fname}.${1};
-			log_msg info "Finished build step ${1} of \`${_sbsd_script_fname}'.";
+			touch "${_done_fname_pfx}.${1}";
+			log_msg info "Finished build step ${1} of package \`${_pkg_fname}'.";
 		fi; shift;
-	done; unset _sbsd_script_fname _sbsd_done_fname;
+	done;
+};
+
+lfilter() {
+	local _list="${1}" _filter="${2}" _lnew _litem _lfilter;
+	for _litem in ${_list}; do
+		for _lfilter in ${_filter}; do
+			if [ "${_lfilter}" = "${_litem}" ]; then
+				_lnew="${_lnew:+${_lnew} }${_litem}"; break;
+			fi; 
+		done;
+	done;
+	echo ${_lnew};
 };
 
 log_env_vars() {
+	local _nvar _arg _arg_len_max;
 	log_msg info "Variables for this ${1:-build}:"; shift;
-	while [ ${_lev_nvar:=0} -lt ${#} ]; do
-		_lev_arg="$(eval echo \${${_lev_nvar}})";
-		_lev_arg="${_lev_arg%%=*}";
-		if [ ${#_lev_arg} -gt ${_lev_arg_len_max:=0} ]; then
-			_lev_arg_len_max=${#_lev_arg};
-		fi; : $((_lev_nvar+=1));
-	done; unset _lev_nvar _lev_arg;
+	while [ ${_nvar:=0} -lt ${#} ]; do
+		_arg="$(eval echo \${${_nvar}})";
+		_arg="${_arg%%=*}";
+		if [ ${#_arg} -gt ${_arg_len_max:=0} ]; then
+			_arg_len_max=${#_arg};
+		fi; : $((_nvar+=1));
+	done;
 	while [ ${#} -gt 0 ]; do
 		log_msg info "$(printf					\
-			"%${_lev_arg_len_max}.${_lev_arg_len_max}s=%s"	\
+			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
 			"${1%%=*}" "$(get_var_unsafe ${1#*=})")";
 		shift;
-	done; unset _lev_arg_len_max;
+	done;
 };
 
-parse_with_pkg_name() {
-	PKG_NAME=${1}; shift; PKG_TARGET=${TARGET};
-	MIDIPIX_BUILD_PWD=$(pwd); build_fileop cd ${WORKDIR};
-	for __ in vars/${PKG_NAME}.vars; do
-		[ -e ${MIDIPIX_BUILD_PWD}/${__} ] && . ${MIDIPIX_BUILD_PWD}/${__};
-	done;
-	_pwpn_pkg_name_uc=$(echo ${PKG_NAME} | tr a-z A-Z);
-	if [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_URL)" ]\
-	&& [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_URLS_GIT)" ]\
-	&& [ -z "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_VERSION)" ]; then
-		unset _pwpn_pkg_name_uc;
-		log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
-	else
-		for _pwpn_vname in PREFIX ${PKG_BUILD_VARS}; do
-			if [ -n "$(get_var_unsafe DEFAULT_${_pwpn_vname})" ]; then
-				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe DEFAULT_${_pwpn_vname})";
-			fi;
-			if [ -n "$(get_var_unsafe ${BUILD_TARGET}_${_pwpn_vname})" ]; then
-				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe ${BUILD_TARGET}_${_pwpn_vname})";
-			fi;
-			if [ "${BUILD}" = "debug" ]	\
-			&& [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_DEBUG)" ]; then
-				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_DEBUG)";
-			elif [ "${BUILD}" = "release" ]	\
-			&& [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_RELEASE)" ]; then
-				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname}_RELEASE)";
-			elif [ -n "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname})" ]; then
-				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe PKG_${_pwpn_pkg_name_uc}_${_pwpn_vname})";
-			fi;
-		done; unset _pwpn_vname;
+log_msg() {
+	local _lvl="${1}"; shift;
+	if [ "${_lvl#v}" != "${_lvl}" ]\
+	&& [ ${ARG_VERBOSE:-0} -eq 0 ]; then
+		return;
 	fi;
-	[ -z "${PKG_FNAME}" ] && PKG_FNAME=${PKG_URL##*/};
-	[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR=${PKG_FNAME%%.tar*};
-	[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
-	for _pwpn_env_var in $(set); do
-		if [ "${_pwpn_env_var#PKG_${_pwpn_pkg_name_uc}}" != "${_pwpn_env_var}" ]; then
-			_pwpn_env_vars="${_pwpn_env_vars:+${_pwpn_env_vars} }${_pwpn_env_var%%=*}";
-		fi;
-	done;
-	if [ -n "${_pwpn_env_vars}" ]; then
-		log_env_vars "build" ${_pwpn_env_vars};
-	fi; unset _pwpn_pkg_name_uc _pwpn_env_var _pwpn_env_vars;
+	case "${_lvl}" in
+		failexit) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
+		fail) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
+		info) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		vnfo) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		succ) printf "\033[0m\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
+		warn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
+		varn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
+	esac;
+	if [ ${#} -gt 1 ]; then
+		printf "==> %s %s %s\033[0m\n" "$(date)" "${1}" "$*";
+	else
+		printf "==> %s %s\033[0m\n" "$(date)" "${1}";
+	fi; [ ${_lvl} = failexit ] && exit 1 || return 0;
+};
+
+match_list() {
+	local _cmp="${3}"; push_IFS "${2}"; set -- ${1}; pop_IFS;
+	while [ ${#} -gt 0 ]; do
+		if [ "${1}" = "${_cmp}" ]; then
+			return 0;
+		fi; shift;
+	done; return 1;
 };
 
 run_cmd_unsplit() {
-	_rcu_cmd=${1}; shift;
+	local _cmd="${1}" _cmdline _rc; shift;
 	while [ ${#} -gt 0 ]; do
 		[ -n "${1}" ] &&\
-			_rcu_cmdline="${_rcu_cmdline:+${_rcu_cmdline}:}${1}";
+			_cmdline="${_cmdline:+${_cmdline}:}${1}";
 		shift;
 	done;
-	push_IFS :; ${_rcu_cmd} ${_rcu_cmdline}; _rcu_rc=$?; pop_IFS;
-	unset _rcu_cmd _rcu_cmdline; return ${_rcu_rc};
+	push_IFS :; ${_cmd} ${_cmdline}; _rc=$?; pop_IFS;
+	return ${_rc};
+};
+
+set_env_vars_with_sep() {
+	local _sep="${1}"; shift; push_IFS ${_sep}; set -- ${1};
+	while [ ${#} -gt 0 ]; do
+		export "${1}"; shift;
+	done; pop_IFS;
 };
 
 subst_tgts() {
