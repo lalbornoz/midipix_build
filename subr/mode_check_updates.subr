@@ -54,7 +54,7 @@ mode_check_pkg_updates() {
 	cu_url="$(get_var_unsafe PKG_${cu_NAME}_URL)";
 	cu_url_type="$(get_var_unsafe PKG_${cu_NAME}_URL_TYPE)";
 	. vars/check_updates.vars;
-	if match_list "${CHECK_UPDATES_SKIP}" " " "${cu_name}"; then
+	if lmatch "${CHECK_UPDATES_SKIP}" " " "${cu_name}"; then
 		log_msg vnfo "Skipping \`${cu_name}' (set in \${CHECK_UPDATES_SKIP}.)";
 		return 0;
 	elif [ "${cu_url_type}" = "git" ]; then
