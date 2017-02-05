@@ -24,9 +24,6 @@ pkg_extract() {
 		else
 			tar ${PKG_SUBDIR_CREATE:+-C ${PKG_SUBDIR}} -xf ${DLCACHEDIR}/${PKG_FNAME};
 		fi;
-		if test_cmd pkg_${PKG_NAME}_extract_post; then
-			pkg_${PKG_NAME}_extract_post;
-		fi;
 	fi;
 };
 
