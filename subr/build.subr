@@ -75,11 +75,17 @@ install_files() {
 };
 
 is_build_script_done() {
-	local _done_fname="${WORKDIR}/.${1}.${2}";
-	if [ -e "${_done_fname}" ]; then
-		return 0;	# Skip
+	local _done_fname="${WORKDIR}/.${1}.${2}" _restart_at="${2}";
+	if [ -z "${_restart_at}" ]; then
+		if [ -e "${_done_fname}" ]; then
+			return 0;	# Skip
+		else
+			return 1;	# Build
+		fi;
+	elif lmatch "${_restart_at}" , "${2}"; then
+		return 1;		# Build
 	else
-		return 1;	# Build
+		return 0;		# Skip
 	fi;
 };
 

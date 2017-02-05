@@ -14,9 +14,6 @@ pkg_patch_pre() {
 			patch -b -d ${PKG_SUBDIR} -p1 < ${__};
 		fi;
 	done;
-	if test_cmd pkg_${PKG_NAME}_patch_pre_post; then
-		pkg_${PKG_NAME}_patch_pre_post;
-	fi;
 };
 
 # vim:filetype=sh
