@@ -74,14 +74,14 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 				always)	  _pkg_step_cmds="pkg_${1%:*}"; ;;
 				main)	if [ -n "${BUILD_PACKAGES_RESTART}" ]; then
 						if [ -z "${ARG_RESTART_AT}" ]\
-						|| match_list "${ARG_RESTART_AT}" , "${1%:*}"; then
+						|| lmatch "${ARG_RESTART_AT}" , "${1%:*}"; then
 							_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 						fi;
 					elif ! is_build_script_done ${PKG_NAME} ${1%:*}; then
 						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 					fi; ;;
 				optional)
-					if match_list "${ARG_RESTART_AT}" "," "${1%:*}"; then
+					if lmatch "${ARG_RESTART_AT}" "," "${1%:*}"; then
 						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 					fi; ;;
 				esac;
