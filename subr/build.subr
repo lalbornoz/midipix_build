@@ -14,13 +14,13 @@ build_fileop() {
 	local _op="${1}"; shift;
 	if [ "${_op}" = cd ]; then
 		log_msg varn "Changing working directory to \`${1}'.";
-		[ \( -n "${1}" \) -a \( -e "${1}" \) ] && cd -- ${1};
+		[ \( -n "${1}" \) -a \( -e "${1}" \) ] && cd -- "${1}";
 	elif [ "${_op}" = cp ]; then
 		log_msg varn "Copying \`${1}' to \`${2}' w/ -pPR.";
 		[ ${#} -ge 2 ] && cp -pPR -- "${@}";
 	elif [ "${_op}" = ln_symbolic ]; then
 		log_msg varn "Linking \`${1}' to \`${2}' w/ -fs";
-		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && ln -fs -- ${1} ${2};
+		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && ln -fs -- "${1}" "${2}";
 	elif [ "${_op}" = mkdir ]\
 	||   [ "${_op}" = rm ]; then
 		while [ ${#} -gt 0 ]; do
@@ -53,22 +53,22 @@ install_files() {
 		_ln_target="${1%=*}";
 		_ln_target="${_ln_target#@}";
 		_ln_fname="${1#*=}";
-		if [ -e ${_ln_fname} ]; then
+		if [ -e "${_ln_fname}" ]; then
 			if [ ${_verbose:-0} -eq 1 ]; then
-				echo build_fileop rm ${_ln_fname};
+				echo build_fileop rm "${_ln_fname}";
 			fi;
-			build_fileop rm ${_ln_fname};
+			build_fileop rm "${_ln_fname}";
 		fi;
-		build_fileop ln_symbolic ${_ln_target} ${_prefix:+${_prefix}/}${_ln_fname};
+		build_fileop ln_symbolic "${_ln_target}" "${_prefix:+${_prefix}/}${_ln_fname}";
 		;;
 	/=*)
 		_mkdir_fname="${1#/=}";
-		build_fileop mkdir ${_prefix:+${_prefix}/}${_mkdir_fname};
+		build_fileop mkdir "${_prefix:+${_prefix}/}${_mkdir_fname}";
 		;;
 	*)
 		_file_fname_src="${1%=*}";
 		_file_fname_dst="${1#*=}";
-		build_fileop cp ${_file_fname_src} ${_prefix:+${_prefix}/}${_file_fname_dst};
+		build_fileop cp "${_file_fname_src}" "${_prefix:+${_prefix}/}${_file_fname_dst}";
 		;;
 	esac; shift;
 	done;
@@ -179,9 +179,9 @@ subst_tgts() {
 	while [ ${#} -ge 1 ]; do
 	case "${1}" in
 	devroot)
-		echo ${DEVROOT_PACKAGES}; ;;
-	world)	echo ${WORLD_PACKAGES}; ;;
-	*)	echo ${1}; ;;
+		echo "${DEVROOT_PACKAGES}"; ;;
+	world)	echo "${WORLD_PACKAGES}"; ;;
+	*)	echo "${1}"; ;;
 	esac; shift;
 	done;
 };
