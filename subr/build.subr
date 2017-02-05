@@ -29,6 +29,18 @@ set_env_vars_with_sep() {
 	done; unset _sevws_sep; pop_IFS;
 };
 
+lfilter() {
+	_lf_list="${1}"; _lf_filter="${2}"; _lf_lnew="";
+	for _lf_litem in ${_lf_list}; do
+		for _lf_lfilter in ${_lf_filter}; do
+			if [ "${_lf_lfilter}" = "${_lf_litem}" ]; then
+				_lf_lnew="${_lf_lnew:+${_lf_lnew} }${_lf_litem}"; break;
+			fi; 
+		done;
+	done;
+	echo ${_lf_lnew}; unset _lf_list _lf_filter _lf_lnew _lf_litem _lf_lfilter;
+};
+
 log_msg() {
 	_lm_lvl=${1}; shift;
 	if [ "${_lm_lvl#v}" != "${_lm_lvl}" ]\
@@ -196,7 +208,7 @@ parse_with_pkg_name() {
 		unset _pwpn_pkg_name_uc;
 		log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
 	else
-		for _pwpn_vname in ${PKG_BUILD_VARS}; do
+		for _pwpn_vname in PREFIX ${PKG_BUILD_VARS}; do
 			if [ -n "$(get_var_unsafe DEFAULT_${_pwpn_vname})" ]; then
 				set_var_unsafe PKG_${_pwpn_vname} "$(get_var_unsafe DEFAULT_${_pwpn_vname})";
 			fi;
