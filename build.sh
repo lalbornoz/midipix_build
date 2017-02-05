@@ -93,7 +93,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		break;
 	fi;
 done;
-if [ ${BUILD_SCRIPT_RC:-0} -ne 0 ]; then
+if [ ${BUILD_SCRIPT_RC:-0} -eq 0 ]; then
 	post_copy_etc; post_strip; post_tarballs; post_build_files;
 fi;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
