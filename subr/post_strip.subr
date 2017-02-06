@@ -4,8 +4,7 @@
 
 post_strip() {
 	local __;
-	if [ ${BUILD_SCRIPT_RC:-0} -eq 0 ]\
-	&& [ "${BUILD}" = release ]; then
+	if [ "${BUILD}" = release ]; then
 		for __ in $(find ${PREFIX_NATIVE}/bin -perm -0100 \( -type f -or -type l \)); do
 			if objdump -sj .debug_info >/dev/null 2>&1; then
 				log_msg vnfo "${PKG_TARGET}-strip ${__}";
