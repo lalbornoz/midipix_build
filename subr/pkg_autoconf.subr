@@ -4,19 +4,19 @@
 
 pkg_autoconf() {
 	local __;
-	if [ -e "../${PKG_SUBDIR}/configure" -o							\
-	     -e "../${PKG_SUBDIR}/configure.ac" -o							\
-	     -e "../${PKG_SUBDIR}/configure.in" -o							\
-	     -e "../${PKG_SUBDIR}/config.guess" ]; then
-		find "../${PKG_SUBDIR}" -name config.sub						\
+	if [ -e "${WORKDIR}/${PKG_SUBDIR}/configure" -o						\
+	     -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" -o					\
+	     -e "${WORKDIR}/${PKG_SUBDIR}/configure.in" -o					\
+	     -e "${WORKDIR}/${PKG_SUBDIR}/config.guess" ]; then
+		find "${WORKDIR}/${PKG_SUBDIR}" -name config.sub				\
 			-exec echo mv -- {} {}.orig \;						\
 			-exec mv -- {} {}.orig \;						\
 			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;	\
 			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
-		if [ -e "../${PKG_SUBDIR}/configure.ac" ]\
-		&& [ ! -e "../${PKG_SUBDIR}/configure" ]; then
-			if [ -e "../${PKG_SUBDIR}/autogen.sh" ]; then
-				for __ in "../${PKG_SUBDIR}/build-aux" "../${PKG_SUBDIR}"; do
+		if [ -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" ]\
+		&& [ ! -e "${WORKDIR}/${PKG_SUBDIR}/configure" ]; then
+			if [ -e "${WORKDIR}/${PKG_SUBDIR}/autogen.sh" ]; then
+				for __ in "${WORKDIR}/${PKG_SUBDIR}/build-aux" "${WORKDIR}/${PKG_SUBDIR}"; do
 					if [ -e "${__}" ]; then
 						echo install -m 0700				\
 							"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
@@ -27,13 +27,13 @@ pkg_autoconf() {
 						break;
 					fi;
 				done;
-				(build_fileop cd "../${PKG_SUBDIR}" && "${SHELL}" ./autogen.sh) || exit 1;
+				(build_fileop cd "${WORKDIR}/${PKG_SUBDIR}" && "${SHELL}" ./autogen.sh) || exit 1;
 			else
-				(build_fileop cd "../${PKG_SUBDIR}" && autoconf) || exit 1;
+				(build_fileop cd "${WORKDIR}/${PKG_SUBDIR}" && autoconf) || exit 1;
 			fi;
 		fi;
-		for __ in . ${PKG_CONFIG_CACHE_EXTRA}; do
-			build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${__}/";
+		for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
+			build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${WORKDIR}/${__}/";
 		done;
 	fi;
 };

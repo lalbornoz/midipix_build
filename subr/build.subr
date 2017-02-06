@@ -85,6 +85,8 @@ is_build_script_done() {
 		else
 			return 1;	# Build
 		fi;
+	elif [ "${_restart_at}" = "ALL" ]; then
+		return 1;		# Build
 	elif lmatch "${_restart_at}" , "${2}"; then
 		return 1;		# Build
 	else
