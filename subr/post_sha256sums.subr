@@ -1,0 +1,16 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+post_sha256sums() {
+	local __;
+	log_msg info "Compiling SHA256 sums...";
+	if [ -e "${PREFIX}/SHA256SUMS" ]; then
+		build_fileop mv "${PREFIX}/SHA256SUMS" "${PREFIX}/SHA256SUMS.last";
+	fi;
+	for __ in $(find "${PREFIX_NATIVE}" -type f -perm +011 -name bin/\* lib/\*); do
+		sha256sum "${__}";
+	done > "${PREFIX}/SHA256SUMS";
+};
+
+# vim:filetype=sh
