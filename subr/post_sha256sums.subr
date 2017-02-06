@@ -10,11 +10,12 @@ post_sha256sums() {
 		if [ -e "${PREFIX}/SHA256SUMS" ]; then
 			build_fileop mv "${PREFIX}/SHA256SUMS" "${PREFIX}/SHA256SUMS.last";
 		fi;
-		for __ in $(find "${PREFIX_NATIVE}" -type f -perm /a=x	\
-				\( -path "${PREFIX_NATIVE}/bin/*" -or	\
-				   -path "${PREFIX_NATIVE}/lib/*" \)); do
+		(cd "${PREFIX}";
+		for __ in $(find "${PREFIX_NATIVE#${PREFIX}/}" -type f -perm /a=x	\
+				\( -path "${PREFIX_NATIVE#${PREFIX}/}/bin/*" -or	\
+				   -path "${PREFIX_NATIVE#${PREFIX}/}/lib/*" \)); do
 			sha256sum "${__}";
-		done > "${PREFIX}/SHA256SUMS";
+		done > "${PREFIX}/SHA256SUMS");
 	fi;
 };
 
