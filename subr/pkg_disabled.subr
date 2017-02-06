@@ -3,7 +3,7 @@
 #
 
 pkg_disabled() {
-	if [ ${PKG_DISABLED:-0} -eq 1 ]; then
+	if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
 		exit 0;
 	fi;
 };

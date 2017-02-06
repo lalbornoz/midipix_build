@@ -3,6 +3,10 @@
 #
 
 pkg_build() {
+	local _no_autoconf;
+	if [ ! -x "${PKG_CONFIGURE}" ]; then
+		_no_autoconf=1;
+	fi;
 	if [ -n "${PKG_BUILD_CMDLINE}" ]; then
 		${PKG_BUILD_CMDLINE};
 	elif [ ${PKG_NO_MAKE_BUILD:-0} -eq 0 ]; then
@@ -12,13 +16,12 @@ pkg_build() {
 		run_cmd_unsplit make							\
 			${PKG_MAKEFLAGS_BUILD}						\
 			${PKG_MAKEFLAGS_BUILD_EXTRA}					\
-			AR=${AR} ${__no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
+			AR=${AR} ${_no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
 			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
 			"${CFLAGS_FOR_BUILD:+CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}}"	\
 			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
 			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
 			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
-		unset __no_autoconf;
 	fi;
 };
 

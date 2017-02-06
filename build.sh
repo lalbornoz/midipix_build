@@ -71,7 +71,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 				_pkg_step_cmds=""; _pkg_step_cmd_args="";
 				case "${1#*:}" in
 				abstract) _pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}";
-					  _pkg_step_cmd_args="${ARG_RESTART_AT}"; ;;
+					  _pkg_step_cmd_args="${ARG_RESTART_AT:-ALL}"; ;;
 				always)	  _pkg_step_cmds="pkg_${1%:*}"; ;;
 				main)	if [ -n "${BUILD_PACKAGES_RESTART}" ]; then
 						if [ -z "${ARG_RESTART_AT}" ]\
@@ -88,11 +88,17 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 				esac;
 				for __ in ${_pkg_step_cmds}; do
 					if test_cmd "${__}"; then
-						test_cmd "${__}_pre" && "${__}_pre";
+						test_cmd "pkg_${PKG_NAME}_${1%:*}_pre"	\
+							&& "pkg_${PKG_NAME}_${1%:*}_pre"
 						"${__}" ${_pkg_step_cmd_args};
-						test_cmd "${__}_post" && "${__}_post";
-						set_build_script_done "${PKG_NAME}" "${1%:*}"	\
-							${2:+-${2%:*}}; break;
+						test_cmd "pkg_${PKG_NAME}_${1%:*}_post"	\
+							&& "pkg_${PKG_NAME}_${1%:*}_post"
+						if [ "${1#*:}" != "always" ]\
+						&& [ ${#} -ge 2 ]; then
+							set_build_script_done "${PKG_NAME}" "${1%:*}" "-${2#*:}";
+						else
+							set_build_script_done "${PKG_NAME}" "${1%:*}";
+						fi; break;
 					fi;
 				done;
 			shift; done;

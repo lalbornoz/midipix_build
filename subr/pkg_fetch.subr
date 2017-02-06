@@ -10,53 +10,51 @@ pkgp_fetch() {
 	else
 		_url_dst="${DLCACHEDIR}/${3}";
 	fi;
-	if [ ${ARG_OFFLINE:-0} -eq 1 ]\
-	|| [ -e ${_url_dst}.fetched ]; then
+	if [ "${ARG_OFFLINE:-0}" -eq 1 ]\
+	|| [ -e "${_url_dst}.fetched" ]; then
 		return 0;
 	else
-		wget ${WGET_ARGS} -c -O ${_url_dst} "${_url}";
+		wget ${WGET_ARGS} -c -O "${_url_dst}" "${_url}";
 	fi;
 	if [ -n "${_sha256sum_src}" ]; then
-		set -- $(openssl dgst -sha256 ${_url_dst}); shift $((${#}-1));
+		set -- $(openssl dgst -sha256 "${_url_dst}"); shift $((${#}-1));
 		if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
-			if [ ${ARG_IGNORE_SHA256SUMS:-0} -eq 0 ]; then
+			if [ "${ARG_IGNORE_SHA256SUMS:-0}" -eq 0 ]; then
 				log_msg failexit "Error: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			else
 				log_msg warn "Warning: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			fi;
 		fi;
 	fi;
-	touch ${_url_dst}.fetched;
+	touch "${_url_dst}.fetched";
 };
 
 pkgp_fetch_git() {
 	local _subdir="${1}" _url="${2}" _branch="${3}";
-	if [ ${ARG_OFFLINE:-0} -eq 0 ]; then
+	if [ "${ARG_OFFLINE:-0}" -eq 0 ]; then
 		if [ -e "${DLCACHEDIR}/${_subdir}" ]; then
-			build_fileop cd ${DLCACHEDIR}/${_subdir} &&\
-				git pull origin ${_branch:-main} &&\
-					build_fileop cd ${OLDPWD};
+			(build_fileop cd "${DLCACHEDIR}/${_subdir}" &&\
+				git pull origin "${_branch:-main}");
 		else
-			git clone ${_url} ${DLCACHEDIR}/${_subdir};
+			git clone "${_url}" "${DLCACHEDIR}/${_subdir}";
 			if [ -n "${_branch}" -a		\
 			     \( -z "${_branch#main}" \) -a	\
 			     \( -z "${_branch#master}" \) ]; then
-				build_fileop cd ${DLCACHEDIR}/${_subdir}	&&\
-					git checkout -b ${_branch}		&&\	
-						build_fileop cd ${OLDPWD};
+				(build_fileop cd "${DLCACHEDIR}/${_subdir}"	&&\
+					git checkout -b "${_branch}");
 			fi;
 		fi;
 	fi;
-	build_fileop rm ${_subdir};
-	build_fileop cp ${DLCACHEDIR}/${_subdir} .;
+	build_fileop rm "${WORKDIR}/${_subdir}";
+	build_fileop cp "${DLCACHEDIR}/${_subdir}" "${WORKDIR}";
 };
 
 pkgp_fetch_urls_git() {
 	local _url_spec _subdir _url _git_branch;
-	for _url_spec in "${@}"; do
-		_subdir=${_url_spec%=*};
-		_url=${_url_spec#*=};
-		_url=${_url%@*};
+	for _url_spec in ${@}; do
+		_subdir="${_url_spec%=*}";
+		_url="${_url_spec#*=}";
+		_url="${_url%@*}";
 		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
 			_git_branch=${_url_spec#*@};
 		fi;
@@ -67,16 +65,16 @@ pkgp_fetch_urls_git() {
 pkg_fetch() {
 	if [ -n "${1}" ]; then
 		if [ "${1}" = "-git" ]; then
-			shift; pkgp_fetch_urls_git ${1};
+			shift; pkgp_fetch_urls_git "${1}";
 		else
-			pkgp_fetch ${1} ${2};
+			pkgp_fetch "${1}" "${2}";
 		fi;
 	else
 		if [ -n "${PKG_URL}" ]; then
-			pkgp_fetch ${PKG_URL} ${PKG_SHA256SUM} ${PKG_FNAME};
+			pkgp_fetch "${PKG_URL}" "${PKG_SHA256SUM}" "${PKG_FNAME}";
 		fi;
 		if [ -n "${PKG_URLS_GIT}" ]; then
-			pkgp_fetch_urls_git ${PKG_URLS_GIT};
+			pkgp_fetch_urls_git "${PKG_URLS_GIT}";
 		fi;
 	fi;
 };
