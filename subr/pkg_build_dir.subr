@@ -4,11 +4,12 @@
 
 pkg_build_dir() {
 	if [ -z "${PKG_BUILD_DIR}" ]; then
-		set_build_dir ${PKG_SUBDIR} ${PKG_BUILD_TYPE:-native};
+		set_build_dir "${PKG_SUBDIR}" "${PKG_BUILD_TYPE:-native}";
 	fi;
 	if [ ! -d "${PKG_BUILD_DIR}" ]; then
-		build_fileop mkdir ${PKG_BUILD_DIR};
+		build_fileop mkdir "${PKG_BUILD_DIR}";
 	fi;
+	build_fileop cd "${PKG_BUILD_DIR}";
 };
 
 # vim:filetype=sh

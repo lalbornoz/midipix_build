@@ -7,7 +7,7 @@ get_var_unsafe() { eval echo \${${1}}; };
 set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
 push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
-set_build_dir() { PKG_BUILD_DIR=${1}-${2}-${PKG_TARGET}; };
+set_build_dir() { PKG_BUILD_DIR="${1}-${2}-${PKG_TARGET}"; };
 test_cmd() { command -v "${1}" >/dev/null; };
 
 build_fileop() {
@@ -78,7 +78,7 @@ install_files() {
 };
 
 is_build_script_done() {
-	local _done_fname="${WORKDIR}/.${1}.${2}" _restart_at="${2}";
+	local _done_fname="${WORKDIR}/.${1}.${2}" _restart_at="${3}";
 	if [ -z "${_restart_at}" ]; then
 		if [ -e "${_done_fname}" ]; then
 			return 0;	# Skip
