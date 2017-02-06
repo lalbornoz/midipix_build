@@ -64,6 +64,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		fi;
 		(set -o errexit -o noglob;
 		if [ -n "${BUILD_PACKAGES_RESTART}" ]\
+		|| [ "${BUILD_TARGET}" = "INVARIANTS" ]\
 		|| ! is_build_script_done "${PKG_NAME}" finish; then
 			PKG_BUILD_STEPS="$(get_var_unsafe PKG_$(echo ${PKG_NAME} | tr a-z A-Z)_BUILD_STEPS)";
 			set -- ${PKG_BUILD_STEPS:-${BUILD_STEPS}};
@@ -73,7 +74,9 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 				abstract) _pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}";
 					  _pkg_step_cmd_args="${ARG_RESTART_AT:-ALL}"; ;;
 				always)	  _pkg_step_cmds="pkg_${1%:*}"; ;;
-				main)	if [ -n "${BUILD_PACKAGES_RESTART}" ]; then
+				main)	if [ "${BUILD_TARGET}" = "INVARIANTS" ]; then
+						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
+					elif [ -n "${BUILD_PACKAGES_RESTART}" ]; then
 						if [ -z "${ARG_RESTART_AT}" ]\
 						|| lmatch "${ARG_RESTART_AT}" , "${1%:*}"; then
 							_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
