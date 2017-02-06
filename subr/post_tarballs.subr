@@ -3,73 +3,73 @@
 #
 
 postp_tarball_dist() {
-	TARBALL_FNAME=${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
+	TARBALL_FNAME="${TARBALL_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX}";
 	tar -cpf - $(find . -maxdepth 2 -mindepth 1 -type d				\
 			-not -path ./${PREFIX_BASENAME} 				\
 			-not -path ./${PREFIX_BASENAME}.bak				\
 			-not -path ./${PREFIX_BASENAME}.bak/\*				\
 			-not -path ./tmp -not -path ./tmp/\*)				\
-		midipix_shortcut.vbs midipix.sh	README					|\
-	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_FNAME};
+		midipix_shortcut.vbs midipix.sh	README SHA256SUMS			|\
+	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_FNAME}";
 	log_msg info "Finished building binary distribution tarball.";
-	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&\
+	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&		\
 				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 		gpg --armor --passphrase-file /dev/null					\
-			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign ${TARBALL_FNAME};
+			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign "${TARBALL_FNAME}";
 		log_msg info "Signed binary distribution tarball.";
 	fi;
 };
 
 postp_tarball_toolchain() {
-	TARBALL_CROSS_FNAME=${TARBALL_CROSS_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
-	tar -cpf - bin include lib lib64 libexec share ${PKG_TARGET}			|\
-	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_CROSS_FNAME};
+	TARBALL_CROSS_FNAME="${TARBALL_CROSS_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX}";
+	tar -cpf - bin include lib lib64 libexec share "${PKG_TARGET}"			|\
+	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_CROSS_FNAME}";
 	log_msg info "Finished building toolchain tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_CROSS_SIGN_GPG_KEY}" ] &&\
 				gpg --list-keys "${TARBALL_CROSS_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 		gpg --armor --passphrase-file /dev/null					\
-			--local-user "${TARBALL_CROSS_SIGN_GPG_KEY}" --sign ${TARBALL_CROSS_FNAME};
+			--local-user "${TARBALL_CROSS_SIGN_GPG_KEY}" --sign "${TARBALL_CROSS_FNAME}";
 		log_msg info "Signed toolchain tarball.";
 	fi;
 };
 
 postp_tarball_minipix() {
-	TARBALL_MINIPIX_FNAME=${TARBALL_MINIPIX_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};	
+	TARBALL_MINIPIX_FNAME="${TARBALL_MINIPIX_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX}";
 	tar -cpf - minipix 								\
 		midipix_shortcut.vbs midipix.sh README					|\
-	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_MINIPIX_FNAME};
+	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_MINIPIX_FNAME}";
 	log_msg info "Finished building binary Minipix distribution tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_MINIPIX_SIGN_GPG_KEY}" ] &&\
 				gpg --list-keys "${TARBALL_MINIPIX_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 		gpg --armor --passphrase-file /dev/null					\
-			--local-user "${TARBALL_MINIPIX_SIGN_GPG_KEY}" --sign ${TARBALL_MINIPIX_FNAME};
+			--local-user "${TARBALL_MINIPIX_SIGN_GPG_KEY}" --sign "${TARBALL_MINIPIX_FNAME}";
 		log_msg info "Signed binary Minipix distribution tarball.";
 	fi;
 };
 
 postp_tarball_src() {
-	TARBALL_SRC_FNAME=${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX};
+	TARBALL_SRC_FNAME="${TARBALL_SRC_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX}";
 	log_msg info "Building source tarball...";
 	tar -cpf - $(find tmp -mindepth 2 -maxdepth 2				\
 		-not -path tmp/.\*						\
 		-not -path tmp/ntctty/.git					\
 		-not -path tmp/psxscl/.git					\
 		-not -path tmp/ptycon/.git)					|\
-	${TARBALL_COMPRESS_CMD} ${TARBALL_COMPRESS_ARGS} -c > ${TARBALL_SRC_FNAME};
+	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_SRC_FNAME}";
 	log_msg info "Finished building source tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
 				gpg --list-keys "${TARBALL_SRC_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 		gpg --armor --passphrase-file /dev/null				\
-			--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign ${TARBALL_SRC_FNAME};
+			--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign "${TARBALL_SRC_FNAME}";
 		log_msg info "Signed source tarball.";
 	fi;
 };
 
 post_tarballs() {
-	if [ ${BUILD_SCRIPT_RC:-0} -eq 0 ]\
-	&& [ ${ARG_TARBALL:-0} -eq 1 ]; then
+	if [ "${BUILD_SCRIPT_RC:-0}" -eq 0 ]\
+	&& [ "${ARG_TARBALL:-0}" -eq 1 ]; then
 		log_msg info "Building distribution tarballs...";
-		case ${TARBALL_SUFFIX} in
+		case "${TARBALL_SUFFIX}" in
 		bz2)	if [ -n "$(which pbzip2 2>/dev/null)" ]; then
 				TARBALL_COMPRESS_CMD="pbzip2";
 			else
@@ -84,7 +84,7 @@ post_tarballs() {
 			TARBALL_COMPRESS_ARGS="-T0"; ;;
 		*)	log_msg failexit "Unknown tarball suffix \`.${TARBALL_SUFFIX}'.";
 		esac;
-		build_fileop cd ${PREFIX}; PREFIX_BASENAME=${PREFIX_NATIVE##*/};
+		build_fileop cd "${PREFIX}"; PREFIX_BASENAME="${PREFIX_NATIVE##*/}";
 		postp_tarball_dist; postp_tarball_toolchain; postp_tarball_minipix;
 		if [ "${BUILD}" = "debug" ]; then
 			postp_tarball_src;

@@ -4,13 +4,16 @@
 
 post_sha256sums() {
 	local __;
-	log_msg info "Compiling SHA256 sums...";
-	if [ -e "${PREFIX}/SHA256SUMS" ]; then
-		build_fileop mv "${PREFIX}/SHA256SUMS" "${PREFIX}/SHA256SUMS.last";
+	if [ "${BUILD_SCRIPT_RC:-0}" -eq 0 ]\
+	&& [ "${ARG_TARBALL:-0}" -eq 1 ]; then
+		log_msg info "Compiling SHA256 sums...";
+		if [ -e "${PREFIX}/SHA256SUMS" ]; then
+			build_fileop mv "${PREFIX}/SHA256SUMS" "${PREFIX}/SHA256SUMS.last";
+		fi;
+		for __ in $(find "${PREFIX_NATIVE}" -type f -perm /a=x -name bin/\* -name lib/\*); do
+			sha256sum "${__}";
+		done > "${PREFIX}/SHA256SUMS";
 	fi;
-	for __ in $(find "${PREFIX_NATIVE}" -type f -perm /a=x -name bin/\* -name lib/\*); do
-		sha256sum "${__}";
-	done > "${PREFIX}/SHA256SUMS";
 };
 
 # vim:filetype=sh
