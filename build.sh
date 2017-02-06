@@ -78,7 +78,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 						|| lmatch "${ARG_RESTART_AT}" , "${1%:*}"; then
 							_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 						fi;
-					elif ! is_build_script_done ${PKG_NAME} ${1%:*}; then
+					elif ! is_build_script_done "${PKG_NAME}" "${1%:*}"; then
 						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 					fi; ;;
 				optional)
