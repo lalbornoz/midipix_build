@@ -5,13 +5,13 @@
 pkg_patch_pre() {
 	local __;
 	for __ in 											\
-			"${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local.patch"				\
-			"${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch"		\
-			"${WORKDIR}/chainport/${PKG_SUBDIR}_pre.midipix.patch"				\
-			"${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local.patch"			\
-			"${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch"; do
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local.patch				\
+			${MIDIPIX_BUILD_PWD}/../${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch		\
+			${WORKDIR}/chainport/${PKG_SUBDIR}_pre.midipix.patch				\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}_pre.local@${BUILD_HNAME}.patch; do
 		if [ -r "${__}" ]; then
-			patch -b -d "${PKG_SUBDIR}" -p1 < "${__}";
+			patch -b -d "${WORKDIR}/${PKG_SUBDIR}" -p1 < "${__}";
 		fi;
 	done;
 };
