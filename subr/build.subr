@@ -21,6 +21,9 @@ build_fileop() {
 	elif [ "${_op}" = ln_symbolic ]; then
 		log_msg varn "Linking \`${1}' to \`${2}' w/ -fs";
 		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && ln -fs -- "${1}" "${2}";
+	elif [ "${_op}" = mv ]; then
+		log_msg varn "Moving \`${1}' to \`${2}' w/ -fs";
+		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && mv -f -- "${1}" "${2}";
 	elif [ "${_op}" = mkdir ]\
 	||   [ "${_op}" = rm ]; then
 		while [ ${#} -gt 0 ]; do
