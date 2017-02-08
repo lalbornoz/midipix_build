@@ -22,7 +22,7 @@ postp_tarball_dist() {
 
 postp_tarball_toolchain() {
 	TARBALL_CROSS_FNAME="${TARBALL_CROSS_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.tar.${TARBALL_SUFFIX}";
-	tar -cpf - bin include lib lib64 libexec share "${PKG_TARGET}"			|\
+	tar -cpf - bin include lib lib64 libexec share "${TARGET}"			|\
 	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_CROSS_FNAME}";
 	log_msg info "Finished building toolchain tarball.";
 	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_CROSS_SIGN_GPG_KEY}" ] &&\
