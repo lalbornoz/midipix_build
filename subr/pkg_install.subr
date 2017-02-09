@@ -44,9 +44,8 @@ pkgp_install_pkgconfig() {
 	local __;
 	for __ in $(find "${WORKDIR}/${PKG_BUILD_DIR}" -name \*.pc); do 
 		if grep -Eq '^libdir=[^$]+$' "${__}"; then
-			echo sed -i '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
-					"${__}";
-			sed -i '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'		\
+			sed -i	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
+				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'			\
 					"${__}";
 		fi;
 	done;
