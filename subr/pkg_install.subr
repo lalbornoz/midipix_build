@@ -40,12 +40,25 @@ pkgp_install_dlltool() {
 	fi;
 };
 
+pkgp_install_pkgconfig() {
+	local __;
+	for __ in $(find "${WORKDIR}/${PKG_BUILD_DIR}" -name \*.pc); do 
+		if grep -Eq '^libdir=[^$]+$' "${__}"; then
+			echo sed -i '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
+					"${__}";
+			sed -i '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'		\
+					"${__}";
+		fi;
+	done;
+};
+
 pkg_install() {
+	pkgp_install_pkgconfig;
 	if [ ${PKG_NO_MAKE_INSTALL:-0} -eq 0 ]; then
-		run_cmd_unsplit make					\
-			${PKG_MAKEFLAGS_INSTALL}			\
-			${PKG_MAKEFLAGS_INSTALL_EXTRA}			\
-			AR=${AR} CC=${CC} RANLIB=${RANLIB}		\
+		run_cmd_unsplit make							\
+			${PKG_MAKEFLAGS_INSTALL}					\
+			${PKG_MAKEFLAGS_INSTALL_EXTRA}					\
+			AR=${AR} CC=${CC} RANLIB=${RANLIB}				\
 			"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"				\
 			"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"		\
 			"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
@@ -53,16 +66,16 @@ pkg_install() {
 			"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
 			${PKG_INSTALL_TARGET:=install};
 		if [ -n "${PKG_PREFIX_EXTRA}" ]; then
-			run_cmd_unsplit make				\
-				${PKG_MAKEFLAGS_INSTALL}		\
-				${PKG_MAKEFLAGS_INSTALL_EXTRA}		\
-				AR=${AR} CC=${CC} RANLIB=${RANLIB}	\
+			run_cmd_unsplit make						\
+				${PKG_MAKEFLAGS_INSTALL}				\
+				${PKG_MAKEFLAGS_INSTALL_EXTRA}				\
+				AR=${AR} CC=${CC} RANLIB=${RANLIB}			\
 				"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
 				"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
 				"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
 				"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
 				"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
-				${PKG_INSTALL_TARGET_EXTRA:=install}	\
+				${PKG_INSTALL_TARGET_EXTRA:=install}			\
 				DESTDIR=${PKG_PREFIX_EXTRA};
 		fi;
 	fi;
@@ -71,6 +84,7 @@ pkg_install() {
 		(install_files -v ${PKG_PREFIX} ${PKG_INSTALL_FILES});
 	fi;
 	pkgp_install_dlltool;
+	pkgp_install_pkgconfig;
 };
 
 # vim:filetype=sh
