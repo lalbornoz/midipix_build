@@ -1,0 +1,94 @@
+--- openlitespeed-1.4.24/configure.orig	2016-12-02 19:52:25.745807731 +0000
++++ openlitespeed-1.4.24/configure	2017-02-11 15:09:26.176648560 +0000
+@@ -15863,16 +15863,8 @@
+ 
+ 
+ if test "$OPENLSWS_BSSL" = no ; then
+-    if test "$OSNAME" = Darwin ; then
+-        usedynossl=yes
+-        CPPFLAGS="$CPPFLAGS -I../../src -I../../include -I/usr/local/include -I/usr/local -I/usr -I/usr/pkg "
+-    else
+-        usedynossl=no
+-        CPPFLAGS="$CPPFLAGS -I../../ssl/include -I../../src -I../../include -I/usr/local/include -I/usr/local -I/usr -I/usr/pkg "
+-        echo "Will build latest stable openssl libraries for you, this may take several minutes ..."
+-        OSSL=`. $srcdir/dlossl.sh`
+-        echo "Finsihed building openssl."
+-    fi
++    usedynossl=yes
++    CPPFLAGS="$CPPFLAGS -I../../src -I../../include "
+     echo "Openssl: use_dyn_ossl = $usedynossl"
+ else
+     #### Not provide location, use default location, will not copy files
+@@ -15982,12 +15974,6 @@
+ fi
+ 
+ 
+-ZLIB_HOME=/usr/local
+-if test ! -f "${ZLIB_HOME}/include/zlib.h"
+-then
+-        ZLIB_HOME=/usr
+-fi
+-
+ #
+ # Locate zlib, if wanted
+ #
+@@ -16131,7 +16117,6 @@
+ 
+ 
+ 
+-if test "$OSNAME" = Darwin ; then
+ 
+ 
+ # Check whether --with-openssl was given.
+@@ -16259,8 +16244,6 @@
+ 
+ 
+ 
+-fi
+-
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking lib pcre" >&5
+ $as_echo_n "checking lib pcre... " >&6; }
+ PCRE_LDFLAGS=
+--- openlitespeed-1.4.24/src/util/gsendfile.h.orig	2016-12-02 19:51:11.000000000 +0000
++++ openlitespeed-1.4.24/src/util/gsendfile.h	2017-02-11 15:37:19.976655229 +0000
+@@ -83,7 +83,7 @@
+ #endif
+ 
+ #if defined(linux) || defined(__linux) || defined(__linux__) || \
+-    defined(__gnu_linux__)
++    defined(__gnu_linux__) || defined(__midipix__)
+ #include <sys/sendfile.h>
+ #define gsendfile ::sendfile
+ #endif
+--- openlitespeed-1.4.24/src/util/pcutil.h.orig	2016-12-02 19:51:11.000000000 +0000
++++ openlitespeed-1.4.24/src/util/pcutil.h	2017-02-11 15:39:02.736901419 +0000
+@@ -18,7 +18,7 @@
+ #ifndef PCUTIL_H
+ #define PCUTIL_H
+ 
+-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__)
++#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__) || defined(__midipix__)
+ #include <sched.h>
+ # define SET_AFFINITY(pid, size, mask) sched_setaffinity(0, size, mask)
+ # define GET_AFFINITY(pid, size, mask) sched_getaffinity(0, size, mask)
+--- openlitespeed-1.4.24/src/main/lshttpdmain.cpp.orig	2016-12-02 19:51:11.000000000 +0000
++++ openlitespeed-1.4.24/src/main/lshttpdmain.cpp	2017-02-11 15:50:52.882605886 +0000
+@@ -45,7 +45,9 @@
+ #include <util/stringlist.h>
+ #include <util/signalutil.h>
+ #include <util/vmembuf.h>
++#ifndef __midipix__
+ #include <sys/sysctl.h>
++#endif
+ 
+ #include <extensions/cgi/cgidworker.h>
+ #include <extensions/registry/extappregistry.h>
+@@ -1428,7 +1430,7 @@
+ #ifdef LSWS_NO_SET_AFFINITY
+     return 2;
+ #else
+-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__)
++#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__) || defined(__midipix__)
+     return sysconf(_SC_NPROCESSORS_ONLN);
+ #else
+     int nm[2];

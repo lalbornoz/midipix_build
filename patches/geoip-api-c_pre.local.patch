@@ -1,0 +1,11 @@
+--- geoip-api-c/bootstrap.orig	2017-02-11 15:15:17.545489844 +0000
++++ geoip-api-c/bootstrap	2017-02-11 15:17:36.181821782 +0000
+@@ -2,7 +2,7 @@
+ 
+ # make sure  to use the installed libtool
+ rm -f ltmain.sh
+-autoreconf -fiv
++autoreconf -iv
+ 
+ ###################################################
+ # the steps below may help with outdated toolsets
