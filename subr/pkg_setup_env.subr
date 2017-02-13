@@ -40,6 +40,7 @@ pkg_setup_env() {
 			export RANLIB="${PKG_TARGET}-ranlib";
 		fi;
 		if [ "${PKG_SLIBTOOL}" != "default" ]; then
+			export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
 			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
 		fi;
 	fi;
