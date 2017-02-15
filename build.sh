@@ -55,7 +55,9 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		#
 		#
 		#
-		if [ "${ARG_CHECK_UPDATES:-0}" -eq 1 ]\
+		if [ "${PKG_NAME#*_flavour_*}" != "${PKG_NAME}" ]; then
+			PKG_NAME_PARENT="${PKG_NAME%_flavour_*}";
+		elif [ "${ARG_CHECK_UPDATES:-0}" -eq 1 ]\
 		&& [ "${BUILD_PACKAGE#*.*}" = "${BUILD_PACKAGE}" ]; then
 			(mode_check_pkg_updates "${PKG_NAME}" "${BUILD_PACKAGE}");
 			continue;

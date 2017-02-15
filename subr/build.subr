@@ -129,12 +129,12 @@ lmatch() {
 };
 
 log_env_vars() {
-	local _nvar _arg _arg_len_max;
+	local _nvar=1 _arg _arg_len_max=0;
 	log_msg info "Variables for this ${1:-build}:"; shift;
-	while [ ${_nvar:=0} -lt ${#} ]; do
+	while [ ${_nvar} -le ${#} ]; do
 		_arg="$(eval echo \${${_nvar}})";
 		_arg="${_arg%%=*}";
-		if [ ${#_arg} -gt ${_arg_len_max:=0} ]; then
+		if [ ${#_arg} -gt ${_arg_len_max} ]; then
 			_arg_len_max=${#_arg};
 		fi; : $((_nvar+=1));
 	done;
