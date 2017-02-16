@@ -3,8 +3,8 @@
 #
 
 pkg_patch() {
-	local _patch_fname;
-	set -o noglob;
+	local _patch_fname _patches_done;
+	set +o noglob;
 	for _patch_fname in 										\
 			${WORKDIR}/chainport/${PKG_NAME}.midipix.patch					\
 			${WORKDIR}/chainport/${PKG_SUBDIR}.midipix.patch				\
@@ -18,11 +18,13 @@ pkg_patch() {
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}.local@${BUILD_HNAME}.patch		\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch		\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}.local@${BUILD_HNAME}.patch; do
-		if [ -r "${_patch_fname}" ]; then
+		if ! lmatch "${_patches_done}" " " "${_patch_fname}"\
+		&& [ -r "${_patch_fname}" ]; then
 			patch -b -d "${WORKDIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}";
+			_patches_done="${_patches_done:+${_patches_done} }${_patch_fname}";
 		fi;
 	done;
-	set +o noglob;
+	set -o noglob;
 };
 
 # vim:filetype=sh
