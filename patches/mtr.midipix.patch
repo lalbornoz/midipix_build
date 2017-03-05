@@ -1,0 +1,28 @@
+diff -ru mtr.orig/Makefile.am mtr/Makefile.am
+--- mtr.orig/Makefile.am	2017-03-02 12:55:53.968328160 +0100
++++ mtr/Makefile.am	2017-03-02 13:02:10.645991226 +0100
+@@ -41,8 +41,8 @@
+ PATHFILES += man/mtr.8 man/mtr-packet.8
+ 
+ install-exec-hook: 
+-	`setcap cap_net_raw+ep $(DESTDIR)$(sbindir)/mtr-packet` \
+-	|| chmod u+s $(DESTDIR)$(sbindir)/mtr-packet
++#	`setcap cap_net_raw+ep $(DESTDIR)$(sbindir)/mtr-packet` \
++#	|| chmod u+s $(DESTDIR)$(sbindir)/mtr-packet
+ 
+ mtr_SOURCES = ui/mtr.c ui/mtr.h \
+               ui/net.c ui/net.h \
+diff -ru mtr.orig/packet/platform.h mtr/packet/platform.h
+--- mtr.orig/packet/platform.h	2017-03-02 12:55:53.968328160 +0100
++++ mtr/packet/platform.h	2017-03-02 13:03:59.185316954 +0100
+@@ -40,6 +40,10 @@
+ 
+ #define PLATFORM_FREEBSD
+ 
++#elif defined(__midipix__)
++
++#define PLATFORM_MIDIPIX
++
+ #elif defined(__unix__)
+ 
+ #define PLATFORM_UNIX_UNKNOWN
