@@ -15,7 +15,7 @@ pkg_autoconf() {
 			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
 		if [ -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" ]\
 		&& [ ! -e "${WORKDIR}/${PKG_SUBDIR}/configure" ]; then
-			for __ in bootstrap autogen.sh ""; do
+			for __ in bootstrap bootstrap.sh autogen.sh ""; do
 				if [ -z "${__}" ]; then
 					(build_fileop cd "${WORKDIR}/${PKG_SUBDIR}" && autoconf)\
 						|| exit 1 && break;
