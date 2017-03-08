@@ -57,11 +57,16 @@ pkg_setup_env() {
 		fi;
 	fi;
 	for __ in $(set); do
-		if [ -n "${_pkg_name_parent_uc}" ]\
-		&& [ "${__#PKG_${_pkg_name_parent_uc}}" != "${__}" ]; then
-			_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__%%=*}";
-		elif [ "${__#PKG_${_pkg_name_uc}}" != "${__}" ]; then
-			_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__%%=*}";
+		if [ -n "${_pkg_name_parent_uc}" ]; then
+			if [ "${__#PKG_${_pkg_name_uc}}" != "${__}" ]\
+			|| [ "${__#PKG_${_pkg_name_parent_uc}}" != "${__}" ]; then
+				_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__%%=*}";
+			fi;
+		else
+			if [ "${__#PKG_${_pkg_name_uc}}" != "${__}" ]\
+			&& [ "${__#*_FLAVOUR_*}" = "${__}" ]; then
+				_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__%%=*}";
+			fi;
 		fi;
 	done;
 	if [ -n "${_log_env_vars}" ]; then
