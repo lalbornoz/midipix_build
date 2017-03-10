@@ -17,7 +17,12 @@ pkg_setup_env() {
 				  "${BUILD_TARGET}_${_vname}"			\
 				  "PKG_${_pkg_name_parent_uc}_${_vname}"	\
 				  "PKG_${_pkg_name_parent_uc}_${_vname}_${_build_uc}"; do
-				set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
+				if [ -n "$(get_var_unsafe "${__}")" ]; then
+					set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
+					if ! lmatch "${_log_env_vars}" " " "${__}"; then
+						_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__}";
+					fi;
+				fi;
 			done;
 		done;
 	fi;
@@ -26,7 +31,12 @@ pkg_setup_env() {
 			  "${BUILD_TARGET}_${_vname}"				\
 			  "PKG_${_pkg_name_uc}_${_vname}"			\
 			  "PKG_${_pkg_name_uc}_${_vname}_${_build_uc}"; do
-			set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
+			if [ -n "$(get_var_unsafe "${__}")" ]; then
+				set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
+				if ! lmatch "${_log_env_vars}" " " "${__}"; then
+					_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__}";
+				fi;
+			fi;
 		done;
 	done;
 	if [ -z "${PKG_URL}" -a -z "${PKG_URLS_GIT}" -a -z "${PKG_VERSION}" ]; then
@@ -56,20 +66,8 @@ pkg_setup_env() {
 			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
 		fi;
 	fi;
-	for __ in $(set); do
-		if [ -n "${_pkg_name_parent_uc}" ]; then
-			if [ "${__#PKG_${_pkg_name_uc}}" != "${__}" ]\
-			|| [ "${__#PKG_${_pkg_name_parent_uc}}" != "${__}" ]; then
-				_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__%%=*}";
-			fi;
-		else
-			if [ "${__#PKG_${_pkg_name_uc}}" != "${__}" ]\
-			&& [ "${__#*_FLAVOUR_*}" = "${__}" ]; then
-				_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__%%=*}";
-			fi;
-		fi;
-	done;
 	if [ -n "${_log_env_vars}" ]; then
+		_log_env_vars="$(echo "${_log_env_vars}" | tr " " "\n" | sort | tr "\n" " ")";
  		log_env_vars "build" ${_log_env_vars};
 	fi;
 };
