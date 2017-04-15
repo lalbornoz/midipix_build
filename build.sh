@@ -13,6 +13,7 @@ case ${1} in
 -C)	ARG_CHECK_UPDATES=1; ;;
 -N)	ARG_OFFLINE=1; ;;
 -i)	ARG_IGNORE_SHA256SUMS=1; ;;
+-R)	ARG_RELAXED=1; ;;
 -t*)	ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX="${1#-t.}"; ;;
 -v)	ARG_VERBOSE=1; ;;
 -x)	ARG_XTRACE=1; set -o xtrace; ;;
@@ -113,7 +114,8 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		0) log_msg succ "Finished \`${PKG_NAME}' build.";
 			: $((BUILD_NFINI+=1)); continue; ;;
 		*) log_msg fail "Build failed in \`${PKG_NAME}' (last return code ${BUILD_SCRIPT_RC}.).";
-			: $((BUILD_NFAIL+=1)); break; ;;
+			: $((BUILD_NFAIL+=1));
+			[ ${ARG_RELAXED:-0} -eq 0 ] && break || continue; ;;
 		esac;
 	done;
 	if [ "${BUILD_SCRIPT_RC:-0}" -ne 0 ]; then

@@ -1,5 +1,5 @@
 usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
-                  [-i] [-N] [-r package[,...][:step]] [-t[.gz|.bz2|.xz]
+                  [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz]
                   [-v] [<target>[ ...]]
         -x                      Set the xtrace sh(1)ell option for debugging purposes.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
@@ -14,6 +14,7 @@ usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
                                 the optionally specified step. Currently defined steps are:
                                 fetch extract build_dir patch_pre autoconf patch configure clean
                                 build install.
+        -R                      Ignore build failures and continue building (relaxed mode.)
         -t[.gz|.bz2|.xz]        Produce binary distribution and source tarballs containing ${PREFIX}
                                 sans ${WORKDIR} and ${PREFIX}/src/midipix_build and ${WORKDIR} sans top-
                                 level regular files at the end of a build with zero failures. The
