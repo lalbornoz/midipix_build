@@ -1,7 +1,9 @@
-usage: ./build.sh [-x] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
-                  [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz]
+usage: ./build.sh [-x] [-4] [-6] [-a nt32|nt64] [-b debug|release] [-c] [-C]
+                  [-h] [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz]
                   [-v] [<target>[ ...]]
         -x                      Set the xtrace sh(1)ell option for debugging purposes.
+        -4                      Force IPv4 when downloading files.
+        -6                      Force IPv6 when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
                                 This currently only controls CFLAGS.
