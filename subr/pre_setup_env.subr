@@ -11,6 +11,11 @@ pre_setup_env() {
 	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/build.vars; do
 		[ -e ${__} ] && . ${__};
 	done;
+	if [ ${ARG_IPV4_ONLY:-0} -eq 1 ]; then
+		WGET_ARGS="-4${WGET_ARGS:+ ${WGET_ARGS}}";
+	elif [ ${ARG_IPV6_ONLY:-0} -eq 1 ]; then
+		WGET_ARGS="-6${WGET_ARGS:+ ${WGET_ARGS}}";
+	fi;
 	for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
 		if ! lmatch "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
 			unset "${__}";
