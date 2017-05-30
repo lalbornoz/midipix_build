@@ -9,6 +9,8 @@ for __ in subr/*.subr; do . "${__}"; done;
 set -o noglob;
 while [ ${#} -gt 0 ]; do
 case ${1} in
+-4)	ARG_IPV4_ONLY=1; ;;
+-6)	ARG_IPV6_ONLY=1; ;;
 -c)	ARG_CLEAN=1; ;;
 -C)	ARG_CHECK_UPDATES=1; ;;
 -N)	ARG_OFFLINE=1; ;;
