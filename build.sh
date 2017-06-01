@@ -117,7 +117,12 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 			: $((BUILD_NFINI+=1)); continue; ;;
 		*) log_msg fail "Build failed in \`${PKG_NAME}' (last return code ${BUILD_SCRIPT_RC}.).";
 			: $((BUILD_NFAIL+=1));
-			[ ${ARG_RELAXED:-0} -eq 0 ] && break || continue; ;;
+			if [ ${ARG_RELAXED:-0} -eq 1 ]; then
+				BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${PKG_NAME}";
+				continue;
+			else
+				break;
+			fi;
 		esac;
 	done;
 	if [ "${BUILD_SCRIPT_RC:-0}" -ne 0 ]; then
@@ -130,6 +135,10 @@ fi;
 post_build_files;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
+if [ ${ARG_RELAXED:-0} -eq 1 ]\
+&& [ -n "${BUILD_PKGS_FAILED}" ]; then
+	log_msg info "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
+fi;
 exit "${BUILD_SCRIPT_RC}")} 2>&1 | tee "${BUILD_LOG_FNAME}" & TEE_PID="${!}";
 trap "rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME};	\
 	log_msg fail \"Build aborted.\";	\

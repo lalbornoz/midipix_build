@@ -14,6 +14,7 @@ pre_build_files() {
 	BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
 	BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
 	BUILD_TIMES_SECS=$(command date +%s);
+	BUILD_PKGS_FAILED="";
 };
 
 # vim:filetype=sh
