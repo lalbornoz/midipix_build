@@ -16,6 +16,8 @@ case ${1} in
 -N)	ARG_OFFLINE=1; ;;
 -i)	ARG_IGNORE_SHA256SUMS=1; ;;
 -R)	ARG_RELAXED=1; ;;
+--debug-minipix)
+	ARG_DEBUG_MINIPIX=1; ;;
 -t*)	ARG_TARBALL=1; [ "${1#-t.}" != "${1}" ] && TARBALL_SUFFIX="${1#-t.}"; ;;
 -v)	ARG_VERBOSE=1; ;;
 -x)	ARG_XTRACE=1; set -o xtrace; ;;
@@ -30,7 +32,7 @@ case ${1} in
 	fi;
 	BUILD_PACKAGES_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
 	shift; ;;
-host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|devroot|world)
+host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|minipix|devroot|world)
 	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 *)	exec cat etc/build.usage; ;;

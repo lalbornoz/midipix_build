@@ -1,12 +1,10 @@
-usage: ./build.sh [-x] [-4] [-6] [-a nt32|nt64] [-b debug|release] [-c] [-C]
-                  [-h] [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz]
-                  [-v] [<target>[ ...]]
+usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
+                  [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz] [-v]
+                  [<target>[ ...]]
         -x                      Set the xtrace sh(1)ell option for debugging purposes.
-        -4                      Force IPv4 when downloading files.
-        -6                      Force IPv6 when downloading files.
+        -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
-                                This currently only controls CFLAGS.
         -c                      Clean ${PREFIX} before processing build scripts.
         -C                      Check package(s) for updates upstream.
         -h                      Show this screen.
@@ -23,9 +21,10 @@ usage: ./build.sh [-x] [-4] [-6] [-a nt32|nt64] [-b debug|release] [-c] [-C]
                                 tarballs will be compressed with either gzip, bzip2, or xz and signed
                                 with GPG; the default compression is xz.
         -v                      Be verbose.
+        --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
         <target>[ ...]          One of:
                                 host_toolchain, native_toolchain, runtime, lib_packages,
-                                leaf_packages, world, or devroot.
+                                leaf_packages, minipix, world, or devroot.
 
         ${HOME}/midipix_build.vars, ../midipix_build.vars, and build.vars are sourced
         if they exist.
