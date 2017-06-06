@@ -2,15 +2,25 @@
 # set -o errexit -o noglob are assumed.
 #
 
+postp_strip_files() {
+	local _pname="${1}";
+	for __ in $(find "${_pname}" -perm -0100 \( -type f -or -type l \)); do
+		if objdump -sj .debug_info "${__}" >/dev/null 2>&1; then
+			log_msg vnfo "${TARGET}-strip ${__}";
+			set +o errexit; ${TARGET}-strip ${__}; set -o errexit;
+		fi;
+	done;
+};
+
 post_strip() {
 	local __;
 	if [ "${BUILD}" = release ]; then
-		for __ in $(find ${PREFIX_NATIVE}/bin -perm -0100 \( -type f -or -type l \)); do
-			if objdump -sj .debug_info >/dev/null 2>&1; then
-				log_msg vnfo "${PKG_TARGET}-strip ${__}";
-				set +o errexit; ${PKG_TARGET}-strip ${__}; set -o errexit;
-			fi;
-		done;
+		log_msg info "Stripping ${PREFIX_NATIVE}/bin...";
+		postp_strip_files ${PREFIX_NATIVE}/bin;
+	fi;
+	if [ ${ARG_DEBUG_MINIPIX:-0} -eq 0 ]; then
+		log_msg info "Stripping ${PREFIX_MINIPIX}/bin...";
+		postp_strip_files ${PREFIX_MINIPIX}/bin;
 	fi;
 };
 
