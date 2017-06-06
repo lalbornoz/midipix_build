@@ -8,19 +8,30 @@ apr_cv_tcp_nodelay_with_cork=no
 
 # autoconf
 ac_cv_buggy_getaddrinfo=no
+ac_cv_file__dev_ptc=no
+ac_cv_file__dev_ptmx=yes
 ac_cv_func_calloc_0_nonnull=yes
 ac_cv_func_chown_works=yes
 ac_cv_func_getgroups_works=yes
 ac_cv_func_malloc_0_nonnull=yes
-ac_cv_func_strnlen_working=yes
 ac_cv_func_mmap_fixed_mapped=yes
 ac_cv_func_strcoll_works=yes
+ac_cv_func_strnlen_working=yes
 ac_cv_func_working_mktime=yes
-ac_cv_file__dev_ptmx=yes
-ac_cv_file__dev_ptc=no
 gt_cv_int_divbyzero_sigfpe=yes
 
+# bash
+bash_cv_func_sigsetjmp=present
+bash_cv_getcwd_malloc=yes
+bash_cv_job_control_missing=present
+bash_cv_printf_a_format=yes
+bash_cv_sys_named_pipes=present
+bash_cv_ulimit_maxfds=yes
+bash_cv_under_sys_siglist=yes
+bash_cv_unusable_rtsigs=no
+
 # gnulib
+ac_cv_func___fseterr=yes
 gl_cv_func_cbrtl_ieee=yes
 gl_cv_func_ceilf_ieee=yes
 gl_cv_func_ceil_ieee=yes
@@ -31,8 +42,8 @@ gl_cv_func_exp2l_ieee=yes
 gl_cv_func_expm1_ieee=yes
 gl_cv_func_fcntl_f_dupfd_works=yes
 gl_cv_func_fdopendir_works=yes
-gl_cv_func_floorf_ieee=yes
 gl_cv_func_fflush_stdin=yes
+gl_cv_func_floorf_ieee=yes
 gl_cv_func_fmaf_works=yes
 gl_cv_func_fmal_works=yes
 gl_cv_func_fma_works=yes
@@ -43,11 +54,12 @@ gl_cv_func_fpurge_works=yes
 gl_cv_func_fseeko=yes
 gl_cv_func_futimens_works=yes
 gl_cv_func_futimesat_works=yes
+gl_cv_func_getcwd_null=yes
 gl_cv_func_getgroups_works=yes
 gl_cv_func_gettimeofday_clobber=no
 gl_cv_func_hypotf_ieee=yes
-gl_cv_func_hypotl_ieee=yes
 gl_cv_func_hypot_ieee=yes
+gl_cv_func_hypotl_ieee=yes
 gl_cv_func_isfinitel_works=yes
 gl_cv_func_isnanl_works=yes
 gl_cv_func_linkat_slash=yes
@@ -134,19 +146,10 @@ gl_cv_func_working_getdelim=yes
 gl_cv_func_working_mkstemp=yes
 gl_cv_func_working_mktime=yes
 gl_cv_func_working_strerror=yes
-ac_cv_func___fseterr=yes
-gl_cv_func_getcwd_null=yes
 gl_cv_struct_dirent_d_ino=yes
 
-# bash
-bash_cv_func_sigsetjmp=present
-bash_cv_getcwd_malloc=yes
-bash_cv_job_control_missing=present
-bash_cv_printf_a_format=yes
-bash_cv_sys_named_pipes=present
-bash_cv_ulimit_maxfds=yes
-bash_cv_under_sys_siglist=yes
-bash_cv_unusable_rtsigs=no
+# libevent
+ac_pe_target=true
 
 # libX11
 xorg_cv_malloc0_returns_null=yes
@@ -170,5 +173,5 @@ vim_cv_toupper_broken=no
 vim_cv_tty_group=tty
 vim_cv_tty_mode=0666
 
-# libevent
-ac_pe_target=true
+# xcb
+ac_cv_search_sendmsg=no
