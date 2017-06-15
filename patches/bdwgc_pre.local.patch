@@ -1,13 +1,13 @@
---- bdwgc/configure.ac.orig	2017-05-29 14:42:22.121575637 +0000
-+++ bdwgc/configure.ac	2017-05-29 14:48:31.518727090 +0000
-@@ -195,6 +195,10 @@
-      *-*-hpux10*)
-         AC_MSG_WARN("Only HP-UX 11 POSIX threads are supported.")
+--- bdwgc/configure.ac.orig	2017-06-15 16:27:37.964531977 +0000
++++ bdwgc/configure.ac	2017-06-15 18:17:47.369988647 +0000
+@@ -208,6 +208,10 @@
+         THREADDLLIBS="-lpthread -lrt"
+         # HPUX needs REENTRANT for the _r calls.
          ;;
 +     *-*-midipix*)
 +        AC_DEFINE(GC_THREADS)
 +        AC_DEFINE(_REENTRANT)
 +        ;;
-      *-*-openbsd*)
-         AC_DEFINE(GC_THREADS)
-         if test "${enable_parallel_mark}" != no; then
+       *-*-openbsd*)
+         AM_CFLAGS="$AM_CFLAGS -pthread"
+         THREADDLLIBS=-pthread
