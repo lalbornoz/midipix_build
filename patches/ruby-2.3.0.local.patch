@@ -1,0 +1,38 @@
+--- ruby-2.3.0/enc/Makefile.in.orig	2015-01-18 04:56:52.000000000 +0100
++++ ruby-2.3.0/enc/Makefile.in	2017-07-30 20:20:04.296061880 +0200
+@@ -35,6 +35,7 @@
+ empty =
+ AR = @AR@
+ CC = @CC@
++LD = @CC@
+ ARFLAGS = @ARFLAGS@$(empty)
+ RANLIB = @RANLIB@
+ OUTFLAG = @OUTFLAG@$(empty)
+@@ -48,7 +49,7 @@
+ INCFLAGS = -I. -I$(arch_hdrdir) -I$(hdrdir) -I$(top_srcdir)
+ DEFS = @DEFS@
+ CPPFLAGS = @CPPFLAGS@ -DONIG_ENC_REGISTER=rb_enc_register
+-LDFLAGS = @LDFLAGS@
++LDFLAGS = @LDFLAGS@ -lruby-static -shared
+ LDSHARED = @LDSHARED@
+ ldflags  = $(LDFLAGS)
+ dldflags = @DLDFLAGS@
+--- ruby-2.3.0/lib/mkmf.rb.orig	2015-12-16 10:25:48.000000000 +0100
++++ ruby-2.3.0/lib/mkmf.rb	2017-07-30 21:44:12.418432849 +0200
+@@ -1952,6 +1952,7 @@
+ 
+ CC = #{CONFIG['CC']}
+ CXX = #{CONFIG['CXX']}
++LD = #{CONFIG['CC']}
+ LIBRUBY = #{CONFIG['LIBRUBY']}
+ LIBRUBY_A = #{CONFIG['LIBRUBY_A']}
+ LIBRUBYARG_SHARED = #$LIBRUBYARG_SHARED
+@@ -1972,7 +1973,7 @@
+ DEFS     = #{CONFIG['DEFS']}
+ CPPFLAGS = #{extconf_h}#{$CPPFLAGS}
+ CXXFLAGS = $(CCDLFLAGS) #$CXXFLAGS $(ARCH_FLAG)
+-ldflags  = #{$LDFLAGS}
++ldflags  = #{$LDFLAGS} -lruby-static -shared
+ dldflags = #{$DLDFLAGS} #{CONFIG['EXTDLDFLAGS']}
+ ARCH_FLAG = #{$ARCH_FLAG}
+ DLDFLAGS = $(ldflags) $(dldflags) $(ARCH_FLAG)
