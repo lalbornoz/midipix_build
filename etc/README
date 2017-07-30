@@ -1,5 +1,5 @@
-
-                # Obtaining and installing a Midipix distribution
+Obtaining and installing a Midipix distribution
+===============================================
 
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
@@ -54,11 +54,13 @@ either:
 References:
 * Sun, 24 Apr 2016 09:04:08 +0000 [1] musl FAQ <http://www.musl-libc.org/faq.html>
 
-                       # Linux distribution-related errata       
+Linux distribution-related errata
+=================================
 
 Busybox based distributions need the gawk, gsed, and coreutils packages to build perl.
 
-                             # Midipix status report
+Midipix status report
+=====================
 
 Last update: Tue, 26 Apr 2016 10:16:16 +0000
 
