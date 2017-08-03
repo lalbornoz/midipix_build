@@ -1,6 +1,6 @@
---- apr-util-1.5.4/configure.orig	2014-09-16 23:30:58.000000000 +0000
-+++ apr-util-1.5.4/configure	2017-02-02 19:13:14.380272997 +0000
-@@ -20614,10 +20614,10 @@
+--- apr-util-1.6.0/configure.orig	2017-05-04 01:16:59.000000000 +0200
++++ apr-util-1.6.0/configure	2017-08-03 16:28:21.653082936 +0200
+@@ -20794,10 +20794,10 @@
        if test "$apu_have_sqlite3" = "1"; then
  
    if test "x$LDADD_dbd_sqlite3" = "x"; then
@@ -14,8 +14,8 @@
      for i in $apr_addto_bugger; do
        apr_addto_duplicate="0"
        for j in $LDADD_dbd_sqlite3; do
---- apr-util-1.5.4/Makefile.in.orig	2008-11-21 06:30:43.000000000 +0000
-+++ apr-util-1.5.4/Makefile.in	2017-02-02 19:18:54.417141284 +0000
+--- apr-util-1.6.0/Makefile.in.orig	2017-05-04 01:18:52.000000000 +0200
++++ apr-util-1.6.0/Makefile.in	2017-08-03 16:28:21.653082936 +0200
 @@ -23,7 +23,7 @@
  INSTALL_DATA = @INSTALL_DATA@
  
