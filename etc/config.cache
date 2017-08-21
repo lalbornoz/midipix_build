@@ -30,6 +30,13 @@ bash_cv_ulimit_maxfds=yes
 bash_cv_under_sys_siglist=yes
 bash_cv_unusable_rtsigs=no
 
+# glib
+glib_cv_stack_grows=yes
+glib_cv_uscore=yes
+ac_cv_func_posix_getpwuid_r=yes
+ac_cv_func_posix_getgrgid_r=yes
+glib_cv_eventfd=no
+
 # gnulib
 ac_cv_func___fseterr=yes
 gl_cv_func_cbrtl_ieee=yes
