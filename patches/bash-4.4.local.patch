@@ -1,5 +1,5 @@
---- bash-4.4-rc2/configure.orig	2016-08-05 22:29:55.000000000 +0200
-+++ bash-4.4-rc2/configure	2016-12-17 21:32:44.745849000 +0100
+--- bash-4.4/configure.orig	2016-08-05 22:29:55.000000000 +0200
++++ bash-4.4/configure	2016-12-17 21:32:44.745849000 +0100
 @@ -2869,6 +2869,7 @@
  *-opennt*|*-interix*)	opt_bash_malloc=no ;;	# Interix, now owned by Microsoft
  *-nsk*)		opt_bash_malloc=no ;;	# HP NonStop
@@ -8,7 +8,7 @@
  esac
  
  # memory scrambling on free()
-@@ -5156,13 +5157,13 @@
+@@ -5157,13 +5158,13 @@
  if test "x$ac_cv_lib_curses_tgetent" = xyes; then :
    bash_cv_termcap_lib=libcurses
  else
@@ -26,7 +26,7 @@
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -5182,18 +5183,18 @@
+@@ -5183,18 +5184,18 @@
  }
  _ACEOF
  if ac_fn_c_try_link "$LINENO"; then :
@@ -51,7 +51,7 @@
  else
    bash_cv_termcap_lib=gnutermcap
  fi
-@@ -5224,8 +5225,8 @@
+@@ -5225,8 +5226,8 @@
  elif test $bash_cv_termcap_lib = libtinfo; then
  TERMCAP_LIB=-ltinfo
  TERMCAP_DEP=
@@ -62,7 +62,7 @@
  TERMCAP_DEP=
  elif test $bash_cv_termcap_lib = libc; then
  TERMCAP_LIB=
-@@ -15811,13 +15812,13 @@
+@@ -15850,13 +15851,13 @@
  if test "x$ac_cv_lib_curses_tgetent" = xyes; then :
    bash_cv_termcap_lib=libcurses
  else
@@ -80,7 +80,7 @@
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -15837,18 +15838,18 @@
+@@ -15876,18 +15877,18 @@
  }
  _ACEOF
  if ac_fn_c_try_link "$LINENO"; then :
@@ -105,7 +105,7 @@
  else
    bash_cv_termcap_lib=gnutermcap
  fi
-@@ -15879,8 +15880,8 @@
+@@ -15918,8 +15919,8 @@
  elif test $bash_cv_termcap_lib = libtinfo; then
  TERMCAP_LIB=-ltinfo
  TERMCAP_DEP=
