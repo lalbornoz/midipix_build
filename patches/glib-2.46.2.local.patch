@@ -9,3 +9,14 @@
  am__objects_1 =
  am_libinotify_la_OBJECTS = libinotify_la-inotify-kernel.lo \
  	libinotify_la-inotify-sub.lo libinotify_la-inotify-path.lo \
+--- glib-2.46.2/glib-2.0.pc.in.orig	2015-03-23 04:22:18.000000000 +0100
++++ glib-2.46.2/glib-2.0.pc.in	2017-08-25 22:20:03.833998381 +0200
+@@ -5,7 +5,7 @@
+ 
+ glib_genmarshal=glib-genmarshal
+ gobject_query=gobject-query
+-glib_mkenums=glib-mkenums
++glib_mkenums=@prefix@/bin/glib-mkenums
+ 
+ Name: GLib
+ Description: C Utility Library
