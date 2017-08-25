@@ -37,6 +37,9 @@ ac_cv_func_posix_getpwuid_r=yes
 ac_cv_func_posix_getgrgid_r=yes
 glib_cv_eventfd=no
 
+# glib/gdk
+enable_gio_sniffing=yes
+
 # gnulib
 ac_cv_func___fseterr=yes
 gl_cv_func_cbrtl_ieee=yes
