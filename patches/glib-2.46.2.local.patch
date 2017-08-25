@@ -16,7 +16,7 @@
  glib_genmarshal=glib-genmarshal
  gobject_query=gobject-query
 -glib_mkenums=glib-mkenums
-+glib_mkenums=@prefix@/bin/glib-mkenums
++glib_mkenums=@exec_prefix@/bin/glib-mkenums
  
  Name: GLib
  Description: C Utility Library
