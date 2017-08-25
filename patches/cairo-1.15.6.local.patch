@@ -1,0 +1,36 @@
+--- cairo-1.15.6/Makefile.in.orig	2017-06-13 23:57:59.000000000 +0200
++++ cairo-1.15.6/Makefile.in	2017-08-25 16:02:40.473494458 +0200
+@@ -106,8 +106,6 @@
+ EXTRA_PROGRAMS =
+ TESTS =
+ check_PROGRAMS =
+-# libpng is required for our test programs
+-@CAIRO_HAS_PNG_FUNCTIONS_TRUE@am__append_1 = boilerplate test perf
+ subdir = .
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+ am__aclocal_m4_deps = $(top_srcdir)/build/aclocal.cairo.m4 \
+@@ -712,7 +710,7 @@
+ #	$(srcdir)/build/Makefile.win32.features-h \
+ #	$(NULL)
+ ACLOCAL_AMFLAGS = -I build ${ACLOCAL_FLAGS}
+-DIST_SUBDIRS = src doc util boilerplate test perf
++DIST_SUBDIRS = src doc util
+ SUBDIRS = src doc util $(am__append_1)
+ DISTCHECK_CONFIGURE_FLAGS = \
+ 	--enable-gtk-doc \
+@@ -1493,14 +1491,7 @@
+ 
+ doc:
+ 	cd doc && $(MAKE) $(AM_MAKEFLAGS) $@
+-test retest recheck: all
+-	cd test && $(MAKE) $(AM_MAKEFLAGS) $@
+-perf: all
+-	cd perf && $(MAKE) $(AM_MAKEFLAGS) $@
+-check-valgrind: all
+-	cd test && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
+-	cd perf && $(MAKE) $(AM_MAKEFLAGS) check-valgrind
+-.PHONY: doc test retest recheck perf check-valgrind
++.PHONY: doc
+ 
+ changelogs:
+ 	@$(MAKE) $(AM_MAKEFLAGS) $(CHANGELOGS)
