@@ -1,0 +1,11 @@
+diff -ru dropbear-2017.75.orig/svr-auth.c dropbear-2017.75/svr-auth.c
+--- dropbear-2017.75.orig/svr-auth.c	2017-05-18 16:47:02.000000000 +0200
++++ dropbear-2017.75/svr-auth.c	2017-08-23 17:38:21.843211002 +0200
+@@ -300,6 +300,7 @@
+ 	}
+ 	/* no matching shell */
+ 	endusershell();
++	return DROPBEAR_SUCCESS;
+ 	TRACE(("no matching shell"))
+ 	dropbear_log(LOG_WARNING, "User '%s' has invalid shell, rejected",
+ 				ses.authstate.pw_name);
