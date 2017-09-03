@@ -1,0 +1,13 @@
+diff -ru libcaca.orig/Makefile.in libcaca/Makefile.in
+--- libcaca.orig/Makefile.in	2017-09-03 17:16:49.749749822 +0200
++++ libcaca/Makefile.in	2017-09-03 17:57:51.004186415 +0200
+@@ -424,8 +424,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/caca -I$(top_builddir)/caca
+-SUBDIRS = kernel caca src examples tools \
+-          cxx caca-sharp python ruby java doc
++SUBDIRS = kernel caca src examples tools
+ 
+ DIST_SUBDIRS = $(SUBDIRS) build
+ EXTRA_DIST = NOTES COPYING.GPL COPYING.ISC COPYING.LGPL bootstrap caca-config.in libcaca.spec libcaca.sln
