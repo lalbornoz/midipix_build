@@ -132,7 +132,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 	fi;
 done;
 if [ "${BUILD_SCRIPT_RC:-0}" -eq 0 ]; then
-	post_copy_etc; post_strip; post_sha256sums; post_tarballs;
+	post_copy_etc; post_sha256sums; post_tarballs;
 fi;
 post_build_files;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";

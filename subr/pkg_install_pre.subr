@@ -1,0 +1,16 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_install_pre() {
+	if [ "${PKG_NAME%flavour_minipix}" != "${PKG_NAME}" ]	\
+	&& [ ${ARG_DEBUG_MINIPIX:-0} -eq 0 ]; then
+		find "${PREFIX_MINIPIX}" -perm /a=x		\
+			\( -type f -or -type l \) > "${WORKDIR}/.stat_minipix.old";
+	elif [ "${BUILD}" = release ]; then
+		find "${PREFIX_NATIVE}/bin" -perm /a=x		\
+			\( -type f -or -type l \) > "${WORKDIR}/.stat_native.old";
+	fi;
+};
+
+# vim:filetype=sh
