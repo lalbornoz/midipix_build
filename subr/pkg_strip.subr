@@ -5,7 +5,8 @@
 pkgp_strip_tree() {
 	local _tree_old="${1}" _tree_root="${2}";
 	local _tree_new="${_tree_old%.*}.new" _tree_diff="${_tree_old%.*}.diff";
-	if [ ! -e "${_tree_old}" ]; then
+	if [ ! -e "${_tree_old}" ]				\
+	|| [ ! -e "${_tree_root}" ]; then
 		return;
 	fi;
 	find "${_tree_root}" -perm /a=x	\( -type f -or -type l \) > "${_tree_new}";
