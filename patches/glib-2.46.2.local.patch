@@ -20,3 +20,14 @@
  
  Name: GLib
  Description: C Utility Library
+--- glib-2.46.2/configure.orig	2015-11-06 22:28:54.000000000 +0000
++++ glib-2.46.2/configure	2017-09-06 17:48:13.444000000 +0000
+@@ -28873,7 +28873,7 @@
+    -Wall -Wstrict-prototypes -Werror=declaration-after-statement \
+    -Werror=missing-prototypes -Werror=implicit-function-declaration \
+    -Werror=pointer-arith -Werror=init-self -Werror=format-security \
+-   -Werror=format=2 -Werror=missing-include-dirs; do
++   -Werror=missing-include-dirs; do
+ 
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if $CC supports flag $flag in envvar CFLAGS" >&5
+ $as_echo_n "checking if $CC supports flag $flag in envvar CFLAGS... " >&6; }
