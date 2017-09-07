@@ -1,0 +1,12 @@
+diff -ru st-0.7.orig/st.c st-0.7/st.c
+--- st-0.7.orig/st.c	2016-08-11 16:25:58.000000000 +0200
++++ st-0.7/st.c	2017-09-07 21:02:34.090114957 +0200
+@@ -4379,7 +4379,7 @@
+ 		opt_embed = EARGF(usage());
+ 		break;
+ 	case 'v':
+-		die("%s " VERSION " (c) 2010-2016 st engineers\n", argv0);
++		die("%s 0.7 (c) 2010-2016 st engineers\n", argv0);
+ 		break;
+ 	default:
+ 		usage();
