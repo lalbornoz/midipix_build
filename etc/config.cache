@@ -30,6 +30,10 @@ bash_cv_ulimit_maxfds=yes
 bash_cv_under_sys_siglist=yes
 bash_cv_unusable_rtsigs=no
 
+# bison
+ac_cv_path_M4=/bin/m4
+ac_cv_prog_gnu_m4_gnu=yes
+
 # glib
 glib_cv_stack_grows=yes
 glib_cv_uscore=yes
