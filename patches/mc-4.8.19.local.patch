@@ -1,6 +1,6 @@
---- mc-4.8.18/configure.orig	2016-10-02 19:47:28.000000000 +0200
-+++ mc-4.8.18/configure	2016-12-18 01:54:29.486734700 +0100
-@@ -19922,7 +19922,7 @@
+--- mc-4.8.19/configure.orig	2016-10-02 19:47:28.000000000 +0200
++++ mc-4.8.19/configure	2016-12-18 01:54:29.486734700 +0100
+@@ -19974,7 +19974,7 @@
  
  
  # Determine how to get the list of mounted file systems.
@@ -9,7 +9,7 @@
  
  # If the getmntent function is available but not in the standard library,
  # make sure LIBS contains the appropriate -l option.
-@@ -20634,7 +20634,7 @@
+@@ -20686,7 +20686,7 @@
  
  
  # Determine how to get the list of mounted file systems.
