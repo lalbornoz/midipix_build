@@ -36,9 +36,11 @@ pkg_autoconf() {
 				fi;
 			done;
 		fi;
-		for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
-			build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${WORKDIR}/${__}/";
-		done;
+		if [ "${PKG_BUILD_TYPE}" != host ]; then
+			for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
+				build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${WORKDIR}/${__}/";
+			done;
+		fi;
 	fi;
 };
 
