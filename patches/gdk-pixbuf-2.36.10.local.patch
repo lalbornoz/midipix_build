@@ -1,0 +1,12 @@
+diff -ru gdk-pixbuf-2.36.10.orig/thumbnailer/Makefile.in gdk-pixbuf-2.36.10/thumbnailer/Makefile.in
+--- gdk-pixbuf-2.36.10.orig/thumbnailer/Makefile.in	2017-09-11 13:00:44.000000000 +0200
++++ gdk-pixbuf-2.36.10/thumbnailer/Makefile.in	2017-09-15 20:57:24.196896220 +0200
+@@ -453,7 +453,7 @@
+ 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GDK_PIXBUF_API_VERSION).la
+ 
+ thumbnailerdir = $(datadir)/thumbnailers/
+-thumbnailer_DATA = gdk-pixbuf-thumbnailer.thumbnailer
++thumbnailer_DATA = 
+ EXTRA_DIST = gdk-pixbuf-thumbnailer.thumbnailer.in
+ CLEANFILES = $(thumbnailer_DATA)
+ all: all-am
