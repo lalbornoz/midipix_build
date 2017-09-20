@@ -1,0 +1,76 @@
+diff -ru glib-2.54.0.orig/gio/gdbusmenumodel.c glib-2.54.0/gio/gdbusmenumodel.c
+--- glib-2.54.0.orig/gio/gdbusmenumodel.c	2017-07-14 01:03:38.000000000 +0200
++++ glib-2.54.0/gio/gdbusmenumodel.c	2017-09-15 13:41:01.197598091 +0200
+@@ -625,7 +625,7 @@
+   while (g_variant_iter_loop (&iter, "@a{sv}", &item))
+     g_sequence_insert_before (point, g_dbus_menu_group_create_item (item));
+ 
+-  if (g_sequence_is_empty (items))
++  if (g_sequence_get_length (items) == 0)
+     {
+       g_hash_table_remove (group->menus, GINT_TO_POINTER (menu_id));
+       items = NULL;
+diff -ru glib-2.54.0.orig/gio/gio-tool-mount.c glib-2.54.0/gio/gio-tool-mount.c
+--- glib-2.54.0.orig/gio/gio-tool-mount.c	2017-07-14 01:03:38.000000000 +0200
++++ glib-2.54.0/gio/gio-tool-mount.c	2017-09-15 14:02:09.478223902 +0200
+@@ -780,7 +780,7 @@
+               g_object_unref (icon);
+             }
+ 
+-          g_print ("%*sis_removable=%d\n", indent + 2, "", g_drive_is_removable (drive));
++          //g_print ("%*sis_removable=%d\n", indent + 2, "", g_drive_is_removable (drive));
+           g_print ("%*sis_media_removable=%d\n", indent + 2, "", g_drive_is_media_removable (drive));
+           g_print ("%*shas_media=%d\n", indent + 2, "", g_drive_has_media (drive));
+           g_print ("%*sis_media_check_automatic=%d\n", indent + 2, "", g_drive_is_media_check_automatic (drive));
+diff -ru glib-2.54.0.orig/gio/glocalfilemonitor.c glib-2.54.0/gio/glocalfilemonitor.c
+--- glib-2.54.0.orig/gio/glocalfilemonitor.c	2017-07-14 01:03:38.000000000 +0200
++++ glib-2.54.0/gio/glocalfilemonitor.c	2017-09-15 13:44:25.240386777 +0200
+@@ -504,7 +504,7 @@
+   g_mutex_lock (&fms->lock);
+ 
+   /* Create events for any pending changes that are due to fire */
+-  while (!g_sequence_is_empty (fms->pending_changes))
++  while (g_sequence_get_length (fms->pending_changes))
+     {
+       GSequenceIter *iter = g_sequence_get_begin_iter (fms->pending_changes);
+       PendingChange *pending = g_sequence_get (iter);
+@@ -572,7 +572,7 @@
+       while ((event = g_queue_pop_head (&fms->event_queue)))
+         queued_event_free (event);
+ 
+-      g_assert (g_sequence_is_empty (fms->pending_changes));
++      g_assert (g_sequence_get_length (fms->pending_changes) == 0);
+       g_assert (g_hash_table_size (fms->pending_changes_table) == 0);
+       g_assert (fms->event_queue.length == 0);
+       fms->instance = NULL;
+@@ -592,7 +592,7 @@
+ 
+   /* should already have been cleared in dispose of the monitor */
+   g_assert (fms->instance == NULL);
+-  g_assert (g_sequence_is_empty (fms->pending_changes));
++  g_assert (g_sequence_get_length (fms->pending_changes) == 0);
+   g_assert (g_hash_table_size (fms->pending_changes_table) == 0);
+   g_assert (fms->event_queue.length == 0);
+ 
+diff -ru glib-2.54.0.orig/gio/gmenuexporter.c glib-2.54.0/gio/gmenuexporter.c
+--- glib-2.54.0.orig/gio/gmenuexporter.c	2017-07-14 01:03:38.000000000 +0200
++++ glib-2.54.0/gio/gmenuexporter.c	2017-09-15 13:43:12.772817146 +0200
+@@ -377,7 +377,7 @@
+       guint id = GPOINTER_TO_INT (key);
+       GMenuExporterMenu *menu = val;
+ 
+-      if (!g_sequence_is_empty (menu->item_links))
++      if (g_sequence_get_length (menu->item_links))
+         {
+           g_variant_builder_open (builder, G_VARIANT_TYPE ("(uuaa{sv})"));
+           g_variant_builder_add (builder, "u", group->id);
+--- glib-2.54.0/configure.orig	2017-09-11 02:18:49.000000000 +0200
++++ glib-2.54.0/configure	2017-09-20 17:29:08.801664593 +0200
+@@ -16675,6 +16681,7 @@
+ 
+ 
+ 
++can_build_shared=yes;
+   # Report what library types will actually be built
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if libtool supports shared libraries" >&5
+ $as_echo_n "checking if libtool supports shared libraries... " >&6; }
