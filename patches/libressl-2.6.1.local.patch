@@ -1,0 +1,222 @@
+diff -ru libressl-2.6.1.orig/configure libressl-2.6.1/configure
+--- libressl-2.6.1.orig/configure	2017-09-04 23:50:38.000000000 +0200
++++ libressl-2.6.1/configure	2017-09-19 20:07:11.024248094 +0200
+@@ -724,6 +724,8 @@
+ HOST_LINUX_TRUE
+ HOST_HPUX_FALSE
+ HOST_HPUX_TRUE
++HOST_MIDIPIX_FALSE
++HOST_MIDIPIX_TRUE
+ HOST_FREEBSD_FALSE
+ HOST_FREEBSD_TRUE
+ HOST_DARWIN_FALSE
+@@ -11045,7 +11047,7 @@
+   ;;
+ 
+ # This must be glibc/ELF.
+-linux* | k*bsd*-gnu | kopensolaris*-gnu)
++linux* | k*bsd*-gnu | kopensolaris*-gnu | midipix*)
+   version_type=linux # correct to gnu/linux during the next big refactor
+   need_lib_prefix=no
+   need_version=no
+@@ -12190,6 +12192,11 @@
+ 		HOST_ABI=elf
+ 		CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_SOURCE -D_GNU_SOURCE"
+ 		;;
++	*midipix*)
++		HOST_OS=midipix
++		HOST_ABI=pe
++		CFLAGS="$CFLAGS -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_SOURCE -D_GNU_SOURCE"
++		;;
+ 	*netbsd*)
+ 		HOST_OS=netbsd
+ 		HOST_ABI=elf
+@@ -12316,6 +12323,14 @@
+   HOST_LINUX_FALSE=
+ fi
+ 
++ if test x$HOST_OS = xmidipix; then
++  HOST_MIDIPIX_TRUE=
++  HOST_MIDIPIX_FALSE='#'
++else
++  HOST_MIDIPIX_TRUE='#'
++  HOST_MIDIPIX_FALSE=
++fi
++
+  if test x$HOST_OS = xnetbsd; then
+   HOST_NETBSD_TRUE=
+   HOST_NETBSD_FALSE='#'
+@@ -14214,6 +14229,10 @@
+   as_fn_error $? "conditional \"HOST_LINUX\" was never defined.
+ Usually this means the macro was only invoked conditionally." "$LINENO" 5
+ fi
++if test -z "${HOST_MIDIPIX_TRUE}" && test -z "${HOST_MIDIPIX_FALSE}"; then
++  as_fn_error $? "conditional \"HOST_MIDIPIX\" was never defined.
++Usually this means the macro was only invoked conditionally." "$LINENO" 5
++fi
+ if test -z "${HOST_NETBSD_TRUE}" && test -z "${HOST_NETBSD_FALSE}"; then
+   as_fn_error $? "conditional \"HOST_NETBSD\" was never defined.
+ Usually this means the macro was only invoked conditionally." "$LINENO" 5
+diff -ru libressl-2.6.1.orig/crypto/compat/arc4random.h libressl-2.6.1/crypto/compat/arc4random.h
+--- libressl-2.6.1.orig/crypto/compat/arc4random.h	2016-04-04 00:14:45.000000000 +0200
++++ libressl-2.6.1/crypto/compat/arc4random.h	2017-09-19 19:45:28.995745938 +0200
+@@ -12,7 +12,7 @@
+ #elif defined(__hpux)
+ #include "arc4random_hpux.h"
+ 
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__midipix__)
+ #include "arc4random_linux.h"
+ 
+ #elif defined(__NetBSD__)
+diff -ru libressl-2.6.1.orig/crypto/compat/getentropy_linux.c libressl-2.6.1/crypto/compat/getentropy_linux.c
+--- libressl-2.6.1.orig/crypto/compat/getentropy_linux.c	2017-09-04 23:50:15.000000000 +0200
++++ libressl-2.6.1/crypto/compat/getentropy_linux.c	2017-09-19 20:18:40.240411176 +0200
+@@ -27,7 +27,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/resource.h>
+ #include <sys/syscall.h>
+-#ifdef SYS__sysctl
++#if defined(SYS__sysctl) && !defined(__midipix__)
+ #include <linux/sysctl.h>
+ #endif
+ #include <sys/statvfs.h>
+@@ -49,8 +49,10 @@
+ #include <time.h>
+ #include <openssl/sha.h>
+ 
++#ifndef __midipix__
+ #include <linux/types.h>
+ #include <linux/random.h>
++#endif
+ #ifdef HAVE_GETAUXVAL
+ #include <sys/auxv.h>
+ #endif
+@@ -74,11 +76,11 @@
+ int	getentropy(void *buf, size_t len);
+ 
+ static int gotdata(char *buf, size_t len);
+-#ifdef SYS_getrandom
++#if defined(SYS_getrandom) && !defined(__midipix__)
+ static int getentropy_getrandom(void *buf, size_t len);
+ #endif
+ static int getentropy_urandom(void *buf, size_t len);
+-#ifdef SYS__sysctl
++#if defined(SYS__sysctl) && !defined(__midipix__)
+ static int getentropy_sysctl(void *buf, size_t len);
+ #endif
+ static int getentropy_fallback(void *buf, size_t len);
+@@ -94,7 +96,7 @@
+ 		return (-1);
+ 	}
+ 
+-#ifdef SYS_getrandom
++#if defined(SYS_getrandom) && !defined(__midipix__)
+ 	/*
+ 	 * Try descriptor-less getrandom(), in non-blocking mode.
+ 	 *
+@@ -118,7 +120,7 @@
+ 	if (ret != -1)
+ 		return (ret);
+ 
+-#ifdef SYS__sysctl
++#if defined(SYS__sysctl) && !defined(__midipix__)
+ 	/*
+ 	 * Try to use sysctl CTL_KERN, KERN_RANDOM, RANDOM_UUID.
+ 	 * sysctl is a failsafe API, so it guarantees a result.  This
+@@ -193,7 +195,7 @@
+ 	return (0);
+ }
+ 
+-#ifdef SYS_getrandom
++#if defined(SYS_getrandom) && !defined(__midipix__)
+ static int
+ getentropy_getrandom(void *buf, size_t len)
+ {
+@@ -244,10 +246,12 @@
+ 		close(fd);
+ 		goto nodevrandom;
+ 	}
++#ifndef __midipix__
+ 	if (ioctl(fd, RNDGETENTCNT, &cnt) == -1) {
+ 		close(fd);
+ 		goto nodevrandom;
+ 	}
++#endif
+ 	for (i = 0; i < len; ) {
+ 		size_t wanted = len - i;
+ 		ssize_t ret = read(fd, (char *)buf + i, wanted);
+@@ -270,7 +274,7 @@
+ 	return (-1);
+ }
+ 
+-#ifdef SYS__sysctl
++#if defined(SYS__sysctl) && !defined(__midipix__)
+ static int
+ getentropy_sysctl(void *buf, size_t len)
+ {
+diff -ru libressl-2.6.1.orig/crypto/Makefile.in libressl-2.6.1/crypto/Makefile.in
+--- libressl-2.6.1.orig/crypto/Makefile.in	2017-09-04 23:50:41.000000000 +0200
++++ libressl-2.6.1/crypto/Makefile.in	2017-09-19 20:01:29.750162029 +0200
+@@ -121,10 +121,11 @@
+ @HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_FREEBSD_TRUE@am__append_26 = compat/getentropy_freebsd.c
+ @HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_HPUX_TRUE@am__append_27 = compat/getentropy_hpux.c
+ @HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_LINUX_TRUE@am__append_28 = compat/getentropy_linux.c
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_NETBSD_TRUE@am__append_29 = compat/getentropy_netbsd.c
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_DARWIN_TRUE@am__append_30 = compat/getentropy_osx.c
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_SOLARIS_TRUE@am__append_31 = compat/getentropy_solaris.c
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_WIN_TRUE@am__append_32 = compat/getentropy_win.c
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_MIDIPIX_TRUE@am__append_29 = compat/getentropy_linux.c
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_NETBSD_TRUE@am__append_30 = compat/getentropy_netbsd.c
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_DARWIN_TRUE@am__append_31 = compat/getentropy_osx.c
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_SOLARIS_TRUE@am__append_32 = compat/getentropy_solaris.c
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_WIN_TRUE@am__append_33 = compat/getentropy_win.c
+ @HOST_ASM_ELF_X86_64_TRUE@am__append_33 = -DAES_ASM -DBSAES_ASM \
+ @HOST_ASM_ELF_X86_64_TRUE@	-DVPAES_ASM -DOPENSSL_IA32_SSE2 \
+ @HOST_ASM_ELF_X86_64_TRUE@	-DOPENSSL_BN_ASM_MONT \
+@@ -239,10 +240,11 @@
+ @HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_FREEBSD_TRUE@am__objects_18 = compat/getentropy_freebsd.lo
+ @HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_HPUX_TRUE@am__objects_19 = compat/getentropy_hpux.lo
+ @HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_LINUX_TRUE@am__objects_20 = compat/getentropy_linux.lo
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_NETBSD_TRUE@am__objects_21 = compat/getentropy_netbsd.lo
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_DARWIN_TRUE@am__objects_22 = compat/getentropy_osx.lo
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_SOLARIS_TRUE@am__objects_23 = compat/getentropy_solaris.lo
+-@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_WIN_TRUE@am__objects_24 = compat/getentropy_win.lo
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_MIDIPIX_TRUE@am__objects_21 = compat/getentropy_linux.lo
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_NETBSD_TRUE@am__objects_22 = compat/getentropy_netbsd.lo
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_DARWIN_TRUE@am__objects_23 = compat/getentropy_osx.lo
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_SOLARIS_TRUE@am__objects_24 = compat/getentropy_solaris.lo
++@HAVE_ARC4RANDOM_BUF_FALSE@@HAVE_GETENTROPY_FALSE@@HOST_WIN_TRUE@am__objects_25 = compat/getentropy_win.lo
+ am_libcompat_la_OBJECTS = $(am__objects_1) $(am__objects_2) \
+ 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+ 	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
+@@ -251,7 +253,7 @@
+ 	$(am__objects_15) $(am__objects_16) $(am__objects_17) \
+ 	$(am__objects_18) $(am__objects_19) $(am__objects_20) \
+ 	$(am__objects_21) $(am__objects_22) $(am__objects_23) \
+-	$(am__objects_24)
++	$(am__objects_24) $(am__objects_25)
+ libcompat_la_OBJECTS = $(am_libcompat_la_OBJECTS)
+ AM_V_lt = $(am__v_lt_@AM_V@)
+ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+@@ -1020,7 +1022,7 @@
+ 	$(am__append_23) $(am__append_24) $(am__append_25) \
+ 	$(am__append_26) $(am__append_27) $(am__append_28) \
+ 	$(am__append_29) $(am__append_30) $(am__append_31) \
+-	$(am__append_32)
++	$(am__append_32) $(am__append_33)
+ libcompat_la_LIBADD = $(PLATFORM_LDADD)
+ 
+ # rc4
+diff -ru libressl-2.6.1.orig/include/compat/machine/endian.h libressl-2.6.1/include/compat/machine/endian.h
+--- libressl-2.6.1.orig/include/compat/machine/endian.h	2016-04-04 00:14:45.000000000 +0200
++++ libressl-2.6.1/include/compat/machine/endian.h	2017-09-19 20:02:26.977839948 +0200
+@@ -21,7 +21,7 @@
+ #define BYTE_ORDER BIG_ENDIAN
+ #endif
+ 
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__midipix__)
+ #include <endian.h>
+ 
+ #elif defined(__sun) || defined(_AIX) || defined(__hpux)

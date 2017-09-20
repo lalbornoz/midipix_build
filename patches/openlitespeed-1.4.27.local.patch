@@ -1,0 +1,343 @@
+diff -ru openlitespeed-1.4.27.orig/configure openlitespeed-1.4.27/configure
+--- openlitespeed-1.4.27.orig/configure	2017-08-15 23:10:20.876017915 +0200
++++ openlitespeed-1.4.27/configure	2017-09-19 23:24:41.430943590 +0200
+@@ -11323,7 +11323,7 @@
+   ;;
+ 
+ # This must be glibc/ELF.
+-linux* | k*bsd*-gnu | kopensolaris*-gnu)
++linux* | k*bsd*-gnu | kopensolaris*-gnu | midipix)
+   version_type=linux # correct to gnu/linux during the next big refactor
+   need_lib_prefix=no
+   need_version=no
+@@ -15907,16 +15907,8 @@
+ 
+ 
+ if test "$OPENLSWS_BSSL" = no ; then
+-    if test "$OSNAME" = Darwin ; then
+-        usedynossl=yes
+-        CPPFLAGS="$CPPFLAGS -I../../src -I../../include -I/usr/local/include -I/usr/local -I/usr -I/usr/pkg "
+-    else
+-        usedynossl=no
+-        CPPFLAGS="$CPPFLAGS -I../../ssl/include -I../../src -I../../include -I/usr/local/include -I/usr/local -I/usr -I/usr/pkg "
+-        echo "Will build latest stable openssl libraries for you, this may take several minutes ..."
+-        OSSL=`. $srcdir/dlossl.sh`
+-        echo "Finsihed building openssl."
+-    fi
++    usedynossl=yes
++    CPPFLAGS="$CPPFLAGS -I../../src -I../../include "
+     echo "Openssl: use_dyn_ossl = $usedynossl"
+ else
+     #### Not provide location, use default location, will not copy files
+@@ -16243,12 +16235,6 @@
+ fi
+ 
+ 
+-ZLIB_HOME=/usr/local
+-if test ! -f "${ZLIB_HOME}/include/zlib.h"
+-then
+-        ZLIB_HOME=/usr
+-fi
+-
+ #
+ # Locate zlib, if wanted
+ #
+@@ -16392,7 +16378,6 @@
+ 
+ 
+ 
+-if test "$OSNAME" = Darwin ; then
+ 
+ 
+ # Check whether --with-openssl was given.
+@@ -16520,8 +16505,6 @@
+ 
+ 
+ 
+-fi
+-
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking lib pcre" >&5
+ $as_echo_n "checking lib pcre... " >&6; }
+ PCRE_LDFLAGS=
+diff -ru openlitespeed-1.4.27.orig/dist/install.sh openlitespeed-1.4.27/dist/install.sh
+--- openlitespeed-1.4.27.orig/dist/install.sh	2017-08-15 22:41:26.000000000 +0200
++++ openlitespeed-1.4.27/dist/install.sh	2017-09-19 23:35:08.535232855 +0200
+@@ -7,92 +7,6 @@
+ MARIADBCPUARCH=
+ 
+ 
+-inst_admin_php()
+-{
+-    # detect download method
+-    OS=`uname -s`
+-    OSTYPE=`uname -m`
+-
+-    DLCMD=
+-    DL=`which wget`
+-    if [ $? -eq 0 ] ; then
+-        DLCMD="wget -nv -O "
+-    else
+-        DL=`which curl`
+-        if [ $? -eq 0 ] ; then
+-            DLCMD="curl -L -o "
+-        else
+-            if [ "x$OS" = "xFreeBSD" ] ; then
+-                DL=`which fetch`
+-                if [ $? -eq 0 ] ; then
+-                    DLCMD="fetch -o "
+-                fi
+-            fi
+-        fi
+-    fi
+-
+-    if [ "x$DLCMD" = "x" ] ; then
+-        echo "ERROR: cannot find proper download method curl/wget/fetch."
+-    fi
+-
+-    echo "DLCMD is $DLCMD"
+-    echo
+-
+-    HASADMINPHP=n
+-    if [ -f "$LSWS_HOME/admin/fcgi-bin/admin_php" ] ; then
+-        mv "$LSWS_HOME/admin/fcgi-bin/admin_php" "$LSWS_HOME/admin/fcgi-bin/admin_php.bak"
+-        echo "admin_php found and mv to admin_php.bak"
+-    fi
+-
+-    if [ ! -d "$LSWS_HOME/admin/fcgi-bin/" ] ; then
+-        mkdir -p "$LSWS_HOME/admin/fcgi-bin/"
+-        echo "Mkdir $LSWS_HOME/admin/fcgi-bin/ for installing admni_php"
+-    fi
+-        
+-    if [ "x$OS" = "xLinux" ] ; then
+-        if [ "x$OSTYPE" != "xx86_64" ] ; then
+-            $DLCMD $LSWS_HOME/admin/fcgi-bin/admin_php http://www.litespeedtech.com/packages/lsphp5_bin/i386/lsphp5
+-        else
+-            $DLCMD $LSWS_HOME/admin/fcgi-bin/admin_php http://www.litespeedtech.com/packages/lsphp5_bin/x86_64/lsphp5
+-        fi
+-        
+-        if [ $? = 0 ] ; then 
+-            HASADMINPHP=y
+-            echo "admin_php downloaded."
+-        fi
+-        
+-#        if [ -f  "$LSWS_HOME/admin/fcgi-bin/admin_php" ] ; then
+-#            HASADMINPHP=y
+-#        fi
+-
+-    elif [ "x$OS" = "xFreeBSD" ] ; then
+-        if [ "x$OSTYPE" != "xamd64" ] ; then
+-           $DLCMD $LSWS_HOME/admin/fcgi-bin/admin_php http://www.litespeedtech.com/packages/lsphp5_bin/i386-freebsd/lsphp5
+-        else
+-           $DLCMD $LSWS_HOME/admin/fcgi-bin/admin_php http://www.litespeedtech.com/packages/lsphp5_bin/x86_64-freebsd/lsphp5
+-        fi
+-       
+-        if [ $? = 0 ] ; then 
+-           HASADMINPHP=y
+-           echo "admin_php downloaded."
+-        fi
+-    fi
+-
+-    if [ "x$HASADMINPHP" = "xn" ] ; then
+-        echo -e "\033[38;5;148mStart to build php, this may take several minutes, please waiting ...\033[39m"
+-        $LSWS_HOME/admin/misc/build_admin_php.sh
+-    else
+-        chmod "$EXEC_MOD" "$LSWS_HOME/admin/fcgi-bin/admin_php"
+-    fi
+-
+-    #final checking of existence of admin_php
+-    if [ ! -f "$LSWS_HOME/admin/fcgi-bin/admin_php" ] ; then
+-        echo -e "\033[38;5;148mFinal checking found admin_php not exists, installation abort.\033[39m"
+-        exit 1
+-    fi
+-}
+-
+-
+ install_lsphp7_centos()
+ {
+     action=install
+@@ -230,17 +144,6 @@
+ }
+ 
+ 
+-inst_lsphp7()
+-{
+-    check_os
+-    if [ "x$OSNAME" = "xcentos" ] ; then
+-        install_lsphp7_centos
+-    else
+-        install_lsphp7_debian
+-    fi
+-}
+-
+-
+ #script start here
+ cd `dirname "$0"`
+ source ./functions.sh 2>/dev/null
+@@ -332,7 +235,6 @@
+     echo
+     
+     echo -e "\033[38;5;148m$LSWS_HOME/conf/httpd_config.xml exists, will be converted to $LSWS_HOME/conf/httpd_config.conf!\033[39m"
+-    inst_admin_php
+     PHP_INSTALLED=y
+     
+     if [ -e "$LSWS_HOME/conf/httpd_config.conf" ] ; then
+@@ -401,9 +303,6 @@
+ buildConfigFiles
+ installation
+ 
+-if [ "x$PHP_INSTALLED" = "xn" ] ; then
+-    inst_admin_php
+-fi
+ 
+ rm $LSWS_HOME/bin/lshttpd
+ ln -sf ./openlitespeed $LSWS_HOME/bin/lshttpd
+@@ -424,7 +323,6 @@
+     ln -sf "$LSWS_HOME/fcgi-bin/lsphp5" "$LSWS_HOME/fcgi-bin/lsphp" 
+     
+     if [ "x$USE_LSPHP7" = "xyes" ] ; then
+-        inst_lsphp7
+         if [ -f "$LSWS_HOME/fcgi-bin/lsphp7" ]; then
+             rm "$LSWS_HOME/fcgi-bin/lsphp"
+             ln -sf "$LSWS_HOME/fcgi-bin/lsphp7" "$LSWS_HOME/fcgi-bin/lsphp" 
+diff -ru openlitespeed-1.4.27.orig/src/main/lshttpdmain.cpp openlitespeed-1.4.27/src/main/lshttpdmain.cpp
+--- openlitespeed-1.4.27.orig/src/main/lshttpdmain.cpp	2017-08-15 22:41:26.000000000 +0200
++++ openlitespeed-1.4.27/src/main/lshttpdmain.cpp	2017-09-19 23:17:37.734034146 +0200
+@@ -46,7 +46,9 @@
+ #include <util/stringlist.h>
+ #include <util/signalutil.h>
+ #include <util/vmembuf.h>
++#ifndef __midipix__
+ #include <sys/sysctl.h>
++#endif
+ 
+ #include <extensions/cgi/cgidworker.h>
+ #include <extensions/registry/extappregistry.h>
+@@ -1441,7 +1443,7 @@
+ #ifdef LSWS_NO_SET_AFFINITY
+     return 2;
+ #else
+-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__)
++#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__) || defined(__midipix__)
+     return sysconf(_SC_NPROCESSORS_ONLN);
+ #else
+     int nm[2];
+diff -ru openlitespeed-1.4.27.orig/src/modules/Makefile.in openlitespeed-1.4.27/src/modules/Makefile.in
+--- openlitespeed-1.4.27.orig/src/modules/Makefile.in	2017-08-15 23:10:18.868017963 +0200
++++ openlitespeed-1.4.27/src/modules/Makefile.in	2017-09-19 23:30:25.052836970 +0200
+@@ -188,7 +188,7 @@
+   done | $(am__uniquify_input)`
+ ETAGS = etags
+ CTAGS = ctags
+-DIST_SUBDIRS = cache uploadprogress modinspector modreqparser lua
++DIST_SUBDIRS = lua
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ am__relativize = \
+   dir0=`pwd`; \
+@@ -375,8 +375,8 @@
+ AM_CPPFLAGS = -I$(top_srcdir)/openssl/include/ -I$(top_srcdir)/include -I$(top_srcdir)/src
+ libmodules_a_METASOURCES = AUTO
+ libmodules_a_SOURCES = modgzip/modgzip.cpp
+-@HAVE_LIBLUA_FALSE@SUBDIRS = cache uploadprogress modinspector modreqparser
+-@HAVE_LIBLUA_TRUE@SUBDIRS = cache uploadprogress lua modinspector modreqparser
++@HAVE_LIBLUA_FALSE@SUBDIRS = 
++@HAVE_LIBLUA_TRUE@SUBDIRS = lua
+ all: all-recursive
+ 
+ .SUFFIXES:
+diff -ru openlitespeed-1.4.27.orig/src/util/gsendfile.h openlitespeed-1.4.27/src/util/gsendfile.h
+--- openlitespeed-1.4.27.orig/src/util/gsendfile.h	2017-08-15 22:41:26.000000000 +0200
++++ openlitespeed-1.4.27/src/util/gsendfile.h	2017-09-19 23:16:05.818827428 +0200
+@@ -83,7 +83,7 @@
+ #endif
+ 
+ #if defined(linux) || defined(__linux) || defined(__linux__) || \
+-    defined(__gnu_linux__)
++    defined(__gnu_linux__) || defined(__midipix__)
+ #include <sys/sendfile.h>
+ #define gsendfile ::sendfile
+ #endif
+diff -ru openlitespeed-1.4.27.orig/src/util/pcutil.cpp openlitespeed-1.4.27/src/util/pcutil.cpp
+--- openlitespeed-1.4.27.orig/src/util/pcutil.cpp	2017-08-15 22:41:26.000000000 +0200
++++ openlitespeed-1.4.27/src/util/pcutil.cpp	2017-09-19 23:26:15.822340402 +0200
+@@ -22,6 +22,7 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <string.h>
++#include <pthread.h>
+ 
+ #ifdef __linux
+ #include <sched.h>
+@@ -73,7 +74,7 @@
+ 
+     if (s_nCpu > 0)
+         return s_nCpu;
+-#if defined(linux) || defined(__linux) || defined(__linux__)
++#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__midipix__)
+     s_nCpu = sysconf(_SC_NPROCESSORS_ONLN);
+ #else
+     int mib[2];
+@@ -117,7 +118,7 @@
+ #ifdef __FreeBSD__
+     return cpuset_setaffinity(CPU_LEVEL_WHICH, CPU_WHICH_PID, -1,
+                               sizeof(cpu_set_t), mask);
+-#elif defined(linux) || defined(__linux) || defined(__linux__)
++#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__midipix__)
+     return pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), mask);
+     //return sched_setaffinity(0, sizeof(cpu_set_t), mask);
+ #endif
+diff -ru openlitespeed-1.4.27.orig/src/util/pcutil.h openlitespeed-1.4.27/src/util/pcutil.h
+--- openlitespeed-1.4.27.orig/src/util/pcutil.h	2017-08-15 22:41:26.000000000 +0200
++++ openlitespeed-1.4.27/src/util/pcutil.h	2017-09-19 23:16:40.650519918 +0200
+@@ -18,7 +18,7 @@
+ #ifndef PCUTIL_H
+ #define PCUTIL_H
+ 
+-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__)
++#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__) || defined(__midipix__)
+ #include <sched.h>
+ # define SET_AFFINITY(pid, size, mask) sched_setaffinity(0, size, mask)
+ # define GET_AFFINITY(pid, size, mask) sched_getaffinity(0, size, mask)
+diff -ru openlitespeed-1.4.27.orig/src/util/sysinfo/partitioninfo.cpp openlitespeed-1.4.27/src/util/sysinfo/partitioninfo.cpp
+--- openlitespeed-1.4.27.orig/src/util/sysinfo/partitioninfo.cpp	2017-08-15 22:41:26.000000000 +0200
++++ openlitespeed-1.4.27/src/util/sysinfo/partitioninfo.cpp	2017-09-19 23:27:38.773827268 +0200
+@@ -16,7 +16,11 @@
+ *    along with this program. If not, see http://www.gnu.org/licenses/.      *
+ *****************************************************************************/
+ #include "partitioninfo.h"
++
+ #include <lsdef.h>
++#ifdef __midipix__
++#include <sys/statfs.h>
++#endif
+ 
+ PartitionInfo::PartitionInfo()
+ {
+@@ -33,7 +37,7 @@
+ int PartitionInfo::getPartitionInfo(const char *path, uint64_t *outTotal,
+                                     uint64_t *outFree)
+ {
+-#if defined(__linux) || defined(sun)
++#if defined(__linux) || defined(sun) || defined(__midipix__)
+     struct statvfs st;
+     if (statvfs(path, &st) != 0)
+     {
+diff -ru openlitespeed-1.4.27.orig/src/util/sysinfo/siocglif_nicdetect.cpp openlitespeed-1.4.27/src/util/sysinfo/siocglif_nicdetect.cpp
+--- openlitespeed-1.4.27.orig/src/util/sysinfo/siocglif_nicdetect.cpp	2017-08-15 22:41:26.000000000 +0200
++++ openlitespeed-1.4.27/src/util/sysinfo/siocglif_nicdetect.cpp	2017-09-19 23:29:06.497299135 +0200
+@@ -18,6 +18,9 @@
+ struct ifi_info *
+ NICDetect::get_ifi_info(int family, int doaliases)
+ {
++#ifdef __midipix__
++    return NULL;
++#else
+     struct ifi_info     *ifi, *ifihead, **ifipnext;
+     int                 sockfd, len, lastlen, flags, myflags;
+     char                *buf, lastname[IFNAMSIZ], *cptr;
+@@ -163,5 +166,6 @@
+     close(sockfd);
+     free(buf);
+     return (ifihead);   /* pointer to first structure in linked list */
++#endif
+ }
+ 
