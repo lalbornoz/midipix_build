@@ -1,8 +1,9 @@
 #!/bin/sh -f
 # Prepend /bin to ${PATH} if it does not contain it.
-if [ -z "${PATH##/bin:*}" -a -z "${PATH##*:/bin:*}" -a -z "${PATH##*:/bin}" ]; then
-	export PATH="/bin${PATH:+:${PATH}}";
-fi;
+case "${PATH}" in
+/bin:*|*:/bin:*|*:/bin) ;;
+*)	export PATH="/bin${PATH:+:${PATH}}"; ;;
+esac;
 
 #
 # Process -h/${#} > 1. Set and cd into ${MIDIPIX_PATH} from either
