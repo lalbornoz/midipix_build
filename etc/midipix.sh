@@ -37,10 +37,11 @@ if [ "$(uname -o)" = "Msys" ]; then
 fi;
 mintty -h always -s 120,80 -e /bin/sh -c "
 	set -o errexit;
+	stty raw -echo;
 	env PATH=${MIDIPIX_PATH}/lib		\
-	bin/ntctty.exe -e			\
+	bin/ntctty.exe -p -e			\
 		bin/chroot .			\
-		/bin/env PATH=/bin:/lib bash" &
+		/bin/env PATH=/bin:/lib bash -l" &
 sleep ${SLEEP_DELAY:=0.25};
 printf "%-35s: %s\n" "ntctty PID" "$(ps -W | awk '$NF ~ /ntctty\.exe$/{print $1}')";
 
