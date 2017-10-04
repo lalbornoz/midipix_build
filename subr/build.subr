@@ -189,6 +189,8 @@ set_env_vars_with_sep() {
 subst_tgts() {
 	while [ ${#} -ge 1 ]; do
 	case "${1}" in
+	dev)
+		echo "${DEV_PACKAGES}"; ;;
 	devroot)
 		echo "${DEVROOT_PACKAGES}"; ;;
 	world)	echo "${WORLD_PACKAGES}"; ;;

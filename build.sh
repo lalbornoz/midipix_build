@@ -32,7 +32,7 @@ case ${1} in
 	fi;
 	BUILD_PACKAGES_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
 	shift; ;;
-host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|minipix|devroot|world)
+host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|minipix|dev|devroot|world)
 	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 *)	exec cat etc/build.usage; ;;
