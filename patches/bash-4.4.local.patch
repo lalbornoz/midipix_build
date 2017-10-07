@@ -116,3 +116,15 @@
  TERMCAP_DEP=
  elif test $bash_cv_termcap_lib = libc; then
  TERMCAP_LIB=
+diff -ru bash-4.4.orig/lib/sh/oslib.c bash-4.4/lib/sh/oslib.c
+--- bash-4.4.orig/lib/sh/oslib.c	2013-10-14 15:12:57.000000000 +0200
++++ bash-4.4/lib/sh/oslib.c	2017-10-07 22:48:52.478254782 +0200
+@@ -280,7 +280,7 @@
+ long
+ getmaxchild ()
+ {
+-  static long maxchild = -1L;
++  static long maxchild = _SC_CHILD_MAX;
+ 
+   if (maxchild > 0)
+     return maxchild;
