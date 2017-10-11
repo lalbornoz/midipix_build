@@ -13,7 +13,7 @@
     -Werror=missing-prototypes -Werror=implicit-function-declaration \
     -Werror=pointer-arith -Werror=init-self -Werror=format-security \
 -   -Werror=format=2 -Werror=missing-include-dirs; do
-+   -Werror=missing-include-dirs; do
++   do
  
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if $CC supports flag $flag in envvar CFLAGS" >&5
  $as_echo_n "checking if $CC supports flag $flag in envvar CFLAGS... " >&6; }
