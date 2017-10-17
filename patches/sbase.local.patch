@@ -1,0 +1,9 @@
+diff -ru sbase.orig/config.mk sbase/config.mk
+--- sbase.orig/config.mk	2017-10-17 18:50:00.118534627 +0200
++++ sbase/config.mk	2017-10-17 18:53:49.429001349 +0200
+@@ -13,4 +13,4 @@
+ # -lrt might be needed on some systems
+ CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_FILE_OFFSET_BITS=64
+ CFLAGS   = -std=c99 -Wall -pedantic
+-LDFLAGS  = -s
++LDFLAGS  =
