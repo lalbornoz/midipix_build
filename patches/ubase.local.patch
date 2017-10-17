@@ -1,0 +1,9 @@
+diff -ru ubase.orig/config.mk ubase/config.mk
+--- ubase.orig/config.mk	2017-10-17 18:59:11.582930570 +0200
++++ ubase/config.mk	2017-10-17 18:59:29.394818004 +0200
+@@ -12,4 +12,4 @@
+ CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_XOPEN_SOURCE=700 -D_GNU_SOURCE
+ CFLAGS   = -std=c99 -Wall -Wextra
+ LDLIBS   = -lcrypt
+-LDFLAGS  = -s
++LDFLAGS  =
