@@ -1,58 +1,3 @@
---- apr-1.6.2/Makefile.in.orig	2017-05-31 17:04:18.000000000 +0200
-+++ apr-1.6.2/Makefile.in	2017-08-03 16:20:20.174740106 +0200
-@@ -46,8 +46,7 @@
- 
- CLEAN_TARGETS = apr-config.out apr.exp exports.c export_vars.c .make.dirs \
- 	build/apr_rules.out tools/gen_test_char@EXEEXT@ \
--	tools/gen_test_char.o tools/gen_test_char.lo \
--	include/private/apr_escape_test_char.h
-+	tools/gen_test_char.o tools/gen_test_char.lo
- DISTCLEAN_TARGETS = config.cache config.log config.status \
- 	include/apr.h include/arch/unix/apr_private.h \
- 	libtool $(APR_CONFIG) build/apr_rules.mk apr.pc \
-@@ -74,7 +73,7 @@
- 	sed -e 's,^\(apr_build.*=\).*$$,\1$(installbuilddir),' -e 's,^\(top_build.*=\).*$$,\1$(installbuilddir),' < build/apr_rules.mk > $@
- 
- install: $(TARGETS)
--	$(APR_MKDIR) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(installbuilddir) \
-+	$(APR_MKDIR) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
- 		     $(DESTDIR)$(libdir)/pkgconfig $(DESTDIR)$(includedir)
- 	$(INSTALL_DATA) $(top_blddir)/include/apr.h $(DESTDIR)$(includedir)
- 	for f in $(top_srcdir)/include/apr_*.h; do \
-@@ -83,14 +82,6 @@
- 	$(LIBTOOL) --mode=install $(INSTALL) -m 755 $(TARGET_LIB) $(DESTDIR)$(libdir)
- 	$(INSTALL_DATA) apr.exp $(DESTDIR)$(libdir)/apr.exp
- 	$(INSTALL_DATA) apr.pc $(DESTDIR)$(libdir)/pkgconfig/$(APR_PCFILE)
--	for f in libtool shlibtool; do \
--	    if test -f $${f}; then $(INSTALL) -m 755 $${f} $(DESTDIR)$(installbuilddir); fi; \
--	done
--	$(INSTALL) -m 755 $(top_srcdir)/build/mkdir.sh $(DESTDIR)$(installbuilddir)
--	for f in make_exports.awk make_var_export.awk; do \
--	    $(INSTALL_DATA) $(top_srcdir)/build/$${f} $(DESTDIR)$(installbuilddir); \
--	done
--	$(INSTALL_DATA) build/apr_rules.out $(DESTDIR)$(installbuilddir)/apr_rules.mk
- 	$(INSTALL_DATA) $(top_srcdir)/build/apr_common.m4 $(DESTDIR)$(installbuilddir)
- 	$(INSTALL_DATA) $(top_srcdir)/build/find_apr.m4 $(DESTDIR)$(installbuilddir)
- 	$(INSTALL) -m 755 apr-config.out $(DESTDIR)$(bindir)/$(APR_CONFIG)
-@@ -131,18 +122,6 @@
- etags:
- 	etags `find . -name '*.[ch]'`
- 
--OBJECTS_gen_test_char = tools/gen_test_char.lo $(LOCAL_LIBS)
--tools/gen_test_char.lo: tools/gen_test_char.c
--	$(APR_MKDIR) tools
--	$(LT_COMPILE)
--
--tools/gen_test_char@EXEEXT@: $(OBJECTS_gen_test_char)
--	$(LINK_PROG) $(OBJECTS_gen_test_char) $(ALL_LIBS)
--
--include/private/apr_escape_test_char.h: tools/gen_test_char@EXEEXT@
--	$(APR_MKDIR) include/private
--	tools/gen_test_char@EXEEXT@ > $@
--
- LINK_PROG = $(LIBTOOL) $(LTFLAGS) --mode=link $(COMPILE) $(LT_LDFLAGS) \
- 	    @LT_NO_INSTALL@ $(ALL_LDFLAGS) -o $@
- 
 --- apr-1.6.2/network_io/unix/sendrecv.c.orig	2013-10-21 13:57:36.000000000 +0200
 +++ apr-1.6.2/network_io/unix/sendrecv.c	2017-08-03 16:18:08.681830961 +0200
 @@ -252,7 +252,7 @@
@@ -92,3 +37,60 @@
 +    222,222,222,222,222,222,222,222,222,222,222,222,222,222,222,222,222,222,222,222,
 +    222,222,222,222,222,222,222,222,222,222,222,222,222,222,222,222 
 +};
+--- apr-1.6.2/Makefile.in.orig	2017-05-31 17:04:18.000000000 +0200
++++ apr-1.6.2/Makefile.in	2017-10-17 15:50:46.869583816 +0200
+@@ -46,8 +46,7 @@
+ 
+ CLEAN_TARGETS = apr-config.out apr.exp exports.c export_vars.c .make.dirs \
+ 	build/apr_rules.out tools/gen_test_char@EXEEXT@ \
+-	tools/gen_test_char.o tools/gen_test_char.lo \
+-	include/private/apr_escape_test_char.h
++	tools/gen_test_char.o tools/gen_test_char.lo
+ DISTCLEAN_TARGETS = config.cache config.log config.status \
+ 	include/apr.h include/arch/unix/apr_private.h \
+ 	libtool $(APR_CONFIG) build/apr_rules.mk apr.pc \
+@@ -74,7 +73,7 @@
+ 	sed -e 's,^\(apr_build.*=\).*$$,\1$(installbuilddir),' -e 's,^\(top_build.*=\).*$$,\1$(installbuilddir),' < build/apr_rules.mk > $@
+ 
+ install: $(TARGETS)
+-	$(APR_MKDIR) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(installbuilddir) \
++	$(APR_MKDIR) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+ 		     $(DESTDIR)$(libdir)/pkgconfig $(DESTDIR)$(includedir)
+ 	$(INSTALL_DATA) $(top_blddir)/include/apr.h $(DESTDIR)$(includedir)
+ 	for f in $(top_srcdir)/include/apr_*.h; do \
+@@ -83,16 +82,6 @@
+ 	$(LIBTOOL) --mode=install $(INSTALL) -m 755 $(TARGET_LIB) $(DESTDIR)$(libdir)
+ 	$(INSTALL_DATA) apr.exp $(DESTDIR)$(libdir)/apr.exp
+ 	$(INSTALL_DATA) apr.pc $(DESTDIR)$(libdir)/pkgconfig/$(APR_PCFILE)
+-	for f in libtool shlibtool; do \
+-	    if test -f $${f}; then $(INSTALL) -m 755 $${f} $(DESTDIR)$(installbuilddir); fi; \
+-	done
+-	$(INSTALL) -m 755 $(top_srcdir)/build/mkdir.sh $(DESTDIR)$(installbuilddir)
+-	for f in make_exports.awk make_var_export.awk; do \
+-	    $(INSTALL_DATA) $(top_srcdir)/build/$${f} $(DESTDIR)$(installbuilddir); \
+-	done
+-	$(INSTALL_DATA) build/apr_rules.out $(DESTDIR)$(installbuilddir)/apr_rules.mk
+-	$(INSTALL_DATA) $(top_srcdir)/build/apr_common.m4 $(DESTDIR)$(installbuilddir)
+-	$(INSTALL_DATA) $(top_srcdir)/build/find_apr.m4 $(DESTDIR)$(installbuilddir)
+ 	$(INSTALL) -m 755 apr-config.out $(DESTDIR)$(bindir)/$(APR_CONFIG)
+ 	@if [ $(INSTALL_SUBDIRS) != "none" ]; then \
+             for i in $(INSTALL_SUBDIRS); do \
+@@ -131,18 +120,6 @@
+ etags:
+ 	etags `find . -name '*.[ch]'`
+ 
+-OBJECTS_gen_test_char = tools/gen_test_char.lo $(LOCAL_LIBS)
+-tools/gen_test_char.lo: tools/gen_test_char.c
+-	$(APR_MKDIR) tools
+-	$(LT_COMPILE)
+-
+-tools/gen_test_char@EXEEXT@: $(OBJECTS_gen_test_char)
+-	$(LINK_PROG) $(OBJECTS_gen_test_char) $(ALL_LIBS)
+-
+-include/private/apr_escape_test_char.h: tools/gen_test_char@EXEEXT@
+-	$(APR_MKDIR) include/private
+-	tools/gen_test_char@EXEEXT@ > $@
+-
+ LINK_PROG = $(LIBTOOL) $(LTFLAGS) --mode=link $(COMPILE) $(LT_LDFLAGS) \
+ 	    @LT_NO_INSTALL@ $(ALL_LDFLAGS) -o $@
+ 
