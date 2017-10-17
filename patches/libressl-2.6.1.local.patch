@@ -220,3 +220,69 @@ diff -ru libressl-2.6.1.orig/include/compat/machine/endian.h libressl-2.6.1/incl
  #include <endian.h>
  
  #elif defined(__sun) || defined(_AIX) || defined(__hpux)
+diff -ru libressl-2.6.1.orig/man/Makefile.am libressl-2.6.1/man/Makefile.am
+--- libressl-2.6.1.orig/man/Makefile.am	2017-09-04 23:50:27.000000000 +0200
++++ libressl-2.6.1/man/Makefile.am	2017-10-17 15:08:48.948729828 +0200
+@@ -2411,14 +2411,6 @@
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
+@@ -4517,14 +4509,6 @@
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
+diff -ru libressl-2.6.1.orig/man/Makefile.in libressl-2.6.1/man/Makefile.in
+--- libressl-2.6.1.orig/man/Makefile.in	2017-09-04 23:50:42.000000000 +0200
++++ libressl-2.6.1/man/Makefile.in	2017-10-17 15:09:11.020656860 +0200
+@@ -2677,14 +2677,6 @@
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
+@@ -4783,14 +4775,6 @@
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
