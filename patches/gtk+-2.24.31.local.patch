@@ -1,0 +1,53 @@
+diff -ru gtk+-2.24.31.orig/gtk/gtksettings.c gtk+-2.24.31/gtk/gtksettings.c
+--- gtk+-2.24.31.orig/gtk/gtksettings.c	2015-12-28 16:42:28.000000000 +0100
++++ gtk+-2.24.31/gtk/gtksettings.c	2017-10-20 00:12:56.784947298 +0200
+@@ -32,7 +32,7 @@
+ 
+ #ifdef GDK_WINDOWING_X11
+ #include "x11/gdkx.h"
+-#include <pango/pangofc-fontmap.h>
++#include <pango/pango-fontmap.h>
+ #endif
+ 
+ #ifdef GDK_WINDOWING_QUARTZ
+@@ -2354,13 +2354,14 @@
+       gboolean update_needed = FALSE;
+ 
+       /* bug 547680 */
++#ifndef __midipix__
+       if (PANGO_IS_FC_FONT_MAP (fontmap) && !FcConfigUptoDate (NULL))
+ 	{
+ 	  pango_fc_font_map_cache_clear (PANGO_FC_FONT_MAP (fontmap));
+ 	  if (FcInitReinitialize ())
+ 	    update_needed = TRUE;
+ 	}
+-
++#endif
+       last_update_timestamp = timestamp;
+       last_update_needed = update_needed;
+     }
+diff -ru gtk+-2.24.31.orig/gtk/Makefile.in gtk+-2.24.31/gtk/Makefile.in
+--- gtk+-2.24.31.orig/gtk/Makefile.in	2016-09-09 21:33:09.000000000 +0200
++++ gtk+-2.24.31/gtk/Makefile.in	2017-10-20 00:08:05.310575203 +0200
+@@ -1937,7 +1937,7 @@
+ libgtk_win32_2_0_la_LDFLAGS = $(libtool_opts) -Wl,-luuid
+ libgtk_quartz_2_0_la_LDFLAGS = $(libtool_opts)
+ libgtk_directfb_2_0_la_LDFLAGS = $(libtool_opts)
+-libgtk_x11_2_0_la_LIBADD = $(libadd)
++libgtk_x11_2_0_la_LIBADD = $(libadd) -latk-1.0
+ libgtk_win32_2_0_la_LIBADD = $(libadd) -lole32 -lgdi32 -lcomdlg32 -lwinspool -lcomctl32
+ libgtk_quartz_2_0_la_LIBADD = $(libadd)
+ libgtk_directfb_2_0_la_LIBADD = $(libadd)
+diff -ru gtk+-2.24.31.orig/Makefile.in gtk+-2.24.31/Makefile.in
+--- gtk+-2.24.31.orig/Makefile.in	2016-09-09 21:33:07.000000000 +0200
++++ gtk+-2.24.31/Makefile.in	2017-10-20 00:07:42.010704831 +0200
+@@ -564,7 +564,7 @@
+ 	|| { echo "Gtk+Tests:ERROR: Failed to start Xvfb environment for X11 target tests."; exit 1; } \
+ 	&& DISPLAY=:$$XID && export DISPLAY
+ 
+-SRC_SUBDIRS = gdk gtk modules demos tests perf
++SRC_SUBDIRS = gdk gtk modules demos perf
+ SUBDIRS = po po-properties $(SRC_SUBDIRS) docs m4macros build
+ 
+ # require automake 1.4
+
