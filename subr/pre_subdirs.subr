@@ -20,6 +20,7 @@ pre_subdirs() {
 		/=${PREFIX_CROSS}				\
 		/=${PREFIX_MINIPIX}/bin				\
 		/=${PREFIX_NATIVE}				\
+		/=${PREFIX_TARGET}/bin				\
 		/=${PREFIX_TARGET}/lib				\
 		@.=${PREFIX}/usr				\
 		@.=${PREFIX}/x86_64-w64-mingw32/mingw		\
