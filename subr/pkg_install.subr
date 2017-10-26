@@ -15,26 +15,29 @@ pkgp_install_dlltool() {
 	local _so_fname _so_name;
 	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
 	&& test_cmd perk								\
-	&& test_cmd ${PKG_TARGET}-dlltool; then
+	&& test_cmd ${PKG_TARGET}-mdso; then
 		for _so_fname in							\
-			$(find	\( -name "*.so"						\
-				-or -name "*.so.[0-9]"					\
-				-or -name "*.so.[0-9].[0-9]"				\
-				-or -name "*.so.[0-9].[0-9].[0-9]" \) -printf '%P\n');
+			$(find	\(  -name "*.so"					\
+				-or -name "*.so.*"					\
+				-or -name "*.so.*.*"					\
+				-or -name "*.so.*.*.*" \) -printf '%P\n');
 		do
-			if [ \( -e ${_so_fname%.so}.lib.a \) -o				\
-			     \( ! -e ${PKG_PREFIX}/lib/$(basename ${_so_fname}) \) -o	\
-			     \( "$(readlink -f ${_so_fname})" = "/dev/null" \) ]; then
+			case "${_so_fname}" in
+			*.so)		_so_fname_ver=""; ;;
+			*.so.*)		_so_fname_ver="${_so_fname##*.so.}"; ;;
+			esac;
+			_so_name="${_so_fname%%.so*}";
+			_lib_fname="${_so_name}${_so_fname_ver:+.${_so_fname_ver}}.lib.a";
+			if [ -e "${_lib_fname}" ]					\
+			|| [ ! -e "${PKG_PREFIX}/lib/$(basename "${_so_fname}")" ]	\
+			|| [ "$(readlink -f "${_so_fname}")" = "/dev/null" \) ]; then
 				continue;
 			else
-				_so_name="${_so_fname%.so}";
-				echo perk -epdlltool ${_so_fname} \> ${_so_fname%.so}.def;
-				perk -epdlltool ${_so_fname} > ${_so_fname%.so}.def;
-				echo ${PKG_TARGET}-dlltool -l ${_so_fname%.so}.lib.a	\
-					-D ${_so_fname} -d ${_so_fname%.so}.def;
-				${PKG_TARGET}-dlltool -l ${_so_fname%.so}.lib.a	\
-					-D ${_so_fname} -d ${_so_fname%.so}.def;
-				build_fileop cp ${_so_fname%.so}.lib.a "${PKG_PREFIX}/lib";
+				echo perk -e "${_so_fname}"				\|\
+					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname}" -
+				perk -e "${_so_fname}"					|\
+					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname}" -
+				build_fileop cp "${_lib_fname}" "${PKG_PREFIX}/lib";
 			fi;
 		done;
 	fi;
