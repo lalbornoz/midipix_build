@@ -46,7 +46,7 @@ diff -ru gtk+-2.24.31.orig/Makefile.in gtk+-2.24.31/Makefile.in
  	&& DISPLAY=:$$XID && export DISPLAY
  
 -SRC_SUBDIRS = gdk gtk modules demos tests perf
-+SRC_SUBDIRS = gdk gtk modules demos perf
++SRC_SUBDIRS = gdk gtk modules perf
  SUBDIRS = po po-properties $(SRC_SUBDIRS) docs m4macros build
  
  # require automake 1.4
