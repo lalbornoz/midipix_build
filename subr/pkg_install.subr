@@ -28,7 +28,8 @@ pkgp_install_dlltool() {
 			esac;
 			_so_name="${_so_fname%%.so*}";
 			_lib_fname="${_so_name}${_so_fname_ver:+.${_so_fname_ver}}.lib.a";
-			if [ -e "${PKG_PREFIX}/lib/${_lib_fname}" ]			\
+			if [ -e "${_lib_fname}" ]					\
+			|| [ -e "${PKG_PREFIX}/lib/${_lib_fname}" ]			\
 			|| [ ! -e "${PKG_PREFIX}/lib/$(basename "${_so_fname}")" ]	\
 			|| [ "$(readlink -f "${_so_fname}")" = "/dev/null" ]; then
 				continue;
