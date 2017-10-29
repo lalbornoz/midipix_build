@@ -18,9 +18,9 @@ pkgp_install_dlltool() {
 	&& test_cmd ${PKG_TARGET}-mdso; then
 		for _so_fname in							\
 			$(find	\(  -name "*.so"					\
-				-or -name "*.so.*"					\
-				-or -name "*.so.*.*"					\
-				-or -name "*.so.*.*.*" \) -print);
+				-or -name "*.so.[0-9]*"					\
+				-or -name "*.so.[0-9]*.[0-9]*"				\
+				-or -name "*.so.[0-9]*.[0-9]*.[0-9]*" \) -print);
 		do	_so_fname="${_so_fname#./}";
 			case "${_so_fname}" in
 			*.so)		_so_fname_ver=""; ;;
