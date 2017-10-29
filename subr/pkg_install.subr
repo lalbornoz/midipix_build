@@ -30,14 +30,13 @@ pkgp_install_dlltool() {
 			_lib_fname="${_so_name}${_so_fname_ver:+.${_so_fname_ver}}.lib.a";
 			if [ -e "${_lib_fname}" ]					\
 			|| [ -e "${PKG_PREFIX}/lib/${_lib_fname}" ]			\
-			|| [ ! -e "${PKG_PREFIX}/lib/$(basename "${_so_fname}")" ]	\
 			|| [ "$(readlink -f "${_so_fname}")" = "/dev/null" ]; then
 				continue;
 			else
 				echo perk -e "${_so_fname}"				\|\
-					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname}" -
+					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname##*/}" -
 				perk -e "${_so_fname}"					|\
-					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname}" -
+					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname##*/}" -
 				build_fileop cp "${_lib_fname}" "${PKG_PREFIX}/lib";
 			fi;
 		done;
