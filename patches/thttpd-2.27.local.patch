@@ -1,0 +1,26 @@
+--- thttpd-2.27/Makefile.in.orig	2005-05-20 19:10:24.000000000 +0000
++++ thttpd-2.27/Makefile.in	2017-11-08 13:57:11.088000000 +0000
+@@ -110,11 +110,11 @@
+ 
+ installthis:
+ 	-mkdir -p $(DESTDIR)$(BINDIR)
+-	$(INSTALL) -m 555 -o bin -g bin thttpd $(DESTDIR)$(BINDIR)
++	$(INSTALL) -m 555 thttpd $(DESTDIR)$(BINDIR)
+ 
+ install-man:
+ 	-mkdir -p $(DESTDIR)$(MANDIR)/man8
+-	$(INSTALL) -m 444 -o bin -g bin thttpd.8 $(DESTDIR)$(MANDIR)/man8
++	$(INSTALL) -m 444 thttpd.8 $(DESTDIR)$(MANDIR)/man8
+ 
+ installsubdirs:
+ 	for i in $(SUBDIRS) ; do ( \
+--- thttpd-2.27/extras/Makefile.in.orig	2005-05-20 19:10:25.000000000 +0000
++++ thttpd-2.27/extras/Makefile.in	2017-11-08 13:59:32.352000000 +0000
+@@ -68,7 +68,6 @@
+ install:	all
+ 	rm -f $(BINDIR)/makeweb $(BINDIR)/htpasswd $(BINDIR)/syslogtocern
+ 	cp makeweb $(BINDIR)/makeweb
+-	chgrp $(WEBGROUP) $(BINDIR)/makeweb
+ 	chmod 2755 $(BINDIR)/makeweb
+ 	cp htpasswd $(BINDIR)/htpasswd
+ 	cp syslogtocern $(BINDIR)/syslogtocern
