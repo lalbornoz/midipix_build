@@ -44,12 +44,19 @@ pkg_setup_env() {
 	else
 		[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
 		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
-		[ -z "${PKG_SUBDIR}" ] && PKG_SUBDIR="${PKG_FNAME%%.t*}";
 		[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
 		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
+		if [ -z "${PKG_SUBDIR}" ]; then
+			if [ -n "${PKG_URLS_GIT}" ]; then
+				PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
+			else
+				PKG_SUBDIR="${PKG_FNAME%%.t*}";
+			fi;
+		fi;
 		if [ -z "${PKG_BUILD_DIR}" ]; then
 			set_build_dir "${PKG_SUBDIR}" "${PKG_BUILD_TYPE:-native}";
 		fi;
+
 		if [ "${PKG_BUILD_TYPE}" = "host" ]; then
 			export AR="ar";
 			export CC="gcc";
