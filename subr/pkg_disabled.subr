@@ -3,7 +3,10 @@
 #
 
 pkg_disabled() {
-	if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
+	local _pkg_name_uc;
+	_pkg_name_uc="$(toupper "${PKG_NAME}")";
+	if [ "$(get_var_unsafe PKG_${_pkg_name_uc}_DISABLED)" = "1" ]; then
+		log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
 		exit 0;
 	fi;
 };

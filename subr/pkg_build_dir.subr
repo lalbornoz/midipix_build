@@ -3,10 +3,15 @@
 #
 
 pkg_build_dir() {
-	if [ ! -d "${WORKDIR}/${PKG_BUILD_DIR}" ]; then
-		build_fileop mkdir "${WORKDIR}/${PKG_BUILD_DIR}";
+	if [ -z "${PKG_BUILD_DIR}" ]; then
+		if [ -e "${WORKDIR}/${PKG_SUBDIR}/configure" ]\
+		|| [ -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" ]\
+		|| [ -e "${WORKDIR}/${PKG_SUBDIR}/configure.in" ]; then
+			set_build_dir "${PKG_SUBDIR}" "${PKG_BUILD_TYPE:-native}";
+		else
+			PKG_BUILD_DIR="${PKG_SUBDIR}";
+		fi;
 	fi;
-	build_fileop cd "${WORKDIR}/${PKG_BUILD_DIR}";
 };
 
 # vim:filetype=sh

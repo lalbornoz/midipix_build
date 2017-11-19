@@ -8,11 +8,6 @@ pkg_autoconf() {
 	     -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" -o					\
 	     -e "${WORKDIR}/${PKG_SUBDIR}/configure.in" -o					\
 	     -e "${WORKDIR}/${PKG_SUBDIR}/config.guess" ]; then
-		find "${WORKDIR}/${PKG_SUBDIR}" -name config.sub				\
-			-exec echo mv -- {} {}.orig \;						\
-			-exec mv -- {} {}.orig \;						\
-			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;	\
-			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
 		if [ -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" ]\
 		&& [ ! -e "${WORKDIR}/${PKG_SUBDIR}/configure" ]; then
 			for __ in bootstrap bootstrap.sh autogen.sh ""; do
@@ -36,6 +31,11 @@ pkg_autoconf() {
 				fi;
 			done;
 		fi;
+		find "${WORKDIR}/${PKG_SUBDIR}" -name config.sub				\
+			-exec echo mv -- {} {}.orig \;						\
+			-exec mv -- {} {}.orig \;						\
+			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;	\
+			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
 		if [ "${PKG_BUILD_TYPE}" != host ]; then
 			for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
 				build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${WORKDIR}/${__}/";

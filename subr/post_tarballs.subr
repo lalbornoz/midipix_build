@@ -25,10 +25,10 @@ postp_tarball_toolchain() {
 	tar -cpf - bin include lib lib64 libexec share "${TARGET}"			|\
 	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_CROSS_FNAME}";
 	log_msg info "Finished building toolchain tarball.";
-	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_CROSS_SIGN_GPG_KEY}" ] &&\
-				gpg --list-keys "${TARBALL_CROSS_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&		\
+				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 		gpg --armor --passphrase-file /dev/null					\
-			--local-user "${TARBALL_CROSS_SIGN_GPG_KEY}" --sign "${TARBALL_CROSS_FNAME}";
+			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign "${TARBALL_CROSS_FNAME}";
 		log_msg info "Signed toolchain tarball.";
 	fi;
 };
@@ -39,10 +39,10 @@ postp_tarball_minipix() {
 		midipix_shortcut.vbs midipix.sh README					|\
 	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_MINIPIX_FNAME}";
 	log_msg info "Finished building binary Minipix distribution tarball.";
-	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_MINIPIX_SIGN_GPG_KEY}" ] &&\
-				gpg --list-keys "${TARBALL_MINIPIX_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&		\
+				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 		gpg --armor --passphrase-file /dev/null					\
-			--local-user "${TARBALL_MINIPIX_SIGN_GPG_KEY}" --sign "${TARBALL_MINIPIX_FNAME}";
+			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign "${TARBALL_MINIPIX_FNAME}";
 		log_msg info "Signed binary Minipix distribution tarball.";
 	fi;
 };
@@ -57,10 +57,10 @@ postp_tarball_src() {
 		-not -path tmp/ptycon/.git)					|\
 	"${TARBALL_COMPRESS_CMD}" ${TARBALL_COMPRESS_ARGS} -c > "${TARBALL_SRC_FNAME}";
 	log_msg info "Finished building source tarball.";
-	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SRC_SIGN_GPG_KEY}" ] &&\
-				gpg --list-keys "${TARBALL_SRC_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+	if [ -x "$(which gpg 2>/dev/null)" -a -n "${TARBALL_SIGN_GPG_KEY}" ] &&	\
+				gpg --list-keys "${TARBALL_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 		gpg --armor --passphrase-file /dev/null				\
-			--local-user "${TARBALL_SRC_SIGN_GPG_KEY}" --sign "${TARBALL_SRC_FNAME}";
+			--local-user "${TARBALL_SIGN_GPG_KEY}" --sign "${TARBALL_SRC_FNAME}";
 		log_msg info "Signed source tarball.";
 	fi;
 };

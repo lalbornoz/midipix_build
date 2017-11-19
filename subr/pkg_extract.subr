@@ -6,23 +6,20 @@ pkg_extract() {
 	if [ -n "${PKG_URL}" ]\
 	&& [ "${PKG_URL_TYPE:-wget}" = wget ]; then
 		build_fileop rm "${WORKDIR}/${PKG_SUBDIR}";
-		if [ "${PKG_SUBDIR_CREATE:-0}" -eq 1 ]; then
-			build_fileop mkdir "${WORKDIR}/${PKG_SUBDIR}";
-		fi;
 		if [ "${PKG_FNAME##*.tar.}" = "bz2" ]; then
-			bunzip2 -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}${PKG_SUBDIR_CREATE:+/${PKG_SUBDIR}}" -xf -;
+			bunzip2 -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}" -xf -;
 		elif [ "${PKG_FNAME##*.tar.}" = "gz" ]; then
-			gunzip -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}${PKG_SUBDIR_CREATE:+/${PKG_SUBDIR}}" -xf -;
+			gunzip -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}" -xf -;
 		elif [ "${PKG_FNAME##*.tar.}" = "xz" ]; then
-			xz -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}${PKG_SUBDIR_CREATE:+/${PKG_SUBDIR}}" -xf -;
+			xz -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}" -xf -;
 		elif [ "${PKG_FNAME##*.t}" = "bz2" ]; then
-			bunzip2 -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}${PKG_SUBDIR_CREATE:+/${PKG_SUBDIR}}" -xf -;
+			bunzip2 -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}" -xf -;
 		elif [ "${PKG_FNAME##*.t}" = "gz" ]; then
-			gunzip -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}${PKG_SUBDIR_CREATE:+/${PKG_SUBDIR}}" -xf -;
+			gunzip -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}" -xf -;
 		elif [ "${PKG_FNAME##*.t}" = "xz" ]; then
-			xz -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}${PKG_SUBDIR_CREATE:+/${PKG_SUBDIR}}" -xf -;
+			xz -d < "${DLCACHEDIR}/${PKG_FNAME}" | tar -C "${WORKDIR}" -xf -;
 		else
-			tar -C "${WORKDIR}${PKG_SUBDIR_CREATE:+/${PKG_SUBDIR}}" -xf "${DLCACHEDIR}/${PKG_FNAME}";
+			tar -C "${WORKDIR}" -xf "${DLCACHEDIR}/${PKG_FNAME}";
 		fi;
 	fi;
 };

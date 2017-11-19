@@ -3,79 +3,38 @@
 #
 
 pkg_setup_env() {
-	local	_pkg_name_uc _pkg_name_parent_uc				\
-		_vars_fname _vname _build_uc __ _log_env_vars;
-	_pkg_name_uc="$(echo ${PKG_NAME} | tr a-z A-Z)";
-	for _vars_fname in vars/${PKG_NAME}.vars; do
-		[ -e "${_vars_fname}" ] && . "${_vars_fname}";
-	done;
-	_build_uc="$(echo ${BUILD} | tr a-z A-Z)";
-	if [ -n "${PKG_NAME_PARENT}" ]; then
-		_pkg_name_parent_uc="$(echo ${PKG_NAME_PARENT} | tr a-z A-Z)";
-		for _vname in PREFIX ${PKG_BUILD_VARS}; do
-			for __ in "DEFAULT_${_vname}"				\
-				  "${BUILD_TARGET}_${_vname}"			\
-				  "PKG_${_pkg_name_parent_uc}_${_vname}"	\
-				  "PKG_${_pkg_name_parent_uc}_${_vname}_${_build_uc}"; do
-				if [ -n "$(get_var_unsafe "${__}")" ]; then
-					set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
-					if ! lmatch "${_log_env_vars}" " " "${__}"; then
-						_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__}";
-					fi;
-				fi;
-			done;
-		done;
-	fi;
-	for _vname in PREFIX ${PKG_BUILD_VARS}; do
-		for __ in "DEFAULT_${_vname}"					\
-			  "${BUILD_TARGET}_${_vname}"				\
-			  "PKG_${_pkg_name_uc}_${_vname}"			\
-			  "PKG_${_pkg_name_uc}_${_vname}_${_build_uc}"; do
-			if [ -n "$(get_var_unsafe "${__}")" ]; then
-				set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
-				if ! lmatch "${_log_env_vars}" " " "${__}"; then
-					_log_env_vars="${_log_env_vars:+${_log_env_vars} }${__}";
-				fi;
-			fi;
-		done;
-	done;
-	if [ -z "${PKG_URL}" -a -z "${PKG_URLS_GIT}" -a -z "${PKG_VERSION}" ]; then
+	if [ -z "${PKG_URL}" ]\
+	&& [ -z "${PKG_URLS_GIT}" ]\
+	&& [ -z "${PKG_VERSION}" ]; then
 		log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
 	else
+		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
 		[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
 		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
 		[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
-		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
-		if [ -z "${PKG_SUBDIR}" ]; then
-			if [ -n "${PKG_URLS_GIT}" ]; then
-				PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
-			else
-				PKG_SUBDIR="${PKG_FNAME%%.t*}";
-			fi;
-		fi;
-		if [ -z "${PKG_BUILD_DIR}" ]; then
-			set_build_dir "${PKG_SUBDIR}" "${PKG_BUILD_TYPE:-native}";
-		fi;
-
-		if [ "${PKG_BUILD_TYPE}" = "host" ]; then
-			export AR="ar";
+		case "${PKG_BUILD_TYPE}" in
+		host)	export AR="ar";
 			export CC="gcc";
 			export CXX="g++";
-			export RANLIB="ranlib";
-		else
-			export AR="${PKG_TARGET}-ar";
+			export RANLIB="ranlib"; ;;
+		*)	export AR="${PKG_TARGET}-ar";
 			export CC="${PKG_TARGET}-gcc";
 			export CXX="${PKG_TARGET}-g++";
-			export RANLIB="${PKG_TARGET}-ranlib";
+			export RANLIB="${PKG_TARGET}-ranlib"; ;;
+		esac;
+		case "${PKG_SUBDIR}" in
+		?*)	;;
+		*)	case "${PKG_URLS_GIT}" in
+			?*)	PKG_SUBDIR="${PKG_URLS_GIT%%=*}"; ;;
+			*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;
+			esac; ;;
+		esac;
+		export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
+		export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+		if [ -n "${PKG_ENV_VARS}" ]; then
+			PKG_ENV_VARS="$(echo "${PKG_ENV_VARS}" | tr " " "\n" | sort | tr "\n" " ")";
+			log_env_vars "build" ${PKG_ENV_VARS};
 		fi;
-		if [ "${PKG_SLIBTOOL}" != "default" ]; then
-			export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
-			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
-		fi;
-	fi;
-	if [ -n "${_log_env_vars}" ]; then
-		_log_env_vars="$(echo "${_log_env_vars}" | tr " " "\n" | sort | tr "\n" " ")";
- 		log_env_vars "build" ${_log_env_vars};
 	fi;
 };
 

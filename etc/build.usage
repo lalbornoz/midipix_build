@@ -23,8 +23,9 @@ usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
         -v                      Be verbose.
         --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
         <target>[ ...]          One of:
-                                host_toolchain, native_toolchain, runtime, lib_packages,
-                                leaf_packages, minipix, world, or devroot.
+                                host_toolchain, native_toolchain, runtime, host_packages,
+                                lib_packages, dev_packages, leaf_packages, minipix, devroot,
+                                dev, or world.
 
         ${HOME}/midipix_build.vars, ../midipix_build.vars, and build.vars are sourced
         if they exist.

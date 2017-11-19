@@ -8,9 +8,22 @@ pre_setup_env() {
 	&& [ -e /proc/cpuinfo ]; then
 		BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
 	fi;
-	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/build.vars; do
+	: ${ARCH:=nt64}; : ${BUILD:=debug};
+	if [ "${ARCH}" = nt32 ]; then
+		TARGET="i686-nt32-midipix";
+	elif [ "${ARCH}" = nt64 ]; then
+		TARGET="x86_64-nt64-midipix";
+	else
+		if [ "${BUILD}" != debug ]\
+		&& [ "${BUILD}" != release ]; then
+			log_msg failexit "Error: unknown build type \`${BUILD}'.";
+		fi;
+		log_msg failexit "Error: invalid architecture \`${ARCH}'.";
+	fi;
+	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/env.vars ./vars/build.vars; do
 		[ -e ${__} ] && . ${__};
 	done;
+	export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
 	if [ ${ARG_IPV4_ONLY:-0} -eq 1 ]; then
 		WGET_ARGS="-4${WGET_ARGS:+ ${WGET_ARGS}}";
 	elif [ ${ARG_IPV6_ONLY:-0} -eq 1 ]; then
