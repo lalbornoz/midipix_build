@@ -1,0 +1,11 @@
+--- SmallBASIC/configure.orig	2017-11-20 01:35:25.276000000 +0000
++++ SmallBASIC/configure	2017-11-20 01:37:03.332000000 +0000
+@@ -5171,7 +5171,7 @@
+ 
+ $as_echo "#define USE_PCRE 1" >>confdefs.h
+ 
+-     PACKAGE_LIBS="${PACKAGE_LIBS} `pcre-config --libs`"
++     PACKAGE_LIBS="${PACKAGE_LIBS} ${PCRE_LIBS}"
+    fi
+ }
+ 

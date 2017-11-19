@@ -1,0 +1,12 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_work_dir() {
+	if [ ! -d "${WORKDIR}/${PKG_BUILD_DIR}" ]; then
+		build_fileop mkdir "${WORKDIR}/${PKG_BUILD_DIR}";
+	fi;
+	build_fileop cd "${WORKDIR}/${PKG_BUILD_DIR}";
+};
+
+# vim:filetype=sh

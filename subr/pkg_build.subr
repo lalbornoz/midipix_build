@@ -9,7 +9,7 @@ pkg_build() {
 	fi;
 	if [ -n "${PKG_BUILD_CMDLINE}" ]; then
 		${PKG_BUILD_CMDLINE};
-	elif [ ${PKG_NO_MAKE_BUILD:-0} -eq 0 ]; then
+	else
 		# N.B.	We only specify CC= here if the current package does not use GNU
 		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
 		#	instead of amending CFLAGS.
@@ -21,7 +21,8 @@ pkg_build() {
 			"${CFLAGS_FOR_BUILD:+CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}}"	\
 			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
 			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
-			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}";
+			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"\
+			"LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
 	fi;
 };
 

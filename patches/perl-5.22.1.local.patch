@@ -22,7 +22,7 @@ diff -ru perl-5.22.1.orig/Makefile perl-5.22.1/Makefile
  	$(eval extlibs=$(shell cat ext.libs))
  	$(eval statars=$(shell cat static.list))
 -	$(CC) $(LDFLAGS) -o $@ $(filter %$o,$^) $(LIBPERL) $(statars) $(LIBS) $(extlibs)
-+	$(CC) $(LDFLAGS) -o $@ $(filter %$o,$^) -lperl $(statars) $(LIBS) $(extlibs)
++	$(CC) $(LDFLAGS) -o $@ $(filter %$o,$^) -L. -lperl $(statars) $(LIBS) $(extlibs)
  
  %$o: %.c config.h
  	$(CC) $(CFLAGS) -c -o $@ $<
