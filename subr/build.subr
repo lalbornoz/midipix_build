@@ -11,6 +11,7 @@ pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
 push_IFS() { _pI_IFS="${IFS}"; IFS="${1}"; };
 set_build_dir() { PKG_BUILD_DIR="${1}-${2}-${PKG_TARGET}"; };
 test_cmd() { command -v "${1}" >/dev/null; };
+toupper() { echo "${1}" | tr a-z A-Z; };
 
 build_fileop() {
 	local _op="${1}"; shift;
@@ -119,15 +120,26 @@ set_build_script_done() {
 };
 
 lfilter() {
-	local _list="${1}" _filter="${2}" _lnew _litem _lfilter;
+	[ "x${1}" = "x-not" ] && { local _notfl=1; shift; }
+	local _list="${1}" _filter="${2}" _lnew _litem _lfilter _filterfl;
+	[ -z "${_filter}" ] && { echo "${_list}"; return 0; };
 	for _litem in ${_list}; do
+		_filterfl=0;
 		for _lfilter in ${_filter}; do
-			if [ "${_lfilter}" = "${_litem}" ]; then
+			if [ "${_notfl:-0}" -eq 0 ]\
+			&& [ "${_lfilter}" = "${_litem}" ]; then
 				_lnew="${_lnew:+${_lnew} }${_litem}"; break;
-			fi; 
+			elif [ "${_notfl:-0}" -eq 1 ]\
+			&& [ "${_lfilter}" = "${_litem}" ]; then
+				_filterfl=1; break;
+			fi;
 		done;
+		if [ "${_notfl:-0}" -eq 1 ]\
+		&& [ "${_filterfl:-0}" -eq 0 ]; then
+			_lnew="${_lnew:+${_lnew} }${_litem}";
+		fi;
 	done;
-	echo ${_lnew};
+	echo "${_lnew}";
 };
 
 lmatch() {
@@ -198,15 +210,14 @@ set_env_vars_with_sep() {
 };
 
 subst_tgts() {
+	local _pkgs;
 	while [ ${#} -ge 1 ]; do
-	case "${1}" in
-	dev)
-		echo "${DEV_PACKAGES}"; ;;
-	devroot)
-		echo "${DEVROOT_PACKAGES}"; ;;
-	world)	echo "${WORLD_PACKAGES}"; ;;
-	*)	echo "${1}"; ;;
-	esac; shift;
+	_pkgs="$(get_var_unsafe "$(toupper "${1}")_TARGET")";
+	if [ -n "${_pkgs}" ]; then
+		echo "${_pkgs}";
+	else
+		echo "${1}";
+	fi; shift;
 	done;
 };
 

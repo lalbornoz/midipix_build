@@ -88,6 +88,7 @@ pkg_install() {
 			"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
 			"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"		\
 			"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
+			"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"				\
 			${PKG_INSTALL_TARGET:=install};
 		if [ -n "${PKG_PREFIX_EXTRA}" ]; then
 			run_cmd_unsplit make						\
@@ -99,6 +100,7 @@ pkg_install() {
 				"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
 				"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
 				"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
+				"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"			\
 				${PKG_INSTALL_TARGET_EXTRA:=install}			\
 				DESTDIR=${PKG_PREFIX_EXTRA};
 		fi;
@@ -107,7 +109,9 @@ pkg_install() {
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
 		(install_files -v ${PKG_PREFIX} ${PKG_INSTALL_FILES});
 	fi;
-	pkgp_install_libs;
+	if [ "${PKG_NO_INSTALL_LIBS:-0}" -eq 0 ]; then
+		pkgp_install_libs;
+	fi;
 	pkgp_install_pkgconfig;
 };
 

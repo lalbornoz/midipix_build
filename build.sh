@@ -32,10 +32,12 @@ case ${1} in
 	fi;
 	BUILD_PACKAGES_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
 	shift; ;;
-host_toolchain|native_toolchain|runtime|lib_packages|leaf_packages|minipix|dev|devroot|world)
-	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 *=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
-*)	exec cat etc/build.usage; ;;
+*)	if lmatch "${1}" " " "${ALL_TARGETS}"; then
+		BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}";
+	else
+		exec cat etc/build.usage;
+	fi; ;;
 esac; shift; done;
 pre_setup_env; pre_prereqs; pre_subdirs; pre_build_files;
 
@@ -50,7 +52,7 @@ else
 	log_msg info "Version check run started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 fi;
 for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
-	BUILD_TARGET="$(echo ${BUILD_TARGET_LC} | tr a-z A-Z)";
+	BUILD_TARGET="$(toupper "${BUILD_TARGET_LC}")";
 	BUILD_PACKAGES="$(get_var_unsafe ${BUILD_TARGET}_PACKAGES)";
 	if [ "${BUILD_TARGET}" != "INVARIANTS" ]\
 	&& [ -n "${BUILD_PACKAGES_RESTART}" ]; then
@@ -74,8 +76,8 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		if [ -n "${BUILD_PACKAGES_RESTART}" ]\
 		|| [ "${BUILD_TARGET}" = "INVARIANTS" ]\
 		|| ! is_build_script_done "${PKG_NAME}" finish; then
-			PKG_BUILD_STEPS="$(get_var_unsafe PKG_$(echo ${PKG_NAME} | tr a-z A-Z)_BUILD_STEPS)";
-			set -- ${PKG_BUILD_STEPS:-${BUILD_STEPS}};
+			set -- $(lfilter -not "${BUILD_STEPS}"	\
+					"$(get_var_unsafe PKG_$(toupper "${PKG_NAME}")_BUILD_STEPS_DISABLE)");
 			while [ ${#} -gt 0 ]; do
 				_pkg_step_cmds=""; _pkg_step_cmd_args="";
 				case "${1#*:}" in
@@ -96,6 +98,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 					if lmatch "${ARG_RESTART_AT}" "," "${1%:*}"; then
 						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 					fi; ;;
+				*)	continue; ;;
 				esac;
 				for __ in ${_pkg_step_cmds}; do
 					if test_cmd "${__}"; then
@@ -141,7 +144,7 @@ if [ ${ARG_RELAXED:-0} -eq 1 ]\
 && [ -n "${BUILD_PKGS_FAILED}" ]; then
 	log_msg info "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
 fi;
-exit "${BUILD_SCRIPT_RC}")} 2>&1 | tee "${BUILD_LOG_FNAME}" & TEE_PID="${!}";
+exit "${BUILD_SCRIPT_RC:-0}")} 2>&1 | tee "${BUILD_LOG_FNAME}" & TEE_PID="${!}";
 trap "rm -f ${BUILD_STATUS_IN_PROGRESS_FNAME};	\
 	log_msg fail \"Build aborted.\";	\
 	echo kill ${TEE_PID};			\
