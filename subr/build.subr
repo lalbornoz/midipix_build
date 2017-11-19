@@ -2,7 +2,9 @@
 # set -o errexit -o noglob are assumed.
 #
 
+basename() { echo "${1##*/}"; };
 date() { command date "+${1:-${TIMESTAMP_FMT}}"; };
+dirname() { echo "${1%/*}"; };
 get_var_unsafe() { eval echo \${${1}}; };
 set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 pop_IFS() { IFS="${_pI_IFS}"; unset _pI_IFS; };
@@ -14,7 +16,7 @@ build_fileop() {
 	local _op="${1}"; shift;
 	if [ "${_op}" = cd ]; then
 		log_msg varn "Changing working directory to \`${1}'.";
-		[ \( -n "${1}" \) -a \( -e "${1}" \) ] && cd -- "${1}";
+		[ \( -n "${1}" \) -a \( -L "${1}" -o -e "${1}" \) ] && cd -- "${1}";
 	elif [ "${_op}" = cp ]; then
 		log_msg varn "Copying \`${1}' to \`${2}' w/ -pPR.";
 		[ ${#} -ge 2 ] && cp -pPR -- "${@}";
@@ -34,7 +36,7 @@ build_fileop() {
 				log_msg varn "Making directory \`${1}'.";
 				mkdir -p -- "${1}";
 			elif [ "${_op}" = rm ]\
-			&&   [ -e "${1}" ]; then
+			&&   [ \( -L "${1}" \) -o \( -e "${1}" \) ]; then
 				log_msg varn "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}";
 			fi; shift;
