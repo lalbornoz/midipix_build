@@ -11,34 +11,56 @@ pkgp_install_clean_lib() {
 	fi;
 };
 
-pkgp_install_dlltool() {
-	local _so_fname _so_name;
+pkgp_install_lib_link() {
+	local _so_path="${1}" _so_dir="${2}" _lib_name="${3}"				\
+		_lib_link_tgt _lib_link_path;
+	_lib_link_tgt="$(find "${_so_dir}"						\
+			-name "${_lib_name%%.*}.*.lib.a"				|\
+			sort | tail -1)";
+	if [ -n "${_lib_link_tgt}" ]; then
+		_lib_link_path="${_so_path%.so*}.lib.a";
+		build_fileop rm "${_lib_link_path}";
+		build_fileop ln_symbolic "${_lib_link_tgt}"				\
+			"${_lib_link_path}";
+	fi;
+};
+
+pkgp_install_libs() {
+	local _so_src_path _so_dst_path _so_dst_dir					\
+		_lib_src_path _lib_name _lib_dst_path;
 	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
 	&& test_cmd perk								\
 	&& test_cmd ${PKG_TARGET}-mdso; then
-		for _so_fname in							\
+		for _so_src_path in							\
 			$(find	\(  -name "*.so"					\
 				-or -name "*.so.[0-9]*"					\
 				-or -name "*.so.[0-9]*.[0-9]*"				\
 				-or -name "*.so.[0-9]*.[0-9]*.[0-9]*" \) -print);
-		do	_so_fname="${_so_fname#./}";
-			case "${_so_fname}" in
-			*.so)		_so_fname_ver=""; ;;
-			*.so.*)		_so_fname_ver="${_so_fname##*.so.}"; ;;
-			esac;
-			_so_name="${_so_fname%%.so*}";
-			_lib_fname="${_so_name}${_so_fname_ver:+.${_so_fname_ver}}.lib.a";
-			if [ -e "${_lib_fname}" ]					\
-			|| [ -e "${PKG_PREFIX}/lib/${_lib_fname}" ]			\
-			|| [ "$(readlink -f "${_so_fname}")" = "/dev/null" ]; then
+		do	_so_src_path="${_so_src_path#./}";
+			if [ "$(readlink -f "${_so_src_path}")" = "/dev/null" ]; then
 				continue;
-			else
-				echo perk -e "${_so_fname}"				\|\
-					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname##*/}" -
-				perk -e "${_so_fname}"					|\
-					${PKG_TARGET}-mdso -i ${_lib_fname} -n "${_so_fname##*/}" -
-				build_fileop cp "${_lib_fname}" "${PKG_PREFIX}/lib";
+			else	case "${_so_src_path}" in
+				*.so)	_lib_src_path="${_so_src_path%%.so}.lib.a"; ;;
+				*.so.*)	_lib_src_path="${_so_src_path%%.so.*}.${_so_src_path##*.so.}.lib.a"; ;;
+				esac;
+				_lib_name="$(basename "${_lib_src_path}")";
+				_so_dst_path="$(find "${PKG_PREFIX}/lib"		\
+						-name "$(basename "${_so_src_path}")"	\
+						-size "$(stat -c %s "${_so_src_path}")c")";
+				_so_dst_dir="${_so_dst_path%/*}";
 			fi;
+			if [ -z "${_so_dst_path}" ]; then
+				continue;
+			elif [ ! -L "${_lib_src_path}" ]; then
+				_lib_dst_path="${_so_dst_dir}/${_lib_name}";
+				perk -e "${_so_src_path}"				|\
+					"${PKG_TARGET}-mdso"				\
+						-i "${_lib_src_path}"			\
+						-n "${_so_src_path}" -;
+				build_fileop rm "${_lib_dst_path}";
+				build_fileop cp "${_lib_src_path}" "${_lib_dst_path}";
+			fi;
+			pkgp_install_lib_link "${_so_dst_path}" "${_so_dst_dir}" "${_lib_name}";
 		done;
 	fi;
 };
@@ -48,7 +70,7 @@ pkgp_install_pkgconfig() {
 	for __ in $(find "${WORKDIR}/${PKG_BUILD_DIR}" -name \*.pc); do 
 		if grep -Eq '^libdir=[^$]+$' "${__}"; then
 			sed -i	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
-				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'			\
+				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'	\
 					"${__}";
 		fi;
 	done;
@@ -85,7 +107,7 @@ pkg_install() {
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
 		(install_files -v ${PKG_PREFIX} ${PKG_INSTALL_FILES});
 	fi;
-	pkgp_install_dlltool;
+	pkgp_install_libs;
 	pkgp_install_pkgconfig;
 };
 
