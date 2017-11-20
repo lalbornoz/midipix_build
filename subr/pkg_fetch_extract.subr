@@ -2,7 +2,7 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkg_extract() {
+pkg_fetch_extract() {
 	if [ -n "${PKG_URL}" ]\
 	&& [ "${PKG_URL_TYPE:-wget}" = wget ]; then
 		build_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}";

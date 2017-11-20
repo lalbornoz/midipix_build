@@ -1,4 +1,4 @@
-usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
+usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-h]
                   [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz] [-v]
                   [<target>[ ...]]
         -x                      Set the xtrace sh(1)ell option for debugging purposes.
@@ -6,7 +6,6 @@ usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
         -c                      Clean ${PREFIX} before processing build scripts.
-        -C                      Check package(s) for updates upstream.
         -h                      Show this screen.
         -i                      Ignore SHA256 hash mismatches when downloading files.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
@@ -24,8 +23,8 @@ usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-C] [-h]
         --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
         <target>[ ...]          One of:
                                 host_toolchain, native_toolchain, runtime, host_packages,
-                                lib_packages, dev_packages, leaf_packages, minipix, devroot,
-                                dev, or world.
+                                lib_packages, dev_packages, leaf_packages, minipix, dist,
+                                devroot, dev, or world.
 
         ${HOME}/midipix_build.vars, ../midipix_build.vars, and build.vars are sourced
         if they exist.

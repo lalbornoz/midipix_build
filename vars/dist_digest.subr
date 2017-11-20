@@ -2,10 +2,9 @@
 # set -o errexit -o noglob are assumed.
 #
 
-post_sha256sums() {
+dist_digest_all() {
 	local __;
-	if [ "${BUILD_SCRIPT_RC:-0}" -eq 0 ]\
-	&& [ "${ARG_TARBALL:-0}" -eq 1 ]; then
+	if [ "${ARG_TARBALL:-0}" -eq 1 ]; then
 		log_msg info "Compiling SHA256 sums...";
 		if [ -e "${PREFIX}/SHA256SUMS" ]; then
 			build_fileop mv "${PREFIX}/SHA256SUMS" "${PREFIX}/SHA256SUMS.last";

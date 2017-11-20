@@ -7,23 +7,19 @@ pkg_build() {
 	if [ ! -x "${PKG_CONFIGURE}" ]; then
 		_no_autoconf=1;
 	fi;
-	if [ -n "${PKG_BUILD_CMDLINE}" ]; then
-		${PKG_BUILD_CMDLINE};
-	else
-		# N.B.	We only specify CC= here if the current package does not use GNU
-		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
-		#	instead of amending CFLAGS.
-		run_cmd_unsplit make							\
-			${PKG_MAKEFLAGS_BUILD}						\
-			${PKG_MAKEFLAGS_BUILD_EXTRA}					\
-			AR=${AR} ${_no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
-			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
-			"${CFLAGS_FOR_BUILD:+CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}}"	\
-			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
-			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
-			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"\
-			"LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
-	fi;
+	# N.B.	We only specify CC= here if the current package does not use GNU
+	#	autoconf as it often abuses it by appending -std={gnu99,...} to it
+	#	instead of amending CFLAGS.
+	run_cmd_unsplit make							\
+		${PKG_MAKEFLAGS_BUILD}						\
+		${PKG_MAKEFLAGS_BUILD_EXTRA}					\
+		AR=${AR} ${_no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
+		"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
+		"${CFLAGS_FOR_BUILD:+CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}}"	\
+		"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
+		"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
+		"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"\
+		"LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
 };
 
 # vim:filetype=sh

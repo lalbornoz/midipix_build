@@ -1,0 +1,12 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_install_purge_la() {
+	local __;
+	for __ in $(find "${PWD}/../destdir/lib" -type f -name \*.la); do
+		build_fileop rm ${__};
+	done;
+};
+
+# vim:filetype=sh

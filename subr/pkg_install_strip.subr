@@ -1,0 +1,31 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkgp_strip_tree() {
+	local _tree_root="${1}" _bin_path;
+	if [ ! -e "${_tree_root}" ]; then
+		return;
+	fi;
+	for _bin_path in $(find "${_tree_root}" -perm /a=x	\
+			\( -type f -or -type l \)); do
+		set +o errexit;
+		if objdump -sj .debug_info "${_bin_path}" >/dev/null 2>&1; then
+			log_msg info "Stripping ${_bin_path}...";
+			log_msg vnfo "${TARGET}-strip ${_bin_path}";
+			${TARGET}-strip ${_bin_path};
+		fi;
+		set -o errexit;
+	done;
+};
+
+pkg_strip() {
+	if [ "${PKG_NAME%flavour_minipix}" != "${PKG_NAME}" ]	\
+	&& [ ${ARG_DEBUG_MINIPIX:-0} -eq 0 ]; then
+		pkgp_strip_tree "${PWD}/../destdir";
+	elif [ "${BUILD}" = release ]; then
+		pkgp_strip_tree "${PWD}/../destdir/bin";
+	fi;
+};
+
+# vim:filetype=sh

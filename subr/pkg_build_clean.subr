@@ -2,7 +2,7 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkg_clean() {
+pkg_build_clean() {
 	make clean;
 };
 

@@ -2,7 +2,7 @@
 # set -o errexit -o noglob are assumed.
 #
 
-post_copy_etc() {
+dist_etc_all() {
 	tar -C etc -cpf - midipix.sh README midipix_shortcut.vbs	|\
 	tar -C ${PREFIX} -xpf -;
 	chmod +x ${PREFIX}/midipix.sh;

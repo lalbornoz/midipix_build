@@ -65,9 +65,8 @@ postp_tarball_src() {
 	fi;
 };
 
-post_tarballs() {
-	if [ "${BUILD_SCRIPT_RC:-0}" -eq 0 ]\
-	&& [ "${ARG_TARBALL:-0}" -eq 1 ]; then
+dist_tarballs_all() {
+	if [ "${ARG_TARBALL:-0}" -eq 1 ]; then
 		log_msg info "Building distribution tarballs...";
 		case "${TARBALL_SUFFIX}" in
 		bz2)	if [ -n "$(which pbzip2 2>/dev/null)" ]; then

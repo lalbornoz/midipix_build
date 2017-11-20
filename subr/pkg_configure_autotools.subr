@@ -2,32 +2,32 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkg_autoconf() {
-	local __;
+pkg_configure_autotools() {
+	local _script_fname _subdir_tgt;
 	if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" -o						\
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" -o						\
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.in" -o						\
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/config.guess" ]; then
 		if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" ]\
 		&& [ ! -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]; then
-			for __ in bootstrap bootstrap.sh autogen.sh ""; do
-				if [ -z "${__}" ]; then
+			for _script_fname in bootstrap bootstrap.sh autogen.sh ""; do
+				if [ -z "${_script_fname}" ]; then
 					(build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf)\
 						|| exit 1 && break;
-				elif [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${__}" ]; then
-					for ___ in "${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux" "${PKG_BASE_DIR}/${PKG_SUBDIR}"; do
-						if [ -e "${___}" ]; then
+				elif [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${_script_fname}" ]; then
+					for _subdir_tgt in "${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux" "${PKG_BASE_DIR}/${PKG_SUBDIR}"; do
+						if [ -e "${_subdir_tgt}" ]; then
 							echo install -m 0700				\
 								"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
-								"${___}/config.sub";
+								"${_subdir_tgt}/config.sub";
 							install -m 0700					\
 								"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
-								"${___}/config.sub";
+								"${_subdir_tgt}/config.sub";
 							break;
 						fi;
 					done;
-					(build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && "${SHELL}" "${__}")\
-						|| exit 1 && break;
+					(build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&		\
+						"${SHELL}" "${_script_fname}") || exit 1 && break;
 				fi;
 			done;
 		fi;
@@ -38,9 +38,6 @@ pkg_autoconf() {
 			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
 		if [ "${PKG_BUILD_TYPE}" != host ]; then
 			build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${PKG_BUILD_DIR}/";
-			if [ -n "${PKG_CONFIG_CACHE_EXTRA}" ]; then
-				build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${PKG_BASE_DIR}/${PKG_CONFIG_CACHE_EXTRA}/";
-			fi;
 		fi;
 	fi;
 };

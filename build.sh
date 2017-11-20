@@ -12,7 +12,6 @@ case ${1} in
 -4)	ARG_IPV4_ONLY=1; ;;
 -6)	ARG_IPV6_ONLY=1; ;;
 -c)	ARG_CLEAN=1; ;;
--C)	ARG_CHECK_UPDATES=1; ;;
 -N)	ARG_OFFLINE=1; ;;
 -i)	ARG_IGNORE_SHA256SUMS=1; ;;
 -R)	ARG_RELAXED=1; ;;
@@ -39,18 +38,14 @@ case ${1} in
 		exec cat etc/build.usage;
 	fi; ;;
 esac; shift; done;
-pre_setup_env; pre_prereqs; pre_subdirs; pre_build_files;
+pre_setup_env; pre_check; pre_subdirs; build_files_init;
 
 #
 #
 #
 {(
-if [ "${ARG_CHECK_UPDATES:-0}" -eq 0 ]; then
-	log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
-	log_env_vars "build (global)" ${LOG_ENV_VARS};
-else
-	log_msg info "Version check run started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
-fi;
+log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
+log_env_vars "build (global)" ${LOG_ENV_VARS};
 for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 	BUILD_TARGET="$(toupper "${BUILD_TARGET_LC}")";
 	BUILD_PACKAGES="$(get_var_unsafe ${BUILD_TARGET}_PACKAGES)";
@@ -65,10 +60,6 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		unset PKG_NAME_PARENT;
 		if [ "${PKG_NAME#*_flavour_*}" != "${PKG_NAME}" ]; then
 			PKG_NAME_PARENT="${PKG_NAME%_flavour_*}";
-		elif [ "${ARG_CHECK_UPDATES:-0}" -eq 1 ]\
-		&& [ "${BUILD_PACKAGE#*.*}" = "${BUILD_PACKAGE}" ]; then
-			(mode_check_pkg_updates "${PKG_NAME}" "${BUILD_PACKAGE}");
-			continue;
 		else
 			unset BUILD_SCRIPT_RC;
 		fi;
@@ -81,10 +72,8 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 			while [ ${#} -gt 0 ]; do
 				_pkg_step_cmds=""; _pkg_step_cmd_args="";
 				case "${1#*:}" in
-				abstract) _pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}";
-					  _pkg_step_cmd_args="${ARG_RESTART_AT:-ALL}"; ;;
-				always)	  _pkg_step_cmds="pkg_${1%:*}"; ;;
-				main)	if [ "${BUILD_TARGET}" = "INVARIANTS" ]; then
+				dynamic)
+					if [ "${BUILD_TARGET}" = "INVARIANTS" ]; then
 						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 					elif [ -n "${BUILD_PACKAGES_RESTART}" ]; then
 						if [ -z "${ARG_RESTART_AT}" ]\
@@ -94,9 +83,19 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 					elif ! is_build_script_done "${PKG_NAME}" "${1%:*}"; then
 						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
 					fi; ;;
-				optional)
+				invariant)
+					_pkg_step_cmds="pkg_${1%:*}"; ;;
+				variant)
 					if lmatch "${ARG_RESTART_AT}" "," "${1%:*}"; then
 						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
+					fi; ;;
+				virtual)
+					_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}";
+					_pkg_step_cmd_args="${ARG_RESTART_AT:-ALL}"; ;;
+				all)
+					if test_cmd "pkg_${PKG_NAME}_${1%:*}"; then
+						"pkg_${PKG_NAME}_${1%:*}" "${ARG_RESTART_AT:-ALL}";
+						break;
 					fi; ;;
 				*)	continue; ;;
 				esac;
@@ -134,10 +133,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		break;
 	fi;
 done;
-if [ "${BUILD_SCRIPT_RC:-0}" -eq 0 ]; then
-	post_copy_etc; post_sha256sums; post_tarballs;
-fi;
-post_build_files;
+build_files_fini;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
 if [ ${ARG_RELAXED:-0} -eq 1 ]\

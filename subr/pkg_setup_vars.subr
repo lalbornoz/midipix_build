@@ -3,18 +3,19 @@
 #
 
 pkgp_setup_pkg_vars() {
-	local _pkg_name="${1}" _pkg_name_uc _build_uc _vname __;
+	local _pkg_name="${1}" _pkg_name_uc _build_uc _vname_dst _vname_src;
 	_pkg_name_uc="$(toupper "${_pkg_name}")";
 	_build_uc="$(toupper "${BUILD}")";
-	for _vname in PREFIX ${PKG_BUILD_VARS}; do
-		for __ in "DEFAULT_${_vname}"				\
-			  "${BUILD_TARGET}_${_vname}"			\
-			  "PKG_${_pkg_name_uc}_${_vname}"		\
-			  "PKG_${_pkg_name_uc}_${_vname}_${_build_uc}"; do
-			if [ -n "$(get_var_unsafe "${__}")" ]; then
-				set_var_unsafe "PKG_${_vname}" "$(get_var_unsafe ${__})";
-				if ! lmatch "${PKG_ENV_VARS}" " " "${__}"; then
-					PKG_ENV_VARS="${PKG_ENV_VARS:+${PKG_ENV_VARS} }${__}";
+	for _vname_dst in PREFIX ${PKG_BUILD_VARS}; do
+		for _vname_src in					\
+				"DEFAULT_${_vname_dst}"			\
+				"${BUILD_TARGET}_${_vname_dst}"		\
+				"PKG_${_pkg_name_uc}_${_vname_dst}"	\
+				"PKG_${_pkg_name_uc}_${_vname_dst}_${_build_uc}"; do
+			if [ -n "$(get_var_unsafe "${_vname_src}")" ]; then
+				set_var_unsafe "PKG_${_vname_dst}" "$(get_var_unsafe ${_vname_src})";
+				if ! lmatch "${PKG_ENV_VARS}" " " "${_vname_src}"; then
+					PKG_ENV_VARS="${PKG_ENV_VARS:+${PKG_ENV_VARS} }${_vname_src}";
 				fi;
 			fi;
 		done;
@@ -22,10 +23,12 @@ pkgp_setup_pkg_vars() {
 };
 
 pkg_setup_vars() {
-	local __;
-	for __ in vars/${PKG_NAME}.vars; do
-		[ \( -e "${__}" \) -o \( -L "${__}" \) ]\
-			&& { . "${__}"; };
+	local _vars_path;
+	for _vars_path in vars/${PKG_NAME}.vars; do
+		if [ -e "${_vars_path}" ]\
+		|| [ -L "${_vars_path}" ]; then
+			. "${_vars_path}";
+		fi;
 	done;
 	if [ -n "${PKG_NAME_PARENT}" ]; then
 		pkgp_setup_pkg_vars "${PKG_NAME_PARENT}";

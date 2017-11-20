@@ -12,17 +12,19 @@ pre_subdirs() {
 			fi;
 		done;
 	fi;
-	install_files ""					\
+	pkg_install_files ""					\
 		/=${DLCACHEDIR}					\
 		/=${WORKDIR}					\
 		/=${PREFIX}					\
 		/=${PREFIX}/bin					\
+		/=${PREFIX}/share/man				\
 		/=${PREFIX}/${TARGET}/bin			\
 		/=${PREFIX}/${TARGET}/lib			\
 		/=${PREFIX}/x86_64-w64-mingw32			\
 		/=${PREFIX_CROSS}				\
 		/=${PREFIX_MINIPIX}/bin				\
 		/=${PREFIX_NATIVE}				\
+		/=${PREFIX_NATIVE}/share/man			\
 		/=${PREFIX_NATIVE}/${TARGET}/lib		\
 		@.=${PREFIX}/usr				\
 		@.=${PREFIX}/x86_64-w64-mingw32/mingw		\
