@@ -16,6 +16,7 @@ pre_subdirs() {
 		/=${DLCACHEDIR}					\
 		/=${WORKDIR}					\
 		/=${PREFIX}					\
+		/=${PREFIX}/bin					\
 		/=${PREFIX}/${TARGET}/bin			\
 		/=${PREFIX}/${TARGET}/lib			\
 		/=${PREFIX}/x86_64-w64-mingw32			\

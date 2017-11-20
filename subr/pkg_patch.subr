@@ -5,10 +5,10 @@
 pkg_patch() {
 	local _patch_fname _patches_done;
 	set +o noglob;
-	for _patch_fname in 										\
-			${WORKDIR}/chainport/${PKG_NAME}.midipix.patch					\
-			${WORKDIR}/chainport/${PKG_SUBDIR}.midipix.patch				\
-			${WORKDIR}/chainport/${PKG_SUBDIR%-*}.midipix.patch				\
+	for _patch_fname in 											\
+			${WORKDIR}/chainport-native-${PKG_TARGET}/chainport/${PKG_NAME}.midipix.patch		\
+			${WORKDIR}/chainport-native-${PKG_TARGET}/chainport/${PKG_SUBDIR}.midipix.patch		\
+			${WORKDIR}/chainport-native-${PKG_TARGET}/chainport/${PKG_SUBDIR%-*}.midipix.patch	\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}/*.patch				\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}/*.patch				\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}/*.patch				\
@@ -20,7 +20,7 @@ pkg_patch() {
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}.local@${BUILD_HNAME}.patch; do
 		if ! lmatch "${_patches_done}" " " "${_patch_fname}"\
 		&& [ -r "${_patch_fname}" ]; then
-			patch -b -d "${WORKDIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}";
+			patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}";
 			_patches_done="${_patches_done:+${_patches_done} }${_patch_fname}";
 		fi;
 	done;

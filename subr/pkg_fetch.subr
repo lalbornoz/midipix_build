@@ -14,7 +14,7 @@ pkgp_fetch() {
 	|| [ -e "${_url_dst}.fetched" ]; then
 		return 0;
 	else
-		wget ${WGET_ARGS} -c -O "${_url_dst}" "${_url}";
+		wget ${DEFAULT_WGET_ARGS} -c -O "${_url_dst}" "${_url}";
 	fi;
 	if [ -n "${_sha256sum_src}" ]; then
 		set -- $(openssl dgst -sha256 "${_url_dst}"); shift $((${#}-1));
@@ -30,7 +30,7 @@ pkgp_fetch() {
 };
 
 pkgp_fetch_git() {
-	local _subdir="${1}" _url="${2}" _branch="${3}";
+	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}";
 	if [ "${ARG_OFFLINE:-0}" -eq 0 ]; then
 		if [ -e "${DLCACHEDIR}/${_subdir}" ]; then
 			(build_fileop cd "${DLCACHEDIR}/${_subdir}" &&\
@@ -45,27 +45,27 @@ pkgp_fetch_git() {
 			fi;
 		fi;
 	fi;
-	build_fileop rm "${WORKDIR}/${_subdir}";
-	build_fileop cp "${DLCACHEDIR}/${_subdir}" "${WORKDIR}";
+	build_fileop rm "${_tgtdir}/${_subdir}";
+	build_fileop cp "${DLCACHEDIR}/${_subdir}" "${_tgtdir}";
 };
 
 pkgp_fetch_urls_git() {
-	local _url_spec _subdir _url _git_branch;
-	for _url_spec in ${@}; do
+	local _tgtdir="${2}" _url_spec _subdir _url _git_branch;
+	for _url_spec in ${1}; do
 		_subdir="${_url_spec%=*}";
 		_url="${_url_spec#*=}";
 		_url="${_url%@*}";
 		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
 			_git_branch=${_url_spec#*@};
 		fi;
-		pkgp_fetch_git ${_subdir} ${_url} ${_git_branch};
+		pkgp_fetch_git "${_tgtdir}" "${_subdir}" "${_url}" "${_git_branch}";
 	done;
 };
 
 pkg_fetch() {
 	if [ -n "${1}" ]; then
 		if [ "${1}" = "-git" ]; then
-			shift; pkgp_fetch_urls_git "${1}";
+			shift; pkgp_fetch_urls_git "${1}" "${PKG_BASE_DIR}";
 		else
 			pkgp_fetch "${1}" "${2}";
 		fi;
@@ -74,7 +74,7 @@ pkg_fetch() {
 			pkgp_fetch "${PKG_URL}" "${PKG_SHA256SUM}" "${PKG_FNAME}";
 		fi;
 		if [ -n "${PKG_URLS_GIT}" ]; then
-			pkgp_fetch_urls_git "${PKG_URLS_GIT}";
+			pkgp_fetch_urls_git "${PKG_URLS_GIT}" "${PKG_BASE_DIR}";
 		fi;
 	fi;
 };

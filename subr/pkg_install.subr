@@ -67,7 +67,7 @@ pkgp_install_libs() {
 
 pkgp_install_pkgconfig() {
 	local __;
-	for __ in $(find "${WORKDIR}/${PKG_BUILD_DIR}" -name \*.pc); do 
+	for __ in $(find "${PKG_BUILD_DIR}" -name \*.pc); do 
 		if grep -Eq '^libdir=[^$]+$' "${__}"; then
 			sed -i	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
 				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'	\
@@ -79,30 +79,33 @@ pkgp_install_pkgconfig() {
 pkg_install() {
 	pkgp_install_pkgconfig;
 	if [ ${PKG_NO_MAKE_INSTALL:-0} -eq 0 ]; then
-		run_cmd_unsplit make							\
-			${PKG_MAKEFLAGS_INSTALL}					\
-			${PKG_MAKEFLAGS_INSTALL_EXTRA}					\
-			AR=${AR} CC=${CC} RANLIB=${RANLIB}				\
+		build_fileop mkdir ../destdir;
+		build_fileop mkdir ../destdir/bin;
+		build_fileop mkdir ../destdir/lib;
+		build_fileop mkdir ../destdir/sbin;
+		build_fileop mkdir ../destdir/share/man/man1;
+		build_fileop mkdir ../destdir/share/man;
+		build_fileop rm ../destdir/usr;
+		build_fileop ln_symbolic . ../destdir/usr;
+		build_fileop rm ../destdir/man;
+		build_fileop ln_symbolic share/man ../destdir/man;
+		run_cmd_unsplit make									\
+			${PKG_MAKEFLAGS_INSTALL}							\
+			${PKG_MAKEFLAGS_INSTALL_EXTRA}							\
+			AR=${AR} CC=${CC} RANLIB=${RANLIB}						\
 			"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"				\
 			"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"		\
 			"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
 			"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"		\
 			"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
-			"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"				\
+			"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"						\
+			"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PWD}/../destdir/"				\
 			${PKG_INSTALL_TARGET:=install};
+		build_fileop mkdir "${PKG_PREFIX}";
+		tar -C ../destdir -cpf - . | tar -C "${PKG_PREFIX}" -xpf -;
 		if [ -n "${PKG_PREFIX_EXTRA}" ]; then
-			run_cmd_unsplit make						\
-				${PKG_MAKEFLAGS_INSTALL}				\
-				${PKG_MAKEFLAGS_INSTALL_EXTRA}				\
-				AR=${AR} CC=${CC} RANLIB=${RANLIB}			\
-				"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
-				"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
-				"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
-				"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
-				"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
-				"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"			\
-				${PKG_INSTALL_TARGET_EXTRA:=install}			\
-				DESTDIR=${PKG_PREFIX_EXTRA};
+			build_fileop mkdir "${PKG_PREFIX_EXTRA}";
+			tar -C ../destdir -cpf - . | tar -C "${PKG_PREFIX_EXTRA}" -xpf -;
 		fi;
 	fi;
 	pkgp_install_clean_lib;
