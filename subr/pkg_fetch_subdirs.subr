@@ -2,7 +2,7 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkg_build_dir() {
+pkg_fetch_subdirs() {
 	if [ -z "${PKG_BUILD_DIR}" ]; then
 		if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]\
 		|| [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" ]\
@@ -14,6 +14,10 @@ pkg_build_dir() {
 	else
 		PKG_BUILD_DIR="${PKG_BASE_DIR}/${PKG_BUILD_DIR}";
 	fi;
+	if [ ! -d "${PKG_BUILD_DIR}" ]; then
+		build_fileop mkdir "${PKG_BUILD_DIR}";
+	fi;
+	build_fileop cd "${PKG_BUILD_DIR}";
 };
 
 # vim:filetype=sh

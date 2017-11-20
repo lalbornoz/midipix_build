@@ -1,0 +1,42 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+# N.B.	URLs ($1) may contain `?' or '&' characters.
+pkgp_fetch_wget() {
+	local _url="${1}" _sha256sum_src="${2}";
+	if [ -z "${3}" ]; then
+		_url_dst="${DLCACHEDIR}/$(basename "${_url}")";
+	else
+		_url_dst="${DLCACHEDIR}/${3}";
+	fi;
+	if [ "${ARG_OFFLINE:-0}" -eq 1 ]\
+	|| [ -e "${_url_dst}.fetched" ]; then
+		return 0;
+	else
+		wget ${DEFAULT_WGET_ARGS} -c -O "${_url_dst}" "${_url}";
+	fi;
+	if [ -n "${_sha256sum_src}" ]; then
+		set -- $(openssl dgst -sha256 "${_url_dst}"); shift $((${#}-1));
+		if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
+			if [ "${ARG_IGNORE_SHA256SUMS:-0}" -eq 0 ]; then
+				log_msg failexit "Error: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
+			else
+				log_msg warn "Warning: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
+			fi;
+		fi;
+	fi;
+	touch "${_url_dst}.fetched";
+};
+
+pkg_fetch_wget() {
+	if [ -n "${1}" ]; then
+		pkgp_fetch_wget "${1}" "${2}";
+	else
+		if [ -n "${PKG_URL}" ]; then
+			pkgp_fetch_wget "${PKG_URL}" "${PKG_SHA256SUM}" "${PKG_FNAME}";
+		fi;
+	fi;
+};
+
+# vim:filetype=sh

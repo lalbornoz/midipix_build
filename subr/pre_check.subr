@@ -2,7 +2,7 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pre_prereqs() {
+pre_check() {
 	local __ _exit;
 	for __ in ${CHECK_PATH_VARS}; do
 		if [ -z "${___:=$(get_var_unsafe "${__}")}" ]; then

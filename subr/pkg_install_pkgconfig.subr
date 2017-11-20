@@ -1,0 +1,16 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_install_pkgconfig() {
+	local __;
+	for __ in $(find "${PWD}/../destdir" -name \*.pc); do 
+		if grep -Eq '^libdir=[^$]+$' "${__}"; then
+			sed -i	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
+				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'	\
+					"${__}";
+		fi;
+	done;
+};
+
+# vim:filetype=sh

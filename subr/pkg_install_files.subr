@@ -1,0 +1,54 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkgp_install_files() {
+	local _verbose _prefix _ln_target _ln_fname _mkdir_fname	\
+		_file_fname_src _file_fname_dst;
+	if [ "${1}" = "-v" ]; then
+		_verbose=1; shift;
+	fi; _prefix="${1}"; shift;
+	while [ ${#} -gt 0 ]; do
+	case "${1}" in
+	@*=*)
+		_ln_target="${1%=*}";
+		_ln_target="${_ln_target#@}";
+		_ln_fname="${1#*=}";
+		if [ "${_ln_fname#/}" = "${_ln_fname}" ]; then
+			_ln_fname="${_prefix:+${_prefix}/}${_ln_fname}";
+		fi;
+		if [ -e "${_ln_fname}" ]; then
+			build_fileop rm "${_ln_fname}";
+		fi;
+		build_fileop ln_symbolic "${_ln_target}" "${_ln_fname}";
+		;;
+	/=*)
+		_mkdir_fname="${1#/=}";
+		if [ "${_mkdir_fname#/}" = "${_mkdir_fname}" ]; then
+			_mkdir_fname="${_prefix:+${_prefix}/}${_mkdir_fname}";
+		fi;
+		build_fileop mkdir "${_mkdir_fname}";
+		;;
+	*)
+		_file_fname_src="${1%=*}";
+		_file_fname_dst="${1#*=}";
+		if [ "${_file_fname_dst#/}" = "${_file_fname_dst}" ]; then
+			_file_fname_dst="${_prefix:+${_prefix}/}${_file_fname_dst}";
+		fi;
+		build_fileop cp "${_file_fname_src}" "${_file_fname_dst}";
+		;;
+	esac; shift;
+	done;
+};
+
+pkg_install_files() {
+	if [ ${#} -ge 2 ]; then
+		pkgp_install_files -v "${@}";
+	else
+		if [ -n "${PKG_INSTALL_FILES}" ]; then
+			pkgp_install_files -v "${PWD}/../destdir" ${PKG_INSTALL_FILES};
+		fi;
+	fi;
+};
+
+# vim:filetype=sh
