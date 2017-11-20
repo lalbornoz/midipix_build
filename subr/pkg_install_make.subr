@@ -1,0 +1,20 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_install_make() {
+	run_cmd_unsplit make								\
+		${PKG_MAKEFLAGS_INSTALL}						\
+		${PKG_MAKEFLAGS_INSTALL_EXTRA}						\
+		AR=${AR} CC=${CC} RANLIB=${RANLIB}					\
+		"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
+		"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
+		"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
+		"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
+		"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
+		"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"					\
+		"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PWD}/../destdir/"			\
+		${PKG_INSTALL_TARGET:=install};
+};
+
+# vim:filetype=sh

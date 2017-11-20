@@ -1,0 +1,49 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkgp_install_lib_link() {
+	local _so_path="${1}" _so_dir="${2}" _lib_name="${3}"				\
+		_lib_link_tgt _lib_link_path;
+	_lib_link_tgt="$(find "${_so_dir}"						\
+			-name "${_lib_name%%.*}.*.lib.a"				|\
+			sort | tail -1)";
+	if [ -n "${_lib_link_tgt}" ]; then
+		_lib_link_path="${_so_path%.so*}.lib.a";
+		build_fileop rm "${_lib_link_path}";
+		build_fileop ln_symbolic "${_lib_link_tgt}"				\
+			"${_lib_link_path}";
+	fi;
+};
+
+pkg_install_libs() {
+	local _so_src_path _so_dst_dir _lib_src_path _lib_name _lib_dst_path;
+	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
+		for _so_src_path in							\
+			$(find	"${PWD}/../destdir"					\
+				\(  -name "*.so"					\
+				-or -name "*.so.[0-9]*"					\
+				-or -name "*.so.[0-9]*.[0-9]*"				\
+				-or -name "*.so.[0-9]*.[0-9]*.[0-9]*" \) -print);
+		do	if [ "$(readlink -f "${_so_src_path}")" = "/dev/null" ]; then
+				continue;
+			else	case "${_so_src_path}" in
+				*.so)	_lib_src_path="${_so_src_path%%.so}.lib.a"; ;;
+				*.so.*)	_lib_src_path="${_so_src_path%%.so.*}.${_so_src_path##*.so.}.lib.a"; ;;
+				esac;
+				_lib_name="$(basename "${_lib_src_path}")";
+				_so_dst_dir="${_so_src_path%/*}";
+			fi;
+			if [ ! -L "${_lib_src_path}" ]; then
+				_lib_dst_path="${_so_dst_dir}/${_lib_name}";
+				perk -e "${_so_src_path}"				|\
+					"${PKG_TARGET}-mdso"				\
+						-i "${_lib_dst_path}"			\
+						-n "${_so_src_path}" -;
+			fi;
+			pkgp_install_lib_link "${_so_src_path}" "${_so_dst_dir}" "${_lib_name}";
+		done;
+	fi;
+};
+
+# vim:filetype=sh

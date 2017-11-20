@@ -2,120 +2,13 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkgp_install_clean_lib() {
-	local __;
-	if [ -d ${PKG_PREFIX}/lib ]; then
-		for __ in $(find ${PKG_PREFIX}/lib -type f -name \*.la); do
-			build_fileop rm ${__};
-		done;
-	fi;
-};
-
-pkgp_install_lib_link() {
-	local _so_path="${1}" _so_dir="${2}" _lib_name="${3}"				\
-		_lib_link_tgt _lib_link_path;
-	_lib_link_tgt="$(find "${_so_dir}"						\
-			-name "${_lib_name%%.*}.*.lib.a"				|\
-			sort | tail -1)";
-	if [ -n "${_lib_link_tgt}" ]; then
-		_lib_link_path="${_so_path%.so*}.lib.a";
-		build_fileop rm "${_lib_link_path}";
-		build_fileop ln_symbolic "${_lib_link_tgt}"				\
-			"${_lib_link_path}";
-	fi;
-};
-
-pkgp_install_libs() {
-	local _so_src_path _so_dst_path _so_dst_dir					\
-		_lib_src_path _lib_name _lib_dst_path;
-	if [ "${PKG_BUILD_TYPE}" != "host" ]						\
-	&& test_cmd perk								\
-	&& test_cmd ${PKG_TARGET}-mdso; then
-		for _so_src_path in							\
-			$(find	\(  -name "*.so"					\
-				-or -name "*.so.[0-9]*"					\
-				-or -name "*.so.[0-9]*.[0-9]*"				\
-				-or -name "*.so.[0-9]*.[0-9]*.[0-9]*" \) -print);
-		do	_so_src_path="${_so_src_path#./}";
-			if [ "$(readlink -f "${_so_src_path}")" = "/dev/null" ]; then
-				continue;
-			else	case "${_so_src_path}" in
-				*.so)	_lib_src_path="${_so_src_path%%.so}.lib.a"; ;;
-				*.so.*)	_lib_src_path="${_so_src_path%%.so.*}.${_so_src_path##*.so.}.lib.a"; ;;
-				esac;
-				_lib_name="$(basename "${_lib_src_path}")";
-				_so_dst_path="$(find "${PKG_PREFIX}/lib"		\
-						-name "$(basename "${_so_src_path}")"	\
-						-size "$(stat -c %s "${_so_src_path}")c")";
-				_so_dst_dir="${_so_dst_path%/*}";
-			fi;
-			if [ -z "${_so_dst_path}" ]; then
-				continue;
-			elif [ ! -L "${_lib_src_path}" ]; then
-				_lib_dst_path="${_so_dst_dir}/${_lib_name}";
-				perk -e "${_so_src_path}"				|\
-					"${PKG_TARGET}-mdso"				\
-						-i "${_lib_src_path}"			\
-						-n "${_so_src_path}" -;
-				build_fileop rm "${_lib_dst_path}";
-				build_fileop cp "${_lib_src_path}" "${_lib_dst_path}";
-			fi;
-			pkgp_install_lib_link "${_so_dst_path}" "${_so_dst_dir}" "${_lib_name}";
-		done;
-	fi;
-};
-
-pkgp_install_pkgconfig() {
-	local __;
-	for __ in $(find "${PKG_BUILD_DIR}" -name \*.pc); do 
-		if grep -Eq '^libdir=[^$]+$' "${__}"; then
-			sed -i	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
-				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'	\
-					"${__}";
-		fi;
-	done;
-};
-
 pkg_install() {
-	pkgp_install_pkgconfig;
-	if [ ${PKG_NO_MAKE_INSTALL:-0} -eq 0 ]; then
-		build_fileop mkdir ../destdir;
-		build_fileop mkdir ../destdir/bin;
-		build_fileop mkdir ../destdir/lib;
-		build_fileop mkdir ../destdir/sbin;
-		build_fileop mkdir ../destdir/share/man/man1;
-		build_fileop mkdir ../destdir/share/man;
-		build_fileop rm ../destdir/usr;
-		build_fileop ln_symbolic . ../destdir/usr;
-		build_fileop rm ../destdir/man;
-		build_fileop ln_symbolic share/man ../destdir/man;
-		run_cmd_unsplit make									\
-			${PKG_MAKEFLAGS_INSTALL}							\
-			${PKG_MAKEFLAGS_INSTALL_EXTRA}							\
-			AR=${AR} CC=${CC} RANLIB=${RANLIB}						\
-			"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"				\
-			"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"		\
-			"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"			\
-			"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"		\
-			"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"				\
-			"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"						\
-			"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PWD}/../destdir/"				\
-			${PKG_INSTALL_TARGET:=install};
-		build_fileop mkdir "${PKG_PREFIX}";
-		tar -C ../destdir -cpf - . | tar -C "${PKG_PREFIX}" -xpf -;
-		if [ -n "${PKG_PREFIX_EXTRA}" ]; then
-			build_fileop mkdir "${PKG_PREFIX_EXTRA}";
-			tar -C ../destdir -cpf - . | tar -C "${PKG_PREFIX_EXTRA}" -xpf -;
-		fi;
+	build_fileop mkdir "${PKG_PREFIX}";
+	tar -C ../destdir -cpf - . | tar -C "${PKG_PREFIX}" -xpf -;
+	if [ -n "${PKG_PREFIX_EXTRA}" ]; then
+		build_fileop mkdir "${PKG_PREFIX_EXTRA}";
+		tar -C ../destdir -cpf - . | tar -C "${PKG_PREFIX_EXTRA}" -xpf -;
 	fi;
-	pkgp_install_clean_lib;
-	if [ -n "${PKG_INSTALL_FILES}" ]; then
-		(install_files -v ${PKG_PREFIX} ${PKG_INSTALL_FILES});
-	fi;
-	if [ "${PKG_NO_INSTALL_LIBS:-0}" -eq 0 ]; then
-		pkgp_install_libs;
-	fi;
-	pkgp_install_pkgconfig;
 };
 
 # vim:filetype=sh

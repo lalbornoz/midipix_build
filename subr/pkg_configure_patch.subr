@@ -2,21 +2,21 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkg_patch() {
+pkg_configure_patch() {
 	local _patch_fname _patches_done;
 	set +o noglob;
 	for _patch_fname in 											\
 			${WORKDIR}/chainport-native-${PKG_TARGET}/chainport/${PKG_NAME}.midipix.patch		\
 			${WORKDIR}/chainport-native-${PKG_TARGET}/chainport/${PKG_SUBDIR}.midipix.patch		\
 			${WORKDIR}/chainport-native-${PKG_TARGET}/chainport/${PKG_SUBDIR%-*}.midipix.patch	\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}/*.patch				\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}/*.patch				\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}/*.patch				\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}.local.patch				\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local.patch				\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}.local.patch			\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}.local@${BUILD_HNAME}.patch		\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch		\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}/*.patch					\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}/*.patch					\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}/*.patch					\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}.local.patch					\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local.patch					\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}.local.patch				\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}.local@${BUILD_HNAME}.patch			\
+			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR}.local@${BUILD_HNAME}.patch			\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_SUBDIR%-*}.local@${BUILD_HNAME}.patch; do
 		if ! lmatch "${_patches_done}" " " "${_patch_fname}"\
 		&& [ -r "${_patch_fname}" ]; then
