@@ -4,18 +4,18 @@
 
 pkg_autoconf() {
 	local __;
-	if [ -e "${WORKDIR}/${PKG_SUBDIR}/configure" -o						\
-	     -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" -o					\
-	     -e "${WORKDIR}/${PKG_SUBDIR}/configure.in" -o					\
-	     -e "${WORKDIR}/${PKG_SUBDIR}/config.guess" ]; then
-		if [ -e "${WORKDIR}/${PKG_SUBDIR}/configure.ac" ]\
-		&& [ ! -e "${WORKDIR}/${PKG_SUBDIR}/configure" ]; then
+	if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" -o						\
+	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" -o						\
+	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.in" -o						\
+	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/config.guess" ]; then
+		if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" ]\
+		&& [ ! -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]; then
 			for __ in bootstrap bootstrap.sh autogen.sh ""; do
 				if [ -z "${__}" ]; then
-					(build_fileop cd "${WORKDIR}/${PKG_SUBDIR}" && autoconf)\
+					(build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf)\
 						|| exit 1 && break;
-				elif [ -e "${WORKDIR}/${PKG_SUBDIR}/${__}" ]; then
-					for ___ in "${WORKDIR}/${PKG_SUBDIR}/build-aux" "${WORKDIR}/${PKG_SUBDIR}"; do
+				elif [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${__}" ]; then
+					for ___ in "${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux" "${PKG_BASE_DIR}/${PKG_SUBDIR}"; do
 						if [ -e "${___}" ]; then
 							echo install -m 0700				\
 								"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
@@ -26,20 +26,21 @@ pkg_autoconf() {
 							break;
 						fi;
 					done;
-					(build_fileop cd "${WORKDIR}/${PKG_SUBDIR}" && "${SHELL}" "${__}")\
+					(build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && "${SHELL}" "${__}")\
 						|| exit 1 && break;
 				fi;
 			done;
 		fi;
-		find "${WORKDIR}/${PKG_SUBDIR}" -name config.sub				\
-			-exec echo mv -- {} {}.orig \;						\
-			-exec mv -- {} {}.orig \;						\
-			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;	\
+		find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.sub					\
+			-exec echo mv -- {} {}.orig \;							\
+			-exec mv -- {} {}.orig \;							\
+			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;		\
 			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
 		if [ "${PKG_BUILD_TYPE}" != host ]; then
-			for __ in ${PKG_BUILD_DIR} ${PKG_CONFIG_CACHE_EXTRA}; do
-				build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${WORKDIR}/${__}/";
-			done;
+			build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${PKG_BUILD_DIR}/";
+			if [ -n "${PKG_CONFIG_CACHE_EXTRA}" ]; then
+				build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${PKG_BASE_DIR}/${PKG_CONFIG_CACHE_EXTRA}/";
+			fi;
 		fi;
 	fi;
 };

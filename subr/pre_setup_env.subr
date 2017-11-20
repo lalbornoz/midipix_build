@@ -4,9 +4,9 @@
 
 pre_setup_env() {
 	local __;
-	if [ -z "${BUILD_CPUS}" ]\
+	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
 	&& [ -e /proc/cpuinfo ]; then
-		BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
+		DEFAULT_BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
 	fi;
 	: ${ARCH:=nt64}; : ${BUILD:=debug};
 	if [ "${ARCH}" = nt32 ]; then
@@ -25,9 +25,9 @@ pre_setup_env() {
 	done;
 	export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
 	if [ ${ARG_IPV4_ONLY:-0} -eq 1 ]; then
-		WGET_ARGS="-4${WGET_ARGS:+ ${WGET_ARGS}}";
+		DEFAULT_WGET_ARGS="-4${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
 	elif [ ${ARG_IPV6_ONLY:-0} -eq 1 ]; then
-		WGET_ARGS="-6${WGET_ARGS:+ ${WGET_ARGS}}";
+		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
 	fi;
 	for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
 		if ! lmatch "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
