@@ -54,68 +54,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		BUILD_PACKAGES="$(lfilter "${BUILD_PACKAGES}" "${BUILD_PACKAGES_RESTART}")";
 	fi;
 	for PKG_NAME in ${BUILD_PACKAGES}; do
-		#
-		#
-		#
-		unset PKG_NAME_PARENT;
-		if [ "${PKG_NAME#*_flavour_*}" != "${PKG_NAME}" ]; then
-			PKG_NAME_PARENT="${PKG_NAME%_flavour_*}";
-		else
-			unset BUILD_SCRIPT_RC;
-		fi;
-		(set -o errexit -o noglob;
-		if [ -n "${BUILD_PACKAGES_RESTART}" ]\
-		|| [ "${BUILD_TARGET}" = "INVARIANTS" ]\
-		|| ! is_build_script_done "${PKG_NAME}" finish; then
-			set -- $(lfilter -not "${BUILD_STEPS}"	\
-					"$(get_var_unsafe PKG_$(toupper "${PKG_NAME}")_BUILD_STEPS_DISABLE)");
-			while [ ${#} -gt 0 ]; do
-				_pkg_step_cmds=""; _pkg_step_cmd_args="";
-				case "${1#*:}" in
-				dynamic)
-					if [ "${BUILD_TARGET}" = "INVARIANTS" ]; then
-						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
-					elif [ -n "${BUILD_PACKAGES_RESTART}" ]; then
-						if [ -z "${ARG_RESTART_AT}" ]\
-						|| lmatch "${ARG_RESTART_AT}" , "${1%:*}"; then
-							_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
-						fi;
-					elif ! is_build_script_done "${PKG_NAME}" "${1%:*}"; then
-						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
-					fi; ;;
-				invariant)
-					_pkg_step_cmds="pkg_${1%:*}"; ;;
-				variant)
-					if lmatch "${ARG_RESTART_AT}" "," "${1%:*}"; then
-						_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*} pkg_${1%:*}";
-					fi; ;;
-				virtual)
-					_pkg_step_cmds="pkg_${PKG_NAME}_${1%:*}";
-					_pkg_step_cmd_args="${ARG_RESTART_AT:-ALL}"; ;;
-				all)
-					if test_cmd "pkg_${PKG_NAME}_${1%:*}"; then
-						"pkg_${PKG_NAME}_${1%:*}" "${ARG_RESTART_AT:-ALL}";
-						break;
-					fi; ;;
-				*)	continue; ;;
-				esac;
-				for __ in ${_pkg_step_cmds}; do
-					if test_cmd "${__}"; then
-						test_cmd "pkg_${PKG_NAME}_${1%:*}_pre"	\
-							&& "pkg_${PKG_NAME}_${1%:*}_pre"
-						"${__}" ${_pkg_step_cmd_args};
-						test_cmd "pkg_${PKG_NAME}_${1%:*}_post"	\
-							&& "pkg_${PKG_NAME}_${1%:*}_post"
-						if [ "${1#*:}" != "always" ]\
-						&& [ ${#} -ge 2 ]; then
-							set_build_script_done "${PKG_NAME}" "${1%:*}" "-${2#*:}";
-						else
-							set_build_script_done "${PKG_NAME}" "${1%:*}";
-						fi; break;
-					fi;
-				done;
-			shift; done;
-		fi);
+		pkg_setup_dispatch "${BUILD_TARGET}" "${PKG_NAME}" "${ARG_RESTART}" "${ARG_RESTART_AT}";
 		case "${BUILD_SCRIPT_RC:=${?}}" in
 		0) log_msg succ "Finished \`${PKG_NAME}' build.";
 			: $((BUILD_NFINI+=1)); continue; ;;
