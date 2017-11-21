@@ -3,15 +3,14 @@
 #
 
 pkg_install_subdirs() {
-	pkg_install_files "${PWD}/.."		\
-		/=destdir			\
-		/=destdir/bin			\
-		/=destdir/lib			\
-		/=destdir/sbin			\
-		/=destdir/share/man/man1	\
-		/=destdir/share/man		\
-		@.=destdir/usr			\
-		@share/man=destdir/man;
+	pkg_install_files "${PKG_DESTDIR}"	\
+		/=bin				\
+		/=lib				\
+		/=sbin				\
+		/=share/man/man1		\
+		/=share/man			\
+		@.=usr				\
+		@share/man=man;
 };
 
 # vim:filetype=sh
