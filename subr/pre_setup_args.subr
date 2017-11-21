@@ -1,0 +1,67 @@
+BUILD_ARGS_SPEC="
+	ARG_IPV4_ONLY:-4
+	ARG_IPV6_ONLY:-6
+	ARCH:arg:-a
+	BUILD:arg:-b
+	ARG_CLEAN:-c
+	ARG_DEBUG_MINIPIX:--debug-minipix
+	ARG_IGNORE_SHA256SUMS:-i
+	ARG_OFFLINE:-N
+	ARG_RELAXED:-R
+	ARG_RESTART:arg:-r
+	ARG_TARBALL:selfarg:-t
+	ARG_TARBALL:selfarg:-t.bz2
+	ARG_TARBALL:selfarg:-t.gz
+	ARG_TARBALL:selfarg:-t.xz
+	ARG_VERBOSE:-v
+	ARG_XTRACE:-x";
+
+pre_setup_args() {
+	local _spec="${BUILD_ARGS_SPEC}" _spec_arg _found;
+	while [ ${#} -gt 0 ]; do
+		if [ "${1#-}" = "${1}" ]; then
+			break;
+		fi;
+		for _spec_arg in ${_spec}; do
+			case "${_spec_arg}" in
+			*:${1})	case "${_spec_arg#*:}" in
+				arg:*)
+					set_var_unsafe "${_spec_arg%%:*}" "${2}"; shift; ;;
+				selfarg:*)
+					set_var_unsafe "${_spec_arg%%:*}" "${1}"; ;;
+				*)
+					set_var_unsafe "${_spec_arg%%:*}" 1; ;;
+				esac; _found=1; break; ;;
+			*)	_found=0; ;;
+			esac;
+		done;
+		if [ "${_found:-0}" -eq 0 ]; then
+			exec cat etc/build.usage;
+		else
+			shift;
+		fi;
+	done;
+	if [ -n "${ARG_TARBALL}" ]; then
+		if [ "${ARG_TARBALL#-t.}" != "${ARG_TARBALL}" ]; then
+			TARBALL_SUFFIX="${ARG_TARBALL#-t.}";
+		else
+			TARBALL_SUFFIX=xz;
+		fi;
+	fi;
+	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
+		set -o xtrace;
+	fi;
+	if [ -n "${ARG_RESTART}" ]; then
+		if [ "${ARG_RESTART%:*}" != "${ARG_RESTART}" ]; then
+			ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="${ARG_RESTART%:*}";
+		fi;
+		BUILD_PACKAGES_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
+	fi;
+	while [ ${#} -gt 0 ]; do
+	case "${1}" in
+	*=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+	*)	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
+	esac; shift; done;
+};
+
+# vim:filetype=sh
