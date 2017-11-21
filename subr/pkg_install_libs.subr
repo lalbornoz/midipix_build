@@ -8,7 +8,7 @@ pkgp_install_lib_check() {
 		if [ "${_so_ver#[0-9.]}" = "${_so_ver}" ]; then
 			return 0;
 		else
-			_so_ver="${_so_ver#[0-9].}";
+			_so_ver="${_so_ver#[0-9.]}";
 		fi;
 	done; return 1;
 };
