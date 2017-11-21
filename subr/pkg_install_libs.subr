@@ -31,7 +31,7 @@ pkg_install_libs() {
 	local _so_src_path _so_dst_dir _lib_src_path _lib_name _lib_dst_path;
 	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
 		for _so_src_path in							\
-			$(find	"${PWD}/../destdir"					\
+			$(find	"${PKG_DESTDIR}"					\
 				\(  -name "*.so" -or -name "*.so.*" \) -print);
 		do	if ! pkgp_install_lib_check "${_so_src_path}"			\
 			|| [ "$(readlink -f "${_so_src_path}")" = "/dev/null" ]; then

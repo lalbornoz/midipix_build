@@ -24,6 +24,7 @@ pkg_setup_env() {
 				build_fileop rm "${PKG_BASE_DIR}";
 			fi; ;;
 		esac;
+		PKG_DESTDIR="${PKG_BASE_DIR}/destdir";
 		case "${PKG_BUILD_TYPE}" in
 		host)	export AR="ar";
 			export CC="gcc";
