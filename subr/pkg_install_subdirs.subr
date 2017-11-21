@@ -10,6 +10,7 @@ pkg_install_subdirs() {
 		/=share/man/man1		\
 		/=share/man			\
 		@.=usr				\
+		@lib=lib64			\
 		@share/man=man;
 };
 
