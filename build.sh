@@ -4,7 +4,7 @@
 
 for __ in $(find subr -name *.subr); do . "${__}"; done;
 pre_setup_args "${@}"; pre_setup_env; pre_check; pre_subdirs;
-build_files_init; {(
+pre_state init; {(
 log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 log_env_vars "build (global)" ${LOG_ENV_VARS};
 for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
@@ -34,7 +34,7 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 	if [ "${BUILD_SCRIPT_RC:-0}" -ne 0 ]; then
 		break;
 	fi;
-done; build_files_fini;
+done; pre_state fini;
 log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
 if [ ${ARG_RELAXED:-0} -eq 1 ]\
