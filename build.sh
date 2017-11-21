@@ -15,8 +15,10 @@ for BUILD_TARGET_LC in $(subst_tgts invariants ${BUILD_TARGETS_META:-world}); do
 		BUILD_PACKAGES="$(lfilter "${BUILD_PACKAGES}" "${BUILD_PACKAGES_RESTART}")";
 	fi;
 	for PKG_NAME in ${BUILD_PACKAGES}; do
-		pkg_setup_dispatch "${BUILD_TARGET}" "${PKG_NAME}" "${ARG_RESTART}" "${ARG_RESTART_AT}";
-		case "${BUILD_SCRIPT_RC:=${?}}" in
+		pkg_setup_dispatch "${BUILD_TARGET}" "${PKG_NAME}"	\
+			"${ARG_RESTART}" "${ARG_RESTART_AT}";
+		BUILD_SCRIPT_RC=${?};
+		case ${BUILD_SCRIPT_RC} in
 		0) log_msg succ "Finished \`${PKG_NAME}' build.";
 			: $((BUILD_NFINI+=1)); continue; ;;
 		*) log_msg fail "Build failed in \`${PKG_NAME}' (last return code ${BUILD_SCRIPT_RC}.).";
