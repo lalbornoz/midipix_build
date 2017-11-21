@@ -30,6 +30,7 @@ pre_subdirs() {
 		@.=${PREFIX}/x86_64-w64-mingw32/mingw		\
 		/=${PREFIX}/x86_64-w64-mingw32/mingw/include	\
 		@.=${PREFIX_NATIVE}/usr				\
+		@lib=${PREFIX}/lib64				\
 		@bin=${PREFIX_MINIPIX}/lib			\
 		@bin=${PREFIX_MINIPIX}/libexec			\
 		@bin=${PREFIX_MINIPIX}/share			\
