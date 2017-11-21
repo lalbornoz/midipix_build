@@ -46,7 +46,7 @@ pkg_install_files() {
 		pkgp_install_files -v "${@}";
 	else
 		if [ -n "${PKG_INSTALL_FILES}" ]; then
-			pkgp_install_files -v "${PWD}/../destdir" ${PKG_INSTALL_FILES};
+			pkgp_install_files -v "${PKG_DESTDIR}" ${PKG_INSTALL_FILES};
 		fi;
 	fi;
 };

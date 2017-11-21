@@ -3,9 +3,9 @@
 #
 
 pkg_install_purge_la() {
-	local __;
-	for __ in $(find "${PWD}/../destdir/lib" -type f -name \*.la); do
-		build_fileop rm ${__};
+	local _la_path;
+	for _la_path in $(find "${PKG_DESTDIR}" -type f -name \*.la); do
+		build_fileop rm ${_la_path};
 	done;
 };
 

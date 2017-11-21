@@ -22,9 +22,9 @@ pkgp_strip_tree() {
 pkg_strip() {
 	if [ "${PKG_NAME%flavour_minipix}" != "${PKG_NAME}" ]	\
 	&& [ ${ARG_DEBUG_MINIPIX:-0} -eq 0 ]; then
-		pkgp_strip_tree "${PWD}/../destdir";
+		pkgp_strip_tree "${PKG_DESTDIR}";
 	elif [ "${BUILD}" = release ]; then
-		pkgp_strip_tree "${PWD}/../destdir/bin";
+		pkgp_strip_tree "${PKG_DESTDIR}/bin";
 	fi;
 };
 
