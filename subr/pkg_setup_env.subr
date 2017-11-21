@@ -16,7 +16,14 @@ pkg_setup_env() {
 		[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
 		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
 		[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
-		[ -z "${PKG_BASE_DIR}" ] && PKG_BASE_DIR="${WORKDIR}/${PKG_NAME}-${PKG_BUILD_TYPE:-native}-${PKG_TARGET}";
+		case "${PKG_BASE_DIR}" in
+		?*)	;;
+		*)	PKG_BASE_DIR="${WORKDIR}/${PKG_NAME}-${PKG_BUILD_TYPE:-native}-${PKG_TARGET}";
+			if [ -n "${ARG_RESTART}" ]\
+			&& [ -z "${ARG_RESTART_AT}" ]; then
+				build_fileop rm "${PKG_BASE_DIR}";
+			fi; ;;
+		esac;
 		case "${PKG_BUILD_TYPE}" in
 		host)	export AR="ar";
 			export CC="gcc";
