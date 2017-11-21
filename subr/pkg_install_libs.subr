@@ -5,7 +5,7 @@
 pkgp_install_lib_check() {
 	local _so_path="${1}" _so_ver="${1##*.so}";
 	while [ -n "${_so_ver}" ]; do
-		if [ "${_so_ver#[0-9].}" = "${_so_ver}" ]; then
+		if [ "${_so_ver#[0-9.]}" = "${_so_ver}" ]; then
 			return 0;
 		else
 			_so_ver="${_so_ver#[0-9].}";
