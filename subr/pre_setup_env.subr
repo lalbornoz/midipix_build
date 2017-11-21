@@ -1,9 +1,6 @@
-#
-# set -o errexit -o noglob are assumed.
-#
-
 pre_setup_env() {
 	local __;
+	set -o noglob;
 	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
 	&& [ -e /proc/cpuinfo ]; then
 		DEFAULT_BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
