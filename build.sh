@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2016 Lucio Andrés Illanes Albornoz <l.illanes@gmx.de>
+# Copyright (c) 2016, 2017 Lucio Andrés Illanes Albornoz <lucio@lucioillanes.de>
 #
 
 #
