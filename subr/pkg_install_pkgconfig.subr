@@ -3,12 +3,12 @@
 #
 
 pkg_install_pkgconfig() {
-	local __;
-	for __ in $(find "${PWD}/../destdir" -name \*.pc); do 
-		if grep -Eq '^libdir=[^$]+$' "${__}"; then
+	local _pc_path;
+	for _pc_path in $(find "${PKG_DESTDIR}" -name \*.pc); do 
+		if grep -Eq '^libdir=[^$]+$' "${_pc_path}"; then
 			sed -i	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
-				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'	\
-					"${__}";
+				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'			\
+					"${_pc_path}";
 		fi;
 	done;
 };
