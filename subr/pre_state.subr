@@ -1,0 +1,31 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pre_state() {
+	case "${1}" in
+	fini)	: $((BUILD_TIMES_SECS=$(command date +%s)-${BUILD_TIMES_SECS}));
+		: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
+		: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
+		: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
+		if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+			build_fileop rm ${BUILD_STATUS_IN_PROGRESS_FNAME};
+		fi;
+		;;
+	init)	if [ -e ${BUILD_STATUS_IN_PROGRESS_FNAME} ]; then
+			log_msg failexit "Error: another build targeting this architecture and build type is currently in progress.";
+		else
+			touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
+		fi;
+		if [ -e ${BUILD_LOG_FNAME} ]; then
+			mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
+		fi;
+		BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
+		BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
+		BUILD_TIMES_SECS=$(command date +%s);
+		BUILD_PKGS_FAILED="";
+		;;
+	esac;
+};
+
+# vim:filetype=sh

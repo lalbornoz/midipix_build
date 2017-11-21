@@ -47,30 +47,6 @@ build_fileop() {
 	fi;
 };
 
-build_files_fini() {
-	: $((BUILD_TIMES_SECS=$(command date +%s)-${BUILD_TIMES_SECS}));
-	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
-	: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
-	: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
-	if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		build_fileop rm ${BUILD_STATUS_IN_PROGRESS_FNAME};
-	fi;
-};
-build_files_init() {
-	if [ -e ${BUILD_STATUS_IN_PROGRESS_FNAME} ]; then
-		log_msg failexit "Error: another build targeting this architecture and build type is currently in progress.";
-	else
-		touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
-	fi;
-	if [ -e ${BUILD_LOG_FNAME} ]; then
-		mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
-	fi;
-	BUILD_DATE_START="$(date %Y-%m-%d-%H-%M-%S)";
-	BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
-	BUILD_TIMES_SECS=$(command date +%s);
-	BUILD_PKGS_FAILED="";
-};
-
 is_build_script_done() {
 	local _done_fname="${WORKDIR}/.${1}.${2}" _restart_at="${3}";
 	if [ -z "${_restart_at}" ]; then
@@ -87,7 +63,6 @@ is_build_script_done() {
 		return 0;		# Skip
 	fi;
 };
-
 set_build_script_done() {
 	local _pkg_fname="${1}";
 	local _done_fname_pfx="${WORKDIR}/.${_pkg_fname}";
