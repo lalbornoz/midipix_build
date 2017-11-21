@@ -53,8 +53,6 @@ pkg_setup_env() {
 		PKG_ENV_VARS="$(echo "${PKG_ENV_VARS}" | tr " " "\n" | sort | tr "\n" " ")";
 		log_env_vars "build" ${PKG_ENV_VARS};
 	fi;
-	build_fileop mkdir "${PKG_BASE_DIR}";
-	build_fileop cd "${PKG_BASE_DIR}";
 };
 
 # vim:filetype=sh
