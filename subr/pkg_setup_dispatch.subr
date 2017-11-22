@@ -5,9 +5,9 @@
 pkg_setup_dispatch() {
 	local _tgt_name="${1}" _pkg_name="${2}"		\
 		_restart="${3}" _restart_at="${4}"	\
-		_pkg_name_parent _pkg_step_cmds _pkg_step_cmd_args;
+		_pkg_step_cmds _pkg_step_cmd_args;
 	if [ "${_pkg_name#*_flavour_*}" != "${_pkg_name}" ]; then
-		_pkg_name_parent="${_pkg_name%_flavour_*}";
+		PKG_NAME_PARENT="${_pkg_name%_flavour_*}";
 	fi;
 	(set -o errexit -o noglob;
 	if [ -n "${_restart}" ]\
