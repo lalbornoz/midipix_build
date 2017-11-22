@@ -30,7 +30,8 @@ ex_pkg_vars() {
 			. "${_vars_path}";
 		fi;
 	done;
-	if [ -n "${PKG_NAME_PARENT}" ]; then
+	if [ "${PKG_NAME#*_flavour_*}" != "${PKG_NAME}" ]; then
+		PKG_NAME_PARENT="${_pkg_name%_flavour_*}";
 		exp_pkg_vars "${PKG_NAME_PARENT}";
 	fi;
 	exp_pkg_vars "${PKG_NAME}";
