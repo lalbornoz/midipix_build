@@ -50,7 +50,8 @@ pkg_setup_env() {
 			esac; ;;
 		esac;
 	fi;
-	if [ -n "${PKG_ENV_VARS}" ]; then
+	if [ -n "${PKG_ENV_VARS}" ]\
+	&& [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 		PKG_ENV_VARS="$(echo "${PKG_ENV_VARS}" | tr " " "\n" | sort | tr "\n" " ")";
 		log_env_vars "build" ${PKG_ENV_VARS};
 	fi;
