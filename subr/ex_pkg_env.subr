@@ -4,56 +4,46 @@
 
 ex_pkg_env() {
 	local _vname;
-	if [ -z "${PKG_URL}" ]\
-	&& [ -z "${PKG_URLS_GIT}" ]\
-	&& [ -z "${PKG_VERSION}" ]\
-	&& ! ex_test_cmd "pkg_${PKG_NAME}_all"; then
-		ex_log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
-	elif [ "${PKG_DISABLED:-0}" -eq 1 ]; then
-		ex_log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
-		exit 0;
-	else
-		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
-		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
-		[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
-		case "${PKG_BASE_DIR}" in
-		?*)	;;
-		*)	PKG_BASE_DIR="${WORKDIR}/${PKG_NAME}-${PKG_BUILD_TYPE:-native}-${PKG_TARGET}";
-			if [ -n "${ARG_RESTART}" ]\
-			&& [ -z "${ARG_RESTART_AT}" ]; then
-				ex_build_fileop rm "${PKG_BASE_DIR}";
-			fi; ;;
-		esac;
-		PKG_DESTDIR="${PKG_BASE_DIR}/destdir";
-		case "${PKG_BUILD_TYPE}" in
-		host)	export AR="ar";
-			export CC="gcc";
-			export CXX="g++";
-			export RANLIB="ranlib"; ;;
-		*)	export AR="${PKG_TARGET}-ar";
-			export CC="${PKG_TARGET}-gcc";
-			export CXX="${PKG_TARGET}-g++";
-			export RANLIB="${PKG_TARGET}-ranlib";
-			[ -x "${PREFIX}/bin/${TARGET}-pkg-config" ]\
-				&& export PKG_CONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
-			;;
-		esac;
-		export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
-		export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
-		case "${PKG_SUBDIR}" in
-		?*)	;;
-		*)	case "${PKG_URLS_GIT}" in
-			?*)	PKG_SUBDIR="${PKG_URLS_GIT%%=*}"; ;;
-			*)	case "${PKG_FNAME}" in
-				*.t*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;
-				*)	PKG_SUBDIR="${PKG_NAME}"; ;;
-				esac; ;;
+	[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
+	[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
+	[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
+	case "${PKG_BASE_DIR}" in
+	?*)	;;
+	*)	PKG_BASE_DIR="${WORKDIR}/${PKG_NAME}-${PKG_BUILD_TYPE:-native}-${PKG_TARGET}";
+		if [ -n "${ARG_RESTART}" ]\
+		&& [ -z "${ARG_RESTART_AT}" ]; then
+			ex_build_fileop rm "${PKG_BASE_DIR}";
+		fi; ;;
+	esac;
+	PKG_DESTDIR="${PKG_BASE_DIR}/destdir";
+	case "${PKG_BUILD_TYPE}" in
+	host)	export AR="ar";
+		export CC="gcc";
+		export CXX="g++";
+		export RANLIB="ranlib"; ;;
+	*)	export AR="${PKG_TARGET}-ar";
+		export CC="${PKG_TARGET}-gcc";
+		export CXX="${PKG_TARGET}-g++";
+		export RANLIB="${PKG_TARGET}-ranlib";
+		[ -x "${PREFIX}/bin/${TARGET}-pkg-config" ]\
+			&& export PKG_CONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
+		;;
+	esac;
+	export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
+	export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+	case "${PKG_SUBDIR}" in
+	?*)	;;
+	*)	case "${PKG_URLS_GIT}" in
+		?*)	PKG_SUBDIR="${PKG_URLS_GIT%%=*}"; ;;
+		*)	case "${PKG_FNAME}" in
+			*.t*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;
+			*)	PKG_SUBDIR="${PKG_NAME}"; ;;
 			esac; ;;
-		esac;
-		for _vname in $(ex_split : ${PKG_ENV_VARS_EXTRA}); do
-			export "${_vname}";
-		done;
-	fi;
+		esac; ;;
+	esac;
+	for _vname in $(ex_split : ${PKG_ENV_VARS_EXTRA}); do
+		export "${_vname}";
+	done;
 	if [ -n "${PKG_ENV_VARS}" ]\
 	&& [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 		PKG_ENV_VARS="$(echo "${PKG_ENV_VARS}" | tr " " "\n" | sort | tr "\n" " ")";

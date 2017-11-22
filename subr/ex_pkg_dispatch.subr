@@ -5,7 +5,9 @@
 ex_pkg_dispatch() {
 	local _tgt_name="${1}" _pkg_name="${2}"		\
 		_restart="${3}" _restart_at="${4}"	\
-		_pkg_step_cmds _pkg_step_cmd_args;
+		_pkg_step_cmds _pkg_step_cmd_args	\
+		_stdout_path _stderr_path		\
+		_pipe_path _pipe_path2 _pipe_msg _script_rc;
 	if [ "${_pkg_name#*_flavour_*}" != "${_pkg_name}" ]; then
 		PKG_NAME_PARENT="${_pkg_name%_flavour_*}";
 	fi;
@@ -15,10 +17,29 @@ ex_pkg_dispatch() {
 			return 0;
 		fi;
 	fi;
+	_pipe_path="${WORKDIR}/${_pkg_name}_build.fifo";
+	ex_build_fileop rm "${_pipe_path}"; mkfifo "${_pipe_path}";
+	_pipe2_path="${WORKDIR}/${_pkg_name}_build2.fifo";
+	ex_build_fileop rm "${_pipe2_path}"; mkfifo "${_pipe2_path}";
+	_stderr_path="${WORKDIR}/${_pkg_name}_stderr.log";
+	_stdout_path="${WORKDIR}/${_pkg_name}_stdout.log";
+	ex_build_fileop rm "${_stderr_path}" "${_stdout_path}";
 	(set -o errexit -o noglob;
-	ex_pkg_vars; ex_pkg_env;
-	ex_build_fileop mkdir "${PKG_BASE_DIR}";
-	ex_build_fileop cd "${PKG_BASE_DIR}";
+	ex_pkg_vars;
+	if [ -z "${PKG_URL}" ]\
+	&& [ -z "${PKG_URLS_GIT}" ]\
+	&& [ -z "${PKG_VERSION}" ]\
+	&& ! ex_test_cmd "pkg_${PKG_NAME}_all"; then
+		ex_log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
+		exit 1;
+	elif [ "${PKG_DISABLED:-0}" -eq 1 ]; then
+		ex_log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
+		echo "done ${PKG_BASE_DIR}" >&3; exit 0;
+	else
+		ex_pkg_env;
+		ex_build_fileop mkdir "${PKG_BASE_DIR}";
+		ex_build_fileop cd "${PKG_BASE_DIR}";
+	fi;
 	set -- $(ex_lfilter -not "${BUILD_STEPS}"	\
 			"$(ex_get_var_unsafe PKG_$(ex_toupper "${_pkg_name}")_BUILD_STEPS_DISABLE)");
 	while [ ${#} -gt 0 ]; do
@@ -67,7 +88,17 @@ ex_pkg_dispatch() {
 				fi; break;
 			fi;
 		done;
-	shift; done); return ${?};
+	shift; done; set -o xtrace
+	echo "done ${PKG_BASE_DIR}" >&3; read __ <&4;)	\
+		1>"${_stdout_path}" 2>"${_stderr_path}"	\
+		3<>"${_pipe_path}" 4<>"${_pipe2_path}" &
+	_script_rc=1; while read _pipe_msg <"${_pipe_path}"; do
+	case "${_pipe_msg%% *}" in
+	done)	echo >"${_pipe2_path}"; _script_rc=0; break; ;;
+	*)	break; ;;
+	esac; done;
+	ex_build_fileop rm "${_pipe_path}";
+	return "${_script_rc:-0}";
 };
 
 # vim:filetype=sh
