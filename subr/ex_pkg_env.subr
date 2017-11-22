@@ -7,7 +7,7 @@ ex_pkg_env() {
 	if [ -z "${PKG_URL}" ]\
 	&& [ -z "${PKG_URLS_GIT}" ]\
 	&& [ -z "${PKG_VERSION}" ]\
-	&& ! test_cmd "pkg_${PKG_NAME}_all"; then
+	&& ! ex_test_cmd "pkg_${PKG_NAME}_all"; then
 		ex_log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
 	elif [ "${PKG_DISABLED:-0}" -eq 1 ]; then
 		ex_log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
