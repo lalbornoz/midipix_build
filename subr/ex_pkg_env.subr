@@ -10,9 +10,6 @@ ex_pkg_env() {
 	&& ! ex_test_cmd "pkg_${PKG_NAME}_all"; then
 		ex_log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
 		return 1;
-	elif [ "${PKG_DISABLED:-0}" -eq 1 ]; then
-		ex_log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
-		return 0;
 	else
 		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
 		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
