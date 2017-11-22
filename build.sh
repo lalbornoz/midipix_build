@@ -26,7 +26,7 @@ for BUILD_TARGET_META in invariants ${BUILD_TARGETS_META:-world}; do
 			*) ex_log_msg fail "Build failed in \`${PKG_NAME}', check \`${WORKDIR}/${PKG_NAME}_std{err,out}.log' for details.";
 			   : $((BUILD_NFAIL+=1));
 			   if [ ${ARG_RELAXED:-0} -eq 1 ]; then
-			   BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${PKG_NAME}";
+				BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${PKG_NAME}";
 				continue;
 			   else
 				break;
