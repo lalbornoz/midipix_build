@@ -1,9 +1,0 @@
-#
-# set -o errexit -o noglob are assumed.
-#
-
-pkg_finish() {
-	:;
-};
-
-# vim:filetype=sh

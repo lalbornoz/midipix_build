@@ -1,0 +1,39 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+ex_build_fileop() {
+	local _op="${1}"; shift;
+	if [ "${_op}" = cd ]; then
+		ex_log_msg varn "Changing working directory to \`${1}'.";
+		[ \( -n "${1}" \) -a \( -L "${1}" -o -e "${1}" \) ] && cd -- "${1}";
+	elif [ "${_op}" = cp ]; then
+		ex_log_msg varn "Copying \`${1}' to \`${2}' w/ -pPR.";
+		[ ${#} -ge 2 ] && cp -pPR -- "${@}";
+	elif [ "${_op}" = ln_symbolic ]; then
+		ex_log_msg varn "Linking \`${1}' to \`${2}' w/ -fs";
+		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && ln -fs -- "${1}" "${2}";
+	elif [ "${_op}" = mv ]; then
+		ex_log_msg varn "Moving \`${1}' to \`${2}' w/ -fs";
+		[ \( -n "${1}" \) -a \( -n "${2}" \) ] && mv -f -- "${1}" "${2}";
+	elif [ "${_op}" = mkdir ]\
+	||   [ "${_op}" = rm ]; then
+		while [ ${#} -gt 0 ]; do
+			if [ -z "${1}" ]; then
+				return 1;
+			elif [ "${_op}" = mkdir ]\
+			&&   [ ! -e "${1}" ]; then
+				ex_log_msg varn "Making directory \`${1}'.";
+				mkdir -p -- "${1}";
+			elif [ "${_op}" = rm ]\
+			&&   [ \( -L "${1}" \) -o \( -e "${1}" \) ]; then
+				ex_log_msg varn "Removing directory or file \`${1}'.";
+				rm -rf -- "${1}";
+			fi; shift;
+		done;
+	else
+		ex_log_msg failexit "Error: ex_build_fileop() called w/ invalid parameter(s) \`${@}'.";
+	fi;
+};
+
+# vim:filetype=sh

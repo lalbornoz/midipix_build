@@ -12,7 +12,7 @@ usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-h]
         -r package[,...][:step] Restart the specified comma-separated build(s) completely
                                 or at the optionally specified step. Currently defined
                                 steps are:
-                                setup_distclean, fetch_wget, fetch_git, fetch_extract,
+                                fetch_distclean, fetch_wget, fetch_git, fetch_extract,
                                 configure_patch_pre, configure_autotools, configure_patch,
                                 configure, build_clean, build, install_subdirs, install_make,
                                 install_files, install_libs, install_pkgconfig, install_purge_la,

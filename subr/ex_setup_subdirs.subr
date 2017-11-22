@@ -2,10 +2,10 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pre_subdirs() {
+ex_setup_subdirs() {
 	local __;
 	if [ ${ARG_CLEAN:-0} -eq 1 ]; then
-		log_msg info "-c specified, cleaning prefix...";
+		ex_log_msg info "-c specified, cleaning prefix...";
 		for __ in ${CLEAR_PREFIX_DIRS}; do
 			if [ -e ${PREFIX}/${__} ]; then
 				build_rm ${PREFIX}/${__};

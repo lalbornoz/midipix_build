@@ -12,7 +12,7 @@ pkg_configure_autotools() {
 		&& [ ! -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]; then
 			for _script_fname in bootstrap bootstrap.sh autogen.sh ""; do
 				if [ -z "${_script_fname}" ]; then
-					(build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf)\
+					(ex_build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf)\
 						|| exit 1 && break;
 				elif [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${_script_fname}" ]; then
 					for _subdir_tgt in "${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux" "${PKG_BASE_DIR}/${PKG_SUBDIR}"; do
@@ -26,7 +26,7 @@ pkg_configure_autotools() {
 							break;
 						fi;
 					done;
-					(build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&		\
+					(ex_build_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&		\
 						"${SHELL}" "${_script_fname}") || exit 1 && break;
 				fi;
 			done;
@@ -37,7 +37,7 @@ pkg_configure_autotools() {
 			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;		\
 			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
 		if [ "${PKG_BUILD_TYPE}" != host ]; then
-			build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${PKG_BUILD_DIR}/";
+			ex_build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${PKG_BUILD_DIR}/";
 		fi;
 	fi;
 };

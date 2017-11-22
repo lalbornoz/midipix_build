@@ -1,4 +1,4 @@
-pre_setup_env() {
+ex_setup_env() {
 	local __;
 	set -o noglob;
 	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
@@ -13,9 +13,9 @@ pre_setup_env() {
 	else
 		if [ "${BUILD}" != debug ]\
 		&& [ "${BUILD}" != release ]; then
-			log_msg failexit "Error: unknown build type \`${BUILD}'.";
+			ex_log_msg failexit "Error: unknown build type \`${BUILD}'.";
 		fi;
-		log_msg failexit "Error: invalid architecture \`${ARCH}'.";
+		ex_log_msg failexit "Error: invalid architecture \`${ARCH}'.";
 	fi;
 	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/env.vars ./vars/build.vars; do
 		[ -e ${__} ] && . ${__};
@@ -27,7 +27,7 @@ pre_setup_env() {
 		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
 	fi;
 	for __ in $(export | sed -e 's/^export //' -e 's/=.*$//'); do
-		if ! lmatch "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
+		if ! ex_lmatch "${CLEAR_ENV_VARS_EXCEPT}" " " "${__}"; then
 			unset "${__}";
 		fi;
 	done;

@@ -16,7 +16,7 @@ BUILD_ARGS_SPEC="
 	ARG_VERBOSE:-v
 	ARG_XTRACE:-x";
 
-pre_setup_args() {
+ex_setup_args() {
 	local _spec="${BUILD_ARGS_SPEC}" _spec_arg _found;
 	while [ ${#} -gt 0 ]; do
 		if [ "${1#-}" = "${1}" ]; then
@@ -26,11 +26,11 @@ pre_setup_args() {
 			case "${_spec_arg}" in
 			*:${1})	case "${_spec_arg#*:}" in
 				arg:*)
-					set_var_unsafe "${_spec_arg%%:*}" "${2}"; shift; ;;
+					ex_set_var_unsafe "${_spec_arg%%:*}" "${2}"; shift; ;;
 				selfarg:*)
-					set_var_unsafe "${_spec_arg%%:*}" "${1}"; ;;
+					ex_set_var_unsafe "${_spec_arg%%:*}" "${1}"; ;;
 				*)
-					set_var_unsafe "${_spec_arg%%:*}" 1; ;;
+					ex_set_var_unsafe "${_spec_arg%%:*}" 1; ;;
 				esac; _found=1; break; ;;
 			*)	_found=0; ;;
 			esac;
@@ -59,7 +59,7 @@ pre_setup_args() {
 	fi;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
-	*=*)	set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+	*=*)	ex_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 	*)	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 	esac; shift; done;
 };

@@ -10,7 +10,7 @@ pkg_build() {
 	# N.B.	We only specify CC= here if the current package does not use GNU
 	#	autoconf as it often abuses it by appending -std={gnu99,...} to it
 	#	instead of amending CFLAGS.
-	run_cmd_unsplit make							\
+	ex_run_cmd_unsplit make							\
 		${PKG_MAKEFLAGS_BUILD}						\
 		${PKG_MAKEFLAGS_BUILD_EXTRA}					\
 		AR=${AR} ${_no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\

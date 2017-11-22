@@ -15,9 +15,9 @@ pkg_fetch_subdirs() {
 		PKG_BUILD_DIR="${PKG_BASE_DIR}/${PKG_BUILD_DIR}";
 	fi;
 	if [ ! -d "${PKG_BUILD_DIR}" ]; then
-		build_fileop mkdir "${PKG_BUILD_DIR}";
+		ex_build_fileop mkdir "${PKG_BUILD_DIR}";
 	fi;
-	build_fileop cd "${PKG_BUILD_DIR}";
+	ex_build_fileop cd "${PKG_BUILD_DIR}";
 };
 
 # vim:filetype=sh
