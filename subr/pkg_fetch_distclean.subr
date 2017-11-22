@@ -1,0 +1,15 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_fetch_distclean() {
+	if [ "$(stat -c %i "${PKG_BASE_DIR}")"	\
+	!=   "$(stat -c %i "${WORKDIR}")" ]; then
+		ex_build_fileop cd "${WORKDIR}";
+		ex_build_fileop rm "${PKG_BASE_DIR}";
+		ex_build_fileop mkdir "${PKG_BASE_DIR}";
+		ex_build_fileop cd "${PKG_BASE_DIR}";
+	fi;
+};
+
+# vim:filetype=sh

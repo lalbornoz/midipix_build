@@ -1,0 +1,64 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+ex_pkg_state_build_dir() {
+	PKG_BUILD_DIR="${1}-${2}-${PKG_TARGET}";
+};
+
+ex_pkg_state_fini() {
+	: $((BUILD_TIMES_SECS=$(ex_date %s)-${BUILD_TIMES_SECS}));
+	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
+	: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
+	: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
+	if [ -f "${BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+		ex_build_fileop rm ${BUILD_STATUS_IN_PROGRESS_FNAME};
+	fi;
+};
+
+ex_pkg_state_init() {
+	if [ -e ${BUILD_STATUS_IN_PROGRESS_FNAME} ]; then
+		ex_log_msg failexit "Error: another build targeting this architecture and build type is currently in progress.";
+	else
+		touch ${BUILD_STATUS_IN_PROGRESS_FNAME};
+	fi;
+	if [ -e ${BUILD_LOG_FNAME} ]; then
+		mv -- ${BUILD_LOG_FNAME} ${BUILD_LOG_LAST_FNAME};
+	fi;
+	BUILD_DATE_START="$(ex_date %Y-%m-%d-%H-%M-%S)";
+	BUILD_NFINI=${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}};
+	BUILD_TIMES_SECS=$(ex_date %s);
+	BUILD_PKGS_FAILED="";
+};
+
+ex_pkg_state_push() {
+	local _pkg_fname="${1}";
+	local _done_fname_pfx="${WORKDIR}/.${_pkg_fname}";
+	shift; while [ ${#} -ge 1 ]; do
+		if [ "${1#-}" != "${1}" ]; then
+			ex_build_fileop rm "${_done_fname_pfx}.${1#-}";
+		else
+			touch "${_done_fname_pfx}.${1}";
+			ex_log_msg info "Finished build step ${1} of package \`${_pkg_fname}'.";
+		fi; shift;
+	done;
+};
+
+ex_pkg_state_test() {
+	local _done_fname="${WORKDIR}/.${1}.${2}" _restart_at="${3}";
+	if [ -z "${_restart_at}" ]; then
+		if [ -e "${_done_fname}" ]; then
+			return 0;	# Skip
+		else
+			return 1;	# Build
+		fi;
+	elif [ "${_restart_at}" = "ALL" ]; then
+		return 1;		# Build
+	elif ex_lmatch "${_restart_at}" , "${2}"; then
+		return 1;		# Build
+	else
+		return 0;		# Skip
+	fi;
+};
+
+# vim:filetype=sh
