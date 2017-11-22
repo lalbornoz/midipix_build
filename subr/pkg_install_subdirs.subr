@@ -7,10 +7,13 @@ pkg_install_subdirs() {
 		/=bin				\
 		/=lib				\
 		/=sbin				\
+		/=share/doc			\
+		/=share/info			\
 		/=share/man/man1		\
-		/=share/man			\
 		@.=usr				\
 		@lib=lib64			\
+		@share/doc=doc			\
+		@share/info=info		\
 		@share/man=man;
 };
 
