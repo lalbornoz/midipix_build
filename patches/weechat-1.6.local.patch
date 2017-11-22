@@ -1,15 +1,17 @@
---- weechat-1.6/configure.orig	2016-11-15 19:19:45.531918300 +0100
-+++ weechat-1.6/configure	2016-11-15 19:23:22.078226900 +0100
-@@ -23683,7 +23683,7 @@
+--- weechat-1.6/configure.orig	2017-11-22 14:47:17.644000000 +0000
++++ weechat-1.6/configure	2017-11-22 15:05:58.224000000 +0000
+@@ -24277,8 +24277,8 @@
+ else
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
-     GCRYPT_CFLAGS=`libgcrypt-config --cflags`
+-    GCRYPT_CFLAGS=`libgcrypt-config --cflags`
 -    GCRYPT_LFLAGS=`libgcrypt-config --libs`
-+    GCRYPT_LFLAGS="-lgcrypt -lgpg-error"
++    GCRYPT_CFLAGS=`${LIBGCRYPT_CONFIG} --cflags`
++    GCRYPT_LFLAGS=`${LIBGCRYPT_CONFIG} --libs`
  
  
  fi
-@@ -23760,8 +23760,8 @@
+@@ -24355,8 +24355,8 @@
      else
          { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
@@ -20,7 +22,7 @@
  
  
          $as_echo "#define HAVE_GNUTLS 1" >>confdefs.h
-@@ -23972,8 +23972,8 @@
+@@ -24567,8 +24567,8 @@
  else
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
