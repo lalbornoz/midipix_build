@@ -29,16 +29,17 @@ ex_pkg_env() {
 		host)	export AR="ar";
 			export CC="gcc";
 			export CXX="g++";
-			export RANLIB="ranlib";
-			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
-			export LIBTOOL="${PKG_SLIBTOOL:-slibtool}"; ;;
+			export RANLIB="ranlib"; ;;
 		*)	export AR="${PKG_TARGET}-ar";
 			export CC="${PKG_TARGET}-gcc";
 			export CXX="${PKG_TARGET}-g++";
 			export RANLIB="${PKG_TARGET}-ranlib";
-			export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
-			export LIBTOOL="${PKG_SLIBTOOL:-slibtool}"; ;;
+			[ -x "${PREFIX}/bin/${TARGET}-pkg-config" ]\
+				&& export PKG_CONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
+			;;
 		esac;
+		export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
+		export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
 		case "${PKG_SUBDIR}" in
 		?*)	;;
 		*)	case "${PKG_URLS_GIT}" in
