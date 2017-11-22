@@ -1,0 +1,45 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+ex_log_env_vars() {
+	local _nvar=1 _arg _arg_len_max=0;
+	ex_log_msg info "Variables for this ${1:-build}:"; shift;
+	while [ ${_nvar} -le ${#} ]; do
+		_arg="$(eval echo \${${_nvar}})";
+		_arg="${_arg%%=*}";
+		if [ ${#_arg} -gt ${_arg_len_max} ]; then
+			_arg_len_max=${#_arg};
+		fi; : $((_nvar+=1));
+	done;
+	while [ ${#} -gt 0 ]; do
+		ex_log_msg info "$(printf					\
+			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
+			"${1%%=*}" "$(ex_get_var_unsafe ${1#*=})")";
+		shift;
+	done;
+};
+
+ex_log_msg() {
+	local _lvl="${1}"; shift;
+	if [ "${_lvl#v}" != "${_lvl}" ]\
+	&& [ ${ARG_VERBOSE:-0} -eq 0 ]; then
+		return;
+	fi;
+	case "${_lvl}" in
+		failexit) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
+		fail) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
+		info) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		vnfo) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		succ) printf "\033[0m\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
+		warn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
+		varn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
+	esac;
+	if [ ${#} -gt 1 ]; then
+		printf "==> %s %s %s\033[0m\n" "$(ex_date)" "${1}" "$*";
+	else
+		printf "==> %s %s\033[0m\n" "$(ex_date)" "${1}";
+	fi; [ ${_lvl} = failexit ] && exit 1 || return 0;
+};
+
+# vim:filetype=sh

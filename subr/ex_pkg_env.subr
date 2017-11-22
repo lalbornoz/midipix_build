@@ -2,18 +2,18 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkg_setup_env() {
+ex_pkg_env() {
+	local _vname;
 	if [ -z "${PKG_URL}" ]\
 	&& [ -z "${PKG_URLS_GIT}" ]\
 	&& [ -z "${PKG_VERSION}" ]\
 	&& ! test_cmd "pkg_${PKG_NAME}_all"; then
-		log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
+		ex_log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
 	elif [ "${PKG_DISABLED:-0}" -eq 1 ]; then
-		log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
+		ex_log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
 		exit 0;
 	else
 		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
-		[ -n "${PKG_ENV_VARS_EXTRA}" ] && set_env_vars_with_sep : "${PKG_ENV_VARS_EXTRA}";
 		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
 		[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
 		case "${PKG_BASE_DIR}" in
@@ -21,7 +21,7 @@ pkg_setup_env() {
 		*)	PKG_BASE_DIR="${WORKDIR}/${PKG_NAME}-${PKG_BUILD_TYPE:-native}-${PKG_TARGET}";
 			if [ -n "${ARG_RESTART}" ]\
 			&& [ -z "${ARG_RESTART_AT}" ]; then
-				build_fileop rm "${PKG_BASE_DIR}";
+				ex_build_fileop rm "${PKG_BASE_DIR}";
 			fi; ;;
 		esac;
 		PKG_DESTDIR="${PKG_BASE_DIR}/destdir";
@@ -49,11 +49,14 @@ pkg_setup_env() {
 				esac; ;;
 			esac; ;;
 		esac;
+		for _vname in $(ex_split : ${PKG_ENV_VARS_EXTRA}); do
+			export "${_vname}";
+		done;
 	fi;
 	if [ -n "${PKG_ENV_VARS}" ]\
 	&& [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 		PKG_ENV_VARS="$(echo "${PKG_ENV_VARS}" | tr " " "\n" | sort | tr "\n" " ")";
-		log_env_vars "build" ${PKG_ENV_VARS};
+		ex_log_env_vars "build" ${PKG_ENV_VARS};
 	fi;
 };
 

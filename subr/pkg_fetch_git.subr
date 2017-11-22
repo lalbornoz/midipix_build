@@ -6,20 +6,20 @@ pkgp_fetch_git() {
 	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}";
 	if [ "${ARG_OFFLINE:-0}" -eq 0 ]; then
 		if [ -e "${DLCACHEDIR}/${_subdir}" ]; then
-			(build_fileop cd "${DLCACHEDIR}/${_subdir}" &&\
+			(ex_build_fileop cd "${DLCACHEDIR}/${_subdir}" &&\
 				git pull origin "${_branch:-main}");
 		else
 			git clone "${_url}" "${DLCACHEDIR}/${_subdir}";
 			if [ -n "${_branch}" -a		\
 			     \( -z "${_branch#main}" \) -a	\
 			     \( -z "${_branch#master}" \) ]; then
-				(build_fileop cd "${DLCACHEDIR}/${_subdir}"	&&\
+				(ex_build_fileop cd "${DLCACHEDIR}/${_subdir}"	&&\
 					git checkout -b "${_branch}");
 			fi;
 		fi;
 	fi;
-	build_fileop rm "${_tgtdir}/${_subdir}";
-	build_fileop cp "${DLCACHEDIR}/${_subdir}" "${_tgtdir}";
+	ex_build_fileop rm "${_tgtdir}/${_subdir}";
+	ex_build_fileop cp "${DLCACHEDIR}/${_subdir}" "${_tgtdir}";
 };
 
 pkgp_fetch_urls_git() {

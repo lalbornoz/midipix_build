@@ -11,8 +11,8 @@ pkgp_strip_tree() {
 			\( -type f -or -type l \)); do
 		set +o errexit;
 		if objdump -sj .debug_info "${_bin_path}" >/dev/null 2>&1; then
-			log_msg info "Stripping ${_bin_path}...";
-			log_msg vnfo "${TARGET}-strip ${_bin_path}";
+			ex_log_msg info "Stripping ${_bin_path}...";
+			ex_log_msg vnfo "${TARGET}-strip ${_bin_path}";
 			${TARGET}-strip ${_bin_path};
 		fi;
 		set -o errexit;

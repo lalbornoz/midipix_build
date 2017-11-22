@@ -6,7 +6,7 @@ pkg_install() {
 	local _dst_path;
 	for _dst_path in "${PKG_PREFIX}" "${PKG_PREFIX_EXTRA}"; do
 		if [ -n "${_dst_path}" ]; then
-			build_fileop mkdir "${_dst_path}";
+			ex_build_fileop mkdir "${_dst_path}";
 			tar -C "${PKG_DESTDIR}" -cpf - . |\
 				tar -C "${_dst_path}" -xpf -;
 		fi;

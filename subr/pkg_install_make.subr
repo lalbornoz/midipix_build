@@ -3,7 +3,7 @@
 #
 
 pkg_install_make() {
-	run_cmd_unsplit make								\
+	ex_run_cmd_unsplit make								\
 		${PKG_MAKEFLAGS_INSTALL}						\
 		${PKG_MAKEFLAGS_INSTALL_EXTRA}						\
 		AR=${AR} CC=${CC} RANLIB=${RANLIB}					\

@@ -6,7 +6,7 @@
 pkgp_fetch_wget() {
 	local _url="${1}" _sha256sum_src="${2}";
 	if [ -z "${3}" ]; then
-		_url_dst="${DLCACHEDIR}/$(basename "${_url}")";
+		_url_dst="${DLCACHEDIR}/$(ex_basename "${_url}")";
 	else
 		_url_dst="${DLCACHEDIR}/${3}";
 	fi;
@@ -20,9 +20,9 @@ pkgp_fetch_wget() {
 		set -- $(openssl dgst -sha256 "${_url_dst}"); shift $((${#}-1));
 		if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
 			if [ "${ARG_IGNORE_SHA256SUMS:-0}" -eq 0 ]; then
-				log_msg failexit "Error: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
+				ex_log_msg failexit "Error: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			else
-				log_msg warn "Warning: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
+				ex_log_msg warn "Warning: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			fi;
 		fi;
 	fi;

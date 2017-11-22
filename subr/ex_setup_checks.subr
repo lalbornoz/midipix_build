@@ -2,31 +2,31 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pre_check() {
+ex_setup_checks() {
 	local __ _exit;
 	for __ in ${CHECK_PATH_VARS}; do
-		if [ -z "${___:=$(get_var_unsafe "${__}")}" ]; then
-			log_msg failexit "Error: variable \`${__}' is empty or unset.";
+		if [ -z "${___:=$(ex_get_var_unsafe "${__}")}" ]; then
+			ex_log_msg failexit "Error: variable \`${__}' is empty or unset.";
 		elif [ "${___#* *}" != "${___}" ]; then
-			log_msg failexit "Error: variable \`${__}' contains one or more whitespace characters.";
+			ex_log_msg failexit "Error: variable \`${__}' contains one or more whitespace characters.";
 		fi;
 	done;
 	for __ in ${CHECK_PREREQ_CMDS} $(eval echo ${CHECK_PREREQ_FILES_DYNAMIC}) ${CHECK_PREREQ_FILES}; do
 		if [ "${__#/}" != "${__}" ]; then
 			if [ ! -e "${__}" ]; then
-				log_msg fail "Error: missing prerequisite file \`${__}'.";
+				ex_log_msg fail "Error: missing prerequisite file \`${__}'.";
 				_exit=1;
 			fi;
 		else
-			if ! test_cmd "${__}"; then
-				log_msg fail "Error: missing prerequisite command \`${__}'.";
+			if ! ex_test_cmd "${__}"; then
+				ex_log_msg fail "Error: missing prerequisite command \`${__}'.";
 				_exit=1;
 			fi;
 		fi;
 	done;
 	for __ in ${CHECK_PREREQ_PERL_MODULES}; do
 		if ! perl -M"${__}" -e "" 2>/dev/null; then
-			log_msg fail "Error: missing prerequisite Perl module \`${__}'.";
+			ex_log_msg fail "Error: missing prerequisite Perl module \`${__}'.";
 			_exit=1;
 		fi;
 	done;

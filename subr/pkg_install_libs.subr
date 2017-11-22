@@ -21,8 +21,8 @@ pkgp_install_lib_link() {
 			sort | tail -1)";
 	if [ -n "${_lib_link_tgt}" ]; then
 		_lib_link_path="${_so_path%.so*}.lib.a";
-		build_fileop rm "${_lib_link_path}";
-		build_fileop ln_symbolic "$(basename "${_lib_link_tgt}")"		\
+		ex_build_fileop rm "${_lib_link_path}";
+		ex_build_fileop ln_symbolic "$(ex_basename "${_lib_link_tgt}")"		\
 			"${_lib_link_path}";
 	fi;
 };
@@ -40,7 +40,7 @@ pkg_install_libs() {
 				*.so)	_lib_src_path="${_so_src_path%%.so}.lib.a"; ;;
 				*.so.*)	_lib_src_path="${_so_src_path%%.so.*}.${_so_src_path##*.so.}.lib.a"; ;;
 				esac;
-				_lib_name="$(basename "${_lib_src_path}")";
+				_lib_name="$(ex_basename "${_lib_src_path}")";
 				_so_dst_dir="${_so_src_path%/*}";
 			fi;
 			if [ ! -L "${_lib_src_path}" ]; then
