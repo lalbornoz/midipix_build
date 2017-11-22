@@ -17,6 +17,8 @@ ex_setup_subdirs() {
 		/=${WORKDIR}					\
 		/=${PREFIX}					\
 		/=${PREFIX}/bin					\
+		/=${PREFIX}/share/doc				\
+		/=${PREFIX}/share/info				\
 		/=${PREFIX}/share/man				\
 		/=${PREFIX}/${TARGET}/bin			\
 		/=${PREFIX}/${TARGET}/lib			\
@@ -24,6 +26,8 @@ ex_setup_subdirs() {
 		/=${PREFIX_CROSS}				\
 		/=${PREFIX_MINIPIX}/bin				\
 		/=${PREFIX_NATIVE}				\
+		/=${PREFIX_NATIVE}/share/doc			\
+		/=${PREFIX_NATIVE}/share/info			\
 		/=${PREFIX_NATIVE}/share/man			\
 		/=${PREFIX_NATIVE}/${TARGET}/lib		\
 		@.=${PREFIX}/usr				\
@@ -34,7 +38,11 @@ ex_setup_subdirs() {
 		@bin=${PREFIX_MINIPIX}/lib			\
 		@bin=${PREFIX_MINIPIX}/libexec			\
 		@bin=${PREFIX_MINIPIX}/share			\
+		@share/doc=${PREFIX}/doc			\
+		@share/info=${PREFIX}/info			\
 		@share/man=${PREFIX}/man			\
+		@share/doc=${PREFIX_NATIVE}/doc			\
+		@share/info=${PREFIX_NATIVE}/info		\
 		@share/man=${PREFIX_NATIVE}/man;
 };
 
