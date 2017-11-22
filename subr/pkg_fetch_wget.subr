@@ -22,7 +22,7 @@ pkgp_fetch_wget() {
 			if [ "${ARG_IGNORE_SHA256SUMS:-0}" -eq 0 ]; then
 				ex_log_msg failexit "Error: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			else
-				ex_log_msg warn "Warning: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
+				ex_log_msg vnfo "Warning: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
 			fi;
 		fi;
 	fi;
