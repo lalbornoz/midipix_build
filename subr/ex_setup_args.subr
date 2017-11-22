@@ -14,6 +14,8 @@ BUILD_ARGS_SPEC="
 	ARG_TARBALL:selfarg:-t.gz
 	ARG_TARBALL:selfarg:-t.xz
 	ARG_VERBOSE:-v
+	ARG_VERBOSE2:-vv
+	ARG_VERBOSE3:-vvv
 	ARG_XTRACE:-x";
 
 ex_setup_args() {
@@ -50,6 +52,12 @@ ex_setup_args() {
 	fi;
 	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
 		set -o xtrace;
+	fi;
+	if [ "${ARG_VERBOSE3:-0}" -eq 1 ]; then
+		ARG_VERBOSE2=1;
+	fi;
+	if [ "${ARG_VERBOSE2:-0}" -eq 1 ]; then
+		ARG_VERBOSE=1;
 	fi;
 	if [ -n "${ARG_RESTART}" ]; then
 		if [ "${ARG_RESTART%:*}" != "${ARG_RESTART}" ]; then

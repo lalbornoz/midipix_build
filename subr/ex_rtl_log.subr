@@ -22,8 +22,14 @@ ex_log_env_vars() {
 
 ex_log_msg() {
 	local _lvl="${1}"; shift;
-	if [ "${_lvl#v}" != "${_lvl}" ]\
+	if [ "${_lvl}" = vnfo ]\
 	&& [ ${ARG_VERBOSE:-0} -eq 0 ]; then
+		return;
+	elif [ "${_lvl}" = vvfo ]\
+	&& [ ${ARG_VERBOSE1:-0} -eq 0 ]; then
+		return;
+	elif [ "${_lvl}" = vvvo ]\
+	&& [ ${ARG_VERBOSE2:-0} -eq 0 ]; then
 		return;
 	fi;
 	case "${_lvl}" in
@@ -31,6 +37,8 @@ ex_log_msg() {
 		fail) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
 		info) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
 		vnfo) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		vvfo) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
+		vvvo) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
 		succ) printf "\033[0m\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
 		warn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
 		varn) printf "\033[0m\033[${LOG_MSG_WARN_COLOUR}m"; ;;
