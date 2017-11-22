@@ -1,0 +1,41 @@
+--- pkg-cron.git/Makefile.orig	2016-07-11 19:06:33.212362869 +0000
++++ pkg-cron.git/Makefile	2016-09-11 20:37:42.714987721 +0000
+@@ -79,7 +79,7 @@
+ #DEFS		=	-D_BSD_SIGNALS -Dconst=
+ #<<the name of the BSD-like install program>>
+ #INSTALL = installbsd
+-INSTALL = install -s
++INSTALL = install $(INSTALLFLAGS)
+ #<<any special load flags>>
+ # LDFLAGS		=	-s
+ # Let install do the strip
+@@ -118,8 +118,8 @@
+ 			$(CC) $(LDFLAGS) -o crontab $(CRONTAB_OBJ) $(LIBS)
+ 
+ install		:	all
+-			$(INSTALL) -c -m  755 -o root cron    $(DESTSBIN)/
+-			$(INSTALL) -c -m 4755 -o root crontab $(DESTBIN)/
++			$(INSTALL) -c -m  755 cron    $(DESTSBIN)/
++			$(INSTALL) -c -m 4755 crontab $(DESTBIN)/
+ 			sh putman.sh crontab.1 $(DESTMAN)
+ 			sh putman.sh cron.8    $(DESTMAN)
+ 			sh putman.sh crontab.5 $(DESTMAN)
+--- pkg-cron.git/compat.h.orig	2017-11-21 23:36:50.268000000 +0000
++++ pkg-cron.git/compat.h	2017-11-22 11:41:13.036000000 +0000
+@@ -81,12 +81,14 @@
+ #endif
+ 
+ #if (!defined(BSD) || (BSD < 198902)) && !defined(__linux__) && \
+-	!defined(IRIX) && !defined(NeXT) && !defined(HPUX) && !defined(__GNU__) && !defined(__GLIBC__)
++	!defined(IRIX) && !defined(NeXT) && !defined(HPUX) && \
++	!defined(__GNU__) && !defined(__GLIBC__) && !defined(__midipix__)
+ # define NEED_STRCASECMP
+ #endif
+ 
+ #if (!defined(BSD) || (BSD < 198911)) && !defined(__linux__) &&\
+-	!defined(IRIX) && !defined(UNICOS) && !defined(HPUX) && !defined(__GNU__) && !defined(__GLIBC__)
++	!defined(IRIX) && !defined(UNICOS) && !defined(HPUX) &&\
++	!defined(__GNU__) && !defined(__GLIBC__) && !defined(__midipix__)
+ # define NEED_STRDUP
+ #endif
+ 
