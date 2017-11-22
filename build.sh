@@ -16,19 +16,27 @@ for BUILD_TARGET_META in invariants ${BUILD_TARGETS_META:-world}; do
 			BUILD_PACKAGES="$(ex_lfilter "${BUILD_PACKAGES}" "${BUILD_PACKAGES_RESTART}")";
 		fi;
 		for PKG_NAME in ${BUILD_PACKAGES}; do
-			ex_log_msg vnfo "Starting \`${PKG_NAME}' build...";
+			ex_log_msg info "Starting \`${PKG_NAME}' build...";
 			ex_pkg_dispatch "${BUILD_TARGET}" "${PKG_NAME}"	\
 				"${ARG_RESTART}" "${ARG_RESTART_AT}";
 			BUILD_SCRIPT_RC=${?};
 			case ${BUILD_SCRIPT_RC} in
-			0) ex_log_msg succ "Finished \`${PKG_NAME}' build.";
-			   : $((BUILD_NFINI+=1)); continue; ;;
-			*) ex_log_msg fail "Build failed in \`${PKG_NAME}', check \`${WORKDIR}/${PKG_NAME}_std{err,out}.log' for details.";
-			   : $((BUILD_NFAIL+=1));
-			   if [ ${ARG_RELAXED:-0} -eq 1 ]; then
+			0) : $((BUILD_NFINI+=1));
+			   if [ "${ARG_VERBOSE2:-0}" -eq 1 ]; then
+				cat "${WORKDIR}/${PKG_NAME}_stdout.log";
+			   fi;
+			   ex_log_msg succ "Finished \`${PKG_NAME}' build."; ;;
+			*) : $((BUILD_NFAIL+=1));
+			   if [ "${ARG_RELAXED:-0}" -eq 1 ]; then
+				ex_log_msg fail "Build failed in \`${PKG_NAME}', check \`${WORKDIR}/${PKG_NAME}_std{err,out}.log' for details.";
 				BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${PKG_NAME}";
 				continue;
 			   else
+				ex_log_msg fail "${WORKDIR}/${PKG_NAME}_stdout.log:";
+				cat "${WORKDIR}/${PKG_NAME}_stdout.log";
+				ex_log_msg fail "${WORKDIR}/${PKG_NAME}_stderr.log:";
+				cat "${WORKDIR}/${PKG_NAME}_stderr.log";
+				ex_log_msg fail "Build failed in \`${PKG_NAME}'.";
 				break;
 			   fi; ;;
 			esac;
