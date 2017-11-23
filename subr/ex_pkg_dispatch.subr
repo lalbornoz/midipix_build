@@ -6,8 +6,7 @@ ex_pkg_dispatch() {
 	local _tgt_name="${1}" _pkg_name="${2}"			\
 		_restart="${3}" _restart_at="${4}"		\
 		_stdout_path _stderr_path			\
-		_pipe_path _pipe_path2	_pipe_msg		\
-		_script_rc=1;
+		_pipe_path _pipe_msg _script_rc=1;
 	if ex_pkg_state_test "${_pkg_name}" finish		\
 	&& [ -z "${_restart}" ]					\
 	&& [ "${_tgt_name}" != "INVARIANTS" ]; then
@@ -15,13 +14,16 @@ ex_pkg_dispatch() {
 	else
 		_pipe_path="${WORKDIR}/${_pkg_name}_build.fifo";
 		ex_build_fileop rm "${_pipe_path}"; mkfifo "${_pipe_path}";
-		_pipe2_path="${WORKDIR}/${_pkg_name}_build2.fifo";
-		ex_build_fileop rm "${_pipe2_path}"; mkfifo "${_pipe2_path}";
 		_stderr_path="${WORKDIR}/${_pkg_name}_stderr.log";
 		_stdout_path="${WORKDIR}/${_pkg_name}_stdout.log";
 		ex_build_fileop rm "${_stderr_path}" "${_stdout_path}";
 	fi;
 	(set -o errexit -o noglob;
+	trap "if [ \${?} -eq 0 ]; then				\
+		echo \"done ${PKG_NAME}\" >&3;			\
+	      else						\
+		echo \"fail ${PKG_NAME}\" >&3;			\
+	      fi;" EXIT HUP INT TERM USR1 USR2;
 	ex_pkg_vars;
 	if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
 		ex_log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
@@ -29,16 +31,15 @@ ex_pkg_dispatch() {
 		ex_pkg_env;
 		ex_pkg_steps "${_tgt_name}" "${_pkg_name}"	\
 			"${_restart}" "${_restart_at}";
-	fi;
-	echo "done ${PKG_BASE_DIR}" >&3; read __ <&4;)		\
-		1>"${_stdout_path}" 2>"${_stderr_path}"		\
-		3<>"${_pipe_path}" 4<>"${_pipe2_path}" &
-	while read _pipe_msg <"${_pipe_path}"; do
+	fi;)	1>"${_stdout_path}" 2>"${_stderr_path}"		\
+		3>"${_pipe_path}" &
+	while read _pipe_msg; do
 	case "${_pipe_msg%% *}" in
-	done)	echo >"${_pipe2_path}"; _script_rc=0; break; ;;
-	*)	break; ;;
-	esac; done;
-	ex_build_fileop rm "${_pipe_path}" "${_pipe2_path}";
+	done)	_script_rc=0; break; ;;
+	fail)	_script_rc=1; break; ;;
+	*)	_script_rc=1; break; ;;
+	esac; done <"${_pipe_path}";
+	ex_build_fileop rm "${_pipe_path}";
 	return "${_script_rc:-1}";
 };
 
