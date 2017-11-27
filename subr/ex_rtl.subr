@@ -2,7 +2,7 @@
 # set -o errexit -o noglob are assumed.
 #
 
-IFS_NL="
+EXP_IFS_NL="
 ";
 
 ex_basename() { echo "${1##*/}"; };
@@ -10,7 +10,9 @@ ex_date() { command date "+${1:-${TIMESTAMP_FMT}}"; };
 ex_dirname() { echo "${1%/*}"; };
 ex_get_var_unsafe() { eval echo \${${1}}; };
 ex_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
-ex_split() { local IFS="${1}"; set -- $(echo "${2}"); IFS="${IFS_NL}"; echo "${*}"; };
+ex_pop_IFS() { IFS="${EXP_OLDIFS}"; };
+ex_push_IFS() { EXP_OLDIFS="${IFS}"; IFS="${1}"; };
+ex_push_IFS_nl() { ex_push_IFS "${EXP_IFS_NL}"; };
 ex_test_cmd() { command -v "${1}" >/dev/null; };
 ex_toupper() { echo "${1}" | tr a-z A-Z; };
 

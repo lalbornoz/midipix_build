@@ -50,9 +50,10 @@ ex_pkg_env() {
 				esac; ;;
 			esac; ;;
 		esac;
-		for _vname in $(ex_split : ${PKG_ENV_VARS_EXTRA}); do
+		ex_push_IFS :;
+		for _vname in ${PKG_ENV_VARS_EXTRA}; do
 			export "${_vname}";
-		done;
+		done; ex_pop_IFS;
 		if [ -n "${PKG_ENV_VARS}" ]\
 		&& [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 			PKG_ENV_VARS="$(echo "${PKG_ENV_VARS}" | tr " " "\n" | sort | tr "\n" " ")";
