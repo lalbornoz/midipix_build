@@ -4,13 +4,16 @@
 
 pkgp_install_lib_check() {
 	local _so_path="${1}" _so_ver="${1##*.so}";
+	if [ -z "${_so_ver}" ]; then
+		return 1;
+	fi;
 	while [ -n "${_so_ver}" ]; do
 		if [ "${_so_ver#[0-9.]}" = "${_so_ver}" ]; then
-			return 0;
+			return 1;
 		else
 			_so_ver="${_so_ver#[0-9.]}";
 		fi;
-	done; return 1;
+	done; return 0;
 };
 
 pkgp_install_lib_link() {
