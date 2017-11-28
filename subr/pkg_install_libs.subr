@@ -19,11 +19,12 @@ pkgp_install_lib_check() {
 pkgp_install_lib_link() {
 	local _so_path="${1}" _so_dir="${2}" _lib_name="${3}"				\
 		_lib_link_tgt _lib_link_path;
+	_lib_link_path="${_so_path%.so*}.lib.a";
 	_lib_link_tgt="$(find "${_so_dir}"						\
 			-name "${_lib_name%%.*}.*.lib.a"				|\
 			sort | tail -1)";
-	if [ -n "${_lib_link_tgt}" ]; then
-		_lib_link_path="${_so_path%.so*}.lib.a";
+	if [ -n "${_lib_link_tgt}" ]\
+	&& [ "${_lib_link_tgt}" != "${_lib_link_path}" ]; then
 		ex_build_fileop rm "${_lib_link_path}";
 		ex_build_fileop ln_symbolic "$(ex_basename "${_lib_link_tgt}")"		\
 			"${_lib_link_path}";
