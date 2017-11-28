@@ -1,17 +1,25 @@
---- weechat-1.6/configure.orig	2017-11-22 14:47:17.644000000 +0000
-+++ weechat-1.6/configure	2017-11-22 15:05:58.224000000 +0000
-@@ -24277,8 +24277,8 @@
+--- weechat-1.6/configure.orig	2017-11-28 13:45:00.520000000 +0000
++++ weechat-1.6/configure	2017-11-28 13:46:29.676000000 +0000
+@@ -22487,7 +22487,6 @@
+ #                                  pkg-config
+ # ------------------------------------------------------------------------------
+ 
+-PKGCONFIG=""
+ for ac_prog in pkg-config
+ do
+   # Extract the first word of "$ac_prog", so it can be a program name with args.
+@@ -24277,8 +24276,8 @@
  else
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
 -    GCRYPT_CFLAGS=`libgcrypt-config --cflags`
 -    GCRYPT_LFLAGS=`libgcrypt-config --libs`
-+    GCRYPT_CFLAGS=`${LIBGCRYPT_CONFIG} --cflags`
-+    GCRYPT_LFLAGS=`${LIBGCRYPT_CONFIG} --libs`
++    GCRYPT_CFLAGS=`$LIBGCRYPT_CONFIG --cflags`
++    GCRYPT_LFLAGS=`$LIBGCRYPT_CONFIG --libs`
  
  
  fi
-@@ -24355,8 +24355,8 @@
+@@ -24355,8 +24354,8 @@
      else
          { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
@@ -22,7 +30,7 @@
  
  
          $as_echo "#define HAVE_GNUTLS 1" >>confdefs.h
-@@ -24567,8 +24567,8 @@
+@@ -24567,8 +24566,8 @@
  else
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
