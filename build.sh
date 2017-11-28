@@ -15,6 +15,7 @@ for BUILD_TARGET_META in invariants ${BUILD_TARGETS_META:-world}; do
 		&& [ -n "${BUILD_PACKAGES_RESTART}" ]; then
 			BUILD_PACKAGES="$(ex_lfilter "${BUILD_PACKAGES}" "${BUILD_PACKAGES_RESTART}")";
 		fi;
+		ex_log_msg info "Starting \`${BUILD_TARGET_LC}' build target...";
 		for PKG_NAME in ${BUILD_PACKAGES}; do
 			ex_log_msg info "Starting \`${PKG_NAME}' build...";
 			ex_pkg_dispatch "${BUILD_TARGET}" "${PKG_NAME}"	\
@@ -43,6 +44,8 @@ for BUILD_TARGET_META in invariants ${BUILD_TARGETS_META:-world}; do
 		done;
 		if [ "${BUILD_SCRIPT_RC:-0}" -ne 0 ]; then
 			break;
+		else
+			ex_log_msg succ "Finished \`${BUILD_TARGET_LC}' build target.";
 		fi;
 	done;
 done;
