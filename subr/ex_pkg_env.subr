@@ -34,8 +34,11 @@ ex_pkg_env() {
 			export CC="${PKG_TARGET}-gcc";
 			export CXX="${PKG_TARGET}-g++";
 			export RANLIB="${PKG_TARGET}-ranlib";
-			[ -x "${PREFIX}/bin/${TARGET}-pkg-config" ]\
-				&& export PKG_CONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
+			if [ -x "${PREFIX}/bin/${TARGET}-pkg-config" ]; then
+				export PKGCONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
+				export PKG_CONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
+				export PKG_CONFIG_LIBDIR="${PKG_PREFIX}/lib/pkgconfig";
+			fi;
 			;;
 		esac;
 		export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
