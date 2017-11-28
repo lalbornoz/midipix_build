@@ -17,6 +17,7 @@ ex_setup_subdirs() {
 		/=${WORKDIR}					\
 		/=${PREFIX}					\
 		/=${PREFIX}/bin					\
+		/=${PREFIX}/lib/pkgconfig			\
 		/=${PREFIX}/share/doc				\
 		/=${PREFIX}/share/info				\
 		/=${PREFIX}/share/man				\
@@ -34,6 +35,7 @@ ex_setup_subdirs() {
 		@.=${PREFIX}/x86_64-w64-mingw32/mingw		\
 		/=${PREFIX}/x86_64-w64-mingw32/mingw/include	\
 		@.=${PREFIX_NATIVE}/usr				\
+		@../lib/pkgconfig=${PREFIX}/share/pkgconfig	\
 		@lib=${PREFIX}/lib64				\
 		@bin=${PREFIX_MINIPIX}/lib			\
 		@bin=${PREFIX_MINIPIX}/libexec			\
