@@ -3,17 +3,19 @@
 #
 
 pkg_install_subdirs() {
-	pkg_install_files "${PKG_DESTDIR}"	\
-		/=bin				\
-		/=lib				\
-		/=sbin				\
-		/=share/doc			\
-		/=share/info			\
-		/=share/man/man1		\
-		@.=usr				\
-		@lib=lib64			\
-		@share/doc=doc			\
-		@share/info=info		\
+	pkg_install_files "${PKG_DESTDIR}"		\
+		/=bin					\
+		/=lib					\
+		/=lib/pkgconfig				\
+		/=sbin					\
+		/=share/doc				\
+		/=share/info				\
+		/=share/man/man1			\
+		@.=usr					\
+		@../lib/pkgconfig=share/pkgconfig	\
+		@lib=lib64				\
+		@share/doc=doc				\
+		@share/info=info			\
 		@share/man=man;
 };
 
