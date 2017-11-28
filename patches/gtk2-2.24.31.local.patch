@@ -34,7 +34,7 @@ diff -ru gtk+-2.24.31.orig/gtk/Makefile.in gtk+-2.24.31/gtk/Makefile.in
  libgtk_quartz_2_0_la_LDFLAGS = $(libtool_opts)
  libgtk_directfb_2_0_la_LDFLAGS = $(libtool_opts)
 -libgtk_x11_2_0_la_LIBADD = $(libadd)
-+libgtk_x11_2_0_la_LIBADD = $(libadd) -latk-1.0
++libgtk_x11_2_0_la_LIBADD = $(libadd) -latk-1.0 -lglib-2.0 -lgobject-2.0
  libgtk_win32_2_0_la_LIBADD = $(libadd) -lole32 -lgdi32 -lcomdlg32 -lwinspool -lcomctl32
  libgtk_quartz_2_0_la_LIBADD = $(libadd)
  libgtk_directfb_2_0_la_LIBADD = $(libadd)
