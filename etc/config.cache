@@ -34,6 +34,10 @@ bash_cv_unusable_rtsigs=no
 ac_cv_path_M4=/bin/m4
 ac_cv_prog_gnu_m4_gnu=yes
 
+# git
+ac_cv_fread_reads_directories=1
+ac_cv_snprintf_returns_bogus=0
+
 # glib
 glib_cv_stack_grows=yes
 glib_cv_uscore=yes
@@ -171,12 +175,15 @@ xorg_cv_malloc0_returns_null=yes
 # mc
 ac_list_mounted_fs=found
 
+# pcre <- {lighttpd,smallbasic}
+ac_cv_path_PCRECONFIG=%PREFIX%/bin/pcre-config
+
 # procps_ng
 ac_cv_func_realloc_0_nonnull=yes
 
 # vim
 ac_cv_small_wchar_t=no
-ac_x_header_dirs=${PKG_PREFIX}/include
+ac_x_header_dirs=%PREFIX%/include
 vim_cv_bcopy_handles_overlap=yes
 vim_cv_getcwd_broken=no
 vim_cv_memcpy_handles_overlap=no
@@ -189,3 +196,5 @@ vim_cv_tty_mode=0666
 
 # xcb
 ac_cv_search_sendmsg=no
+
+# vim:filetype=sh
