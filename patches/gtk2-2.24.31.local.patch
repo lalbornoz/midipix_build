@@ -51,3 +51,14 @@ diff -ru gtk+-2.24.31.orig/Makefile.in gtk+-2.24.31/Makefile.in
  
  # require automake 1.4
 
+--- gtk+-2.24.31/configure.orig	2016-09-09 19:33:11.000000000 +0000
++++ gtk+-2.24.31/configure	2017-11-28 09:52:56.536000000 +0000
+@@ -24351,7 +24351,7 @@
+ GLIB_PREFIX="`$PKG_CONFIG --variable=prefix glib-2.0`"
+ ATK_PREFIX="`$PKG_CONFIG --variable=prefix atk`"
+ PANGO_PREFIX="`$PKG_CONFIG --variable=prefix pango`"
+-CAIRO_PREFIX="`pkg-config --variable=prefix cairo`"
++CAIRO_PREFIX="`$PKG_CONFIG --variable=prefix cairo`"
+ 
+ 
+ 
