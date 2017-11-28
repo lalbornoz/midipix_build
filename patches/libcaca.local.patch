@@ -11,3 +11,69 @@ diff -ru libcaca.orig/Makefile.in libcaca/Makefile.in
  
  DIST_SUBDIRS = $(SUBDIRS) build
  EXTRA_DIST = NOTES COPYING.GPL COPYING.ISC COPYING.LGPL bootstrap caca-config.in libcaca.spec libcaca.sln
+--- libcaca/src/Makefile.in.orig	2017-11-28 13:05:58.460000000 +0000
++++ libcaca/src/Makefile.in	2017-11-28 13:14:54.780000000 +0000
+@@ -437,7 +437,8 @@
+ cacaview_SOURCES = cacaview.c common-image.c common-image.h
+ cacaview_LDADD = ../caca/libcaca.la ../caca/libcaca.la
+ cacaview_CFLAGS = $(IMLIB2_CFLAGS)
+-cacaview_LDFLAGS = $(IMLIB2_LIBS)
++cacaview_LDFLAGS =
++cacaview_LIBS = $(IMLIB2_LIBS)
+ cacadraw_SOURCES = cacadraw.c
+ cacadraw_LDADD = ../caca/libcaca.la ../caca/libcaca.la
+ cacaplay_SOURCES = cacaplay.c
+@@ -449,7 +450,8 @@
+ img2txt_SOURCES = img2txt.c common-image.c common-image.h
+ img2txt_LDADD = ../caca/libcaca.la
+ img2txt_CFLAGS = $(IMLIB2_CFLAGS)
+-img2txt_LDFLAGS = $(IMLIB2_LIBS)
++img2txt_LDFLAGS =
++img2txt_LIBS = $(IMLIB2_LIBS)
+ @USE_NETWORK_FALSE@fcntl_programs = 
+ @USE_NETWORK_TRUE@fcntl_programs = cacaserver
+ all: all-am
+@@ -571,11 +573,11 @@
+ 
+ cacaview$(EXEEXT): $(cacaview_OBJECTS) $(cacaview_DEPENDENCIES) $(EXTRA_cacaview_DEPENDENCIES) 
+ 	@rm -f cacaview$(EXEEXT)
+-	$(AM_V_CCLD)$(cacaview_LINK) $(cacaview_OBJECTS) $(cacaview_LDADD) $(LIBS)
++	$(AM_V_CCLD)$(cacaview_LINK) $(cacaview_OBJECTS) $(cacaview_LDADD) $(cacaview_LIBS)
+ 
+ img2txt$(EXEEXT): $(img2txt_OBJECTS) $(img2txt_DEPENDENCIES) $(EXTRA_img2txt_DEPENDENCIES) 
+ 	@rm -f img2txt$(EXEEXT)
+-	$(AM_V_CCLD)$(img2txt_LINK) $(img2txt_OBJECTS) $(img2txt_LDADD) $(LIBS)
++	$(AM_V_CCLD)$(img2txt_LINK) $(img2txt_OBJECTS) $(img2txt_LDADD) $(img2txt_LIBS)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+--- libcaca/examples/Makefile.in.orig	2017-11-28 13:16:54.760000000 +0000
++++ libcaca/examples/Makefile.in	2017-11-28 13:19:12.304000000 +0000
+@@ -203,7 +203,7 @@
+ trifiller_DEPENDENCIES = ../caca/libcaca.la
+ trifiller_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(trifiller_CFLAGS) \
+-	$(CFLAGS) $(trifiller_LDFLAGS) $(LDFLAGS) -o $@
++	$(CFLAGS) $(trifiller_LDFLAGS) $(LDFLAGS) $(trifiller_LIBS) -o $@
+ am_truecolor_OBJECTS = truecolor.$(OBJEXT)
+ truecolor_OBJECTS = $(am_truecolor_OBJECTS)
+ truecolor_DEPENDENCIES = ../caca/libcaca.la
+@@ -497,7 +497,8 @@
+ @USE_CXX_TRUE@conio_snake = conio-snake
+ trifiller_SOURCES = trifiller.c
+ trifiller_CFLAGS = $(IMLIB2_CFLAGS)
+-trifiller_LDFLAGS = $(IMLIB2_LIBS)
++trifiller_LDFLAGS =
++trifiller_LIBS = $(IMLIB2_LIBS)
+ trifiller_LDADD = ../caca/libcaca.la -lm
+ blit_SOURCES = blit.c
+ blit_LDADD = ../caca/libcaca.la
+@@ -702,7 +703,7 @@
+ 
+ trifiller$(EXEEXT): $(trifiller_OBJECTS) $(trifiller_DEPENDENCIES) $(EXTRA_trifiller_DEPENDENCIES) 
+ 	@rm -f trifiller$(EXEEXT)
+-	$(AM_V_CCLD)$(trifiller_LINK) $(trifiller_OBJECTS) $(trifiller_LDADD) $(LIBS)
++	$(AM_V_CCLD)$(trifiller_LINK) $(trifiller_OBJECTS) $(trifiller_LDADD) $(trifiller_LIBS)
+ 
+ truecolor$(EXEEXT): $(truecolor_OBJECTS) $(truecolor_DEPENDENCIES) $(EXTRA_truecolor_DEPENDENCIES) 
+ 	@rm -f truecolor$(EXEEXT)
