@@ -37,7 +37,12 @@ pkg_configure_autotools() {
 			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;		\
 			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
 		if [ "${PKG_BUILD_TYPE}" != host ]; then
-			ex_build_fileop cp "${MIDIPIX_BUILD_PWD}/etc/config.cache" "${PKG_BUILD_DIR}/";
+			if [ -n "${PKG_CONFIG_CACHE}" ]; then
+				echo "${PKG_CONFIG_CACHE}" > "${PKG_BUILD_DIR}/config.cache";
+				if [ -n "${PKG_CONFIG_CACHE_EXTRA}" ]; then
+					echo "${PKG_CONFIG_CACHE_EXTRA}" >> "${PKG_BUILD_DIR}/config.cache";
+				fi;
+			fi;
 			sed -i"" "s,%PREFIX%,${PKG_PREFIX},g" "${PKG_BUILD_DIR}/config.cache";
 		fi;
 	fi;
