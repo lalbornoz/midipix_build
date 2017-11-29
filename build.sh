@@ -25,6 +25,10 @@ for BUILD_TARGET_META in invariants ${BUILD_TARGETS_META:-world}; do
 			0) : $((BUILD_NFINI+=1));
 			   if [ "${ARG_VERBOSE2:-0}" -eq 1 ]; then
 				cat "${WORKDIR}/${PKG_NAME}_stdout.log";
+				if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
+					ex_log_msg vvfo "${WORKDIR}/${PKG_NAME}_stderr.log:";
+					cat "${WORKDIR}/${PKG_NAME}_stderr.log";
+				fi;
 			   fi;
 			   ex_log_msg succ "Finished \`${PKG_NAME}' build."; ;;
 			*) : $((BUILD_NFAIL+=1));
