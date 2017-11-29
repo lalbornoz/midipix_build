@@ -17,25 +17,35 @@ ex_test_cmd() { command -v "${1}" >/dev/null; };
 ex_toupper() { echo "${1}" | tr a-z A-Z; };
 
 ex_lfilter() {
-	[ "x${1}" = "x-not" ] && { local _notfl=1; shift; }
-	local _list="${1}" _filter="${2}" _lnew _litem _ex_lfilter _filterfl;
-	[ -z "${_filter}" ] && { echo "${_list}"; return 0; };
-	for _litem in ${_list}; do
+	local _list="${1}" _filter="${2}" _lnew _litem _litem_filter;
+	if [ -z "${_filter}" ]; then
+		echo "${_list}"; return 0;
+	else for _litem in ${_list}; do
+		for _litem_filter in ${_filter}; do
+			if [ "${_litem_filter}" = "${_litem}" ]; then
+				_lnew="${_lnew:+${_lnew} }${_litem}";
+				break;
+			fi;
+		done;
+	done; fi;
+	echo "${_lnew}";
+};
+
+ex_lfilter_not() {
+	local _list="${1}" _filter="${2}" _lnew _litem _litem_filter _filterfl;
+	if [ -z "${_filter}" ]; then
+		echo "${_list}"; return 0;
+	else for _litem in ${_list}; do
 		_filterfl=0;
-		for _ex_lfilter in ${_filter}; do
-			if [ "${_notfl:-0}" -eq 0 ]\
-			&& [ "${_ex_lfilter}" = "${_litem}" ]; then
-				_lnew="${_lnew:+${_lnew} }${_litem}"; break;
-			elif [ "${_notfl:-0}" -eq 1 ]\
-			&& [ "${_ex_lfilter}" = "${_litem}" ]; then
+		for _litem_filter in ${_filter}; do
+			if [ "${_litem_filter}" = "${_litem}" ]; then
 				_filterfl=1; break;
 			fi;
 		done;
-		if [ "${_notfl:-0}" -eq 1 ]\
-		&& [ "${_filterfl:-0}" -eq 0 ]; then
+		if [ "${_filterfl:-0}" -eq 0 ]; then
 			_lnew="${_lnew:+${_lnew} }${_litem}";
 		fi;
-	done;
+	done; fi;
 	echo "${_lnew}";
 };
 
