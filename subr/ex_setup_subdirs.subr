@@ -3,13 +3,11 @@
 #
 
 ex_setup_subdirs() {
-	local __;
+	local _pname;
 	if [ ${ARG_CLEAN:-0} -eq 1 ]; then
 		ex_log_msg info "-c specified, cleaning prefix...";
-		for __ in ${CLEAR_PREFIX_DIRS}; do
-			if [ -e ${PREFIX}/${__} ]; then
-				build_rm ${PREFIX}/${__};
-			fi;
+		for _pname in ${CLEAR_PREFIX_PATHS}; do
+			ex_build_fileop rm ${PREFIX}/${_pname};
 		done;
 	fi;
 	pkg_install_files ""					\
