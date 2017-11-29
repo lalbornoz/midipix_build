@@ -50,10 +50,8 @@ ex_setup_args() {
 			TARBALL_SUFFIX=xz;
 		fi;
 	fi;
-	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
-		set -o xtrace;
-	fi;
-	if [ "${ARG_VERBOSE3:-0}" -eq 1 ]; then
+	if [ "${ARG_VERBOSE3:-0}" -eq 1 ]\
+	|| [ "${ARG_XTRACE:-0}" -eq 1 ]; then
 		ARG_VERBOSE2=1;
 	fi;
 	if [ "${ARG_VERBOSE2:-0}" -eq 1 ]; then

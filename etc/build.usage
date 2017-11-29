@@ -1,7 +1,7 @@
 usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-h]
                   [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]]
                   [<target>[ ...]]
-        -x                      Set the xtrace sh(1)ell option for debugging purposes.
+        -x                      Set xtrace during package builds; implies -vv.
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
