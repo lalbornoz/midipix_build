@@ -8,7 +8,7 @@ ex_pkg_steps() {
 		_step _step_type					\
 		_step_cmds _step_cmd_args				\
 		_step_cmd_pfx _step_cmd _step_next;
-	set -- $(ex_lfilter -not "${BUILD_STEPS}" "${PKG_BUILD_STEPS_DISABLE}");
+	set -- $(ex_lfilter_not "${BUILD_STEPS}" "${PKG_BUILD_STEPS_DISABLE}");
 	while [ ${#} -gt 0 ]; do
 		_step="${1}"; _step_next="${2}";
 		_step_cmds=""; _step_cmd_args="";
