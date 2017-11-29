@@ -24,6 +24,9 @@ ex_pkg_dispatch() {
 	      else						\
 		echo \"fail ${PKG_NAME}\" >&3;			\
 	      fi;" EXIT HUP INT TERM USR1 USR2;
+	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
+		set -o xtrace;
+	fi;
 	ex_pkg_vars;
 	if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
 		ex_log_msg vnfo "Skipping disabled package \`${PKG_NAME}.'";
