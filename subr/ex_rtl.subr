@@ -10,7 +10,7 @@ ex_rtl_dirname() { echo "${1%/*}"; };
 ex_rtl_get_var_unsafe() { eval echo \${${1}}; };
 ex_rtl_pop_IFS() { IFS="${EXP_RTL_IFS}"; };
 ex_rtl_push_IFS() { EXP_RTL_IFS="${IFS}"; IFS="${1}"; };
-ex_rtl_try_run() { ex_rtl_test_cmd "${1}" && { "${@}" || exit ${?}; }; };
+ex_rtl_try_run() { if ex_rtl_test_cmd "${1}"; then "${@}"; fi; };
 ex_rtl_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 ex_rtl_test_cmd() { command -v "${1}" >/dev/null; };
 ex_rtl_toupper() { echo "${1}" | tr a-z A-Z; };
