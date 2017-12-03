@@ -47,11 +47,3 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
 
         ./build.sh -c -r ALL DEFAULT_GITROOT_HEAD=...
         Clean ${PREFIX} and forcibly rebuild everything.
-
-This script has been tested on the following platforms:
-Alpine v3.4 (20160917_17:50) (x86_64)
-Arch Linux 2016.02.01 (x86_64)
-CentOS v7.2.1511 (Core) (x86_64)
-Debian GNU/Linux v8.5 (stable) (jessie) (x86_64)
-Exherbo Linux (x86_64-pc-linux-musl) (x86_64)
-openSUSE 20150612 (Tumbleweed) (x86_64)
