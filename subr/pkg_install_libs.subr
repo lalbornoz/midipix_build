@@ -4,29 +4,28 @@
 
 pkgp_install_lib_check() {
 	local _so_path="${1}" _so_ver="${1##*.so}";
-	if [ -z "${_so_ver}" ]; then
+	if [ -z "${_so_path}" ]; then
 		return 1;
-	fi;
-	while [ -n "${_so_ver}" ]; do
+	else while [ -n "${_so_ver}" ]; do
 		if [ "${_so_ver#[0-9.]}" = "${_so_ver}" ]; then
 			return 1;
 		else
 			_so_ver="${_so_ver#[0-9.]}";
 		fi;
-	done; return 0;
+	done; return 0; fi;
 };
 
 pkgp_install_lib_link() {
-	local _so_path="${1}" _so_dir="${2}" _lib_name="${3}"				\
+	local _so_path="${1}" _so_dir="${2}" _lib_name="${3}"					\
 		_lib_link_tgt _lib_link_path;
 	_lib_link_path="${_so_path%.so*}.lib.a";
-	_lib_link_tgt="$(find "${_so_dir}"						\
-			-name "${_lib_name%%.*}.*.lib.a"				|\
+	_lib_link_tgt="$(find "${_so_dir}"							\
+			-name "${_lib_name%%.*}.*.lib.a"					|\
 			sort | tail -1)";
 	if [ -n "${_lib_link_tgt}" ]\
 	&& [ "${_lib_link_tgt}" != "${_lib_link_path}" ]; then
-		ex_build_fileop rm "${_lib_link_path}";
-		ex_build_fileop ln_symbolic "$(ex_basename "${_lib_link_tgt}")"		\
+		ex_rtl_fileop rm "${_lib_link_path}";
+		ex_rtl_fileop ln_symbolic "$(ex_rtl_basename "${_lib_link_tgt}")"		\
 			"${_lib_link_path}";
 	fi;
 };
@@ -34,25 +33,29 @@ pkgp_install_lib_link() {
 pkg_install_libs() {
 	local _so_src_path _so_dst_dir _lib_src_path _lib_name _lib_dst_path;
 	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
-		for _so_src_path in							\
-			$(find	"${PKG_DESTDIR}"					\
+		for _so_src_path in								\
+			$(find	"${PKG_DESTDIR}"						\
 				\(  -name "*.so" -or -name "*.so.*" \) -print);
-		do	if ! pkgp_install_lib_check "${_so_src_path}"			\
+		do	if ! pkgp_install_lib_check "${_so_src_path}"				\
 			|| [ "$(readlink -f "${_so_src_path}")" = "/dev/null" ]; then
 				continue;
-			else	case "${_so_src_path}" in
+			else	_so_dst_dir="${_so_src_path%/*}";
+				case "${_so_src_path}" in
 				*.so)	_lib_src_path="${_so_src_path%%.so}.lib.a"; ;;
 				*.so.*)	_lib_src_path="${_so_src_path%%.so.*}.${_so_src_path##*.so.}.lib.a"; ;;
 				esac;
-				_lib_name="$(ex_basename "${_lib_src_path}")";
-				_so_dst_dir="${_so_src_path%/*}";
-			fi;
-			if [ ! -L "${_lib_src_path}" ]; then
+				_lib_name="$(ex_rtl_basename "${_lib_src_path}")";
 				_lib_dst_path="${_so_dst_dir}/${_lib_name}";
-				perk -e "${_so_src_path}"				|\
-					"${PKG_TARGET}-mdso"				\
-						-i "${_lib_dst_path}"			\
-						-n "${_so_src_path}" -;
+			fi;
+			if [ ! -L "${_lib_src_path}" ]\
+			&& [ ! -e "${_lib_dst_path}" ]; then
+				set -o xtrace
+				(ex_rtl_fileop cd "$(ex_rtl_dirname "${_so_src_path}")";
+				perk -e "$(ex_rtl_basename "${_so_src_path}")"			|\
+					"${PKG_TARGET}-mdso"					\
+						-i "$(ex_rtl_basename "${_lib_dst_path}")"	\
+						-n "$(ex_rtl_basename "${_so_src_path}")" -);
+				set +o xtrace
 			fi;
 			pkgp_install_lib_link "${_so_src_path}" "${_so_dst_dir}" "${_lib_name}";
 		done;

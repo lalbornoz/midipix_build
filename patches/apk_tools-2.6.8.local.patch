@@ -27,12 +27,18 @@
  }
  
  int main(int argc, char **argv)
---- apk-tools-2.6.8/src/Makefile.orig	2016-10-25 10:06:30.000000000 +0200
-+++ apk-tools-2.6.8/src/Makefile	2016-12-17 21:25:34.221413300 +0100
-@@ -7,13 +7,13 @@
- ZLIB_CFLAGS		:= $(shell $(PKG_CONFIG) --cflags zlib)
- ZLIB_LIBS		:= $(shell $(PKG_CONFIG) --libs zlib)
+--- apk-tools-2.6.8/src/Makefile.orig	2016-10-25 08:06:30.000000000 +0000
++++ apk-tools-2.6.8/src/Makefile	2017-12-03 15:36:54.260000000 +0000
+@@ -1,24 +1,15 @@
+-PKG_CONFIG ?= pkg-config
+ LUAAPK ?= yes
  
+-OPENSSL_CFLAGS		:= $(shell $(PKG_CONFIG) --cflags openssl)
+-OPENSSL_LIBS		:= $(shell $(PKG_CONFIG) --libs openssl)
+-
+-ZLIB_CFLAGS		:= $(shell $(PKG_CONFIG) --cflags zlib)
+-ZLIB_LIBS		:= $(shell $(PKG_CONFIG) --libs zlib)
+-
 -FETCH_LIBS		:= $(shell $(CC) -print-file-name=libfetch.a)
 +FETCH_LIBS		:= $(shell $(CC) -print-file-name=$(PREFIX)/lib/libfetch.a)
  
@@ -41,7 +47,12 @@
  LUA_VERSION		?= 5.2
  LUA_PC			?= lua$(LUA_VERSION)
 -LUA_LIBDIR		?= /usr/lib/lua/$(LUA_VERSION)
-+LUA_LIBDIR		?= $(PREFIX)/lib/lua/$(LUA_VERSION)
  LIBAPK			:= YesPlease
  shlibs-y		+= apk.so
  apk.so-objs		:= lua-apk.o
+-CFLAGS_lua-apk.o	:= -DAPK_VERSION=\"$(FULL_VERSION)\" \
+-			   $(shell $(PKG_CONFIG) $(LUA_PC) --cflags)
++CFLAGS_lua-apk.o	:= -DAPK_VERSION=\"$(FULL_VERSION)\" $(LUA_CFLAGS)
+ LUA_LIB-y		:= $(obj)/apk.so
+ install-LUA_LIB-y	:= $(INSTALLDIR) $(DESTDIR)$(LUA_LIBDIR) && \
+ 			   $(INSTALL) $(LUA_LIB-y) $(DESTDIR)$(LUA_LIBDIR)

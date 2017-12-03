@@ -2,67 +2,65 @@
 # set -o errexit -o noglob are assumed.
 #
 
-ex_pkg_env() {
-	local _vname;
-	if [ -z "${PKG_URL}" ]\
-	&& [ -z "${PKG_URLS_GIT}" ]\
-	&& [ -z "${PKG_VERSION}" ]\
-	&& ! ex_test_cmd "pkg_${PKG_NAME}_all"; then
-		ex_log_msg failexit "Error: package \`${PKG_NAME}' missing in build.vars.";
-		return 1;
-	else
-		[ -z "${MIDIPIX_BUILD_PWD}" ] && MIDIPIX_BUILD_PWD="$(pwd)";
-		[ -z "${PKG_FNAME}" ] && PKG_FNAME="${PKG_URL##*/}";
-		[ -z "${PKG_TARGET}" ] && PKG_TARGET="${TARGET}";
-		case "${PKG_BASE_DIR}" in
-		?*)	;;
-		*)	PKG_BASE_DIR="${WORKDIR}/${PKG_NAME}-${PKG_BUILD_TYPE:-native}-${PKG_TARGET}";
-			if [ -n "${ARG_RESTART}" ]\
-			&& [ -z "${ARG_RESTART_AT}" ]; then
-				ex_build_fileop rm "${PKG_BASE_DIR}";
-			fi; ;;
-		esac;
-		ex_build_fileop mkdir "${PKG_BASE_DIR}";
-		ex_build_fileop cd "${PKG_BASE_DIR}";
-		PKG_DESTDIR="${PKG_BASE_DIR}/destdir";
-		case "${PKG_BUILD_TYPE}" in
-		host)	export AR="ar";
-			export CC="gcc";
-			export CXX="g++";
-			export RANLIB="ranlib"; ;;
-		*)	export AR="${PKG_TARGET}-ar";
-			export CC="${PKG_TARGET}-gcc";
-			export CXX="${PKG_TARGET}-g++";
-			export RANLIB="${PKG_TARGET}-ranlib";
-			if [ -x "${PREFIX}/bin/${TARGET}-pkg-config" ]; then
-				export PKGCONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
-				export PKG_CONFIG="${PREFIX}/bin/${TARGET}-pkg-config";
-				export PKG_CONFIG_LIBDIR="${PKG_PREFIX}/lib/pkgconfig";
-			fi;
-			;;
-		esac;
-		export LIBTOOL="${PKG_SLIBTOOL:-slibtool}";
-		export MAKE="make LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
-		case "${PKG_SUBDIR}" in
-		?*)	;;
-		*)	case "${PKG_URLS_GIT}" in
-			?*)	PKG_SUBDIR="${PKG_URLS_GIT%%=*}"; ;;
-			*)	case "${PKG_FNAME}" in
-				*.t*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;
-				*)	PKG_SUBDIR="${PKG_NAME}"; ;;
-				esac; ;;
-			esac; ;;
-		esac;
-		ex_push_IFS :;
-		for _vname in ${PKG_ENV_VARS_EXTRA}; do
-			export "${_vname}";
-		done; ex_pop_IFS;
-		if [ -n "${PKG_ENV_VARS}" ]\
-		&& [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
-			PKG_ENV_VARS="$(echo "${PKG_ENV_VARS}" | tr " " "\n" | sort | tr "\n" " ")";
-			ex_log_env_vars "build" ${PKG_ENV_VARS};
-		fi;
+exp_pkg_env_source() {
+	local _pkg_name="${1}" _tgt_name="${2}"				\
+		_tgt_name_uc _pkg_name_uc _build_type_uc		\
+		_vname_dst _vars_set="";
+	if [ "${_pkg_name#*_flavour_*}" != "${_pkg_name}" ]; then
+		PKG_NAME_PARENT="${PKG_NAME%_flavour_*}";
+		ex_pkg_env_source "${PKG_NAME_PARENT}";
 	fi;
+	ex_rtl_fileop source_opt "vars/${_pkg_name}.vars";
+	_tgt_name_uc="$(ex_rtl_toupper "${_tgt_name}")";
+	_pkg_name_uc="$(ex_rtl_toupper "${_pkg_name}")";
+	ex_rtl_set_vars BUILD_TYPE					\
+		"DEFAULT ${_tgt_name_uc} PKG_${_pkg_name_uc}"		\
+		_vars_set;
+	_build_type_uc="$(ex_rtl_toupper "${PKG_BUILD_TYPE}")";
+	for _vname_dst in $(ex_rtl_lfilter_not				\
+			"${DEFAULT_BUILD_VARS}" BUILD_TYPE); do
+		ex_rtl_set_vars "${_vname_dst}"				\
+			"DEFAULT DEFAULT_${_build_type_uc}		\
+			${_tgt_name_uc} PKG_${_pkg_name_uc}"		\
+			_vars_set;
+	done;
+	ex_rtl_unset_vars $(ex_rtl_lfilter_not				\
+		"$(set | awk -F= '/^PKG_/{print $1}' | sort)"		\
+		"${_vars_set}");
 };
+
+ex_pkg_env() {
+	local _pkg_name="${1}" _tgt_name="${2}" _restart_at="${3}" _vname;
+	exp_pkg_env_source "${_pkg_name}" "${_tgt_name}";
+	: ${PKG_NAME:="${_pkg_name}"};
+	: ${MIDIPIX_BUILD_PWD:="$(pwd)"};
+	: ${PKG_BASE_DIR:="${BUILD_WORKDIR}/${_pkg_name}-${PKG_BUILD_TYPE}-${PKG_TARGET}"};
+	: ${PKG_FNAME:="${PKG_URL##*/}"};
+	: ${PKG_BUILD_STEPS:="$(ex_rtl_lfilter_not "${DEFAULT_BUILD_STEPS}"		\
+		"${PKG_BUILD_STEPS_DISABLE}")"};
+	if [ -z "${PKG_SUBDIR}" ]; then
+		if [ -n "${PKG_URLS_GIT}" ]; then
+			PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
+		else case "${PKG_FNAME}" in
+		*.t*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;
+		*)	PKG_SUBDIR="${_pkg_name}"; ;;
+		esac; fi;
+	fi;
+	if [ -z "${PKG_BUILD_DIR}" ]; then
+		case "${PKG_IN_TREE:-0}" in
+		0) PKG_BUILD_DIR="obj"; ;;
+		1) PKG_BUILD_DIR="${PKG_SUBDIR}"; ;; 
+		esac;
+	fi;
+	PKG_BUILD_DIR="${PKG_BASE_DIR}/${PKG_BUILD_DIR}";
+	PKG_CONFIGURE="${PKG_BASE_DIR}/${PKG_CONFIGURE:-${PKG_SUBDIR}/configure}";
+	PKG_DESTDIR="${PKG_BASE_DIR}/${PKG_DESTDIR:-destdir}";
+	ex_rtl_push_IFS :; for _vname in ${PKG_ENV_VARS_EXTRA}; do
+		export "${_vname}";
+	done; ex_rtl_pop_IFS;
+};
+
+ex_pkg_state_set() { ex_rtl_state_set "${BUILD_WORKDIR}" "${@}"; };
+ex_pkg_state_test() { ex_rtl_state_test "${BUILD_WORKDIR}" "${@}"; };
 
 # vim:filetype=sh

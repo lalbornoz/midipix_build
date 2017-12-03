@@ -2,21 +2,21 @@
 # set -o errexit -o noglob are assumed.
 #
 
-EXP_IFS_NL="
-";
+EXP_RTL_IFS="${IFS}";
 
-ex_basename() { echo "${1##*/}"; };
-ex_date() { command date "+${1:-${TIMESTAMP_FMT}}"; };
-ex_dirname() { echo "${1%/*}"; };
-ex_get_var_unsafe() { eval echo \${${1}}; };
-ex_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
-ex_pop_IFS() { IFS="${EXP_OLDIFS}"; };
-ex_push_IFS() { EXP_OLDIFS="${IFS}"; IFS="${1}"; };
-ex_push_IFS_nl() { ex_push_IFS "${EXP_IFS_NL}"; };
-ex_test_cmd() { command -v "${1}" >/dev/null; };
-ex_toupper() { echo "${1}" | tr a-z A-Z; };
+ex_rtl_basename() { echo "${1##*/}"; };
+ex_rtl_date() { command date "+${1:-${DEFAULT_TIMESTAMP_FMT}}"; };
+ex_rtl_dirname() { echo "${1%/*}"; };
+ex_rtl_get_var_unsafe() { eval echo \${${1}}; };
+ex_rtl_pop_IFS() { IFS="${EXP_RTL_IFS}"; };
+ex_rtl_push_IFS() { EXP_RTL_IFS="${IFS}"; IFS="${1}"; };
+ex_rtl_try_run() { ex_rtl_test_cmd "${1}" && { "${@}" || exit ${?}; }; };
+ex_rtl_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
+ex_rtl_test_cmd() { command -v "${1}" >/dev/null; };
+ex_rtl_toupper() { echo "${1}" | tr a-z A-Z; };
+ex_rtl_unset_vars() { while [ ${#} -gt 0 ]; do unset "${1}"; shift; done; };
 
-ex_lfilter() {
+ex_rtl_lfilter() {
 	local _list="${1}" _filter="${2}" _lnew _litem _litem_filter;
 	if [ -z "${_filter}" ]; then
 		echo "${_list}"; return 0;
@@ -31,7 +31,7 @@ ex_lfilter() {
 	echo "${_lnew}";
 };
 
-ex_lfilter_not() {
+ex_rtl_lfilter_not() {
 	local _list="${1}" _filter="${2}" _lnew _litem _litem_filter _filterfl;
 	if [ -z "${_filter}" ]; then
 		echo "${_list}"; return 0;
@@ -49,7 +49,7 @@ ex_lfilter_not() {
 	echo "${_lnew}";
 };
 
-ex_lmatch() {
+ex_rtl_lmatch() {
 	local _cmp="${3}" IFS="${2}"; set -- ${1};
 	while [ ${#} -gt 0 ]; do
 		if [ "${1}" = "${_cmp}" ]; then
@@ -58,7 +58,7 @@ ex_lmatch() {
 	done; return 1;
 };
 
-ex_run_cmd_unsplit() {
+ex_rtl_run_cmd_unsplit() {
 	local _cmd="${1}" _cmdline _rc IFS; shift;
 	while [ ${#} -gt 0 ]; do
 		[ -n "${1}" ] &&\
@@ -67,6 +67,23 @@ ex_run_cmd_unsplit() {
 	done;
 	IFS=:; ${_cmd} ${_cmdline}; _rc=$?;
 	return ${_rc};
+};
+
+ex_rtl_set_vars() {
+	local _vname_dst="${1}" _vname_src_tmpls="${2}"			\
+		_vars_set_vname="${3}" _vname_src _vars_set_tmp=""	\
+		_vars_set_old;
+	for _vname_src in ${_vname_src_tmpls}; do
+		_vname_src="${_vname_src}_${_vname_dst}";
+		_vval_src="$(ex_rtl_get_var_unsafe "${_vname_src}")";
+		if [ -n "${_vval_src}" ]; then
+			ex_rtl_set_var_unsafe "PKG_${_vname_dst}" "${_vval_src}";
+			_vars_set_tmp="${_vars_set_tmp:+${_vars_set_tmp} }PKG_${_vname_dst}";
+		fi;
+	done;
+	_vars_set_old="$(ex_rtl_get_var_unsafe "${_vars_set_vname}")";
+	ex_rtl_set_var_unsafe "${_vars_set_vname}"				\
+		"${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
 };
 
 # vim:filetype=sh

@@ -2,9 +2,9 @@
 # set -o errexit -o noglob are assumed.
 #
 
-ex_log_env_vars() {
+ex_rtl_log_env_vars() {
 	local _nvar=1 _arg _arg_len_max=0;
-	ex_log_msg info "Variables for this ${1:-build}:"; shift;
+	ex_rtl_log_msg info "Variables for this ${1:-build}:"; shift;
 	while [ ${_nvar} -le ${#} ]; do
 		_arg="$(eval echo \${${_nvar}})";
 		_arg="${_arg%%=*}";
@@ -13,38 +13,44 @@ ex_log_env_vars() {
 		fi; : $((_nvar+=1));
 	done;
 	while [ ${#} -gt 0 ]; do
-		ex_log_msg info "$(printf					\
+		ex_rtl_log_msg info "$(printf			\
 			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
-			"${1%%=*}" "$(ex_get_var_unsafe ${1#*=})")";
+			"${1%%=*}" "$(ex_rtl_get_var_unsafe ${1#*=})")";
 		shift;
 	done;
 };
 
-ex_log_msg() {
+ex_rtl_log_set_vnfo_lvl() {
+	EXP_RTL_LOG_VNFO_LVL="${1}";
+};
+
+ex_rtl_log_msg() {
 	local _lvl="${1}"; shift;
 	if [ "${_lvl}" = vnfo ]\
-	&& [ ${ARG_VERBOSE:-0} -eq 0 ]; then
+	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 1 ]; then
 		return;
 	elif [ "${_lvl}" = vvfo ]\
-	&& [ ${ARG_VERBOSE2:-0} -eq 0 ]; then
+	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 2 ]; then
 		return;
 	elif [ "${_lvl}" = vvvo ]\
-	&& [ ${ARG_VERBOSE3:-0} -eq 0 ]; then
+	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 3 ]; then
 		return;
 	fi;
 	case "${_lvl}" in
-		failexit) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
-		fail) printf "\033[0m\033[${LOG_MSG_FAIL_COLOUR}m"; ;;
-		info) printf "\033[0m\033[${LOG_MSG_INFO_COLOUR}m"; ;;
-		vnfo) printf "\033[0m\033[${LOG_MSG_VNFO_COLOUR}m"; ;;
-		vvfo) printf "\033[0m\033[${LOG_MSG_VVFO_COLOUR}m"; ;;
-		vvvo) printf "\033[0m\033[${LOG_MSG_VVVO_COLOUR}m"; ;;
-		succ) printf "\033[0m\033[${LOG_MSG_SUCC_COLOUR}m"; ;;
+		failexit) printf "\033[0m\033[${DEFAULT_LOG_MSG_FAIL_COLOUR}m"; ;;
+		fail) printf "\033[0m\033[${DEFAULT_LOG_MSG_FAIL_COLOUR}m"; ;;
+		info) printf "\033[0m\033[${DEFAULT_LOG_MSG_INFO_COLOUR}m"; ;;
+		inf2) printf "\033[0m\033[${DEFAULT_LOG_MSG_INF2_COLOUR}m"; ;;
+		vnfo) printf "\033[0m\033[${DEFAULT_LOG_MSG_VNFO_COLOUR}m"; ;;
+		vvfo) printf "\033[0m\033[${DEFAULT_LOG_MSG_VVFO_COLOUR}m"; ;;
+		vvvo) printf "\033[0m\033[${DEFAULT_LOG_MSG_VVVO_COLOUR}m"; ;;
+		succ) printf "\033[0m\033[${DEFAULT_LOG_MSG_SUCC_COLOUR}m"; ;;
+		suc2) printf "\033[0m\033[${DEFAULT_LOG_MSG_SUC2_COLOUR}m"; ;;
 	esac;
 	if [ ${#} -gt 1 ]; then
-		printf "==> %s %s %s\033[0m\n" "$(ex_date)" "${1}" "$*";
+		printf "==> %s %s %s\033[0m\n" "$(ex_rtl_date)" "${1}" "$*";
 	else
-		printf "==> %s %s\033[0m\n" "$(ex_date)" "${1}";
+		printf "==> %s %s\033[0m\n" "$(ex_rtl_date)" "${1}";
 	fi; [ ${_lvl} = failexit ] && exit 1 || return 0;
 };
 

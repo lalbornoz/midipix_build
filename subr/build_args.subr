@@ -5,7 +5,6 @@ BUILD_ARGS_SPEC="
 	BUILD:arg:-b
 	ARG_CLEAN:-c
 	ARG_DEBUG_MINIPIX:--debug-minipix
-	ARG_IGNORE_SHA256SUMS:-i
 	ARG_OFFLINE:-N
 	ARG_RELAXED:-R
 	ARG_RESTART:arg:-r
@@ -13,12 +12,12 @@ BUILD_ARGS_SPEC="
 	ARG_TARBALL:selfarg:-t.bz2
 	ARG_TARBALL:selfarg:-t.gz
 	ARG_TARBALL:selfarg:-t.xz
-	ARG_VERBOSE:-v
-	ARG_VERBOSE2:-vv
-	ARG_VERBOSE3:-vvv
+	ARG_VERBOSE:selfarg:-v
+	ARG_VERBOSE:selfarg:-vv
+	ARG_VERBOSE:selfarg:-vvv
 	ARG_XTRACE:-x";
 
-ex_setup_args() {
+build_args() {
 	local _spec="${BUILD_ARGS_SPEC}" _spec_arg _found;
 	while [ ${#} -gt 0 ]; do
 		if [ "${1#-}" = "${1}" ]; then
@@ -28,11 +27,11 @@ ex_setup_args() {
 			case "${_spec_arg}" in
 			*:${1})	case "${_spec_arg#*:}" in
 				arg:*)
-					ex_set_var_unsafe "${_spec_arg%%:*}" "${2}"; shift; ;;
+					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${2}"; shift; ;;
 				selfarg:*)
-					ex_set_var_unsafe "${_spec_arg%%:*}" "${1}"; ;;
+					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${1}"; ;;
 				*)
-					ex_set_var_unsafe "${_spec_arg%%:*}" 1; ;;
+					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" 1; ;;
 				esac; _found=1; break; ;;
 			*)	_found=0; ;;
 			esac;
@@ -50,22 +49,25 @@ ex_setup_args() {
 			TARBALL_SUFFIX=xz;
 		fi;
 	fi;
-	if [ "${ARG_VERBOSE3:-0}" -eq 1 ]\
-	|| [ "${ARG_XTRACE:-0}" -eq 1 ]; then
-		ARG_VERBOSE2=1;
-	fi;
-	if [ "${ARG_VERBOSE2:-0}" -eq 1 ]; then
-		ARG_VERBOSE=1;
+	case "${ARG_VERBOSE}" in
+	-v)	ARG_VERBOSE=1; ;;
+	-vv)	ARG_VERBOSE=2; ;;
+	-vvv)	ARG_VERBOSE=3; ;;
+	esac;
+	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
+		ARG_VERBOSE=2;
 	fi;
 	if [ -n "${ARG_RESTART}" ]; then
 		if [ "${ARG_RESTART%:*}" != "${ARG_RESTART}" ]; then
 			ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="${ARG_RESTART%:*}";
+		else
+			ARG_RESTART_AT=ALL;
 		fi;
-		BUILD_PACKAGES_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
+		ARG_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
 	fi;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
-	*=*)	ex_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+	*=*)	ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 	*)	BUILD_TARGETS_META="${BUILD_TARGETS_META:+${BUILD_TARGETS_META} }${1}"; ;;
 	esac; shift; done;
 };

@@ -2,47 +2,9 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkgp_fetch_git() {
-	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}";
-	if [ "${ARG_OFFLINE:-0}" -eq 0 ]; then
-		if [ -e "${DLCACHEDIR}/${_subdir}" ]; then
-			(ex_build_fileop cd "${DLCACHEDIR}/${_subdir}" &&\
-				git pull origin "${_branch:-main}");
-		else
-			git clone "${_url}" "${DLCACHEDIR}/${_subdir}";
-			if [ -n "${_branch}" -a		\
-			     \( -z "${_branch#main}" \) -a	\
-			     \( -z "${_branch#master}" \) ]; then
-				(ex_build_fileop cd "${DLCACHEDIR}/${_subdir}"	&&\
-					git checkout -b "${_branch}");
-			fi;
-		fi;
-	fi;
-	ex_build_fileop rm "${_tgtdir}/${_subdir}";
-	ex_build_fileop cp "${DLCACHEDIR}/${_subdir}" "${_tgtdir}";
-};
-
-pkgp_fetch_urls_git() {
-	local _tgtdir _url_spec _subdir _url _git_branch;
-	_tgtdir="${1}"; shift; 
-	for _url_spec in "${@}"; do
-		_subdir="${_url_spec%=*}";
-		_url="${_url_spec#*=}";
-		_url="${_url%@*}";
-		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
-			_git_branch=${_url_spec#*@};
-		fi;
-		pkgp_fetch_git "${_tgtdir}" "${_subdir}" "${_url}" "${_git_branch}";
-	done;
-};
-
 pkg_fetch_git() {
-	if [ ${#} -gt 0 ]; then
-		pkgp_fetch_urls_git "${PKG_BASE_DIR}" "${@}";
-	else
-		if [ -n "${PKG_URLS_GIT}" ]; then
-			pkgp_fetch_urls_git "${PKG_BASE_DIR}" ${PKG_URLS_GIT};
-		fi;
+	if [ -n "${PKG_URLS_GIT}" ]; then
+		ex_rtl_fetch_urls_git "${PKG_BASE_DIR}" ${PKG_URLS_GIT};
 	fi;
 };
 
