@@ -1,9 +1,0 @@
-#
-# set -o errexit -o noglob are assumed.
-#
-
-pkg_build_clean() {
-	make clean;
-};
-
-# vim:filetype=sh

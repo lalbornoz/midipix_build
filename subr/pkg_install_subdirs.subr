@@ -3,20 +3,16 @@
 #
 
 pkg_install_subdirs() {
-	pkg_install_files "${PKG_DESTDIR}"		\
-		/=bin					\
-		/=lib					\
-		/=lib/pkgconfig				\
-		/=sbin					\
-		/=share/doc				\
-		/=share/info				\
-		/=share/man/man1			\
-		@.=usr					\
-		@../lib/pkgconfig=share/pkgconfig	\
-		@lib=lib64				\
-		@share/doc=doc				\
-		@share/info=info			\
-		@share/man=man;
+	local _spec;
+	for _spec in "${PKG_INSTALL_FILES_DESTDIR}"		\
+			"${PKG_INSTALL_FILES_DESTDIR_EXTRA}"; do
+		ex_rtl_install "${PKG_DESTDIR}" ${_spec};
+	done;
+	if [ "${PKG_PREFIX%/}" = "${PREFIX_NATIVE%/}" ]; then
+		ex_rtl_install					\
+			"${PKG_DESTDIR}/${DEFAULT_TARGET}"	\
+			${PKG_INSTALL_FILES_DESTDIR};
+	fi;
 };
 
 # vim:filetype=sh

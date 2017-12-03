@@ -3,23 +3,26 @@
 #
 
 pkg_configure_patch() {
-	local _patch_fname _patches_done;
-	set +o noglob;
-	for _patch_fname in 																\
-			${WORKDIR}/chainport-host-invariants/chainport/${PKG_NAME%_host}${PKG_VERSION:+-${PKG_VERSION}}.midipix.patch			\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}/*.patch										\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}.local.patch						\
-			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}.local@${BUILD_HNAME}.patch				\
-			${PKG_NAME_PARENT:+${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME_PARENT}/*.patch}							\
-			${PKG_NAME_PARENT:+${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME_PARENT}${PKG_VERSION:+-${PKG_VERSION}}.local.patch}			\
-			${PKG_NAME_PARENT:+${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME_PARENT}${PKG_VERSION:+-${PKG_VERSION}}.local@${BUILD_HNAME}.patch}; do
-		if ! ex_lmatch "${_patches_done}" " " "${_patch_fname}"\
-		&& [ -r "${_patch_fname}" ]; then
-			patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}";
-			_patches_done="${_patches_done:+${_patches_done} }${_patch_fname}";
+	local _pkg_name _pkg_name_full _patch_dir _patch_fname _patches_done;
+	for _pkg_name in "${PKG_NAME}" "${PKG_NAME_PARENT}"; do
+		if [ -z "${_pkg_name}" ]; then
+			continue;
+		else
+			_pkg_name_full="${_pkg_name}${PKG_VERSION:+-${PKG_VERSION}}";
+			_patch_dir="${MIDIPIX_BUILD_PWD}/patches";
 		fi;
+		set +o noglob; for _patch_fname in 						\
+				${_patch_dir}/${_pkg_name}/*.patch				\
+				${_patch_dir}/${_pkg_name_full}.local.patch			\
+				${_patch_dir}/${_pkg_name_full}.local@${BUILD_HNAME}.patch	\
+				"${PKG_PATCHES_EXTRA}"; do
+			if [ -r "${_patch_fname}" ]\
+			&& ! ex_rtl_lmatch "${_patches_done}" " " "${_patch_fname}"; then
+				patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}";
+				_patches_done="${_patches_done:+${_patches_done} }${_patch_fname}";
+			fi;
+		done; set -o noglob;
 	done;
-	set -o noglob;
 };
 
 # vim:filetype=sh

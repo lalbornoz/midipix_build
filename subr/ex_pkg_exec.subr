@@ -1,0 +1,60 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+exp_pkg_exec_pre() {
+	local _pkg_name="${1}" _tgt_name="${2}" _restart_at="${3}";
+	if [ -z "${PKG_URL}" ]\
+	&& [ -z "${PKG_URLS_GIT}" ]\
+	&& [ -z "${PKG_VERSION}" ]\
+	&& ! ex_rtl_test_cmd "pkg_${_pkg_name}_all"; then
+		"${_dispatch_fn}" exec_missing "${_pkg_name}" "${_tgt_name}";
+		return 1;
+	elif ! ex_pkg_state_test "${_pkg_name}" "start" "${_restart_at}"; then
+		if [ "${PKG_NO_CLEAN_BASE_DIR:-0}" -eq 0 ]; then
+			ex_rtl_fileop rm "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}";
+			ex_rtl_fileop mkdir "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}";
+		fi;
+		ex_pkg_state_set "${_pkg_name}" "start";
+	fi;
+	ex_rtl_fileop cd "${PKG_BUILD_DIR}";
+};
+
+ex_pkg_exec() {
+	local _pkg_name="${1}" _tgt_name="${2}" _restart_at="${3}"			\
+		_step _step_cmd _step_cmd_pfx _step_rc;
+	exp_pkg_exec_pre "${_pkg_name}" "${_tgt_name}" "${_restart_at}";
+	"${_dispatch_fn}" exec_start "${_pkg_name}" "${_tgt_name}";
+	if ex_rtl_test_cmd "pkg_${_pkg_name}_all"; then
+		"pkg_${_pkg_name}_all" "${_restart_at}";
+	else	set -- ${PKG_BUILD_STEPS};
+		while [ ${#} -gt 0 ]; do
+			_step="${1}"; shift;
+			if ex_pkg_state_test "${_pkg_name}" "${_step}"			\
+					"${_restart_at}"; then
+				continue;
+			else	ex_rtl_try_run						\
+					"pkg_${_pkg_name}_${_step}_pre"			\
+					"${_pkg_name}" "${_tgt_name}" "${_restart_at}";
+				if ex_rtl_test_cmd "pkg_${_pkg_name}_${_step}"; then
+					ex_rtl_try_run "pkg_${_pkg_name}_${_step}"	\
+						"${_pkg_name}" "${_tgt_name}" "${_restart_at}";
+				else	
+					ex_rtl_try_run "pkg_${_step}"			\
+						"${_pkg_name}" "${_tgt_name}" "${_restart_at}";
+				fi;
+				ex_rtl_try_run						\
+					"pkg_${_pkg_name}_${_step}_post"		\
+					"${_pkg_name}" "${_tgt_name}" "${_restart_at}";
+
+			fi;
+			echo "step ${_pkg_name} ${_tgt_name} ${_step}" >&3;
+			"${_dispatch_fn}" exec_step "${_pkg_name}" "${_tgt_name}" "${_step}";
+			ex_pkg_state_set "${_pkg_name}" "${_step}" "${1:+-${1}}";
+		done;
+		"${_dispatch_fn}" exec_finish "${_pkg_name}" "${_tgt_name}";
+		ex_pkg_state_set "${_pkg_name}" finish;
+	fi;
+};
+
+# vim:filetype=sh

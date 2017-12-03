@@ -10,16 +10,19 @@ pkg_build() {
 	# N.B.	We only specify CC= here if the current package does not use GNU
 	#	autoconf as it often abuses it by appending -std={gnu99,...} to it
 	#	instead of amending CFLAGS.
-	ex_run_cmd_unsplit make							\
+	ex_rtl_run_cmd_unsplit make						\
 		${PKG_MAKEFLAGS_BUILD}						\
 		${PKG_MAKEFLAGS_BUILD_EXTRA}					\
-		AR=${AR} ${_no_autoconf:+CC=${CC}} RANLIB=${RANLIB}		\
+		"AR=${PKG_AR}" "${_no_autoconf:+CC=${PKG_CC}}"			\
+		"RANLIB=${PKG_RANLIB}"						\
 		"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
-		"${CFLAGS_FOR_BUILD:+CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}}"	\
 		"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
 		"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
 		"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"\
-		"LIBTOOL=${PKG_SLIBTOOL:-slibtool}";
+		"${PKG_PKGCONFIG:+PKGCONFIG=${PKG_PKGCONFIG}}"			\
+		"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"		\
+		"${PKG_PKG_CONFIG_LIBPATH:+PKG_CONFIG_LIBPATH=${PKG_PKG_CONFIG_LIBPATH}}"\
+		"LIBTOOL=${PKG_LIBTOOL:-slibtool}";
 };
 
 # vim:filetype=sh
