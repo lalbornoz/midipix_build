@@ -1,5 +1,5 @@
 #
-# set -o errexit -o noglob are assumed.
+# set -o noglob is assumed.
 #
 
 EXP_RTL_IFS="${IFS}";

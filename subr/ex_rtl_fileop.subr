@@ -1,5 +1,5 @@
 #
-# set -o errexit -o noglob are assumed.
+# set -o noglob is assumed.
 #
 
 exp_rtl_fileop_check() {
