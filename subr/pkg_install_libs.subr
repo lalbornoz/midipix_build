@@ -49,13 +49,11 @@ pkg_install_libs() {
 			fi;
 			if [ ! -L "${_lib_src_path}" ]\
 			&& [ ! -e "${_lib_dst_path}" ]; then
-				set -o xtrace
 				(ex_rtl_fileop cd "$(ex_rtl_dirname "${_so_src_path}")";
 				perk -e "$(ex_rtl_basename "${_so_src_path}")"			|\
 					"${PKG_TARGET}-mdso"					\
 						-i "$(ex_rtl_basename "${_lib_dst_path}")"	\
 						-n "$(ex_rtl_basename "${_so_src_path}")" -);
-				set +o xtrace
 			fi;
 			pkgp_install_lib_link "${_so_src_path}" "${_so_dst_dir}" "${_lib_name}";
 		done;
