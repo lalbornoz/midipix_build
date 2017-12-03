@@ -9,13 +9,11 @@ pkg_strip() {
 	fi;
 	for _bin_path in $(find "${_tree_root}" -perm /a=x	\
 			\( -type f -or -type l \)); do
-		set +o errexit;
 		if objdump -sj .debug_info "${_bin_path}" >/dev/null 2>&1; then
 			ex_rtl_log_msg info "Stripping ${_bin_path}...";
 			ex_rtl_log_msg vnfo "${PKG_TARGET}-strip ${_bin_path}";
 			${PKG_TARGET}-strip ${_bin_path};
 		fi;
-		set -o errexit;
 	done;
 };
 
