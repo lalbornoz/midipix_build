@@ -14,9 +14,10 @@ buildp_dispatch() {
 			for _build_tgt_meta in ${BUILD_TARGETS_META:-world}; do
 				for _build_tgt_lc in $(ex_rtl_get_var_unsafe				\
 						"$(ex_rtl_toupper "${_build_tgt_meta}")_TARGET"); do
-					if ! ex_pkg_dispatch "${_build_tgt_lc}"				\
+					ex_pkg_dispatch "${_build_tgt_lc}"				\
 							"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
-							buildp_dispatch; then
+							buildp_dispatch;
+					if [ ${?} -ne 0 ]; then
 						break;
 					fi;
 				done;
