@@ -1,3 +1,7 @@
+#
+# set -o noglob is assumed.
+#
+
 BUILD_ARGS_SPEC="
 	ARG_IPV4_ONLY:-4
 	ARG_IPV6_ONLY:-6

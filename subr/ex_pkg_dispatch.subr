@@ -1,5 +1,9 @@
 #
-# set -o errexit -o noglob are assumed.
+# set -o noglob is assumed.
+# WARNING: ex_pkg_dispatch(), its caller, and its callers must _NOT_ be executed
+# as part of conditional evaluation, e.g. if, until, while, !, or && and ||, as
+# doing so would inhibit set -o errexit during execution of this function and its
+# subshell(!).  Instead, call ex_pkg_dispatch() and subsequently evaluate ${?}.
 #
 
 ex_pkg_dispatch() {
