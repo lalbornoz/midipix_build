@@ -74,7 +74,7 @@ buildp_dispatch() {
 				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
 					"${PKG_BUILD_STEPS}" "fetch_git fetch_wget")";
 			fi;
-			if [ "${ARG_TARBALL:-0}" -eq 0 ]; then
+			if [ -z "${ARG_TARBALL}" ]; then
 				case "${_pkg_name}" in
 				dist_digest)	PKG_BUILD_STEPS=""; ;;
 				dist_tarballs)	PKG_BUILD_STEPS=""; ;;
