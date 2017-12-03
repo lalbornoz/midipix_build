@@ -3,16 +3,16 @@
 #
 
 pkg_install_make() {
-	ex_run_cmd_unsplit make								\
+	ex_rtl_run_cmd_unsplit make							\
 		${PKG_MAKEFLAGS_INSTALL}						\
 		${PKG_MAKEFLAGS_INSTALL_EXTRA}						\
-		AR=${AR} CC=${CC} RANLIB=${RANLIB}					\
+		AR=${PKG_AR} CC=${PKG_CC} RANLIB=${PKG_RANLIB}				\
 		"${PKG_CFLAGS_INSTALL:+CFLAGS=${PKG_CFLAGS_INSTALL}}"			\
 		"${PKG_CFLAGS_INSTALL_EXTRA:+CFLAGS+=${PKG_CFLAGS_INSTALL_EXTRA}}"	\
 		"${PKG_LDFLAGS_INSTALL:+LDFLAGS=${PKG_LDFLAGS_INSTALL}}"		\
 		"${PKG_LDFLAGS_INSTALL_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_INSTALL_EXTRA}}"	\
 		"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
-		"LIBTOOL=${PKG_SLIBTOOL:-slibtool}"					\
+		"LIBTOOL=${PKG_LIBTOOL:-slibtool}"					\
 		"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"			\
 		${PKG_INSTALL_TARGET:=install};
 };

@@ -1,0 +1,60 @@
+build_fini() {
+	: $((BUILD_TIMES_SECS=$(ex_rtl_date %s)-${BUILD_TIMES_SECS}));
+	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
+	: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
+	: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
+	if [ -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+		ex_rtl_fileop rm ${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME};
+	fi;
+};
+
+build_init() {
+	local __;
+	set -o noglob;
+	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
+	&& [ -e /proc/cpuinfo ]; then
+		DEFAULT_BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
+	fi;
+	: ${ARCH:=nt64}; : ${BUILD:=debug};
+	if [ "${ARCH}" = nt32 ]; then
+		DEFAULT_TARGET="i686-nt32-midipix";
+	elif [ "${ARCH}" = nt64 ]; then
+		DEFAULT_TARGET="x86_64-nt64-midipix";
+	else
+		if [ "${BUILD}" != debug ]\
+		&& [ "${BUILD}" != release ]; then
+			ex_rtl_log_msg failexit "Error: unknown build type \`${BUILD}'.";
+		fi;
+		ex_rtl_log_msg failexit "Error: invalid architecture \`${ARCH}'.";
+	fi;
+	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/env.vars ./vars/midipix.vars ./vars/build.vars; do
+		[ -e ${__} ] && . ${__};
+	done;
+	export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
+	if [ ${ARG_IPV4_ONLY:-0} -eq 1 ]; then
+		DEFAULT_WGET_ARGS="-4${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
+	elif [ ${ARG_IPV6_ONLY:-0} -eq 1 ]; then
+		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
+	fi;
+	ex_rtl_unset_vars $(ex_rtl_lfilter_not				\
+		"$(export | sed -e 's/^export //' -e 's/=.*$//')"	\
+		"${DEFAULT_CLEAR_ENV_VARS_EXCEPT}");
+	ex_rtl_fileop mkdir "${BUILD_DLCACHEDIR}" "${BUILD_WORKDIR}";
+	if [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+		ex_rtl_log_msg failexit "Error: another build targeting this architecture and build type is currently in progress.";
+	else
+		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
+	fi;
+	if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
+		mv -- "${DEFAULT_BUILD_LOG_FNAME} ${DEFAULT_BUILD_LOG_LAST_FNAME}";
+	fi;
+	BUILD_DATE_START="$(ex_rtl_date %Y-%m-%d-%H-%M-%S)";
+	BUILD_NFINI="${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}}";
+	BUILD_TIMES_SECS="$(ex_rtl_date %s)";
+	BUILD_PKGS_FAILED="";
+	trap "rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";	\
+		ex_rtl_log_msg failexit \"Build aborted.\";"		\
+		HUP INT TERM USR1 USR2;
+};
+
+# vim:filetype=sh

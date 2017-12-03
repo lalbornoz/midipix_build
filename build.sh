@@ -2,65 +2,92 @@
 # Copyright (c) 2016, 2017 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 #
 
-for __ in $(find subr -name *.subr); do . "${__}"; done;
-ex_setup_args "${@}"; ex_setup_env; ex_setup_checks; ex_setup_subdirs; ex_pkg_state_init;
-ex_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
-ex_log_env_vars "build (global)" ${LOG_ENV_VARS};
+buildp_dispatch() {
+	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"						\
+		_build_tgt_meta _build_tgt_lc;
+	case "${_msg}" in
+	# Top-level
+	start_build)	shift; build_args "${@}"; build_init; build_checks;
+			ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
+			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
+			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
+			for _build_tgt_meta in ${BUILD_TARGETS_META:-world}; do
+				for _build_tgt_lc in $(ex_rtl_get_var_unsafe				\
+						"$(ex_rtl_toupper "${_build_tgt_meta}")_TARGET"); do
+					if ! ex_pkg_dispatch "${_build_tgt_lc}"				\
+							"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
+							buildp_dispatch; then
+						break;
+					fi;
+				done;
+			done;
+			buildp_dispatch finish_build; ;;
+	finish_build)	build_fini;
+			ex_rtl_log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
+			ex_rtl_log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
+			if [ -n "${BUILD_PKGS_FAILED}" ]; then
+				ex_rtl_log_msg info "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
+				exit 1;
+			fi; ;;
 
-for BUILD_TARGET_META in invariants ${BUILD_TARGETS_META:-world}; do
-	for BUILD_TARGET_LC in $(ex_get_var_unsafe "$(ex_toupper "${BUILD_TARGET_META}")_TARGET"); do
-		BUILD_TARGET="$(ex_toupper "${BUILD_TARGET_LC}")";
-		BUILD_PACKAGES="$(ex_get_var_unsafe ${BUILD_TARGET}_PACKAGES)";
-		if [ "${BUILD_TARGET}" != "INVARIANTS" ]\
-		&& [ -n "${BUILD_PACKAGES_RESTART}" ]; then
-			BUILD_PACKAGES="$(ex_lfilter "${BUILD_PACKAGES}" "${BUILD_PACKAGES_RESTART}")";
-		fi;
-		ex_log_msg info "Starting \`${BUILD_TARGET_LC}' build target...";
-		for PKG_NAME in ${BUILD_PACKAGES}; do
-			ex_log_msg info "Starting \`${PKG_NAME}' build...";
-			ex_pkg_dispatch "${BUILD_TARGET}" "${PKG_NAME}"	\
-				"${ARG_RESTART}" "${ARG_RESTART_AT}";
-			BUILD_SCRIPT_RC=${?};
-			case ${BUILD_SCRIPT_RC} in
-			0) : $((BUILD_NFINI+=1));
-			   if [ "${ARG_VERBOSE2:-0}" -eq 1 ]; then
-				cat "${WORKDIR}/${PKG_NAME}_stdout.log";
-				if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
-					ex_log_msg vvfo "${WORKDIR}/${PKG_NAME}_stderr.log:";
-					cat "${WORKDIR}/${PKG_NAME}_stderr.log";
-				fi;
-			   fi;
-			   ex_log_msg succ "Finished \`${PKG_NAME}' build."; ;;
-			*) : $((BUILD_NFAIL+=1));
-			   if [ "${ARG_RELAXED:-0}" -eq 1 ]; then
-				ex_log_msg fail "Build failed in \`${PKG_NAME}', check \`${WORKDIR}/${PKG_NAME}_std{err,out}.log' for details.";
-				BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${PKG_NAME}";
-				continue;
-			   else
-				ex_log_msg fail "${WORKDIR}/${PKG_NAME}_stdout.log:";
-				cat "${WORKDIR}/${PKG_NAME}_stdout.log";
-				ex_log_msg fail "${WORKDIR}/${PKG_NAME}_stderr.log:";
-				cat "${WORKDIR}/${PKG_NAME}_stderr.log";
-				ex_log_msg fail "Build failed in \`${PKG_NAME}'.";
-				break;
-			   fi; ;;
-			esac;
-		done;
-		if [ "${BUILD_SCRIPT_RC:-0}" -ne 0 ]; then
-			break;
-		else
-			ex_log_msg succ "Finished \`${BUILD_TARGET_LC}' build target.";
-		fi;
-	done;
-done;
+	# Target build
+	start_target)	ex_rtl_log_msg inf2 "Starting \`${_tgt_name}' build target..."; ;;
+	finish_target)	ex_rtl_log_msg suc2 "Finished \`${_tgt_name}' build target."; ;;
 
-ex_pkg_state_fini;
-ex_log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
-ex_log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
-if [ ${ARG_RELAXED:-0} -eq 1 ]\
-&& [ -n "${BUILD_PKGS_FAILED}" ]; then
-	ex_log_msg info "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
-fi;
-exit "${BUILD_SCRIPT_RC:-0}"
+	# Package build
+	start_pkg)	ex_rtl_log_msg info "Starting \`${_pkg_name}' build..."; ;;
+	finish_pkg)	: $((BUILD_NFINI+=1));
+			if [ "${ARG_VERBOSE:-0}" -ge 2 ]; then
+				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
+			fi;
+			ex_rtl_log_msg succ "Finished \`${_pkg_name}' build."; ;;
+	fail_pkg)	: $((BUILD_NFAIL+=1));
+			if [ "${ARG_RELAXED:-0}" -eq 1 ]; then
+				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}', check \`${BUILD_WORKDIR}/${_pkg_name}_stderrout.log' for details.";
+				BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${_pkg_name}";
+			else
+				ex_rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
+				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
+				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}'.";
+				return 1;
+			fi; ;;
+	disabled_pkg)	ex_rtl_log_msg vnfo "Skipping disabled package \`${_pkg_name}.'"; ;;
+	skipped_pkg)	ex_rtl_log_msg vnfo "Skipping finished package \`${_pkg_name}.'"; ;;
+	step_pkg)	ex_rtl_log_msg vnfo "Finished build step ${4} of package \`${_pkg_name}'."; ;;
+
+	# Child process
+	exec_finish)	;;
+	exec_missing)	ex_rtl_log_msg failexit "Error: package \`${_pkg_name}' missing in build.vars."; ;;
+	exec_start)	if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
+				ex_rtl_log_env_vars "build"		\
+					$(set | awk -F= '/^PKG_/{print $1}' | sort);
+			fi;
+			if [ "${ARG_DEBUG_MINIPIX:-0}" -eq 1 ]\
+			&& [ "${_tgt_name}" = "dist_minipix" ]; then
+				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
+					"${PKG_BUILD_STEPS}" "strip")";
+			elif [ "${BUILD}" = release ]; then
+				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
+					"${PKG_BUILD_STEPS}" "strip")";
+			fi;
+			if [ "${ARG_OFFLINE:-0}" -eq 1 ]; then
+				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
+					"${PKG_BUILD_STEPS}" "fetch_git fetch_wget")";
+			fi;
+			if [ "${ARG_TARBALL:-0}" -eq 0 ]; then
+				case "${_pkg_name}" in
+				dist_digest)	PKG_BUILD_STEPS=""; ;;
+				dist_tarballs)	PKG_BUILD_STEPS=""; ;;
+				esac;
+			fi;
+			if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
+				set -o xtrace;
+			fi; ;;
+	exec_step)	ex_rtl_log_msg info "Finished build step ${4} of package \`${_pkg_name}'."; ;;
+	esac; return 0;
+};
+
+for __ in $(find subr -name *.subr); do
+	. "${__}"; done; buildp_dispatch start_build "${@}";
 
 # vim:filetype=sh

@@ -2,8 +2,8 @@
 # set -o errexit -o noglob are assumed.
 #
 
-pkgp_strip_tree() {
-	local _tree_root="${1}" _bin_path;
+pkg_strip() {
+	local _tree_root="${PKG_DESTDIR}/bin" _bin_path;
 	if [ ! -e "${_tree_root}" ]; then
 		return;
 	fi;
@@ -11,21 +11,12 @@ pkgp_strip_tree() {
 			\( -type f -or -type l \)); do
 		set +o errexit;
 		if objdump -sj .debug_info "${_bin_path}" >/dev/null 2>&1; then
-			ex_log_msg info "Stripping ${_bin_path}...";
-			ex_log_msg vnfo "${TARGET}-strip ${_bin_path}";
-			${TARGET}-strip ${_bin_path};
+			ex_rtl_log_msg info "Stripping ${_bin_path}...";
+			ex_rtl_log_msg vnfo "${PKG_TARGET}-strip ${_bin_path}";
+			${PKG_TARGET}-strip ${_bin_path};
 		fi;
 		set -o errexit;
 	done;
-};
-
-pkg_strip() {
-	if [ "${PKG_NAME%flavour_minipix}" != "${PKG_NAME}" ]	\
-	&& [ ${ARG_DEBUG_MINIPIX:-0} -eq 0 ]; then
-		pkgp_strip_tree "${PKG_DESTDIR}";
-	elif [ "${BUILD}" = release ]; then
-		pkgp_strip_tree "${PKG_DESTDIR}/bin";
-	fi;
 };
 
 # vim:filetype=sh

@@ -5,7 +5,7 @@
 pkg_install_purge_la() {
 	local _la_path;
 	for _la_path in $(find "${PKG_DESTDIR}" -type f -name \*.la); do
-		ex_build_fileop rm ${_la_path};
+		ex_rtl_fileop rm ${_la_path};
 	done;
 };
 

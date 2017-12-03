@@ -1,0 +1,63 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+exp_rtl_fetch_url_git() {
+	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}"	\
+		_oldpwd;
+	if [ -e "${BUILD_DLCACHEDIR}/${_subdir}" ]; then
+		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
+			git pull origin "${_branch:-main}");
+	else
+		git clone "${_url}" "${BUILD_DLCACHEDIR}/${_subdir}";
+		if [ -n "${_branch}" -a		\
+		     \( -z "${_branch#main}" \) -a	\
+		     \( -z "${_branch#master}" \) ]; then
+			(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}"	&&\
+				git checkout -b "${_branch}");
+		fi;
+	fi;
+	_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}";
+	ex_rtl_fileop rm "${_tgtdir}/${_subdir}";
+	ex_rtl_fileop cp "${BUILD_DLCACHEDIR}/${_subdir}" "${_tgtdir}";
+	ex_rtl_fileop cd "${_oldpwd}";
+};
+
+ex_rtl_fetch_urls_git() {
+	local _tgtdir _url_spec _subdir _url _git_branch;
+	_tgtdir="${1}"; shift; 
+	for _url_spec in "${@}"; do
+		_subdir="${_url_spec%=*}";
+		_url="${_url_spec#*=}";
+		_url="${_url%@*}";
+		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
+			_git_branch=${_url_spec#*@};
+		fi;
+		exp_rtl_fetch_url_git "${_tgtdir}" "${_subdir}"	\
+			"${_url}" "${_git_branch}";
+	done;
+};
+
+# N.B.	URLs ($1) may contain `?' or '&' characters.
+ex_rtl_fetch_url_wget() {
+	local _url="${1}" _sha256sum_src="${2}";
+	if [ -z "${3}" ]; then
+		_url_dst="${BUILD_DLCACHEDIR}/$(ex_rtl_basename "${_url}")";
+	else
+		_url_dst="${BUILD_DLCACHEDIR}/${3}";
+	fi;
+	if [ -e "${_url_dst}.fetched" ]; then
+		return 0;
+	else
+		wget ${DEFAULT_WGET_ARGS} -c -O "${_url_dst}" "${_url}";
+	fi;
+	if [ -n "${_sha256sum_src}" ]; then
+		set -- $(openssl dgst -sha256 "${_url_dst}"); shift $((${#}-1));
+		if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
+			ex_rtl_log_msg failexit "Error: hash mismatch for URL \`${_url}' (is: ${_sha256sum_dst}, should be: ${_sha256sum_src}.)";
+		fi;
+	fi;
+	touch "${_url_dst}.fetched";
+};
+
+# vim:filetype=sh

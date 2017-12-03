@@ -1,35 +1,34 @@
-usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-h]
-                  [-i] [-N] [-r package[,...][:step]] [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]]
-                  [<target>[ ...]]
-        -x                      Set xtrace during package builds; implies -vv.
+usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
+                  [-c] [-h] [-N] [-r package[,...][:step]]
+                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x] [<target>[ ...]]
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
         -c                      Clean ${PREFIX} before processing build scripts.
         -h                      Show this screen.
-        -i                      Ignore SHA256 hash mismatches when downloading files.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
         -r package[,...][:step] Restart the specified comma-separated build(s) completely
                                 or at the optionally specified step. Currently defined
                                 steps are:
-                                fetch_distclean, fetch_wget, fetch_git, fetch_extract,
+                                fetch_wget, fetch_git, fetch_extract,
                                 configure_patch_pre, configure_autotools, configure_patch,
-                                configure, build_clean, build, install_subdirs, install_make,
+                                configure, build, install_subdirs, install_make,
                                 install_files, install_libs, install_pkgconfig, install_purge_la,
                                 install_strip, and install.
         -R                      Ignore build failures, skip printing package logs, and continue
                                 building (relaxed mode.)
         -t[.gz|.bz2|.xz]        Produce binary distribution and source tarballs containing
-                                ${PREFIX} sans ${WORKDIR} and ${PREFIX}/src/midipix_build
-                                and ${WORKDIR} sans top-level regular files at the end of
+                                ${PREFIX} sans ${BUILD_WORKDIR} and ${PREFIX}/src/midipix_build
+                                and ${BUILD_WORKDIR} sans top-level regular files at the end of
                                 a build with zero failures. The tarballs will be compressed
                                 with either gzip, bzip2, or xz and signed with GPG; the
                                 default compression is xz.
         -v[v[v]]                Be verbose; -vv: always print package logs; -vvv: logs fileops.
+        -x                      Set xtrace during package builds; implies -vv.
         --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
         <target>[ ...]          One of: dev, devroot, or world, or:
-                                host or host_toolchain_deps, host_toolchain,
-                                native or native_toolchain_deps, native_toolchain, native_runtime,
+                                host or host_tools, host_toolchain_deps, host_toolchain, host_toolchain_mingw32,
+                                native or native_tools, native_toolchain_deps, native_toolchain, native_toolchain_mingw32, native_runtime,
                                 packages_deps or host_packages_deps, native_packages_deps, native_packages_deps_x11,
                                 packages or native_packages_cmdline, native_packages_dev, native_packages_etc, native_packages_inet,
                                 or dist, dist_minipix, or dist_target.
@@ -37,7 +36,7 @@ usage: ./build.sh [-x] [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-h]
         ${HOME}/midipix_build.vars, ../midipix_build.vars, and build.vars are sourced
         if they exist.
 
-        Packages that are built by pkg.build will apply local patches in ${WORKDIR}
+        Packages that are built by pkg.build will apply local patches in ${BUILD_WORKDIR}
         named ${PKG_SUBDIR}.local.patch.
 
         Examples:
