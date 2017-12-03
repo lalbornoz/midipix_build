@@ -42,9 +42,9 @@ buildp_dispatch() {
 			fi;
 			ex_rtl_log_msg succ "Finished \`${_pkg_name}' build."; ;;
 	fail_pkg)	: $((BUILD_NFAIL+=1));
+			BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${_pkg_name}";
 			if [ "${ARG_RELAXED:-0}" -eq 1 ]; then
 				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}', check \`${BUILD_WORKDIR}/${_pkg_name}_stderrout.log' for details.";
-				BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${_pkg_name}";
 			else
 				ex_rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
