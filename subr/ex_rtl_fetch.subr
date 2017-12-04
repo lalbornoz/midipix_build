@@ -25,7 +25,7 @@ exp_rtl_fetch_url_git() {
 
 ex_rtl_fetch_urls_git() {
 	local _tgtdir _url_spec _subdir _url _git_branch;
-	_tgtdir="${1}"; shift; 
+	_tgtdir="${1}"; shift;
 	for _url_spec in "${@}"; do
 		_subdir="${_url_spec%=*}";
 		_url="${_url_spec#*=}";
