@@ -77,8 +77,8 @@ buildp_dispatch() {
 			fi;
 			if [ -z "${ARG_TARBALL}" ]; then
 				case "${_pkg_name}" in
-				dist_digest)	PKG_BUILD_STEPS=""; ;;
-				dist_tarballs)	PKG_BUILD_STEPS=""; ;;
+				dist_digest)	exit 0; ;;
+				dist_tarballs)	exit 0; ;;
 				esac;
 			fi;
 			if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
