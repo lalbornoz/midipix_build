@@ -13,8 +13,9 @@ exp_pkg_exec_pre() {
 	elif ! ex_pkg_state_test "${_pkg_name}" "start" "${_restart_at}"; then
 		if [ "${PKG_NO_CLEAN_BASE_DIR:-0}" -eq 0 ]; then
 			ex_rtl_fileop rm "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}";
-			ex_rtl_fileop mkdir "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}";
+			ex_rtl_fileop mkdir "${PKG_BASE_DIR}";
 		fi;
+		ex_rtl_fileop mkdir "${PKG_BUILD_DIR}" "${PKG_DESTDIR}";
 		ex_pkg_state_set "${_pkg_name}" "start";
 	fi;
 	ex_rtl_fileop cd "${PKG_BUILD_DIR}";
