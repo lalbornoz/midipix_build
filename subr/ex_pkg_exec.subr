@@ -40,7 +40,7 @@ ex_pkg_exec() {
 				if ex_rtl_test_cmd "pkg_${_pkg_name}_${_step}"; then
 					ex_rtl_try_run "pkg_${_pkg_name}_${_step}"	\
 						"${_pkg_name}" "${_tgt_name}" "${_restart_at}";
-				else	
+				else
 					ex_rtl_try_run "pkg_${_step}"			\
 						"${_pkg_name}" "${_tgt_name}" "${_restart_at}";
 				fi;

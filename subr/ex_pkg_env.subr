@@ -55,7 +55,7 @@ ex_pkg_env() {
 	if [ -z "${PKG_BUILD_DIR}" ]; then
 		case "${PKG_IN_TREE:-0}" in
 		0) PKG_BUILD_DIR="obj"; ;;
-		1) PKG_BUILD_DIR="${PKG_SUBDIR}"; ;; 
+		1) PKG_BUILD_DIR="${PKG_SUBDIR}"; ;;
 		esac;
 	fi;
 	PKG_BUILD_DIR="${PKG_BASE_DIR}/${PKG_BUILD_DIR}";
