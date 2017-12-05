@@ -55,10 +55,16 @@ ex_pkg_dispatch() {
 	while [ ${#} -gt 0 ]; do
 		_script_rc=0; _njobs=0;
 		ex_rtl_fileop mkfifo "${_pipe_path}";
-		exp_pkg_dispatch "${1}" "${_tgt_name}"						\
-			"${_restart_at}" "${_dispatch_fn}"					\
-			"${_stderrout_path}" "${_pipe_path}"					\
-			_njobs; shift;
+		for _njob in $(seq 1 $((${_njobs_max}-${_njobs}))); do
+			if [ ${#} -eq 0 ]; then
+				break;
+			else
+				exp_pkg_dispatch "${1}" "${_tgt_name}"				\
+					"${_restart_at}" "${_dispatch_fn}"			\
+					"${_stderrout_path}" "${_pipe_path}"			\
+					_njobs; shift;
+			fi;
+		done;
 		if [ "${_njobs:-0}" -gt 0 ]; then
 			while read _pipe_msg; do
 			case "${_pipe_msg%% *}" in
