@@ -2,6 +2,14 @@
 # set -o noglob is assumed.
 #
 
+exp_rtl_log_printf() {
+	local _attrs="${1}" _msg; shift; _msg="$(printf "${@}")";
+	if [ "${BUILD_IS_PARENT:-0}" -eq 1 ]; then
+		printf "%s\n" "${_msg}" >> "${DEFAULT_BUILD_LOG_FNAME}";
+	fi;
+	printf "\033[0m\033[${_attr}m%s\033[0m\n" "${_msg}";
+};
+
 ex_rtl_log_env_vars() {
 	local _nvar=1 _arg _arg_len_max=0;
 	ex_rtl_log_msg info "Variables for this ${1:-build}:"; shift;
@@ -25,7 +33,7 @@ ex_rtl_log_set_vnfo_lvl() {
 };
 
 ex_rtl_log_msg() {
-	local _lvl="${1}"; shift;
+	local _lvl="${1}" _attr; shift;
 	if [ "${_lvl}" = vnfo ]\
 	|| [ "${_lvl}" = vucc ]\
 	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 1 ]; then
@@ -38,22 +46,27 @@ ex_rtl_log_msg() {
 		return;
 	fi;
 	case "${_lvl}" in
-		failexit) printf "\033[0m\033[${DEFAULT_LOG_MSG_FAIL_COLOUR}m"; ;;
-		fail) printf "\033[0m\033[${DEFAULT_LOG_MSG_FAIL_COLOUR}m"; ;;
-		info) printf "\033[0m\033[${DEFAULT_LOG_MSG_INFO_COLOUR}m"; ;;
-		inf2) printf "\033[0m\033[${DEFAULT_LOG_MSG_INF2_COLOUR}m"; ;;
-		vnfo) printf "\033[0m\033[${DEFAULT_LOG_MSG_VNFO_COLOUR}m"; ;;
-		vvfo) printf "\033[0m\033[${DEFAULT_LOG_MSG_VVFO_COLOUR}m"; ;;
-		vvvo) printf "\033[0m\033[${DEFAULT_LOG_MSG_VVVO_COLOUR}m"; ;;
-		succ) printf "\033[0m\033[${DEFAULT_LOG_MSG_SUCC_COLOUR}m"; ;;
-		suc2) printf "\033[0m\033[${DEFAULT_LOG_MSG_SUC2_COLOUR}m"; ;;
-		vucc) printf "\033[0m\033[${DEFAULT_LOG_MSG_VUCC_COLOUR}m"; ;;
+		failexit) _attr="${DEFAULT_LOG_MSG_FAIL_COLOUR}"; ;;
+		fail) _attr="${DEFAULT_LOG_MSG_FAIL_COLOUR}"; ;;
+		info) _attr="${DEFAULT_LOG_MSG_INFO_COLOUR}"; ;;
+		inf2) _attr="${DEFAULT_LOG_MSG_INF2_COLOUR}"; ;;
+		vnfo) _attr="${DEFAULT_LOG_MSG_VNFO_COLOUR}"; ;;
+		vvfo) _attr="${DEFAULT_LOG_MSG_VVFO_COLOUR}"; ;;
+		vvvo) _attr="${DEFAULT_LOG_MSG_VVVO_COLOUR}"; ;;
+		succ) _attr="${DEFAULT_LOG_MSG_SUCC_COLOUR}"; ;;
+		suc2) _attr="${DEFAULT_LOG_MSG_SUC2_COLOUR}"; ;;
+		vucc) _attr="${DEFAULT_LOG_MSG_VUCC_COLOUR}"; ;;
 	esac;
 	if [ ${#} -gt 1 ]; then
-		printf "==> %s %s %s\033[0m\n" "$(ex_rtl_date)" "${1}" "$*";
+		exp_rtl_log_printf "${_attrs}" "==> %s %s %s" "$(ex_rtl_date)" "${1}" "$*";
 	else
-		printf "==> %s %s\033[0m\n" "$(ex_rtl_date)" "${1}";
-	fi; [ ${_lvl} = failexit ] && exit 1 || return 0;
+		exp_rtl_log_printf "${_attrs}" "==> %s %s" "$(ex_rtl_date)" "${1}";
+	fi;
+	if [ ${_lvl} = failexit ]; then
+		exit 1;
+	else
+		return 0;
+	fi;
 };
 
 # vim:filetype=sh
