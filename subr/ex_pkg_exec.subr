@@ -53,9 +53,9 @@ ex_pkg_exec() {
 			"${_dispatch_fn}" exec_step "${_pkg_name}" "${_tgt_name}" "${_step}";
 			ex_pkg_state_set "${_pkg_name}" "${_step}" "${1:+-${1}}";
 		done;
-		"${_dispatch_fn}" exec_finish "${_pkg_name}" "${_tgt_name}";
-		ex_pkg_state_set "${_pkg_name}" finish;
 	fi;
+	"${_dispatch_fn}" exec_finish "${_pkg_name}" "${_tgt_name}";
+	ex_pkg_state_set "${_pkg_name}" finish;
 };
 
 # vim:filetype=sh
