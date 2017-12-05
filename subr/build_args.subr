@@ -3,23 +3,24 @@
 #
 
 BUILD_ARGS_SPEC="
-	ARG_IPV4_ONLY:-4
-	ARG_IPV6_ONLY:-6
-	ARCH:arg:-a
-	BUILD:arg:-b
-	ARG_CLEAN:-c
-	ARG_DEBUG_MINIPIX:--debug-minipix
-	ARG_OFFLINE:-N
-	ARG_RELAXED:-R
-	ARG_RESTART:arg:-r
-	ARG_TARBALL:selfarg:-t
-	ARG_TARBALL:selfarg:-t.bz2
-	ARG_TARBALL:selfarg:-t.gz
-	ARG_TARBALL:selfarg:-t.xz
-	ARG_VERBOSE:selfarg:-v
-	ARG_VERBOSE:selfarg:-vv
-	ARG_VERBOSE:selfarg:-vvv
-	ARG_XTRACE:-x";
+	ARG_IPV4_ONLY:-4:
+	ARG_IPV6_ONLY:-6:
+	ARCH:arg:-a:
+	BUILD:arg:-b:
+	ARG_CLEAN:-c:
+	ARG_DEBUG_MINIPIX:--debug-minipix:
+	ARG_OFFLINE:-N:
+	ARG_PARALLEL:optarg:-P:auto
+	ARG_RELAXED:-R:
+	ARG_RESTART:arg:-r:
+	ARG_TARBALL:selfarg:-t:
+	ARG_TARBALL:selfarg:-t.bz2;
+	ARG_TARBALL:selfarg:-t.gz:
+	ARG_TARBALL:selfarg:-t.xz:
+	ARG_VERBOSE:selfarg:-v:
+	ARG_VERBOSE:selfarg:-vv:
+	ARG_VERBOSE:selfarg:-vvv:
+	ARG_XTRACE:-x:";
 
 build_args() {
 	local _spec="${BUILD_ARGS_SPEC}" _spec_arg _found;
@@ -29,9 +30,19 @@ build_args() {
 		fi;
 		for _spec_arg in ${_spec}; do
 			case "${_spec_arg}" in
-			*:${1})	case "${_spec_arg#*:}" in
+			*:${1}:*)
+				case "${_spec_arg#*:}" in
 				arg:*)
 					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${2}"; shift; ;;
+				optarg:*)
+					if [ -n "${2}" ]\
+					&& [ "x${2#-}" = "x${2}" ]; then
+						ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${2}";
+						shift;
+					else
+						ex_rtl_set_var_unsafe "${_spec_arg%%:*}"	\
+							"${_spec_arg##*:}";
+					fi; ;;
 				selfarg:*)
 					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${1}"; ;;
 				*)
