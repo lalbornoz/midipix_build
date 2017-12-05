@@ -82,9 +82,6 @@ ex_pkg_dispatch() {
 				[ $((_njobs-=1)) -eq 0 ] && break; ;;
 			step)	"${_dispatch_fn}" step_pkg ${_pipe_msg#step };
 			esac; done <"${_pipe_path}";
-			if [ "${_script_rc:-1}" -eq 1 ]; then
-				break;
-			fi;
 		fi;
 		ex_rtl_fileop rm "${_pipe_path}";
 		if [ "${_script_rc:-1}" -eq 1 ]; then
