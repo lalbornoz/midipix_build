@@ -46,7 +46,8 @@ ex_pkg_dispatch() {
 	&& [ "${_restart}" != ALL ]; then
 		_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_restart}")";
 	fi;
-	if [ "$(ex_rtl_get_var_unsafe ${_tgt_name_uc}_PARALLELISE)" = 1 ]; then
+	if [ "$(ex_rtl_get_var_unsafe ${_tgt_name_uc}_PARALLELISE)" = 1 ]\
+	&& [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
 		_njobs_max="${DEFAULT_BUILD_CPUS}";
 	else
 		_njobs_max=1;

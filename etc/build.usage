@@ -1,15 +1,19 @@
-usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
-                  [-c] [-h] [-N] [-r ALL[:step,..]] [-r name[,..][:step,..]]
-                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x] [<target>[ ..]]
+usage: ./build.sh [-4|6]     [-a nt32|nt64]    [-b debug|release]
+                  [-c] [-h] [-N]  [-P [jobs]]  [-r ALL[:step,..]]
+                  [-r name[,..][:step,..]] [-R] [-t[.gz|.bz2|.xz]
+                  [-v[v[v]]] [-x] [<target>[ ..]]
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
         -c                      Clean ${PREFIX} before processing build scripts.
         -h                      Show this screen.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
+        -P [jobs]               Enables parallelisation at target-level, whenever applicable.
+                                The maximum count of jobs defaults to the number of logical
+                                processors on the host system.
         -r ALL[:step,..]
         -r name[,..][:step,..]  Restart the all packages/the specified comma-separated package(s)
-				completely or at optionally specified comma-separated step(s).
+                                completely or at optionally specified comma-separated step(s).
                                 Currently defined steps are:
                                 fetch_wget, fetch_git, fetch_extract,
                                 configure_patch_pre, configure_autotools, configure_patch,
