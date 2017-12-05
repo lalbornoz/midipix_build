@@ -19,7 +19,7 @@ exp_pkg_dispatch() {
 	else
 		_stderrout_path="${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		"${_dispatch_fn}" start_pkg "${_pkg_name}" "${_tgt_name}";
-		(set -o errexit -o noglob;
+		(set -o errexit -o noglob; BUILD_IS_PARENT=0;
 		ex_pkg_env "${_pkg_name}" "${_tgt_name}" "${_restart_at}";
 		trap "if [ \${?} -eq 0 ]; then							\
 			echo \"done ${_pkg_name} ${_tgt_name}\" >&3;				\

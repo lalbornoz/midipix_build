@@ -49,8 +49,10 @@ build_init() {
 		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 	fi;
 	if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
-		mv -- "${DEFAULT_BUILD_LOG_FNAME} ${DEFAULT_BUILD_LOG_LAST_FNAME}";
+		ex_rtl_fileop mv "${DEFAULT_BUILD_LOG_FNAME} ${DEFAULT_BUILD_LOG_LAST_FNAME}";
 	fi;
+	ex_rtl_fileop touch "${DEFAULT_BUILD_LOG_FNAME}";
+	BUILD_IS_PARENT=1;
 	BUILD_DATE_START="$(ex_rtl_date %Y-%m-%d-%H-%M-%S)";
 	BUILD_NFINI="${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}}";
 	BUILD_TIMES_SECS="$(ex_rtl_date %s)";
