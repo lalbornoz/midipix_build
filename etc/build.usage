@@ -31,8 +31,7 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                                 host or host_tools, host_toolchain_deps, host_toolchain, host_toolchain_mingw32,
                                 native or native_tools, native_toolchain_deps, native_toolchain, native_toolchain_mingw32, native_runtime,
                                 packages_deps or host_packages_deps, native_packages_deps, native_packages_deps_x11,
-                                packages or native_packages_cmdline, native_packages_dev, native_packages_etc, native_packages_inet,
-                                or dist, dist_minipix, or dist_target.
+                                packages or native_packages, or dist, dist_minipix, or dist_target.
 
         ${HOME}/midipix_build.vars will be sourced if present.
 
