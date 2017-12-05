@@ -15,6 +15,9 @@ build_init() {
 	&& [ -e /proc/cpuinfo ]; then
 		DEFAULT_BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
 	fi;
+	if [ "${ARG_PARALLEL}" = auto ]; then
+		ARG_PARALLEL="${DEFAULT_BUILD_CPUS}";
+	fi;
 	: ${ARCH:=nt64}; : ${BUILD:=debug};
 	if [ "${ARCH}" = nt32 ]; then
 		DEFAULT_TARGET="i686-nt32-midipix";
