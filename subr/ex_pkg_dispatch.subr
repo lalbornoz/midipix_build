@@ -80,8 +80,8 @@ ex_pkg_dispatch() {
 			fail)	_script_rc=1;
 				"${_dispatch_fn}" fail_pkg ${_pipe_msg#fail };
 				[ $((_njobs-=1)) -eq 0 ] && break; ;;
-			step)	"${_dispatch_fn}" step_pkg ${_pipe_msg#step };
-			esac; done <"${_pipe_path}";
+			step)	"${_dispatch_fn}" step_pkg ${_pipe_msg#step }; ;;
+			esac; done <>"${_pipe_path}";
 		fi;
 		ex_rtl_fileop rm "${_pipe_path}";
 		if [ "${_script_rc:-1}" -eq 1 ]; then
