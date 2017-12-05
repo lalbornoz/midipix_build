@@ -54,7 +54,7 @@ buildp_dispatch() {
 			fi; ;;
 	disabled_pkg)	ex_rtl_log_msg vnfo "Skipping disabled package \`${_pkg_name}.'"; ;;
 	skipped_pkg)	ex_rtl_log_msg vnfo "Skipping finished package \`${_pkg_name}.'"; ;;
-	step_pkg)	ex_rtl_log_msg vnfo "Finished build step ${4} of package \`${_pkg_name}'."; ;;
+	step_pkg)	ex_rtl_log_msg vucc "Finished build step ${4} of package \`${_pkg_name}'."; ;;
 
 	# Child process
 	exec_finish)	;;
