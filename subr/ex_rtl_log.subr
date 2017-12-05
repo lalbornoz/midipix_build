@@ -27,6 +27,7 @@ ex_rtl_log_set_vnfo_lvl() {
 ex_rtl_log_msg() {
 	local _lvl="${1}"; shift;
 	if [ "${_lvl}" = vnfo ]\
+	|| [ "${_lvl}" = vucc ]\
 	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 1 ]; then
 		return;
 	elif [ "${_lvl}" = vvfo ]\
@@ -46,6 +47,7 @@ ex_rtl_log_msg() {
 		vvvo) printf "\033[0m\033[${DEFAULT_LOG_MSG_VVVO_COLOUR}m"; ;;
 		succ) printf "\033[0m\033[${DEFAULT_LOG_MSG_SUCC_COLOUR}m"; ;;
 		suc2) printf "\033[0m\033[${DEFAULT_LOG_MSG_SUC2_COLOUR}m"; ;;
+		vucc) printf "\033[0m\033[${DEFAULT_LOG_MSG_VUCC_COLOUR}m"; ;;
 	esac;
 	if [ ${#} -gt 1 ]; then
 		printf "==> %s %s %s\033[0m\n" "$(ex_rtl_date)" "${1}" "$*";
