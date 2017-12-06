@@ -13,6 +13,9 @@ pkg_configure() {
 		if [ -n "${PKG_PKG_CONFIG_LIB_PATH}" ]; then
 			export PKG_CONFIG_LIBPATH="${PKG_PKG_CONFIG_LIBPATH}";
 		fi;
+		if [ -n "${PKG_PYTHON}" ]; then
+			export PYTHON="${PKG_PYTHON}";
+		fi;
 		AR="${PKG_AR}"												\
 		CC="${PKG_CC}"												\
 		RANLIB="${PKG_RANLIB}"											\
@@ -22,7 +25,7 @@ pkg_configure() {
 		LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"	\
 		${PKG_CONFIGURE}											\
 			${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
-		unset PKGCONFIG PKG_CONFIG PKG_CONFIG_LIBPATH;
+		unset PKGCONFIG PKG_CONFIG PKG_CONFIG_LIBPATH PYTHON;
 	fi;
 };
 
