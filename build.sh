@@ -27,8 +27,7 @@ buildp_dispatch() {
 			ex_rtl_log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
 			ex_rtl_log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
 			if [ -n "${BUILD_PKGS_FAILED}" ]; then
-				ex_rtl_log_msg info "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
-				exit 1;
+				ex_rtl_log_msg failexit "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
 			fi; ;;
 
 	# Target build
@@ -49,8 +48,7 @@ buildp_dispatch() {
 			else
 				ex_rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
-				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}'.";
-				return 1;
+				ex_rtl_log_msg failexit "Build failed in \`${_pkg_name}'.";
 			fi; ;;
 	disabled_pkg)	ex_rtl_log_msg vnfo "Skipping disabled package \`${_pkg_name}.'"; ;;
 	skipped_pkg)	ex_rtl_log_msg vnfo "Skipping finished package \`${_pkg_name}.'"; ;;
