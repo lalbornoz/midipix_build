@@ -71,16 +71,18 @@ ex_pkg_dispatch() {
 			case "${_pipe_msg%% *}" in
 			done)	"${_dispatch_fn}" finish_pkg ${_pipe_msg#done };
 				: $((_njobs-=1));
-				for _njob in $(seq 1 $((${_njobs_max}-${_njobs}))); do
-					if [ ${#} -eq 0 ]; then
-						break;
-					else
-						exp_pkg_dispatch "${1}" "${_tgt_name}"		\
-							"${_restart_at}" "${_dispatch_fn}"	\
-							"${_stderrout_path}" "${_pipe_path}"	\
-							_njobs; shift;
-					fi;
-				done;
+				if [ "${_script_rc:-0}" -eq 0 ]; then
+					for _njob in $(seq 1 $((${_njobs_max}-${_njobs}))); do
+						if [ ${#} -eq 0 ]; then
+							break;
+						else
+							exp_pkg_dispatch "${1}" "${_tgt_name}"		\
+								"${_restart_at}" "${_dispatch_fn}"	\
+								"${_stderrout_path}" "${_pipe_path}"	\
+								_njobs; shift;
+						fi;
+					done;
+				fi;
 				if [ "${_njobs:-0}" -eq 0 ]; then
 					break;
 				fi; ;;
