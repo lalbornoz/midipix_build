@@ -111,3 +111,15 @@ diff -ru dbus-1.11.20.orig/dbus/Makefile.in dbus-1.11.20/dbus/Makefile.in
  @DBUS_WIN_TRUE@AM_CXXFLAGS = \
  @DBUS_WIN_TRUE@	$(CODE_COVERAGE_CXXFLAGS) \
  @DBUS_WIN_TRUE@	$(NULL)
+diff -Naur dbus-1.11.20.orig/Makefile.in dbus-1.11.20/Makefile.in
+--- dbus-1.11.20.orig/Makefile.in       2017-10-03 00:46:44.000000000 -0600
++++ dbus-1.11.20/Makefile.in    2017-12-07 10:56:37.853995935 -0700
+@@ -498,7 +498,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = dbus bus tools test doc
++SUBDIRS = dbus bus tools doc
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = dbus-1.pc
+ cmakeconfigdir = $(libdir)/cmake/DBus1
