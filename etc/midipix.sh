@@ -35,7 +35,7 @@ if [ "$(uname -o)" = "Msys" ]; then
 	# MingW workaround (via Elieux.)
 	export MSYS2_ARG_CONV_EXCL="*";
 fi;
-mintty -h always -s 120,80 -e /bin/sh -c "
+mintty -d -h always -s 120,80 -e /bin/sh -c "
 	set -o errexit;
 	stty raw -echo;
 	env PATH=${MIDIPIX_PATH}/lib		\
