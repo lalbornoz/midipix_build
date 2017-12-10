@@ -1,0 +1,17 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_clean() {
+	local _dir;
+	for _dir in ${ARG_CLEAN_BUILDS}; do
+		case "${_dir}" in
+		build)	ex_rtl_fileop rm "${PKG_BUILD_DIR}"; ;;
+		src)	ex_rtl_fileop rm "${PKG_SUBDIR}"; ;;
+		dest)	ex_rtl_fileop rm "${PKG_DESTDIR}"; ;;
+		*)	return 1; ;;
+		esac;
+	done;
+};
+
+# vim:filetype=sh

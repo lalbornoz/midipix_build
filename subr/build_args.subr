@@ -8,8 +8,10 @@ BUILD_ARGS_SPEC="
 	ARCH:arg:-a:
 	BUILD:arg:-b:
 	ARG_CLEAN:-c:
+	ARG_CLEAN_BUILDS:arg:-C:
 	ARG_DEBUG_MINIPIX:--debug-minipix:
 	ARG_OFFLINE:-N:
+	ARG_PACKAGE:-p:
 	ARG_PARALLEL:optarg:-P:auto
 	ARG_RELAXED:-R:
 	ARG_RESTART:arg:-r:
@@ -57,7 +59,14 @@ build_args() {
 			shift;
 		fi;
 	done;
-	if [ -n "${ARG_TARBALL}" ]; then
+	if [ -n "${ARG_CLEAN_BUILDS}" ]; then
+		ARG_CLEAN_BUILDS="$(echo "${ARG_CLEAN_BUILDS}" | sed "s/,/ /g")";
+	fi;
+	if [ -n "${ARG_CLEAN_BUILDS}" ]\
+	|| [ "${ARG_PACKAGE:-0}" -eq 1 ]\
+	&& [ -n "${ARG_TARBALL}" ]; then
+		unset ARG_TARBALL;
+	elif [ -n "${ARG_TARBALL}" ]; then
 		if [ "${ARG_TARBALL#-t.}" != "${ARG_TARBALL}" ]; then
 			TARBALL_SUFFIX="${ARG_TARBALL#-t.}";
 		else
@@ -78,7 +87,7 @@ build_args() {
 		else
 			ARG_RESTART_AT=ALL;
 		fi;
-		ARG_RESTART="$(echo ${ARG_RESTART} | sed "s/,/ /g")";
+		ARG_RESTART="$(echo "${ARG_RESTART}" | sed "s/,/ /g")";
 	fi;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
