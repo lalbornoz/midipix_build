@@ -60,6 +60,8 @@ build_init() {
 	trap "rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";	\
 		ex_rtl_log_msg failexit \"Build aborted.\";"		\
 		HUP INT TERM USR1 USR2;
+	trap "rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";"	\
+		EXIT;
 };
 
 # vim:filetype=sh
