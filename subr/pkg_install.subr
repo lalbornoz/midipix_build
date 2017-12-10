@@ -4,8 +4,12 @@
 
 pkg_install() {
 	ex_rtl_fileop mkdir "${PKG_PREFIX}";
-	tar -C "${PKG_DESTDIR}" -cpf - . |\
+	tar -C "${PKG_DESTDIR}" -cpf - .		|\
 		tar -C "${PKG_PREFIX}" --overwrite -xpf -;
+	if [ "${ARG_PACKAGE:-0}" -eq 1 ]; then
+		tar -C "${PKG_DESTDIR}" -cpf - .	|\
+			gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"
+	fi;
 };
 
 # vim:filetype=sh
