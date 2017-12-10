@@ -1,13 +1,17 @@
-usage: ./build.sh [-4|6]     [-a nt32|nt64]    [-b debug|release]
-                  [-c] [-h] [-N]  [-P [jobs]]  [-r ALL[:step,..]]
-                  [-r name[,..][:step,..]] [-R] [-t[.gz|.bz2|.xz]
-                  [-v[v[v]]] [-x] [<target>[ ..]]
+usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
+                  [-c] [-C dir[,..]] [-h] [-N] [-P [jobs]]
+                  [-r ALL[:step,..]] [-r name[,..][:step,..]]
+                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x] [<target>[ ..]]
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
         -c                      Clean ${PREFIX} before processing build scripts.
+        -C dir[,..]             Clean build directory (build,) source directory (src,) and/or
+                                destination directory (dest) after successful package builds;
+                                excludes -t, but may be passed alongside -p.
         -h                      Show this screen.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
+        -p                      Create package tarballs; excludes -t.
         -P [jobs]               Enables parallelisation at target-level, whenever applicable.
                                 The maximum count of jobs defaults to the number of logical
                                 processors on the host system.
