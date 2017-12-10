@@ -7,7 +7,7 @@ pkg_clean() {
 	for _dir in ${ARG_CLEAN_BUILDS}; do
 		case "${_dir}" in
 		build)	ex_rtl_fileop rm "${PKG_BUILD_DIR}"; ;;
-		src)	ex_rtl_fileop rm "${PKG_SUBDIR}"; ;;
+		src)	ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}"; ;;
 		dest)	ex_rtl_fileop rm "${PKG_DESTDIR}"; ;;
 		*)	return 1; ;;
 		esac;
