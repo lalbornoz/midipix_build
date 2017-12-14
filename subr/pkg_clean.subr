@@ -4,6 +4,9 @@
 
 pkg_clean() {
 	local _dir;
+	if [ -n "${PKG_DEPS_BASE}" ]; then
+		return 0;
+	fi;
 	for _dir in ${ARG_CLEAN_BUILDS}; do
 		case "${_dir}" in
 		build)	ex_rtl_fileop rm "${PKG_BUILD_DIR}"; ;;
