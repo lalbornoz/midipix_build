@@ -42,7 +42,8 @@ build_init() {
 	_env_vars="$(export | sed -e 's/^export //' -e 's/=.*$//')";
 	_env_vars_except="${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
 	for _env_var in ${_env_vars}; do
-		if [ "${_env_var#PKG_}" != "${_env_var}" ]; then
+		if [ "${_env_var#DEFAULT_}" != "${_env_var}" ]\
+		|| [ "${_env_var#PKG_}" != "${_env_var}" ]; then
 			_env_vars_except="${_env_vars_except:+${_env_vars_except} }${_env_var}";
 		fi;
 	done;
