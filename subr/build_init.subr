@@ -9,7 +9,7 @@ build_fini() {
 };
 
 build_init() {
-	local __;
+	local __ _env_vars _env_vars_except _env_var;
 	set -o noglob;
 	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
 	&& [ -e /proc/cpuinfo ]; then
@@ -39,9 +39,14 @@ build_init() {
 	elif [ ${ARG_IPV6_ONLY:-0} -eq 1 ]; then
 		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
 	fi;
-	ex_rtl_unset_vars $(ex_rtl_lfilter_not				\
-		"$(export | sed -e 's/^export //' -e 's/=.*$//')"	\
-		"${DEFAULT_CLEAR_ENV_VARS_EXCEPT}");
+	_env_vars="$(export | sed -e 's/^export //' -e 's/=.*$//')";
+	_env_vars_except="${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
+	for _env_var in ${_env_vars}; do
+		if [ "${_env_var#PKG_}" != "${_env_var}" ]; then
+			_env_vars_except="${_env_vars_except:+${_env_vars_except} }${_env_var}";
+		fi;
+	done;
+	ex_rtl_unset_vars $(ex_rtl_lfilter_not "${_env_vars}" "${_env_vars_except}");
 	ex_rtl_fileop mkdir "${BUILD_DLCACHEDIR}" "${BUILD_WORKDIR}";
 	if [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 		ex_rtl_log_msg failexit "Error: another build targeting this architecture and build type is currently in progress.";
