@@ -9,3 +9,14 @@
     fi
  }
  
+--- SmallBASIC/src/platform/console/main.c.orig	2017-12-19 08:54:21.692000000 +0000
++++ SmallBASIC/src/platform/console/main.c	2017-12-19 13:53:21.540000000 +0000
+@@ -253,7 +253,7 @@
+   return 1;
+ }
+ 
+-#if defined(__GNUC__)
++#if defined(__GLIBC__)
+ // for analysing excessive malloc calls using kdbg
+ extern void *__libc_malloc(size_t size);
+ void* malloc (size_t size) {
