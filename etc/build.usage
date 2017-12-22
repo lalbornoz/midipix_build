@@ -15,6 +15,8 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
         -P [jobs]               Enables parallelisation at target-level, whenever applicable.
                                 The maximum count of jobs defaults to the number of logical
                                 processors on the host system.
+                                If -R is not specified and at least one (1) package fails to build,
+                                all remaining package builds will be forcibly aborted for convenience.
         -r ALL[:step,..]
         -r name[,..][:step,..]  Restart the all packages/the specified comma-separated package(s)
                                 completely or at optionally specified comma-separated step(s).

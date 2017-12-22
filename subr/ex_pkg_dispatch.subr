@@ -21,11 +21,6 @@ exp_pkg_dispatch() {
 		"${_dispatch_fn}" start_pkg "${_pkg_name}" "${_tgt_name}";
 		(set -o errexit -o noglob; BUILD_IS_PARENT=0;
 		ex_pkg_env "${_pkg_name}" "${_tgt_name}" "${_restart_at}";
-		trap "if [ \${?} -eq 0 ]; then							\
-			echo \"done ${_pkg_name} ${_tgt_name}\" >&3;				\
-		      else									\
-			echo \"fail ${_pkg_name} ${_tgt_name}\" >&3;				\
-		      fi;" EXIT HUP INT TERM USR1 USR2;
 		ex_pkg_exec "${_pkg_name}" "${_tgt_name}" "${_restart_at}"			\
 			"${_dispatch_fn}";) 1>"${_stderrout_path}" 2>&1 3>"${_pipe_path}" &
 		: $((${_njobs_vname}+=1));
