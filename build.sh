@@ -45,7 +45,10 @@ buildp_dispatch() {
 			else
 				ex_rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
-				ex_rtl_log_msg failexit "Build failed in \`${_pkg_name}'.";
+				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}'.";
+				ex_rtl_log_msg fail "Terminating pending builds...";
+				pkill -P "${$}";
+				exit 1;
 			fi; ;;
 	disabled_pkg)	ex_rtl_log_msg vnfo "Skipping disabled package \`${_pkg_name}.'"; ;;
 	skipped_pkg)	ex_rtl_log_msg vnfo "Skipping finished package \`${_pkg_name}.'"; ;;
