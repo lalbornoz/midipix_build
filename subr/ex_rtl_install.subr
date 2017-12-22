@@ -32,6 +32,9 @@ ex_rtl_install() {
 	*)
 		_file_fname_src="${1%=*}";
 		_file_fname_dst="${1#*=}";
+		if [ "${_file_fname_src#/}" = "${_file_fname_src}" ]; then
+			_file_fname_src="${_prefix:+${_prefix}/}${_file_fname_src}";
+		fi;
 		if [ "${_file_fname_dst#/}" = "${_file_fname_dst}" ]; then
 			_file_fname_dst="${_prefix:+${_prefix}/}${_file_fname_dst}";
 		fi;
