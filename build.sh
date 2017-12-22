@@ -11,7 +11,7 @@ buildp_dispatch() {
 			ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
 			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
-			for _build_tgt_lc in ${BUILD_TARGETS:-${ALL_TARGETS}}; do
+			for _build_tgt_lc in ${BUILD_TARGETS:-${TARGETS_DEFAULT}}; do
 				ex_pkg_dispatch "${_build_tgt_lc}"				\
 						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
 						buildp_dispatch;
