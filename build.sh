@@ -78,6 +78,8 @@ buildp_dispatch() {
 				dist_digest)	exit 0; ;;
 				dist_tarballs)	exit 0; ;;
 				esac;
+			elif [ "${_pkg_name}" = "dist_tarballs" ]; then
+				ex_pkg_state_set "${_pkg_name}" -all -finish;
 			fi;
 			if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
 				set -o xtrace;
