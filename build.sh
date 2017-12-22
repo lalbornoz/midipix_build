@@ -3,7 +3,7 @@
 #
 
 buildp_dispatch() {
-	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"						\
+	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"					\
 		_build_tgt_meta _build_tgt_lc;
 	case "${_msg}" in
 	# Top-level
@@ -11,16 +11,13 @@ buildp_dispatch() {
 			ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
 			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
-			for _build_tgt_meta in ${BUILD_TARGETS_META:-world}; do
-				for _build_tgt_lc in $(ex_rtl_get_var_unsafe				\
-						"$(ex_rtl_toupper "${_build_tgt_meta}")_TARGET"); do
-					ex_pkg_dispatch "${_build_tgt_lc}"				\
-							"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
-							buildp_dispatch;
-					if [ ${?} -ne 0 ]; then
-						break;
-					fi;
-				done;
+			for _build_tgt_lc in ${BUILD_TARGETS:-${ALL_TARGETS}}; do
+				ex_pkg_dispatch "${_build_tgt_lc}"				\
+						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
+						buildp_dispatch;
+				if [ ${?} -ne 0 ]; then
+					break;
+				fi;
 			done;
 			buildp_dispatch finish_build; ;;
 	finish_build)	build_fini;
