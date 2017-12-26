@@ -1,0 +1,11 @@
+--- libz-1.2.8.2015.12.26/Makefile.in.orig	2015-12-21 22:12:17.000000000 +0000
++++ libz-1.2.8.2015.12.26/Makefile.in	2017-12-26 10:04:53.364000000 +0000
+@@ -145,7 +145,7 @@
+ 
+ install-shared-lib-so: libz.so
+ 	mkdir -p $(DESTDIR)$(libdir)
+-	install -m 644 libz.so.$(VERSION) $(DESTDIR)$(libdir)/libz.so.$(VERSION)
++	install -m 755 libz.so.$(VERSION) $(DESTDIR)$(libdir)/libz.so.$(VERSION)
+ 	ln -fs libz.so.$(VERSION) $(DESTDIR)$(libdir)/libz.so.1
+ 	ln -fs libz.so.$(VERSION) $(DESTDIR)$(libdir)/libz.so
+ 
