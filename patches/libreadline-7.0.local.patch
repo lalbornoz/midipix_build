@@ -1,0 +1,12 @@
+diff -ru readline-7.0.orig/shlib/Makefile.in readline-7.0/shlib/Makefile.in
+--- readline-7.0.orig/shlib/Makefile.in	2015-07-13 00:41:58.000000000 +0200
++++ readline-7.0/shlib/Makefile.in	2017-12-30 00:39:53.919481249 +0100
+@@ -86,7 +86,7 @@
+ SHOBJ_LIBS = @SHOBJ_LIBS@
+ 
+ SHLIB_XLDFLAGS = @LDFLAGS@ @SHLIB_XLDFLAGS@
+-SHLIB_LIBS = @SHLIB_LIBS@
++SHLIB_LIBS = @SHLIB_LIBS@ -lncurses
+ 
+ SHLIB_DOT = @SHLIB_DOT@
+ SHLIB_LIBPREF = @SHLIB_LIBPREF@
