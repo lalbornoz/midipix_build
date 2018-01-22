@@ -1,0 +1,112 @@
+--- unix/configure.orig	2017-09-07 12:54:11.000000000 +0000
++++ unix/configure	2018-01-22 18:01:25.880000000 +0000
+@@ -3957,7 +3957,7 @@
+ 
+ $as_echo "#define _REENTRANT 1" >>confdefs.h
+ 
+-	if test "`uname -s`" = "SunOS" ; then
++	if test "${target}" = "SunOS" ; then
+ 
+ $as_echo "#define _POSIX_PTHREAD_SEMANTICS 1" >>confdefs.h
+ 
+@@ -4893,13 +4893,13 @@
+ 	if test "${TEA_PLATFORM}" = "windows" ; then
+ 	    tcl_cv_sys_version=windows
+ 	else
+-	    tcl_cv_sys_version=`uname -s`-`uname -r`
++	    tcl_cv_sys_version=${target}-`uname -r`
+ 	    if test "$?" -ne 0 ; then
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: can't find uname command" >&5
+ $as_echo "$as_me: WARNING: can't find uname command" >&2;}
+ 		tcl_cv_sys_version=unknown
+ 	    else
+-		if test "`uname -s`" = "AIX" ; then
++		if test "${target}" = "AIX" ; then
+ 		    tcl_cv_sys_version=AIX-`uname -v`.`uname -r`
+ 		fi
+ 	    fi
+@@ -7429,7 +7429,7 @@
+ fi
+ 
+ 
+-if test "`uname -s`" = "Darwin" && test "${TCL_THREADS}" = 1 && \
++if test "${target}" = "Darwin" && test "${TCL_THREADS}" = 1 && \
+ 	test "`uname -r | awk -F. '{print $1}'`" -lt 7; then
+     # prior to Darwin 7, realpath is not threadsafe, so don't
+     # use it when threads are enabled, c.f. bug # 711232
+@@ -7937,7 +7937,7 @@
+ 
+ fi
+ 
+-    if test "`uname -s`" = "Darwin" && \
++    if test "${target}" = "Darwin" && \
+ 	    test "`uname -r | awk -F. '{print $1}'`" -gt 5; then
+ 	# Starting with Darwin 6 (Mac OSX 10.2), gethostbyX
+ 	# are actually MT-safe as they always return pointers
+@@ -7949,7 +7949,7 @@
+ $as_echo "#define HAVE_MTSAFE_GETHOSTBYADDR 1" >>confdefs.h
+ 
+ 
+-    elif test "`uname -s`" = "HP-UX" && \
++    elif test "${target}" = "HP-UX" && \
+ 	      test "`uname -r|sed -e 's|B\.||' -e 's|\..*$||'`" -gt 10; then
+         # Starting with HPUX 11.00 (we believe), gethostbyX
+         # are actually MT-safe as they always return pointers
+@@ -8330,7 +8330,7 @@
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for advanced notifier support" >&5
+ $as_echo_n "checking for advanced notifier support... " >&6; }
+-case x`uname -s` in
++case x${target} in
+   xLinux)
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: epoll(7)" >&5
+ $as_echo "epoll(7)" >&6; }
+@@ -9676,7 +9676,7 @@
+ # Darwin specific API checks and defines
+ #--------------------------------------------------------------------
+ 
+-if test "`uname -s`" = "Darwin" ; then
++if test "${target}" = "Darwin" ; then
+     for ac_func in getattrlist
+ do :
+   ac_fn_c_check_func "$LINENO" "getattrlist" "ac_cv_func_getattrlist"
+@@ -9942,13 +9942,13 @@
+ 	if test "${TEA_PLATFORM}" = "windows" ; then
+ 	    tcl_cv_sys_version=windows
+ 	else
+-	    tcl_cv_sys_version=`uname -s`-`uname -r`
++	    tcl_cv_sys_version=${target}-`uname -r`
+ 	    if test "$?" -ne 0 ; then
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: can't find uname command" >&5
+ $as_echo "$as_me: WARNING: can't find uname command" >&2;}
+ 		tcl_cv_sys_version=unknown
+ 	    else
+-		if test "`uname -s`" = "AIX" ; then
++		if test "${target}" = "AIX" ; then
+ 		    tcl_cv_sys_version=AIX-`uname -v`.`uname -r`
+ 		fi
+ 	    fi
+@@ -10133,9 +10133,9 @@
+ 
+     DTRACE_SRC="\${DTRACE_SRC}"
+     DTRACE_HDR="\${DTRACE_HDR}"
+-    if test "`uname -s`" != "Darwin" ; then
++    if test "${target}" != "Darwin" ; then
+ 	DTRACE_OBJ="\${DTRACE_OBJ}"
+-	if test "`uname -s`" = "SunOS" -a "$SHARED_BUILD" = "0" ; then
++	if test "${target}" = "SunOS" -a "$SHARED_BUILD" = "0" ; then
+ 	    # Need to create an intermediate object file to ensure tclDTrace.o
+ 	    # gets included when linking against the static tcl library.
+ 	    STLIB_LD='stlib_ld () { /usr/ccs/bin/ld -r -o $${1%.a}.o "$${@:2}" && '"${STLIB_LD}"' $${1} $${1%.a}.o ; } && stlib_ld'
+@@ -10219,9 +10219,9 @@
+ # AIX remembers this path and will attempt to use it at run-time to look
+ # up the Tcl library.
+ 
+-if test "`uname -s`" = "Darwin" ; then
++if test "${target}" = "Darwin" ; then
+ 
+-    if test "`uname -s`" = "Darwin" ; then
++    if test "${target}" = "Darwin" ; then
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to package libraries" >&5
+ $as_echo_n "checking how to package libraries... " >&6; }
+ 	# Check whether --enable-framework was given.
