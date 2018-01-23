@@ -4,13 +4,24 @@
 
 buildp_dispatch() {
 	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"					\
-		_build_tgt_meta _build_tgt_lc;
+		_build_tgt_meta _build_tgt_lc _build_tgt_pkg_names _build_tgt_uc;
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_args "${@}"; build_init; build_checks;
 			ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
 			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
+			if [ -n "${ARG_RESTART}" ]; then
+				_build_tgt_pkg_names="";
+				for _build_tgt_lc in ${BUILD_TARGETS:-${TARGETS_DEFAULT}}; do
+					_build_tgt_uc="$(ex_rtl_toupper "${_build_tgt_lc}")";
+					_build_tgt_pkg_names="${_build_tgt_pkg_names:+${_build_tgt_pkg_names} }$(ex_rtl_get_var_unsafe ${_build_tgt_uc}_PACKAGES)";
+				done;
+				_build_tgt_pkg_names="$(ex_rtl_lfilter_not "${ARG_RESTART}" "${_build_tgt_pkg_names}")";
+				if [ -n "${_build_tgt_pkg_names}" ]; then
+					ex_rtl_log_msg failexit "Error: package(s) \`${_build_tgt_pkg_names}' unknown.";
+				fi;
+			fi;
 			for _build_tgt_lc in ${BUILD_TARGETS:-${TARGETS_DEFAULT}}; do
 				ex_pkg_dispatch "${_build_tgt_lc}"				\
 						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
