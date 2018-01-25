@@ -42,24 +42,6 @@ diff -ru coreutils-8.27.orig/Makefile.in coreutils-8.27/Makefile.in
  info_TEXINFOS = doc/coreutils.texi
  doc_coreutils_TEXINFOS = \
    doc/perm.texi \
-@@ -14773,7 +14775,8 @@
- 				$$argv$(EXEEXT))			\
- 	&& : $${SOURCE_DATE_EPOCH=`cat $(srcdir)/.timestamp 2>/dev/null || :`} \
- 	&& export SOURCE_DATE_EPOCH && $(run_help2man)			\
--		     --source='$(PACKAGE_STRING)'			\
-+		     --no-discard-stderr				\
-+                    --source='$(PACKAGE_STRING)'			\
- 		     --include=$(srcdir)/man/$$name.x			\
- 		     --output=$$t/$$name.1				\
- 		     --info-page='\(aq(coreutils) '$$name' invocation\(aq' \
-@@ -14786,6 +14789,7 @@
- 	  && chmod a-w $@-t						\
- 	  && mv $@-t $@
- .PHONY: check-root
-+
- check-root:
- 	$(MAKE) check TESTS='$(root_tests)' SUBDIRS=.
- 
 diff -ru coreutils-8.27.orig/src/fs.h coreutils-8.27/src/fs.h
 --- coreutils-8.27.orig/src/fs.h	2017-03-09 05:44:05.000000000 +0100
 +++ coreutils-8.27/src/fs.h	2017-08-11 19:05:05.283026746 +0200
