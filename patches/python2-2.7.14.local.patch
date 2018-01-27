@@ -1,0 +1,171 @@
+--- a/Lib/smtpd.py
++++ b/Lib/smtpd.py
+@@ -1,4 +1,3 @@
+-#! /usr/bin/env python
+ """An RFC 2821 smtp proxy.
+ 
+ Usage: %(program)s [options] [localhost:localport [remotehost:remoteport]]
+--- a/Lib/smtplib.py
++++ b/Lib/smtplib.py
+@@ -1,5 +1,3 @@
+-#! /usr/bin/env python
+-
+ '''SMTP/ESMTP client class.
+ 
+ This should follow RFC 821 (SMTP), RFC 1869 (ESMTP), RFC 2554 (SMTP
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -238,6 +238,7 @@
+ ##########################################################################
+ # Parser
+ PGEN=		Parser/pgen$(EXE)
++PGEN_FOR_BUILD=	$(PGEN)
+ 
+ PSRCS=		\
+ 		Parser/acceler.c \
+@@ -498,8 +499,9 @@
+ 	    *) quiet="";; \
+ 	esac; \
+ 	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
++		_PYTHON_HOST_PLATFORM='$(_PYTHON_HOST_PLATFORM)' \
+ 		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
+-		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
++		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py build
+ 
+ # Build static library
+ # avoid long command lines, same as LIBRARY_OBJS
+@@ -1206,10 +1208,10 @@
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
+-	   	--prefix=$(prefix) \
+-		--install-scripts=$(BINDIR) \
+-		--install-platlib=$(DESTSHARED) \
+-		--root=$(DESTDIR)/
++	   	--prefix=$(DESTDIR)///./$(prefix) \
++		--install-scripts=$(DESTDIR)/./$(BINDIR) \
++		--install-platlib=$(DESTDIR)/./$(DESTSHARED) \
++		--root=/
+ 	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata.py*
+ 
+ # Here are a couple of targets for MacOSX again, to install a full
+--- a/configure
++++ b/configure
+@@ -3212,6 +3212,9 @@
+ 	*-*-cygwin*)
+ 		ac_sys_system=Cygwin
+ 		;;
++	*-*-midipix*)
++		ac_sys_system=Midipix
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -3258,6 +3261,9 @@
+ 	*-*-cygwin*)
+ 		_host_cpu=
+ 		;;
++	*-*-midipix*)
++		_host_cpu=
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -14570,7 +14576,7 @@
+   $as_echo_n "(cached) " >&6
+ else
+   if test "$cross_compiling" = yes; then :
+-  ac_cv_have_long_long_format="cross -- assuming no"
++  ac_cv_have_long_long_format="cross -- assuming yes"
+    if test x$GCC = xyes; then
+     save_CFLAGS=$CFLAGS
+     CFLAGS="$CFLAGS -Werror -Wformat"
+@@ -14651,7 +14657,7 @@
+ $as_echo "$ac_cv_have_long_long_format" >&6; }
+ fi
+ 
+-if test "$ac_cv_have_long_long_format" = yes
++if test "$ac_cv_have_long_long_format" != no
+ then
+ 
+ $as_echo "#define PY_FORMAT_LONG_LONG \"ll\"" >>confdefs.h
+--- a/setup.py
++++ b/setup.py
+@@ -294,6 +294,13 @@
+                           (ext.name, sys.exc_info()[1]))
+             self.failed.append(ext.name)
+             return
++
++        if cross_compiling:
++            self.announce(
++                'INFO: skipping import check for cross-compiled: "%s"' %
++                ext.name)
++            return
++
+         # Workaround for Mac OS X: The Carbon-based modules cannot be
+         # reliably imported into a command-line Python
+         if 'Carbon' in ext.extra_link_args:
+@@ -376,13 +383,6 @@
+         finally:
+             os.unlink(tmpfile)
+ 
+-        if multiarch_path_component != '':
+-            add_dir_to_list(self.compiler.library_dirs,
+-                            '/usr/lib/' + multiarch_path_component)
+-            add_dir_to_list(self.compiler.include_dirs,
+-                            '/usr/include/' + multiarch_path_component)
+-            return
+-
+         if not find_executable('dpkg-architecture'):
+             return
+         opt = ''
+@@ -398,10 +398,6 @@
+             if ret >> 8 == 0:
+                 with open(tmpfile) as fp:
+                     multiarch_path_component = fp.readline().strip()
+-                add_dir_to_list(self.compiler.library_dirs,
+-                                '/usr/lib/' + multiarch_path_component)
+-                add_dir_to_list(self.compiler.include_dirs,
+-                                '/usr/include/' + multiarch_path_component)
+         finally:
+             os.unlink(tmpfile)
+ 
+@@ -439,11 +435,6 @@
+ 
+     def detect_modules(self):
+         # Ensure that /usr/local is always used
+-        if not cross_compiling:
+-            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-            add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+-        if cross_compiling:
+-            self.add_gcc_paths()
+         self.add_multiarch_paths()
+ 
+         # Add paths specified in the environment variables LDFLAGS and
+@@ -501,16 +492,6 @@
+         # be assumed that no additional -I,-L directives are needed.
+         inc_dirs = self.compiler.include_dirs[:]
+         lib_dirs = self.compiler.library_dirs[:]
+-        if not cross_compiling:
+-            for d in (
+-                '/usr/include',
+-                ):
+-                add_dir_to_list(inc_dirs, d)
+-            for d in (
+-                '/lib64', '/usr/lib64',
+-                '/lib', '/usr/lib',
+-                ):
+-                add_dir_to_list(lib_dirs, d)
+         exts = []
+         missing = []
+ 
+@@ -2002,6 +1983,9 @@
+         return True
+ 
+     def configure_ctypes(self, ext):
++        if cross_compiling:
++            self.use_system_libffi = True
++
+         if not self.use_system_libffi:
+             if host_platform == 'darwin':
+                 return self.configure_ctypes_darwin(ext)
