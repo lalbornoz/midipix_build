@@ -1,0 +1,92 @@
+diff -ru xterm-331.orig/configure xterm-331/configure
+--- xterm-331.orig/configure	2017-12-25 13:39:17.000000000 +0100
++++ xterm-331/configure	2018-02-07 21:24:41.886291513 +0100
+@@ -2574,7 +2574,7 @@
+ 	cf_xopen_source="-D_SGI_SOURCE"
+ 	cf_XOPEN_SOURCE=
+ 	;;
+-(linux*|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin)
++(linux*|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|midipix*)
+ 
+ echo "$as_me:2579: checking if we must define _GNU_SOURCE" >&5
+ echo $ECHO_N "checking if we must define _GNU_SOURCE... $ECHO_C" >&6
+diff -ru xterm-331.orig/main.c xterm-331/main.c
+--- xterm-331.orig/main.c	2017-12-20 02:17:24.000000000 +0100
++++ xterm-331/main.c	2018-02-07 21:35:36.776089906 +0100
+@@ -154,7 +154,7 @@
+ #define KANJI
+ #endif
+ 
+-#ifdef linux
++#if defined(linux) || defined(__midipix__)
+ #define USE_SYSV_PGRP
+ #define USE_SYSV_SIGNALS
+ #define WTMP
+@@ -2785,7 +2785,7 @@
+     }
+ }
+ 
+-#if defined(__osf__) || (defined(__GLIBC__) && !defined(USE_USG_PTYS)) || defined(__DragonFly__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
++#if defined(__osf__) || (defined(__GLIBC__) && !defined(USE_USG_PTYS)) || defined(__DragonFly__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__) || defined(__midipix__)
+ #define USE_OPENPTY 1
+ static int opened_tty = -1;
+ #endif
+diff -ru xterm-331.orig/ptyx.h xterm-331/ptyx.h
+--- xterm-331.orig/ptyx.h	2017-12-30 15:42:05.000000000 +0100
++++ xterm-331/ptyx.h	2018-02-07 21:04:06.021826172 +0100
+@@ -185,7 +185,7 @@
+ #undef USE_PTY_SEARCH
+ #elif defined(PUCC_PTYD)
+ #undef USE_PTY_SEARCH
+-#elif (defined(sun) && defined(SVR4)) || defined(_ALL_SOURCE) || defined(__CYGWIN__)
++#elif (defined(sun) && defined(SVR4)) || defined(_ALL_SOURCE) || defined(__CYGWIN__) || defined(__midipix__)
+ #undef USE_PTY_SEARCH
+ #elif defined(__OpenBSD__)
+ #undef USE_PTY_SEARCH
+diff -ru xterm-331.orig/xtermcap.h xterm-331/xtermcap.h
+--- xterm-331.orig/xtermcap.h	2013-06-23 17:34:37.000000000 +0200
++++ xterm-331/xtermcap.h	2018-02-07 21:15:52.683355025 +0100
+@@ -60,6 +60,8 @@
+ 
+ #ifdef HAVE_NCURSES_CURSES_H
+ #include <ncurses/curses.h>
++#elif defined(__midipix__)
++#include <ncurses/ncurses.h>
+ #else
+ #include <curses.h>
+ #endif
+diff -ru xterm-331.orig/xterm.h xterm-331/xterm.h
+--- xterm-331.orig/xterm.h	2017-12-26 12:37:37.000000000 +0100
++++ xterm-331/xterm.h	2018-02-07 21:10:07.983160836 +0100
+@@ -162,7 +162,7 @@
+ #define HAVE_UTMP_UT_XTIME 1
+ #endif
+ 
+-#if defined(linux) || defined(__CYGWIN__)
++#if defined(linux) || defined(__CYGWIN__) || defined(__midipix__)
+ #define USE_LASTLOG
+ #define HAVE_LASTLOG_H
+ #define USE_STRUCT_LASTLOG
+@@ -199,7 +199,7 @@
+ #define USE_TTY_GROUP
+ #endif
+ 
+-#if defined(__CYGWIN__)
++#if defined(__CYGWIN__) || defined(__midipix__)
+ #define HAVE_NCURSES_TERM_H 1
+ #endif
+ 
+diff -ru xterm-331.orig/xterm_io.h xterm-331/xterm_io.h
+--- xterm-331.orig/xterm_io.h	2017-05-18 23:15:14.000000000 +0200
++++ xterm-331/xterm_io.h	2018-02-07 21:06:56.362468943 +0100
+@@ -74,6 +74,10 @@
+ #define USE_TERMIOS
+ #endif
+ 
++#ifdef __midipix__
++#define USE_POSIX_TERMIOS
++#endif
++
+ #ifdef __SCO__
+ #define USE_TERMIOS
+ #ifndef _SVID3
