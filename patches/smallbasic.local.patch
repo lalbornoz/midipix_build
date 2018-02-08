@@ -1,22 +1,22 @@
---- SmallBASIC/configure.orig	2017-11-20 01:35:25.276000000 +0000
-+++ SmallBASIC/configure	2017-11-20 01:37:03.332000000 +0000
-@@ -5171,7 +5171,7 @@
+--- SmallBASIC/configure.ac.orig	2018-02-04 10:05:56.100000000 +0000
++++ SmallBASIC/configure.ac	2018-02-08 11:39:39.740000000 +0000
+@@ -117,7 +117,7 @@
  
- $as_echo "#define USE_PCRE 1" >>confdefs.h
- 
+    if test "${have_pcre}" = "yes" ; then
+      AC_DEFINE(USE_PCRE, 1, [match.c used with libpcre.])
 -     PACKAGE_LIBS="${PACKAGE_LIBS} `pcre-config --libs`"
 +     PACKAGE_LIBS="${PACKAGE_LIBS} ${PCRE_LIBS}"
     fi
  }
  
---- SmallBASIC/src/platform/console/main.c.orig	2017-12-19 08:54:21.692000000 +0000
-+++ SmallBASIC/src/platform/console/main.c	2017-12-19 13:53:21.540000000 +0000
-@@ -253,7 +253,7 @@
+--- SmallBASIC/src/platform/console/main.c.orig	2018-02-04 10:05:56.108000000 +0000
++++ SmallBASIC/src/platform/console/main.c	2018-02-08 11:39:11.172000000 +0000
+@@ -262,7 +262,7 @@
    return 1;
  }
  
--#if defined(__GNUC__)
-+#if defined(__GLIBC__)
+-#if defined(__GNUC__) && !defined(__MACH__) && !defined(_Win32)
++#if defined(__GLIBC__) && !defined(__MACH__) && !defined(_Win32)
  // for analysing excessive malloc calls using kdbg
  extern void *__libc_malloc(size_t size);
- void* malloc (size_t size) {
+ void *malloc(size_t size) {
