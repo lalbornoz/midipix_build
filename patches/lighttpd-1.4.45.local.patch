@@ -1,0 +1,34 @@
+--- lighttpd-1.4.45/src/network.c.orig	2017-01-14 05:05:17.000000000 +0000
++++ lighttpd-1.4.45/src/network.c	2018-02-17 20:39:33.920000000 +0000
+@@ -53,6 +53,7 @@
+ void
+ network_accept_tcp_nagle_disable (const int fd)
+ {
++#ifndef __midipix__
+     static int noinherit_tcpnodelay = -1;
+     int opt;
+ 
+@@ -70,6 +71,7 @@
+ 
+     opt = 1;
+     (void)setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt));
++#endif
+ }
+ 
+ static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
+@@ -445,6 +447,7 @@
+ 		goto error_free_socket;
+ 	}
+ 
++#ifndef __midipix__
+ 	if (srv_socket->addr.plain.sa_family != AF_UNIX) {
+ 		val = 1;
+ 		if (setsockopt(srv_socket->fd, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val)) < 0) {
+@@ -452,6 +455,7 @@
+ 			goto error_free_socket;
+ 		}
+ 	}
++#endif
+ 
+ 	if (0 != bind(srv_socket->fd, (struct sockaddr *) &(srv_socket->addr), addr_len)) {
+ 		switch(srv_socket->addr.plain.sa_family) {
