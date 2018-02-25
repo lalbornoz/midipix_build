@@ -10,11 +10,9 @@ exp_rtl_fetch_url_git() {
 			git pull origin "${_branch:-main}");
 	else
 		git clone "${_url}" "${BUILD_DLCACHEDIR}/${_subdir}";
-		if [ -n "${_branch}" -a		\
-		     \( -z "${_branch#main}" \) -a	\
-		     \( -z "${_branch#master}" \) ]; then
-			(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}"	&&\
-				git checkout -b "${_branch}");
+		if [ -n "${_branch}" ]; then
+			(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
+				git checkout "${_branch}");
 		fi;
 	fi;
 	_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}";
