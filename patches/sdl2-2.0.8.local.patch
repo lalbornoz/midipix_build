@@ -1,0 +1,57 @@
+diff -ru SDL2-2.0.8.orig/configure SDL2-2.0.8/configure
+--- SDL2-2.0.8.orig/configure	2018-03-01 17:34:41.000000000 +0100
++++ SDL2-2.0.8/configure	2018-03-26 21:34:16.065368148 +0200
+@@ -23829,7 +23829,7 @@
+ CheckWarnAll
+ 
+ case "$host" in
+-    *-*-linux*|*-*-uclinux*|*-*-gnu*|*-*-k*bsd*-gnu|*-*-bsdi*|*-*-freebsd*|*-*-dragonfly*|*-*-netbsd*|*-*-openbsd*|*-*-sysv5*|*-*-solaris*|*-*-hpux*|*-*-aix*|*-*-minix*|*-*-nto*)
++    *-*-linux*|*-*-uclinux*|*-*-gnu*|*-*-k*bsd*-gnu|*-*-bsdi*|*-*-freebsd*|*-*-dragonfly*|*-*-netbsd*|*-*-openbsd*|*-*-sysv5*|*-*-solaris*|*-*-hpux*|*-*-aix*|*-*-minix*|*-*-nto*|*-*-midipix*)
+         case "$host" in
+             *-*-android*)
+                 # Android
+@@ -23854,6 +23854,7 @@
+             *-*-knetbsd*-gnu)   ARCH=knetbsd-gnu ;;
+             *-*-kopenbsd*-gnu)  ARCH=kopenbsd-gnu ;;
+             *-*-gnu*)           ARCH=gnu ;; # must be last of the gnu variants
++            *-*-midipix*)       ARCH=gnu ;;
+             *-*-bsdi*)          ARCH=bsdi ;;
+             *-*-freebsd*)       ARCH=freebsd ;;
+             *-*-dragonfly*)     ARCH=freebsd ;;
+diff -ru SDL2-2.0.8.orig/Makefile.in SDL2-2.0.8/Makefile.in
+--- SDL2-2.0.8.orig/Makefile.in	2018-03-01 17:34:41.000000000 +0100
++++ SDL2-2.0.8/Makefile.in	2018-03-26 22:59:44.238745288 +0200
+@@ -124,7 +124,7 @@
+ LT_REVISION = @LT_REVISION@
+ LT_LDFLAGS  = -no-undefined -rpath $(libdir) -release $(LT_RELEASE) -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+ 
+-all: $(srcdir)/configure Makefile $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET) $(objects)/$(SDLTEST_TARGET)
++all: $(srcdir)/configure Makefile $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET)
+ 
+ $(srcdir)/configure: $(srcdir)/configure.in
+ 	@echo "Warning, configure is out of date, please re-run autogen.sh"
+@@ -167,11 +167,10 @@
+ 	    $(INSTALL) -m 644 $(srcdir)/include/SDL_revision.h $(DESTDIR)$(includedir)/SDL2/SDL_revision.h; \
+ 	fi
+ 
+-install-lib: $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET) $(objects)/$(SDLTEST_TARGET)
++install-lib: $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET)
+ 	$(SHELL) $(auxdir)/mkinstalldirs $(DESTDIR)$(libdir)
+ 	$(LIBTOOL) --mode=install $(INSTALL) $(objects)/$(TARGET) $(DESTDIR)$(libdir)/$(TARGET)
+ 	$(LIBTOOL) --mode=install $(INSTALL) $(objects)/$(SDLMAIN_TARGET) $(DESTDIR)$(libdir)/$(SDLMAIN_TARGET)
+-	$(LIBTOOL) --mode=install $(INSTALL) $(objects)/$(SDLTEST_TARGET) $(DESTDIR)$(libdir)/$(SDLTEST_TARGET)
+ install-data:
+ 	$(SHELL) $(auxdir)/mkinstalldirs $(DESTDIR)$(datadir)/aclocal
+ 	$(INSTALL) -m 644 $(srcdir)/sdl2.m4 $(DESTDIR)$(datadir)/aclocal/sdl2.m4
+diff -ru SDL2-2.0.8.orig/src/dynapi/SDL_dynapi.c SDL2-2.0.8/src/dynapi/SDL_dynapi.c
+--- SDL2-2.0.8.orig/src/dynapi/SDL_dynapi.c	2018-03-01 17:34:42.000000000 +0100
++++ SDL2-2.0.8/src/dynapi/SDL_dynapi.c	2018-03-26 22:05:52.162381490 +0200
+@@ -222,7 +222,7 @@
+     return retval;
+ }
+ 
+-#elif defined(unix) || defined(__unix__) || defined(__APPLE__) || defined(__HAIKU__) || defined(__QNX__)
++#elif defined(unix) || defined(__unix__) || defined(__APPLE__) || defined(__HAIKU__) || defined(__QNX__) || defined(__midipix__)
+ #include <dlfcn.h>
+ static SDL_INLINE void *get_sdlapi_entry(const char *fname, const char *sym)
+ {
