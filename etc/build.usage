@@ -36,6 +36,7 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                                 default compression is xz.
         -v[v[v]]                Be verbose; -vv: always print package logs; -vvv: logs fileops.
         -x                      Set xtrace during package builds; implies -vv.
+        --as-needed             Don't build unless the midipix_build repository has received new commits.
         --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
         <target>[ ..]           One of:
                                 host or host_tools, host_toolchain_deps, host_toolchain, host_toolchain_mingw32,
