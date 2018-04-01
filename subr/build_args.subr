@@ -9,6 +9,7 @@ BUILD_ARGS_SPEC="
 	BUILD:arg:-b:
 	ARG_CLEAN:-c:
 	ARG_CLEAN_BUILDS:arg:-C:
+	ARG_AS_NEEDED:--as-needed:
 	ARG_DEBUG_MINIPIX:--debug-minipix:
 	ARG_OFFLINE:-N:
 	ARG_PACKAGE:-p:
