@@ -1,7 +1,8 @@
 usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                   [-c] [-C dir[,..]] [-h] [-N] [-P [jobs]]
                   [-r ALL[:step,..]] [-r name[,..][:step,..]]
-                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x] [<target>[ ..]]
+                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x]
+                  [--as-needed] [--debug-minipix] [<target>[ ..]]
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
