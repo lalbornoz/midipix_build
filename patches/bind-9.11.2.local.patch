@@ -328,3 +328,52 @@ diff -ru bind-9.11.2.orig/lib/samples/Makefile.in bind-9.11.2/lib/samples/Makefi
  
  SUBDIRS =
  
+diff -ru bind-9.11.2.orig/lib/dns/openssldh_link.c bind-9.11.2/lib/dns/openssldh_link.c
+--- bind-9.11.2.orig/lib/dns/openssldh_link.c   2017-07-24 07:36:50.000000000 +0200
++++ bind-9.11.2/lib/dns/openssldh_link.c        2018-04-03 22:59:19.495540759 +0200
+@@ -68,7 +68,7 @@
+
+ static BIGNUM *bn2, *bn768, *bn1024, *bn1536;
+
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000fL)
+ /*
+  * DH_get0_key, DH_set0_key, DH_get0_pqg and DH_set0_pqg
+  * are from OpenSSL 1.1.0.
+diff -ru bind-9.11.2.orig/lib/dns/openssldsa_link.c bind-9.11.2/lib/dns/openssldsa_link.c
+--- bind-9.11.2.orig/lib/dns/openssldsa_link.c  2017-07-24 07:36:50.000000000 +0200
++++ bind-9.11.2/lib/dns/openssldsa_link.c       2018-04-03 22:57:53.448001297 +0200
+@@ -48,7 +48,7 @@
+
+ static isc_result_t openssldsa_todns(const dst_key_t *key, isc_buffer_t *data);
+
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000fL)
+ static void
+ DSA_get0_pqg(const DSA *d, const BIGNUM **p, const BIGNUM **q,
+             const BIGNUM **g)
+diff -ru bind-9.11.2.orig/lib/dns/opensslecdsa_link.c bind-9.11.2/lib/dns/opensslecdsa_link.c
+--- bind-9.11.2.orig/lib/dns/opensslecdsa_link.c        2017-07-24 07:36:50.000000000 +0200
++++ bind-9.11.2/lib/dns/opensslecdsa_link.c     2018-04-03 23:04:46.094300264 +0200
+@@ -41,7 +41,7 @@
+
+ #define DST_RET(a) {ret = a; goto err;}
+
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000fL)
+ /* From OpenSSL 1.1 */
+ static void
+ ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps) {
+diff -ru bind-9.11.2.orig/lib/dns/opensslrsa_link.c bind-9.11.2/lib/dns/opensslrsa_link.c
+--- bind-9.11.2.orig/lib/dns/opensslrsa_link.c  2017-07-24 07:36:50.000000000 +0200
++++ bind-9.11.2/lib/dns/opensslrsa_link.c       2018-04-03 22:58:49.591700657 +0200
+@@ -120,7 +120,7 @@
+ #endif
+ #define DST_RET(a) {ret = a; goto err;}
+
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000fL)
+ /* From OpenSSL 1.1.0 */
+ static int
+ RSA_set0_key(RSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d) {
+
