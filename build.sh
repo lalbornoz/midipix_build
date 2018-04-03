@@ -30,6 +30,9 @@ buildp_dispatch() {
 					break;
 				fi;
 			done;
+			if ! ex_pkg_dispatch "invariants" "ALL" "ALL" buildp_dispatch; then
+				break;
+			fi;
 			buildp_dispatch finish_build; ;;
 	finish_build)	build_fini;
 			ex_rtl_log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
@@ -85,14 +88,6 @@ buildp_dispatch() {
 			if [ "${ARG_OFFLINE:-0}" -eq 1 ]; then
 				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
 					"${PKG_BUILD_STEPS}" "fetch_git fetch_wget")";
-			fi;
-			if [ -z "${ARG_TARBALL}" ]; then
-				case "${_pkg_name}" in
-				dist_digest)	exit 0; ;;
-				dist_tarballs)	exit 0; ;;
-				esac;
-			elif [ "${_pkg_name}" = "dist_tarballs" ]; then
-				ex_pkg_state_set "${_pkg_name}" -all -finish;
 			fi;
 			if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
 				set -o xtrace;
