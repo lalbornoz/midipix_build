@@ -33,12 +33,6 @@ build_checks() {
 	if [ ${_exit:-0} = 1 ]; then
 		exit 1;
 	fi;
-	if [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
-	&& [ -e "${PREFIX}/build.gitref" ]\
-	&& [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
-		ex_rtl_log_msg info "Git repository has not changed since last build and --as-needed was specified.";
-		exit 0;
-	fi;
 	if [ ${ARG_CLEAN:-0} -eq 1 ]; then
 		ex_rtl_log_msg info "-c specified, cleaning prefix...";
 		for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do

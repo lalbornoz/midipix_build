@@ -33,6 +33,12 @@ build_init() {
 	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/env.vars ./vars/midipix.vars ./vars/build.vars; do
 		[ -e ${__} ] && . ${__};
 	done;
+	if [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
+	&& [ -e "${PREFIX}/build.gitref" ]\
+	&& [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
+		ex_rtl_log_msg info "Git repository has not changed since last build and --as-needed was specified.";
+		exit 0;
+	fi;
 	export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
 	if [ ${ARG_IPV4_ONLY:-0} -eq 1 ]; then
 		DEFAULT_WGET_ARGS="-4${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
