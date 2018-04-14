@@ -1,0 +1,63 @@
+diff -ru ksh-openbsd-20180115.orig/history.c ksh-openbsd-20180115/history.c
+--- ksh-openbsd-20180115.orig/history.c	2018-01-15 23:04:15.000000000 +0100
++++ ksh-openbsd-20180115/history.c	2018-04-14 15:31:50.346308024 +0200
+@@ -28,6 +28,10 @@
+ #include "vis.h"
+ #include "sh.h"
+ 
++#ifndef F_EXLCK
++#define F_EXLCK 4
++#endif
++
+ #define timespeccmp(tsp, usp, cmp)		\
+ 	(((tsp)->tv_sec == (usp)->tv_sec) ?	\
+ 		((tsp)->tv_nsec cmp (usp)->tv_nsec) :	\
+diff -ru ksh-openbsd-20180115.orig/Makefile ksh-openbsd-20180115/Makefile
+--- ksh-openbsd-20180115.orig/Makefile	2018-01-15 23:04:15.000000000 +0100
++++ ksh-openbsd-20180115/Makefile	2018-04-14 16:03:43.040414391 +0200
+@@ -22,12 +22,12 @@
+ CDIAGFLAGS+=	-Wshadow
+ CDIAGFLAGS+=	-Wdeclaration-after-statement
+ 
+-CFLAGS +=	$(CDIAGFLAGS) `getconf LFS_CFLAGS` -DEMACS -DVI
++CFLAGS +=	$(CDIAGFLAGS) `getconf LFS_CFLAGS` -D_GNU_SOURCE -DEMACS -DVI
+ LDADD +=	-lbsd
+ 
+ $(PROG): $(OBJS)
+-	$(CC) -o $(PROG) $(CFLAGS) $(LDADD) \
+-		$(OBJS)
++	$(CC) -o $(PROG) $(CFLAGS) \
++		$(OBJS) $(LDADD)
+ 
+ all: $(PROG)
+ 
+@@ -37,7 +37,7 @@
+ 
+ install:
+ 	install -m755 -d $(BINDIR)
+-	install -m755 --strip --no-target-directory ksh $(BINDIR)/pdksh
++	install -m755 --no-target-directory ksh $(BINDIR)/pdksh
+ 	install -m755 -d $(MANDIR)/man1
+ 	install -m644 --no-target-directory ksh.1 $(MANDIR)/man1/pdksh.1
+ 	install -m644 --no-target-directory sh.1 $(MANDIR)/man1/pdksh-sh.1
+diff -ru ksh-openbsd-20180115.orig/vis.c ksh-openbsd-20180115/vis.c
+--- ksh-openbsd-20180115.orig/vis.c	2018-01-15 23:04:15.000000000 +0100
++++ ksh-openbsd-20180115/vis.c	2018-04-14 15:38:41.605684906 +0200
+@@ -139,7 +139,7 @@
+ 	*dst = '\0';
+ 	return (dst);
+ }
+-DEF_WEAK(vis);
++//DEF_WEAK(vis);
+ 
+ /*
+  * strvis, strnvis, strvisx - visually encode characters from src into dst
+@@ -165,7 +165,7 @@
+ 	*dst = '\0';
+ 	return (dst - start);
+ }
+-DEF_WEAK(strvis);
++//DEF_WEAK(strvis);
+ 
+ int
+ strnvis(char *dst, const char *src, size_t siz, int flag)
