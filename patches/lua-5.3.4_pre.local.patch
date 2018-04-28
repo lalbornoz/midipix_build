@@ -89,7 +89,7 @@ index 0000000..61c4dcd
 +  [use_readline=yes]
 +)
 +
-+LUA_LIBS="-lm"
++LUA_LIBS="-lm -ldl"
 +
 +# Check for readline
 +READLINE_DEFS="#undef LUA_USE_READLINE"
