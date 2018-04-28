@@ -1,0 +1,445 @@
+From c13b3e5466ab1ced0f78bdc83aec77b4fef0b5e4 Mon Sep 17 00:00:00 2001
+From: Neal Gompa <ngompa13@gmail.com>
+Date: Sat, 28 Apr 2018 09:22:35 -0400
+Subject: [PATCH] Autotoolize Lua 5.3.4
+
+This is a super-patch of the Red Hat/Fedora patches for building Lua
+using Autotools.
+
+It is made up of the following patches:
+* lua-5.3.0-autotoolize.patch
+* lua-5.3.0-idsize.patch
+* lua-5.2.2-configure-linux.patch
+* lua-5.3.0-configure-compat-module.patch
+
+The canonical source of these patches is: https://src.fedoraproject.org/rpms/lua
+
+Note that on minor version bumps, the full version must be replaced
+in configure.ac to match.
+
+That is, all instances of "5.3.4" must be replaced with the new 5.3.x
+version. This can be accomplished with sed on this patch.
+
+Cf. https://src.fedoraproject.org/rpms/lua/blob/ed24e54f3b10a67e141af985ff63b49337667b5d/f/lua.spec#_103-104
+
+Before bumping Lua, check to see if the Fedora patch set for autotoolizing
+has changed and use those to rebase this super-patch.
+---
+ Makefile.am                              |   9 +
+ configure.ac                             | 226 +++++++++++++++++++++++
+ doc/Makefile.am                          |  12 ++
+ src/.gitignore                           |  15 ++
+ src/Makefile.am                          |  46 +++++
+ src/lua.pc.in                            |  13 ++
+ src/{luaconf.h => luaconf.h.template.in} |  14 +-
+ 7 files changed, 331 insertions(+), 4 deletions(-)
+ create mode 100644 Makefile.am
+ create mode 100644 configure.ac
+ create mode 100644 doc/Makefile.am
+ create mode 100644 src/.gitignore
+ create mode 100644 src/Makefile.am
+ create mode 100644 src/lua.pc.in
+ rename src/{luaconf.h => luaconf.h.template.in} (98%)
+
+diff --git a/Makefile.am b/Makefile.am
+new file mode 100644
+index 0000000..ca86fd2
+--- /dev/null
++++ b/Makefile.am
+@@ -0,0 +1,9 @@
++SUBDIRS = src doc
++
++EXTRA_DIST = README
++SUBDIRS = src doc
++
++EXTRA_DIST = README
++SUBDIRS = src doc
++
++EXTRA_DIST = README
+diff --git a/configure.ac b/configure.ac
+new file mode 100644
+index 0000000..53d0140
+--- /dev/null
++++ b/configure.ac
+@@ -0,0 +1,226 @@
++AC_PREREQ(2.59)
++AC_INIT([lua], [5.3.4], [https://bugzilla.redhat.com/], [lua-at], [http://www.lua.org])
++AC_SUBST([MAJOR_VERSION], [5.3])
++
++AC_CONFIG_HEADERS([config.h])
++AC_CONFIG_SRCDIR([src/lapi.c])
++
++AM_INIT_AUTOMAKE([1.9 foreign])
++
++AC_PROG_CC
++AC_PROG_LIBTOOL
++
++AC_ARG_WITH(
++  [compat-module],
++  [AC_HELP_STRING([--with-compat-module], [Enable LUA_COMPAT_MODULE functions [default=no]])],
++  [use_compat_module=$withval],
++  [use_compat_module=no]
++)
++
++COMPAT_DEFS="#undef LUA_COMPAT_ALL"
++if test "x$use_compat_module" == "xyes"; then
++  COMPAT_DEFS="#define LUA_COMPAT_5_1
++#define LUA_COMPAT_5_2"
++fi
++AC_SUBST(COMPAT_DEFS)
++
++AC_ARG_WITH(
++  [readline],
++  [AC_HELP_STRING([--with-readline], [Use readline for interpreter input [default=yes]])],
++  [use_readline=$withval],
++  [use_readline=yes]
++)
++
++LUA_LIBS="-lm"
++
++# Check for readline
++READLINE_DEFS="#undef LUA_USE_READLINE"
++if test "x$use_readline" == "xyes"; then
++  AC_CHECK_LIB([readline], [readline], [:], [use_readline=no], [-lncurses])
++  AC_CHECK_HEADERS([readline/readline.h readline/history.h], [], [use_readline=no])
++  if test "x$use_readline" == "xno"; then
++    AC_MSG_WARN([readline headers could not be found, disabling readline support])
++  else
++    READLINE_DEFS="#define LUA_USE_READLINE"
++    READLINE_LIBS="-lreadline -lncurses"
++  fi
++fi
++AC_SUBST(READLINE_DEFS)
++AC_SUBST(READLINE_LIBS)
++
++case "$host" in
++  *-mingw*)  use_os=win32  ;;
++  *-darwin*) use_os=macosx ;;
++  *-linux*)  use_os=linux  ;;
++  *)         use_os=posix  ;;
++esac
++
++POSIX_DEFS="#undef LUA_USE_POSIX"
++LUA_DL_DEFS="#undef LUA_USE_DLOPEN"
++LUA_BUILD_AS_DLL_DEFS="#undef LUA_BUILD_AS_DLL"
++
++if test "x$use_os" == "xwin32"; then
++  LUA_BUILD_AS_DLL_DEFS="#define LUA_BUILD_AS_DLL"
++elif test "x$use_os" == "xmacosx"; then
++  POSIX_DEFS="#define LUA_USE_POSIX"
++  LUA_DL_DEFS="#define LUA_DL_DYLD"
++elif test "x$use_os" == "xlinux"; then
++  POSIX_DEFS="#define LUA_USE_LINUX"
++  LUA_DL_DEFS="#define LUA_DL_DLOPEN"
++  LUA_LIBS="$LUA_LIBS -ldl"
++elif test "x$use_os" == "xposix"; then
++  POSIX_DEFS="#define LUA_USE_POSIX"
++  LUA_DL_DEFS="#define LUA_DL_DLOPEN"
++  LUA_LIBS="$LUA_LIBS -ldl"
++fi
++AC_SUBST(POSIX_DEFS)
++AC_SUBST(LUA_DL_DEFS)
++AC_SUBST(LUA_BUILD_AS_DLL_DEFS)
++
++AC_SUBST(LUA_LIBS)
++
++AC_CONFIG_FILES([Makefile
++                 src/Makefile
++                 src/lua.pc
++                 src/luaconf.h.template
++                 doc/Makefile
++])
++AC_OUTPUT
++AC_PREREQ(2.59)
++AC_INIT([lua], [5.3.4], [https://bugzilla.redhat.com/], [lua-at], [http://www.lua.org])
++AC_SUBST([MAJOR_VERSION], [5.3])
++
++AC_CONFIG_HEADERS([config.h])
++AC_CONFIG_SRCDIR([src/lapi.c])
++
++AM_INIT_AUTOMAKE([1.9 foreign])
++
++AC_PROG_CC
++AC_PROG_LIBTOOL
++
++AC_ARG_WITH(
++  [readline],
++  [AC_HELP_STRING([--with-readline], [Use readline for interpreter input [default=yes]])],
++  [use_readline=$withval],
++  [use_readline=yes]
++)
++
++LUA_LIBS="-lm"
++
++# Check for readline
++READLINE_DEFS="#undef LUA_USE_READLINE"
++if test "x$use_readline" == "xyes"; then
++  AC_CHECK_LIB([readline], [readline], [:], [use_readline=no], [-lncurses])
++  AC_CHECK_HEADERS([readline/readline.h readline/history.h], [], [use_readline=no])
++  if test "x$use_readline" == "xno"; then
++    AC_MSG_WARN([readline headers could not be found, disabling readline support])
++  else
++    READLINE_DEFS="#define LUA_USE_READLINE"
++    READLINE_LIBS="-lreadline -lncurses"
++  fi
++fi
++AC_SUBST(READLINE_DEFS)
++AC_SUBST(READLINE_LIBS)
++
++case "$host" in
++  *-mingw*)  use_os=win32  ;;
++  *-darwin*) use_os=macosx ;;
++  *)         use_os=posix  ;;
++esac
++
++POSIX_DEFS="#undef LUA_USE_POSIX"
++LUA_DL_DEFS="#undef LUA_USE_DLOPEN"
++LUA_BUILD_AS_DLL_DEFS="#undef LUA_BUILD_AS_DLL"
++
++if test "x$use_os" == "xwin32"; then
++  LUA_BUILD_AS_DLL_DEFS="#define LUA_BUILD_AS_DLL"
++elif test "x$use_os" == "xmacosx"; then
++  POSIX_DEFS="#define LUA_USE_POSIX"
++  LUA_DL_DEFS="#define LUA_DL_DYLD"
++elif test "x$use_os" == "xposix"; then
++  POSIX_DEFS="#define LUA_USE_POSIX"
++  LUA_DL_DEFS="#define LUA_DL_DLOPEN"
++  LUA_LIBS="$LUA_LIBS -ldl"
++fi
++AC_SUBST(POSIX_DEFS)
++AC_SUBST(LUA_DL_DEFS)
++AC_SUBST(LUA_BUILD_AS_DLL_DEFS)
++
++AC_SUBST(LUA_LIBS)
++
++AC_CONFIG_FILES([Makefile
++                 src/Makefile
++                 src/lua.pc
++                 src/luaconf.h.template
++                 doc/Makefile
++])
++AC_OUTPUT
++AC_PREREQ(2.59)
++AC_INIT([lua], [5.3.4], [https://bugzilla.redhat.com/], [lua-at], [http://www.lua.org])
++AC_SUBST([MAJOR_VERSION], [5.3])
++
++AC_CONFIG_HEADERS([config.h])
++AC_CONFIG_SRCDIR([src/lapi.c])
++
++AM_INIT_AUTOMAKE([1.9 foreign])
++
++AC_PROG_CC
++AC_PROG_LIBTOOL
++
++AC_ARG_WITH(
++  [readline],
++  [AC_HELP_STRING([--with-readline], [Use readline for interpreter input [default=yes]])],
++  [use_readline=$withval],
++  [use_readline=yes]
++)
++
++LUA_LIBS="-lm"
++
++# Check for readline
++READLINE_DEFS="#undef LUA_USE_READLINE"
++if test "x$use_readline" == "xyes"; then
++  AC_CHECK_LIB([readline], [readline], [:], [use_readline=no], [-lncurses])
++  AC_CHECK_HEADERS([readline/readline.h readline/history.h], [], [use_readline=no])
++  if test "x$use_readline" == "xno"; then
++    AC_MSG_WARN([readline headers could not be found, disabling readline support])
++  else
++    READLINE_DEFS="#define LUA_USE_READLINE"
++    READLINE_LIBS="-lreadline -lncurses"
++  fi
++fi
++AC_SUBST(READLINE_DEFS)
++AC_SUBST(READLINE_LIBS)
++
++case "$host" in
++  *-mingw*)  use_os=win32  ;;
++  *-darwin*) use_os=macosx ;;
++  *)         use_os=posix  ;;
++esac
++
++POSIX_DEFS="#undef LUA_USE_POSIX"
++LUA_DL_DEFS="#undef LUA_USE_DLOPEN"
++LUA_BUILD_AS_DLL_DEFS="#undef LUA_BUILD_AS_DLL"
++
++if test "x$use_os" == "xwin32"; then
++  LUA_BUILD_AS_DLL_DEFS="#define LUA_BUILD_AS_DLL"
++elif test "x$use_os" == "xmacosx"; then
++  POSIX_DEFS="#define LUA_USE_POSIX"
++  LUA_DL_DEFS="#define LUA_DL_DYLD"
++elif test "x$use_os" == "xposix"; then
++  POSIX_DEFS="#define LUA_USE_POSIX"
++  LUA_DL_DEFS="#define LUA_DL_DLOPEN"
++  LUA_LIBS="$LUA_LIBS -ldl"
++fi
++AC_SUBST(POSIX_DEFS)
++AC_SUBST(LUA_DL_DEFS)
++AC_SUBST(LUA_BUILD_AS_DLL_DEFS)
++
++AC_SUBST(LUA_LIBS)
++
++AC_CONFIG_FILES([Makefile
++                 src/Makefile
++                 src/lua.pc
++                 src/luaconf.h.template
++                 doc/Makefile
++])
++AC_OUTPUT
+diff --git a/doc/Makefile.am b/doc/Makefile.am
+new file mode 100644
+index 0000000..9a72205
+--- /dev/null
++++ b/doc/Makefile.am
+@@ -0,0 +1,12 @@
++man1_MANS = lua.1 luac.1
++
++EXTRA_DIST = \
++	contents.html logo.gif lua.1 luac.1 lua.css manual.css manual.html osi-certified-72x60.png readme.html
++man1_MANS = lua.1 luac.1
++
++EXTRA_DIST = \
++	contents.html logo.gif lua.1 luac.1 lua.css manual.css manual.html osi-certified-72x60.png readme.html
++man1_MANS = lua.1 luac.1
++
++EXTRA_DIST = \
++	contents.html logo.gif lua.1 luac.1 lua.css manual.css manual.html osi-certified-72x60.png readme.html
+diff --git a/src/.gitignore b/src/.gitignore
+new file mode 100644
+index 0000000..44aac47
+--- /dev/null
++++ b/src/.gitignore
+@@ -0,0 +1,15 @@
++lua
++lua.pc
++luac
++luaconf.h
++luaconf.h.template
++lua
++lua.pc
++luac
++luaconf.h
++luaconf.h.template
++lua
++lua.pc
++luac
++luaconf.h
++luaconf.h.template
+diff --git a/src/Makefile.am b/src/Makefile.am
+new file mode 100644
+index 0000000..33f5b2e
+--- /dev/null
++++ b/src/Makefile.am
+@@ -0,0 +1,46 @@
++AM_CFLAGS = -Wall
++
++include_HEADERS = lua.h lualib.h lauxlib.h lua.hpp
++
++nodist_include_HEADERS = luaconf.h
++
++lib_LTLIBRARIES = liblua.la
++liblua_la_LDFLAGS = -release @MAJOR_VERSION@
++liblua_la_SOURCES = \
++	lapi.c lauxlib.c lbaselib.c lbitlib.c lcode.c lcorolib.c lctype.c ldblib.c \
++	ldebug.c ldo.c ldump.c lfunc.c lgc.c linit.c liolib.c llex.c lmathlib.c lmem.c \
++	loadlib.c lobject.c lopcodes.c loslib.c lparser.c lstate.c lstring.c lstrlib.c \
++	ltable.c ltablib.c ltm.c lundump.c lutf8lib.c lvm.c lzio.c \
++	lapi.h lcode.h lctype.h ldebug.h ldo.h lfunc.h lgc.h llex.h llimits.h \
++	lmem.h lobject.h lopcodes.h lparser.h lstate.h lstring.h ltable.h ltm.h \
++	lundump.h lvm.h lzio.h
++
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = lua.pc
++
++bin_PROGRAMS = lua luac
++
++lua_SOURCES = lua.c
++lua_LDADD = liblua.la @LUA_LIBS@ @READLINE_LIBS@
++lua_DEPENDENCIES = liblua.la
++
++luac_SOURCES = luac.c
++# Statically link liblua against luac since luac uses symbols not exported in liblua
++luac_LDADD = .libs/liblua.a @LUA_LIBS@
++luac_DEPENDENCIES = liblua.la
++
++EXTRA_DIST = luaconf.h.template
++BUILT_SOURCES = luaconf.h
++CLEANFILES = luaconf.h luaconf.h.template
++
++readline_defs = @READLINE_DEFS@
++
++edit = 	sed \
++	  -e 's,%prefix%,$(prefix),g' \
++	  -e 's,%lua_datadir%,$(datadir),g' \
++	  -e 's,%lua_libdir%,$(libdir),g'
++
++luaconf.h : luaconf.h.template
++	rm -f $@ $@.tmp
++	$(edit) $< >$@.tmp
++	mv $@.tmp $@
+diff --git a/src/lua.pc.in b/src/lua.pc.in
+new file mode 100644
+index 0000000..25faa8d
+--- /dev/null
++++ b/src/lua.pc.in
+@@ -0,0 +1,13 @@
++V= @MAJOR_VERSION@
++R= @VERSION@
++prefix= @prefix@
++exec_prefix=${prefix}
++libdir= @libdir@
++includedir=${prefix}/include
++
++Name: Lua
++Description: An Extensible Extension Language
++Version: ${R}
++Requires:
++Libs: -llua @LUA_LIBS@
++Cflags: -I${includedir}
+diff --git a/src/luaconf.h b/src/luaconf.h.template.in
+similarity index 98%
+rename from src/luaconf.h
+rename to src/luaconf.h.template.in
+index f37bea0..c7ff227 100644
+--- a/src/luaconf.h
++++ b/src/luaconf.h.template.in
+@@ -11,6 +11,12 @@
+ #include <limits.h>
+ #include <stddef.h>
+ 
++@POSIX_DEFS@
++@LUA_DL_DEFS@
++@LUA_BUILD_AS_DLL_DEFS@
++@READLINE_DEFS@
++@COMPAT_DEFS@
++
+ 
+ /*
+ ** ===================================================================
+@@ -200,9 +206,9 @@
+ 
+ #else			/* }{ */
+ 
+-#define LUA_ROOT	"/usr/local/"
+-#define LUA_LDIR	LUA_ROOT "share/lua/" LUA_VDIR "/"
+-#define LUA_CDIR	LUA_ROOT "lib/lua/" LUA_VDIR "/"
++#define LUA_ROOT	"@prefix@/"
++#define LUA_LDIR	"@datadir@/lua/" LUA_VDIR "/"
++#define LUA_CDIR	"@libdir@/lua/" LUA_VDIR "/"
+ #define LUA_PATH_DEFAULT  \
+ 		LUA_LDIR"?.lua;"  LUA_LDIR"?/init.lua;" \
+ 		LUA_CDIR"?.lua;"  LUA_CDIR"?/init.lua;" \
+@@ -738,7 +744,7 @@
+ @@ of a function in debug information.
+ ** CHANGE it if you want a different size.
+ */
+-#define LUA_IDSIZE	60
++#define LUA_IDSIZE	512
+ 
+ 
+ /*
+-- 
+2.17.0
+
