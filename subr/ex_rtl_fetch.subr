@@ -4,7 +4,7 @@
 
 exp_rtl_fetch_url_git() {
 	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}"	\
-		_oldpwd;
+		_oldpwd="";
 	if [ -e "${BUILD_DLCACHEDIR}/${_subdir}" ]; then
 		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
 			git pull origin "${_branch:-main}");
@@ -22,7 +22,7 @@ exp_rtl_fetch_url_git() {
 };
 
 ex_rtl_fetch_urls_git() {
-	local _tgtdir _url_spec _subdir _url _git_branch;
+	local _tgtdir="" _url_spec="" _subdir="" _url="" _git_branch="";
 	_tgtdir="${1}"; shift;
 	for _url_spec in "${@}"; do
 		_subdir="${_url_spec%=*}";

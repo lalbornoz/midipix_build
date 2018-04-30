@@ -4,8 +4,8 @@
 
 exp_pkg_env_source() {
 	local _pkg_name="${1}" _tgt_name="${2}"				\
-		_tgt_name_uc _pkg_name_uc _pkg_name_inherit_uc		\
-		_build_type_uc _vname_dst _vars_set="";
+		_tgt_name_uc="" _pkg_name_uc="" _pkg_name_inherit_uc=""	\
+		_build_type_uc="" _vname_dst="" _vars_set="";
 	ex_rtl_fileop source_opt "vars/${_pkg_name}.vars";
 	_tgt_name_uc="$(ex_rtl_toupper "${_tgt_name}")";
 	_pkg_name_uc="$(ex_rtl_toupper "${_pkg_name}")";
@@ -36,7 +36,7 @@ exp_pkg_env_source() {
 };
 
 ex_pkg_env() {
-	local _pkg_name="${1}" _tgt_name="${2}" _restart_at="${3}" _vname;
+	local _pkg_name="${1}" _tgt_name="${2}" _restart_at="${3}" _vname="";
 	exp_pkg_env_source "${_pkg_name}" "${_tgt_name}";
 	: ${PKG_NAME:="${_pkg_name}"};
 	: ${MIDIPIX_BUILD_PWD:="$(pwd)"};

@@ -3,7 +3,7 @@
 #
 
 pkg_install_subdirs() {
-	local _spec;
+	local _spec="";
 	for _spec in "${PKG_INSTALL_FILES_DESTDIR}"		\
 			"${PKG_INSTALL_FILES_DESTDIR_EXTRA}"; do
 		ex_rtl_install "${PKG_DESTDIR}" ${_spec};

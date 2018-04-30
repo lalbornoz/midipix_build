@@ -3,7 +3,7 @@
 #
 
 pkg_configure_autotools() {
-	local _script_fname _subdir_tgt;
+	local _script_fname="" _subdir_tgt="";
 	if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" -o						\
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" -o						\
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.in" -o						\

@@ -3,7 +3,7 @@
 #
 
 pkg_configure_patch() {
-	local _pkg_name="${PKG_NAME}" _pkg_name_full _patch_dir _patch_fname _patches_done;
+	local _pkg_name="${PKG_NAME}" _pkg_name_full="" _patch_dir="" _patch_fname="" _patches_done="";
 	if [ -z "${_pkg_name}" ]; then
 		continue;
 	else

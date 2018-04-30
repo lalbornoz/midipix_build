@@ -3,7 +3,7 @@
 #
 
 pkg_fetch_extract() {
-	local _oldpwd;
+	local _oldpwd="";
 	if [ -n "${PKG_URL}" ]\
 	&& [ "${PKG_URL_TYPE:-wget}" = wget ]; then
 		_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}";

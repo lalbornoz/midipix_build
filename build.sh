@@ -4,7 +4,7 @@
 
 buildp_dispatch() {
 	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"					\
-		_build_tgt_meta _build_tgt_lc _build_tgt_pkg_names _build_tgt_uc;
+		_build_tgt_meta="" _build_tgt_lc="" _build_tgt_pkg_names="" _build_tgt_uc="";
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_args "${@}"; build_init; build_checks;
