@@ -3,8 +3,8 @@
 #
 
 ex_rtl_install() {
-	local _verbose _prefix _ln_target _ln_fname _mkdir_fname	\
-		_file_fname_src _file_fname_dst;
+	local _verbose="" _prefix="" _ln_target="" _ln_fname=""	\
+		_mkdir_fname="" _file_fname_src="" _file_fname_dst="";
 	if [ "${1}" = "-v" ]; then
 		_verbose=1; shift;
 	fi; _prefix="${1}"; shift;

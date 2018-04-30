@@ -3,7 +3,7 @@
 #
 
 pkg_build() {
-	local _no_autoconf;
+	local _no_autoconf="";
 	if [ ! -x "${PKG_CONFIGURE}" ]; then
 		_no_autoconf=1;
 	fi;

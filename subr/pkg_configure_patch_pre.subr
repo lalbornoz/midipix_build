@@ -3,7 +3,7 @@
 #
 
 pkg_configure_patch_pre() {
-	local _patch_path;
+	local _patch_path="";
 	for _patch_path in 											\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}_pre.local.patch	\
 			${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}_pre.local@${BUILD_HNAME}.patch; do

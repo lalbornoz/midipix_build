@@ -17,7 +17,7 @@ ex_rtl_toupper() { echo "${1}" | tr a-z A-Z; };
 ex_rtl_unset_vars() { while [ ${#} -gt 0 ]; do unset "${1}"; shift; done; };
 
 ex_rtl_lfilter() {
-	local _list="${1}" _filter="${2}" _lnew _litem _litem_filter;
+	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="";
 	if [ -z "${_filter}" ]; then
 		echo "${_list}"; return 0;
 	else for _litem in ${_list}; do
@@ -32,7 +32,7 @@ ex_rtl_lfilter() {
 };
 
 ex_rtl_lfilter_not() {
-	local _list="${1}" _filter="${2}" _lnew _litem _litem_filter _filterfl;
+	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="" _filterfl="";
 	if [ -z "${_filter}" ]; then
 		echo "${_list}"; return 0;
 	else for _litem in ${_list}; do
@@ -59,7 +59,7 @@ ex_rtl_lmatch() {
 };
 
 ex_rtl_run_cmd_unsplit() {
-	local _cmd="${1}" _cmdline _rc IFS; shift;
+	local _cmd="${1}" _cmdline="" _rc="" IFS; shift;
 	while [ ${#} -gt 0 ]; do
 		[ -n "${1}" ] &&\
 			_cmdline="${_cmdline:+${_cmdline}:}${1}";
@@ -72,7 +72,7 @@ ex_rtl_run_cmd_unsplit() {
 ex_rtl_set_vars() {
 	local _vname_dst="${1}" _vname_src_tmpls="${2}"			\
 		_vars_set_vname="${3}" _vname_src _vars_set_tmp=""	\
-		_vars_set_old;
+		_vars_set_old="";
 	for _vname_src in ${_vname_src_tmpls}; do
 		_vname_src="${_vname_src}_${_vname_dst}";
 		_vval_src="$(ex_rtl_get_var_unsafe "${_vname_src}")";
@@ -82,7 +82,7 @@ ex_rtl_set_vars() {
 		fi;
 	done;
 	_vars_set_old="$(ex_rtl_get_var_unsafe "${_vars_set_vname}")";
-	ex_rtl_set_var_unsafe "${_vars_set_vname}"				\
+	ex_rtl_set_var_unsafe "${_vars_set_vname}"			\
 		"${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
 };
 

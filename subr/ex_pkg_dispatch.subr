@@ -9,7 +9,7 @@
 exp_pkg_dispatch() {
 	local _pkg_name="${1}" _tgt_name="${2}" _restart_at="${3}"				\
 		_dispatch_fn="${4}" _stderrout_path="${5}" _pipe_path="${6}"			\
-		_njobs_vname="${7}" _pkg_name_uc;
+		_njobs_vname="${7}" _pkg_name_uc="";
 	_pkg_name_uc="$(ex_rtl_toupper "${_pkg_name}")";
 	if [ -n "$(ex_rtl_get_var_unsafe PKG_${_pkg_name_uc}_DISABLED)" ]; then
 		"${_dispatch_fn}" disabled_pkg "${_pkg_name}" "${_tgt_name}";
@@ -29,9 +29,9 @@ exp_pkg_dispatch() {
 
 ex_pkg_dispatch() {
 	local _tgt_name="${1}" _restart="${2}" _restart_at="${3}"				\
-		_dispatch_fn="${4}" _tgt_name_uc						\
-		_pkg_names _njob _njobs _njobs_max						\
-		_pipe_path _stderrout_path _pipe_msg _script_rc;
+		_dispatch_fn="${4}" _tgt_name_uc=""						\
+		_pkg_names="" _njob="" _njobs="" _njobs_max=""					\
+		_pipe_path="" _stderrout_path="" _pipe_msg="" _script_rc="";
 	ex_rtl_fileop mkdir "${BUILD_WORKDIR}";
 	_pipe_path="${BUILD_WORKDIR}/build.fifo";
 	_tgt_name_uc="$(ex_rtl_toupper "${_tgt_name}")";
