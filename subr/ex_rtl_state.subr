@@ -3,7 +3,7 @@
 #
 
 ex_rtl_state_set() {
-	local _workdir="${1}" _pkg_fname="${2}" _done_fname_pfx;
+	local _workdir="${1}" _pkg_fname="${2}" _done_fname_pfx="";
 	_done_fname_pfx="${_workdir}/.${_pkg_fname}";
 	shift 2; while [ ${#} -ge 1 ]; do
 		if [ -z "${1}" ]; then
@@ -18,7 +18,7 @@ ex_rtl_state_set() {
 
 ex_rtl_state_test() {
 	local _workdir="${1}" _pkg_name="${2}" _build_step="${3}"	\
-		_restart_at="${4}" _done_fname;
+		_restart_at="${4}" _done_fname="";
 	_done_fname="${_workdir}/.${_pkg_name}.${_build_step}";
 	if [ -z "${_restart_at}" ]; then
 		ex_rtl_fileop test "${_done_fname}";

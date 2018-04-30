@@ -3,7 +3,7 @@
 #
 
 exp_rtl_log_printf() {
-	local _attrs="${1}" _msg; shift; _msg="$(printf "${@}")";
+	local _attrs="${1}" _msg=""; shift; _msg="$(printf "${@}")";
 	if [ "${BUILD_IS_PARENT:-0}" -eq 1 ]; then
 		printf "%s\n" "${_msg}" >> "${DEFAULT_BUILD_LOG_FNAME}";
 	fi;
@@ -11,7 +11,7 @@ exp_rtl_log_printf() {
 };
 
 ex_rtl_log_env_vars() {
-	local _nvar=1 _arg _arg_len_max=0;
+	local _nvar=1 _arg="" _arg_len_max=0;
 	ex_rtl_log_msg info "Variables for this ${1:-build}:"; shift;
 	while [ ${_nvar} -le ${#} ]; do
 		_arg="$(eval echo \${${_nvar}})";
@@ -33,7 +33,7 @@ ex_rtl_log_set_vnfo_lvl() {
 };
 
 ex_rtl_log_msg() {
-	local _lvl="${1}" _attr; shift;
+	local _lvl="${1}" _attr=""; shift;
 	if [ "${_lvl}" = vnfo ]\
 	|| [ "${_lvl}" = vucc ]\
 	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 1 ]; then

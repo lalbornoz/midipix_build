@@ -3,7 +3,7 @@
 #
 
 pkg_clean() {
-	local _dir;
+	local _dir="";
 	if [ -n "${PKG_DEPS_BASE}" ]; then
 		return 0;
 	fi;

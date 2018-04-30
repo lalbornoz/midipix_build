@@ -26,7 +26,7 @@ BUILD_ARGS_SPEC="
 	ARG_XTRACE:-x:";
 
 build_args() {
-	local _spec="${BUILD_ARGS_SPEC}" _spec_arg _found;
+	local _spec="${BUILD_ARGS_SPEC}" _spec_arg="" _found="";
 	while [ ${#} -gt 0 ]; do
 		if [ "${1#-}" = "${1}" ]; then
 			break;

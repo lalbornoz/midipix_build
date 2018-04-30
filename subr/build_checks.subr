@@ -3,7 +3,7 @@
 #
 
 build_checks() {
-	local __ _exit _pname;
+	local __="" _exit="" _pname="";
 	for __ in ${DEFAULT_CHECK_PATH_VARS}; do
 		if [ -z "${___:=$(ex_rtl_get_var_unsafe "${__}")}" ]; then
 			ex_rtl_log_msg failexit "Error: variable \`${__}' is empty or unset.";

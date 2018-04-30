@@ -9,7 +9,7 @@ build_fini() {
 };
 
 build_init() {
-	local __ _env_vars _env_vars_except _env_var;
+	local __="" _env_vars="" _env_vars_except="" _env_var="";
 	set -o noglob;
 	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
 	&& [ -e /proc/cpuinfo ]; then

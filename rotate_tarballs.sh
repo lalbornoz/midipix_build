@@ -26,7 +26,7 @@ rotate_build() {
 
 rotate_build_dates() {
 	local _build_dname="${1}" _dist_dates="${2}" _limit="${3}";
-	local _dist_dates_count _dist_dates_count_limit="" _dist_fname="" _nl="
+	local _dist_dates_count="" _dist_dates_count_limit="" _dist_fname="" _nl="
 ";	_dist_dates="$(map "${_nl}" ${_dist_dates} | sort | uniq)";
 	_dist_dates_count="$(echo "${_dist_dates}" | wc -l)";
 	if [ "${_dist_dates_count}" -gt "${_limit}" ]; then

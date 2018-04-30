@@ -3,7 +3,7 @@
 #
 
 pkg_strip() {
-	local _tree_root="${PKG_DESTDIR}/bin" _bin_path;
+	local _tree_root="${PKG_DESTDIR}/bin" _bin_path="";
 	if [ ! -e "${_tree_root}" ]; then
 		return;
 	fi;
