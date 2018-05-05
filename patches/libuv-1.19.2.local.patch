@@ -1,0 +1,48 @@
+diff -ru libuv-v1.19.2.orig/configure.ac libuv-v1.19.2/configure.ac
+--- libuv-v1.19.2.orig/configure.ac	2018-02-21 21:25:38.000000000 +0100
++++ libuv-v1.19.2/configure.ac	2018-05-04 20:35:43.157687243 +0200
+@@ -57,6 +57,7 @@
+ AM_CONDITIONAL([DRAGONFLY],[AS_CASE([$host_os],[dragonfly*],    [true], [false])])
+ AM_CONDITIONAL([FREEBSD],  [AS_CASE([$host_os],[*freebsd*],     [true], [false])])
+ AM_CONDITIONAL([LINUX],    [AS_CASE([$host_os],[linux*],        [true], [false])])
++AM_CONDITIONAL([MIDIPIX],  [AS_CASE([$host_os],[midipix*],      [true], [false])])
+ AM_CONDITIONAL([MSYS],     [AS_CASE([$host_os],[msys*],         [true], [false])])
+ AM_CONDITIONAL([NETBSD],   [AS_CASE([$host_os],[netbsd*],       [true], [false])])
+ AM_CONDITIONAL([OPENBSD],  [AS_CASE([$host_os],[openbsd*],      [true], [false])])
+Only in libuv-v1.19.2: depcomp
+diff -ru libuv-v1.19.2.orig/include/uv-unix.h libuv-v1.19.2/include/uv-unix.h
+--- libuv-v1.19.2.orig/include/uv-unix.h	2018-02-21 21:25:38.000000000 +0100
++++ libuv-v1.19.2/include/uv-unix.h	2018-05-04 18:53:02.286365282 +0200
+@@ -62,7 +62,7 @@
+       defined(__OpenBSD__)         || \
+       defined(__NetBSD__)
+ # include "uv-bsd.h"
+-#elif defined(__CYGWIN__) || defined(__MSYS__)
++#elif defined(__CYGWIN__) || defined(__MSYS__) || defined(__midipix__)
+ # include "uv-posix.h"
+ #endif
+ 
+diff -ru libuv-v1.19.2.orig/Makefile.am libuv-v1.19.2/Makefile.am
+--- libuv-v1.19.2.orig/Makefile.am	2018-02-21 21:25:38.000000000 +0100
++++ libuv-v1.19.2/Makefile.am	2018-05-04 20:55:46.028984363 +0200
+@@ -403,6 +403,20 @@
+ test_run_tests_LDFLAGS += -lutil
+ endif
+ 
++# src/unix/cygwin.c is mostly just stubs, implement proper codepaths at later date?
++if MIDIPIX
++include_HEADERS += include/uv-posix.h
++libuv_la_CFLAGS += -D_GNU_SOURCE
++libuv_la_SOURCES += src/unix/cygwin.c \
++                    src/unix/no-fsevents.c \
++                    src/unix/no-proctitle.c \
++                    src/unix/posix-hrtime.c \
++                    src/unix/posix-poll.c \
++                    src/unix/procfs-exepath.c \
++                    src/unix/sysinfo-loadavg.c \
++                    src/unix/sysinfo-memory.c
++endif
++
+ if MSYS
+ libuv_la_CFLAGS += -D_GNU_SOURCE
+ libuv_la_SOURCES += src/unix/cygwin.c \
