@@ -1,0 +1,20 @@
+--- mandoc-1.14.3/Makefile.in.orig	2018-05-02 13:56:07.000000000 +0000
++++ mandoc-1.14.3/Makefile.in	2018-05-09 11:45:31.296000000 +0000
+@@ -1307,13 +1307,13 @@
+ # Install makewhatis to .../sbin
+ install-exec-hook:
+ 	$(MKDIR_P) $(DESTDIR)$(sbindir)
+-	$(LN_S) $(DESTDIR)$(bindir)/mandoc$(EXEEXT) \
++	$(LN_S) mandoc$(EXEEXT) \
+ 		$(DESTDIR)$(sbindir)/makewhatis$(EXEEXT)
+-	$(LN_S) $(DESTDIR)$(bindir)/mandoc$(EXEEXT) \
++	$(LN_S) mandoc$(EXEEXT) \
+ 		$(DESTDIR)$(bindir)/man$(EXEEXT)
+-	$(LN_S) $(DESTDIR)$(bindir)/mandoc$(EXEEXT) \
++	$(LN_S) mandoc$(EXEEXT) \
+ 		$(DESTDIR)$(bindir)/apropos$(EXEEXT)
+-	$(LN_S) $(DESTDIR)$(bindir)/mandoc$(EXEEXT) \
++	$(LN_S) mandoc$(EXEEXT) \
+ 		$(DESTDIR)$(bindir)/whatis$(EXEEXT)
+ 
+ # *sigh*
