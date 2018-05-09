@@ -5,13 +5,13 @@
 pkg_install() {
 	ex_rtl_fileop mkdir "${PKG_PREFIX}";
 	find "${PKG_DESTDIR}"				\
-		-type d -exec chmod 0700 {} \;;
+		-type d -exec chmod 0755 {} \;;
 	find "${PKG_DESTDIR}"				\
 		\( -perm -0400 \) -and			\
 		\( -not -perm /0100 \)			\
-		-type f -exec chmod 0600 {} \;;
+		-type f -exec chmod 0644 {} \;;
 	find "${PKG_DESTDIR}"				\
-		-perm /0100 -type f -exec chmod 0700 {} \;;
+		-perm /0100 -type f -exec chmod 0755 {} \;;
 	tar -C "${PKG_DESTDIR}" -cpf - .		|\
 		tar -C "${PKG_PREFIX}" --overwrite -xpf -;
 	if [ "${ARG_PACKAGE:-0}" -eq 1 ]; then
