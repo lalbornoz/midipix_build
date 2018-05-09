@@ -1,0 +1,13 @@
+diff -ru cmake-3.7.2.orig/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h cmake-3.7.2/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h
+--- cmake-3.7.2.orig/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h	2017-01-13 15:05:42.000000000 +0100
++++ cmake-3.7.2/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h	2018-05-08 22:39:23.249070904 +0200
+@@ -28,7 +28,8 @@
+ #include <openssl/hmac.h>
+ #include <openssl/opensslv.h>
+ 
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || \
++    (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000fL)
+ #include <stdlib.h> /* malloc, free */
+ #include <string.h> /* memset */
+ static inline HMAC_CTX *HMAC_CTX_new(void)
