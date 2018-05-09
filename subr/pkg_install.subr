@@ -7,11 +7,10 @@ pkg_install() {
 	find "${PKG_DESTDIR}"				\
 		-type d -exec chmod 0755 {} \;;
 	find "${PKG_DESTDIR}"				\
-		\( -perm -0400 \) -and			\
-		\( -not -perm /0100 \)			\
+		\( -not -perm /0111 \)			\
 		-type f -exec chmod 0644 {} \;;
 	find "${PKG_DESTDIR}"				\
-		-perm /0100 -type f -exec chmod 0755 {} \;;
+		-perm /0111 -type f -exec chmod 0755 {} \;;
 	tar -C "${PKG_DESTDIR}" -cpf - .		|\
 		tar -C "${PKG_PREFIX}" --overwrite -xpf -;
 	if [ "${ARG_PACKAGE:-0}" -eq 1 ]; then
