@@ -1,6 +1,10 @@
 #!/bin/sh
-# assume a correct target input: this should always be the case
-# in the context of midipix_build; then, for compatibility, output
-# the target name.
+#
 
-echo "$1"
+case "${1}" in
+x86_64)			echo x86_64-pc-none; ;;
+x86_64-nt64-midipix)	echo x86_64-nt64-midipix; ;;
+*)			echo "${1}"; ;;
+esac;
+
+# vim:filetype=sh
