@@ -8,7 +8,11 @@ pkg_install_rpm() {
 	|| ! [ -x "$(which rpmbuild 2>/dev/null)" ]; then
 		return 0;
 	fi; 
-	if [ -n "${PKG_URLS_GIT}" ]; then
+	if [ -n "${PKG_URL}" ]; then
+		_pkg_version_rpm="${PKG_VERSION%%-*}";
+		_pkg_version_full="${PKG_VERSION}";
+		_pkg_url="${PKG_URL}";
+	elif [ -n "${PKG_URLS_GIT}" ]; then
 		_pkg_version_rpm="$(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse HEAD)";
 		_pkg_version_full="${_pkg_version_rpm} ($(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse --abbrev-ref HEAD))";
 		_pkg_url="${PKG_URLS_GIT%% *}";
@@ -16,14 +20,6 @@ pkg_install_rpm() {
 		if [ "${_pkg_url#${DEFAULT_GITROOT_HEAD}}" != "${_pkg_url}" ]; then
 			_pkg_url="Unknown";
 		fi;
-	elif [ -n "${PKG_VERSION}" ]; then
-		_pkg_version_rpm="${PKG_VERSION%%-*}";
-		_pkg_version_full="${PKG_VERSION}";
-		_pkg_url="${PKG_URL}";
-	else
-		_pkg_version_rpm="${PKG_VERSION}";
-		_pkg_version_full="${PKG_VERSION}";
-		_pkg_url="${PKG_URL}";
 	fi;
 	cat > "${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec" <<EOF
 Name:           ${PKG_NAME}
