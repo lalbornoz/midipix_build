@@ -36,7 +36,12 @@ configured in build.vars, which defaults to ${HOME}/midipix.
 Previously, this repository contained a shell script for usage within Cygwin
 and a VBS script in order to obtain a Midipix shell environment. These have been
 replaced with <https://git.midipix.org/cgit.cgi/mpackage/plain/distro/bash.cmd>
-from the Midipix distro skeleton[2], which will handle this process itself.
+from the Midipix distro skeleton[2]. In that respect, and as a general rule,
+midipix_build provides all the bits needed for (cross-)building the framework
+along with the entire collection of third-party software packages, whereas
+mpackage's task is to create a live execution environment (midipix-on-the-fly,
+or mxfly), optionally including with it a set of tarballs for the installation
+of a custom, midipix-based distribution.
 
 References:
 * Sun, 24 Apr 2016 09:04:08 +0000 [1] musl FAQ <http://www.musl-libc.org/faq.html>
