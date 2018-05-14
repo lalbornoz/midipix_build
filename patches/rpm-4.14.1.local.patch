@@ -287,12 +287,11 @@ Only in rpm-4.14.1: macros.in.orig
 diff -ru rpm-4.14.1.orig/rpmio/digest_openssl.c rpm-4.14.1/rpmio/digest_openssl.c
 --- rpm-4.14.1.orig/rpmio/digest_openssl.c	2017-10-05 12:04:57.554602041 +0200
 +++ rpm-4.14.1/rpmio/digest_openssl.c	2018-04-01 02:39:06.081268659 +0200
-@@ -175,8 +175,11 @@
+@@ -175,8 +175,10 @@
      case PGPHASHALGO_RIPEMD160:
          return EVP_ripemd160();
  
-+/* This should be a ifndef libressl... */
-+#ifndef __midipix__
++#ifndef LIBRESSL_VERSION_NUMBER
      case PGPHASHALGO_MD2:
          return EVP_md2();
 +#endif

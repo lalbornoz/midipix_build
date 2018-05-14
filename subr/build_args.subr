@@ -11,6 +11,7 @@ BUILD_ARGS_SPEC="
 	ARG_CLEAN_BUILDS:arg:-C:
 	ARG_AS_NEEDED:--as-needed:
 	ARG_DEBUG_MINIPIX:--debug-minipix:
+	ARG_RPM:--rpm:
 	ARG_OFFLINE:-N:
 	ARG_PACKAGE:-p:
 	ARG_PARALLEL:optarg:-P:auto
