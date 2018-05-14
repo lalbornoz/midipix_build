@@ -29,7 +29,7 @@ buildp_dispatch() {
 			fi;
 			for _build_tgt_lc in ${BUILD_TARGETS:-${TARGETS_DEFAULT}}; do
 				if [ "${_build_tgt_lc}" = "host_tools_rpm" ]			\
-				&& [ "${ARG_RPM}" -eq 0 ]; then
+				&& [ "${ARG_RPM:-0}" -eq 0 ]; then
 					continue;
 				fi;
 				ex_pkg_dispatch "${_build_tgt_lc}"				\
