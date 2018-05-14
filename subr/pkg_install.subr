@@ -26,7 +26,7 @@ Release:        1
 Summary:        ${PKG_NAME} ${PKG_VERSION:-Unknown}
 License:        Unknown
 Group:          Applications
-Url:            ${PKG_URL:-${PKG_URLS_GIT}}
+Url:            ${PKG_URL:-${PKG_URLS_GIT:-Unknown}}
 
 %description
 ${PKG_NAME} ${PKG_VERSION:-Unknown}
