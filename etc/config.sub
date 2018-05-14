@@ -1,3 +1,4 @@
+#!/bin/sh
 # assume a correct target input: this should always be the case
 # in the context of midipix_build; then, for compatibility, output
 # the target name.
