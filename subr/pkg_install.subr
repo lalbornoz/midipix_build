@@ -21,15 +21,15 @@ pkg_install() {
 	&& [ -x "$(which rpmbuild 2>/dev/null)" ]; then
 		cat > "${PKG_BASE_DIR}/${PKG_NAME}.spec" <<EOF
 Name:           ${PKG_NAME}
-Version:        ${PKG_VERSION}
+Version:        ${PKG_VERSION:-Unknown}
 Release:        1
-Summary:        ${PKG_NAME} ${PKG_VERSION}
+Summary:        ${PKG_NAME} ${PKG_VERSION:-Unknown}
 License:        Unknown
 Group:          Applications
 Url:            ${PKG_URL}
 
 %description
-${PKG_NAME} ${PKG_VERSION}
+${PKG_NAME} ${PKG_VERSION:-Unknown}
 
 %prep
 %build
@@ -42,9 +42,9 @@ cp -pPr ${PKG_DESTDIR}/. .
 %changelog
 
 EOF
-		rpmbuild -bb --define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION}" --nodeps "${PKG_BASE_DIR}/${PKG_NAME}.spec";
-		find "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION}/RPMS" -iname \*.rpm -exec cp -pP {} "${PREFIX_RPM}/" \;;
-		ex_rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION}";
+		rpmbuild -bb --define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION:-Unknown}" --nodeps "${PKG_BASE_DIR}/${PKG_NAME}.spec";
+		find "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION:-Unknown}/RPMS" -iname \*.rpm -exec cp -pP {} "${PREFIX_RPM}/" \;;
+		ex_rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION:-Unknown}";
 	fi;
 };
 
