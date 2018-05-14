@@ -26,7 +26,7 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                                 configure_patch_pre, configure_autotools, configure_patch,
                                 configure, build, install_subdirs, install_make,
                                 install_files, install_libs, install_pkgconfig, install_purge_la,
-                                install_strip, and install.
+                                install_strip, install, and install_rpm.
         -R                      Ignore build failures, skip printing package logs, and continue
                                 building (relaxed mode.)
         -t[.gz|.bz2|.xz]        Produce binary distribution and source tarballs containing
