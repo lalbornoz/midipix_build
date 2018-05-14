@@ -34,11 +34,15 @@ ${PKG_NAME} ${PKG_VERSION:-Unknown}
 %prep
 %build
 %install
-cp -pPr ${PKG_DESTDIR}/. .
+rm -rf "\${RPM_BUILD_ROOT}"
+mkdir -p "\${RPM_BUILD_ROOT}"
+cp -pPr "${PKG_DESTDIR}/." "\${RPM_BUILD_ROOT}"
 
 %post
 %postun
 %files
+/
+
 %changelog
 
 EOF
