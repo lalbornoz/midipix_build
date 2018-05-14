@@ -15,6 +15,10 @@ buildp_dispatch() {
 			&& [ "${ARG_RESTART}" != ALL ]; then
 				_build_tgt_pkg_names="";
 				for _build_tgt_lc in ${BUILD_TARGETS:-${TARGETS_DEFAULT}}; do
+					if [ "${_build_tgt_lc}" = "host_tools_rpm" ]		\
+					&& [ "${ARG_RPM:-0}" -eq 0 ]; then
+						continue;
+					fi;
 					_build_tgt_uc="$(ex_rtl_toupper "${_build_tgt_lc}")";
 					_build_tgt_pkg_names="${_build_tgt_pkg_names:+${_build_tgt_pkg_names} }$(ex_rtl_get_var_unsafe ${_build_tgt_uc}_PACKAGES)";
 				done;
@@ -24,6 +28,10 @@ buildp_dispatch() {
 				fi;
 			fi;
 			for _build_tgt_lc in ${BUILD_TARGETS:-${TARGETS_DEFAULT}}; do
+				if [ "${_build_tgt_lc}" = "host_tools_rpm" ]			\
+				&& [ "${ARG_RPM}" -eq 0 ]; then
+					continue;
+				fi;
 				ex_pkg_dispatch "${_build_tgt_lc}"				\
 						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
 						buildp_dispatch;

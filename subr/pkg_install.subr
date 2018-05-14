@@ -17,6 +17,34 @@ pkg_install() {
 		tar -C "${PKG_DESTDIR}" -cpf - .	|\
 			gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"
 	fi;
+	if [ "${ARG_RPM:-0}" -eq 1 ]; then
+		cat > "${PKG_BASE_DIR}/${PKG_NAME}.spec" <<EOF
+Name:           ${PKG_NAME}
+Version:        ${PKG_VERSION}
+Release:        1
+Summary:        ${PKG_NAME} ${PKG_VERSION}
+License:        Unknown
+Group:          Applications
+Url:            ${PKG_URL}
+
+%description
+${PKG_NAME} ${PKG_VERSION}
+
+%prep
+%build
+%install
+cp -pPr ${PKG_DESTDIR}/. .
+
+%post
+%postun
+%files
+%changelog
+
+EOF
+		rpmbuild -bb --define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION}" --nodeps "${PKG_BASE_DIR}/${PKG_NAME}.spec";
+		find "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION}/RPMS" -iname \*.rpm -exec cp -pP {} "${PREFIX_RPM}/" \;;
+		ex_rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION}";
+	fi;
 };
 
 # vim:filetype=sh
