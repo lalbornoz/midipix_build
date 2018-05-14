@@ -2,7 +2,7 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                   [-c] [-C dir[,..]] [-h] [-N] [-P [jobs]]
                   [-r ALL[:step,..]] [-r name[,..][:step,..]]
                   [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x]
-                  [--as-needed] [--debug-minipix] [<target>[ ..]]
+                  [--as-needed] [--debug-minipix] [--rpm] [<target>[ ..]]
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
@@ -39,8 +39,9 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
         -x                      Set xtrace during package builds; implies -vv.
         --as-needed             Don't build unless the midipix_build repository has received new commits.
         --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
+        --rpm                   Build RPM packages for each package built; selects host_tools_rpm.
         <target>[ ..]           One of:
-                                host or host_tools, host_toolchain_deps, host_toolchain, host_toolchain_mingw32,
+                                host or host_tools, host_tools_rpm, host_toolchain_deps, host_toolchain, host_toolchain_mingw32,
                                 native or native_tools, native_toolchain_deps, native_toolchain, native_toolchain_mingw32, native_runtime,
                                 packages_deps or host_packages_deps, native_packages_deps, native_packages_deps_x11,
                                 packages or native_packages, or dist.
