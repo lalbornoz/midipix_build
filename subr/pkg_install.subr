@@ -17,7 +17,8 @@ pkg_install() {
 		tar -C "${PKG_DESTDIR}" -cpf - .	|\
 			gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"
 	fi;
-	if [ "${ARG_RPM:-0}" -eq 1 ]; then
+	if [ "${ARG_RPM:-0}" -eq 1 ]\
+	&& [ -x "$(which rpmbuild 2>/dev/null)" ]; then
 		cat > "${PKG_BASE_DIR}/${PKG_NAME}.spec" <<EOF
 Name:           ${PKG_NAME}
 Version:        ${PKG_VERSION}
