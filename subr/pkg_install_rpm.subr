@@ -1,0 +1,61 @@
+#
+# set -o errexit -o noglob are assumed.
+#
+
+pkg_install_rpm() {
+	local _pkg_url="" _pkg_version_full="" _pkg_version_rpm="";
+	if [ "${ARG_RPM:-0}" -eq 0 ]\
+	|| ! [ -x "$(which rpmbuild 2>/dev/null)" ]; then
+		return 0;
+	fi; 
+	if [ -n "${PKG_URLS_GIT}" ]; then
+		_pkg_version_rpm="$(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse HEAD)";
+		_pkg_version_full="${_pkg_version_rpm} ($(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse --abbrev-ref HEAD))";
+		_pkg_url="${PKG_URLS_GIT%% *}";
+		_pkg_url="${_pkg_url##*=}"; _pkg_url="${_pkg_url%%@*}";
+		if [ "${_pkg_url#${DEFAULT_GITROOT_HEAD}}" != "${_pkg_url}" ]; then
+			_pkg_url="Unknown";
+		fi;
+	elif [ -n "${PKG_VERSION}" ]; then
+		_pkg_version_rpm="${PKG_VERSION%%-*}";
+		_pkg_version_full="${PKG_VERSION}";
+		_pkg_url="${PKG_URL}";
+	else
+		_pkg_version_rpm="${PKG_VERSION}";
+		_pkg_version_full="${PKG_VERSION}";
+		_pkg_url="${PKG_URL}";
+	fi;
+	cat > "${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec" <<EOF
+Name:           ${PKG_NAME}
+Version:        ${_pkg_version_rpm}
+Release:        1
+Summary:        ${PKG_NAME} ${_pkg_version_full}
+License:        Unknown
+Group:          Applications
+Url:            ${_pkg_url}
+
+%description
+${PKG_NAME} ${_pkg_version_full}
+
+%prep
+%build
+%install
+rm -rf "\${RPM_BUILD_ROOT}"
+mkdir -p "\${RPM_BUILD_ROOT}"
+cp -pPr "${PKG_DESTDIR}/." "\${RPM_BUILD_ROOT}"
+
+%post
+%postun
+%files
+/
+
+%changelog
+
+EOF
+	rpmbuild -bb --define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${_pkg_version_rpm}" --nodeps "${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec";
+	find "${PREFIX_RPM}/${PKG_NAME}-${_pkg_version_rpm}/RPMS" -iname \*.rpm -exec cp -pP {} "${PREFIX_RPM}/" \;;
+	ex_rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${_pkg_version_rpm}";
+	ex_rtl_fileop cp "${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec" "${PREFIX_RPM}/";
+};
+
+# vim:filetype=sh
