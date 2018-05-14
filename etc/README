@@ -29,30 +29,18 @@ following GitHub repository: <https://github.com/Lucía Andrea Illanes Albornoz/
 
 If you obtained a Midipix distribution tarball, extract it into a directory and
 drive of your choice, henceforth referred to as target directory; the drive can
-be a network drive. Do _not_ use anything but a true UNIX environment tar(1), as
-e.g. WinRAR or WinZip handle extracting hard links incorrectly.
+be a network drive.
 If you built Midipix yourself, the target directory is equivalent to the ${PREFIX}
 configured in build.vars, which defaults to ${HOME}/midipix.
 
-At present, providing an interactive Midipix environment still requires the Cygwin
-terminal emulator Mintty and a shell; this does not include pseudoterminals, which
-are entirely handled by Midipix. Both can be installed via the 64-bit Cygwin setup
-program at <https://www.cygwin.com/setup-x86_64.exe>.
-
-Once installed, launching a Midipix shell is accomplished by the `midipix.sh' shell
-script provided in the target directory from within a Cygwin shell prompt in Mintty
-and the target directory. This may either simply be done manually each time, or
-automated by a shortcut. As shortcuts cannot be distributed, it can be created by
-either:
-* Opening (executing) the VBScript script in the target directory from within the
-  latter cscript.exe, providing the fully qualified pathname to Mintty, if it differs
-  from the default value of C:\cygwin64\bin\mintty.exe or
-* manually creating a shortcut to Mintty with `Start in:' set to the target directory
-  and the following command line:
-  [ ... ]\mintty.exe -i /Cygwin-Terminal.ico -e sh midipix.sh, or
+Previously, this repository contained a shell script for usage within Cygwin
+and a VBS script in order to obtain a Midipix shell environment. These have been
+replaced with <https://git.midipix.org/cgit.cgi/mpackage/plain/distro/bash.cmd>
+from the Midipix distro skeleton[2], which will handle this process itself.
 
 References:
 * Sun, 24 Apr 2016 09:04:08 +0000 [1] musl FAQ <http://www.musl-libc.org/faq.html>
+* Mon, 14 May 2018 17:15:26 +0000 [2] <https://git.midipix.org/cgit.cgi/mpackage/plain/README>
 
 Linux distribution-related errata
 =================================
