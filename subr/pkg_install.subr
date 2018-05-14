@@ -19,7 +19,7 @@ pkg_install() {
 	fi;
 	if [ "${ARG_RPM:-0}" -eq 1 ]\
 	&& [ -x "$(which rpmbuild 2>/dev/null)" ]; then
-		cat > "${PKG_BASE_DIR}/${PKG_NAME}.spec" <<EOF
+		cat > "${PKG_BASE_DIR}/${PKG_NAME}-${PKG_VERSION:-Unknown}.spec" <<EOF
 Name:           ${PKG_NAME}
 Version:        ${PKG_VERSION:-Unknown}
 Release:        1
@@ -46,9 +46,10 @@ cp -pPr "${PKG_DESTDIR}/." "\${RPM_BUILD_ROOT}"
 %changelog
 
 EOF
-		rpmbuild -bb --define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION:-Unknown}" --nodeps "${PKG_BASE_DIR}/${PKG_NAME}.spec";
+		rpmbuild -bb --define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION:-Unknown}" --nodeps "${PKG_BASE_DIR}/${PKG_NAME}-${PKG_VERSION:-Unknown}.spec";
 		find "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION:-Unknown}/RPMS" -iname \*.rpm -exec cp -pP {} "${PREFIX_RPM}/" \;;
 		ex_rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${PKG_VERSION:-Unknown}";
+		ex_rtl_fileop cp "${PKG_BASE_DIR}/${PKG_NAME}-${PKG_VERSION:-Unknown}.spec" "${PREFIX_RPM}/";
 	fi;
 };
 
