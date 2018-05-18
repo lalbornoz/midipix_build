@@ -1,6 +1,18 @@
+diff -ru readline-7.0.orig/configure readline-7.0/configure
+--- readline-7.0.orig/configure	2016-09-07 23:15:16.000000000 +0200
++++ readline-7.0/configure	2018-05-18 13:35:12.958734947 +0200
+@@ -3851,7 +3851,7 @@
+ 
+ test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
+ 
+-test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
++test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 755'
+ 
+ if test -n "$ac_tool_prefix"; then
+   # Extract the first word of "${ac_tool_prefix}ar", so it can be a program name with args.
 diff -ru readline-7.0.orig/shlib/Makefile.in readline-7.0/shlib/Makefile.in
 --- readline-7.0.orig/shlib/Makefile.in	2015-07-13 00:41:58.000000000 +0200
-+++ readline-7.0/shlib/Makefile.in	2017-12-30 00:39:53.919481249 +0100
++++ readline-7.0/shlib/Makefile.in	2018-05-18 13:36:19.410406513 +0200
 @@ -86,7 +86,7 @@
  SHOBJ_LIBS = @SHOBJ_LIBS@
  
