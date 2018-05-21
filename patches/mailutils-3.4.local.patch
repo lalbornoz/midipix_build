@@ -1,0 +1,73 @@
+diff -ru mailutils-3.4.orig/imap4d/Makefile.in mailutils-3.4/imap4d/Makefile.in
+--- mailutils-3.4.orig/imap4d/Makefile.in	2017-11-02 12:21:12.000000000 +0100
++++ mailutils-3.4/imap4d/Makefile.in	2018-05-21 13:21:33.429204950 +0200
+@@ -1048,8 +1048,9 @@
+  ${MU_LIB_MAILDIR}\
+  ${MU_LIB_AUTH}\
+  @MU_AUTHLIBS@ \
++ @MU_TCPWRAP_LIBRARIES@\
+  ${MU_LIB_MAILUTILS}\
+- @SERV_AUTHLIBS@ @MU_COMMON_LIBRARIES@ @MU_TCPWRAP_LIBRARIES@
++ @SERV_AUTHLIBS@ @MU_COMMON_LIBRARIES@
+ 
+ imap4d_DEPENDENCIES = \
+  @MU_AUTHLIBS_DEPENDENCY@\
+diff -ru mailutils-3.4.orig/lib/Makefile.in mailutils-3.4/lib/Makefile.in
+--- mailutils-3.4.orig/lib/Makefile.in	2017-11-02 12:21:13.000000000 +0100
++++ mailutils-3.4/lib/Makefile.in	2018-05-21 13:30:13.216744220 +0200
+@@ -183,7 +183,7 @@
+   }
+ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(lispdir)"
+ LTLIBRARIES = $(lib_LTLIBRARIES)
+-libmuaux_la_DEPENDENCIES = gnu/libgnu.la
++libmuaux_la_DEPENDENCIES = gnu/libgnu.la ../libmailutils/libmailutils.la
+ am_libmuaux_la_OBJECTS = daemon.lo mailcap.lo manlock.lo signal.lo \
+ 	strexit.lo mu_umaxtostr.lo
+ libmuaux_la_OBJECTS = $(am_libmuaux_la_OBJECTS)
+@@ -1019,7 +1019,7 @@
+  mu_umaxtostr.c\
+  mu_umaxtostr.h
+ 
+-libmuaux_la_LIBADD = gnu/libgnu.la
++libmuaux_la_LIBADD = gnu/libgnu.la ../libmailutils/libmailutils.la
+ libmuaux_la_LDFLAGS = -version-info @VI_CURRENT@:@VI_REVISION@:@VI_AGE@
+ libmutcpwrap_a_SOURCES = tcpwrap.c
+ noinst_HEADERS = \
+diff -ru mailutils-3.4.orig/maidag/Makefile.in mailutils-3.4/maidag/Makefile.in
+--- mailutils-3.4.orig/maidag/Makefile.in	2017-11-02 12:21:19.000000000 +0100
++++ mailutils-3.4/maidag/Makefile.in	2018-05-21 13:25:16.403865751 +0200
+@@ -1022,6 +1022,7 @@
+  ${MU_LIB_AUTH}\
+  ${MU_LIB_MAILER}\
+  @MU_AUTHLIBS@\
++ @MU_TCPWRAP_LIBRARIES@\
+  ${MU_LIB_MAILUTILS} \
+  @MU_COMMON_LIBRARIES@\
+  @LIBMU_SCM@\
+@@ -1030,8 +1031,7 @@
+  $(LIBMU_DBM)\
+  @GUILE_LIBS@\
+  @PYTHON_LIBS@\
+- @DBMLIBS@\
+- @MU_TCPWRAP_LIBRARIES@
++ @DBMLIBS@
+ 
+ AM_CPPFLAGS = -I${top_srcdir} @MU_APP_COMMON_INCLUDES@ @GUILE_INCLUDES@ \
+  @PYTHON_INCLUDES@
+diff -ru mailutils-3.4.orig/pop3d/Makefile.in mailutils-3.4/pop3d/Makefile.in
+--- mailutils-3.4.orig/pop3d/Makefile.in	2017-11-02 12:21:22.000000000 +0100
++++ mailutils-3.4/pop3d/Makefile.in	2018-05-21 13:25:05.807995953 +0200
+@@ -1019,11 +1019,11 @@
+  ${MU_LIB_MAILDIR}\
+  ${MU_LIB_AUTH}\
+  @MU_AUTHLIBS@ \
++ @MU_TCPWRAP_LIBRARIES@\
+  ${MU_LIB_MAILUTILS}\
+  @MU_COMMON_LIBRARIES@\
+  ${LIBMU_DBM}\
+- @DBMLIBS@\
+- @MU_TCPWRAP_LIBRARIES@
++ @DBMLIBS@
+ 
+ popauth_SOURCES = popauth.c
+ popauth_LDADD = \
