@@ -1,0 +1,108 @@
+diff -Nru rc-1.7.4.orig/Makefile.in rc-1.7.4/Makefile.in
+--- rc-1.7.4.orig/Makefile.in	2015-05-13 23:26:18.000000000 +0200
++++ rc-1.7.4/Makefile.in	2018-05-21 14:01:54.782421179 +0200
+@@ -920,14 +920,14 @@
+ 
+ 
+ sigmsgs.c sigmsgs.h: mksignal
+-	./mksignal
++	echo sigmsgs.c
+ 
+ # Newer automake's buildtime dependency tracking can't seem to figure
+ # this one out.
+ status.o: statval.h
+ 
+ statval.h: mkstatval
+-	./mkstatval > statval.h
++	echo statval.h
+ 
+ # Of course, parse.c and parse.h depend on parse.y.  However, unless
+ # you're hacking on rc's grammar, it's not useful to have this
+diff -Nru rc-1.7.4.orig/sigmsgs.c rc-1.7.4/sigmsgs.c
+--- rc-1.7.4.orig/sigmsgs.c	1970-01-01 01:00:00.000000000 +0100
++++ rc-1.7.4/sigmsgs.c	2018-05-21 13:56:36.000000000 +0200
+@@ -0,0 +1,69 @@
++#include "sigmsgs.h"
++
++Sigmsgs signals[] = {
++	{"",	""},
++	{"sighup",	"hangup"},
++	{"sigint",	""},
++	{"sigquit",	"quit"},
++	{"sigill",	"illegal instruction"},
++	{"sigtrap",	"trace trap"},
++	{"sigabrt",	"abort"},
++	{"sigbus",	"bus error"},
++	{"sigfpe",	"floating point error"},
++	{"sigkill",	"killed"},
++	{"sigusr1",	"user defined signal 1"},
++	{"sigsegv",	"segmentation violation"},
++	{"sigusr2",	"user defined signal 2"},
++	{"sigpipe",	""},
++	{"sigalrm",	"alarm clock"},
++	{"sigterm",	"terminated"},
++	{"sigstkflt",	"stack fault"},
++	{"sigchld",	"child stop or exit"},
++	{"sigcont",	"continue"},
++	{"sigstop",	"stopped by program"},
++	{"sigtstp",	"stopped"},
++	{"sigttin",	"background tty read"},
++	{"sigttou",	"background tty write"},
++	{"sigurg",	"urgent condition on i/o channel"},
++	{"sigxcpu",	"exceeded cpu time limit"},
++	{"sigxfsz",	"exceeded file size limit"},
++	{"sigvtalrm",	"virtual timer alarm"},
++	{"sigprof",	"profiling timer alarm"},
++	{"sigwinch",	"window size change"},
++	{"sigio",	"socket i/o possible"},
++	{"sigpwr",	"power-fail restart"},
++	{"sigsys",	"invalid argument to system call"},
++	{"sigunknown32",	"unknown signal 32"},
++	{"sigunknown33",	"unknown signal 33"},
++	{"sigunknown34",	"unknown signal 34"},
++	{"sigunknown35",	"unknown signal 35"},
++	{"sigunknown36",	"unknown signal 36"},
++	{"sigunknown37",	"unknown signal 37"},
++	{"sigunknown38",	"unknown signal 38"},
++	{"sigunknown39",	"unknown signal 39"},
++	{"sigunknown40",	"unknown signal 40"},
++	{"sigunknown41",	"unknown signal 41"},
++	{"sigunknown42",	"unknown signal 42"},
++	{"sigunknown43",	"unknown signal 43"},
++	{"sigunknown44",	"unknown signal 44"},
++	{"sigunknown45",	"unknown signal 45"},
++	{"sigunknown46",	"unknown signal 46"},
++	{"sigunknown47",	"unknown signal 47"},
++	{"sigunknown48",	"unknown signal 48"},
++	{"sigunknown49",	"unknown signal 49"},
++	{"sigunknown50",	"unknown signal 50"},
++	{"sigunknown51",	"unknown signal 51"},
++	{"sigunknown52",	"unknown signal 52"},
++	{"sigunknown53",	"unknown signal 53"},
++	{"sigunknown54",	"unknown signal 54"},
++	{"sigunknown55",	"unknown signal 55"},
++	{"sigunknown56",	"unknown signal 56"},
++	{"sigunknown57",	"unknown signal 57"},
++	{"sigunknown58",	"unknown signal 58"},
++	{"sigunknown59",	"unknown signal 59"},
++	{"sigunknown60",	"unknown signal 60"},
++	{"sigunknown61",	"unknown signal 61"},
++	{"sigunknown62",	"unknown signal 62"},
++	{"sigunknown63",	"unknown signal 63"},
++	{"sigunknown64",	"unknown signal 64"},
++};
+diff -Nru rc-1.7.4.orig/sigmsgs.h rc-1.7.4/sigmsgs.h
+--- rc-1.7.4.orig/sigmsgs.h	1970-01-01 01:00:00.000000000 +0100
++++ rc-1.7.4/sigmsgs.h	2018-05-21 13:56:36.000000000 +0200
+@@ -0,0 +1,5 @@
++typedef struct {
++	char *name, *msg;
++} Sigmsgs;
++extern Sigmsgs signals[];
++#define NUMOFSIGNALS 65
+diff -Nru rc-1.7.4.orig/statval.h rc-1.7.4/statval.h
+--- rc-1.7.4.orig/statval.h	1970-01-01 01:00:00.000000000 +0100
++++ rc-1.7.4/statval.h	2018-05-21 13:56:42.000000000 +0200
+@@ -0,0 +1,2 @@
++#define STATUS0 0
++#define STATUS1 256
