@@ -1,5 +1,5 @@
 --- unix/configure.orig	2017-09-07 12:54:11.000000000 +0000
-+++ unix/configure	2018-01-22 18:01:25.880000000 +0000
++++ unix/configure	2018-05-29 14:55:16.464000000 +0000
 @@ -3957,7 +3957,7 @@
  
  $as_echo "#define _REENTRANT 1" >>confdefs.h
@@ -25,7 +25,37 @@
  		    tcl_cv_sys_version=AIX-`uname -v`.`uname -r`
  		fi
  	    fi
-@@ -7429,7 +7429,7 @@
+@@ -5718,6 +5718,29 @@
+ 		LD_SEARCH_FLAGS='-Wl,-rpath,${LIB_RUNTIME_DIR}'
+ fi
+ 	    ;;
++	*-midipix-*)
++	    SHLIB_CFLAGS="-fPIC"
++	    SHLIB_SUFFIX=".so"
++
++	    CFLAGS_OPTIMIZE="-O2"
++
++	    SHLIB_LD='${CC} -shared ${CFLAGS} ${LDFLAGS}'
++	    DL_OBJS="tclLoadDl.o"
++	    DL_LIBS="-ldl"
++	    LD_SEARCH_FLAGS=${CC_SEARCH_FLAGS}
++	    if test $do64bit = yes; then :
++
++		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if compiler accepts -m64 flag" >&5
++$as_echo_n "checking if compiler accepts -m64 flag... " >&6; }
++if ${tcl_cv_cc_m64+:} false; then :
++  $as_echo_n "(cached) " >&6
++else
++  tcl_cv_cc_m64=no
++fi
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $tcl_cv_cc_m64" >&5
++$as_echo "$tcl_cv_cc_m64" >&6; }
++fi
++	    ;;
+ 	OpenBSD-*)
+ 	    arch=`arch -s`
+ 	    case "$arch" in
+@@ -7429,7 +7452,7 @@
  fi
  
  
@@ -34,7 +64,7 @@
  	test "`uname -r | awk -F. '{print $1}'`" -lt 7; then
      # prior to Darwin 7, realpath is not threadsafe, so don't
      # use it when threads are enabled, c.f. bug # 711232
-@@ -7937,7 +7937,7 @@
+@@ -7937,7 +7960,7 @@
  
  fi
  
@@ -43,7 +73,7 @@
  	    test "`uname -r | awk -F. '{print $1}'`" -gt 5; then
  	# Starting with Darwin 6 (Mac OSX 10.2), gethostbyX
  	# are actually MT-safe as they always return pointers
-@@ -7949,7 +7949,7 @@
+@@ -7949,7 +7972,7 @@
  $as_echo "#define HAVE_MTSAFE_GETHOSTBYADDR 1" >>confdefs.h
  
  
@@ -52,7 +82,7 @@
  	      test "`uname -r|sed -e 's|B\.||' -e 's|\..*$||'`" -gt 10; then
          # Starting with HPUX 11.00 (we believe), gethostbyX
          # are actually MT-safe as they always return pointers
-@@ -8330,7 +8330,7 @@
+@@ -8330,7 +8353,7 @@
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for advanced notifier support" >&5
  $as_echo_n "checking for advanced notifier support... " >&6; }
@@ -61,7 +91,7 @@
    xLinux)
  	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: epoll(7)" >&5
  $as_echo "epoll(7)" >&6; }
-@@ -9676,7 +9676,7 @@
+@@ -9676,7 +9699,7 @@
  # Darwin specific API checks and defines
  #--------------------------------------------------------------------
  
@@ -70,7 +100,7 @@
      for ac_func in getattrlist
  do :
    ac_fn_c_check_func "$LINENO" "getattrlist" "ac_cv_func_getattrlist"
-@@ -9942,13 +9942,13 @@
+@@ -9942,13 +9965,13 @@
  	if test "${TEA_PLATFORM}" = "windows" ; then
  	    tcl_cv_sys_version=windows
  	else
@@ -86,7 +116,7 @@
  		    tcl_cv_sys_version=AIX-`uname -v`.`uname -r`
  		fi
  	    fi
-@@ -10133,9 +10133,9 @@
+@@ -10133,9 +10156,9 @@
  
      DTRACE_SRC="\${DTRACE_SRC}"
      DTRACE_HDR="\${DTRACE_HDR}"
@@ -98,7 +128,7 @@
  	    # Need to create an intermediate object file to ensure tclDTrace.o
  	    # gets included when linking against the static tcl library.
  	    STLIB_LD='stlib_ld () { /usr/ccs/bin/ld -r -o $${1%.a}.o "$${@:2}" && '"${STLIB_LD}"' $${1} $${1%.a}.o ; } && stlib_ld'
-@@ -10219,9 +10219,9 @@
+@@ -10219,9 +10242,9 @@
  # AIX remembers this path and will attempt to use it at run-time to look
  # up the Tcl library.
  
