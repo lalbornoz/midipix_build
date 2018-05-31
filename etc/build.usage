@@ -46,7 +46,7 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                                 packages_deps or host_packages_deps, native_packages_deps, native_packages_deps_x11,
                                 packages or native_packages, or dist.
 
-        ${HOME}/midipix_build.vars will be sourced if present.
+        ${HOME}/midipix_build.vars, ${HOME}/.midipix_build.vars, and/or ../midipix_build.vars will be sourced if present.
 
         Examples:
         ./build.sh -r coreutils
