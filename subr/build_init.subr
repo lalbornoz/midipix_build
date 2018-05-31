@@ -30,7 +30,7 @@ build_init() {
 		fi;
 		ex_rtl_log_msg failexit "Error: invalid architecture \`${ARCH}'.";
 	fi;
-	for __ in ${HOME}/midipix_build.vars ../midipix_build.vars ./vars/env.vars ./vars/midipix.vars ./vars/build.vars; do
+	for __ in ${HOME}/midipix_build.vars ${HOME}/.midipix_build.vars ../midipix_build.vars ./vars/env.vars ./vars/midipix.vars ./vars/build.vars; do
 		[ -e ${__} ] && . ${__};
 	done;
 	if [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
