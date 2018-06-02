@@ -1,0 +1,12 @@
+diff -ru slang-2.3.2.orig/modules/Makefile.in slang-2.3.2/modules/Makefile.in
+--- slang-2.3.2.orig/modules/Makefile.in	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/modules/Makefile.in	2018-06-01 22:01:48.926864387 +0200
+@@ -16,7 +16,7 @@
+ # ---------------------------------------------------------------------------
+ CC		= @CC@
+ CFLAGS		= @CFLAGS@ @SLANG_DLL_CFLAGS@
+-LDFLAGS		= @LDFLAGS@
++LDFLAGS		= @LDFLAGS@ -L../../src/elfobjs -lslang
+ CC_SHARED_FLAGS = @CC_SHARED_FLAGS@
+ CC_SHARED 	= $(CC) $(INCS) $(CC_SHARED_FLAGS) $(CFLAGS)
+ CONFIG_DIR	= @CONFIG_DIR@
