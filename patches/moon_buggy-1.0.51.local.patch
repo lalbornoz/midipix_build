@@ -1,0 +1,11 @@
+diff -ru moon-buggy-1.0.51.orig/Makefile.in moon-buggy-1.0.51/Makefile.in
+--- moon-buggy-1.0.51.orig/Makefile.in	2006-03-19 20:24:50.000000000 +0100
++++ moon-buggy-1.0.51/Makefile.in	2018-06-06 13:25:19.270964962 +0200
+@@ -861,7 +861,6 @@
+ 		 || chmod 664 "$(DESTDIR)$(scoredir)/mbscore" ; } \
+ 	    && chmod 575 "$(DESTDIR)$(scoredir)" ; \
+ 	fi
+-	$(DESTDIR)$(bindir)/moon-buggy -c
+ 
+ uninstall-local:
+ 	rm -f $(DESTDIR)$(scoredir)/mbscore
