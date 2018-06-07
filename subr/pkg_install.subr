@@ -3,6 +3,7 @@
 #
 
 pkg_install() {
+	local _pkglist_name="";
 	ex_rtl_fileop mkdir "${PKG_PREFIX}";
 	find "${PKG_DESTDIR}"				\
 		-type d -exec chmod 0755 {} \;;
@@ -20,7 +21,9 @@ pkg_install() {
 	if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]; then
 		touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
 	fi;
-	echo "${PKG_NAME}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
+	_pkglist_name="${PKG_BASE_DIR##*/}";
+	_pkglist_name="${_pkglist_name%%-*}";
+	echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
 };
 
 # vim:filetype=sh
