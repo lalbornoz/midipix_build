@@ -1,0 +1,12 @@
+diff -ru classpath-0.99.orig/native/jni/midi-alsa/Makefile.am classpath-0.99/native/jni/midi-alsa/Makefile.am
+--- classpath-0.99.orig/native/jni/midi-alsa/Makefile.am	2008-06-23 16:12:25.000000000 +0200
++++ classpath-0.99/native/jni/midi-alsa/Makefile.am	2018-06-07 16:04:06.060732894 +0200
+@@ -4,7 +4,7 @@
+ gnu_javax_sound_midi_alsa_AlsaPortDevice.c \
+ gnu_javax_sound_midi_alsa_AlsaMidiDeviceProvider.c
+ 
+-libgjsmalsa_la_LIBADD = -lasound
++libgjsmalsa_la_LIBADD = -lasound $(top_srcdir)/native/jni/classpath/libclasspath.la
+ libgjsmalsa_la_LDFLAGS = $(AM_LDFLAGS) -avoid-version
+ 
+ AM_LDFLAGS = @CLASSPATH_MODULE@
