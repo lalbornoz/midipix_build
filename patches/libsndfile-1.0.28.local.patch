@@ -1,0 +1,38 @@
+diff -ru libsndfile-1.0.28.orig/programs/sndfile-play.c libsndfile-1.0.28/programs/sndfile-play.c
+--- libsndfile-1.0.28.orig/programs/sndfile-play.c	2017-04-01 09:18:02.000000000 +0200
++++ libsndfile-1.0.28/programs/sndfile-play.c	2018-06-10 03:16:32.784821054 +0200
+@@ -193,7 +193,7 @@
+ 		goto catch_error ;
+ 		} ;
+ 
+-	if ((err = snd_pcm_hw_params_set_rate_near (alsa_dev, hw_params, &samplerate, 0)) < 0)
++	if ((err = __snd_pcm_hw_params_set_rate_near (alsa_dev, hw_params, &samplerate, 0)) < 0)
+ 	{	fprintf (stderr, "cannot set sample rate (%s)\n", snd_strerror (err)) ;
+ 		goto catch_error ;
+ 		} ;
+@@ -203,12 +203,12 @@
+ 		goto catch_error ;
+ 		} ;
+ 
+-	if ((err = snd_pcm_hw_params_set_buffer_size_near (alsa_dev, hw_params, &alsa_buffer_frames)) < 0)
++	if ((err = __snd_pcm_hw_params_set_buffer_size_near (alsa_dev, hw_params, &alsa_buffer_frames)) < 0)
+ 	{	fprintf (stderr, "cannot set buffer size (%s)\n", snd_strerror (err)) ;
+ 		goto catch_error ;
+ 		} ;
+ 
+-	if ((err = snd_pcm_hw_params_set_period_size_near (alsa_dev, hw_params, &alsa_period_size, 0)) < 0)
++	if ((err = __snd_pcm_hw_params_set_period_size_near (alsa_dev, hw_params, &alsa_period_size, 0)) < 0)
+ 	{	fprintf (stderr, "cannot set period size (%s)\n", snd_strerror (err)) ;
+ 		goto catch_error ;
+ 		} ;
+@@ -219,8 +219,8 @@
+ 		} ;
+ 
+ 	/* extra check: if we have only one period, this code won't work */
+-	snd_pcm_hw_params_get_period_size (hw_params, &alsa_period_size, 0) ;
+-	snd_pcm_hw_params_get_buffer_size (hw_params, &buffer_size) ;
++	__snd_pcm_hw_params_get_period_size (hw_params, &alsa_period_size, 0) ;
++	__snd_pcm_hw_params_get_buffer_size (hw_params, &buffer_size) ;
+ 	if (alsa_period_size == buffer_size)
+ 	{	fprintf (stderr, "Can't use period equal to buffer size (%lu == %lu)", alsa_period_size, buffer_size) ;
+ 		goto catch_error ;
