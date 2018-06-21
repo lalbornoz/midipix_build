@@ -18,7 +18,7 @@ diff -ru readline-7.0.orig/shlib/Makefile.in readline-7.0/shlib/Makefile.in
  
  SHLIB_XLDFLAGS = @LDFLAGS@ @SHLIB_XLDFLAGS@
 -SHLIB_LIBS = @SHLIB_LIBS@
-+SHLIB_LIBS = @SHLIB_LIBS@ -lncurses
++SHLIB_LIBS = @SHLIB_LIBS@ -lncurses -ltinfo
  
  SHLIB_DOT = @SHLIB_DOT@
  SHLIB_LIBPREF = @SHLIB_LIBPREF@
