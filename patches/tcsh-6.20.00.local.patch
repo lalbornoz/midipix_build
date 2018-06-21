@@ -1,3 +1,14 @@
+--- tcsh-6.20.00.orig/configure 2018-06-21 16:23:41.803468940 +0200
++++ tcsh-6.20.00/configure      2018-06-21 16:24:12.059836489 +0200
+@@ -4289,7 +4289,7 @@
+   return 0;
+ }
+ _ACEOF
+-for ac_lib in '' termlib termcap curses ncurses; do
++for ac_lib in '' termlib termcap curses ncurses tinfo; do
+   if test -z "$ac_lib"; then
+     ac_res="none required"
+   else
 --- tcsh-6.20.00/config_f.h.orig	2016-04-16 17:44:18.000000000 +0200
 +++ tcsh-6.20.00/config_f.h	2016-12-18 02:01:28.699635400 +0100
 @@ -139,11 +139,9 @@
