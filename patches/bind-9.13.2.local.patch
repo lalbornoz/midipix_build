@@ -1,0 +1,142 @@
+diff -ru bind-9.13.2.orig/bin/delv/Makefile.in bind-9.13.2/bin/delv/Makefile.in
+--- bind-9.13.2.orig/bin/delv/Makefile.in	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/bin/delv/Makefile.in	2018-07-28 13:57:22.338491119 +0200
+@@ -56,7 +56,7 @@
+ 
+ delv@EXEEXT@: delv.@O@ ${DEPLIBS}
+ 	export BASEOBJS="delv.@O@"; \
+-	export LIBS0="${DNSLIBS}"; \
++	export LIBS0="${IRSLIBS} ${ISCCFGLIBS} ${DNSLIBS} ${ISCLIBS}"; \
+ 	${FINALBUILDCMD}
+ 
+ installdirs:
+diff -ru bind-9.13.2.orig/bin/Makefile.in bind-9.13.2/bin/Makefile.in
+--- bind-9.13.2.orig/bin/Makefile.in	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/bin/Makefile.in	2018-07-28 14:02:26.358862803 +0200
+@@ -12,7 +12,7 @@
+ top_srcdir =	@top_srcdir@
+ 
+ SUBDIRS =	named rndc dig delv dnssec tools nsupdate check confgen \
+-		@NZD_TOOLS@ @PYTHON_TOOLS@ @PKCS11_TOOLS@ tests
++		@NZD_TOOLS@ @PYTHON_TOOLS@ @PKCS11_TOOLS@
+ TARGETS =
+ 
+ @BIND9_MAKE_RULES@
+diff -ru bind-9.13.2.orig/bin/named/Makefile.in bind-9.13.2/bin/named/Makefile.in
+--- bind-9.13.2.orig/bin/named/Makefile.in	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/bin/named/Makefile.in	2018-07-28 13:51:14.468398709 +0200
+@@ -67,11 +67,11 @@
+ BIND9DEPLIBS =	../../lib/bind9/libbind9.@A@
+ NSDEPLIBS =	../../lib/ns/libns.@A@
+ 
+-DEPLIBS =	${NSDEPLIBS} ${DNSDEPLIBS} ${BIND9DEPLIBS} \
+-		${ISCCFGDEPLIBS} ${ISCCCDEPLIBS} ${ISCDEPLIBS}
++DEPLIBS =	${NSDEPLIBS} ${BIND9DEPLIBS} \
++		${ISCCFGDEPLIBS} ${ISCCCDEPLIBS} ${DNSDEPLIBS} ${ISCDEPLIBS}
+ 
+ LIBS =		${NSLIBS} ${DNSLIBS} ${BIND9LIBS} \
+-		${ISCCFGLIBS} ${ISCCCLIBS} ${ISCLIBS} \
++		${ISCCFGLIBS} ${ISCCCLIBS} ${DNSLIBS} ${ISCLIBS} \
+ 		${DLZDRIVER_LIBS} ${DBDRIVER_LIBS} @LIBCAP_LIBS@ \
+ 		@LIBS@
+ 
+@@ -141,7 +141,7 @@
+ 
+ named@EXEEXT@: ${OBJS} ${DEPLIBS}
+ 	export MAKE_SYMTABLE="yes"; \
+-	export BASEOBJS="${OBJS} ${UOBJS}"; \
++	export BASEOBJS="${OBJS} ${UOBJS} ${ISCCFGLIBS} ${DNSLIBS} ${ISCLIBS}"; \
+ 	${FINALBUILDCMD}
+ 
+ doc man:: ${MANOBJS}
+diff -ru bind-9.13.2.orig/lib/bind9/Makefile.in bind-9.13.2/lib/bind9/Makefile.in
+--- bind-9.13.2.orig/lib/bind9/Makefile.in	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/bind9/Makefile.in	2018-07-27 23:07:51.683466013 +0200
+@@ -61,7 +61,7 @@
+ 	${LIBTOOL_MODE_LINK} \
+ 		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libbind9.la -rpath ${libdir} \
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+-		${OBJS} ${DNSLIBS} ${ISCCFGLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ \
++		${OBJS} ${ISCCFGLIBS} ${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ \
+ 		${LIBS}
+ 
+ timestamp: libbind9.@A@
+diff -ru bind-9.13.2.orig/lib/irs/Makefile.in bind-9.13.2/lib/irs/Makefile.in
+--- bind-9.13.2.orig/lib/irs/Makefile.in	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/irs/Makefile.in	2018-07-27 23:41:03.454823333 +0200
+@@ -36,6 +36,14 @@
+ 		gai_strerror.c getaddrinfo.c getnameinfo.c \
+ 		resconf.c
+ 
++ISCLIBS =       ../../lib/isc/libisc.@A@ @ISC_OPENSSL_LIBS@
++ISCCFGLIBS =    ../../lib/isccfg/libisccfg.@A@
++DNSLIBS =       ../../lib/dns/libdns.@A@ @DNS_CRYPTO_LIBS@
++
++ISCDEPLIBS =    ../../lib/isc/libisc.@A@
++ISCCFGDEPLIBS = ../../lib/isccfg/libisccfg.@A@
++DNSDEPLIBS =    ../../lib/dns/libdns.@A@
++
+ LIBS =		@LIBS@
+ 
+ SUBDIRS =	include
+@@ -60,7 +68,7 @@
+ 	${LIBTOOL_MODE_LINK} \
+ 		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libirs.la -rpath ${libdir} \
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+-		${OBJS} version.@O@ ${LIBS}
++		${OBJS} version.@O@ ${LIBS} ${ISCCFGLIBS} ${DNSLIBS} ${ISCLIBS}
+ 
+ timestamp: libirs.@A@
+ 	touch timestamp
+diff -ru bind-9.13.2.orig/lib/isc/Makefile.in bind-9.13.2/lib/isc/Makefile.in
+--- bind-9.13.2.orig/lib/isc/Makefile.in	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/Makefile.in	2018-07-27 22:11:27.820001533 +0200
+@@ -109,26 +109,16 @@
+ 	${AR} ${ARFLAGS} $@ ${OBJS} ${SYMTBLOBJS}
+ 	${RANLIB} $@
+ 
+-libisc-nosymtbl.@SA@: ${OBJS}
+-	${AR} ${ARFLAGS} $@ ${OBJS}
+-	${RANLIB} $@
+-
+ libisc.la: ${OBJS} ${SYMTBLOBJS}
+ 	${LIBTOOL_MODE_LINK} \
+ 		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc.la -rpath ${libdir} \
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+ 		${OBJS} ${SYMTBLOBJS} ${LIBS}
+ 
+-libisc-nosymtbl.la: ${OBJS}
+-	${LIBTOOL_MODE_LINK} \
+-		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libisc-nosymtbl.la -rpath ${libdir} \
+-		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+-		${OBJS} ${LIBS}
+-
+-timestamp: libisc.@A@ libisc-nosymtbl.@A@
++timestamp: libisc.@A@
+ 	touch timestamp
+ 
+-testdirs: libisc.@A@ libisc-nosymtbl.@A@
++testdirs: libisc.@A@
+ 
+ installdirs:
+ 	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+@@ -140,5 +130,5 @@
+ 	${LIBTOOL_MODE_UNINSTALL} rm -f ${DESTDIR}${libdir}/libisc.@A@
+ 
+ clean distclean::
+-	rm -f libisc.@A@ libisc-nosymtbl.@A@ libisc.la \
+-	libisc-nosymtbl.la timestamp
++	rm -f libisc.@A@ libisc.la \
++	timestamp
+diff -ru bind-9.13.2.orig/lib/ns/Makefile.in bind-9.13.2/lib/ns/Makefile.in
+--- bind-9.13.2.orig/lib/ns/Makefile.in	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/ns/Makefile.in	2018-07-27 23:50:52.641259810 +0200
+@@ -75,7 +75,7 @@
+ 	${LIBTOOL_MODE_LINK} \
+ 		${CC} ${ALL_CFLAGS} ${LDFLAGS} -o libns.la -rpath ${libdir} \
+ 		-version-info ${LIBINTERFACE}:${LIBREVISION}:${LIBAGE} \
+-		${OBJS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ ${LIBS}
++		${OBJS} ${DNSLIBS} ${ISCLIBS} @DNS_CRYPTO_LIBS@ ${LIBS}
+ 
+ timestamp: libns.@A@
+ 	touch timestamp
