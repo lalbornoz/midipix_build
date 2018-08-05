@@ -1,0 +1,98 @@
+diff -ru dante-1.4.2.orig/configure dante-1.4.2/configure
+--- dante-1.4.2.orig/configure	2017-02-03 15:17:15.000000000 +0100
++++ dante-1.4.2/configure	2018-08-04 19:01:29.524396348 +0200
+@@ -15341,10 +15341,8 @@
+ $as_echo_n "checking whether realloc with a NULL pointer calls malloc... " >&6; }
+ if test "$cross_compiling" = yes; then :
+ 
+-$as_echo "#define HAVE_NOMALLOC_REALLOC 1" >>confdefs.h
+-
+-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-$as_echo "no" >&6; }
++     { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming yes" >&5
++$as_echo "assuming yes" >&6; }
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -16923,8 +16921,9 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking read/send-side pipe system" >&5
+ $as_echo_n "checking read/send-side pipe system... " >&6; }
+ if test "$cross_compiling" = yes; then :
+-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: cross-compiling" >&5
+-$as_echo "cross-compiling" >&6; }
++      { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming send-based" >&5
++$as_echo "assuming send-based" >&6; }
++$as_echo "#define HAVE_PIPEBUFFER_SEND_BASED 1" >>confdefs.h
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -17226,13 +17225,10 @@
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for errorless select behavior with high timeouts" >&5
+ $as_echo_n "checking for errorless select behavior with high timeouts... " >&6; }
+  if test "$cross_compiling" = yes; then :
+-         { $as_echo "$as_me:${as_lineno-$LINENO}: result: unknown" >&5
+-$as_echo "unknown" >&6; }
+-       { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unable to determine max select value, using default" >&5
+-$as_echo "$as_me: WARNING: unable to determine max select value, using default" >&2;}
+-
++         { $as_echo "$as_me:${as_lineno-$LINENO}: result: cross-compiling: assuming yes -- midipix specific" >&5
++$as_echo "yes" >&6; }
+ cat >>confdefs.h <<_ACEOF
+-#define HAVE_SELECT_MAXTIMEOUT $DEFAULTMAX
++#define HAVE_SELECT_MAXTIMEOUT 0
+ _ACEOF
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+@@ -23228,12 +23224,13 @@
+ 
+ #AC_CHECK_FUNCS will add HAVE_foo define as long as function exists,
+ #check overselves as we only want define set if function is also working.
+-ac_cv_func_pselect=no
++ac_cv_func_pselect=yes
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working pselect()" >&5
+ $as_echo_n "checking for working pselect()... " >&6; }
+ if test "$cross_compiling" = yes; then :
+-       { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming no" >&5
+-$as_echo "assuming no" >&6; }
++       { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming yes" >&5
++$as_echo "assuming yes" >&6; }
++$as_echo "#define HAVE_PSELECT 1" >>confdefs.h
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -23286,8 +23283,9 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working sockatmark" >&5
+ $as_echo_n "checking for working sockatmark... " >&6; }
+ if test "$cross_compiling" = yes; then :
+-       { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming no" >&5
+-$as_echo "assuming no" >&6; }
++       { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming yes" >&5
++$as_echo "assuming yes" >&6; }
++$as_echo "#define HAVE_SOCKATMARK 1" >>confdefs.h
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -23888,8 +23886,9 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CLOCK_MONOTONIC clock_gettime() support" >&5
+ $as_echo_n "checking for CLOCK_MONOTONIC clock_gettime() support... " >&6; }
+ if test "$cross_compiling" = yes; then :
+-       { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming no" >&5
+-$as_echo "assuming no" >&6; }
++       { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming yes" >&5
++$as_echo "assuming yes" >&6; }
++$as_echo "#define HAVE_CLOCK_GETTIME_MONOTONIC 1" >>confdefs.h
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+diff -ru dante-1.4.2.orig/dlib/Makefile.in dante-1.4.2/dlib/Makefile.in
+--- dante-1.4.2.orig/dlib/Makefile.in	2017-02-03 15:17:27.000000000 +0100
++++ dante-1.4.2/dlib/Makefile.in	2018-08-05 01:50:52.803073351 +0200
+@@ -409,7 +409,7 @@
+ 	../libscompat/pselect.c ../libscompat/setproctitle.c \
+ 	../libscompat/strlcpy.c ../libscompat/strvis.c \
+ 	../libscompat/vsyslog.c ../libscompat/issetugid.c
+-libdsocks_la_LDFLAGS = -avoid-version -all-dynamic @MAPOPT@
++libdsocks_la_LDFLAGS = -avoid-version @MAPOPT@
+ libdsocks_la_LIBADD = @LIBDSCSRC@ @DLIBDEPS@ @LIBSCOMPAT@
+ libdsocks_la_DEPENDENCIES = Makefile.am _reconf @LIBDSCSRC@ \
+ 	$(am__append_1)
