@@ -1,0 +1,11 @@
+--- pcre-8.42/Makefile.in.orig	2018-03-20 10:53:18.000000000 +0000
++++ pcre-8.42/Makefile.in	2018-08-21 20:20:32.800000000 +0000
+@@ -1081,7 +1081,7 @@
+ # it is generated from pcre.h.in.
+ nodist_include_HEADERS = pcre.h $(am__append_1)
+ include_HEADERS = pcreposix.h $(am__append_2)
+-bin_SCRIPTS = pcre-config
++bin_SCRIPTS =
+ @WITH_REBUILD_CHARTABLES_TRUE@dftables_SOURCES = dftables.c
+ BUILT_SOURCES = pcre_chartables.c
+ @WITH_PCRE8_TRUE@libpcre_la_SOURCES = \
