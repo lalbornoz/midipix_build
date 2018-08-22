@@ -1,0 +1,11 @@
+--- xorg-server-1.20.1.orig/hw/xwin/winclipboard/Makefile.in	2018-08-07 18:31:19.000000000 +0200
++++ xorg-server-1.20.1/hw/xwin/winclipboard/Makefile.in	2018-08-19 00:16:17.393701487 +0200
+@@ -632,7 +632,7 @@
+ libXWinclipboard_la_LDFLAGS = -static -no-undefined
+ xwinclip_SOURCES = xwinclip.c debug.c
+ xwinclip_CFLAGS = $(XWINMODULES_CFLAGS)
+-xwinclip_LDADD = libXWinclipboard.la $(XWINMODULES_LIBS) -lgdi32 -lpthread
++xwinclip_LDADD = libXWinclipboard.la $(XWINMODULES_LIBS) -lgdi32 -luser32 -lkernel32 -lpthread
+ appmandir = $(APP_MAN_DIR)
+ #appman_PRE = list of application man page files set by calling Makefile.am
+ appman_DATA = $(appman_PRE:man=$(APP_MAN_SUFFIX))

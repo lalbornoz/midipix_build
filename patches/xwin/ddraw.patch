@@ -1,0 +1,38 @@
+--- xorg-server-1.20.1.orig/hw/xwin/ddraw.h	2018-08-07 18:31:04.000000000 +0200
++++ xorg-server-1.20.1/hw/xwin/ddraw.h	2018-08-22 08:26:12.917568413 +0200
+@@ -1,4 +1,4 @@
+-#ifdef __MINGW64_VERSION_MAJOR
++#if defined(__MINGW64_VERSION_MAJOR)
+ #include_next <ddraw.h>
+ #define __XWIN_DDRAW_H
+ #endif
+@@ -9,10 +9,29 @@
+ #include <wingdi.h>
+ #include <objbase.h>
+ 
++/* temporary! */
++#include <guiddef.h>
++
+ #if defined(NONAMELESSUNION) && !defined(DUMMYUNIONNAME1)
+ #define DUMMYUNIONNAME1 u1
+ #endif
+ 
++#if !defined(DUMMYUNIONNAME2)
++#define DUMMYUNIONNAME2 u2
++#endif
++
++#if !defined(DUMMYUNIONNAME3)
++#define DUMMYUNIONNAME3 u3
++#endif
++
++#if !defined(DUMMYUNIONNAME4)
++#define DUMMYUNIONNAME4 u4
++#endif
++
++#if !defined(DUMMYUNIONNAME5)
++#define DUMMYUNIONNAME5 u5
++#endif
++
+ #define ICOM_CALL_( xfn, p, args) (p)->lpVtbl->xfn args
+ 
+ #ifdef UNICODE
