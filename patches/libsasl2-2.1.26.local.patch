@@ -1,0 +1,13 @@
+diff -ru cyrus-sasl-2.1.26.orig/include/Makefile.in cyrus-sasl-2.1.26/include/Makefile.in
+--- cyrus-sasl-2.1.26.orig/include/Makefile.in	2012-11-06 20:21:38.000000000 +0100
++++ cyrus-sasl-2.1.26/include/Makefile.in	2018-08-22 18:24:32.635876325 +0200
+@@ -645,8 +645,7 @@
+ 
+ 
+ md5global.h: makemd5
+-	-rm -f md5global.h
+-	./makemd5 md5global.h
++	-echo yep.
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
