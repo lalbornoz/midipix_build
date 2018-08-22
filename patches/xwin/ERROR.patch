@@ -1,0 +1,28 @@
+--- xorg-server-1.20.1.orig/hw/xwin/winwindow.c	2018-08-07 18:31:04.000000000 +0200
++++ xorg-server-1.20.1/hw/xwin/winwindow.c	2018-08-22 19:39:37.078925268 +0200
+@@ -269,14 +269,14 @@
+ 
+             if (pWinPriv->hRgn) {
+                 if (CombineRgn(hRgnWin, hRgnWin, pWinPriv->hRgn, RGN_AND)
+-                    == ERROR) {
++                    == 0) {
+                     ErrorF("winAddRgn - CombineRgn () failed\n");
+                 }
+             }
+ 
+             OffsetRgn(hRgnWin, iX, iY);
+ 
+-            if (CombineRgn(hRgn, hRgn, hRgnWin, RGN_OR) == ERROR) {
++            if (CombineRgn(hRgn, hRgn, hRgnWin, RGN_OR) == 0) {
+                 ErrorF("winAddRgn - CombineRgn () failed\n");
+             }
+ 
+@@ -363,7 +363,7 @@
+             }
+ 
+             /* Merge the Windows region with the accumulated region */
+-            if (CombineRgn(hRgn, hRgn, hRgnRect, RGN_OR) == ERROR) {
++            if (CombineRgn(hRgn, hRgn, hRgnRect, RGN_OR) == 0) {
+                 ErrorF("winReshapeRootless - CombineRgn() failed\n");
+             }
+ 

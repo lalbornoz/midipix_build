@@ -1,0 +1,12 @@
+diff -Nru xorg-server-1.20.1.orig/configure xorg-server-1.20.1/configure
+--- xorg-server-1.20.1.orig/configure	2018-08-07 18:31:15.000000000 +0200
++++ xorg-server-1.20.1/configure	2018-08-18 19:48:22.107953995 +0200
+@@ -30480,7 +30480,7 @@
+ 	fi
+ 
+ 	case $host_os in
+-		cygwin*)
++		cygwin* | midipix*)
+ 			XWIN_SERVER_NAME=XWin
+ 
+ $as_echo "#define HAS_DEVWINDOWS 1" >>confdefs.h
