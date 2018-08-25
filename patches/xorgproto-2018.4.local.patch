@@ -1,3 +1,17 @@
+diff -ru xorgproto-2018.4.orig/include/X11/Xwindows.h xorgproto-2018.4/include/X11/Xwindows.h
+--- xorgproto-2018.4.orig/include/X11/Xwindows.h        2018-02-28 17:45:07.000000000 +0100
++++ xorgproto-2018.4/include/X11/Xwindows.h     2018-08-25 23:36:53.266741018 +0200
+@@ -98,10 +98,6 @@
+ # define RT_CURSOR       ((RESTYPE)5)
+ #endif
+
+-#ifndef __CYGWIN__
+-#define sleep(x) Sleep((x) * 1000)
+-#endif
+-
+ #if defined(WIN32) && (!defined(PATH_MAX) || PATH_MAX < 1024)
+ # undef PATH_MAX
+ # define PATH_MAX 1024
 diff -Nru xorgproto-2018.4.orig/man/Xprint.man xorgproto-2018.4/man/Xprint.man
 --- xorgproto-2018.4.orig/man/Xprint.man	1970-01-01 01:00:00.000000000 +0100
 +++ xorgproto-2018.4/man/Xprint.man	2018-07-29 01:06:04.000000000 +0200
