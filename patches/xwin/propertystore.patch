@@ -1,0 +1,11 @@
+--- xorg-server-1.20.1.orig/hw/xwin/propertystore.h	2018-08-07 18:31:04.000000000 +0200
++++ xorg-server-1.20.1/hw/xwin/propertystore.h	2018-08-26 00:11:27.888563954 +0200
+@@ -26,7 +26,7 @@
+ 
+ #include <windows.h>
+ 
+-#ifdef __MINGW64_VERSION_MAJOR
++#if defined(__MINGW64_VERSION_MAJOR) || defined(__midipix__)
+ /* If we are using headers from mingw-w64 project, it provides the PSDK headers this needs ... */
+ #include <propkey.h>
+ #include <propsys.h>
