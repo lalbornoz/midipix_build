@@ -1,0 +1,13 @@
+--- xorg-server-1.20.1.orig/hw/xwin/winconfig.c	2018-08-07 18:31:04.000000000 +0200
++++ xorg-server-1.20.1/hw/xwin/winconfig.c	2018-08-26 16:32:01.065234453 +0200
+@@ -301,8 +301,8 @@
+             strcpy(regpath, regtempl);
+             strcat(regpath, layoutName);
+ 
+-            if (!RegOpenKey(HKEY_LOCAL_MACHINE, regpath, &regkey))
+-                RegQueryValueEx(regkey, "Layout Text", 0, NULL,
++            if (!RegOpenKeyA(HKEY_LOCAL_MACHINE, regpath, &regkey))
++                RegQueryValueExA(regkey, "Layout Text", 0, NULL,
+                                 layoutFriendlyName, &namesize);
+ 
+             /* Close registry key */
