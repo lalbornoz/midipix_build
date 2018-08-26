@@ -1,0 +1,20 @@
+--- xorg-server-1.20.1.orig/hw/xwin/Makefile.in	2018-08-07 18:31:19.000000000 +0200
++++ xorg-server-1.20.1/hw/xwin/Makefile.in	2018-08-26 01:51:22.672410381 +0200
+@@ -160,7 +160,7 @@
+ 	winshadgdi.$(OBJEXT) wintaskbar.$(OBJEXT) \
+ 	wintrayicon.$(OBJEXT) winvalargs.$(OBJEXT) winwakeup.$(OBJEXT) \
+ 	winwindow.$(OBJEXT) winwndproc.$(OBJEXT) windisplay.$(OBJEXT) \
+-	XWin.$(OBJEXT) miinitext.$(OBJEXT) $(am__objects_1) \
++	miinitext.$(OBJEXT) $(am__objects_1) \
+ 	$(am__objects_2) $(am__objects_3) $(am__objects_4)
+ am_XWin_OBJECTS = $(am__objects_5)
+ XWin_OBJECTS = $(am_XWin_OBJECTS)
+@@ -619,7 +619,7 @@
+ XWIN_LIBS = @XWIN_LIBS@ $(top_builddir)/pseudoramiX/libPseudoramiX.la \
+ 	$(top_builddir)/Xi/libXistubs.la
+ XWIN_SERVER_NAME = @XWIN_SERVER_NAME@
+-XWIN_SYS_LIBS = @XWIN_SYS_LIBS@ -ldxguid
++XWIN_SYS_LIBS = @XWIN_SYS_LIBS@ -lkernel32 -luser32 -lgdi32 -ladvapi32 -lshell32 -lw32lib
+ YACC = @YACC@
+ YFLAGS = @YFLAGS@
+ abi_ansic = @abi_ansic@

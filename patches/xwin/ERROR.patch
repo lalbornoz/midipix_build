@@ -26,3 +26,14 @@
                  ErrorF("winReshapeRootless - CombineRgn() failed\n");
              }
  
+--- xorg-server-1.20.1.orig/hw/xwin/winmultiwindowshape.c       2018-08-07 18:31:04.000000000 +0200
++++ xorg-server-1.20.1/hw/xwin/winmultiwindowshape.c    2018-08-25 17:23:10.018564229 +0200
+@@ -180,7 +180,7 @@
+             }
+
+             /* Merge the Windows region with the accumulated region */
+-            if (CombineRgn(hRgn, hRgn, hRgnRect, RGN_OR) == ERROR) {
++            if (CombineRgn(hRgn, hRgn, hRgnRect, RGN_OR) == 0) {
+                 ErrorF("winReshape - CombineRgn () failed: %d\n",
+                        (int) GetLastError());
+             }
