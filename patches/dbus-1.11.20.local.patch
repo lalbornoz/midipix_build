@@ -123,11 +123,11 @@ diff -Naur dbus-1.11.20.orig/Makefile.in dbus-1.11.20/Makefile.in
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = dbus-1.pc
  cmakeconfigdir = $(libdir)/cmake/DBus1
---- dbus-1.11.20/test/Makefile.am.orig	2017-09-25 16:00:11.000000000 +0000
-+++ dbus-1.11.20/test/Makefile.am	2018-10-14 20:14:12.616000000 +0000
-@@ -541,7 +541,7 @@
- ## copy tests to builddir so that generated tests and static tests
- ## are all in one place.
+--- dbus-1.11.20/test/Makefile.in.orig	2017-10-03 06:46:45.000000000 +0000
++++ dbus-1.11.20/test/Makefile.in	2018-10-14 20:56:47.156000000 +0000
+@@ -2288,7 +2288,7 @@
+ @DBUS_ENABLE_INSTALLED_TESTS_TRUE@		$(installable_tests); }
+ 
  all-local: copy-config-local uninstalled-config-local
 -	$(AM_V_at)$(MKDIR_P) -m700 XDG_RUNTIME_DIR
 +	$(AM_V_at)$(MKDIR_P) -m 700 XDG_RUNTIME_DIR
