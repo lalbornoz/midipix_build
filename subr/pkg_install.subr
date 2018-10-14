@@ -18,12 +18,14 @@ pkg_install() {
 		tar -C "${PKG_DESTDIR}" -cpf - .	|\
 			gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"
 	fi;
-	if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]; then
-		touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
+	if [ "${PKG_NAME%_minipix}" = "${PKG_NAME}" ]; then
+		if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]; then
+			touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
+		fi;
+		_pkglist_name="${PKG_BASE_DIR##*/}";
+		_pkglist_name="${_pkglist_name%%-*}";
+		echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
 	fi;
-	_pkglist_name="${PKG_BASE_DIR##*/}";
-	_pkglist_name="${_pkglist_name%%-*}";
-	echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
 };
 
 # vim:filetype=sh
