@@ -1,0 +1,79 @@
+diff -ru mpg123-1.25.10.orig/configure mpg123-1.25.10/configure
+--- mpg123-1.25.10.orig/configure	2018-02-27 11:34:50.000000000 +0100
++++ mpg123-1.25.10/configure	2018-11-04 00:56:56.667103853 +0100
+@@ -6497,6 +6497,10 @@
+ #error Cygwin should use dlopen
+ #endif
+ 
++#ifdef __midipix__
++#error midipix has dlopen(3)
++#endif
++
+ #include <windows.h>
+ 
+ int main() {
+@@ -6595,7 +6599,7 @@
+ 
+   fi
+   if test x"$modules" = xenabled -a x"$have_dl" = xno; then
+-    as_fn_error $? "Modules enabled but no runtime loader found! This will not work..." "$LINENO" 5
++    echo "Buggy modules detection... this should be properly fixed, someday..."
+   fi
+   if test x"$modules" = xauto; then
+     if test x"$have_dl" = xyes; then
+@@ -19133,7 +19137,7 @@
+ 
+ 
+ # Check if we want Unicode for Win32. Cygwin does not need _wopen
+-if test x$ac_cv_header_windows_h = xyes && test "x$host_os" != "xcygwin"; then
++if test x$ac_cv_header_windows_h = xyes && test "x$host_os" != "xcygwin" && test "x$host_os" != "xmidipix"; then
+   win32_specific_codes=enabled
+ else
+   win32_specific_codes=disabled
+diff -ru mpg123-1.25.10.orig/src/intsym.h mpg123-1.25.10/src/intsym.h
+--- mpg123-1.25.10.orig/src/intsym.h	2018-02-27 11:26:38.000000000 +0100
++++ mpg123-1.25.10/src/intsym.h	2018-11-04 01:04:36.017552210 +0100
+@@ -3,6 +3,7 @@
+ /* Mapping of internal mpg123 symbols to something that is less likely to
+    conflict in case of static linking. */
+ #include "config.h"
++#ifndef __midipix__
+ #define COS9 INT123_COS9
+ #define tfcos36 INT123_tfcos36
+ #define pnts INT123_pnts
+@@ -358,3 +359,4 @@
+ #define strerror INT123_strerror
+ #endif
+ #endif
++#endif
+diff -ru mpg123-1.25.10.orig/src/libout123/modules/win32.c mpg123-1.25.10/src/libout123/modules/win32.c
+--- mpg123-1.25.10.orig/src/libout123/modules/win32.c	2018-02-27 11:26:38.000000000 +0100
++++ mpg123-1.25.10/src/libout123/modules/win32.c	2018-11-04 12:29:01.346944126 +0100
+@@ -11,8 +11,27 @@
+ 
+ #include "out123_int.h"
+ #include <windows.h>
++#include <mmsystem.h>
+ #include "debug.h"
+ 
++/* temporary stuffs :D */
++#define WAVE_MAPPER ((UINT)-1)
++
++#define WAVE_FORMAT_PCM 1
++
++#define INFINITE 0xffffffff
++
++#define WAVERR_BASE 32
++#define WAVERR_BADFORMAT (WAVERR_BASE + 0)
++
++#define MMSYSERR_BASE 0
++#define MMSYSERR_NOERROR 0
++#define MMSYSERR_ALLOCATED (MMSYSERR_BASE + 4)
++#define MMSYSERR_NODRIVER (MMSYSERR_BASE + 6)
++#define MMSYSERR_NOMEM (MMSYSERR_BASE + 7)
++/* hello there! */
++
++
+ /*
+     Buffer size and number of buffers in the playback ring
+     NOTE: This particular num/size combination performs best under heavy
