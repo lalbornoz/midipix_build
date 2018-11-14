@@ -9,10 +9,10 @@ diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
 +    || defined(SYMBIAN) || defined(MIDIPIX)
  # include <fcntl.h>
  #endif
- 
---- bdwgc/include/private/gcconfig.h.orig	2017-01-23 18:47:24.683963226 +0000
-+++ bdwgc/include/private/gcconfig.h	2017-01-23 18:58:19.917387539 +0000
-@@ -55,6 +55,10 @@
+
+--- bdwgc/include/private/gcconfig.h.orig	2018-11-14 15:26:02.756000000 +0000
++++ bdwgc/include/private/gcconfig.h	2018-11-14 16:42:13.244000000 +0000
+@@ -108,6 +108,10 @@
  #   define LINUX
  # endif
  
@@ -23,7 +23,7 @@ diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
  /* And one for QNX: */
  # if defined(__QNX__)
  #    define I386
-@@ -293,6 +297,14 @@
+@@ -362,6 +366,14 @@
  #    define X86_64
  #    define mach_type_known
  # endif
@@ -38,8 +38,8 @@ diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
  # if defined(LINUX) && (defined(__ia64__) || defined(__ia64))
  #    define IA64
  #    define mach_type_known
-@@ -1426,6 +1438,12 @@
- #         include <gnu/libc-version.h> /* for gnu_get_libc_version() */
+@@ -1542,6 +1554,12 @@
+           EXTERN_C_BEGIN
  #       endif
  #   endif
 +#   ifdef MIDIPIX
@@ -51,8 +51,8 @@ diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
  #   ifdef CYGWIN32
  #       define OS_TYPE "CYGWIN32"
  #       define DATASTART ((ptr_t)GC_DATASTART)  /* From gc.h */
-@@ -2439,6 +2457,12 @@
- #         include <gnu/libc-version.h> /* for gnu_get_libc_version() */
+@@ -2656,6 +2674,12 @@
+           EXTERN_C_BEGIN
  #       endif
  #   endif
 +#   ifdef MIDIPIX
@@ -64,15 +64,15 @@ diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
  #   ifdef DARWIN
  #     define OS_TYPE "DARWIN"
  #     define DARWIN_DONT_PARSE_STACK
-@@ -2953,7 +2977,7 @@
- #if defined(GC_IRIX_THREADS) && !defined(IRIX5)
- # error --> inconsistent configuration
- #endif
--#if defined(GC_LINUX_THREADS) && !defined(LINUX) && !defined(NACL)
-+#if defined(GC_LINUX_THREADS) && !defined(LINUX) && !defined(NACL) && !defined(MIDIPIX)
- # error --> inconsistent configuration
- #endif
- #if defined(GC_NETBSD_THREADS) && !defined(NETBSD)
+@@ -3242,7 +3266,7 @@
+ # if defined(GC_IRIX_THREADS) && !defined(IRIX5)
+ #   error Inconsistent configuration
+ # endif
+-# if defined(GC_LINUX_THREADS) && !defined(LINUX) && !defined(NACL)
++# if defined(GC_LINUX_THREADS) && !defined(LINUX) && !defined(NACL) && !defined(MIDIPIX)
+ #   error Inconsistent configuration
+ # endif
+ # if defined(GC_NETBSD_THREADS) && !defined(NETBSD)
 --- bdwgc/pthread_stop_world.c.orig	2017-01-23 18:47:24.683963226 +0000
 +++ bdwgc/pthread_stop_world.c	2017-01-23 18:59:56.449597256 +0000
 @@ -20,6 +20,10 @@
