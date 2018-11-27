@@ -1,0 +1,25 @@
+--- emacs-26.1/configure.orig	2018-05-25 15:30:58.000000000 +0000
++++ emacs-26.1/configure	2018-11-27 10:43:34.716000000 +0000
+@@ -4766,6 +4766,11 @@
+     opsys=gnu-linux
+   ;;
+ 
++  ## Midipix ports
++  *-*-midipix* )
++    opsys=midipix
++  ;;
++
+   ## FreeBSD ports
+   *-*-freebsd* )
+     opsys=freebsd
+--- emacs-26.1/lib-src/Makefile.in.orig	2018-04-23 14:17:42.000000000 +0000
++++ emacs-26.1/lib-src/Makefile.in	2018-11-27 10:49:07.900000000 +0000
+@@ -389,7 +389,7 @@
+ 	  $(NTLIB) $(LOADLIBES) $(LIB_CLOCK_GETTIME) -o $@
+ 
+ make-docfile${EXEEXT}: ${srcdir}/make-docfile.c $(NTLIB) $(config_h)
+-	$(AM_V_CCLD)$(CC) ${ALL_CFLAGS} $< $(NTLIB) $(LOADLIBES) -o $@
++	$(AM_V_CCLD)$(BUILDCC) ${ALL_CFLAGS} $< $(NTLIB) $(LOADLIBES) -o $@
+ 
+ movemail${EXEEXT}: ${srcdir}/movemail.c pop.o $(NTLIB) $(config_h)
+ 	$(AM_V_CCLD)$(CC) ${ALL_CFLAGS} ${MOVE_FLAGS} $< pop.o \
