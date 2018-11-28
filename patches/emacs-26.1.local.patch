@@ -1,5 +1,6 @@
---- emacs-26.1/configure.orig	2018-05-25 15:30:58.000000000 +0000
-+++ emacs-26.1/configure	2018-11-27 10:43:34.716000000 +0000
+diff -ru emacs-26.1.orig/configure emacs-26.1/configure
+--- emacs-26.1.orig/configure	2018-05-25 17:30:58.000000000 +0200
++++ emacs-26.1/configure	2018-11-28 19:48:51.524844347 +0100
 @@ -4766,6 +4766,11 @@
      opsys=gnu-linux
    ;;
@@ -12,8 +13,90 @@
    ## FreeBSD ports
    *-*-freebsd* )
      opsys=freebsd
---- emacs-26.1/lib-src/Makefile.in.orig	2018-04-23 14:17:42.000000000 +0000
-+++ emacs-26.1/lib-src/Makefile.in	2018-11-27 10:49:07.900000000 +0000
+@@ -9158,6 +9163,7 @@
+ test "x$CANNOT_DUMP" = "x" && CANNOT_DUMP=no
+ case "$opsys" in
+   nacl) CANNOT_DUMP=yes ;;
++  midipix) CANNOT_DUMP=yes ;;
+ esac
+ 
+ if test "$CANNOT_DUMP" = "yes"; then
+@@ -9768,7 +9774,7 @@
+   fi
+             if test x$have_sound_header = xyes || test $HAVE_ALSA = yes; then
+      case "$opsys" in
+-                     gnu-linux|freebsd|netbsd|mingw32|cygwin)
++                     gnu-linux|freebsd|netbsd|mingw32|cygwin|midipix)
+ 
+ $as_echo "#define HAVE_SOUND 1" >>confdefs.h
+ 
+@@ -11412,7 +11418,7 @@
+   ## #ifdef DOUG_LEA_MALLOC; #undef REL_ALLOC; #endif
+   ## Does the AC_FUNC_MMAP test below make this check unnecessary?
+   case "$opsys" in
+-    mingw32|gnu*) REL_ALLOC=no ;;
++    mingw32|midipix|gnu*) REL_ALLOC=no ;;
+   esac
+ fi
+ 
+@@ -11422,7 +11428,7 @@
+ 
+ use_mmap_for_buffers=no
+ case "$opsys" in
+-  mingw32) use_mmap_for_buffers=yes ;;
++  mingw32|midipix) use_mmap_for_buffers=yes ;;
+ esac
+ 
+ 
+@@ -15365,7 +15371,7 @@
+ esac
+ if test "${with_modules}" != "no"; then
+   case $opsys in
+-    gnu|gnu-linux)
++    gnu|gnu-linux|midipix)
+       LIBMODULES="-ldl"
+       HAVE_MODULES=yes
+       ;;
+@@ -16764,7 +16770,7 @@
+   case $opsys in
+     aix4-2) mail_lock="lockf" ;;
+ 
+-    gnu|freebsd|dragonfly|netbsd|openbsd|darwin) mail_lock="flock" ;;
++    gnu|midipix|freebsd|dragonfly|netbsd|openbsd|darwin) mail_lock="flock" ;;
+ 
+     ## On GNU/Linux systems, both methods are used by various mail programs.
+     ## I assume most people are using newer mailers that have heard of flock.
+@@ -18510,7 +18516,7 @@
+ 
+ 
+ case $opsys in
+-  cygwin|gnu|gnu-linux|gnu-kfreebsd|freebsd|netbsd|openbsd)
++  cygwin|midipix|gnu|gnu-linux|gnu-kfreebsd|freebsd|netbsd|openbsd)
+ 
+ $as_echo "#define NARROWPROTO 1" >>confdefs.h
+ 
+@@ -18550,7 +18556,7 @@
+ 
+     ;;
+ 
+-  gnu-linux | gnu-kfreebsd | dragonfly | freebsd | netbsd | darwin | nacl )
++  gnu-linux | midipix | gnu-kfreebsd | dragonfly | freebsd | netbsd | darwin | nacl )
+         if test "x$ac_cv_func_grantpt" = xyes; then
+ 
+ $as_echo "#define UNIX98_PTYS 1" >>confdefs.h
+@@ -18620,7 +18626,7 @@
+ 
+ 
+ case $opsys in
+-    aix4-2 | cygwin | gnu | dragonfly | freebsd | netbsd | openbsd | darwin )
++    aix4-2 | cygwin | midipix | gnu | dragonfly | freebsd | netbsd | openbsd | darwin )
+     $as_echo "#define SIGNALS_VIA_CHARACTERS 1" >>confdefs.h
+ 
+     ;;
+Only in emacs-26.1/lib: .binary-io.h.swp
+diff -ru emacs-26.1.orig/lib-src/Makefile.in emacs-26.1/lib-src/Makefile.in
+--- emacs-26.1.orig/lib-src/Makefile.in	2018-04-23 16:17:42.000000000 +0200
++++ emacs-26.1/lib-src/Makefile.in	2018-11-28 19:25:21.901162314 +0100
 @@ -389,7 +389,7 @@
  	  $(NTLIB) $(LOADLIBES) $(LIB_CLOCK_GETTIME) -o $@
  
