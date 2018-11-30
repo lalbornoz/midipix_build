@@ -97,12 +97,18 @@ Only in emacs-26.1/lib: .binary-io.h.swp
 diff -ru emacs-26.1.orig/lib-src/Makefile.in emacs-26.1/lib-src/Makefile.in
 --- emacs-26.1.orig/lib-src/Makefile.in	2018-04-23 16:17:42.000000000 +0200
 +++ emacs-26.1/lib-src/Makefile.in	2018-11-28 19:25:21.901162314 +0100
-@@ -389,7 +389,7 @@
+@@ -388,8 +388,12 @@ profile${EXEEXT}: ${srcdir}/profile.c $(NTLIB) $(config_h)
+ 	$(AM_V_CCLD)$(CC) ${ALL_CFLAGS} $< \
  	  $(NTLIB) $(LOADLIBES) $(LIB_CLOCK_GETTIME) -o $@
  
- make-docfile${EXEEXT}: ${srcdir}/make-docfile.c $(NTLIB) $(config_h)
+-make-docfile${EXEEXT}: ${srcdir}/make-docfile.c $(NTLIB) $(config_h)
 -	$(AM_V_CCLD)$(CC) ${ALL_CFLAGS} $< $(NTLIB) $(LOADLIBES) -o $@
-+	$(AM_V_CCLD)$(BUILDCC) ${ALL_CFLAGS} $< $(NTLIB) $(LOADLIBES) -o $@
++make-docfile${EXEEXT}: CFLAGS_FOR_BUILD += -std=gnu99
++make-docfile${EXEEXT}: CFLAGS_FOR_BUILD += -I../src
++make-docfile${EXEEXT}: CFLAGS_FOR_BUILD += -I${srcdir}/../src -I${srcdir}/../lib
++make-docfile${EXEEXT}: CFLAGS_FOR_BUILD += -D_BINARY_H -Dset_binary_mode\(x\,y\)
++make-docfile${EXEEXT}: ${srcdir}/make-docfile.c $(config_h)
++	$(AM_V_CCLD)$(BUILDCC) $< -o $@ $(CFLAGS_FOR_BUILD)
  
  movemail${EXEEXT}: ${srcdir}/movemail.c pop.o $(NTLIB) $(config_h)
  	$(AM_V_CCLD)$(CC) ${ALL_CFLAGS} ${MOVE_FLAGS} $< pop.o \
