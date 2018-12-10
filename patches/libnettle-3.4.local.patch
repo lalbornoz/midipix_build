@@ -297,3 +297,109 @@ diff -ru nettle-3.4.orig/x86_64/umac-nh-n.asm nettle-3.4/x86_64/umac-nh-n.asm
 +	.quad	_nettle_umac_nh_n
 +	.linkonce discard
 +#endif
+diff -ru midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-192-modp.asm nettle-3.4/x86_64/ecc-192-modp.asm
+--- midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-192-modp.asm	2017-11-19 14:36:47.000000000 +0100
++++ nettle-3.4/x86_64/ecc-192-modp.asm	2018-12-09 13:10:41.051992276 +0100
+@@ -86,3 +86,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(nettle_ecc_192_modp)
++
++#ifdef __midipix__
++        .section .got$nettle_ecc_192_modp,"r"
++        .global __imp_nettle_ecc_192_modp
++__imp_nettle_ecc_192_modp:
++        .quad   nettle_ecc_192_modp
++        .linkonce discard
++#endif
+diff -ru midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-224-modp.asm nettle-3.4/x86_64/ecc-224-modp.asm
+--- midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-224-modp.asm	2017-11-19 14:36:47.000000000 +0100
++++ nettle-3.4/x86_64/ecc-224-modp.asm	2018-12-09 13:11:17.851656350 +0100
+@@ -129,3 +129,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(nettle_ecc_224_modp)
++
++#ifdef __midipix__
++        .section .got$nettle_ecc_224_modp,"r"
++        .global __imp_nettle_ecc_224_modp
++__imp_nettle_ecc_224_modp:
++        .quad   nettle_ecc_224_modp
++        .linkonce discard
++#endif
+diff -ru midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-25519-modp.asm nettle-3.4/x86_64/ecc-25519-modp.asm
+--- midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-25519-modp.asm	2017-11-19 14:36:47.000000000 +0100
++++ nettle-3.4/x86_64/ecc-25519-modp.asm	2018-12-09 13:15:08.285573030 +0100
+@@ -92,3 +92,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(nettle_ecc_25519_modp)
++
++#ifdef __midipix__
++        .section .got$nettle_ecc_25519_modp,"r"
++        .global __imp_nettle_ecc_25519_modp
++__imp_nettle_ecc_25519_modp:
++        .quad   nettle_ecc_25519_modp
++        .linkonce discard
++#endif
+diff -ru midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-25519-modp-mul.asm nettle-3.4/x86_64/ecc-25519-modp-mul.asm
+--- midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-25519-modp-mul.asm	2017-11-19 14:36:47.000000000 +0100
++++ nettle-3.4/x86_64/ecc-25519-modp-mul.asm	2018-12-09 13:16:21.236919414 +0100
+@@ -266,3 +266,11 @@
+ PROLOGUE(nettle_ecc_25519_modp_sqr)
+ 	
+ EPILOGUE(nettle_ecc_25519_modp_sqr)
++
++#ifdef __midipix__
++        .section .got$nettle_ecc_25519_modp_mul,"r"
++        .global __imp_nettle_ecc_25519_modp_mul
++__imp_nettle_ecc_25519_modp_mul:
++        .quad   nettle_ecc_25519_modp_mul
++        .linkonce discard
++#endif
+diff -ru midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-256-redc.asm nettle-3.4/x86_64/ecc-256-redc.asm
+--- midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-256-redc.asm	2017-11-19 14:36:47.000000000 +0100
++++ nettle-3.4/x86_64/ecc-256-redc.asm	2018-12-09 13:14:26.629947362 +0100
+@@ -127,3 +127,12 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(nettle_ecc_256_redc)
++
++#ifdef __midipix__
++        .section .got$nettle_ecc_256_redc,"r"
++        .global __imp_nettle_ecc_256_redc
++__imp_nettle_ecc_256_redc:
++        .quad   nettle_ecc_256_redc
++        .linkonce discard
++#endif
++
+diff -ru midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-384-modp.asm nettle-3.4/x86_64/ecc-384-modp.asm
+--- midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-384-modp.asm	2017-11-19 14:36:47.000000000 +0100
++++ nettle-3.4/x86_64/ecc-384-modp.asm	2018-12-09 13:12:15.711130111 +0100
+@@ -232,3 +232,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(nettle_ecc_384_modp)
++
++#ifdef __midipix__
++        .section .got$nettle_ecc_384_modp,"r"
++        .global __imp_nettle_ecc_384_modp
++__imp_nettle_ecc_384_modp:
++        .quad   nettle_ecc_384_modp
++        .linkonce discard
++#endif
+diff -ru midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-521-modp.asm nettle-3.4/x86_64/ecc-521-modp.asm
+--- midipix/nt64/debug/tmp/libnettle-native-x86_64-nt64-midipix/nettle-3.4/x86_64/ecc-521-modp.asm	2017-11-19 14:36:47.000000000 +0100
++++ nettle-3.4/x86_64/ecc-521-modp.asm	2018-12-09 13:12:51.738803584 +0100
+@@ -156,3 +156,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(nettle_ecc_521_modp)
++
++#ifdef __midipix__
++        .section .got$nettle_ecc_521_modp,"r"
++        .global __imp_nettle_ecc_521_modp
++__imp_nettle_ecc_521_modp:
++        .quad   nettle_ecc_521_modp
++        .linkonce discard
++#endif
