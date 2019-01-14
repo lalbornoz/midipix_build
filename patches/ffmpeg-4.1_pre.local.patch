@@ -1,0 +1,16 @@
+diff -ru ffmpeg-4.1.orig/configure ffmpeg-4.1/configure
+--- ffmpeg-4.1.orig/configure	2018-11-06 00:22:33.000000000 +0100
++++ ffmpeg-4.1/configure	2019-01-13 20:49:35.764790185 +0100
+@@ -5268,6 +5268,12 @@
+         ranlib=:
+         enable dos_paths
+         ;;
++    midipix*)
++        target_os=midipx
++        disable symver
++        enabled x86_64 && objformat="win64" || objformat="win32"
++	enable shared
++        ;;
+     cygwin*)
+         target_os=cygwin
+         shlibdir_default="$bindir_default"
