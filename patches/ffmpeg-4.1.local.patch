@@ -1,0 +1,324 @@
+--- ffmpeg-4.1/libswscale/x86/rgb2rgb_template.c.orig	2018-11-05 23:22:26.000000000 +0000
++++ ffmpeg-4.1/libswscale/x86/rgb2rgb_template.c	2019-01-16 00:16:40.272000000 +0000
+@@ -114,14 +114,14 @@
+             "psrlq         $8, %%mm3    \n\t" \
+             "psrlq         $8, %%mm6    \n\t" \
+             "psrlq         $8, %%mm7    \n\t" \
+-            "pand "MANGLE(mask24l)", %%mm0\n\t" \
+-            "pand "MANGLE(mask24l)", %%mm1\n\t" \
+-            "pand "MANGLE(mask24l)", %%mm4\n\t" \
+-            "pand "MANGLE(mask24l)", %%mm5\n\t" \
+-            "pand "MANGLE(mask24h)", %%mm2\n\t" \
+-            "pand "MANGLE(mask24h)", %%mm3\n\t" \
+-            "pand "MANGLE(mask24h)", %%mm6\n\t" \
+-            "pand "MANGLE(mask24h)", %%mm7\n\t" \
++            "pand "LOCAL_MANGLE(mask24l)", %%mm0\n\t" \
++            "pand "LOCAL_MANGLE(mask24l)", %%mm1\n\t" \
++            "pand "LOCAL_MANGLE(mask24l)", %%mm4\n\t" \
++            "pand "LOCAL_MANGLE(mask24l)", %%mm5\n\t" \
++            "pand "LOCAL_MANGLE(mask24h)", %%mm2\n\t" \
++            "pand "LOCAL_MANGLE(mask24h)", %%mm3\n\t" \
++            "pand "LOCAL_MANGLE(mask24h)", %%mm6\n\t" \
++            "pand "LOCAL_MANGLE(mask24h)", %%mm7\n\t" \
+             "por        %%mm2, %%mm0    \n\t" \
+             "por        %%mm3, %%mm1    \n\t" \
+             "por        %%mm6, %%mm4    \n\t" \
+@@ -734,9 +734,9 @@
+             "pand          %3, %%mm1    \n\t"
+             "pand          %4, %%mm2    \n\t"
+             "psllq         $5, %%mm0    \n\t"
+-            "pmulhw        "MANGLE(mul15_mid)", %%mm0    \n\t"
+-            "pmulhw        "MANGLE(mul15_mid)", %%mm1    \n\t"
+-            "pmulhw        "MANGLE(mul15_hi)", %%mm2    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_mid)", %%mm0    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_mid)", %%mm1    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_hi)", %%mm2    \n\t"
+             "movq       %%mm0, %%mm3    \n\t"
+             "movq       %%mm1, %%mm4    \n\t"
+             "movq       %%mm2, %%mm5    \n\t"
+@@ -765,9 +765,9 @@
+             "pand          %3, %%mm1    \n\t"
+             "pand          %4, %%mm2    \n\t"
+             "psllq         $5, %%mm0    \n\t"
+-            "pmulhw        "MANGLE(mul15_mid)", %%mm0    \n\t"
+-            "pmulhw        "MANGLE(mul15_mid)", %%mm1    \n\t"
+-            "pmulhw        "MANGLE(mul15_hi)", %%mm2    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_mid)", %%mm0    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_mid)", %%mm1    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_hi)", %%mm2    \n\t"
+             "movq       %%mm0, %%mm3    \n\t"
+             "movq       %%mm1, %%mm4    \n\t"
+             "movq       %%mm2, %%mm5    \n\t"
+@@ -841,9 +841,9 @@
+             "pand          %4, %%mm2    \n\t"
+             "psllq         $5, %%mm0    \n\t"
+             "psrlq         $1, %%mm2    \n\t"
+-            "pmulhw        "MANGLE(mul15_mid)", %%mm0    \n\t"
+-            "pmulhw        "MANGLE(mul16_mid)", %%mm1    \n\t"
+-            "pmulhw        "MANGLE(mul15_hi)", %%mm2    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_mid)", %%mm0    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul16_mid)", %%mm1    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_hi)", %%mm2    \n\t"
+             "movq       %%mm0, %%mm3    \n\t"
+             "movq       %%mm1, %%mm4    \n\t"
+             "movq       %%mm2, %%mm5    \n\t"
+@@ -873,9 +873,9 @@
+             "pand          %4, %%mm2    \n\t"
+             "psllq         $5, %%mm0    \n\t"
+             "psrlq         $1, %%mm2    \n\t"
+-            "pmulhw        "MANGLE(mul15_mid)", %%mm0    \n\t"
+-            "pmulhw        "MANGLE(mul16_mid)", %%mm1    \n\t"
+-            "pmulhw        "MANGLE(mul15_hi)", %%mm2    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_mid)", %%mm0    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul16_mid)", %%mm1    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_hi)", %%mm2    \n\t"
+             "movq       %%mm0, %%mm3    \n\t"
+             "movq       %%mm1, %%mm4    \n\t"
+             "movq       %%mm2, %%mm5    \n\t"
+@@ -970,7 +970,7 @@
+             "psllq         $5, %%mm0    \n\t"
+             "pmulhw        %5, %%mm0    \n\t"
+             "pmulhw        %5, %%mm1    \n\t"
+-            "pmulhw        "MANGLE(mul15_hi)", %%mm2    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_hi)", %%mm2    \n\t"
+             PACK_RGB32
+             ::"r"(d),"r"(s),"m"(mask15b),"m"(mask15g),"m"(mask15r) ,"m"(mul15_mid)
+               NAMED_CONSTRAINTS_ADD(mul15_hi)
+@@ -1013,8 +1013,8 @@
+             "psllq         $5, %%mm0    \n\t"
+             "psrlq         $1, %%mm2    \n\t"
+             "pmulhw        %5, %%mm0    \n\t"
+-            "pmulhw        "MANGLE(mul16_mid)", %%mm1    \n\t"
+-            "pmulhw        "MANGLE(mul15_hi)", %%mm2    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul16_mid)", %%mm1    \n\t"
++            "pmulhw        "LOCAL_MANGLE(mul15_hi)", %%mm2    \n\t"
+             PACK_RGB32
+             ::"r"(d),"r"(s),"m"(mask16b),"m"(mask16g),"m"(mask16r),"m"(mul15_mid)
+               NAMED_CONSTRAINTS_ADD(mul16_mid,mul15_hi)
+@@ -1041,9 +1041,9 @@
+     __asm__ volatile (
+         "test             %%"FF_REG_a", %%"FF_REG_a"    \n\t"
+         "jns                     2f                     \n\t"
+-        "movq     "MANGLE(mask24r)", %%mm5              \n\t"
+-        "movq     "MANGLE(mask24g)", %%mm6              \n\t"
+-        "movq     "MANGLE(mask24b)", %%mm7              \n\t"
++        "movq     "LOCAL_MANGLE(mask24r)", %%mm5              \n\t"
++        "movq     "LOCAL_MANGLE(mask24g)", %%mm6              \n\t"
++        "movq     "LOCAL_MANGLE(mask24b)", %%mm7              \n\t"
+         ".p2align                 4                     \n\t"
+         "1:                                             \n\t"
+         PREFETCH" 32(%1, %%"FF_REG_a")                  \n\t"
+@@ -1377,7 +1377,7 @@
+         if (mmxSize) {
+         __asm__ volatile(
+             "mov                       %4, %%"FF_REG_a" \n\t"
+-            "movq        "MANGLE(mmx_ff)", %%mm0    \n\t"
++            "movq        "LOCAL_MANGLE(mmx_ff)", %%mm0    \n\t"
+             "movq      (%0, %%"FF_REG_a"), %%mm4    \n\t"
+             "movq                   %%mm4, %%mm2    \n\t"
+             "psllq                     $8, %%mm4    \n\t"
+@@ -1595,7 +1595,7 @@
+             __asm__ volatile(
+                 "mov                        %2, %%"FF_REG_a"\n\t"
+                 "movq          "BGR2Y_IDX"(%3), %%mm6       \n\t"
+-                "movq       "MANGLE(ff_w1111)", %%mm5       \n\t"
++                "movq       "LOCAL_MANGLE(ff_w1111)", %%mm5       \n\t"
+                 "pxor                    %%mm7, %%mm7       \n\t"
+                 "lea (%%"FF_REG_a", %%"FF_REG_a", 2), %%"FF_REG_d" \n\t"
+                 ".p2align                    4              \n\t"
+@@ -1649,7 +1649,7 @@
+                 "psraw                      $7, %%mm4       \n\t"
+ 
+                 "packuswb                %%mm4, %%mm0       \n\t"
+-                "paddusb "MANGLE(ff_bgr2YOffset)", %%mm0    \n\t"
++                "paddusb "LOCAL_MANGLE(ff_bgr2YOffset)", %%mm0    \n\t"
+ 
+                 MOVNTQ"                  %%mm0, (%1, %%"FF_REG_a") \n\t"
+                 "add                        $8,      %%"FF_REG_a"  \n\t"
+@@ -1664,7 +1664,7 @@
+         src -= srcStride*2;
+         __asm__ volatile(
+             "mov                        %4, %%"FF_REG_a"\n\t"
+-            "movq       "MANGLE(ff_w1111)", %%mm5       \n\t"
++            "movq       "LOCAL_MANGLE(ff_w1111)", %%mm5       \n\t"
+             "movq          "BGR2U_IDX"(%5), %%mm6       \n\t"
+             "pxor                    %%mm7, %%mm7       \n\t"
+             "lea (%%"FF_REG_a", %%"FF_REG_a", 2), %%"FF_REG_d" \n\t"
+@@ -1770,7 +1770,7 @@
+             "paddw                   %%mm1, %%mm5       \n\t"
+             "paddw                   %%mm3, %%mm2       \n\t"
+             "paddw                   %%mm5, %%mm2       \n\t"
+-            "movq       "MANGLE(ff_w1111)", %%mm5       \n\t"
++            "movq       "LOCAL_MANGLE(ff_w1111)", %%mm5       \n\t"
+             "psrlw                      $2, %%mm4       \n\t"
+             "psrlw                      $2, %%mm2       \n\t"
+ #endif
+@@ -1797,7 +1797,7 @@
+             "punpckldq               %%mm4, %%mm0           \n\t"
+             "punpckhdq               %%mm4, %%mm1           \n\t"
+             "packsswb                %%mm1, %%mm0           \n\t"
+-            "paddb "MANGLE(ff_bgr2UVOffset)", %%mm0         \n\t"
++            "paddb "LOCAL_MANGLE(ff_bgr2UVOffset)", %%mm0         \n\t"
+             "movd                    %%mm0, (%2, %%"FF_REG_a") \n\t"
+             "punpckhdq               %%mm0, %%mm0              \n\t"
+             "movd                    %%mm0, (%3, %%"FF_REG_a") \n\t"
+--- ffmpeg-4.1/libswscale/x86/swscale_template.c.orig	2018-11-05 23:22:26.000000000 +0000
++++ ffmpeg-4.1/libswscale/x86/swscale_template.c	2019-01-16 00:19:06.024000000 +0000
+@@ -429,9 +429,9 @@
+ }
+ 
+ #define REAL_WRITERGB16(dst, dstw, index) \
+-    "pand "MANGLE(bF8)", %%mm2  \n\t" /* B */\
+-    "pand "MANGLE(bFC)", %%mm4  \n\t" /* G */\
+-    "pand "MANGLE(bF8)", %%mm5  \n\t" /* R */\
++    "pand "LOCAL_MANGLE(bF8)", %%mm2  \n\t" /* B */\
++    "pand "LOCAL_MANGLE(bFC)", %%mm4  \n\t" /* G */\
++    "pand "LOCAL_MANGLE(bF8)", %%mm5  \n\t" /* R */\
+     "psrlq           $3, %%mm2  \n\t"\
+ \
+     "movq         %%mm2, %%mm1  \n\t"\
+@@ -505,9 +505,9 @@
+ }
+ 
+ #define REAL_WRITERGB15(dst, dstw, index) \
+-    "pand "MANGLE(bF8)", %%mm2  \n\t" /* B */\
+-    "pand "MANGLE(bF8)", %%mm4  \n\t" /* G */\
+-    "pand "MANGLE(bF8)", %%mm5  \n\t" /* R */\
++    "pand "LOCAL_MANGLE(bF8)", %%mm2  \n\t" /* B */\
++    "pand "LOCAL_MANGLE(bF8)", %%mm4  \n\t" /* G */\
++    "pand "LOCAL_MANGLE(bF8)", %%mm5  \n\t" /* R */\
+     "psrlq           $3, %%mm2  \n\t"\
+     "psrlq           $1, %%mm5  \n\t"\
+ \
+@@ -636,8 +636,8 @@
+ 
+ #define WRITEBGR24MMXEXT(dst, dstw, index) \
+     /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */\
+-    "movq "MANGLE(ff_M24A)", %%mm0 \n\t"\
+-    "movq "MANGLE(ff_M24C)", %%mm7 \n\t"\
++    "movq "LOCAL_MANGLE(ff_M24A)", %%mm0 \n\t"\
++    "movq "LOCAL_MANGLE(ff_M24C)", %%mm7 \n\t"\
+     "pshufw $0x50, %%mm2, %%mm1 \n\t" /* B3 B2 B3 B2  B1 B0 B1 B0 */\
+     "pshufw $0x50, %%mm4, %%mm3 \n\t" /* G3 G2 G3 G2  G1 G0 G1 G0 */\
+     "pshufw $0x00, %%mm5, %%mm6 \n\t" /* R1 R0 R1 R0  R1 R0 R1 R0 */\
+@@ -656,7 +656,7 @@
+     "pshufw $0x55, %%mm4, %%mm3 \n\t" /* G4 G3 G4 G3  G4 G3 G4 G3 */\
+     "pshufw $0xA5, %%mm5, %%mm6 \n\t" /* R5 R4 R5 R4  R3 R2 R3 R2 */\
+ \
+-    "pand "MANGLE(ff_M24B)", %%mm1 \n\t" /* B5       B4        B3    */\
++    "pand "LOCAL_MANGLE(ff_M24B)", %%mm1 \n\t" /* B5       B4        B3    */\
+     "pand   %%mm7, %%mm3        \n\t" /*       G4        G3       */\
+     "pand   %%mm0, %%mm6        \n\t" /*    R4        R3       R2 */\
+ \
+@@ -670,7 +670,7 @@
+ \
+     "pand   %%mm7, %%mm1        \n\t" /*       B7        B6       */\
+     "pand   %%mm0, %%mm3        \n\t" /*    G7        G6       G5 */\
+-    "pand "MANGLE(ff_M24B)", %%mm6 \n\t" /* R7       R6        R5    */\
++    "pand "LOCAL_MANGLE(ff_M24B)", %%mm6 \n\t" /* R7       R6        R5    */\
+ \
+     "por    %%mm1, %%mm3        \n\t"\
+     "por    %%mm3, %%mm6        \n\t"\
+--- ffmpeg-4.1/libswscale/x86/yuv2rgb_template.c.orig	2016-03-29 02:25:33.000000000 +0000
++++ ffmpeg-4.1/libswscale/x86/yuv2rgb_template.c	2019-01-16 00:24:06.884000000 +0000
+@@ -86,7 +86,7 @@
+     "movq      %%mm6, %%mm7\n\t"                 \
+     "punpcklbw %%mm4, %%mm0\n\t"                 \
+     "punpcklbw %%mm4, %%mm1\n\t"                 \
+-    "pand     "MANGLE(mmx_00ffw)", %%mm6\n\t"    \
++    "pand     "LOCAL_MANGLE(mmx_00ffw)", %%mm6\n\t"    \
+     "psrlw     $8,    %%mm7\n\t"                 \
+     "psllw     $3,    %%mm0\n\t"                 \
+     "psllw     $3,    %%mm1\n\t"                 \
+@@ -175,15 +175,15 @@
+ #define IF1(x) x
+ 
+ #define RGB_PACK16(gmask, is15)                  \
+-    "pand      "MANGLE(mmx_redmask)", %%mm0\n\t" \
+-    "pand      "MANGLE(mmx_redmask)", %%mm1\n\t" \
++    "pand      "LOCAL_MANGLE(mmx_redmask)", %%mm0\n\t" \
++    "pand      "LOCAL_MANGLE(mmx_redmask)", %%mm1\n\t" \
+     "movq      %%mm2,     %%mm3\n\t"             \
+     "psllw   $"AV_STRINGIFY(3-is15)", %%mm2\n\t" \
+     "psrlw   $"AV_STRINGIFY(5+is15)", %%mm3\n\t" \
+     "psrlw     $3,        %%mm0\n\t"             \
+     IF##is15("psrlw  $1,  %%mm1\n\t")            \
+-    "pand "MANGLE(pb_e0)", %%mm2\n\t"            \
+-    "pand "MANGLE(gmask)", %%mm3\n\t"            \
++    "pand "LOCAL_MANGLE(pb_e0)", %%mm2\n\t"            \
++    "pand "LOCAL_MANGLE(gmask)", %%mm3\n\t"            \
+     "por       %%mm2,     %%mm0\n\t"             \
+     "por       %%mm3,     %%mm1\n\t"             \
+     "movq      %%mm0,     %%mm2\n\t"             \
+@@ -281,15 +281,15 @@
+     "pshufw    $0xc6,  %%mm2, %%mm1 \n"\
+     "pshufw    $0x84,  %%mm3, %%mm6 \n"\
+     "pshufw    $0x38,  %%mm5, %%mm7 \n"\
+-    "pand "MANGLE(mask1101)", %%mm6 \n" /* R0 G0 B0 R1 -- -- R2 G2 */\
++    "pand "LOCAL_MANGLE(mask1101)", %%mm6 \n" /* R0 G0 B0 R1 -- -- R2 G2 */\
+     "movq      %%mm1,         %%mm0 \n"\
+-    "pand "MANGLE(mask0110)", %%mm7 \n" /* -- -- R6 G6 B6 R7 -- -- */\
++    "pand "LOCAL_MANGLE(mask0110)", %%mm7 \n" /* -- -- R6 G6 B6 R7 -- -- */\
+     "movq      %%mm1,         %%mm2 \n"\
+-    "pand "MANGLE(mask0100)", %%mm1 \n" /* -- -- G3 B3 -- -- -- -- */\
++    "pand "LOCAL_MANGLE(mask0100)", %%mm1 \n" /* -- -- G3 B3 -- -- -- -- */\
+     "psrlq       $48,         %%mm3 \n" /* B2 R3 -- -- -- -- -- -- */\
+-    "pand "MANGLE(mask0010)", %%mm0 \n" /* -- -- -- -- G1 B1 -- -- */\
++    "pand "LOCAL_MANGLE(mask0010)", %%mm0 \n" /* -- -- -- -- G1 B1 -- -- */\
+     "psllq       $32,         %%mm5 \n" /* -- -- -- -- R4 G4 B4 R5 */\
+-    "pand "MANGLE(mask1001)", %%mm2 \n" /* G5 B5 -- -- -- -- G7 B7 */\
++    "pand "LOCAL_MANGLE(mask1001)", %%mm2 \n" /* G5 B5 -- -- -- -- G7 B7 */\
+     "por       %%mm3,         %%mm1 \n"\
+     "por       %%mm6,         %%mm0 \n"\
+     "por       %%mm5,         %%mm1 \n"\
+--- ffmpeg-4.1/libavcodec/x86/lpc.c.orig	2018-11-01 18:34:25.000000000 +0000
++++ ffmpeg-4.1/libavcodec/x86/lpc.c	2019-01-16 00:26:53.376000000 +0000
+@@ -40,8 +40,8 @@
+     x86_reg j =  n2*sizeof(int32_t);
+     __asm__ volatile(
+         "movsd   %4,     %%xmm7                \n\t"
+-        "movapd  "MANGLE(pd_1)", %%xmm6        \n\t"
+-        "movapd  "MANGLE(pd_2)", %%xmm5        \n\t"
++        "movapd  "LOCAL_MANGLE(pd_1)", %%xmm6        \n\t"
++        "movapd  "LOCAL_MANGLE(pd_2)", %%xmm5        \n\t"
+         "movlhps %%xmm7, %%xmm7                \n\t"
+         "subpd   %%xmm5, %%xmm7                \n\t"
+         "addsd   %%xmm6, %%xmm7                \n\t"
+@@ -91,9 +91,9 @@
+         x86_reg i = -len*sizeof(double);
+         if(j == lag-2) {
+             __asm__ volatile(
+-                "movsd    "MANGLE(pd_1)", %%xmm0    \n\t"
+-                "movsd    "MANGLE(pd_1)", %%xmm1    \n\t"
+-                "movsd    "MANGLE(pd_1)", %%xmm2    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm0    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm1    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm2    \n\t"
+                 "1:                                 \n\t"
+                 "movapd   (%2,%0), %%xmm3           \n\t"
+                 "movupd -8(%3,%0), %%xmm4           \n\t"
+@@ -122,8 +122,8 @@
+             );
+         } else {
+             __asm__ volatile(
+-                "movsd    "MANGLE(pd_1)", %%xmm0    \n\t"
+-                "movsd    "MANGLE(pd_1)", %%xmm1    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm0    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm1    \n\t"
+                 "1:                                 \n\t"
+                 "movapd   (%3,%0), %%xmm3           \n\t"
+                 "movupd -8(%4,%0), %%xmm4           \n\t"
+--- ffmpeg-4.1/libavutil/x86/asm.h.orig	2018-11-01 18:34:28.000000000 +0000
++++ ffmpeg-4.1/libavutil/x86/asm.h	2019-01-16 00:36:18.480000000 +0000
+@@ -100,7 +100,11 @@
+ #endif
+ 
+ /* Use to export labels from asm. */
++#ifndef __midipix__
+ #define LABEL_MANGLE(a) EXTERN_PREFIX #a
++#else
++#define LABEL_MANGLE(a) #a
++#endif
+ 
+ // Use rip-relative addressing if compiling PIC code on x86-64.
+ #if ARCH_X86_64 && defined(PIC)
