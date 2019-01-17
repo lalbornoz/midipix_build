@@ -1,0 +1,142 @@
+--- nasm-2.14.02/output/outcoff.c.orig	2018-12-26 13:44:06.000000000 +0000
++++ nasm-2.14.02/output/outcoff.c	2019-01-17 22:38:03.672000000 +0000
+@@ -701,6 +701,7 @@
+     sect->len += len;
+ }
+ 
++#ifndef COFF_MIDIPIX
+ typedef struct tagString {
+     struct tagString *next;
+     int len;
+@@ -765,6 +766,96 @@
+ 
+     *rvp = NULL;
+ }
++#else
++typedef struct tagGlobalSymbol {
++    struct tagGlobalSymbol *next;
++    struct coff_Symbol *sym;
++} GLOBALSYMBOL;
++typedef struct tagGlobalSymbolList {
++    GLOBALSYMBOL *head, *tail;
++} GLOBALSYMBOLLIST;
++
++#define GOT_SECTION_FLAGS                               \
++    (IMAGE_SCN_CNT_INITIALIZED_DATA             |       \
++     IMAGE_SCN_ALIGN_4BYTES                     |       \
++     IMAGE_SCN_LNK_COMDAT                       |       \
++     IMAGE_SCN_MEM_READ)
++#define GOT_SECTION_PREFIX           ".got$"
++#define GOT_SECTION_PREFIX_LEN       (sizeof(GOT_SECTION_PREFIX) - 1)
++#define GOT_SYMBOL_PREFIX            "__imp_"
++#define GOT_SYMBOL_PREFIX_LEN       (sizeof(GOT_SYMBOL_PREFIX) - 1)
++
++static void BuildGlobalOffsetTable(void)
++{
++    GLOBALSYMBOL *global_sym, *global_sym_next;
++    char *global_sym_name;
++    GLOBALSYMBOLLIST global_symbols = {NULL, NULL};
++    char *got_sec_name, *got_sym_name;
++    size_t got_sec_name_len, got_sym_name_len;
++    struct coff_Symbol *sym;
++    unsigned long sym_num;
++    struct coff_Reloc *reloc;
++    int16_t reloc_type;
++
++    saa_rewind(coff_syms);
++    for (sym_num = 0; sym_num < coff_nsyms; sym_num++) {
++        sym = saa_rstruct(coff_syms);
++        if (sym->is_global && sym->section > 0) {
++            global_sym = nasm_malloc(sizeof(*global_sym));
++            global_sym->next = NULL;
++            global_sym->sym = sym;
++            if (!global_symbols.head)
++                global_symbols.head = global_sym;
++            if (global_symbols.tail)
++                global_symbols.tail->next = global_sym;
++            global_symbols.tail = global_sym;
++        }
++    }
++
++    for (global_sym = global_symbols.head, global_sym_next = NULL; global_sym; global_sym = global_sym_next) {
++        global_sym_name = nasm_zalloc(global_sym->sym->namlen + 1);
++        if (global_sym->sym->namlen > 8)
++            saa_fread(coff_strs, global_sym->sym->strpos - 4, global_sym_name, global_sym->sym->namlen);
++        else
++            strcpy(global_sym_name, global_sym->sym->name);
++
++        got_sec_name_len = GOT_SECTION_PREFIX_LEN + global_sym->sym->namlen;
++        got_sym_name_len = GOT_SYMBOL_PREFIX_LEN + global_sym->sym->namlen;
++        got_sec_name = nasm_zalloc(got_sec_name_len + 1);
++        got_sym_name = nasm_zalloc(got_sym_name_len + 1);
++        snprintf(got_sec_name, got_sec_name_len + 1, "%s%s", GOT_SECTION_PREFIX, global_sym_name);
++        snprintf(got_sym_name, got_sym_name_len + 1, "%s%s", GOT_SYMBOL_PREFIX, global_sym_name);
++
++        sym_num = coff_nsyms - 1;
++        sym = saa_wstruct(coff_syms);
++        sym->is_global = 1;
++        sym->namlen = got_sym_name_len;
++        sym->section = coff_make_section(got_sec_name, GOT_SECTION_FLAGS);
++        sym->type = 0; sym->value = 0;
++        coff_nsyms++;
++
++        if (sym->namlen > 8) {
++            sym->strpos = strslen + 4;
++            memset(sym->name, '\0', sizeof(sym->name));
++            saa_wbytes(coff_strs, got_sym_name, sym->namlen + 1);
++            strslen += sym->namlen + 1;
++        } else {
++            sym->strpos = -1;
++            strncpy(sym->name, got_sym_name, sizeof(sym->name));
++        }
++
++        if (win64)
++            reloc_type = IMAGE_REL_AMD64_ADDR64;
++        else
++            reloc_type = IMAGE_REL_I386_DIR32;
++        coff_add_reloc(coff_sects[sym->section], coff_sects[global_sym->sym->section - 1]->index, reloc_type);
++
++        global_sym_next = global_sym->next;
++        nasm_free(global_sym); nasm_free(global_sym_name);
++        nasm_free(got_sec_name); nasm_free(got_sym_name);
++    }
++}
++#endif
+ 
+ static enum directive_result
+ coff_directives(enum directive directive, char *value, int pass)
+@@ -793,7 +884,9 @@
+             nasm_error(ERR_NONFATAL, "unrecognized export qualifier `%s'", q);
+             return DIRR_ERROR;
+         }
++#ifndef COFF_MIDIPIX
+         AddExport(name);
++#endif
+         return DIRR_OK;
+     }
+     case D_SAFESEH:
+@@ -888,8 +981,12 @@
+     int32_t pos, sympos, vsize;
+     int i;
+ 
++#ifndef COFF_MIDIPIX
+     /* fill in the .drectve section with -export's */
+     BuildExportTable(&Exports);
++#else
++    BuildGlobalOffsetTable();
++#endif
+ 
+     if (win32) {
+         /* add default value for @feat.00, this allows to 'link /safeseh' */
+@@ -1086,7 +1183,10 @@
+     memset(filename, 0, 18);    /* useful zeroed buffer */
+ 
+     for (i = 0; i < (uint32_t) coff_nsects; i++) {
+-        coff_symbol(coff_sects[i]->name, 0L, 0L, i + 1, 0, 3, 1);
++        if (coff_sects[i]->namepos == -1)
++            coff_symbol(coff_sects[i]->name, 0L, 0L, i + 1, 0, 3, 1);
++        else
++            coff_symbol(NULL, coff_sects[i]->namepos, 0L, i + 1, 0, 3, 1);
+         fwriteint32_t(coff_sects[i]->len,    ofile);
+         fwriteint16_t(coff_sects[i]->nrelocs,ofile);
+         nasm_write(filename, 12, ofile);
