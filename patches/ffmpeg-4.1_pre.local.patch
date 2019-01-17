@@ -1,6 +1,5 @@
-diff -ru ffmpeg-4.1.orig/configure ffmpeg-4.1/configure
---- ffmpeg-4.1.orig/configure	2018-11-06 00:22:33.000000000 +0100
-+++ ffmpeg-4.1/configure	2019-01-13 20:49:35.764790185 +0100
+--- ffmpeg-4.1/configure.orig	2018-11-05 23:22:33.000000000 +0000
++++ ffmpeg-4.1/configure	2019-01-17 19:13:20.212000000 +0000
 @@ -5268,6 +5268,12 @@
          ranlib=:
          enable dos_paths
@@ -14,3 +13,11 @@ diff -ru ffmpeg-4.1.orig/configure ffmpeg-4.1/configure
      cygwin*)
          target_os=cygwin
          shlibdir_default="$bindir_default"
+@@ -5764,7 +5770,6 @@
+         disabled x86asm && die "nasm/yasm not found or too old. Use --disable-x86asm for a crippled build."
+         X86ASMFLAGS="-f $objformat"
+         enabled pic               && append X86ASMFLAGS "-DPIC"
+-        test -n "$extern_prefix"  && append X86ASMFLAGS "-DPREFIX"
+         case "$objformat" in
+             elf*) enabled debug && append X86ASMFLAGS $x86asm_debug ;;
+         esac
