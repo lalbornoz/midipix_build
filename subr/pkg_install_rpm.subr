@@ -5,7 +5,8 @@
 pkg_install_rpm() {
 	local _pkg_url="" _pkg_version_full="" _pkg_version_rpm="";
 	if [ "${ARG_RPM:-0}" -eq 0 ]\
-	|| ! [ -x "$(which rpmbuild 2>/dev/null)" ]; then
+	|| ! [ -x "$(which rpmbuild 2>/dev/null)" ]\
+	|| [ "${PKG_NAME}" = "mpackage" ]; then
 		return 0;
 	fi; 
 	if [ -n "${PKG_URL}" ]; then
