@@ -1,7 +1,7 @@
 usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                   [-c] [-C dir[,..]] [-h] [-N] [-P [jobs]]
                   [-r ALL[:step,..]] [-r name[,..][:step,..]]
-                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x]
+                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x] [-z]
                   [--as-needed] [--debug-minipix] [--rpm] [<target>[ ..]]
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
@@ -37,6 +37,7 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                                 default compression is xz.
         -v[v[v]]                Be verbose; -vv: always print package logs; -vvv: logs fileops.
         -x                      Set xtrace during package builds; implies -vv.
+        -z                      Produce deployable distribution ZIP archive.
         --as-needed             Don't build unless the midipix_build repository has received new commits.
         --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
         --rpm                   Build RPM packages for each package built; selects host_tools_rpm.
