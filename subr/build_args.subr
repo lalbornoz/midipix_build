@@ -24,7 +24,8 @@ BUILD_ARGS_SPEC="
 	ARG_VERBOSE:selfarg:-v:
 	ARG_VERBOSE:selfarg:-vv:
 	ARG_VERBOSE:selfarg:-vvv:
-	ARG_XTRACE:-x:";
+	ARG_XTRACE:-x:
+	ARG_ZIPDIST:arg:-z:";
 
 build_args() {
 	local _spec="${BUILD_ARGS_SPEC}" _spec_arg="" _found="";
