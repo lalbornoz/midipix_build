@@ -15,7 +15,7 @@ BUILD_ARGS_SPEC="
 	ARG_VERBOSE:selfarg:-v:
 	ARG_VERBOSE:selfarg:-vv:
 	ARG_VERBOSE:selfarg:-vvv:
-	ARG_XTRACE:-x:
+	ARG_VERBOSE:selfarg:-vvvv:
 	BUILD:arg:-b:";
 
 build_args() {
@@ -69,15 +69,12 @@ build_args() {
 		fi;
 		ARG_RESTART="$(echo "${ARG_RESTART}" | sed "s/,/ /g")";
 	fi;
-	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
-		ARG_VERBOSE=2;
-	else
-		case "${ARG_VERBOSE}" in
-		-v)	ARG_VERBOSE=1; ;;
-		-vv)	ARG_VERBOSE=2; ;;
-		-vvv)	ARG_VERBOSE=3; ;;
-		esac;
-	fi;
+	case "${ARG_VERBOSE}" in
+	-v)	ARG_VERBOSE=1; ;;
+	-vv)	ARG_VERBOSE=2; ;;
+	-vvv)	ARG_VERBOSE=3; ;;
+	-vvvv)	ARG_VERBOSE=4; ;;
+	esac;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
 	*=*)	ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;

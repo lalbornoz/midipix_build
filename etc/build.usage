@@ -1,6 +1,6 @@
 usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
                   [-F ipv4|ipv6|offline] [-h] [-P [jobs]] [-r ALL|name[,..][:step,..]]
-                  [-R] [-v[v[v]]] [-x] [--as-needed] [--debug-minipix] [<target>[ ..]]
+                  [-R] [-v[v[v[v]]]] [--as-needed] [--debug-minipix] [<target>[ ..]]
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build; defaults to debug.
         -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
@@ -31,8 +31,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
                           install_strip, install, and install_rpm.
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)
-        -v[v[v]]          Be verbose; -vv: always print package logs; -vvv: logs fileops.
-        -x                Set xtrace during package builds; implies -vv.
+        -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace during package builds; -vvvv: logs fileops.
         --as-needed       Don't build unless the midipix_build repository has received new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
         <target>[ ..]     One of:

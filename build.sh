@@ -82,7 +82,7 @@ buildp_dispatch() {
 				ex_rtl_log_env_vars "build"		\
 					$(set | awk -F= '/^PKG_/{print $1}' | sort);
 			fi;
-			if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
+			if [ "${ARG_VERBOSE:-0}" -ge 3 ]; then
 				set -o xtrace;
 			fi; ;;
 	exec_step)	ex_rtl_log_msg info "Finished build step ${4} of package \`${_pkg_name}'."; ;;
