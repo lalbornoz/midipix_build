@@ -18,8 +18,7 @@ pkg_install() {
 		tar -C "${PKG_DESTDIR}" -cpf - .	|\
 			gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"
 	fi;
-	if [ "${PKG_NAME%_minipix}" = "${PKG_NAME}" ]	\
-	&& [ "${PKG_NAME}" != "mpackage" ]; then
+	if [ [ "${PKG_PKGLIST_DISABLE:-0}" -eq 0 ]; then
 		if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]; then
 			touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
 		fi;
