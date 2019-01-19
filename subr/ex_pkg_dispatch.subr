@@ -28,18 +28,25 @@ exp_pkg_dispatch() {
 };
 
 ex_pkg_dispatch() {
-	local _tgt_name="${1}" _restart="${2}" _restart_at="${3}"				\
-		_dispatch_fn="${4}" _tgt_name_uc=""						\
-		_pkg_names="" _njob="" _njobs="" _njobs_max=""					\
-		_pipe_path="" _stderrout_path="" _pipe_msg="" _script_rc="";
+	local _tgt_name="${1}" _restart="${2}" _restart_at="${3}" _dispatch_fn="${4}" _pkgs_found_vname="${5}"	\
+		_last_pkg="" _njob="" _njobs="" _njobs_max="" _pipe_msg="" _pipe_path=""			\
+		_pkg_names="" _pkgs_found="" _script_rc="" _stderrout_path="" _tgt_name_uc="";
 	ex_rtl_fileop mkdir "${BUILD_WORKDIR}";
 	_pipe_path="${BUILD_WORKDIR}/build.fifo";
 	_tgt_name_uc="$(ex_rtl_toupper "${_tgt_name}")";
 	"${_dispatch_fn}" start_target "" "${_tgt_name}";
 	_pkg_names="$(ex_rtl_get_var_unsafe ${_tgt_name_uc}_PACKAGES)";
-	if [ -n "${_restart}" ]\
-	&& [ "${_restart}" != ALL ]; then
-		_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_restart}")";
+	if [ -n "${_restart}" ]; then
+		if [ "${_restart}" = "LAST" ]; then
+			if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
+			&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
+				_last_pkg="$(cat "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}")";
+				ex_rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
+				ex_rtl_state_clear "${BUILD_WORKDIR}" "${_last_pkg}";
+			fi;
+		elif [ "${_restart}" != "ALL" ]; then
+			_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_restart}")";
+		fi;
 	fi;
 	if [ "$(ex_rtl_get_var_unsafe ${_tgt_name_uc}_PARALLELISE)" = 1 ]\
 	&& [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
@@ -55,6 +62,7 @@ ex_pkg_dispatch() {
 			if [ ${#} -eq 0 ]; then
 				break;
 			else
+				_pkgs_found="${_pkgs_found:+${_pkgs_found} }${1}";
 				exp_pkg_dispatch "${1}" "${_tgt_name}"				\
 					"${_restart_at}" "${_dispatch_fn}"			\
 					"${_stderrout_path}" "${_pipe_path}"			\
@@ -93,6 +101,7 @@ ex_pkg_dispatch() {
 		fi;
 	done;
 	"${_dispatch_fn}" finish_target "" "${_tgt_name}";
+	ex_rtl_set_var_unsafe "${_pkgs_found_vname}" "${_pkgs_found}";
 };
 
 # vim:filetype=sh
