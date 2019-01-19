@@ -27,7 +27,7 @@ pkg_configure_autotools() {
 						fi;
 					done;
 					(ex_rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&		\
-						"${SHELL}" "${_script_fname}") || exit 1 && break;
+						/bin/sh "${_script_fname}") || exit 1 && break;
 				fi;
 			done;
 		fi;
