@@ -322,3 +322,209 @@
  
  // Use rip-relative addressing if compiling PIC code on x86-64.
  #if ARCH_X86_64 && defined(PIC)
+--- ffmpeg-4.1/libavcodec/x86/h264_cabac.c.orig	2018-11-01 18:34:25.000000000 +0000
++++ ffmpeg-4.1/libavcodec/x86/h264_cabac.c	2019-01-18 20:04:01.480000000 +0000
+@@ -56,7 +56,7 @@
+     void *tables;
+ 
+     __asm__ volatile(
+-        "lea   "MANGLE(ff_h264_cabac_tables)", %0      \n\t"
++        "lea   "LOCAL_MANGLE(ff_h264_cabac_tables)", %0      \n\t"
+         : "=&r"(tables)
+         : NAMED_CONSTRAINTS_ARRAY(ff_h264_cabac_tables)
+     );
+@@ -132,7 +132,7 @@
+     void *tables;
+ 
+     __asm__ volatile(
+-        "lea    "MANGLE(ff_h264_cabac_tables)", %0      \n\t"
++        "lea    "LOCAL_MANGLE(ff_h264_cabac_tables)", %0      \n\t"
+         : "=&r"(tables)
+         : NAMED_CONSTRAINTS_ARRAY(ff_h264_cabac_tables)
+     );
+@@ -161,7 +161,7 @@
+ #ifdef BROKEN_RELOCATIONS
+         "movzb %c14(%15, %q6), %6\n\t"
+ #else
+-        "movzb "MANGLE(ff_h264_cabac_tables)"+%c14(%6), %6\n\t"
++        "movzb "LOCAL_MANGLE(ff_h264_cabac_tables)"+%c14(%6), %6\n\t"
+ #endif
+         "add %11, %6                            \n\t"
+ 
+--- ffmpeg-4.1/libavcodec/x86/cabac.h.orig	2018-11-01 18:34:25.000000000 +0000
++++ ffmpeg-4.1/libavcodec/x86/cabac.h	2019-01-18 20:20:12.052000000 +0000
+@@ -143,12 +143,12 @@
+         "movzbl "statep"    , "ret"                                     \n\t"\
+         "mov    "range"     , "tmp"                                     \n\t"\
+         "and    $0xC0       , "range"                                   \n\t"\
+-        "movzbl "MANGLE(ff_h264_cabac_tables)"+"lps_off"("ret", "range", 2), "range" \n\t"\
++        "movzbl "LOCAL_MANGLE(ff_h264_cabac_tables)"+"lps_off"("ret", "range", 2), "range" \n\t"\
+         "sub    "range"     , "tmp"                                     \n\t"\
+         BRANCHLESS_GET_CABAC_UPDATE(ret, low, range, tmp)                    \
+-        "movzbl "MANGLE(ff_h264_cabac_tables)"+"norm_off"("range"), %%ecx    \n\t"\
++        "movzbl "LOCAL_MANGLE(ff_h264_cabac_tables)"+"norm_off"("range"), %%ecx    \n\t"\
+         "shl    %%cl        , "range"                                   \n\t"\
+-        "movzbl "MANGLE(ff_h264_cabac_tables)"+"mlps_off"+128("ret"), "tmp"  \n\t"\
++        "movzbl "LOCAL_MANGLE(ff_h264_cabac_tables)"+"mlps_off"+128("ret"), "tmp"  \n\t"\
+         "shl    %%cl        , "low"                                     \n\t"\
+         "mov    "tmpbyte"   , "statep"                                  \n\t"\
+         "test   "lowword"   , "lowword"                                 \n\t"\
+@@ -163,7 +163,7 @@
+         "shr    $15         , %%ecx                                     \n\t"\
+         "bswap  "tmp"                                                   \n\t"\
+         "shr    $15         , "tmp"                                     \n\t"\
+-        "movzbl "MANGLE(ff_h264_cabac_tables)"+"norm_off"(%%ecx), %%ecx \n\t"\
++        "movzbl "LOCAL_MANGLE(ff_h264_cabac_tables)"+"norm_off"(%%ecx), %%ecx \n\t"\
+         "sub    $0xFFFF     , "tmp"                                     \n\t"\
+         "neg    %%ecx                                                   \n\t"\
+         "add    $7          , %%ecx                                     \n\t"\
+@@ -183,7 +183,7 @@
+     void *tables;
+ 
+     __asm__ volatile(
+-        "lea    "MANGLE(ff_h264_cabac_tables)", %0      \n\t"
++        "lea    "LOCAL_MANGLE(ff_h264_cabac_tables)", %0      \n\t"
+         : "=&r"(tables)
+         : NAMED_CONSTRAINTS_ARRAY(ff_h264_cabac_tables)
+     );
+--- ffmpeg-4.1/libavcodec/x86/cavsdsp.c.orig	2018-11-01 18:34:25.000000000 +0000
++++ ffmpeg-4.1/libavcodec/x86/cavsdsp.c	2019-01-18 20:26:50.820000000 +0000
+@@ -69,9 +69,9 @@
+ #define QPEL_CAVSV1(A,B,C,D,E,F,OP,ADD, MUL1, MUL2) \
+         "movd (%0), "#F"            \n\t"\
+         "movq "#C", %%mm6           \n\t"\
+-        "pmullw "MANGLE(MUL1)", %%mm6\n\t"\
++        "pmullw "LOCAL_MANGLE(MUL1)", %%mm6\n\t"\
+         "movq "#D", %%mm7           \n\t"\
+-        "pmullw "MANGLE(MUL2)", %%mm7\n\t"\
++        "pmullw "LOCAL_MANGLE(MUL2)", %%mm7\n\t"\
+         "psllw $3, "#E"             \n\t"\
+         "psubw "#E", %%mm6          \n\t"\
+         "psraw $3, "#E"             \n\t"\
+@@ -84,7 +84,7 @@
+         "psubw "#B", %%mm6          \n\t"\
+         "psraw $1, "#B"             \n\t"\
+         "psubw "#A", %%mm6          \n\t"\
+-        "paddw "MANGLE(ADD)", %%mm6 \n\t"\
++        "paddw "LOCAL_MANGLE(ADD)", %%mm6 \n\t"\
+         "psraw $7, %%mm6            \n\t"\
+         "packuswb %%mm6, %%mm6      \n\t"\
+         OP(%%mm6, (%1), A, d)            \
+@@ -95,12 +95,12 @@
+         "movd (%0), "#F"            \n\t"\
+         "movq "#C", %%mm6           \n\t"\
+         "paddw "#D", %%mm6          \n\t"\
+-        "pmullw "MANGLE(MUL1)", %%mm6\n\t"\
++        "pmullw "LOCAL_MANGLE(MUL1)", %%mm6\n\t"\
+         "add %2, %0                 \n\t"\
+         "punpcklbw %%mm7, "#F"      \n\t"\
+         "psubw "#B", %%mm6          \n\t"\
+         "psubw "#E", %%mm6          \n\t"\
+-        "paddw "MANGLE(ADD)", %%mm6 \n\t"\
++        "paddw "LOCAL_MANGLE(ADD)", %%mm6 \n\t"\
+         "psraw $3, %%mm6            \n\t"\
+         "packuswb %%mm6, %%mm6      \n\t"\
+         OP(%%mm6, (%1), A, d)            \
+@@ -110,9 +110,9 @@
+ #define QPEL_CAVSV3(A,B,C,D,E,F,OP,ADD, MUL1, MUL2) \
+         "movd (%0), "#F"            \n\t"\
+         "movq "#C", %%mm6           \n\t"\
+-        "pmullw "MANGLE(MUL2)", %%mm6\n\t"\
++        "pmullw "LOCAL_MANGLE(MUL2)", %%mm6\n\t"\
+         "movq "#D", %%mm7           \n\t"\
+-        "pmullw "MANGLE(MUL1)", %%mm7\n\t"\
++        "pmullw "LOCAL_MANGLE(MUL1)", %%mm7\n\t"\
+         "psllw $3, "#B"             \n\t"\
+         "psubw "#B", %%mm6          \n\t"\
+         "psraw $3, "#B"             \n\t"\
+@@ -125,7 +125,7 @@
+         "psubw "#E", %%mm6          \n\t"\
+         "psraw $1, "#E"             \n\t"\
+         "psubw "#F", %%mm6          \n\t"\
+-        "paddw "MANGLE(ADD)", %%mm6 \n\t"\
++        "paddw "LOCAL_MANGLE(ADD)", %%mm6 \n\t"\
+         "psraw $7, %%mm6            \n\t"\
+         "packuswb %%mm6, %%mm6      \n\t"\
+         OP(%%mm6, (%1), A, d)            \
+@@ -195,7 +195,7 @@
+     int h=8;\
+     __asm__ volatile(\
+         "pxor %%mm7, %%mm7          \n\t"\
+-        "movq "MANGLE(ff_pw_5)", %%mm6\n\t"\
++        "movq "LOCAL_MANGLE(ff_pw_5)", %%mm6\n\t"\
+         "1:                         \n\t"\
+         "movq    (%0), %%mm0        \n\t"\
+         "movq   1(%0), %%mm2        \n\t"\
+@@ -221,7 +221,7 @@
+         "paddw %%mm3, %%mm5         \n\t"\
+         "psubw %%mm2, %%mm0         \n\t"\
+         "psubw %%mm5, %%mm1         \n\t"\
+-        "movq "MANGLE(ff_pw_4)", %%mm5\n\t"\
++        "movq "LOCAL_MANGLE(ff_pw_4)", %%mm5\n\t"\
+         "paddw %%mm5, %%mm0         \n\t"\
+         "paddw %%mm5, %%mm1         \n\t"\
+         "psraw $3, %%mm0            \n\t"\
+--- ffmpeg-4.1/libavcodec/x86/vc1dsp_mmx.c.orig	2018-11-01 18:34:25.000000000 +0000
++++ ffmpeg-4.1/libavcodec/x86/vc1dsp_mmx.c	2019-01-18 20:30:04.396000000 +0000
+@@ -86,7 +86,7 @@
+     __asm__ volatile(\
+         "mov       $8, %%"FF_REG_c"        \n\t"\
+         LOAD_ROUNDER_MMX("%5")\
+-        "movq      "MANGLE(ff_pw_9)", %%mm6\n\t"\
++        "movq      "LOCAL_MANGLE(ff_pw_9)", %%mm6\n\t"\
+         "1:                                \n\t"\
+         "movd      0(%0   ), %%mm3         \n\t"\
+         "movd      4(%0   ), %%mm4         \n\t"\
+@@ -147,8 +147,8 @@
+      MOVQ "*4+"A1", %%mm2       \n\t"                           \
+      UNPACK("%%mm1")                                            \
+      UNPACK("%%mm2")                                            \
+-     "pmullw    "MANGLE(ff_pw_3)", %%mm1\n\t"                   \
+-     "pmullw    "MANGLE(ff_pw_3)", %%mm2\n\t"                   \
++     "pmullw    "LOCAL_MANGLE(ff_pw_3)", %%mm1\n\t"                   \
++     "pmullw    "LOCAL_MANGLE(ff_pw_3)", %%mm2\n\t"                   \
+      MOVQ "*0+"A2", %%mm3       \n\t"                           \
+      MOVQ "*4+"A2", %%mm4       \n\t"                           \
+      UNPACK("%%mm3")                                            \
+@@ -192,8 +192,8 @@
+     src -= src_stride;                                                  \
+     __asm__ volatile(                                                       \
+         LOAD_ROUNDER_MMX("%5")                                          \
+-        "movq      "MANGLE(ff_pw_53)", %%mm5\n\t"                       \
+-        "movq      "MANGLE(ff_pw_18)", %%mm6\n\t"                       \
++        "movq      "LOCAL_MANGLE(ff_pw_53)", %%mm5\n\t"                       \
++        "movq      "LOCAL_MANGLE(ff_pw_18)", %%mm6\n\t"                       \
+         ".p2align 3                \n\t"                                \
+         "1:                        \n\t"                                \
+         MSPEL_FILTER13_CORE(DO_UNPACK, "movd  1", A1, A2, A3, A4)       \
+@@ -249,15 +249,15 @@
+     rnd -= (-4+58+13-3)*256; /* Add -256 bias */                        \
+     __asm__ volatile(                                                       \
+         LOAD_ROUNDER_MMX("%4")                                          \
+-        "movq      "MANGLE(ff_pw_18)", %%mm6   \n\t"                    \
+-        "movq      "MANGLE(ff_pw_53)", %%mm5   \n\t"                    \
++        "movq      "LOCAL_MANGLE(ff_pw_18)", %%mm6   \n\t"                    \
++        "movq      "LOCAL_MANGLE(ff_pw_53)", %%mm5   \n\t"                    \
+         ".p2align 3                \n\t"                                \
+         "1:                        \n\t"                                \
+         MSPEL_FILTER13_CORE(DONT_UNPACK, "movq 2", A1, A2, A3, A4)      \
+         NORMALIZE_MMX("$7")                                             \
+         /* Remove bias */                                               \
+-        "paddw     "MANGLE(ff_pw_128)", %%mm3  \n\t"                    \
+-        "paddw     "MANGLE(ff_pw_128)", %%mm4  \n\t"                    \
++        "paddw     "LOCAL_MANGLE(ff_pw_128)", %%mm3  \n\t"                    \
++        "paddw     "LOCAL_MANGLE(ff_pw_128)", %%mm4  \n\t"                    \
+         TRANSFER_DO_PACK(OP)                                            \
+         "add       $24, %1         \n\t"                                \
+         "add       %3, %2          \n\t"                                \
+@@ -288,8 +288,8 @@
+     rnd = 32-rnd;                                                       \
+     __asm__ volatile (                                                      \
+         LOAD_ROUNDER_MMX("%6")                                          \
+-        "movq      "MANGLE(ff_pw_53)", %%mm5       \n\t"                \
+-        "movq      "MANGLE(ff_pw_18)", %%mm6       \n\t"                \
++        "movq      "LOCAL_MANGLE(ff_pw_53)", %%mm5       \n\t"                \
++        "movq      "LOCAL_MANGLE(ff_pw_18)", %%mm6       \n\t"                \
+         ".p2align 3                \n\t"                                \
+         "1:                        \n\t"                                \
+         MSPEL_FILTER13_CORE(DO_UNPACK, "movd   1", A1, A2, A3, A4)      \
