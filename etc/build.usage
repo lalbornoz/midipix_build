@@ -12,6 +12,7 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-C dir[,..]]
                                 tarballs (pkg,) RPM binary packages (rpm,) compressed and optionally
                                 signed binary and source tarballs containing ${PREFIX} sans ${BUILD_WORKDIR}
                                 (t{bz2,gz,xz},) and/or deployable distribution ZIP archive (zipdist.)
+                                {t{bz2,gz,xz},zipdist} imply minipix.
         -h                      Show this screen.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
         -P [jobs]               Enables parallelisation at target-level, whenever applicable.
