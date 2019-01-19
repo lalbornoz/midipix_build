@@ -3,29 +3,23 @@
 #
 
 BUILD_ARGS_SPEC="
+	ARCH:arg:-a:
 	ARG_IPV4_ONLY:-4:
 	ARG_IPV6_ONLY:-6:
-	ARCH:arg:-a:
-	BUILD:arg:-b:
+	ARG_AS_NEEDED:--as-needed:
 	ARG_CLEAN:-c:
 	ARG_CLEAN_BUILDS:arg:-C:
-	ARG_AS_NEEDED:--as-needed:
 	ARG_DEBUG_MINIPIX:--debug-minipix:
-	ARG_RPM:--rpm:
+	ARG_DIST:arg:-D:
 	ARG_OFFLINE:-N:
-	ARG_PACKAGE:-p:
 	ARG_PARALLEL:optarg:-P:auto
 	ARG_RELAXED:-R:
 	ARG_RESTART:arg:-r:
-	ARG_TARBALL:selfarg:-t:
-	ARG_TARBALL:selfarg:-t.bz2;
-	ARG_TARBALL:selfarg:-t.gz:
-	ARG_TARBALL:selfarg:-t.xz:
 	ARG_VERBOSE:selfarg:-v:
 	ARG_VERBOSE:selfarg:-vv:
 	ARG_VERBOSE:selfarg:-vvv:
 	ARG_XTRACE:-x:
-	ARG_ZIPDIST:arg:-z:";
+	BUILD:arg:-b:";
 
 build_args() {
 	local _spec="${BUILD_ARGS_SPEC}" _spec_arg="" _found="";
@@ -62,28 +56,6 @@ build_args() {
 			shift;
 		fi;
 	done;
-	if [ -n "${ARG_CLEAN_BUILDS}" ]; then
-		ARG_CLEAN_BUILDS="$(echo "${ARG_CLEAN_BUILDS}" | sed "s/,/ /g")";
-	fi;
-	if [ -n "${ARG_CLEAN_BUILDS}" ]\
-	|| [ "${ARG_PACKAGE:-0}" -eq 1 ]\
-	&& [ -n "${ARG_TARBALL}" ]; then
-		unset ARG_TARBALL;
-	elif [ -n "${ARG_TARBALL}" ]; then
-		if [ "${ARG_TARBALL#-t.}" != "${ARG_TARBALL}" ]; then
-			TARBALL_SUFFIX="${ARG_TARBALL#-t.}";
-		else
-			TARBALL_SUFFIX=xz;
-		fi;
-	fi;
-	case "${ARG_VERBOSE}" in
-	-v)	ARG_VERBOSE=1; ;;
-	-vv)	ARG_VERBOSE=2; ;;
-	-vvv)	ARG_VERBOSE=3; ;;
-	esac;
-	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
-		ARG_VERBOSE=2;
-	fi;
 	if [ -n "${ARG_RESTART}" ]; then
 		if [ "${ARG_RESTART%:*}" != "${ARG_RESTART}" ]; then
 			ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="${ARG_RESTART%:*}";
@@ -91,6 +63,15 @@ build_args() {
 			ARG_RESTART_AT=ALL;
 		fi;
 		ARG_RESTART="$(echo "${ARG_RESTART}" | sed "s/,/ /g")";
+	fi;
+	if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
+		ARG_VERBOSE=2;
+	else
+		case "${ARG_VERBOSE}" in
+		-v)	ARG_VERBOSE=1; ;;
+		-vv)	ARG_VERBOSE=2; ;;
+		-vvv)	ARG_VERBOSE=3; ;;
+		esac;
 	fi;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in

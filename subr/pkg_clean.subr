@@ -7,14 +7,15 @@ pkg_clean() {
 	if [ -n "${PKG_DEPS_BASE}" ]; then
 		return 0;
 	fi;
-	for _dir in ${ARG_CLEAN_BUILDS}; do
-		case "${_dir}" in
-		build)	ex_rtl_fileop rm "${PKG_BUILD_DIR}"; ;;
-		src)	ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}"; ;;
-		dest)	ex_rtl_fileop rm "${PKG_DESTDIR}"; ;;
-		*)	return 1; ;;
-		esac;
-	done;
+	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , build; then
+		ex_rtl_fileop rm "${PKG_BUILD_DIR}";
+	fi;
+	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , dest; then
+		ex_rtl_fileop rm "${PKG_DESTDIR}";
+	fi;
+	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , src; then
+		ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}";
+	fi;
 };
 
 # vim:filetype=sh
