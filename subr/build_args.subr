@@ -56,6 +56,14 @@ build_args() {
 			shift;
 		fi;
 	done;
+	if ex_rtl_lmatch "${ARG_DIST}" , tbz2	\
+	|| ex_rtl_lmatch "${ARG_DIST}" , tgz	\
+	|| ex_rtl_lmatch "${ARG_DIST}" , txz	\
+	|| ex_rtl_lmatch "${ARG_DIST}" , zipdist; then
+		if ! ex_rtl_lmatch "${ARG_DIST}" , minipix; then
+			ARG_DIST="${ARG_DIST:+${ARG_DIST},}minipix";
+		fi;
+	fi;
 	if [ -n "${ARG_RESTART}" ]; then
 		if [ "${ARG_RESTART%:*}" != "${ARG_RESTART}" ]; then
 			ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="${ARG_RESTART%:*}";
