@@ -15,7 +15,7 @@ ex_rtl_fileop() {
 	cd)	if [ \( -z "${1}" \) -o ! \( -L "${1}" -o -e "${1}" \) ]; then
 			ex_rtl_log_msg failexit "Invalid or non-existent directory \`${1}'.";
 		else
-			ex_rtl_log_msg vvvo "Changing working directory to \`${1}'.";
+			ex_rtl_log_msg vvvv "Changing working directory to \`${1}'.";
 			exp_rtl_fileop_check "${PREFIX}" "${1}";
 			cd -- "${1}";
 		fi; ;;
@@ -25,7 +25,7 @@ ex_rtl_fileop() {
 		else
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
-			ex_rtl_log_msg vvvo "Copying \`${_src}' into \`${_dst}' w/ -pLR.";
+			ex_rtl_log_msg vvvv "Copying \`${_src}' into \`${_dst}' w/ -pLR.";
 			exp_rtl_fileop_check "${PREFIX}" "${*}";
 			cp -pLR -- "${@}";
 		fi; ;;
@@ -34,7 +34,7 @@ ex_rtl_fileop() {
 		else
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
-			ex_rtl_log_msg vvvo "Copying \`${_src}' into \`${_dst}' w/ -pPR.";
+			ex_rtl_log_msg vvvv "Copying \`${_src}' into \`${_dst}' w/ -pPR.";
 			exp_rtl_fileop_check "${PREFIX}" "${*}";
 			cp -pPR -- "${@}";
 		fi; ;;
@@ -46,13 +46,13 @@ ex_rtl_fileop() {
 			if ex_rtl_fileop test "${2}"; then
 				ex_rtl_fileop rm "${2}";
 			fi;
-			ex_rtl_log_msg vvvo "Linking \`${1}' to \`${2}' w/ -fs";
+			ex_rtl_log_msg vvvv "Linking \`${1}' to \`${2}' w/ -fs";
 			ln -fs -- "${1}" "${2}";
 		fi; ;;
 	mv)	if [ \( -z "${1}" \) -o \( -z "${2}" \) ]; then
 			ex_rtl_log_msg failexit "Missing parameters (in: mv ${*}.)";
 		else
-			ex_rtl_log_msg vvvo "Moving \`${1}' to \`${2}' w/ -fs";
+			ex_rtl_log_msg vvvv "Moving \`${1}' to \`${2}' w/ -fs";
 			exp_rtl_fileop_check "${PREFIX}" "${1}" "${2}";
 			mv -f -- "${1}" "${2}";
 		fi; ;;
@@ -66,31 +66,31 @@ ex_rtl_fileop() {
 				if ex_rtl_fileop test "${1}"; then
 					ex_rtl_fileop rm "${1}";
 				fi;
-				ex_rtl_log_msg vvvo "Making directory \`${1}'.";
+				ex_rtl_log_msg vvvv "Making directory \`${1}'.";
 				mkdir -p -- "${1}";
 			elif [ "${_op}" = mkfifo ]; then
 				exp_rtl_fileop_check "${PREFIX}" "${1}";
 				if ex_rtl_fileop test "${1}"; then
 					ex_rtl_fileop rm "${1}";
 				fi;
-				ex_rtl_log_msg vvvo "Creating FIFO \`${1}'.";
+				ex_rtl_log_msg vvvv "Creating FIFO \`${1}'.";
 				exp_rtl_fileop_check "${PREFIX}" "${1}";
 				mkfifo -- "${1}";
 			elif [ "${_op}" = rm ]\
 			&& ex_rtl_fileop test "${1}"; then
-				ex_rtl_log_msg vvvo "Removing directory or file \`${1}'.";
+				ex_rtl_log_msg vvvv "Removing directory or file \`${1}'.";
 				exp_rtl_fileop_check "${PREFIX}" "${1}";
 				rm -rf -- "${1}";
 			elif [ "${_op}" = source_opt ]\
 			&& ex_rtl_fileop test "${1}"; then
-				ex_rtl_log_msg vvvo "Sourcing file \`${1}'.";
+				ex_rtl_log_msg vvvv "Sourcing file \`${1}'.";
 				exp_rtl_fileop_check "${PREFIX}" "${1}";
 				. "${1}";
 			elif [ "${_op}" = test ]\
 			&& ! [ \( -L "${1}" \) -o \( -e "${1}" \) ]; then
 				return 1;
 			elif [ "${_op}" = touch ]; then
-				ex_rtl_log_msg vvvo "Touching file \`${1}'.";
+				ex_rtl_log_msg vvvv "Touching file \`${1}'.";
 				exp_rtl_fileop_check "${PREFIX}" "${1}";
 				touch -- "${1}";
 			fi; shift;
