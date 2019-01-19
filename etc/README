@@ -9,7 +9,7 @@ A Midipix distribution consists of the following:
   executive subsystems of all Windows NT-derived Windows OS starting with and
   including Windows XP, and
 * a steadily increasing number of 3rd party open source packages, as expected in
-  any modern POSIX-compliant *nix environment, including GNU coreutils, shells,
+  any modern POSIX-compliant \*nix environment, including GNU coreutils, shells,
   libraries such as ncurses, libressl, as well as Perl and Python.
 
 Compressed Midipix distribution tarballs and, separately, source tarballs are,
