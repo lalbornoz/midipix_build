@@ -101,7 +101,9 @@ ex_pkg_dispatch() {
 		fi;
 	done;
 	"${_dispatch_fn}" finish_target "" "${_tgt_name}";
-	ex_rtl_set_var_unsafe "${_pkgs_found_vname}" "${_pkgs_found}";
+	if [ -n "${_pkgs_found_vname}" ]; then
+		ex_rtl_set_var_unsafe "${_pkgs_found_vname}" "${_pkgs_found}";
+	fi;
 };
 
 # vim:filetype=sh
