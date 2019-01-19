@@ -14,7 +14,7 @@ pkg_install() {
 		-perm /0111 -type f -exec chmod 0755 {} \;;
 	tar -C "${PKG_DESTDIR}" -cpf - .		|\
 		tar -C "${PKG_PREFIX}" --overwrite -xpf -;
-	if [ "${ARG_PACKAGE:-0}" -eq 1 ]; then
+	if ex_rtl_lmatch "${ARG_DIST}" , pkg; then
 		tar -C "${PKG_DESTDIR}" -cpf - .	|\
 			gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"
 	fi;
