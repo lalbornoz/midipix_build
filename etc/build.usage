@@ -1,18 +1,19 @@
-usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
-                  [-c] [-C dir[,..]] [-h] [-N] [-P [jobs]]
-                  [-r ALL[:step,..]] [-r name[,..][:step,..]]
-                  [-R] [-t[.gz|.bz2|.xz] [-v[v[v]]] [-x] [-z]
-                  [--as-needed] [--debug-minipix] [--rpm] [<target>[ ..]]
+usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release] [-c] [-C dir[,..]]
+                  [-D kind[,..]] [-h] [-N] [-P [jobs]] [-r ALL[:step,..]]
+                  [-r name[,..][:step,..]] [-R] [-v[v[v]]] [-x]
+                  [--as-needed] [--debug-minipix] [<target>[ ..]]
         -4|-6                   Force IPv[46] when downloading files.
         -a nt32|nt64            Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release        Selects debug or release build; defaults to debug.
         -c                      Clean ${PREFIX} before processing build scripts.
         -C dir[,..]             Clean build directory (build,) source directory (src,) and/or
-                                destination directory (dest) after successful package builds;
-                                excludes -t, but may be passed alongside -p.
+                                destination directory (dest) after successful package builds.
+        -D kind[,..]            Produce minimal midipix distribution directory (minipix,) package
+                                tarballs (pkg,) RPM binary packages (rpm,) compressed and optionally
+                                signed binary and source tarballs containing ${PREFIX} sans ${BUILD_WORKDIR}
+                                (t{bz2,gz,xz},) and/or deployable distribution ZIP archive (zipdist.)
         -h                      Show this screen.
         -N                      Offline mode: no {wget,git-{clone,pull}}(1) calls.
-        -p                      Create package tarballs; excludes -t.
         -P [jobs]               Enables parallelisation at target-level, whenever applicable.
                                 The maximum count of jobs defaults to the number of logical
                                 processors on the host system.
@@ -29,23 +30,15 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
                                 install_strip, install, and install_rpm.
         -R                      Ignore build failures, skip printing package logs, and continue
                                 building (relaxed mode.)
-        -t[.gz|.bz2|.xz]        Produce binary distribution and source tarballs containing
-                                ${PREFIX} sans ${BUILD_WORKDIR} and ${PREFIX}/src/midipix_build
-                                and ${BUILD_WORKDIR} sans top-level regular files at the end of
-                                a build with zero failures. The tarballs will be compressed
-                                with either gzip, bzip2, or xz and signed with GPG; the
-                                default compression is xz.
         -v[v[v]]                Be verbose; -vv: always print package logs; -vvv: logs fileops.
         -x                      Set xtrace during package builds; implies -vv.
-        -z                      Produce deployable distribution ZIP archive.
         --as-needed             Don't build unless the midipix_build repository has received new commits.
         --debug-minipix         Don't strip(1) minipix binaries to facilitate debugging minipix.
-        --rpm                   Build RPM packages for each package built; selects host_tools_rpm.
         <target>[ ..]           One of:
                                 host or host_tools, host_tools_deps, host_tools_rpm, host_toolchain_deps, host_toolchain, host_toolchain_mingw32,
                                 native or native_tools, native_toolchain_deps, native_toolchain, native_toolchain_mingw32, native_runtime,
                                 packages_deps or host_packages_deps, native_packages_deps, native_packages_deps_x11,
-                                packages or native_packages, or dist.
+                                packages or native_packages.
 
         ${HOME}/midipix_build.vars, ${HOME}/.midipix_build.vars, and/or ../midipix_build.vars will be sourced if present.
 
@@ -55,9 +48,6 @@ usage: ./build.sh [-4|6] [-a nt32|nt64] [-b debug|release]
 
         ./build.sh -r coreutils:configure,build,install
         Restart the configure, build, and install steps of the coreutils build.
-
-        ./build.sh -r psxscl DEFAULT_GITROOT_HEAD=... PKG_PSXSCL_CFLAGS_CONFIGURE_EXTRA=-DPSX_EXTENDED_STRACE
-        Build psxscl from the internal repository with strace enabled.
 
         ./build.sh -c -r ALL DEFAULT_GITROOT_HEAD=...
         Clean ${PREFIX} and forcibly rebuild everything.
