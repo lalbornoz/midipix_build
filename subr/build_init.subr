@@ -9,7 +9,7 @@ build_fini() {
 };
 
 build_init() {
-	local __="" _env_vars="" _env_vars_except="" _env_var="" _log_last_fname="" _log_last_ts="";
+	local __="" _env_vars="" _env_vars_except="" _env_var="" _log_last_fname="" _log_last_ts="" _vname="" _vname_val="";
 	set -o noglob; umask 022;
 	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
 	&& [ -e /proc/cpuinfo ]; then
@@ -84,6 +84,20 @@ build_init() {
 		HUP INT TERM USR1 USR2;
 	trap "rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";"	\
 		EXIT;
+	for _vname in ${DEFAULT_CHECK_PATH_VARS}; do
+		_vname_val="$(ex_rtl_get_var_unsafe "${_vname}")";
+		if [ -z "${_vname_val}" ]; then
+			ex_rtl_log_msg failexit "Error: variable \`${_vname}' is empty or unset.";
+		elif [ "${_vname_val#* *}" != "${_vname_val}" ]; then
+			ex_rtl_log_msg failexit "Error: variable \`${_vname}' contains one or more whitespace characters.";
+		fi;
+	done;
+	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , prefix; then
+		ex_rtl_log_msg info "-C prefix specified, cleaning prefix...";
+		for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do
+			ex_rtl_fileop rm "${PREFIX}/${_pname}";
+		done;
+	fi;
 };
 
 # vim:filetype=sh
