@@ -4,7 +4,7 @@
 
 buildp_dispatch() {
 	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"					\
-		_build_tgt_meta="" _build_tgt_lc="" _build_tgt_pkg_names="" _build_tgt_uc="" _build_tgts_lc="";
+		_build_tgt_meta="" _build_tgt_lc="" _build_tgts_lc=""_pkg_restart="" _pkgs_found="";
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_args "${@}"; build_init; build_checks;
@@ -15,24 +15,18 @@ buildp_dispatch() {
 			if ! ex_rtl_lmatch "${ARG_DIST}" , rpm; then
 				_build_tgts_lc="$(ex_rtl_lfilter_not "${_build_tgts_lc}" "host_tools_rpm")";
 			fi;
-			if [ -n "${ARG_RESTART}" ]\
-			&& [ "${ARG_RESTART}" != ALL ]; then
-				_build_tgt_pkg_names="";
-				for _build_tgt_lc in ${_build_tgts_lc}; do
-					_build_tgt_uc="$(ex_rtl_toupper "${_build_tgt_lc}")";
-					_build_tgt_pkg_names="${_build_tgt_pkg_names:+${_build_tgt_pkg_names} }$(ex_rtl_get_var_unsafe ${_build_tgt_uc}_PACKAGES)";
-				done;
-				_build_tgt_pkg_names="$(ex_rtl_lfilter_not "${ARG_RESTART}" "${_build_tgt_pkg_names}")";
-				if [ -n "${_build_tgt_pkg_names}" ]; then
-					ex_rtl_log_msg failexit "Error: package(s) \`${_build_tgt_pkg_names}' unknown.";
-				fi;
-			fi;
 			for _build_tgt_lc in ${_build_tgts_lc}; do
 				ex_pkg_dispatch "${_build_tgt_lc}"				\
 						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
-						buildp_dispatch;
+						buildp_dispatch _pkgs_found;
 				if [ ${?} -ne 0 ]; then
 					break;
+				fi;
+			done;
+			for _pkg_restart in ${ARG_RESTART}; do
+				if ! ex_rtl_lmatch "ALL LAST" " " "${_pkg_restart}"		\
+				&& ! ex_rtl_lmatch "${_pkgs_found}" " " "${_pkg_restart}"; then
+					ex_rtl_log_msg failexit "Error: package \`${_pkg_restart}' unknown.";
 				fi;
 			done;
 			if ! ex_pkg_dispatch "invariants" "ALL" "ALL" buildp_dispatch; then
@@ -64,6 +58,9 @@ buildp_dispatch() {
 			else
 				ex_rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
+				if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
+					echo "${_pkg_name}" > "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
+				fi;
 				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}'.";
 				if [ "${ARG_PARALLEL:-0}" -eq 1 ]; then
 					ex_rtl_log_msg fail "Terminating pending builds...";
