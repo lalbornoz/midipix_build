@@ -4,7 +4,7 @@
 
 buildp_dispatch() {
 	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"					\
-		_build_tgt_meta="" _build_tgt_lc="" _build_tgts_lc=""_pkg_restart="" PKGS_FOUND;
+		_build_tgt_meta="" _build_tgt_lc="" _build_tgts_lc="" _last_pkg="" _pkg_restart="" PKGS_FOUND;
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_args "${@}"; build_init;
@@ -14,6 +14,14 @@ buildp_dispatch() {
 			_build_tgts_lc="${BUILD_TARGETS:-${TARGETS_DEFAULT}}";
 			if ! ex_rtl_lmatch "${ARG_DIST}" , rpm; then
 				_build_tgts_lc="$(ex_rtl_lfilter_not "${_build_tgts_lc}" "host_tools_rpm")";
+			fi;
+			if [ "${ARG_RESTART}" = "LAST" ]; then
+				if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
+				&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
+					_last_pkg="$(cat "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}")";
+					ex_rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
+					ex_rtl_state_clear "${BUILD_WORKDIR}" "${_last_pkg}";
+				fi;
 			fi;
 			PKGS_FOUND="";
 			for _build_tgt_lc in ${_build_tgts_lc}; do
