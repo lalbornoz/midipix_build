@@ -5,7 +5,8 @@
 pkg_install_strip() {
 	local _tree_root="${PKG_DESTDIR}" _bin_path="";
 	if [ -e "${_tree_root}" ]\
-	&& [ "${BUILD}" != release ]; then
+	&& [ "${BUILD}" != release ]\
+	&& [ "${PKG_BUILD_TYPE}" = native ]; then
 		if [ "${PKG_NAME%_minipix}" != "${PKG_NAME}" ]\
 		&& [ "${ARG_DEBUG_MINIPIX:-0}" -eq 1 ]; then
 			return;
