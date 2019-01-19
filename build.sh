@@ -30,7 +30,7 @@ buildp_dispatch() {
 					ex_rtl_log_msg failexit "Error: package \`${_pkg_restart}' unknown.";
 				fi;
 			done;
-			if ! ex_pkg_dispatch "invariants" "ALL" "ALL" buildp_dispatch; then
+			if ! ex_pkg_dispatch "invariants" "ALL" "ALL" buildp_dispatch ""; then
 				break;
 			fi;
 			buildp_dispatch finish_build; ;;
