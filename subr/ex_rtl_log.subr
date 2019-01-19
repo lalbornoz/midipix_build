@@ -44,6 +44,9 @@ ex_rtl_log_msg() {
 	elif [ "${_lvl}" = vvvo ]\
 	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 3 ]; then
 		return;
+	elif [ "${_lvl}" = vvvv ]\
+	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 4 ]; then
+		return;
 	fi;
 	_lvl_uc="$(ex_rtl_toupper "${_lvl%exit}")";
 	_attr="$(ex_rtl_get_var_unsafe "DEFAULT_LOG_MSG_${_lvl_uc}_COLOUR")";
