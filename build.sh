@@ -4,7 +4,7 @@
 
 buildp_dispatch() {
 	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"					\
-		_build_tgt_meta="" _build_tgt_lc="" _build_tgts_lc=""_pkg_restart="" _pkgs_found="";
+		_build_tgt_meta="" _build_tgt_lc="" _build_tgts_lc=""_pkg_restart="" PKGS_FOUND;
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_args "${@}"; build_init;
@@ -15,17 +15,18 @@ buildp_dispatch() {
 			if ! ex_rtl_lmatch "${ARG_DIST}" , rpm; then
 				_build_tgts_lc="$(ex_rtl_lfilter_not "${_build_tgts_lc}" "host_tools_rpm")";
 			fi;
+			PKGS_FOUND="";
 			for _build_tgt_lc in ${_build_tgts_lc}; do
 				ex_pkg_dispatch "${_build_tgt_lc}"				\
 						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
-						buildp_dispatch _pkgs_found;
+						buildp_dispatch PKGS_FOUND;
 				if [ ${?} -ne 0 ]; then
 					break;
 				fi;
 			done;
 			for _pkg_restart in ${ARG_RESTART}; do
 				if ! ex_rtl_lmatch "ALL LAST" " " "${_pkg_restart}"		\
-				&& ! ex_rtl_lmatch "${_pkgs_found}" " " "${_pkg_restart}"; then
+				&& ! ex_rtl_lmatch "${PKGS_FOUND}" " " "${_pkg_restart}"; then
 					ex_rtl_log_msg failexit "Error: package \`${_pkg_restart}' unknown.";
 				fi;
 			done;
