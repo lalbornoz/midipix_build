@@ -33,7 +33,7 @@ ex_rtl_log_set_vnfo_lvl() {
 };
 
 ex_rtl_log_msg() {
-	local _lvl="${1}" _attr=""; shift;
+	local _lvl="${1}" _lvl_uc="" _attr=""; shift;
 	if [ "${_lvl}" = vnfo ]\
 	|| [ "${_lvl}" = vucc ]\
 	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 1 ]; then
@@ -45,18 +45,8 @@ ex_rtl_log_msg() {
 	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 3 ]; then
 		return;
 	fi;
-	case "${_lvl}" in
-		failexit) _attr="${DEFAULT_LOG_MSG_FAIL_COLOUR}"; ;;
-		fail) _attr="${DEFAULT_LOG_MSG_FAIL_COLOUR}"; ;;
-		info) _attr="${DEFAULT_LOG_MSG_INFO_COLOUR}"; ;;
-		inf2) _attr="${DEFAULT_LOG_MSG_INF2_COLOUR}"; ;;
-		vnfo) _attr="${DEFAULT_LOG_MSG_VNFO_COLOUR}"; ;;
-		vvfo) _attr="${DEFAULT_LOG_MSG_VVFO_COLOUR}"; ;;
-		vvvo) _attr="${DEFAULT_LOG_MSG_VVVO_COLOUR}"; ;;
-		succ) _attr="${DEFAULT_LOG_MSG_SUCC_COLOUR}"; ;;
-		suc2) _attr="${DEFAULT_LOG_MSG_SUC2_COLOUR}"; ;;
-		vucc) _attr="${DEFAULT_LOG_MSG_VUCC_COLOUR}"; ;;
-	esac;
+	_lvl_uc="$(ex_rtl_toupper "${_lvl%exit}")";
+	_attr="$(ex_rtl_get_var_unsafe "DEFAULT_LOG_MSG_${_lvl_uc}_COLOUR")";
 	if [ ${#} -gt 1 ]; then
 		exp_rtl_log_printf "${_attrs}" "==> %s %s %s" "$(ex_rtl_date)" "${1}" "$*";
 	else
