@@ -7,7 +7,7 @@ buildp_dispatch() {
 		_build_tgt_meta="" _build_tgt_lc="" _build_tgts_lc=""_pkg_restart="" _pkgs_found="";
 	case "${_msg}" in
 	# Top-level
-	start_build)	shift; build_args "${@}"; build_init; build_checks;
+	start_build)	shift; build_args "${@}"; build_init;
 			ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
 			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
