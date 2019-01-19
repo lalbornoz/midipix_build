@@ -33,8 +33,8 @@ build_checks() {
 	if [ ${_exit:-0} = 1 ]; then
 		exit 1;
 	fi;
-	if [ ${ARG_CLEAN:-0} -eq 1 ]; then
-		ex_rtl_log_msg info "-c specified, cleaning prefix...";
+	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , prefix; then
+		ex_rtl_log_msg info "-C prefix specified, cleaning prefix...";
 		for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do
 			ex_rtl_fileop rm ${PREFIX}/${_pname};
 		done;

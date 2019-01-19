@@ -82,18 +82,6 @@ buildp_dispatch() {
 				ex_rtl_log_env_vars "build"		\
 					$(set | awk -F= '/^PKG_/{print $1}' | sort);
 			fi;
-			if [ "${ARG_DEBUG_MINIPIX:-0}" -eq 1 ]\
-			&& [ "${_tgt_name}" = "dist_minipix" ]; then
-				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
-					"${PKG_BUILD_STEPS}" "strip")";
-			elif [ "${BUILD}" = release ]; then
-				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
-					"${PKG_BUILD_STEPS}" "strip")";
-			fi;
-			if [ "${ARG_OFFLINE:-0}" -eq 1 ]; then
-				PKG_BUILD_STEPS="$(ex_rtl_lfilter_not	\
-					"${PKG_BUILD_STEPS}" "fetch_git fetch_wget")";
-			fi;
 			if [ "${ARG_XTRACE:-0}" -eq 1 ]; then
 				set -o xtrace;
 			fi; ;;
