@@ -7,9 +7,9 @@ exp_rtl_fetch_url_git() {
 		_oldpwd="";
 	if [ -e "${BUILD_DLCACHEDIR}/${_subdir}" ]; then
 		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
-			git pull origin "${_branch:-main}");
+			git pull ${DEFAULT_GIT_ARGS} origin "${_branch:-main}");
 	else
-		git clone "${_url}" "${BUILD_DLCACHEDIR}/${_subdir}";
+		git clone ${DEFAULT_GIT_ARGS} "${_url}" "${BUILD_DLCACHEDIR}/${_subdir}";
 		if [ -n "${_branch}" ]; then
 			(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
 				git checkout "${_branch}");
@@ -24,6 +24,9 @@ exp_rtl_fetch_url_git() {
 ex_rtl_fetch_urls_git() {
 	local _tgtdir="" _url_spec="" _subdir="" _url="" _git_branch="";
 	_tgtdir="${1}"; shift;
+	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
+		return 0;
+	fi;
 	for _url_spec in "${@}"; do
 		_subdir="${_url_spec%=*}";
 		_url="${_url_spec#*=}";
@@ -39,6 +42,9 @@ ex_rtl_fetch_urls_git() {
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 ex_rtl_fetch_url_wget() {
 	local _url="${1}" _sha256sum_src="${2}" _sha256sum_dst="";
+	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
+		return 0;
+	fi;
 	if [ -z "${3}" ]; then
 		_url_dst="${BUILD_DLCACHEDIR}/$(ex_rtl_basename "${_url}")";
 	else

@@ -40,9 +40,11 @@ build_init() {
 		exit 0;
 	fi;
 	export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
-	if [ ${ARG_IPV4_ONLY:-0} -eq 1 ]; then
+	if [ "${ARG_FETCH_FORCE}" = "ipv4" ]; then
+		DEFAULT_GIT_ARGS="-4${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
 		DEFAULT_WGET_ARGS="-4${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
-	elif [ ${ARG_IPV6_ONLY:-0} -eq 1 ]; then
+	elif [ "${ARG_FETCH_FORCE}" = "ipv6" ]; then
+		DEFAULT_GIT_ARGS="-6${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
 		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
 	fi;
 	_env_vars="$(export | sed -e 's/^export //' -e 's/=.*$//')";

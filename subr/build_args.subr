@@ -4,14 +4,11 @@
 
 BUILD_ARGS_SPEC="
 	ARCH:arg:-a:
-	ARG_IPV4_ONLY:-4:
-	ARG_IPV6_ONLY:-6:
 	ARG_AS_NEEDED:--as-needed:
-	ARG_CLEAN:-c:
 	ARG_CLEAN_BUILDS:arg:-C:
 	ARG_DEBUG_MINIPIX:--debug-minipix:
 	ARG_DIST:arg:-D:
-	ARG_OFFLINE:-N:
+	ARG_FETCH_FORCE:-F:
 	ARG_PARALLEL:optarg:-P:auto
 	ARG_RELAXED:-R:
 	ARG_RESTART:arg:-r:
