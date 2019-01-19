@@ -61,14 +61,18 @@ build_args() {
 			ARG_DIST="${ARG_DIST:+${ARG_DIST},}minipix";
 		fi;
 	fi;
-	if [ -n "${ARG_RESTART}" ]; then
-		if [ "${ARG_RESTART%:*}" != "${ARG_RESTART}" ]; then
+	case "${ARG_RESTART}" in
+	ALL)	ARG_RESTART_AT=ALL; ;;
+	LAST)	ARG_RESTART_AT=""; ;;
+	"")	;;
+	*)	if [ "${ARG_RESTART%:*}" != "${ARG_RESTART}" ]; then
 			ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="${ARG_RESTART%:*}";
 		else
 			ARG_RESTART_AT=ALL;
 		fi;
 		ARG_RESTART="$(echo "${ARG_RESTART}" | sed "s/,/ /g")";
-	fi;
+		;;
+	esac;
 	case "${ARG_VERBOSE}" in
 	-v)	ARG_VERBOSE=1; ;;
 	-vv)	ARG_VERBOSE=2; ;;
