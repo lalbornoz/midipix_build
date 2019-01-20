@@ -1,5 +1,5 @@
 --- nasm-2.14.02/output/outcoff.c.orig	2018-12-26 13:44:06.000000000 +0000
-+++ nasm-2.14.02/output/outcoff.c	2019-01-18 21:52:03.156000000 +0000
++++ nasm-2.14.02/output/outcoff.c	2019-01-20 13:18:06.240000000 +0000
 @@ -701,6 +701,7 @@
      sect->len += len;
  }
@@ -8,7 +8,7 @@
  typedef struct tagString {
      struct tagString *next;
      int len;
-@@ -765,6 +766,101 @@
+@@ -765,6 +766,98 @@
  
      *rvp = NULL;
  }
@@ -41,8 +41,6 @@
 +    size_t got_sec_name_len, got_sym_name_len;
 +    struct coff_Symbol *sym;
 +    unsigned long sym_num;
-+    struct coff_Reloc *reloc;
-+    int16_t reloc_type;
 +
 +    saa_rewind(coff_syms);
 +    for (sym_num = 0; sym_num < coff_nsyms; sym_num++) {
@@ -92,14 +90,13 @@
 +        }
 +
 +        if (win64) {
++            coff_add_reloc(coff_sects[sym->section - 1], coff_sects[global_sym->sym->section - 1]->index, IMAGE_REL_AMD64_ADDR64);
 +            global_sym_addr = (uint64_t)global_sym->sym->value;
-+            coff_sect_write(coff_sects[sym->section - 1], &global_sym_addr, sizeof(global_sym_addr));
-+            reloc_type = IMAGE_REL_AMD64_ADDR64;
++            coff_sect_write(coff_sects[sym->section - 1], (const uint8_t *)&global_sym_addr, sizeof(global_sym_addr));
 +        } else {
-+            coff_sect_write(coff_sects[sym->section - 1], &global_sym->sym->value, sizeof(global_sym->sym->value));
-+            reloc_type = IMAGE_REL_I386_DIR32;
++            coff_add_reloc(coff_sects[sym->section - 1], coff_sects[global_sym->sym->section - 1]->index, IMAGE_REL_I386_DIR32);
++            coff_sect_write(coff_sects[sym->section - 1], (const uint8_t *)&global_sym->sym->value, sizeof(global_sym->sym->value));
 +        }
-+        coff_add_reloc(coff_sects[sym->section - 1], coff_sects[global_sym->sym->section - 1]->index, reloc_type);
 +
 +        global_sym_next = global_sym->next;
 +        nasm_free(global_sym); nasm_free(global_sym_name);
@@ -110,7 +107,7 @@
  
  static enum directive_result
  coff_directives(enum directive directive, char *value, int pass)
-@@ -793,7 +889,9 @@
+@@ -793,7 +886,9 @@
              nasm_error(ERR_NONFATAL, "unrecognized export qualifier `%s'", q);
              return DIRR_ERROR;
          }
@@ -120,7 +117,7 @@
          return DIRR_OK;
      }
      case D_SAFESEH:
-@@ -888,8 +986,12 @@
+@@ -888,8 +983,12 @@
      int32_t pos, sympos, vsize;
      int i;
  
@@ -133,7 +130,7 @@
  
      if (win32) {
          /* add default value for @feat.00, this allows to 'link /safeseh' */
-@@ -1086,7 +1188,10 @@
+@@ -1086,7 +1185,10 @@
      memset(filename, 0, 18);    /* useful zeroed buffer */
  
      for (i = 0; i < (uint32_t) coff_nsects; i++) {
