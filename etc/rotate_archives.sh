@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-set -o errexit -o noglob;
 
 glob() { set +o noglob; echo ${@}; set -o noglob; };
 map() { local _ifs="${IFS}" _sep="${1}"; shift; IFS="${_sep}"; echo "${*}"; IFS="${_ifs}"; };
@@ -10,11 +8,14 @@ rotate_build() {
 	local _build_dname="${1}" _hostname="${2}" _limit="${3}";
 	local _dist_dates="";
 	for _dist_fname in $(glob			\
-			${_build_dname}/*.tar.xz	\
-			${_build_dname}/*.tar.xz.asc); do
+			${_build_dname}/*.tar.*		\
+			${_build_dname}/*.zip		\
+			${_build_dname}/*.zip.*); do
 		if [ -e "${_dist_fname}" ]; then
 			_dist_date="${_dist_fname#*@${_hostname}-}";
-			_dist_date="${_dist_date%.tar.xz*}";
+			_dist_date="${_dist_date%.tar.*}";
+			_dist_date="${_dist_date%.zip}";
+			_dist_date="${_dist_date%.zip.*}";
 			_dist_date="${_dist_date%-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]}";
 			_dist_dates="${_dist_dates:+${_dist_dates} }${_dist_date}";
 		fi;
@@ -50,6 +51,7 @@ rotate_builds() {
 	done;
 };
 
+set -o errexit -o noglob;
 rotate_builds "${1}" "${2:-3}";
 
-# vim:filetype=sh noexpandtab sw=8 ts=8 
+# vim:noexpandtab sw=8 ts=8 
