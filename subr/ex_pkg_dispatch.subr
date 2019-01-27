@@ -71,6 +71,7 @@ ex_pkg_dispatch() {
 						if [ ${#} -eq 0 ]; then
 							break;
 						else
+							_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${1}";
 							exp_pkg_dispatch "${1}" "${_tgt_name}"		\
 								"${_restart_at}" "${_dispatch_fn}"	\
 								"${_stderrout_path}" "${_pipe_path}"	\
