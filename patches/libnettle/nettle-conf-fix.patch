@@ -1,0 +1,26 @@
+diff -ru nettle-3.4.1.orig/configure nettle-3.4.1/configure
+--- nettle-3.4.1.orig/configure	2018-12-04 21:56:06.000000000 +0100
++++ nettle-3.4.1/configure	2019-01-31 11:41:23.385784666 +0100
+@@ -7188,6 +7188,22 @@
+     LIBHOGWEED_LIBS='-Wl,--no-whole-archive $(LIBS) libnettle.dll.a'
+     IF_DLL=''
+     ;;
++  midipix*)
++    if test "x$ABI" = x64 ; then
++        W64_ABI=yes
++    fi
++    LIBNETTLE_FORLINK=libnettle.so
++    LIBNETTLE_SONAME='$(LIBNETTLE_FORLINK).$(LIBNETTLE_MAJOR)'
++    LIBNETTLE_FILE='$(LIBNETTLE_SONAME).$(LIBNETTLE_MINOR)'
++    LIBNETTLE_LINK='$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,--out-dsolib=libnettle.lib.a -Wl,-soname=$(LIBNETTLE_SONAME)'
++    LIBNETTLE_LIBS=''
++
++    LIBHOGWEED_FORLINK=libhogweed.so
++    LIBHOGWEED_SONAME='$(LIBHOGWEED_FORLINK).$(LIBHOGWEED_MAJOR)'
++    LIBHOGWEED_FILE='$(LIBHOGWEED_SONAME).$(LIBHOGWEED_MINOR)'
++    LIBHOGWEED_LINK='$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,--out-dsolib=libhogweed.lib.a -Wl,-soname=$(LIBHOGWEED_SONAME)'
++    LIBHOGWEED_LIBS='$(LIBS) libnettle.lib.a'
++    ;;
+   darwin*)
+     LIBNETTLE_FORLINK=libnettle.dylib
+     LIBNETTLE_SONAME='libnettle.$(LIBNETTLE_MAJOR).dylib'
