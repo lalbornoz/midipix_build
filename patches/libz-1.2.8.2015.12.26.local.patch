@@ -9,3 +9,14 @@
  	ln -fs libz.so.$(VERSION) $(DESTDIR)$(libdir)/libz.so.1
  	ln -fs libz.so.$(VERSION) $(DESTDIR)$(libdir)/libz.so
  
+diff -u a/zutil.h b/zutil.h
+--- a/zutil.h	2015-12-21 17:11:08.000000000 -0500
++++ b/zutil.h	2019-02-02 11:35:16.680927483 -0500
+@@ -21,6 +21,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++ZLIB_INTERNAL
+ extern const char * const z_errmsg[]; /* indexed by 2-zlib_error */
+ 
+ #define ERR_MSG(err) z_errmsg[Z_NEED_DICT-(err)]
