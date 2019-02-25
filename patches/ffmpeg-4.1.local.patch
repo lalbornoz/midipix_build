@@ -528,3 +528,45 @@
          ".p2align 3                \n\t"                                \
          "1:                        \n\t"                                \
          MSPEL_FILTER13_CORE(DO_UNPACK, "movd   1", A1, A2, A3, A4)      \
+--- ffmpeg-4.1/libavcodec/x86/mlpdsp_init.c.orig	2019-02-25 12:22:33.426318908 -0500
++++ ffmpeg-4.1/libavcodec/x86/mlpdsp_init.c	2019-02-25 12:25:34.936668206 -0500
+@@ -44,21 +44,25 @@
+ 
+ #if HAVE_7REGS && HAVE_INLINE_ASM && HAVE_INLINE_ASM_NONLOCAL_LABELS
+ 
+-extern char ff_mlp_firorder_8;
+-extern char ff_mlp_firorder_7;
+-extern char ff_mlp_firorder_6;
+-extern char ff_mlp_firorder_5;
+-extern char ff_mlp_firorder_4;
+-extern char ff_mlp_firorder_3;
+-extern char ff_mlp_firorder_2;
+-extern char ff_mlp_firorder_1;
+-extern char ff_mlp_firorder_0;
++#ifndef ATTR_HIDDEN
++#define ATTR_HIDDEN __attribute__((visibility("hidden")))
++#endif
+ 
+-extern char ff_mlp_iirorder_4;
+-extern char ff_mlp_iirorder_3;
+-extern char ff_mlp_iirorder_2;
+-extern char ff_mlp_iirorder_1;
+-extern char ff_mlp_iirorder_0;
++extern char ATTR_HIDDEN ff_mlp_firorder_8;
++extern char ATTR_HIDDEN ff_mlp_firorder_7;
++extern char ATTR_HIDDEN ff_mlp_firorder_6;
++extern char ATTR_HIDDEN ff_mlp_firorder_5;
++extern char ATTR_HIDDEN ff_mlp_firorder_4;
++extern char ATTR_HIDDEN ff_mlp_firorder_3;
++extern char ATTR_HIDDEN ff_mlp_firorder_2;
++extern char ATTR_HIDDEN ff_mlp_firorder_1;
++extern char ATTR_HIDDEN ff_mlp_firorder_0;
++
++extern char ATTR_HIDDEN ff_mlp_iirorder_4;
++extern char ATTR_HIDDEN ff_mlp_iirorder_3;
++extern char ATTR_HIDDEN ff_mlp_iirorder_2;
++extern char ATTR_HIDDEN ff_mlp_iirorder_1;
++extern char ATTR_HIDDEN ff_mlp_iirorder_0;
+ 
+ static const void * const firtable[9] = { &ff_mlp_firorder_0, &ff_mlp_firorder_1,
+                                           &ff_mlp_firorder_2, &ff_mlp_firorder_3,
