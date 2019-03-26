@@ -1,0 +1,24 @@
+diff -ru ghostscript-9.26.orig/configure ghostscript-9.26/configure
+--- ghostscript-9.26.orig/configure	2018-11-20 11:08:58.000000000 +0100
++++ ghostscript-9.26/configure	2019-03-25 13:54:01.738597533 +0100
+@@ -3787,7 +3787,7 @@
+   echo $AUXFLAGS_MAK_LINE06 >> $AUXFLAGS_MAK.in
+   echo $AUXFLAGS_MAK_LINE07 >> $AUXFLAGS_MAK.in
+ 
+-  ../$0 CC="$CCAUX" CFLAGS="$CFLAGSAUX" LDFLAGS="$LDFLAGSAUX" CCAUX= CFLAGSAUX= CFLAGSAUX= MAKEFILE=$AUXFLAGS_MAK --host= --build= --without-libtiff --disable-contrib --disable-fontconfig --disable-dbus --disable-freetype --disable-fapi --disable-cups --disable-openjpeg --disable-gtk --with-libiconv=no --without-libidn --without-libpaper --without-pdftoraster --without-ijs --without-luratech --without-jbig2dec --without-x --with-drivers=""
++  $0 CC="$CCAUX" CFLAGS="$CFLAGSAUX" LDFLAGS="$LDFLAGSAUX" CCAUX= CFLAGSAUX= CFLAGSAUX= MAKEFILE=$AUXFLAGS_MAK --host= --build= --without-libtiff --disable-contrib --disable-fontconfig --disable-dbus --disable-freetype --disable-fapi --disable-cups --disable-openjpeg --disable-gtk --with-libiconv=no --without-libidn --without-libpaper --without-pdftoraster --without-ijs --without-luratech --without-jbig2dec --without-x --with-drivers=""
+   status=$?
+   cp config.log ../configaux.log
+   if test $status -eq 0 ; then
+diff -ru ghostscript-9.26.orig/devices/devs.mak ghostscript-9.26/devices/devs.mak
+--- ghostscript-9.26.orig/devices/devs.mak	2018-11-20 11:08:19.000000000 +0100
++++ ghostscript-9.26/devices/devs.mak	2019-03-25 16:52:13.774662402 +0100
+@@ -308,7 +308,7 @@
+ 
+ # See the main makefile for the definition of XLIBDIRS and XLIBS.
+ x11_=$(DEVOBJ)gdevx.$(OBJ) $(DEVOBJ)gdevxcmp.$(OBJ) $(DEVOBJ)gdevxini.$(OBJ)\
+- $(DEVOBJ)gdevxres.$(OBJ) $(DEVOBJ)gsparamx.$(OBJ)
++ $(DEVOBJ)gdevxres.$(OBJ) $(DEVOBJ)gsparamx.$(OBJ) $(DEVOBJ)gsparam.$(OBJ) $(DEVOBJ)gdevnfwd.$(OBJ)
+ $(DD)x11_.dev : $(x11_) $(GLD)bboxutil.dev $(GDEV) $(DEVS_MAK) $(MAKEDIRS)
+ 	$(SETMOD) $(DD)x11_ $(x11_)
+ 	$(ADDMOD) $(DD)x11_ -link $(XLIBDIRS)
