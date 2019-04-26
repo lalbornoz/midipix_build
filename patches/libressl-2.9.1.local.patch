@@ -1,0 +1,78 @@
+diff -ru libressl-2.9.1.orig/configure.ac libressl-2.9.1/configure.ac
+--- libressl-2.9.1.orig/configure.ac	2019-04-11 13:20:57.000000000 +0200
++++ libressl-2.9.1/configure.ac	2019-04-25 11:35:00.232577751 +0200
+@@ -115,6 +115,8 @@
+     [test "x$HOST_ABI" = "xmasm" -a "$host_cpu" = "x86_64" -a "x$enable_asm" != "xno"])
+ AM_CONDITIONAL([HOST_ASM_MINGW64_X86_64],
+     [test "x$HOST_ABI" = "xmingw64" -a "$host_cpu" = "x86_64" -a "x$enable_asm" != "xno"])
++AM_CONDITIONAL([HOST_ASM_MINGW64_X86_64],
++    [test "x$HOST_ABI" = "xmingw64" -a "$host_cpu" = "x86_64" -a "x$enable_asm" != "xno"])
+ 
+ # Check if time_t is sized correctly
+ AC_CHECK_SIZEOF([time_t], [time.h])
+diff -ru libressl-2.9.1.orig/crypto/compat/arc4random.h libressl-2.9.1/crypto/compat/arc4random.h
+--- libressl-2.9.1.orig/crypto/compat/arc4random.h	2017-11-04 21:04:56.000000000 +0100
++++ libressl-2.9.1/crypto/compat/arc4random.h	2019-04-23 08:24:53.883460156 +0200
+@@ -12,7 +12,7 @@
+ #elif defined(__hpux)
+ #include "arc4random_hpux.h"
+ 
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__midipix__)
+ #include "arc4random_linux.h"
+ 
+ #elif defined(__NetBSD__)
+diff -ru libressl-2.9.1.orig/crypto/Makefile.am libressl-2.9.1/crypto/Makefile.am
+--- libressl-2.9.1.orig/crypto/Makefile.am	2019-04-11 13:20:57.000000000 +0200
++++ libressl-2.9.1/crypto/Makefile.am	2019-04-25 12:00:00.092586851 +0200
+@@ -167,6 +167,9 @@
+ if HOST_LINUX
+ libcompat_la_SOURCES += compat/getprogname_linux.c
+ else
++if HOST_MIDIPIX
++libcompat_la_SOURCES += compat/getprogname_linux.c
++else
+ if HOST_WIN
+ libcompat_la_SOURCES += compat/getprogname_windows.c
+ else
+@@ -174,6 +177,7 @@
+ endif
+ endif
+ endif
++endif
+ 
+ if !HAVE_TIMEGM
+ libcompat_la_SOURCES += compat/timegm.c
+diff -ru libressl-2.9.1.orig/include/compat/machine/endian.h libressl-2.9.1/include/compat/machine/endian.h
+--- libressl-2.9.1.orig/include/compat/machine/endian.h	2017-11-04 21:04:56.000000000 +0100
++++ libressl-2.9.1/include/compat/machine/endian.h	2019-04-23 08:20:38.971458609 +0200
+@@ -21,7 +21,7 @@
+ #define BYTE_ORDER BIG_ENDIAN
+ #endif
+ 
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__midipix__)
+ #include <endian.h>
+ 
+ #elif defined(__sun) || defined(_AIX) || defined(__hpux)
+diff -ru libressl-2.9.1.orig/m4/check-os-options.m4 libressl-2.9.1/m4/check-os-options.m4
+--- libressl-2.9.1.orig/m4/check-os-options.m4	2019-04-11 13:20:57.000000000 +0200
++++ libressl-2.9.1/m4/check-os-options.m4	2019-04-25 11:33:31.580577213 +0200
+@@ -110,6 +110,11 @@
+ 		CPPFLAGS="$CPPFLAGS -DOPENSSL_NO_SPEED"
+ 		AC_SUBST([PLATFORM_LDADD], ['-lws2_32'])
+ 		;;
++	*midipix*)
++		HOST_OS=midipix
++		HOST_ABI=mingw64
++		CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_SOURCE -D_GNU_SOURCE"
++		;;
+ 	*solaris*)
+ 		HOST_OS=solaris
+ 		HOST_ABI=elf
+@@ -134,4 +139,5 @@
+ AM_CONDITIONAL([HOST_OPENBSD], [test x$HOST_OS = xopenbsd])
+ AM_CONDITIONAL([HOST_SOLARIS], [test x$HOST_OS = xsolaris])
+ AM_CONDITIONAL([HOST_WIN],     [test x$HOST_OS = xwin])
++AM_CONDITIONAL([HOST_MIDIPIX], [test x$HOST_OS = xmidipix])
+ ])

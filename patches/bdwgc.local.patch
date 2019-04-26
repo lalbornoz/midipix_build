@@ -1,18 +1,7 @@
-diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
---- bdwgc.orig/os_dep.c	2017-01-13 01:05:27.201020300 +0100
-+++ bdwgc/os_dep.c	2017-01-12 22:54:52.681020300 +0100
-@@ -32,7 +32,7 @@
- #endif
- 
- #if defined(UNIX_LIKE) || defined(CYGWIN32) || defined(NACL) \
--    || defined(SYMBIAN)
-+    || defined(SYMBIAN) || defined(MIDIPIX)
- # include <fcntl.h>
- #endif
-
---- bdwgc/include/private/gcconfig.h.orig	2018-11-14 15:26:02.756000000 +0000
-+++ bdwgc/include/private/gcconfig.h	2018-11-14 16:42:13.244000000 +0000
-@@ -108,6 +108,10 @@
+diff -ru bdwgc.orig/include/private/gcconfig.h bdwgc/include/private/gcconfig.h
+--- bdwgc.orig/include/private/gcconfig.h	2019-04-25 16:08:37.996677359 +0200
++++ bdwgc/include/private/gcconfig.h	2019-04-25 16:22:53.456682549 +0200
+@@ -109,6 +109,10 @@
  #   define LINUX
  # endif
  
@@ -20,51 +9,53 @@ diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
 +#    define MIDIPIX
 +# endif
 +
- /* And one for QNX: */
- # if defined(__QNX__)
- #    define I386
-@@ -362,6 +366,14 @@
+ /* And one for NetBSD: */
+ # if defined(__NetBSD__)
+ #    define NETBSD
+@@ -345,6 +349,16 @@
  #    define X86_64
  #    define mach_type_known
  # endif
-+# if defined(MIDIPIX) && defined(__x86_64__)
-+#    define X86_64
-+#    define mach_type_known
++# if defined(MIDIPIX)
++#    if defined(__i386__)
++#      define I386
++#      define mach_type_known
++#    endif
++#    if defined(__x86_64__)
++#      define X86_64
++#      define mach_type_known
++#    endif
 +# endif
-+# if defined(MIDIPIX) && defined(__i386__)
-+#    define I386
-+#    define mach_type_known
-+# endif
- # if defined(LINUX) && (defined(__ia64__) || defined(__ia64))
- #    define IA64
+ # if defined(LINUX) && (defined(i386) || defined(__i386__))
+ #    define I386
  #    define mach_type_known
-@@ -1542,6 +1554,12 @@
+@@ -1538,6 +1552,12 @@
            EXTERN_C_BEGIN
  #       endif
  #   endif
 +#   ifdef MIDIPIX
 +#      define OS_TYPE "MIDIPIX"
-+#	define DATASTART (ptr_t)NULL /* Wrong */
-+#	define DATAEND (ptr_t)NULL /* Wrong */
-+#	define STACKBOTTOM (ptr_t)0x000000 /* Not sure if we should be using STACKBOTTOM or LINUX_STACKBOTTOM & /proc/self/stat */
++#      define DATASTART (ptr_t)NULL /* Wrong */
++#      define DATAEND (ptr_t)NULL /* Wrong */
++#      define STACKBOTTOM (ptr_t)0x000000 /* Not sure if we should be using STACKBOTTOM or LINUX_STACK... */
 +#   endif
  #   ifdef CYGWIN32
  #       define OS_TYPE "CYGWIN32"
  #       define DATASTART ((ptr_t)GC_DATASTART)  /* From gc.h */
-@@ -2656,6 +2674,12 @@
+@@ -2656,6 +2676,12 @@
            EXTERN_C_BEGIN
  #       endif
  #   endif
 +#   ifdef MIDIPIX
 +#      define OS_TYPE "MIDIPIX"
-+#	define DATASTART (ptr_t)NULL /* Wrong */
-+#	define DATAEND (ptr_t)NULL /* Wrong */
-+#	define STACKBOTTOM (ptr_t)0x000000 /* Not sure if we should be using STACKBOTTOM or LINUX_STACKBOTTOM & /proc/self/stat */
++#      define DATASTART (ptr_t)NULL /* Wrong */
++#      define DATAEND (ptr_t)NULL /* Wrong */
++#      define STACKBOTTOM (ptr_t)0x000000 /* Not sure if we should be using STACKBOTTOM or LINUX_STACK... */
 +#   endif
  #   ifdef DARWIN
  #     define OS_TYPE "DARWIN"
- #     define DARWIN_DONT_PARSE_STACK
-@@ -3242,7 +3266,7 @@
+ #     define DARWIN_DONT_PARSE_STACK 1
+@@ -3259,7 +3285,7 @@
  # if defined(GC_IRIX_THREADS) && !defined(IRIX5)
  #   error Inconsistent configuration
  # endif
@@ -73,11 +64,24 @@ diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
  #   error Inconsistent configuration
  # endif
  # if defined(GC_NETBSD_THREADS) && !defined(NETBSD)
---- bdwgc/pthread_stop_world.c.orig	2017-01-23 18:47:24.683963226 +0000
-+++ bdwgc/pthread_stop_world.c	2017-01-23 18:59:56.449597256 +0000
-@@ -20,6 +20,10 @@
- #if defined(GC_PTHREADS) && !defined(GC_WIN32_THREADS) && \
-     !defined(GC_DARWIN_THREADS)
+diff -ru bdwgc.orig/os_dep.c bdwgc/os_dep.c
+--- bdwgc.orig/os_dep.c	2019-04-25 16:08:38.000677359 +0200
++++ bdwgc/os_dep.c	2019-04-25 16:11:21.272678349 +0200
+@@ -33,7 +33,7 @@
+ #endif
+ 
+ #if defined(UNIX_LIKE) || defined(CYGWIN32) || defined(NACL) \
+-    || defined(SYMBIAN)
++    || defined(SYMBIAN) || defined(MIDIPIX)
+ # include <fcntl.h>
+ #endif
+ 
+diff -ru bdwgc.orig/pthread_stop_world.c bdwgc/pthread_stop_world.c
+--- bdwgc.orig/pthread_stop_world.c	2019-04-25 16:08:38.000677359 +0200
++++ bdwgc/pthread_stop_world.c	2019-04-25 16:23:19.820682709 +0200
+@@ -21,6 +21,10 @@
+     !defined(GC_DARWIN_THREADS) && !defined(SN_TARGET_ORBIS) \
+     && !defined(SN_TARGET_PSP2)
  
 +#ifdef MIDIPIX
 +# include <sys/select.h>
