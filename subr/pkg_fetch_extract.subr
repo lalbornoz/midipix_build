@@ -14,6 +14,9 @@ pkg_fetch_extract() {
 		elif [ "${PKG_FNAME##*.tar.}" = "gz" ]\
 		|| [ "${PKG_FNAME##*.t}" = "gz" ]; then
 			gunzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -;
+		elif [ "${PKG_FNAME##*.tar.}" = "lz" ]\
+		|| [ "${PKG_FNAME##*.t}" = "lz" ]; then
+			lzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -;
 		elif [ "${PKG_FNAME##*.tar.}" = "xz" ]\
 		|| [ "${PKG_FNAME##*.t}" = "xz" ]; then
 			xz -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -;
