@@ -1,0 +1,28 @@
+--- w3m-0.5.3-git20190105.orig/Makefile.in	2019-01-05 09:41:27.000000000 +0100
++++ w3m-0.5.3-git20190105/Makefile.in	2019-05-05 15:44:26.429910511 +0200
+@@ -137,11 +137,13 @@
+ $(OBJS) $(LOBJS): fm.h funcname1.h
+ 
+ tagtable.c: tagtable.tab mktable$(EXT) html.h 
+-	./mktable$(EXT) 100 $(srcdir)/tagtable.tab > $@
++	echo tagtable.tab
++	#./mktable$(EXT) 100 $(srcdir)/tagtable.tab > $@
+ 
+ entity.h: entity.tab mktable$(EXT)
+-	echo '/* $$I''d$$ */' > $@
+-	./mktable$(EXT) 100 $(srcdir)/entity.tab >> $@
++	echo entity.h
++	#echo '/* $$I''d$$ */' > $@
++	#./mktable$(EXT) 100 $(srcdir)/entity.tab >> $@
+ 
+ indep.o: indep.c fm.h funcname1.h entity.h
+ func.o: funcname.c functable.c funcname1.h
+@@ -174,7 +176,7 @@
+ 
+ functable.c: funcname.tab mktable$(EXT)
+ 	sort funcname.tab | $(AWK) -f $(top_srcdir)/functable.awk > functable.tab
+-	./mktable$(EXT) 100 functable.tab > $@
++	#./mktable$(EXT) 100 functable.tab > $@
+ 	-rm -f functable.tab
+ 
+ mktable$(EXT): mktable.o dummy.o Str.o hash.o myctype.o
