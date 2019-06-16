@@ -1,15 +1,1 @@
---- infounzip/Makefile.orig	2018-05-14 22:16:49.060000000 +0000
-+++ infounzip/Makefile	2018-06-06 09:34:33.224000000 +0000
-@@ -38,10 +38,10 @@
- $(OBJF): $(UNZIP_H)
- 
- unzip: $(OBJU)
--	$(CC) -o unzip $(LFLAGS1) $(OBJU) $(LDFLAGS)
-+	$(CC) -o unzip $(LFLAGS1) $(LDFLAGS) $(OBJU) $(LDFLAGS)
- 
- funzip: $(OBJF)
--	$(CC) -o funzip $(LFLAGS1) $(OBJF) $(LDFLAGS)
-+	$(CC) -o funzip $(LFLAGS1) $(LDFLAGS) $(OBJF) $(LDFLAGS)
- 
- UNZIPS = unzip funzip
- 
+infounzip.local.patch
