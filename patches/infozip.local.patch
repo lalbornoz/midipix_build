@@ -1,0 +1,32 @@
+--- infozip/Makefile.dist	2019-04-26 18:39:23.212000000 +0000
++++ infozip/Makefile	2019-06-16 16:39:03.728000000 +0000
+@@ -10,7 +10,7 @@
+ INSTALL_PROGRAM = cp
+ INSTALL_D = mkdir -p
+ 
+-CFLAGS ?= -I. -DUNIX -DHAVE_TERMIOS_H -DNO_BZIP2_SUPPORT -DLARGE_FILE_SUPPORT -DUNICODE_SUPPORT -DHAVE_DIRENT_H -DUIDGID_NOT_16BIT
++override CFLAGS += -I. -DUNIX -DHAVE_TERMIOS_H -DNO_BZIP2_SUPPORT -DLARGE_FILE_SUPPORT -DUNICODE_SUPPORT -DHAVE_DIRENT_H -DUIDGID_NOT_16BIT
+ LFLAGS1 ?=
+ LDFLAGS ?=
+ 
+@@ -45,16 +45,16 @@
+ $(OBJC): $(ZIP_H)
+ 
+ zip: $(OBJZ) $(OBJI)
+-	$(CC) -o zip $(LFLAGS1) $(OBJZ) $(OBJI) $(LDFLAGS)
++	$(CC) -o zip $(LFLAGS1) $(LDFLAGS) $(OBJZ) $(OBJI)
+ 
+ zipnote: $(OBJN)
+-	$(CC) -o zipnote $(LFLAGS1) $(OBJN) $(LDFLAGS)
++	$(CC) -o zipnote $(LFLAGS1) $(LDFLAGS) $(OBJN)
+ 
+ zipcloak: $(OBJC)
+-	$(CC) -o zipcloak $(LFLAGS1) $(OBJC) $(LDFLAGS)
++	$(CC) -o zipcloak $(LFLAGS1) $(LDFLAGS) $(OBJC)
+ 
+ zipsplit: $(OBJS)
+-	$(CC) -o zipsplit $(LFLAGS1) $(OBJS) $(LDFLAGS)
++	$(CC) -o zipsplit $(LFLAGS1) $(LDFLAGS) $(OBJS)
+ 
+ ZIPS = zip zipcloak zipnote zipsplit
+ 
