@@ -1,24 +1,3 @@
-diff -ru SmallBASIC.orig/configure.ac SmallBASIC/configure.ac
---- SmallBASIC.orig/configure.ac	2018-08-18 15:58:59.300508539 +0200
-+++ SmallBASIC/configure.ac	2018-08-18 16:04:05.394415143 +0200
-@@ -117,7 +117,7 @@
- 
-    if test "${have_pcre}" = "yes" ; then
-      AC_DEFINE(USE_PCRE, 1, [match.c used with libpcre.])
--     PACKAGE_LIBS="${PACKAGE_LIBS} `pcre-config --libs`"
-+     PACKAGE_LIBS="${PACKAGE_LIBS} ${PCRE_LIBS}"
-    fi
- }
- 
-@@ -325,7 +325,7 @@
- checkProfiling
- checkForWindows
- 
--CFLAGS="${CFLAGS} -std=gnu11"
-+CFLAGS="${CFLAGS} -std=gnu99"
- PACKAGE_CFLAGS="${PACKAGE_CFLAGS} -Wall -Wno-unused-result"
- BUILD_DATE=`date +"%a, %d %b %Y"`
- AC_DEFINE_UNQUOTED([BUILD_DATE],["$BUILD_DATE"],[Build date])
 diff -ru SmallBASIC.orig/src/platform/console/main.cpp SmallBASIC/src/platform/console/main.cpp
 --- SmallBASIC.orig/src/platform/console/main.cpp	2018-08-18 15:58:59.324509172 +0200
 +++ SmallBASIC/src/platform/console/main.cpp	2018-08-18 16:04:21.506628434 +0200
@@ -31,3 +10,29 @@ diff -ru SmallBASIC.orig/src/platform/console/main.cpp SmallBASIC/src/platform/c
  // for analysing excessive malloc calls using kdbg
  extern "C" void *__libc_malloc(size_t size);
  void *malloc(size_t size) {
+--- SmallBASIC/configure.ac.orig	2019-04-26 18:35:43.668000000 +0000
++++ SmallBASIC/configure.ac	2019-06-17 08:27:43.108000000 +0000
+@@ -117,7 +117,7 @@
+ 
+    if test "${have_pcre}" = "yes" ; then
+      AC_DEFINE(USE_PCRE, 1, [match.c used with libpcre.])
+-     PACKAGE_LIBS="${PACKAGE_LIBS} `pcre-config --libs`"
++     PACKAGE_LIBS="${PACKAGE_LIBS} ${PCRE_LIBS}"
+    fi
+ }
+ 
+@@ -337,12 +337,12 @@
+ checkProfiling
+ checkForWindows
+ 
+-CFLAGS="${CFLAGS} -std=gnu11"
++CFLAGS="${CFLAGS} -std=gnu99"
+ PACKAGE_CFLAGS="${PACKAGE_CFLAGS} -Wall -Wno-unused-result"
+ BUILD_DATE=`date +"%a, %d %b %Y"`
+ AC_DEFINE_UNQUOTED([BUILD_DATE],["$BUILD_DATE"],[Build date])
+ 
+-SB_DWORD_VER=`awk -F "." '{printf "0x%02d%02d%02d", $1,$2,$3}' <<< ${PACKAGE_VERSION}`
++SB_DWORD_VER=`echo "${PACKAGE_VERSION}" | awk -F "." '{printf "0x%02d%02d%02d", $1,$2,$3}'`
+ AC_DEFINE_UNQUOTED([SB_DWORD_VER],[$SB_DWORD_VER],[SB_DWORD_VER])
+ 
+ AC_SUBST(PACKAGE_CFLAGS)
