@@ -1,9 +1,8 @@
-diff -ru rpm-4.14.1.orig/config.h.in rpm-4.14.1/config.h.in
---- rpm-4.14.1.orig/config.h.in	2018-01-16 10:32:04.032937164 +0100
-+++ rpm-4.14.1/config.h.in	2018-04-01 01:52:38.186380003 +0200
-@@ -6,6 +6,9 @@
- /* Build with dmalloc support? */
- #undef DMALLOC
+--- rpm-4.14.2.1/config.h.in.orig	2018-10-22 09:23:50.537387460 +0000
++++ rpm-4.14.2.1/config.h.in	2019-06-26 17:43:25.432000000 +0000
+@@ -9,6 +9,9 @@
+ /* Build with systemd inhibit plugin? */
+ #undef ENABLE_INHIBIT_PLUGIN
  
 +/* Enable Berkeley DB rpmdb support */
 +#undef ENABLE_BDB
@@ -11,10 +10,9 @@ diff -ru rpm-4.14.1.orig/config.h.in rpm-4.14.1/config.h.in
  /* Enable new rpm database format? */
  #undef ENABLE_NDB
  
-diff -ru rpm-4.14.1.orig/configure rpm-4.14.1/configure
---- rpm-4.14.1.orig/configure	2018-04-01 01:53:02.034218083 +0200
-+++ rpm-4.14.1/configure	2018-04-01 01:52:38.074380764 +0200
-@@ -715,6 +715,8 @@
+--- rpm-4.14.2.1/configure.orig	2018-10-22 09:23:38.409409243 +0000
++++ rpm-4.14.2.1/configure	2019-06-26 17:43:25.432000000 +0000
+@@ -717,6 +717,8 @@
  LMDB_CFLAGS
  NDB_FALSE
  NDB_TRUE
@@ -23,7 +21,7 @@ diff -ru rpm-4.14.1.orig/configure rpm-4.14.1/configure
  WITH_DB_LIB
  HAVE_LIBDW_STRTAB_FALSE
  HAVE_LIBDW_STRTAB_TRUE
-@@ -960,6 +962,7 @@
+@@ -961,6 +963,7 @@
  with_beecrypt
  with_internal_beecrypt
  with_archive
@@ -31,7 +29,7 @@ diff -ru rpm-4.14.1.orig/configure rpm-4.14.1/configure
  with_external_db
  enable_ndb
  enable_lmdb
-@@ -1652,6 +1655,8 @@
+@@ -1643,6 +1646,8 @@
    --disable-largefile     omit support for large files
    --enable-zstd=[yes/no/auto]
                            build without zstd support (default=auto)
@@ -40,7 +38,7 @@ diff -ru rpm-4.14.1.orig/configure rpm-4.14.1/configure
    --enable-ndb (EXPERIMENTAL)
                            enable the new rpm database format
    --enable-lmdb=[yes/no/auto] (EXPERIMENTAL)
-@@ -21980,6 +21985,23 @@
+@@ -21973,6 +21978,23 @@
  
  
  #=================
@@ -64,7 +62,7 @@ diff -ru rpm-4.14.1.orig/configure rpm-4.14.1/configure
  # Process --with/without-external-db
  
  # Check whether --with-external_db was given.
-@@ -22087,6 +22109,16 @@
+@@ -22080,6 +22102,16 @@
  
  
  
@@ -81,7 +79,7 @@ diff -ru rpm-4.14.1.orig/configure rpm-4.14.1/configure
  #=================
  # Process --enable-ndb
  # Check whether --enable-ndb was given.
-@@ -26723,6 +26755,10 @@
+@@ -26743,6 +26775,10 @@
    as_fn_error $? "conditional \"HAVE_LIBDW_STRTAB\" was never defined.
  Usually this means the macro was only invoked conditionally." "$LINENO" 5
  fi
@@ -92,9 +90,8 @@ diff -ru rpm-4.14.1.orig/configure rpm-4.14.1/configure
  if test -z "${NDB_TRUE}" && test -z "${NDB_FALSE}"; then
    as_fn_error $? "conditional \"NDB\" was never defined.
  Usually this means the macro was only invoked conditionally." "$LINENO" 5
-diff -ru rpm-4.14.1.orig/lib/backend/dbi.c rpm-4.14.1/lib/backend/dbi.c
---- rpm-4.14.1.orig/lib/backend/dbi.c	2017-10-05 12:04:56.946602155 +0200
-+++ rpm-4.14.1/lib/backend/dbi.c	2018-04-01 01:52:13.858545262 +0200
+--- rpm-4.14.2.1/lib/backend/dbi.c.orig	2017-10-05 10:04:56.946602155 +0000
++++ rpm-4.14.2.1/lib/backend/dbi.c	2019-06-26 17:43:25.432000000 +0000
 @@ -50,11 +50,13 @@
      } else
  #endif
@@ -124,9 +121,8 @@ diff -ru rpm-4.14.1.orig/lib/backend/dbi.c rpm-4.14.1/lib/backend/dbi.c
  
      if (db_backend)
  	free(db_backend);
-diff -ru rpm-4.14.1.orig/lib/Makefile.in rpm-4.14.1/lib/Makefile.in
---- rpm-4.14.1.orig/lib/Makefile.in	2018-04-01 01:53:02.858212489 +0200
-+++ rpm-4.14.1/lib/Makefile.in	2018-04-01 01:52:38.898375168 +0200
+--- rpm-4.14.2.1/lib/Makefile.in.orig	2018-10-22 09:23:38.884408390 +0000
++++ rpm-4.14.2.1/lib/Makefile.in	2019-06-26 17:43:25.432000000 +0000
 @@ -96,9 +96,12 @@
  @WITH_LUA_TRUE@am__append_1 = @LUA_CFLAGS@
  @WITH_LUA_TRUE@am__append_2 = @LUA_LIBS@
@@ -213,7 +209,7 @@ diff -ru rpm-4.14.1.orig/lib/Makefile.in rpm-4.14.1/lib/Makefile.in
  librpm_la_OBJECTS = $(am_librpm_la_OBJECTS)
  AM_V_lt = $(am__v_lt_@AM_V@)
  am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-@@ -597,18 +602,18 @@
+@@ -596,18 +601,18 @@
  	-DLOCALSTATEDIR="\"$(localstatedir)\"" \
  	-DLIBRPMALIAS_FILENAME="\"rpmpopt-${VERSION}\"" \
  	-DLIBRPMALIAS_EXECPATH="\"$(bindir)\"" $(am__append_1) \
@@ -241,7 +237,7 @@ diff -ru rpm-4.14.1.orig/lib/Makefile.in rpm-4.14.1/lib/Makefile.in
  	rpmfi_internal.h rpmgi.h rpmgi.c rpminstall.c rpmts_internal.h \
  	rpmlead.c rpmlead.h rpmps.c rpmprob.c rpmrc.c rpmte.c \
  	rpmte_internal.h rpmts.c rpmfs.h rpmfs.c rpmvercmp.c \
-@@ -616,11 +621,12 @@
+@@ -615,11 +620,12 @@
  	rpmlock.h misc.h relocation.c rpmscript.h rpmscript.c \
  	rpmchroot.c rpmchroot.h rpmplugins.c rpmplugins.h rpmplugin.h \
  	rpmug.c rpmug.h rpmtriggers.h rpmtriggers.c rpmvs.c rpmvs.h \
@@ -256,25 +252,9 @@ diff -ru rpm-4.14.1.orig/lib/Makefile.in rpm-4.14.1/lib/Makefile.in
  BUILT_SOURCES = tagtbl.C
  
  # XXX watchout, $(top_builddir)/db3/libdb.la created by this Makefile may surprise
-@@ -748,12 +754,12 @@
- backend/$(DEPDIR)/$(am__dirstamp):
- 	@$(MKDIR_P) backend/$(DEPDIR)
- 	@: > backend/$(DEPDIR)/$(am__dirstamp)
--backend/db3.lo: backend/$(am__dirstamp) \
--	backend/$(DEPDIR)/$(am__dirstamp)
- backend/dbi.lo: backend/$(am__dirstamp) \
- 	backend/$(DEPDIR)/$(am__dirstamp)
- backend/dbiset.lo: backend/$(am__dirstamp) \
- 	backend/$(DEPDIR)/$(am__dirstamp)
-+backend/db3.lo: backend/$(am__dirstamp) \
-+	backend/$(DEPDIR)/$(am__dirstamp)
- backend/ndb/$(am__dirstamp):
- 	@$(MKDIR_P) backend/ndb
- 	@: > backend/ndb/$(am__dirstamp)
-diff -ru rpm-4.14.1.orig/macros.in rpm-4.14.1/macros.in
---- rpm-4.14.1.orig/macros.in	2018-01-16 10:02:32.740236142 +0100
-+++ rpm-4.14.1/macros.in	2018-04-01 01:51:55.766668212 +0200
-@@ -613,7 +613,7 @@
+--- rpm-4.14.2.1/macros.in.orig	2018-10-22 09:22:55.901485593 +0000
++++ rpm-4.14.2.1/macros.in	2019-06-26 17:43:25.432000000 +0000
+@@ -621,7 +621,7 @@
  # lmdb Lightning Memory-mapped Database
  # ndb new data base format
  #
@@ -283,10 +263,8 @@ diff -ru rpm-4.14.1.orig/macros.in rpm-4.14.1/macros.in
  
  #
  #	Macros used to configure Berkley db parameters.
-Only in rpm-4.14.1: macros.in.orig
-diff -ru rpm-4.14.1.orig/rpmio/digest_openssl.c rpm-4.14.1/rpmio/digest_openssl.c
---- rpm-4.14.1.orig/rpmio/digest_openssl.c	2017-10-05 12:04:57.554602041 +0200
-+++ rpm-4.14.1/rpmio/digest_openssl.c	2018-04-01 02:39:06.081268659 +0200
+--- rpm-4.14.2.1/rpmio/digest_openssl.c.orig	2018-09-13 12:52:37.324274216 +0000
++++ rpm-4.14.2.1/rpmio/digest_openssl.c	2019-06-26 17:43:25.432000000 +0000
 @@ -175,8 +175,10 @@
      case PGPHASHALGO_RIPEMD160:
          return EVP_ripemd160();
