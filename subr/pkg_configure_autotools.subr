@@ -40,6 +40,10 @@ pkg_configure_autotools() {
 			if [ -n "${PKG_CONFIG_CACHE}" ]; then
 				echo "${PKG_CONFIG_CACHE}"						|\
 					tr " " "\n" > "${PKG_BUILD_DIR}/config.cache";
+				if [ -n "${PKG_CONFIG_CACHE_LOCAL}" ]; then
+					echo "${PKG_CONFIG_CACHE_LOCAL}"				|\
+						tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache";
+				fi;
 				if [ -n "${PKG_CONFIG_CACHE_EXTRA}" ]; then
 					echo "${PKG_CONFIG_CACHE_EXTRA}"				|\
 						tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache";
