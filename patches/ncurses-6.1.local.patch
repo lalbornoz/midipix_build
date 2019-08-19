@@ -1,6 +1,6 @@
 diff -ru a/configure b/configure
 --- a/configure	2018-01-20 00:27:18.000000000 +0000
-+++ b/configure	2019-08-19 09:46:30.361489923 +0000
++++ b/configure	2019-08-19 14:51:02.694029707 +0000
 @@ -6317,7 +6317,7 @@
  		fi
  		cf_cv_rm_so_locs=yes
@@ -12,7 +12,7 @@ diff -ru a/configure b/configure
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 diff -ru a/misc/gen-pkgconfig.in b/misc/gen-pkgconfig.in
 --- a/misc/gen-pkgconfig.in	2018-01-01 22:51:23.000000000 +0000
-+++ b/misc/gen-pkgconfig.in	2019-08-19 10:00:35.426023772 +0000
++++ b/misc/gen-pkgconfig.in	2019-08-19 14:51:02.694029707 +0000
 @@ -64,17 +64,7 @@
  MENU_LIBRARY="${MENU_NAME}@USE_ARG_SUFFIX@"
  FORM_LIBRARY="${FORM_NAME}@USE_ARG_SUFFIX@"
@@ -28,7 +28,26 @@ diff -ru a/misc/gen-pkgconfig.in b/misc/gen-pkgconfig.in
 -	CFLAGS="$CFLAGS -I\${includedir}"
 -fi
 -
-+CFLAGS=
++CFLAGS='-I${includedir}'
  LDFLAGS=
  if test "$libdir" != "/usr/lib" ; then
  	LDFLAGS="$LDFLAGS -L\${libdir}"
+diff -ru a/misc/Makefile.in b/misc/Makefile.in
+--- a/misc/Makefile.in	2017-12-31 20:34:42.000000000 +0000
++++ b/misc/Makefile.in	2019-08-19 14:51:50.598061950 +0000
+@@ -113,12 +113,12 @@
+ # pkg-config is not installed.  Work around that by creating the library
+ # directory during this rule:
+ @MAKE_PC_FILES@install.libs :: pc-files
+-@MAKE_PC_FILES@	@$(SHELL) -c 'case "x$(DESTDIR)$(PKG_CONFIG_LIBDIR)" in \
++@MAKE_PC_FILES@	@$(SHELL) -c 'case "x$(PKG_CONFIG_LIBDIR)" in \
+ @MAKE_PC_FILES@		(x/*) \
+-@MAKE_PC_FILES@			mkdir -p $(DESTDIR)$(PKG_CONFIG_LIBDIR); \
++@MAKE_PC_FILES@			mkdir -p $(PKG_CONFIG_LIBDIR); \
+ @MAKE_PC_FILES@			for name in *.pc; do \
+ @MAKE_PC_FILES@				echo installing $$name; \
+-@MAKE_PC_FILES@				$(INSTALL_DATA) $$name $(DESTDIR)$(PKG_CONFIG_LIBDIR)/$$name; \
++@MAKE_PC_FILES@				$(INSTALL_DATA) $$name $(PKG_CONFIG_LIBDIR)/$$name; \
+ @MAKE_PC_FILES@			done \
+ @MAKE_PC_FILES@			;; \
+ @MAKE_PC_FILES@		(*) \
