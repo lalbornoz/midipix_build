@@ -1,5 +1,6 @@
---- unix/configure.orig	2017-09-07 12:54:11.000000000 +0000
-+++ unix/configure	2018-05-29 14:55:16.464000000 +0000
+diff -ru a/unix/configure b/unix/configure
+--- unix/configure	2017-09-07 08:54:11.000000000 -0400
++++ unix/configure	2019-08-20 12:55:27.989692823 -0400
 @@ -3957,7 +3957,7 @@
  
  $as_echo "#define _REENTRANT 1" >>confdefs.h
@@ -140,3 +141,27 @@
  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to package libraries" >&5
  $as_echo_n "checking how to package libraries... " >&6; }
  	# Check whether --enable-framework was given.
+@@ -10319,7 +10342,7 @@
+         TCL_LIB_FLAG="-ltcl`echo ${TCL_VERSION} | tr -d .`"
+     fi
+     TCL_BUILD_LIB_SPEC="-L`pwd | sed -e 's/ /\\\\ /g'` ${TCL_LIB_FLAG}"
+-    TCL_LIB_SPEC="-L${libdir} ${TCL_LIB_FLAG}"
++    TCL_LIB_SPEC="${TCL_LIB_FLAG}"
+ fi
+ VERSION='${VERSION}'
+ eval "CFG_TCL_SHARED_LIB_SUFFIX=${TCL_SHARED_LIB_SUFFIX}"
+@@ -10363,12 +10386,12 @@
+ fi
+ 
+ TCL_BUILD_STUB_LIB_SPEC="-L`pwd | sed -e 's/ /\\\\ /g'` ${TCL_STUB_LIB_FLAG}"
+-TCL_STUB_LIB_SPEC="-L${TCL_STUB_LIB_DIR} ${TCL_STUB_LIB_FLAG}"
++TCL_STUB_LIB_SPEC="${TCL_STUB_LIB_FLAG}"
+ TCL_BUILD_STUB_LIB_PATH="`pwd`/${TCL_STUB_LIB_FILE}"
+ TCL_STUB_LIB_PATH="${TCL_STUB_LIB_DIR}/${TCL_STUB_LIB_FILE}"
+ 
+ # Install time header dir can be set via --includedir
+-eval "TCL_INCLUDE_SPEC=\"-I${includedir}\""
++#eval "TCL_INCLUDE_SPEC=\"-I${includedir}\""
+ 
+ #------------------------------------------------------------------------
+ # tclConfig.sh refers to this by a different name
