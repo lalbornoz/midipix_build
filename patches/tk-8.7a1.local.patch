@@ -1,0 +1,29 @@
+diff -ru a/unix/configure b/unix/configure
+--- a/unix/configure	2017-09-06 07:52:06.000000000 -0400
++++ b/unix/configure	2019-08-20 12:46:31.097935159 -0400
+@@ -8054,13 +8054,21 @@
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_xft" >&5
+ $as_echo "$enable_xft" >&6; }
+     else
++	if [ $cross_compiling = yes ]; then
++		XFT_CONFIG=${host}-xft-config
++		PKG_CONFIG=${host}-pkg-config
++	else
++		XFT_CONFIG=xft-config
++		PKG_CONFIG=pkg-config
++	fi
++
+ 	found_xft="yes"
+-			XFT_CFLAGS=`xft-config --cflags 2>/dev/null` || found_xft="no"
+-	XFT_LIBS=`xft-config --libs 2>/dev/null` || found_xft="no"
++	XFT_CFLAGS=`"${XFT_CONFIG}" --cflags 2>/dev/null` || found_xft="no"
++	XFT_LIBS=`"${XFT_CONFIG}" --libs 2>/dev/null` || found_xft="no"
+ 	if test "$found_xft" = "no" ; then
+ 	    found_xft=yes
+-	    XFT_CFLAGS=`pkg-config --cflags xft 2>/dev/null` || found_xft="no"
+-	    XFT_LIBS=`pkg-config --libs xft 2>/dev/null` || found_xft="no"
++	    XFT_CFLAGS=`"${PKG_CONFIG}" --cflags xft 2>/dev/null` || found_xft="no"
++	    XFT_LIBS=`"${PKG_CONFIG}" --libs xft 2>/dev/null` || found_xft="no"
+ 	fi
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $found_xft" >&5
+ $as_echo "$found_xft" >&6; }
