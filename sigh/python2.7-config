@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+for arg ; do
+	case "$arg" in
+		--version)
+			printf 'Python 2.7.15'
+			;;
+
+		--includes)
+			;;
+
+		--ldflags)
+			printf '%s' '-lpython2.7'
+			;;
+
+		--exec-prefix)
+			;;
+	esac
+done
+
+exit 0
