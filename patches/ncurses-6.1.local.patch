@@ -32,9 +32,62 @@ diff -ru a/misc/gen-pkgconfig.in b/misc/gen-pkgconfig.in
  LDFLAGS=
  if test "$libdir" != "/usr/lib" ; then
  	LDFLAGS="$LDFLAGS -L\${libdir}"
-diff -ru a/misc/Makefile.in b/misc/Makefile.in
---- a/misc/Makefile.in	2017-12-31 20:34:42.000000000 +0000
-+++ b/misc/Makefile.in	2019-08-19 14:51:50.598061950 +0000
+--- ncurses-6.1/misc/run_tic.in.orig	2017-10-24 00:16:22.000000000 +0000
++++ ncurses-6.1/misc/run_tic.in	2019-10-11 16:25:12.380000000 +0000
+@@ -42,16 +42,8 @@
+ #	make install.data
+ 
+ : ${suffix:=@EXEEXT@}
+-: ${DESTDIR:=@DESTDIR@}
+-: ${prefix:=@prefix@}
+-: ${exec_prefix:=@exec_prefix@}
+-: ${bindir:=@bindir@}
+-: ${top_srcdir:=@top_srcdir@}
+-: ${srcdir:=@srcdir@}
+ : ${datarootdir:=@datarootdir@}
+-: ${datadir:=@datadir@}
+ : ${TIC_PATH:=@TIC_PATH@}
+-: ${ticdir:=@TERMINFO@}
+ : ${source:=@TERMINFO_SRC@}
+ : ${LN_S:="@LN_S@"}
+ : ${cross_compiling:=no}
+--- ncurses-6.1/misc/Makefile.in.orig	2017-12-31 20:34:42.000000000 +0000
++++ ncurses-6.1/misc/Makefile.in	2019-10-11 16:27:12.376000000 +0000
+@@ -83,17 +83,17 @@
+ install : @MISC_INSTALL_DATA@ install.libs
+ 
+ install.data :	terminfo.tmp \
+-		$(DESTDIR)$(libdir) \
+-		$(DESTDIR)$(datadir) \
+-		$(DESTDIR)$(tabsetdir)
++		$(DESTDIR)/lib \
++		$(DESTDIR)/share \
++		$(DESTDIR)/share/tabset
+ 	DESTDIR=${DESTDIR} \
+-	prefix=${prefix} \
+-	exec_prefix=${exec_prefix} \
+-	bindir=${bindir} \
++	prefix="" \
++	exec_prefix="" \
++	bindir=bin \
+ 	top_srcdir=${top_srcdir} \
+ 	srcdir=${srcdir} \
+-	datadir=${datadir} \
+-	ticdir=${ticdir} \
++	datadir=share \
++	ticdir=share/terminfo \
+ 	source=terminfo.tmp \
+ 	cross_compiling=@cross_compiling@ \
+ 	$(SHELL) ./run_tic.sh
+@@ -101,7 +101,7 @@
+ 		$(SHELL) -c 'for i in * ; do \
+ 			if test -f $$i ; then \
+ 			echo installing $$i; \
+-			$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir)/$$i; \
++			$(INSTALL_DATA) $$i $(DESTDIR)/share/tabset/$$i; \
+ 			fi; done'
+ 
+ NCURSES_CONFIG	= ncurses@DFT_ARG_SUFFIX@@cf_cv_abi_version@@cf_config_suffix@-config
 @@ -113,12 +113,12 @@
  # pkg-config is not installed.  Work around that by creating the library
  # directory during this rule:
