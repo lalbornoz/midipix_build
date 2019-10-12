@@ -56,7 +56,6 @@ build_init() {
 		fi;
 	done;
 	ex_rtl_unset_vars $(ex_rtl_lfilter_not "${_env_vars}" "${_env_vars_except}");
-	export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}${PREFIX}/lib";
 	ex_rtl_fileop mkdir "${BUILD_DLCACHEDIR}" "${BUILD_WORKDIR}";
 	if ex_rtl_lmatch "${ARG_DIST}" , rpm; then
 		ex_rtl_fileop mkdir "${PREFIX_RPM}";
