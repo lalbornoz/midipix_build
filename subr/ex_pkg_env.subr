@@ -33,9 +33,6 @@ exp_pkg_env_source() {
 	ex_rtl_unset_vars $(ex_rtl_lfilter_not				\
 		"$(set | awk -F= '/^PKG_/{print $1}' | sort)"		\
 		"${_vars_set}");
-	if [ "${_tgt_name}" = "host_packages_deps" ]; then
-		unset LD_LIBRARY_PATH;
-	fi;
 };
 
 ex_pkg_env() {
