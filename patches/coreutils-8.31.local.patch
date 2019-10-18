@@ -42,16 +42,15 @@ diff -ru coreutils-8.27.orig/Makefile.in coreutils-8.27/Makefile.in
  info_TEXINFOS = doc/coreutils.texi
  doc_coreutils_TEXINFOS = \
    doc/perm.texi \
-diff -ru coreutils-8.27.orig/src/fs.h coreutils-8.27/src/fs.h
---- coreutils-8.27.orig/src/fs.h	2017-03-09 05:44:05.000000000 +0100
-+++ coreutils-8.27/src/fs.h	2017-08-11 19:05:05.283026746 +0200
+diff -ru coreutils-8.31.orig/src/fs.h coreutils-8.31/src/fs.h
+--- coreutils-8.31.orig/src/fs.h        2019-03-06 19:53:32.000000000 +0100
++++ coreutils-8.31/src/fs.h     2019-10-18 08:55:31.598366616 +0200
 @@ -2,7 +2,7 @@
     Please send additions to bug-coreutils@gnu.org and meskes@debian.org.
     This file is generated automatically from ./src/stat.c. */
- 
--#if defined __linux__
-+#if defined __linux__ || defined __midipix__
+
+-#if defined __linux__ || defined __ANDROID__
++#if defined __linux__ || defined __ANDROID__ || defined(__midipix__)
  # define S_MAGIC_AAFS 0x5A3C69F0
  # define S_MAGIC_ACFS 0x61636673
  # define S_MAGIC_ADFS 0xADF5
- # define S_MAGIC_AFFS 0xADFF

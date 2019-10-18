@@ -1,0 +1,56 @@
+diff -ru coreutils-8.27.orig/configure coreutils-8.27/configure
+--- coreutils-8.27.orig/configure	2017-03-09 06:00:50.000000000 +0100
++++ coreutils-8.27/configure	2017-08-11 19:04:46.135115372 +0200
+@@ -68318,3 +68318,12 @@
+ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
+ fi
+ 
++# bypass dependency on help2man
++if [ x"$cross_compiling" = xyes ]; then
++	mkdir -p man;
++	for f in $srcdir/src/*.c; do src=$(basename $f); doc="${src%.*}"; echo $doc; touch man/$doc.1; done
++	for f in dir sha1sum sha224sum sha256sum sha384sum sha512sum vdir; do touch man/$f.1; done
++
++	sed -i -e 's/@cross_compiling@/'$cross_compiling'/g' Makefile || exit 2
++fi
++
+diff -ru coreutils-8.27.orig/Makefile.in coreutils-8.27/Makefile.in
+--- coreutils-8.27.orig/Makefile.in	2017-03-09 06:24:51.000000000 +0100
++++ coreutils-8.27/Makefile.in	2017-08-11 19:09:39.000000000 +0200
+@@ -3454,7 +3454,7 @@
+ INET_PTON_LIB = @INET_PTON_LIB@
+ INSTALL = $(cu_install_program) -c
+ INSTALL_DATA = @INSTALL_DATA@
+-INSTALL_PROGRAM = @INSTALL_PROGRAM@
++INSTALL_PROGRAM = install
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ INT32_MAX_LT_INTMAX_MAX = @INT32_MAX_LT_INTMAX_MAX@
+@@ -5040,12 +5040,14 @@
+     $(bin_SCRIPTS) \
+     $(EXTRA_PROGRAMS)
+ 
++CROSS_COMPILE = @cross_compiling@
++
+ pm = progs-makefile
+ pr = progs-readme
+ @CROSS_COMPILING_FALSE@cu_install_program = src/ginstall
+ 
+ # Use the just-built 'ginstall', when not cross-compiling.
+-@CROSS_COMPILING_TRUE@cu_install_program = @INSTALL@
++@CROSS_COMPILING_TRUE@cu_install_program = install
+ info_TEXINFOS = doc/coreutils.texi
+ doc_coreutils_TEXINFOS = \
+   doc/perm.texi \
+diff -ru coreutils-8.31.orig/src/fs.h coreutils-8.31/src/fs.h
+--- coreutils-8.31.orig/src/fs.h        2019-03-06 19:53:32.000000000 +0100
++++ coreutils-8.31/src/fs.h     2019-10-18 08:55:31.598366616 +0200
+@@ -2,7 +2,7 @@
+    Please send additions to bug-coreutils@gnu.org and meskes@debian.org.
+    This file is generated automatically from ./src/stat.c. */
+
+-#if defined __linux__ || defined __ANDROID__
++#if defined __linux__ || defined __ANDROID__ || defined(__midipix__)
+ # define S_MAGIC_AAFS 0x5A3C69F0
+ # define S_MAGIC_ACFS 0x61636673
+ # define S_MAGIC_ADFS 0xADF5
