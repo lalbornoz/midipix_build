@@ -85,26 +85,3 @@
  
  	if (rec->target == NULL && interactive)
  		rec->target_item = exec_wi_create(active_win, rec);
-diff -ru irssi-1.1.1.orig/src/core/network-openssl.c irssi-1.1.1/src/core/network-openssl.c
---- irssi-1.1.1.orig/src/core/network-openssl.c 2018-02-15 00:53:44.000000000 +0100
-+++ irssi-1.1.1/src/core/network-openssl.c      2018-04-04 17:17:45.180379304 +0200
-@@ -35,7 +35,8 @@
- #include <openssl/err.h>
-
- /* OpenSSL 1.1.0 introduced some backward-incompatible changes to the api */
--#if (OPENSSL_VERSION_NUMBER >= 0x10100000L) && !defined(LIBRESSL_VERSION_NUMBER)
-+#if (OPENSSL_VERSION_NUMBER >= 0x10100000L) && \
-+    (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER < 0x2070000fL)
- /* The two functions below could be already defined if OPENSSL_API_COMPAT is
-  * below the 1.1.0 version so let's do a clean start */
- #undef  X509_get_notBefore
-@@ -47,7 +48,8 @@
-
- /* OpenSSL 1.1.0 also introduced some useful additions to the api */
- #if (OPENSSL_VERSION_NUMBER >= 0x10002000L)
--#if (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined (LIBRESSL_VERSION_NUMBER)
-+#if (OPENSSL_VERSION_NUMBER < 0x10100000L) && \
-+    (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER < 0x2070000fL)
- static int X509_STORE_up_ref(X509_STORE *vfy)
- {
-     int n;
