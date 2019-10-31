@@ -1,14 +1,3 @@
---- cbb-gcc-4.6.4/libiberty/configure.ac.orig  2016-12-19 18:27:51.909364800 +0100
-+++ cbb-gcc-4.6.4/libiberty/configure.ac       2017-01-30 03:55:45.271150700 +0100
-@@ -683,7 +683,7 @@
-
- # Figure out which version of pexecute to use.
- case "${host}" in
--     *-*-mingw* | *-*-winnt*)	pexecute=pex-win32  ;;
-+     *-*-winnt*)		pexecute=pex-win32  ;;
-      *-*-msdosdjgpp*)		pexecute=pex-djgpp  ;;
-      *-*-msdos*)		pexecute=pex-msdos  ;;
-      *)			pexecute=pex-unix   ;;
 --- cbb-gcc-4.6.4/gcc/Makefile.in.orig
 +++ cbb-gcc-4.6.4/gcc/Makefile.in
 @@ -796,7 +796,8 @@ BUILD_LINKERFLAGS = $(BUILD_CFLAGS)
@@ -30,3 +19,4 @@
  	   $(PPLINC) $(CLOOGINC)
  
  .c.o:
+
