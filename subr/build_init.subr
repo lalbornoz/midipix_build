@@ -47,7 +47,8 @@ build_init() {
 		DEFAULT_GIT_ARGS="-6${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
 		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
 	fi;
-	_env_vars="$(export | sed -ne '/^export/s/^export //p' -e 's/=.*$//')";
+	_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
+	echo	$_env_vars
 	_env_vars_except="${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
 	for _env_var in ${_env_vars}; do
 		if [ "${_env_var#DEFAULT_}" != "${_env_var}" ]\
