@@ -3,7 +3,8 @@
 #
 
 pkg_fetch_extract() {
-	local _oldpwd="";
+	local _chainport_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_*}/${PKG_NAME%%_*}-${PKG_VERSION}.midipix.patch"
+		_chainport_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_*}" _oldpwd="";
 	if [ -n "${PKG_URL}" ]\
 	&& [ "${PKG_URL_TYPE:-wget}" = wget ]; then
 		_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}";
@@ -24,6 +25,10 @@ pkg_fetch_extract() {
 			tar -C "${PKG_BASE_DIR}" -xf "${BUILD_DLCACHEDIR}/${PKG_FNAME}";
 		fi;
 		ex_rtl_fileop cd "${_oldpwd}";
+	fi;
+	if [ -e "${_chainport_patch_fname}" ]; then
+		ex_rtl_fileop mkdir "${_chainport_patch_dname}";
+		ex_rtl_fileop cp "${_chainport_patch_fname}" "${_chainport_patch_dname}";
 	fi;
 };
 
