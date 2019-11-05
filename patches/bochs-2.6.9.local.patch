@@ -1,0 +1,12 @@
+diff -ru bochs-2.6.9.orig/gui/term.cc bochs-2.6.9/gui/term.cc
+--- bochs-2.6.9.orig/gui/term.cc	2017-01-15 12:44:43.207284000 +0100
++++ bochs-2.6.9/gui/term.cc	2019-11-04 21:23:25.102021241 +0100
+@@ -29,7 +29,7 @@
+ #if BX_WITH_TERM
+ 
+ extern "C" {
+-#include <curses.h>
++#include <ncurses.h>
+ #include <signal.h>
+ };
+ 
