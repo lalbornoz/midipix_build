@@ -1,0 +1,215 @@
+diff -ru SDL-1.2.15.orig/configure.in SDL-1.2.15/configure.in
+--- SDL-1.2.15.orig/configure.in	2012-01-19 07:30:05.000000000 +0100
++++ SDL-1.2.15/configure.in	2019-11-08 11:00:50.134023690 +0100
+@@ -453,39 +453,6 @@
+     fi
+ }
+ 
+-dnl Find the ESD includes and libraries
+-CheckESD()
+-{
+-    AC_ARG_ENABLE(esd,
+-AC_HELP_STRING([--enable-esd], [support the Enlightened Sound Daemon [[default=yes]]]),
+-                  , enable_esd=yes)
+-    if test x$enable_audio = xyes -a x$enable_esd = xyes; then
+-        AM_PATH_ESD(0.2.8, have_esd=yes, have_esd=no)
+-        if test x$have_esd = xyes; then
+-            AC_ARG_ENABLE(esd-shared,
+-AC_HELP_STRING([--enable-esd-shared], [dynamically load ESD audio support [[default=yes]]]),
+-                          , enable_esd_shared=yes)
+-            esd_lib=[`find_lib "libesd.so.*" "$ESD_LIBS" | sed 's/.*\/\(.*\)/\1/; q'`]
+-
+-            AC_DEFINE(SDL_AUDIO_DRIVER_ESD)
+-            SOURCES="$SOURCES $srcdir/src/audio/esd/*.c"
+-            EXTRA_CFLAGS="$EXTRA_CFLAGS $ESD_CFLAGS"
+-            if test x$have_loadso != xyes && \
+-               test x$enable_esd_shared = xyes; then
+-                AC_MSG_WARN([You must have SDL_LoadObject() support for dynamic ESD loading])
+-            fi
+-            if test x$have_loadso = xyes && \
+-               test x$enable_esd_shared = xyes && test x$esd_lib != x; then
+-                echo "-- dynamic libesd -> $esd_lib"
+-                AC_DEFINE_UNQUOTED(SDL_AUDIO_DRIVER_ESD_DYNAMIC, "$esd_lib")
+-            else
+-                EXTRA_LDFLAGS="$EXTRA_LDFLAGS $ESD_LIBS"
+-            fi
+-            have_audio=yes
+-        fi
+-    fi
+-}
+-
+ dnl Find PulseAudio
+ CheckPulseAudio()
+ {
+@@ -2357,7 +2324,6 @@
+         CheckMME
+         CheckALSA
+         CheckARTSC
+-        CheckESD
+         CheckPulseAudio
+         CheckNAS
+         CheckX11
+@@ -2494,6 +2460,35 @@
+             have_timers=yes
+         fi
+         ;;
++    *-*-midipix*)
++        ARCH=midipix
++
++        # Set up files for the timer library
++        if test x$enable_timers = xyes; then
++            AC_DEFINE(SDL_TIMER_UNIX)
++            SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
++            have_timers=yes
++        fi
++
++        CheckDummyVideo
++        CheckDiskAudio
++        CheckWIN32
++        #CheckWIN32GL
++        CheckNASM
++        CheckPTHREAD
++        CheckClockGettime
++        CheckVisibilityHidden
++        CheckDLOPEN
++
++        if test x$enable_audio = xyes; then
++            AC_DEFINE(SDL_AUDIO_DRIVER_WAVEOUT)
++            SOURCES="$SOURCES $srcdir/src/audio/windib/*.c"
++            have_audio=yes
++        fi
++        # Set up the system libraries we need
++        EXTRA_LDFLAGS="$EXTRA_LDFLAGS -luser32 -lgdi32 -lwinmm -lkernel32"
++
++        ;;
+     *-*-cygwin* | *-*-mingw32*)
+         ARCH=win32
+         if test "$build" != "$host"; then # cross-compiling
+diff -ru SDL-1.2.15.orig/src/audio/windib/SDL_dibaudio.c SDL-1.2.15/src/audio/windib/SDL_dibaudio.c
+--- SDL-1.2.15.orig/src/audio/windib/SDL_dibaudio.c	2012-01-19 07:30:06.000000000 +0100
++++ SDL-1.2.15/src/audio/windib/SDL_dibaudio.c	2019-11-08 12:49:20.451023616 +0100
+@@ -35,6 +35,35 @@
+ #include "win_ce_semaphore.h"
+ #endif
+ 
++/* FIXME: temporary */
++#ifndef WOM_DONE
++#define WOM_DONE 0x3BD
++#endif
++
++#ifndef MAXERRORLENGTH
++#define MAXERRORLENGTH 256
++#endif
++
++#ifndef THREAD_PRIORITY_HIGHEST
++#define THREAD_PRIORITY_HIGHEST 2
++#endif
++
++#ifndef INFINITE
++#define INFINITE 0xffffffff
++#endif
++
++#ifndef WAVE_FORMAT_PCM
++#define WAVE_FORMAT_PCM 1
++#endif
++
++#ifndef WAVE_MAPPER
++#define WAVE_MAPPER ((UINT)-1)
++#endif
++
++#ifndef CALLBACK_FUNCTION
++#define CALLBACK_FUNCTION (int32_t)(0x00030000)
++#endif
++
+ 
+ /* Audio driver functions */
+ static int DIB_OpenAudio(_THIS, SDL_AudioSpec *spec);
+@@ -132,7 +161,7 @@
+ 	waveOutGetErrorText(code, werrbuf, MAXERRORLENGTH-len);
+ 	WideCharToMultiByte(CP_ACP,0,werrbuf,-1,errbuf+len,MAXERRORLENGTH-len,NULL,NULL);
+ #else
+-	waveOutGetErrorText(code, errbuf+len, (UINT)(MAXERRORLENGTH-len));
++	waveOutGetErrorTextA(code, errbuf+len, (UINT)(MAXERRORLENGTH-len));
+ #endif
+ 
+ 	SDL_SetError("%s",errbuf);
+@@ -290,7 +319,7 @@
+ #if defined(_WIN32_WCE) && (_WIN32_WCE < 300)
+ 	audio_sem = CreateSemaphoreCE(NULL, NUM_BUFFERS-1, NUM_BUFFERS, NULL);
+ #else
+-	audio_sem = CreateSemaphore(NULL, NUM_BUFFERS-1, NUM_BUFFERS, NULL);
++	audio_sem = CreateSemaphoreA(NULL, NUM_BUFFERS-1, NUM_BUFFERS, NULL);
+ #endif
+ 	if ( audio_sem == NULL ) {
+ 		SDL_SetError("Couldn't create semaphore");
+diff -ru SDL-1.2.15.orig/src/video/wincommon/SDL_lowvideo.h SDL-1.2.15/src/video/wincommon/SDL_lowvideo.h
+--- SDL-1.2.15.orig/src/video/wincommon/SDL_lowvideo.h	2012-01-19 07:30:06.000000000 +0100
++++ SDL-1.2.15/src/video/wincommon/SDL_lowvideo.h	2019-11-08 11:58:43.821344665 +0100
+@@ -140,7 +140,7 @@
+    GDL_CreateWindow as well */
+ LRESULT CALLBACK WinMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+ 
+-#ifdef _WIN64
++#if defined(_WIN64) || defined(__midipix__)
+ #define SDL_ToUnicode  ToUnicode
+ #else
+ /* JFP: Implementation of ToUnicode() that works on 9x/ME/2K/XP */
+diff -ru SDL-1.2.15.orig/src/video/wincommon/SDL_sysevents.c SDL-1.2.15/src/video/wincommon/SDL_sysevents.c
+--- SDL-1.2.15.orig/src/video/wincommon/SDL_sysevents.c	2012-01-19 07:30:06.000000000 +0100
++++ SDL-1.2.15/src/video/wincommon/SDL_sysevents.c	2019-11-08 11:14:47.506238807 +0100
+@@ -95,7 +95,7 @@
+ extern void DIB_SwapGamma(_THIS);
+ 
+ #ifndef NO_GETKEYBOARDSTATE
+-#ifndef _WIN64
++#if !defined(_WIN64) && !defined(__midipix__)
+ /* Variables and support functions for SDL_ToUnicode() */
+ static int codepage;
+ static int Is9xME();
+@@ -669,7 +669,7 @@
+ 
+ #ifndef NO_GETKEYBOARDSTATE
+ 		case WM_INPUTLANGCHANGE:
+-#ifndef _WIN64
++#if !defined(_WIN64) && !defined(__midipix__)
+ 			codepage = GetCodePage();
+ #endif
+ 		return(TRUE);
+@@ -779,7 +779,7 @@
+ #endif /* WM_MOUSELEAVE */
+ 
+ #ifndef NO_GETKEYBOARDSTATE
+-#ifndef _WIN64
++#if !defined(_WIN64) && !defined(__midipix__)
+ 	/* Initialise variables for SDL_ToUnicode() */
+ 	codepage = GetCodePage();
+ 
+@@ -814,7 +814,7 @@
+ }
+ 
+ #ifndef NO_GETKEYBOARDSTATE
+-#ifndef _WIN64
++#if !defined(_WIN64) && !defined(__midipix__)
+ /* JFP: Implementation of ToUnicode() that works on 9x/ME/2K/XP */
+ 
+ static int Is9xME()
+diff -ru SDL-1.2.15.orig/src/video/windib/SDL_dibvideo.c SDL-1.2.15/src/video/windib/SDL_dibvideo.c
+--- SDL-1.2.15.orig/src/video/windib/SDL_dibvideo.c	2012-01-19 07:30:06.000000000 +0100
++++ SDL-1.2.15/src/video/windib/SDL_dibvideo.c	2019-11-08 11:17:09.328149984 +0100
+@@ -822,9 +822,15 @@
+ 				video->flags |= SDL_RESIZABLE;
+ 			}
+ 		}
++
++/* FIXME: the heck? */
++#ifdef __midipix__
++		if (IsZoomed(SDL_Window)) style |= WS_MAXIMIZE;
++#else
+ #if WS_MAXIMIZE && !defined(_WIN32_WCE)
+ 		if (IsZoomed(SDL_Window)) style |= WS_MAXIMIZE;
+ #endif
++#endif
+ 	}
+ 
+ 	/* DJM: Don't piss of anyone who has setup his own window */
+
