@@ -1,0 +1,159 @@
+diff -ru util-linux-2.34.orig/sys-utils/ipcs.c util-linux-2.34/sys-utils/ipcs.c
+--- util-linux-2.34.orig/sys-utils/ipcs.c	2019-04-24 11:02:03.122448801 +0200
++++ util-linux-2.34/sys-utils/ipcs.c	2019-12-18 11:11:27.423735474 +0100
+@@ -306,7 +306,7 @@
+ 			if (pw)
+ 				printf ("%-10d %-10.10s", shmdsp->shm_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-10d %-10u", shmdsp->shm_perm.id, shmdsp->shm_perm.uid);
++				printf ("%-10d %-10lu", shmdsp->shm_perm.id, shmdsp->shm_perm.uid);
+ 			/* ctime uses static buffer: use separate calls */
+ 			printf(" %-20.16s", shmdsp->shm_atim
+ 			       ? xctime(&shmdsp->shm_atim) + 4 : _("Not set"));
+@@ -319,7 +319,7 @@
+ 			if (pw)
+ 				printf ("%-10d %-10.10s", shmdsp->shm_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-10d %-10u", shmdsp->shm_perm.id, shmdsp->shm_perm.uid);
++				printf ("%-10d %-10lu", shmdsp->shm_perm.id, shmdsp->shm_perm.uid);
+ 			printf (" %-10u %-10u\n",
+ 				shmdsp->shm_cprid, shmdsp->shm_lprid);
+ 			break;
+@@ -329,7 +329,7 @@
+ 			if (pw)
+ 				printf ("%-10d %-10.10s", shmdsp->shm_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-10d %-10u", shmdsp->shm_perm.id, shmdsp->shm_perm.uid);
++				printf ("%-10d %-10lu", shmdsp->shm_perm.id, shmdsp->shm_perm.uid);
+ 			printf (" %-10o ", shmdsp->shm_perm.mode & 0777);
+ 
+ 			if (unit == IPC_UNIT_HUMAN)
+@@ -425,7 +425,7 @@
+ 			if (pw)
+ 				printf ("%-8d %-10.10s", semdsp->sem_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-8d %-10u", semdsp->sem_perm.id, semdsp->sem_perm.uid);
++				printf ("%-8d %-10lu", semdsp->sem_perm.id, semdsp->sem_perm.uid);
+ 			printf ("  %-26.24s", semdsp->sem_otime
+ 				? xctime(&semdsp->sem_otime) : _("Not set"));
+ 			printf (" %-26.24s\n", semdsp->sem_ctime
+@@ -439,7 +439,7 @@
+ 			if (pw)
+ 				printf ("%-10d %-10.10s", semdsp->sem_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-10d %-10u", semdsp->sem_perm.id, semdsp->sem_perm.uid);
++				printf ("%-10d %-10lu", semdsp->sem_perm.id, semdsp->sem_perm.uid);
+ 			printf (" %-10o %-10ju\n",
+ 				semdsp->sem_perm.mode & 0777,
+ 				semdsp->sem_nsems);
+@@ -533,7 +533,7 @@
+ 			if (pw)
+ 				printf ("%-8d %-10.10s", msgdsp->msg_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-8d %-10u", msgdsp->msg_perm.id, msgdsp->msg_perm.uid);
++				printf ("%-8d %-10lu", msgdsp->msg_perm.id, msgdsp->msg_perm.uid);
+ 			printf (" %-20.16s", msgdsp->q_stime
+ 				? xctime(&msgdsp->q_stime) + 4 : _("Not set"));
+ 			printf (" %-20.16s", msgdsp->q_rtime
+@@ -545,7 +545,7 @@
+ 			if (pw)
+ 				printf ("%-8d %-10.10s", msgdsp->msg_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-8d %-10u", msgdsp->msg_perm.id, msgdsp->msg_perm.uid);
++				printf ("%-8d %-10lu", msgdsp->msg_perm.id, msgdsp->msg_perm.uid);
+ 			printf ("  %5d     %5d\n",
+ 				msgdsp->q_lspid, msgdsp->q_lrpid);
+ 			break;
+@@ -555,7 +555,7 @@
+ 			if (pw)
+ 				printf ("%-10d %-10.10s", msgdsp->msg_perm.id, pw->pw_name);
+ 			else
+-				printf ("%-10d %-10u", msgdsp->msg_perm.id, msgdsp->msg_perm.uid);
++				printf ("%-10d %-10lu", msgdsp->msg_perm.id, msgdsp->msg_perm.uid);
+ 			printf (" %-10o ", msgdsp->msg_perm.mode & 0777);
+ 
+ 			if (unit == IPC_UNIT_HUMAN)
+@@ -582,7 +582,7 @@
+ 	}
+ 
+ 	printf(_("\nShared memory Segment shmid=%d\n"), shmid);
+-	printf(_("uid=%u\tgid=%u\tcuid=%u\tcgid=%u\n"),
++	printf(_("uid=%lu\tgid=%lu\tcuid=%lu\tcgid=%lu\n"),
+ 	       shmdata->shm_perm.uid, shmdata->shm_perm.gid,
+ 	       shmdata->shm_perm.cuid, shmdata->shm_perm.cgid);
+ 	printf(_("mode=%#o\taccess_perms=%#o\n"), shmdata->shm_perm.mode,
+@@ -612,7 +612,7 @@
+ 	}
+ 
+ 	printf(_("\nMessage Queue msqid=%d\n"), msgid);
+-	printf(_("uid=%u\tgid=%u\tcuid=%u\tcgid=%u\tmode=%#o\n"),
++	printf(_("uid=%lu\tgid=%lu\tcuid=%lu\tcgid=%lu\tmode=%#o\n"),
+ 	       msgdata->msg_perm.uid, msgdata->msg_perm.gid,
+ 	       msgdata->msg_perm.cuid, msgdata->msg_perm.cgid,
+ 	       msgdata->msg_perm.mode);
+@@ -645,7 +645,7 @@
+ 	}
+ 
+ 	printf(_("\nSemaphore Array semid=%d\n"), semid);
+-	printf(_("uid=%u\t gid=%u\t cuid=%u\t cgid=%u\n"),
++	printf(_("uid=%lu\t gid=%lu\t cuid=%lu\t cgid=%lu\n"),
+ 	       semdata->sem_perm.uid, semdata->sem_perm.gid,
+ 	       semdata->sem_perm.cuid, semdata->sem_perm.cgid);
+ 	printf(_("mode=%#o, access_perms=%#o\n"),
+diff -ru util-linux-2.34.orig/sys-utils/ipcutils.c util-linux-2.34/sys-utils/ipcutils.c
+--- util-linux-2.34.orig/sys-utils/ipcutils.c	2019-05-23 15:31:58.936589775 +0200
++++ util-linux-2.34/sys-utils/ipcutils.c	2019-12-18 11:27:34.646919292 +0100
+@@ -120,7 +120,7 @@
+ 		p->shm_swp = 0xdead;
+ 		if (sscanf(buf,
+ 			  "%d %d  %o %"SCNu64 " %u %u  "
+-			  "%"SCNu64 " %u %u %u %u %"SCNi64 " %"SCNi64 " %"SCNi64
++			  "%"SCNu64 " %lu %lu %lu %lu %"SCNi64 " %"SCNi64 " %"SCNi64
+ 			  " %"SCNu64 " %"SCNu64 "\n",
+ 			   &p->shm_perm.key,
+ 			   &p->shm_perm.id,
+@@ -264,7 +264,7 @@
+ 
+ 	while (feof(f) == 0) {
+ 		if (fscanf(f,
+-			   "%d %d  %o %" SCNu64 " %u %u %u %u %"
++			   "%d %d  %o %" SCNu64 " %lu %lu %lu %lu %"
+ 			    SCNi64 " %" SCNi64 "\n",
+ 			   &p->sem_perm.key,
+ 			   &p->sem_perm.id,
+@@ -373,7 +373,7 @@
+ 	while (feof(f) == 0) {
+ 		if (fscanf(f,
+ 			   "%d %d  %o  %" SCNu64 " %" SCNu64
+-			   " %u %u %u %u %u %u %" SCNi64 " %" SCNi64 " %" SCNi64 "\n",
++			   " %u %u %lu %lu %lu %lu %" SCNi64 " %" SCNi64 " %" SCNi64 "\n",
+ 			   &p->msg_perm.key,
+ 			   &p->msg_perm.id,
+ 			   &p->msg_perm.mode,
+@@ -474,22 +474,22 @@
+ 	if ((pw = getpwuid(is->cuid)))
+ 		fprintf(f, " %-10s", pw->pw_name);
+ 	else
+-		fprintf(f, " %-10u", is->cuid);
++		fprintf(f, " %-10lu", is->cuid);
+ 
+ 	if ((gr = getgrgid(is->cgid)))
+ 		fprintf(f, " %-10s", gr->gr_name);
+ 	else
+-		fprintf(f, " %-10u", is->cgid);
++		fprintf(f, " %-10lu", is->cgid);
+ 
+ 	if ((pw = getpwuid(is->uid)))
+ 		fprintf(f, " %-10s", pw->pw_name);
+ 	else
+-		fprintf(f, " %-10u", is->uid);
++		fprintf(f, " %-10lu", is->uid);
+ 
+ 	if ((gr = getgrgid(is->gid)))
+ 		fprintf(f, " %-10s\n", gr->gr_name);
+ 	else
+-		fprintf(f, " %-10u\n", is->gid);
++		fprintf(f, " %-10lu\n", is->gid);
+ }
+ 
+ void ipc_print_size(int unit, char *msg, uint64_t size, const char *end,
