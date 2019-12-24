@@ -1,0 +1,17 @@
+diff -ru ImageMagick-7.0.9-10.orig/configure ImageMagick-7.0.9-10/configure
+--- ImageMagick-7.0.9-10.orig/configure	2019-12-22 16:01:03.000000000 +0100
++++ ImageMagick-7.0.9-10/configure	2019-12-24 14:17:48.641714511 +0100
+@@ -22639,13 +22639,7 @@
+ 
+ # Only allow building loadable modules if we are building shared libraries
+ if test "$with_modules" != 'no' ; then
+-    if test "$libtool_build_shared_libs" = 'no'; then
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Modules may only be built if building shared libraries is enabled." >&5
+-$as_echo "$as_me: WARNING: Modules may only be built if building shared libraries is enabled." >&2;}
+-    build_modules='no'
+-  else
+     build_modules='yes'
+-  fi
+ fi
+ if test "$build_modules" != 'no' ; then
+ 
