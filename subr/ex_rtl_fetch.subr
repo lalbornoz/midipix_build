@@ -8,12 +8,16 @@ exp_rtl_fetch_url_git() {
 	if [ -e "${BUILD_DLCACHEDIR}/${_subdir}" ]; then
 		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
 			git pull ${DEFAULT_GIT_ARGS} origin "${_branch:-main}");
+		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
+			git submodule update);
 	else
 		git clone ${DEFAULT_GIT_ARGS} "${_url}" "${BUILD_DLCACHEDIR}/${_subdir}";
 		if [ -n "${_branch}" ]; then
 			(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
 				git checkout "${_branch}");
 		fi;
+		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
+			git submodule update --init);
 	fi;
 	_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}";
 	ex_rtl_fileop rm "${_tgtdir}/${_subdir}";
@@ -36,6 +40,8 @@ ex_rtl_fetch_urls_git() {
 		fi;
 		exp_rtl_fetch_url_git "${_tgtdir}" "${_subdir}"	\
 			"${_url}" "${_git_branch}";
+		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
+			git submodule update --init);
 	done;
 };
 
