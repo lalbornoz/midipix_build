@@ -1,6 +1,5 @@
-diff -ru ImageMagick-7.0.9-10.orig/configure ImageMagick-7.0.9-10/configure
---- ImageMagick-7.0.9-10.orig/configure	2019-12-22 16:01:03.000000000 +0100
-+++ ImageMagick-7.0.9-10/configure	2019-12-24 14:17:48.641714511 +0100
+--- ImageMagick-7.0.9-12/configure.orig	2019-12-27 01:06:32.000000000 +0000
++++ ImageMagick-7.0.9-12/configure	2019-12-27 19:40:26.904000000 +0000
 @@ -22639,13 +22639,7 @@
  
  # Only allow building loadable modules if we are building shared libraries
