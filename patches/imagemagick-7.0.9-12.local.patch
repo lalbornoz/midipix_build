@@ -1,16 +1,54 @@
---- ImageMagick-7.0.9-12/configure.orig	2019-12-27 01:06:32.000000000 +0000
-+++ ImageMagick-7.0.9-12/configure	2019-12-27 19:40:26.904000000 +0000
-@@ -22639,13 +22639,7 @@
+--- ImageMagick-7.0.9-12/configure.orig	2019-12-28 16:36:23.721685562 +0000
++++ ImageMagick-7.0.9-12/configure	2019-12-28 16:36:28.661685403 +0000
+@@ -3622,7 +3622,7 @@
+ for ac_dir in config "$srcdir"/config; do
+   if test -f "$ac_dir/install-sh"; then
+     ac_aux_dir=$ac_dir
+-    ac_install_sh="$SHELL $ac_pwd/$ac_aux_dir/install-sh -c"
++    ac_install_sh="$ac_aux_dir/install-sh -c"
+     break
+   elif test -f "$ac_dir/install.sh"; then
+     ac_aux_dir=$ac_dir
+@@ -4566,7 +4566,7 @@
  
- # Only allow building loadable modules if we are building shared libraries
- if test "$with_modules" != 'no' ; then
--    if test "$libtool_build_shared_libs" = 'no'; then
--        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Modules may only be built if building shared libraries is enabled." >&5
--$as_echo "$as_me: WARNING: Modules may only be built if building shared libraries is enabled." >&2;}
--    build_modules='no'
--  else
-     build_modules='yes'
--  fi
- fi
- if test "$build_modules" != 'no' ; then
+ MAGICK_VERSION=7.0.9-12
  
+-MAGICK_GIT_REVISION=16588:7fdd47e:20191226
++MAGICK_GIT_REVISION=0::20191228
+ 
+ 
+ # Substitute library versioning
+@@ -18287,6 +18287,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
+@@ -22252,6 +22262,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
