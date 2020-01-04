@@ -1,0 +1,21 @@
+diff -ru tar-1.32.orig/src/extract.c tar-1.32/src/extract.c
+--- tar-1.32.orig/src/extract.c	2019-01-13 20:44:05.000000000 +0100
++++ tar-1.32/src/extract.c	2020-01-04 17:16:01.308739492 +0100
+@@ -1466,7 +1466,7 @@
+ }
+ #endif
+ 
+-#if HAVE_MKFIFO || defined mkfifo
++#if 0
+ static int
+ extract_fifo (char *file_name, int typeflag)
+ {
+@@ -1574,7 +1574,7 @@
+       break;
+ #endif
+ 
+-#if HAVE_MKFIFO || defined mkfifo
++#if 0
+     case FIFOTYPE:
+       *fun = extract_fifo;
+       break;
