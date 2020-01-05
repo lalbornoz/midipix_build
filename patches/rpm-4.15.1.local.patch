@@ -1,0 +1,37 @@
+diff -ru rpm-4.15.1.orig/lib/rpmchroot.c rpm-4.15.1/lib/rpmchroot.c
+--- rpm-4.15.1.orig/lib/rpmchroot.c	2019-11-13 10:19:29.309710594 +0100
++++ rpm-4.15.1/lib/rpmchroot.c	2020-01-04 18:36:56.323408444 +0100
+@@ -66,7 +66,7 @@
+ 	setup_map("/proc/self/gid_map", 0, gid);
+ 	unshared = 1;
+     }
+-    rpmlog(RPMLOG_DEBUG, "user ns: %d original user %d:%d current %d:%d\n",
++    rpmlog(RPMLOG_DEBUG, "user ns: %d original user %ld:%ld current %ld:%ld\n",
+ 	    unshared, uid, gid, getuid(), getgid());
+ }
+ #else
+diff -ru rpm-4.15.1.orig/macros.in rpm-4.15.1/macros.in
+--- rpm-4.15.1.orig/macros.in	2019-11-13 10:19:29.311710606 +0100
++++ rpm-4.15.1/macros.in	2020-01-04 18:41:36.981113433 +0100
+@@ -619,7 +619,7 @@
+ # lmdb Lightning Memory-mapped Database
+ # ndb new data base format
+ #
+-%_db_backend	      bdb
++%_db_backend	      ndb
+ 
+ #
+ #	Macros used to configure Berkley db parameters.
+diff --git a/rpmio/digest_libgcrypt.c b/rpmio/digest_libgcrypt.c
+index b31fda569..291187f60 100644
+--- a/rpmio/digest_libgcrypt.c
++++ b/rpmio/digest_libgcrypt.c
+@@ -20,6 +20,8 @@ struct DIGEST_CTX_s {
+ /****************************  init   ************************************/
+ 
+ int rpmInitCrypto(void) {
++    gcry_check_version (NULL);
++    gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
+     return 0;
+ }
+ 
