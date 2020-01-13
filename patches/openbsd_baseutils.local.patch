@@ -1,0 +1,28 @@
+diff -ru baseutils.orig/pax/Makefile baseutils/pax/Makefile
+--- baseutils.orig/pax/Makefile	2020-01-12 15:30:00.798505415 +0100
++++ baseutils/pax/Makefile	2020-01-12 16:17:01.446757336 +0100
+@@ -19,11 +19,7 @@
+ 
+ install:
+ 	install -c -s -m 555 ${PROG} ${PREFIX}/bin/${PROG}
+-	install -c -s -m 555 ${PROG} ${PREFIX}/bin/tar
+-	install -c -s -m 555 ${PROG} ${PREFIX}/bin/cpio
+ 	install -c -m 444 ${PROG}.1 ${MANDIR}/man1
+-	install -c -m 444 tar.1 ${MANDIR}/man1
+-	install -c -m 444 cpio.1 ${MANDIR}/man1
+ 
+ clean:
+ 	rm -f ${PROG} ${OBJS}
+diff --git a/pax/file_subs.c b/pax/file_subs.c
+index be8d065..41ffd57 100644
+--- a/pax/file_subs.c
++++ b/pax/file_subs.c
+@@ -823,7 +823,7 @@ set_attr(const struct file_times *ft, int force_times, mode_t mode,
+ 	 * so do *not* use O_NOFOLLOW.  The dev+ino check will
+ 	 * protect us from evil.
+ 	 */
+-	fd = open(ft->ft_name, O_RDONLY | O_DIRECTORY);
++	fd = open(ft->ft_name, O_RDWR | O_DIRECTORY);
+ 	if (fd == -1) {
+ 		if (!in_sig)
+ 			syswarn(1, errno, "Unable to restore mode and times"
