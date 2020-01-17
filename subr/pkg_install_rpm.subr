@@ -21,6 +21,7 @@ pkg_install_rpm() {
 			fi;
 		fi;
 		cat > "${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec" <<EOF
+Buildroot:      ${PREFIX_RPM}/${PKG_NAME}-${_pkg_version_rpm}/BUILDROOT
 Name:           ${PKG_NAME}
 Version:        ${_pkg_version_rpm}
 Release:        1
