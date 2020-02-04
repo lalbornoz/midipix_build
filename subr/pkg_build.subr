@@ -22,7 +22,7 @@ pkg_build() {
 		"${PKG_PKGCONFIG:+PKGCONFIG=${PKG_PKGCONFIG}}"			\
 		"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"		\
 		"${PKG_PKG_CONFIG_LIBPATH:+PKG_CONFIG_LIBPATH=${PKG_PKG_CONFIG_LIBPATH}}"\
-		"LIBTOOL=${PKG_LIBTOOL:-rdlibtool}";
+		"LIBTOOL=${PKG_LIBTOOL:-slibtool}";
 };
 
 # vim:filetype=sh
