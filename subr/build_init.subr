@@ -11,7 +11,7 @@ build_fini() {
 build_init() {
 	local __="" _env_vars="" _env_vars_except="" _env_var="" _log_last_fname="" _log_last_ts="" _vname="" _vname_val="";
 	set -o noglob; umask 022;
-	if ! awk -V | grep -q "^GNU Awk "; then
+	if ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
 		ex_rtl_log_msg failexit "Error: awk(1) in \$PATH must be GNU Awk.";
 	fi;
 	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
