@@ -3,17 +3,17 @@
 #
 
 buildp_dispatch() {
-	local _msg="${1}" _pkg_name="${2}" _tgt_name="${3}"					\
-		_build_tgt_meta="" _build_tgt_lc="" _build_tgts_lc="" _last_pkg="" _pkg_restart="" PKGS_FOUND;
+	local _msg="${1}" _group_name="${2}" _pkg_name="${3}"					\
+		_build_group_meta="" _build_group_lc="" _build_groups_lc="" _last_pkg="" _pkg_restart="" PKGS_FOUND;
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_args "${@}"; build_init;
 			ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
 			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
-			_build_tgts_lc="${BUILD_TARGETS:-${TARGETS_DEFAULT}}";
+			_build_groups_lc="${BUILD_GROUPS:-${GROUPS_DEFAULT}}";
 			if ! ex_rtl_lmatch "${ARG_DIST}" , rpm; then
-				_build_tgts_lc="$(ex_rtl_lfilter_not "${_build_tgts_lc}" "host_tools_rpm")";
+				_build_groups_lc="$(ex_rtl_lfilter_not "${_build_groups_lc}" "host_tools_rpm")";
 			fi;
 			if [ "${ARG_RESTART}" = "LAST" ]; then
 				if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
@@ -24,8 +24,8 @@ buildp_dispatch() {
 				fi;
 			fi;
 			PKGS_FOUND="";
-			for _build_tgt_lc in ${_build_tgts_lc}; do
-				ex_pkg_dispatch "${_build_tgt_lc}"				\
+			for _build_group_lc in ${_build_groups_lc}; do
+				ex_pkg_dispatch "${_build_group_lc}"				\
 						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
 						buildp_dispatch PKGS_FOUND;
 				if [ ${?} -ne 0 ]; then
@@ -49,9 +49,9 @@ buildp_dispatch() {
 				ex_rtl_log_msg failexit "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
 			fi; ;;
 
-	# Target build
-	start_target)	ex_rtl_log_msg inf2 "Starting \`${_tgt_name}' build target..."; ;;
-	finish_target)	ex_rtl_log_msg suc2 "Finished \`${_tgt_name}' build target."; ;;
+	# Group build
+	start_group)	ex_rtl_log_msg inf2 "Starting \`${_group_name}' build group..."; ;;
+	finish_group)	ex_rtl_log_msg suc2 "Finished \`${_group_name}' build group."; ;;
 
 	# Package build
 	start_pkg)	ex_rtl_log_msg info "Starting \`${_pkg_name}' build..."; ;;

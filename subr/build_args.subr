@@ -82,7 +82,7 @@ build_args() {
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
 	*=*)	ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
-	*)	BUILD_TARGETS="${BUILD_TARGETS:+${BUILD_TARGETS} }${1}"; ;;
+	*)	BUILD_GROUPS="${BUILD_GROUPS:+${BUILD_GROUPS} }${1}"; ;;
 	esac; shift; done;
 };
 
