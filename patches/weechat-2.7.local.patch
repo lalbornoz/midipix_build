@@ -1,14 +1,16 @@
---- weechat-2.1/configure.orig	2017-11-28 13:45:00.520000000 +0000
-+++ weechat-2.1/configure	2017-11-28 13:46:29.676000000 +0000
-@@ -22487,7 +22487,6 @@
+--- weechat-2.7/configure.orig	2020-02-09 23:15:37.432482865 +0000
++++ weechat-2.7/configure	2020-02-09 23:17:57.591493077 +0000
+@@ -22793,8 +22793,7 @@
  #                                  pkg-config
  # ------------------------------------------------------------------------------
  
 -PKGCONFIG=""
- for ac_prog in pkg-config
+-for ac_prog in pkg-config
++for ac_prog in $PKG_CONFIG
  do
    # Extract the first word of "$ac_prog", so it can be a program name with args.
-@@ -24277,8 +24276,8 @@
+ set dummy $ac_prog; ac_word=$2
+@@ -24756,8 +24755,8 @@
  else
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
@@ -19,7 +21,7 @@
  
  
  fi
-@@ -24355,8 +24354,8 @@
+@@ -24834,8 +24833,8 @@
      else
          { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
@@ -30,7 +32,7 @@
  
  
          $as_echo "#define HAVE_GNUTLS 1" >>confdefs.h
-@@ -24567,8 +24566,8 @@
+@@ -25046,8 +25045,8 @@
  else
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
  $as_echo "yes" >&6; }
