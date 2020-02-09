@@ -54,4 +54,4 @@ rotate_builds() {
 set -o errexit -o noglob;
 rotate_builds "${1}" "${2:-3}";
 
-# vim:noexpandtab sw=8 ts=8 
+# vim:noexpandtab sw=8 ts=8
