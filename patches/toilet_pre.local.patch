@@ -1,0 +1,11 @@
+--- toilet/bootstrap.orig	2020-02-09 18:15:11.505838202 +0000
++++ toilet/bootstrap	2020-02-09 18:33:37.270453498 +0000
+@@ -84,7 +84,7 @@
+ 
+ # Check for pkg-config
+ if test "$pkgconfig" = "yes"; then
+-  if ! pkg-config --version >/dev/null 2>&1; then
++  if ! $PKG_CONFIG --version >/dev/null 2>&1; then
+     echo "$0: pkg-config not found"
+     exit 1
+   fi

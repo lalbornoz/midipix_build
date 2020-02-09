@@ -1,0 +1,11 @@
+--- libcaca/bootstrap.orig	2020-02-09 17:08:18.969163074 +0000
++++ libcaca/bootstrap	2020-02-09 18:07:03.387297417 +0000
+@@ -84,7 +84,7 @@
+ 
+ # Check for pkg-config
+ if test "$pkgconfig" = "yes"; then
+-  if ! pkg-config --version >/dev/null 2>&1; then
++  if ! $PKG_CONFIG --version >/dev/null 2>&1; then
+     echo "$0: pkg-config not found"
+     exit 1
+   fi
