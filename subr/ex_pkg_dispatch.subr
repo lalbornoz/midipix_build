@@ -7,40 +7,40 @@
 #
 
 exp_pkg_dispatch() {
-	local _pkg_name="${1}" _tgt_name="${2}" _restart_at="${3}"				\
+	local _group_name="${1}" _pkg_name="${2}" _restart_at="${3}"				\
 		_dispatch_fn="${4}" _stderrout_path="${5}" _pipe_path="${6}"			\
 		_njobs_vname="${7}" _pkg_name_uc="";
 	_pkg_name_uc="$(ex_rtl_toupper "${_pkg_name}")";
 	if [ -n "$(ex_rtl_get_var_unsafe PKG_${_pkg_name_uc}_DISABLED)" ]; then
-		"${_dispatch_fn}" disabled_pkg "${_pkg_name}" "${_tgt_name}";
+		"${_dispatch_fn}" disabled_pkg "${_group_name}" "${_pkg_name}";
 	elif ex_pkg_state_test "${_pkg_name}" finish\
 	&& [ -z "${_restart_at}" ]; then
-		"${_dispatch_fn}" skipped_pkg "${_pkg_name}" "${_tgt_name}";
+		"${_dispatch_fn}" skipped_pkg "${_group_name}" "${_pkg_name}";
 	else
 		_stderrout_path="${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
-		"${_dispatch_fn}" start_pkg "${_pkg_name}" "${_tgt_name}";
+		"${_dispatch_fn}" start_pkg "${_group_name}" "${_pkg_name}";
 		(set -o errexit -o noglob; BUILD_IS_PARENT=0;
-		ex_pkg_env "${_pkg_name}" "${_tgt_name}" "${_restart_at}";
-		ex_pkg_exec "${_pkg_name}" "${_tgt_name}" "${_restart_at}"			\
+		ex_pkg_env "${_group_name}" "${_pkg_name}" "${_restart_at}";
+		ex_pkg_exec "${_group_name}" "${_pkg_name}" "${_restart_at}"			\
 			"${_dispatch_fn}";) 1>"${_stderrout_path}" 2>&1 3>"${_pipe_path}" &
 		: $((${_njobs_vname}+=1));
 	fi;
 };
 
 ex_pkg_dispatch() {
-	local _tgt_name="${1}" _restart="${2}" _restart_at="${3}" _dispatch_fn="${4}" _pkgs_found_vname="${5}"	\
+	local _group_name="${1}" _restart="${2}" _restart_at="${3}" _dispatch_fn="${4}" _pkgs_found_vname="${5}"\
 		_njob="" _njobs="" _njobs_max="" _pipe_msg="" _pipe_path="" _pkg_names="" _pkgs_found=""	\
-		_pkgs_found_new="" _script_rc="" _stderrout_path="" _tgt_name_uc="";
+		_pkgs_found_new="" _script_rc="" _stderrout_path="" _group_name_uc="";
 	ex_rtl_fileop mkdir "${BUILD_WORKDIR}";
 	_pipe_path="${BUILD_WORKDIR}/build.fifo";
-	_tgt_name_uc="$(ex_rtl_toupper "${_tgt_name}")";
-	"${_dispatch_fn}" start_target "" "${_tgt_name}";
-	_pkg_names="$(ex_rtl_get_var_unsafe ${_tgt_name_uc}_PACKAGES)";
+	_group_name_uc="$(ex_rtl_toupper "${_group_name}")";
+	"${_dispatch_fn}" start_group "${_group_name}" "";
+	_pkg_names="$(ex_rtl_get_var_unsafe ${_group_name_uc}_PACKAGES)";
 	if [ -n "${_restart}" ]\
 	&& ! ex_rtl_lmatch "ALL LAST" " " "${_restart}"; then
 		_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_restart}")";
 	fi;
-	if [ "$(ex_rtl_get_var_unsafe ${_tgt_name_uc}_PARALLELISE)" = 1 ]\
+	if [ "$(ex_rtl_get_var_unsafe ${_group_name_uc}_PARALLELISE)" = 1 ]\
 	&& [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
 		_njobs_max="${DEFAULT_BUILD_CPUS}";
 	else
@@ -55,9 +55,9 @@ ex_pkg_dispatch() {
 				break;
 			else
 				_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${1}";
-				exp_pkg_dispatch "${1}" "${_tgt_name}"				\
-					"${_restart_at}" "${_dispatch_fn}"			\
-					"${_stderrout_path}" "${_pipe_path}"			\
+				exp_pkg_dispatch "${_group_name}" "${1}"				\
+					"${_restart_at}" "${_dispatch_fn}"				\
+					"${_stderrout_path}" "${_pipe_path}"				\
 					_njobs; shift;
 			fi;
 		done;
@@ -72,7 +72,7 @@ ex_pkg_dispatch() {
 							break;
 						else
 							_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${1}";
-							exp_pkg_dispatch "${1}" "${_tgt_name}"		\
+							exp_pkg_dispatch "${_group_name}" "${1}"	\
 								"${_restart_at}" "${_dispatch_fn}"	\
 								"${_stderrout_path}" "${_pipe_path}"	\
 								_njobs; shift;
@@ -93,7 +93,7 @@ ex_pkg_dispatch() {
 			return "${_script_rc}";
 		fi;
 	done;
-	"${_dispatch_fn}" finish_target "" "${_tgt_name}";
+	"${_dispatch_fn}" finish_group "${_group_name}" "";
 	if [ -n "${_pkgs_found_vname}" ]; then
 		_pkgs_found="$(ex_rtl_get_var_unsafe "${_pkgs_found_vname}")";
 		ex_rtl_set_var_unsafe "${_pkgs_found_vname}" "${_pkgs_found:+${_pkgs_found} }${_pkgs_found_new}";

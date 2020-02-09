@@ -1,6 +1,6 @@
 usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
                   [-F ipv4|ipv6|offline] [-h] [-P [jobs]] [-r ALL|LAST|name[,..][:step,..]]
-                  [-R] [-v[v[v[v]]]] [--as-needed] [--debug-minipix] [<target>[ ..]]
+                  [-R] [-v[v[v[v]]]] [--as-needed] [--debug-minipix] [<group>[ ..]]
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build; defaults to debug.
         -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
@@ -15,7 +15,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
                           Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package archives
                           and/or Git repositories or don't download either at all (offline.)
         -h                Show this screen.
-        -P [jobs]         Enables parallelisation at target-level, whenever applicable.
+        -P [jobs]         Enables parallelisation at group-level, whenever applicable.
                           The maximum count of jobs defaults to the number of logical
                           processors on the host system.
                           If -R is not specified and at least one (1) package fails to build,
@@ -35,7 +35,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
         -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace during package builds; -vvvv: logs fileops.
         --as-needed       Don't build unless the midipix_build repository has received new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
-        <target>[ ..]     One of: host_deps, host_packages_deps, host_toolchain, host_toolchain_deps,
+        <group>[ ..]      One of: host_deps, host_packages_deps, host_toolchain, host_toolchain_deps,
                           host_toolchain_mingw32, host_tools, host_tools_rpm, minipix, native_packages,
                           native_packages_deps, native_packages_deps_deps, native_packages_deps_x11,
                           native_runtime, native_toolchain, native_toolchain_deps, native_toolchain_mingw32,
