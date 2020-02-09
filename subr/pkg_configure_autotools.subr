@@ -8,6 +8,12 @@ pkg_configure_autotools() {
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" -o						\
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.in" -o						\
 	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/config.guess" ]; then
+		if [ -n "${PKG_PKG_CONFIG}" ]; then
+			export PKG_CONFIG="${PKG_PKG_CONFIG}";
+		fi;
+		if [ -n "${PKG_PKG_CONFIG_PATH}" ]; then
+			export PKG_CONFIG_PATH="${PKG_PKG_CONFIG_PATH}";
+		fi;
 		if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" ]\
 		&& [ ! -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]; then
 			for _script_fname in bootstrap bootstrap.sh autogen.sh ""; do
@@ -51,6 +57,7 @@ pkg_configure_autotools() {
 			fi;
 			sed -i"" "s,%PREFIX%,${PKG_PREFIX},g" "${PKG_BUILD_DIR}/config.cache";
 		fi;
+		unset PKG_CONFIG PKG_CONFIG_PATH;
 	fi;
 };
 
