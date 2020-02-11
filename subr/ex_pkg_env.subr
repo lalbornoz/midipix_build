@@ -15,7 +15,7 @@ exp_pkg_env_source() {
 	_build_type_uc="$(ex_rtl_toupper "${PKG_BUILD_TYPE}")";
 	ex_rtl_set_vars INHERIT_FROM "PKG_${_pkg_name_uc}" _vars_set;
 	_pkg_name_inherit_uc="$(ex_rtl_toupper "${PKG_INHERIT_FROM}")";
-	for _vname_dst in $(ex_rtl_lfilter_not					\
+	for _vname_dst in $(ex_rtl_lfilter					\
 			"${DEFAULT_BUILD_VARS}" BUILD_TYPE); do
 		if [ -n "${_pkg_name_inherit_uc}" ]; then
 			ex_rtl_set_vars "${_vname_dst}"				\
@@ -30,7 +30,7 @@ exp_pkg_env_source() {
 				_vars_set;
 		fi;
 	done;
-	ex_rtl_unset_vars $(ex_rtl_lfilter_not					\
+	ex_rtl_unset_vars $(ex_rtl_lfilter					\
 		"$(set | awk -F= '/^PKG_/{print $1}' | sort)"			\
 		"${_vars_set}");
 };
@@ -42,7 +42,7 @@ ex_pkg_env() {
 	: ${MIDIPIX_BUILD_PWD:="$(pwd)"};
 	: ${PKG_BASE_DIR:="${BUILD_WORKDIR}/${_pkg_name}-${PKG_BUILD_TYPE}-${PKG_TARGET}"};
 	: ${PKG_FNAME:="${PKG_URL##*/}"};
-	: ${PKG_BUILD_STEPS:="$(ex_rtl_lfilter_not "${DEFAULT_BUILD_STEPS}"		\
+	: ${PKG_BUILD_STEPS:="$(ex_rtl_lfilter "${DEFAULT_BUILD_STEPS}"		\
 		"${PKG_BUILD_STEPS_DISABLE}")"};
 	if [ -z "${PKG_SUBDIR}" ]; then
 		if [ -n "${PKG_URLS_GIT}" ]; then

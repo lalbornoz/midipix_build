@@ -14,24 +14,10 @@ ex_rtl_try_run() { if ex_rtl_test_cmd "${1}"; then "${@}"; fi; };
 ex_rtl_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 ex_rtl_test_cmd() { command -v "${1}" >/dev/null; };
 ex_rtl_toupper() { echo "${1}" | tr a-z A-Z; };
+ex_rtl_uniq() { echo "${@}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; };
 ex_rtl_unset_vars() { while [ ${#} -gt 0 ]; do unset "${1}"; shift; done; };
 
 ex_rtl_lfilter() {
-	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="";
-	if [ -z "${_filter}" ]; then
-		echo "${_list}"; return 0;
-	else for _litem in ${_list}; do
-		for _litem_filter in ${_filter}; do
-			if [ "${_litem_filter}" = "${_litem}" ]; then
-				_lnew="${_lnew:+${_lnew} }${_litem}";
-				break;
-			fi;
-		done;
-	done; fi;
-	echo "${_lnew}";
-};
-
-ex_rtl_lfilter_not() {
 	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="" _filterfl="";
 	if [ -z "${_filter}" ]; then
 		echo "${_list}"; return 0;
@@ -56,6 +42,22 @@ ex_rtl_lmatch() {
 			return 0;
 		fi; shift;
 	done; return 1;
+};
+
+
+ex_rtl_lsearch() {
+	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="";
+	if [ -z "${_filter}" ]; then
+		echo "${_list}"; return 0;
+	else for _litem in ${_list}; do
+		for _litem_filter in ${_filter}; do
+			if [ "${_litem_filter}" = "${_litem}" ]; then
+				_lnew="${_lnew:+${_lnew} }${_litem}";
+				break;
+			fi;
+		done;
+	done; fi;
+	echo "${_lnew}";
 };
 
 ex_rtl_run_cmd_unsplit() {
