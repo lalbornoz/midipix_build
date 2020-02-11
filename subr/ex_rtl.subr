@@ -23,7 +23,7 @@ ex_rtl_kill_tree() {
 		for _pid_child in $(pgrep -P "${_pid_top}" 2>/dev/null); do
 			_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_child}"; kill "-${_signal}" "${_pid_child}" 2>/dev/null;
 		done;
-		_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_child}"; kill "-${_signal}" "${_pid_child}" 2>/dev/null;
+		_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_top}"; kill "-${_signal}" "${_pid_top}" 2>/dev/null;
 	done;
 };
 
