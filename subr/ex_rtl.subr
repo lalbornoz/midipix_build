@@ -17,6 +17,16 @@ ex_rtl_toupper() { echo "${1}" | tr a-z A-Z; };
 ex_rtl_uniq() { echo "${@}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; };
 ex_rtl_unset_vars() { while [ ${#} -gt 0 ]; do unset "${1}"; shift; done; };
 
+ex_rtl_kill_tree() {
+	local _pid="${1}" _signal="TERM" _pid_child="" _pid_top="";
+	for _pid_top in $(pgrep -P "${_pid}"); do
+		for _pid_child in $(pgrep -P "${_pid_top}" 2>/dev/null); do
+			_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_child}"; kill "-${_signal}" "${_pid_child}" 2>/dev/null;
+		done;
+		_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_child}"; kill "-${_signal}" "${_pid_child}" 2>/dev/null;
+	done;
+};
+
 ex_rtl_lfilter() {
 	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="" _filterfl="";
 	if [ -z "${_filter}" ]; then
