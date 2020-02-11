@@ -8,12 +8,14 @@
 
 exp_pkg_check_depends() {
 	local _pkg_depends="${1}" _pkg_name="${2}" _dependfl=0;
-	for _pkg_name_depend in ${_pkg_depends}; do
-		if [ -n "$(ex_rtl_lsearch "${_pkgs_wait}" "${_pkg_name_depend}")" ]\
-		|| [ -z "$(ex_rtl_lsearch "${_pkgs_complete}" "${_pkg_name_depend}")" ]; then
-			_dependfl=1; break;
-		fi;
-	done;
+	if [ -z "${_restart}" ]; then
+		for _pkg_name_depend in ${_pkg_depends}; do
+			if [ -n "$(ex_rtl_lsearch "${_pkgs_wait}" "${_pkg_name_depend}")" ]\
+			|| [ -z "$(ex_rtl_lsearch "${_pkgs_complete}" "${_pkg_name_depend}")" ]; then
+				_dependfl=1; break;
+			fi;
+		done;
+	fi;
 	return "${_dependfl}";
 };
 
@@ -76,14 +78,16 @@ exp_pkg_expand_packages() {
 };
 
 exp_pkg_get_packages() {
-	local _dispatch_fn="${1}" _group_name="${2}" _restart="${3}" _group_name_uc="" _pkg_names="";
+	local _dispatch_fn="${1}" _group_name="${2}" _restart="${3}" _group_name_uc="";
 	_group_name_uc="$(ex_rtl_toupper "${_group_name}")";
 	_pkg_names="$(ex_rtl_get_var_unsafe ${_group_name_uc}_PACKAGES)";
 	if [ -n "${_restart}" ]\
 	&& ! ex_rtl_lmatch "ALL LAST" " " "${_restart}"; then
 		_pkg_names="$(ex_rtl_lsearch "${_pkg_names}" "${_restart}")";
 	fi;
-	echo "$(ex_rtl_uniq $(exp_pkg_expand_packages ${_pkg_names}))";
+	if [ -z "${_restart}" ]; then
+		_pkg_names="$(ex_rtl_uniq $(exp_pkg_expand_packages ${_pkg_names}))";
+	fi;
 };
 
 ex_pkg_dispatch() {
@@ -92,7 +96,7 @@ ex_pkg_dispatch() {
 		_pkg_name="" _pkg_names="" _pkgs_complete="" _pkgs_found="" _pkgs_found_new="" _pkgs_wait=""		\
 		_script_rc=0 _stderrout_path="";
 	"${_dispatch_fn}" start_group "${_group_name}" ""; ex_rtl_fileop mkdir "${BUILD_WORKDIR}";
-	if _pkg_names="$(exp_pkg_get_packages "${_dispatch_fn}" "${_group_name}" "${_restart}")"\
+	if exp_pkg_get_packages "${_dispatch_fn}" "${_group_name}" "${_restart}"\
 	&& [ -n "${_pkg_names}" ]; then
 		if [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
 			_njobs_max="${DEFAULT_BUILD_CPUS}";
