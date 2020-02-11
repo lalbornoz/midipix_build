@@ -1,3 +1,12 @@
+build_ast() {
+	local _param="${1}" _pids_killed="";
+	rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
+	case "${_param}" in
+	abort) ex_rtl_log_msg failexit "Build aborted."; ;;
+	esac;
+	ex_rtl_kill_tree "${$}"; ex_rtl_log_msg vnfo "Killed PIDs ${_pids_killed}";
+};
+
 build_fini() {
 	: $((BUILD_TIMES_SECS=$(ex_rtl_date %s)-${BUILD_TIMES_SECS}));
 	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
@@ -13,6 +22,9 @@ build_init() {
 	set -o noglob; umask 022;
 	if ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
 		ex_rtl_log_msg failexit "Error: awk(1) in \$PATH must be GNU Awk.";
+	fi;
+	if ! which pgrep >/dev/null 2>&1; then
+		ex_rtl_log_msg failexit "Error: missing pgrep.";
 	fi;
 	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
 	&& [ -e /proc/cpuinfo ]; then
@@ -81,11 +93,7 @@ build_init() {
 	BUILD_NFINI="${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}}";
 	BUILD_TIMES_SECS="$(ex_rtl_date %s)";
 	BUILD_PKGS_FAILED="";
-	trap "rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";	\
-		ex_rtl_log_msg failexit \"Build aborted.\";"		\
-		HUP INT TERM USR1 USR2;
-	trap "rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";"	\
-		EXIT;
+	trap "build_ast abort" HUP INT TERM USR1 USR2; trap "build_ast exit" EXIT;
 	for _vname in ${DEFAULT_CHECK_PATH_VARS}; do
 		_vname_val="$(ex_rtl_get_var_unsafe "${_vname}")";
 		if [ -z "${_vname_val}" ]; then
