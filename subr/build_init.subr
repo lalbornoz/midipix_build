@@ -4,7 +4,10 @@ build_ast() {
 	case "${_param}" in
 	abort) ex_rtl_log_msg failexit "Build aborted."; ;;
 	esac;
-	ex_rtl_kill_tree "${$}"; ex_rtl_log_msg vnfo "Killed PIDs ${_pids_killed}";
+	ex_rtl_kill_tree "${$}";
+	if [ -n "${_pids_killed}" ]; then
+		ex_rtl_log_msg vnfo "Killed PIDs ${_pids_killed}";
+	fi;
 };
 
 build_fini() {
