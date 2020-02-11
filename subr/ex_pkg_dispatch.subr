@@ -6,80 +6,108 @@
 # subshell(!).  Instead, call ex_pkg_dispatch() and subsequently evaluate ${?}.
 #
 
-exp_pkg_dispatch() {
-	local _group_name="${1}" _pkg_name="${2}" _restart_at="${3}"				\
-		_dispatch_fn="${4}" _stderrout_path="${5}" _pipe_path="${6}"			\
-		_njobs_vname="${7}" _pkg_name_uc="";
+exp_pkg_check_depends() {
+	local _pkg_depends="${1}" _pkg_name="${2}" _dependfl=0;
+	for _pkg_name_depend in ${_pkg_depends}; do
+		if [ -n "$(ex_rtl_lsearch "${_pkgs_wait}" "${_pkg_name_depend}")" ]\
+		|| [ -z "$(ex_rtl_lsearch "${_pkgs_complete}" "${_pkg_name_depend}")" ]; then
+			_dependfl=1; break;
+		fi;
+	done;
+	return "${_dependfl}";
+};
+
+exp_pkg_dispatch_group() {
+	local _njob=0 _pkg_depends="" _pkg_name="";
+	for _njob in $(seq 1 $((${_njobs_max}-${_njobs}))); do
+		for _pkg_name in ${_pkg_names}; do
+			if [ -z "$(ex_rtl_lsearch "${_pkgs_complete}" "${_pkg_name}")" ]	\
+			&& [ -z "$(ex_rtl_lsearch "${_pkgs_wait}" "${_pkg_name}")" ]		\
+			&& _pkg_depends="$(exp_pkg_expand_packages $(ex_rtl_get_var_unsafe "PKG_$(ex_rtl_toupper "${_pkg_name}")_DEPENDS"))"\
+			&& exp_pkg_check_depends "${_pkg_depends}" "${_pkg_name}"		\
+			&& exp_pkg_dispatch_package "${_dispatch_fn}" "${_group_name}"		\
+					"${_pkg_name}" "${_restart_at}" "${_stderrout_path}"	\
+					"${_pipe_path}"; then
+				_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${_pkg_name}";
+				_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+				break;
+			fi;
+		done;
+	done;
+};
+
+exp_pkg_dispatch_package() {
+	local _dispatch_fn="${1}" _group_name="${2}" _pkg_name="${3}" _restart_at="${4}"	\
+		_stderrout_path="${5}" _pipe_path="${6}" _pkg_name_uc="" _rc=0;
 	_pkg_name_uc="$(ex_rtl_toupper "${_pkg_name}")";
 	if [ -n "$(ex_rtl_get_var_unsafe PKG_${_pkg_name_uc}_DISABLED)" ]; then
+		_pkgs_complete="${_pkgs_complete:+${_pkgs_complete} }${_pkg_name}"; _rc=1;
 		"${_dispatch_fn}" disabled_pkg "${_group_name}" "${_pkg_name}";
 	elif ex_pkg_state_test "${_pkg_name}" finish\
 	&& [ -z "${_restart_at}" ]; then
+		_pkgs_complete="${_pkgs_complete:+${_pkgs_complete} }${_pkg_name}"; _rc=1;
 		"${_dispatch_fn}" skipped_pkg "${_group_name}" "${_pkg_name}";
 	else
+		_pkgs_wait="${_pkgs_wait:+${_pkgs_wait} }${_pkg_name}";
 		_stderrout_path="${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		"${_dispatch_fn}" start_pkg "${_group_name}" "${_pkg_name}";
 		(set -o errexit -o noglob; BUILD_IS_PARENT=0;
 		ex_pkg_env "${_group_name}" "${_pkg_name}" "${_restart_at}";
 		ex_pkg_exec "${_group_name}" "${_pkg_name}" "${_restart_at}"			\
 			"${_dispatch_fn}";) 1>"${_stderrout_path}" 2>&1 3>"${_pipe_path}" &
-		: $((${_njobs_vname}+=1));
+		: $((_njobs+=1));
 	fi;
+	return "${_rc}";
 };
 
-ex_pkg_dispatch() {
-	local _group_name="${1}" _restart="${2}" _restart_at="${3}" _dispatch_fn="${4}" _pkgs_found_vname="${5}"\
-		_njob="" _njobs="" _njobs_max="" _pipe_msg="" _pipe_path="" _pkg_names="" _pkgs_found=""	\
-		_pkgs_found_new="" _script_rc="" _stderrout_path="" _group_name_uc="";
-	ex_rtl_fileop mkdir "${BUILD_WORKDIR}";
-	_pipe_path="${BUILD_WORKDIR}/build.fifo";
+exp_pkg_expand_packages() {
+	local _pkg_depends="" _pkg_name="" _pkg_names="";
+	for _pkg_name in "${@}"; do
+		_pkg_depends="$(ex_rtl_get_var_unsafe "PKG_$(ex_rtl_toupper "${_pkg_name}")_DEPENDS")";
+		if [ -n "${_pkg_depends}" ]; then
+			_pkg_depends="$(exp_pkg_expand_packages ${_pkg_depends})";
+			_pkg_names="${_pkg_names:+${_pkg_names} }${_pkg_depends} ${_pkg_name}";
+		else
+			_pkg_names="${_pkg_names:+${_pkg_names} }${_pkg_name}";
+		fi;
+	done;
+	echo "${_pkg_names}";
+};
+
+exp_pkg_get_packages() {
+	local _dispatch_fn="${1}" _group_name="${2}" _restart="${3}" _group_name_uc="" _pkg_names="";
 	_group_name_uc="$(ex_rtl_toupper "${_group_name}")";
-	"${_dispatch_fn}" start_group "${_group_name}" "";
 	_pkg_names="$(ex_rtl_get_var_unsafe ${_group_name_uc}_PACKAGES)";
 	if [ -n "${_restart}" ]\
 	&& ! ex_rtl_lmatch "ALL LAST" " " "${_restart}"; then
-		_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_restart}")";
+		_pkg_names="$(ex_rtl_lsearch "${_pkg_names}" "${_restart}")";
 	fi;
-	if [ "$(ex_rtl_get_var_unsafe ${_group_name_uc}_PARALLELISE)" = 1 ]\
-	&& [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
-		_njobs_max="${DEFAULT_BUILD_CPUS}";
-	else
-		_njobs_max=1;
-	fi;
-	set -- ${_pkg_names};
-	while [ ${#} -gt 0 ]; do
-		_script_rc=0; _njobs=0;
-		ex_rtl_fileop mkfifo "${_pipe_path}";
-		for _njob in $(seq 1 $((${_njobs_max}-${_njobs}))); do
-			if [ ${#} -eq 0 ]; then
-				break;
-			else
-				_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${1}";
-				exp_pkg_dispatch "${_group_name}" "${1}"				\
-					"${_restart_at}" "${_dispatch_fn}"				\
-					"${_stderrout_path}" "${_pipe_path}"				\
-					_njobs; shift;
-			fi;
-		done;
-		if [ "${_njobs:-0}" -gt 0 ]; then
+	echo "$(ex_rtl_uniq $(exp_pkg_expand_packages ${_pkg_names}))";
+};
+
+ex_pkg_dispatch() {
+	local _group_name="${1}" _restart="${2}" _restart_at="${3}" _dispatch_fn="${4}" _pkgs_found_vname="${5}"	\
+		_njob="" _njobs=0 _njobs_max=1 _pipe_msg="" _pipe_path="${BUILD_WORKDIR}/build.fifo"			\
+		_pkg_name="" _pkg_names="" _pkgs_complete="" _pkgs_found="" _pkgs_found_new="" _pkgs_wait=""		\
+		_script_rc=0 _stderrout_path="";
+	"${_dispatch_fn}" start_group "${_group_name}" ""; ex_rtl_fileop mkdir "${BUILD_WORKDIR}";
+	if _pkg_names="$(exp_pkg_get_packages "${_dispatch_fn}" "${_group_name}" "${_restart}")"\
+	&& [ -n "${_pkg_names}" ]; then
+		if [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
+			_njobs_max="${DEFAULT_BUILD_CPUS}";
+		fi;
+		ex_rtl_fileop mkfifo "${_pipe_path}"; exp_pkg_dispatch_group;
+		while [ "${_njobs:-0}" -gt 0 ]; do
 			while read _pipe_msg; do
 			case "${_pipe_msg%% *}" in
-			done)	"${_dispatch_fn}" finish_pkg ${_pipe_msg#done };
-				: $((_njobs-=1));
+			done)	"${_dispatch_fn}" finish_pkg ${_pipe_msg#done }; _pkg_name="${_pipe_msg#done * }"; : $((_njobs-=1));
+				_pkgs_complete="${_pkgs_complete:+${_pkgs_complete} }${_pkg_name}";
+				_pkgs_wait="$(ex_rtl_lfilter "${_pkgs_wait}" "${_pkg_name}")";
 				if [ "${_script_rc:-0}" -eq 0 ]; then
-					for _njob in $(seq 1 $((${_njobs_max}-${_njobs}))); do
-						if [ ${#} -eq 0 ]; then
-							break;
-						else
-							_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${1}";
-							exp_pkg_dispatch "${_group_name}" "${1}"	\
-								"${_restart_at}" "${_dispatch_fn}"	\
-								"${_stderrout_path}" "${_pipe_path}"	\
-								_njobs; shift;
-						fi;
-					done;
+					exp_pkg_dispatch_group;
 				fi;
-				if [ "${_njobs:-0}" -eq 0 ]; then
+				if [ "${_njobs}" -eq 0 ]\
+				&& [ -z "${_pkg_names}" ]; then
 					break;
 				fi; ;;
 			fail)	_script_rc=1;
@@ -87,17 +115,15 @@ ex_pkg_dispatch() {
 				[ $((_njobs-=1)) -eq 0 ] && break; ;;
 			step)	"${_dispatch_fn}" step_pkg ${_pipe_msg#step }; ;;
 			esac; done <>"${_pipe_path}";
-		fi;
+		done;
 		ex_rtl_fileop rm "${_pipe_path}";
-		if [ "${_script_rc:-1}" -eq 1 ]; then
-			return "${_script_rc}";
-		fi;
-	done;
+	fi;
 	"${_dispatch_fn}" finish_group "${_group_name}" "";
 	if [ -n "${_pkgs_found_vname}" ]; then
 		_pkgs_found="$(ex_rtl_get_var_unsafe "${_pkgs_found_vname}")";
 		ex_rtl_set_var_unsafe "${_pkgs_found_vname}" "${_pkgs_found:+${_pkgs_found} }${_pkgs_found_new}";
 	fi;
+	return "${_script_rc}";
 };
 
 # vim:filetype=sh
