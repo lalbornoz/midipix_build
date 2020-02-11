@@ -1,0 +1,19 @@
+--- bmake/boot-strap.orig	2020-02-08 19:30:56.653565539 +0000
++++ bmake/boot-strap	2020-02-11 11:45:44.426114614 +0000
+@@ -202,7 +202,6 @@
+ fi
+ 
+ op=all
+-BMAKE=
+ 
+ while :
+ do
+@@ -391,7 +390,7 @@
+ 	    cd $Mydir &&
+ 	    MAKESYSPATH=$mksrc SRCTOP=$Mydir OBJTOP=$objdir \
+ 	    MAKEOBJDIR='${.CURDIR:S,${SRCTOP:tA},${OBJTOP:tA},}' \
+-	    ${BMAKE:-$objdir/bmake} -f $Mydir/Makefile "$@"
++	    ${BMAKE} -f $Mydir/Makefile TEST_MAKE="${BMAKE}" "$@"
+     )
+ }
+ 
