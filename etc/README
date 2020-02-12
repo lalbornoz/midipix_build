@@ -13,8 +13,8 @@ A Midipix distribution consists of the following:
   libraries such as ncurses, libressl, as well as Perl and Python.
 
 ## Build-time dependencies
-* **Alpine Linux**: bzip2 cmake coreutils g++ gawk gcc git grep gzip libintl libmagic libtool linux-headers make musl-dev patch perl-xml-parser procps sed tar wget xz zip zlib-dev
-* **Debian/-derived Linux**: bzip2 cmake curl g++ gawk gcc git grep gzip lzma make patch procps sed tar wget xz-utils zip
+* **Alpine Linux**: bzip2 cmake coreutils g++ gawk gcc git grep gzip linux-headers lzip make musl-dev patch procps sed tar wget xz zip
+* **Debian/-derived Linux**: bzip2 clzip cmake curl g++ gawk gcc git grep gzip lzma make patch procps sed tar wget xz-utils zip
 
 > N.B. Some packages (*coreutils*, *grep*, and *tar*, among others) override
 Alpine's BusyBox utilities of the same name, as the latter are either non-
