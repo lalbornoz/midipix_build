@@ -4,9 +4,9 @@
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 bash bc busybox calcurse coreutils dash datamash dos2unix ed figlet
-findutils gawk grep mksh moon_buggy mpg123 ninvaders rc sbase screen
-sed sloccount tar tcsh the_silver_searcher toilet tree terminally_tetris
-ubase which zsh";
+findutils gawk grep mksh moon_buggy mpg123 ninvaders openbsd_baseutils
+rc sbase screen sed sloccount tar tcsh the_silver_searcher toilet tree
+terminally_tetris ubase which zsh";
 : ${PKG_BASH_SHA256SUM:=d86b3392c1202e8ff5a423b302e6284db7f8f435ea9f39b5b1b20fd3ac36dfcb};
 : ${PKG_BASH_VERSION:=4.4};
 : ${PKG_BASH_URL:=https://ftp.gnu.org/gnu/bash/bash-${PKG_BASH_VERSION}.tar.gz};
@@ -77,7 +77,7 @@ ubase which zsh";
 : ${PKG_MOON_BUGGY_CONFIGURE_ARGS_EXTRA:="--sharedstatedir=/etc"};
 : ${PKG_MOON_BUGGY_IN_TREE:=1};
 : ${PKG_MOON_BUGGY_MAKEFLAGS_BUILD:="LIBS=-Wl,-lncurses,-ltinfo"};
-: ${PKG_MPG123_DEPENDS:="w32api"};
+: ${PKG_MPG123_DEPENDS:="w32api w32lib"};
 : ${PKG_MPG123_SHA256SUM:=6c1337aee2e4bf993299851c70b7db11faec785303cfca3a5c3eb5f329ba7023};
 : ${PKG_MPG123_VERSION:=1.25.10};
 : ${PKG_MPG123_URL:=https://mpg123.de/download/mpg123-${PKG_MPG123_VERSION}.tar.bz2};
@@ -95,6 +95,10 @@ ubase which zsh";
 : ${PKG_NINVADERS_IN_TREE:=1};
 : ${PKG_NINVADERS_MAKEFLAGS_BUILD:="LIBS=-Wl,-L${PREFIX_NATIVE}/lib,-lncurses,-ltinfo"};
 : ${PKG_NINVADERS_SUBDIR:=ninvaders-${PKG_NINVADERS_VERSION}};
+: ${PKG_OPENBSD_BASEUTILS_DEPENDS:="musl_compat"};
+: ${PKG_OPENBSD_BASEUTILS_URLS_GIT:="baseutils=https://github.com/ibara/baseutils.git@master"};
+: ${PKG_OPENBSD_BASEUTILS_BUILD_DIR:=baseutils};
+: ${PKG_OPENBSD_BASEUTILS_ENV_VARS_EXTRA:="MANDIR=${PREFIX_NATIVE}/share/man"};
 : ${PKG_RC_DEPENDS:="libreadline ncurses"};
 : ${PKG_RC_SHA256SUM:=5ed26334dd0c1a616248b15ad7c90ca678ae3066fa02c5ddd0e6936f9af9bfd8};
 : ${PKG_RC_VERSION:=1.7.4};
@@ -133,6 +137,7 @@ ubase which zsh";
 : ${PKG_THE_SILVER_SEARCHER_SHA256SUM:=d4652bd91c3a05e87a15809c5f3f14ad2e5e1f80185af510e3fa4ad2038c15d4};
 : ${PKG_THE_SILVER_SEARCHER_VERSION:=2.1.0};
 : ${PKG_THE_SILVER_SEARCHER_URL:=http://geoff.greer.fm/ag/releases/the_silver_searcher-${PKG_THE_SILVER_SEARCHER_VERSION}.tar.gz};
+: ${PKG_TOILET_DEPENDS:="libcaca"};
 : ${PKG_TOILET_URLS_GIT:=toilet=https://github.com/cacalabs/toilet@master};
 : ${PKG_TOILET_ENV_VARS_EXTRA:="CACA_CFLAGS=-I${PREFIX_NATIVE}/include:CACA_LIBS=-L${PREFIX_NATIVE} -lcaca"};
 : ${PKG_TREE_SHA256SUM:=715d5d4b434321ce74706d0dd067505bb60c5ea83b5f0b3655dae40aa6f9b7c2};
