@@ -9,7 +9,7 @@
 exp_pkg_check_depends() {
 	local _group_name="${1}" _pkg_depends="${2}" _pkg_name="${3}" _dependfl=0;
 	if ! [ -n "${_restart}" ]\
-	&& ! [ "$(ex_rtl_get_var_unsafe "$(ex_rtl_toupper "${_group_name}")_IN_TREE"))" = "1" ]; then
+	&& ! [ "$(ex_rtl_get_var_unsafe "$(ex_rtl_toupper "${_group_name}")_IN_ORDER"))" = "1" ]; then
 		for _pkg_name_depend in ${_pkg_depends}; do
 			if [ -n "$(ex_rtl_lsearch "${_pkgs_wait}" "${_pkg_name_depend}")" ]\
 			|| [ -z "$(ex_rtl_lsearch "${_pkgs_complete}" "${_pkg_name_depend}")" ]; then
@@ -87,7 +87,7 @@ exp_pkg_get_packages() {
 		_pkg_names="$(ex_rtl_lsearch "${_pkg_names}" "${_restart}")";
 	fi;
 	if ! [ -n "${_restart}" ]\
-	&& ! [ "$(ex_rtl_get_var_unsafe "${_group_name_uc}"_IN_TREE)" = "1" ]; then
+	&& ! [ "$(ex_rtl_get_var_unsafe "${_group_name_uc}"_IN_ORDER)" = "1" ]; then
 		_pkg_names="$(ex_rtl_uniq $(exp_pkg_expand_packages ${_pkg_names}))";
 	fi;
 };
@@ -101,7 +101,7 @@ ex_pkg_dispatch() {
 	if exp_pkg_get_packages "${_dispatch_fn}" "${_group_name}" "${_restart}"\
 	&& [ -n "${_pkg_names}" ]; then
 		if [ "${ARG_PARALLEL:-0}" -gt 1 ]\
-		&& ! [ "$(ex_rtl_get_var_unsafe "$(ex_rtl_toupper "${_group_name}")"_IN_TREE)" = 1 ]; then
+		&& ! [ "$(ex_rtl_get_var_unsafe "$(ex_rtl_toupper "${_group_name}")"_IN_ORDER)" = 1 ]; then
 			_njobs_max="${DEFAULT_BUILD_CPUS}";
 		fi;
 		ex_rtl_fileop mkfifo "${_pipe_path}"; exp_pkg_dispatch_group;
