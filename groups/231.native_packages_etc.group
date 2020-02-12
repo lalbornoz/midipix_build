@@ -4,15 +4,14 @@
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 ca_certificates classpath
-clzip cmake cron curl dante dbus debianutils emacs expat fetchmail ffmpeg
-file gdbm geoip gettext_tiny ghostscript giflib glib gnuchess gnutls gzip
-hastyhex hexcurse htop icecast imagemagick infounzip infozip isync jamvm
+clzip cmake cron curl dante dbus debianutils emacs expat ffmpeg file
+gdbm geoip gettext_tiny ghostscript giflib glib gnuchess gnutls gzip
+hastyhex hexcurse htop icecast imagemagick infounzip infozip jamvm
 john lcms2 less lmdb lolcode lua mc mintty mlogin musl_compat musl_fts
-nano ncdu ncurses ncursestw ncursesw npth nullmailer openbsd_baseutils
-openjpeg opensmtpd p7zip pcre popt procps_ng qemu qpdf qrencode rdesktop
-rpm rw rxvt_unicode shared_mime_info slang sqlite3 st tcl tdnf texinfo
-tiff tmux tzdb utf8proc util_linux vim w32api w32lib xcowsay xeyes
-xorriso xterm xwd xz yabasic zstd";
+nano ncdu ncurses ncursestw ncursesw npth openbsd_baseutils openjpeg
+opensmtpd p7zip pcre popt procps_ng qemu qpdf qrencode rpm rw
+shared_mime_info slang sqlite3 tcl tdnf texinfo tiff tmux tzdb utf8proc
+util_linux vim w32api w32lib xorriso xterm xwd xz yabasic zstd";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
 : ${PKG_ALSA_LIB_URL:=ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PKG_ALSA_LIB_VERSION}.tar.bz2};
@@ -27,6 +26,7 @@ xorriso xterm xwd xz yabasic zstd";
 : ${PKG_APR_UTIL_URL:=https://archive.apache.org/dist/apr/apr-util-${PKG_APR_UTIL_VERSION}.tar.bz2};
 : ${PKG_APR_UTIL_CONFIGURE_ARGS_EXTRA:="--with-apr=${BUILD_WORKDIR}/apr-native-${DEFAULT_TARGET}/obj"};
 : ${PKG_APR_UTIL_INSTALL_FILES:=bin/apu-1-config=${PREFIX}/bin/${DEFAULT_TARGET}-apu-1-config};
+: ${PKG_BDWGC_DEPENDS:="libatomic_ops"};
 : ${PKG_BDWGC_URLS_GIT:="bdwgc=https://github.com/ivmai/bdwgc@master"};
 : ${PKG_BMAKE_URLS_GIT:="bmake=https://github.com/arichardson/bmake@master"};
 : ${PKG_BMAKE_CONFIGURE_ARGS="-C --host=${DEFAULT_TARGET} --prefix=/usr --target=${DEFAULT_TARGET}"};
@@ -80,6 +80,7 @@ fi;
 : ${PKG_CURL_VERSION:=7.61.0};
 : ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
 : ${PKG_CURL_CONFIGURE_ARGS_EXTRA:="--disable-symbol-hiding --enable-shared --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-ca-path=/etc/ssl/certs --with-gnutls --without-ssl"};
+: ${PKG_DANTE_DEPENDS:="libtirpc"};
 : ${PKG_DANTE_SHA256SUM:=4c97cff23e5c9b00ca1ec8a95ab22972813921d7fbf60fc453e3e06382fc38a7};
 : ${PKG_DANTE_VERSION:=1.4.2};
 : ${PKG_DANTE_URL:=http://www.inet.no/dante/files/dante-${PKG_DANTE_VERSION}.tar.gz};
@@ -104,10 +105,6 @@ fi;
 : ${PKG_EXPAT_SHA256SUM:=17b43c2716d521369f82fc2dc70f359860e90fa440bea65b3b85f0b246ea81f2};
 : ${PKG_EXPAT_VERSION:=2.2.6};
 : ${PKG_EXPAT_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_VERSION}.tar.bz2};
-: ${PKG_FETCHMAIL_SHA256SUM:=c7500bed3b0bb85722f7cf2d980e74a879ac57b13cfd225d278179d671c0f5e8};
-: ${PKG_FETCHMAIL_VERSION:=6.4.0.beta4};
-: ${PKG_FETCHMAIL_URL:=http://krusty.dt.e-technik.tu-dortmund.de/~ma/fetchmail/fetchmail-${PKG_FETCHMAIL_VERSION}.tar.xz};
-: ${PKG_FETCHMAIL_CONFIGURE_ARGS_EXTRA:="--with-kerberos5=no --with-kerberos=no --with-ssl=${PREFIX_NATIVE}"};
 : ${PKG_FFMPEG_SHA256SUM:=b684fb43244a5c4caae652af9022ed5d85ce15210835bce054a33fb26033a1a5};
 : ${PKG_FFMPEG_VERSION:=4.1};
 : ${PKG_FFMPEG_URL:=https://ffmpeg.org/releases/ffmpeg-${PKG_FFMPEG_VERSION}.tar.bz2};
@@ -187,10 +184,6 @@ fi;
 : ${PKG_INFOZIP_URLS_GIT:=infozip=https://github.com/Redfoxmoon3/infozip.git@master};
 : ${PKG_INFOZIP_IN_TREE:=1};
 : ${PKG_INFOZIP_CFLAGS_BUILD_EXTRA:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
-: ${PKG_ISYNC_SHA256SUM:=8d5f583976e3119705bdba27fa4fc962e807ff5996f24f354957178ffa697c9c};
-: ${PKG_ISYNC_VERSION:=1.3.0};
-: ${PKG_ISYNC_URL:=https://sources.voidlinux.org/isync-${PKG_ISYNC_VERSION}/isync-${PKG_ISYNC_VERSION}.tar.gz};
-: ${PKG_ISYNC_CONFIGURE_ARGS_EXTRA:=--disable-compat};
 : ${PKG_JAMVM_SHA256SUM:=76428e96df0ae9dd964c7a7c74c1e9a837e2f312c39e9a357fa8178f7eff80da};
 : ${PKG_JAMVM_VERSION:=2.0.0};
 : ${PKG_JAMVM_URL:=http://sourceforge.mirrorservice.org/j/ja/jamvm/jamvm/JamVM%20${PKG_JAMVM_VERSION}/jamvm-${PKG_JAMVM_VERSION}.tar.gz};
@@ -232,6 +225,7 @@ fi;
 : ${PKG_MC_CFLAGS_CONFIGURE_EXTRA:="-DNCURSES_INTERNALS -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncursesw"};
 : ${PKG_MC_CONFIGURE_ARGS_EXTRA:="--with-screen=ncurses --x-includes=${PREFIX_NATIVE}/include/X11 --x-libraries=${PREFIX_NATIVE}/lib"};
 : ${PKG_MC_LDFLAGS_BUILD_EXTRA:=-ltinfow};
+: ${PKG_MINTTY_DEPENDS:="w32api w32lib"};
 : ${PKG_MINTTY_URLS_GIT:="mintty=https://github.com/midipix-ports/mintty.git@midipix bmintty=https://github.com/midipix-ports/bmintty.git@main"};
 : ${PKG_MINTTY_CONFIGURE:=bmintty/configure};
 : ${PKG_MINTTY_CONFIGURE_ARGS:="--debug --strict --target=${DEFAULT_TARGET} --source-dir=../mintty --prefix="};
@@ -272,12 +266,6 @@ fi;
 : ${PKG_NPTH_SHA256SUM:=294a690c1f537b92ed829d867bee537e46be93fbd60b16c04630fbbfcd9db3c2};
 : ${PKG_NPTH_VERSION:=1.5};
 : ${PKG_NPTH_URL:=https://www.gnupg.org/ftp/gcrypt/npth/npth-${PKG_NPTH_VERSION}.tar.bz2};
-: ${PKG_NULLMAILER_SHA256SUM:=6d277f69f1999c86df0ca9a97a4f14f9bb431c50fd4e016918290b84ff679241}
-: ${PKG_NULLMAILER_VERSION:=2.2}
-: ${PKG_NULLMAILER_URL:=https://github.com/bruceg/nullmailer/archive/${PKG_NULLMAILER_VERSION}.tar.gz};
-: ${PKG_NULLMAILER_CONFIGURE_ARGS_EXTRA:="--enable-tls"}
-: ${PKG_NULLMAILER_IN_TREE:=1}
-: ${PKG_NULLMAILER_SUBDIR:=nullmailer-${PKG_NULLMAILER_VERSION}};
 : ${PKG_OPENBSD_BASEUTILS_URLS_GIT:="baseutils=https://github.com/ibara/baseutils.git@master"};
 : ${PKG_OPENBSD_BASEUTILS_BUILD_DIR:=baseutils};
 : ${PKG_OPENBSD_BASEUTILS_ENV_VARS_EXTRA:="MANDIR=${PREFIX_NATIVE}/share/man"};
@@ -285,6 +273,7 @@ fi;
 : ${PKG_OPENJPEG_VERSION:=2.3.1};
 : ${PKG_OPENJPEG_URL:=https://github.com/uclouvain/openjpeg/archive/v${PKG_OPENJPEG_VERSION}.tar.gz};
 : ${PKG_OPENJPEG_SUBDIR:=openjpeg-${PKG_OPENJPEG_VERSION}};
+: ${PKG_OPENSMTPD_DEPENDS:="musl_fts"};
 : ${PKG_OPENSMTPD_SHA256SUM:=eb1bedbfb23d9f08f509d92d8efcaf51d56fb2f44492f40ec059d41124a2f1d9};
 : ${PKG_OPENSMTPD_VERSION:=6.6.1p1};
 : ${PKG_OPENSMTPD_URL:=https://www.opensmtpd.org/archives/opensmtpd-${PKG_OPENSMTPD_VERSION}.tar.gz}
@@ -313,20 +302,17 @@ fi;
 : ${PKG_QEMU_VERSION:=3.1.0};
 : ${PKG_QEMU_URL:=https://download.qemu.org/qemu-${PKG_QEMU_VERSION}.tar.xz};
 : ${PKG_QEMU_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix="" --cc=${DEFAULT_TARGET}-gcc --disable-strip"};
+: ${PKG_QPDF_DEPENDS:="libz pcre"};
 : ${PKG_QPDF_SHA256SUM:=a9fdc7e94d38fcd3831f37b6e0fe36492bf79aa6d54f8f66062cf7f9c4155233};
 : ${PKG_QPDF_VERSION:=6.0.0};
 : ${PKG_QPDF_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/qpdf/qpdf-${PKG_QPDF_VERSION}.tar.gz};
 : ${PKG_QPDF_CONFIGURE_ARGS_EXTRA:=--with-random=/dev/urandom};
 : ${PKG_QPDF_IN_TREE:=1};
+: ${PKG_QRENCODE_DEPENDS:="libpng"};
 : ${PKG_QRENCODE_SHA256SUM:=efe5188b1ddbcbf98763b819b146be6a90481aac30cfc8d858ab78a19cde1fa5};
 : ${PKG_QRENCODE_VERSION:=3.4.4};
 : ${PKG_QRENCODE_URL:=https://fukuchi.org/works/qrencode/qrencode-${PKG_QRENCODE_VERSION}.tar.bz2};
 : ${PKG_QRENCODE_CONFIGURE_ARGS_EXTRA:=--disable-sdltest};
-: ${PKG_RDESKTOP_SHA256SUM:=9b98b8e73aa83e93aa1d9ae82ce38c08395f64b67799edc24821bb26a84dcd2d};
-: ${PKG_RDESKTOP_VERSION:=1.8.4};
-: ${PKG_RDESKTOP_URL:=https://github.com/rdesktop/rdesktop/releases/download/v${PKG_RDESKTOP_VERSION}/rdesktop-${PKG_RDESKTOP_VERSION}.tar.gz};
-: ${PKG_RDESKTOP_IN_TREE:=1};
-: ${PKG_RDESKTOP_CONFIGURE_ARGS_EXTRA:="ALSA_LIBS=-lasound --disable-credssp --disable-smartcard --with-openssl=${PREFIX_NATIVE}"};
 : ${PKG_RPM_DEPENDS:="curl"};
 : ${PKG_RPM_SHA256SUM:=ddef45f9601cd12042edfc9b6e37efcca32814e1e0f4bb8682d08144a3e2d230};
 : ${PKG_RPM_VERSION:=4.15.1};
@@ -337,10 +323,7 @@ fi;
 : ${PKG_RW_VERSION:=1.0};
 : ${PKG_RW_URL:=https://sortix.org/rw/release/rw-portable-${PKG_RW_VERSION}.tar.gz}
 : ${PKG_RW_BUILD_DIR:=rw-portable-${PKG_RW_VERSION}};
-: ${PKG_RXVT_UNICODE_SHA256SUM:=e94628e9bcfa0adb1115d83649f898d6edb4baced44f5d5b769c2eeb8b95addd};
-: ${PKG_RXVT_UNICODE_VERSION:=9.22};
-: ${PKG_RXVT_UNICODE_URL:=http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PKG_RXVT_UNICODE_VERSION}.tar.bz2};
-: ${PKG_RXVT_UNICODE_CONFIGURE_ARGS_EXTRA:=--disable-perl --disable-lastlog --disable-utmp --disable-wtmp};
+: ${PKG_SHARED_MIME_INFO_DEPENDS:="libxml2"};
 : ${PKG_SHARED_MIME_INFO_SHA256SUM:=2af55ef1a0319805b74ab40d331a3962c905477d76c086f49e34dc96363589e9};
 : ${PKG_SHARED_MIME_INFO_VERSION:=1.8};
 : ${PKG_SHARED_MIME_INFO_URL:=http://freedesktop.org/~hadess/shared-mime-info-${PKG_SHARED_MIME_INFO_VERSION}.tar.xz};
@@ -357,14 +340,6 @@ fi;
 : ${PKG_SQLITE3_VERSION:=3160200};
 : ${PKG_SQLITE3_URL:=https://sqlite.org/2017/sqlite-autoconf-${PKG_SQLITE3_VERSION}.tar.gz};
 : ${PKG_SQLITE3_CONFIGURE_ARGS_EXTRA:=--disable-static-shell};
-: ${PKG_ST_SHA256SUM:=f7870d906ccc988926eef2cc98950a99cc78725b685e934c422c03c1234e6000};
-: ${PKG_ST_VERSION:=0.7};
-: ${PKG_ST_URL:=https://dl.suckless.org/st/st-${PKG_ST_VERSION}.tar.gz};
-: ${PKG_ST_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_ST_CFLAGS_BUILD_EXTRA:=${LEAF_PACKAGES_CFLAGS_CONFIGURE} -I${PREFIX_NATIVE}/include/freetype2 -I${PREFIX_NATIVE}/include};
-: ${PKG_ST_IN_TREE:=1};
-: ${PKG_ST_INSTALL_FILES:=../st-${PKG_ST_VERSION}/st=bin/ ../st-${PKG_ST_VERSION}/st.1=share/man/man1/ ../st-${PKG_ST_VERSION}/st.info=bin/};
-: ${PKG_ST_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib -lX11 -lXft -lfreetype -lfontconfig};
 : ${PKG_TCL_SHA256SUM:=2bbd4e0bbdebeaf5dc6cc823d0805afb45c764292f6667d9ce2b9fcf5399e0dc};
 : ${PKG_TCL_VERSION:=8.7a1};
 : ${PKG_TCL_URL:=http://kuiper.mirrorservice.org/sites/ftp.tcl.tk/pub/tcl/tcl8_7/tcl${PKG_TCL_VERSION}-src.tar.gz};
@@ -383,7 +358,7 @@ fi;
 : ${PKG_TIFF_VERSION:=4.0.10};
 : ${PKG_TIFF_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/tiff/tiff-${PKG_TIFF_VERSION}.tar.gz};
 : ${PKG_TIFF_CONFIGURE_ARGS_EXTRA:=--disable-cxx};
-: ${PKG_TMUX_DEPENDS:="ncurses"};
+: ${PKG_TMUX_DEPENDS:="libevent ncurses"};
 : ${PKG_TMUX_SHA256SUM:=55313e132f0f42de7e020bf6323a1939ee02ab79c48634aa07475db41573852b};
 : ${PKG_TMUX_VERSION:=2.3};
 : ${PKG_TMUX_URL:=https://github.com/tmux/tmux/releases/download/${PKG_TMUX_VERSION}/tmux-${PKG_TMUX_VERSION}.tar.gz};
@@ -414,12 +389,6 @@ fi;
 : ${PKG_W32API_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
 : ${PKG_W32LIB_URLS_GIT:="w32lib=git://git.midipix.org/w32lib"};
 : ${PKG_W32LIB_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
-: ${PKG_XCOWSAY_SHA256SUM:=c7e261ba0262c3821c106ccb6d6f984e3c2da999ad10151364e55d1c699f8e51};
-: ${PKG_XCOWSAY_VERSION:=1.4};
-: ${PKG_XCOWSAY_URL:=http://www.nickg.me.uk/files/xcowsay-${PKG_XCOWSAY_VERSION}.tar.gz};
-: ${PKG_XEYES_SHA256SUM:=975e98680cd59e1f9439016386609546ed08c284d0f05a95276f96aca6e8a521};
-: ${PKG_XEYES_VERSION:=1.1.1};
-: ${PKG_XEYES_URL:=https://www.x.org/releases/individual/app/xeyes-${PKG_XEYES_VERSION}.tar.bz2};
 : ${PKG_XORRISO_SHA256SUM:=a93fa7ae5bb1902198cddfec25201388156932f36f2f5da829bf4fcae9a6062b};
 : ${PKG_XORRISO_VERSION:=1.5.0};
 : ${PKG_XORRISO_URL:=https://www.gnu.org/software/xorriso/xorriso-${PKG_XORRISO_VERSION}.tar.gz};
