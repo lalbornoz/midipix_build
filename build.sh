@@ -13,7 +13,7 @@ buildp_dispatch() {
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
 			_build_groups_lc="${BUILD_GROUPS:-${GROUPS_DEFAULT}}";
 			if ! ex_rtl_lmatch "${ARG_DIST}" , rpm; then
-				_build_groups_lc="$(ex_rtl_lfilter "${_build_groups_lc}" "host_tools_rpm")";
+				_build_groups_lc="$(ex_rtl_lfilter "${_build_groups_lc}" "host_deps_rpm")";
 			fi;
 			if [ "${ARG_RESTART}" = "LAST" ]; then
 				if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
