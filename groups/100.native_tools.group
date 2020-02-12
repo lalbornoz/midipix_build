@@ -1,0 +1,25 @@
+#
+# Build group native_tools
+#
+NATIVE_TOOLS_CONFIGURE_ARGS="--disable-nls --host=${DEFAULT_TARGET} --program-prefix= --prefix=/ --target=${DEFAULT_TARGET}";
+NATIVE_TOOLS_MAKEFLAGS_INSTALL="PREFIX= prefix=";
+NATIVE_TOOLS_PACKAGES="
+mdso perk pkgconf slibtool";
+NATIVE_TOOLS_PREFIX="${PREFIX_NATIVE}";
+: ${PKG_MDSO_URLS_GIT:="mdso=${DEFAULT_GITROOT}/mdso"};
+: ${PKG_MDSO_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET}"};
+: ${PKG_MDSO_INSTALL_FILES:="@mdso=bin/${DEFAULT_TARGET}-mdso /=${DEFAULT_TARGET}/bin @../../bin/mdso=${DEFAULT_TARGET}/bin/mdso"};
+: ${PKG_PERK_DEPENDS:="mdso"};
+: ${PKG_PERK_URLS_GIT:="perk=${DEFAULT_GITROOT}/perk"};
+: ${PKG_PERK_CFLAGS_CONFIGURE:="-I${PREFIX_NATIVE}/include"};
+: ${PKG_PERK_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET}"};
+: ${PKG_PERK_INSTALL_FILES:="@perk=bin/${DEFAULT_TARGET}-perk"};
+: ${PKG_PKGCONF_SHA256SUM:=61f0b31b0d5ea0e862b454a80c170f57bad47879c0c42bd8de89200ff62ea210};
+: ${PKG_PKGCONF_VERSION:=1.6.3};
+: ${PKG_PKGCONF_URL:=https://distfiles.dereferenced.org/pkgconf/pkgconf-${PKG_PKGCONF_HOST_VERSION}.tar.xz};
+: ${PKG_PKGCONF_CONFIGURE_ARGS:="--prefix= --host=${DEFAULT_TARGET} --with-sysroot=${PREFIX_NATIVE}"};
+: ${PKG_PKGCONF_INSTALL_FILES:=/=lib/pkgconfig};
+: ${PKG_SLIBTOOL_URLS_GIT:="slibtool=git://midipix.org/slibtool"};
+: ${PKG_SLIBTOOL_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
+
+# vim:filetype=sh textwidth=0
