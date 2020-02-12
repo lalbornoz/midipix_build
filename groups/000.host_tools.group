@@ -1,0 +1,18 @@
+#
+# Build group host_tools
+#
+HOST_TOOLS_BUILD_TYPE="host";
+HOST_TOOLS_CONFIGURE_ARGS="--disable-nls --prefix=${PREFIX}";
+HOST_TOOLS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
+HOST_TOOLS_PACKAGES="
+pkgconf_host slibtool_host";
+HOST_TOOLS_PREFIX="${PREFIX}";
+: ${PKG_PKGCONF_HOST_DEPENDS:="slibtool_host"};
+: ${PKG_PKGCONF_HOST_SHA256SUM:=61f0b31b0d5ea0e862b454a80c170f57bad47879c0c42bd8de89200ff62ea210};
+: ${PKG_PKGCONF_HOST_VERSION:=1.6.3};
+: ${PKG_PKGCONF_HOST_URL:=https://distfiles.dereferenced.org/pkgconf/pkgconf-${PKG_PKGCONF_HOST_VERSION}.tar.xz};
+: ${PKG_PKGCONF_HOST_CONFIGURE_ARGS:="--prefix=${PREFIX} --with-system-libdir=${PREFIX_NATIVE}/lib --with-system-includedir=${PREFIX_NATIVE}/include --with-pkg-config-dir=${PREFIX_NATIVE}/lib/pkgconfig --with-personality-dir=${PREFIX_NATIVE}/share/pkgconfig/personality.d"};
+: ${PKG_SLIBTOOL_HOST_URLS_GIT:="slibtool=${DEFAULT_GITROOT}/slibtool"};
+: ${PKG_SLIBTOOL_HOST_CONFIGURE_ARGS:=--prefix=};
+
+# vim:filetype=sh textwidth=0

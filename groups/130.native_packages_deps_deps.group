@@ -1,0 +1,42 @@
+#
+# Build group native_packages_deps_deps
+#
+NATIVE_PACKAGES_DEPS_DEPS_CFLAGS_CONFIGURE="${DEFAULT_CFLAGS:+${DEFAULT_CFLAGS} }--sysroot=${PREFIX_NATIVE}";
+NATIVE_PACKAGES_DEPS_DEPS_CONFIG_CACHE_LOCAL="${CONFIG_CACHE_GNULIB}";
+NATIVE_PACKAGES_DEPS_DEPS_CONFIGURE_ARGS="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET}";
+NATIVE_PACKAGES_DEPS_DEPS_IN_ORDER=1;
+NATIVE_PACKAGES_DEPS_DEPS_LDFLAGS_CONFIGURE="--sysroot=${PREFIX_NATIVE}";
+NATIVE_PACKAGES_DEPS_DEPS_MAKEFLAGS_INSTALL="PREFIX= prefix=";
+NATIVE_PACKAGES_DEPS_DEPS_PACKAGES="
+curl libarchive ncurses ncursestw ncursesw libuv";
+NATIVE_PACKAGES_DEPS_DEPS_PREFIX="${PREFIX_NATIVE}";
+NATIVE_PACKAGES_DEPS_DEPS_PYTHON="${PREFIX}/bin/python2";
+: ${PKG_CURL_SHA256SUM:=ef6e55192d04713673b4409ccbcb4cb6cd723137d6e10ca45b0c593a454e1720};
+: ${PKG_CURL_VERSION:=7.61.0};
+: ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
+: ${PKG_CURL_CONFIGURE_ARGS_EXTRA:="--disable-symbol-hiding --enable-shared --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-ca-path=/etc/ssl/certs --with-gnutls --without-ssl"};
+: ${PKG_LIBARCHIVE_SHA256SUM:=ba7eb1781c9fbbae178c4c6bad1c6eb08edab9a1496c64833d1715d022b30e2e};
+: ${PKG_LIBARCHIVE_VERSION:=3.3.3};
+: ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.gz};
+: ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
+: ${PKG_NCURSES_SHA256SUM:=aa057eeeb4a14d470101eff4597d5833dcef5965331be3528c08d99cebaa0d17};
+: ${PKG_NCURSES_VERSION:=6.1};
+: ${PKG_NCURSES_URL:=https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_NCURSES_VERSION}.tar.gz};
+: ${PKG_NCURSES_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
+: ${PKG_NCURSES_CONFIGURE_ARGS:="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET} --with-curses"};
+: ${PKG_NCURSES_CONFIGURE_ARGS_EXTRA:="--enable-pc-files --with-pkg-config-libdir=${PREFIX_NATIVE}/lib/pkgconfig --without-manpages --without-progs --with-shared --with-termlib --without-ada --without-tests --disable-widec --without-pthread"};
+: ${PKG_NCURSES_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
+: ${PKG_NCURSESTW_SHA256SUM:=aa057eeeb4a14d470101eff4597d5833dcef5965331be3528c08d99cebaa0d17};
+: ${PKG_NCURSESTW_VERSION:=6.1};
+: ${PKG_NCURSESTW_URL:=https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_NCURSESTW_VERSION}.tar.gz};
+: ${PKG_NCURSESTW_CONFIGURE_ARGS_EXTRA:="--enable-pc-files --with-pkg-config-libdir=${PREFIX_NATIVE}/lib/pkgconfig --without-manpages --without-progs --with-shared --with-termlib --without-ada --without-tests --disable-widec --with-pthread"};
+: ${PKG_NCURSESW_SHA256SUM:=aa057eeeb4a14d470101eff4597d5833dcef5965331be3528c08d99cebaa0d17};
+: ${PKG_NCURSESW_VERSION:=6.1};
+: ${PKG_NCURSESW_URL:=https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_NCURSESW_VERSION}.tar.gz};
+: ${PKG_NCURSESW_CONFIGURE_ARGS_EXTRA:="--enable-pc-files --with-pkg-config-libdir=${PREFIX_NATIVE}/lib/pkgconfig --with-manpages --with-progs --with-shared --with-termlib --without-ada --without-tests --enable-widec --without-pthread"};
+: ${PKG_NCURSESW_INSTALL_FILES:=@ncursesw/ncurses.h=include/ncurses.h};
+: ${PKG_LIBUV_SHA256SUM:=7cbcf2017e7116cf9da8ec1c6a146d578536b1e479458438873c991f984a53d7};
+: ${PKG_LIBUV_VERSION:=1.19.2};
+: ${PKG_LIBUV_URL:=https://dist.libuv.org/dist/v${PKG_LIBUV_VERSION}/libuv-v${PKG_LIBUV_VERSION}.tar.gz};
+
+# vim:filetype=sh textwidth=0
