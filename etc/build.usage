@@ -35,9 +35,8 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
         -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace during package builds; -vvvv: logs fileops.
         --as-needed       Don't build unless the midipix_build repository has received new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
-        <group>[ ..]      One of: host_deps, host_packages_deps, host_toolchain, host_tools, host_tools_rpm,
-                          minipix, native_packages, native_packages_deps, native_packages_deps_deps,
-                          native_packages_deps_x11, native_runtime, native_toolchain, and/or native_tools.
+        <group>[ ..]      One of: host_deps, host_deps_rpm, host_toolchain, host_tools, minipix,
+                          native_packages, native_runtime, native_toolchain, and/or native_tools.
 
         ${HOME}/midipix_build.vars, ${HOME}/.midipix_build.vars, and/or ../midipix_build.vars will be sourced if present.
 

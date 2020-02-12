@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2016, 2017 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
+# Copyright (c) 2016, 2017, 2018, 2019 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 #
 
 buildp_dispatch() {
