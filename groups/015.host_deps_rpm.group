@@ -1,0 +1,27 @@
+#
+# Build group host_deps_rpm
+#
+HOST_DEPS_RPM_BUILD_TYPE="host";
+HOST_DEPS_RPM_CONFIGURE_ARGS="--disable-nls --prefix=${PREFIX}";
+HOST_DEPS_RPM_MAKEFLAGS_INSTALL_EXTRA="prefix= PREFIX=";
+HOST_DEPS_RPM_PACKAGES="
+libarchive_host lmdb_host popt_host rpm_host";
+HOST_DEPS_RPM_PREFIX="${PREFIX}";
+: ${PKG_LIBARCHIVE_HOST_SHA256SUM:=ba7eb1781c9fbbae178c4c6bad1c6eb08edab9a1496c64833d1715d022b30e2e};
+: ${PKG_LIBARCHIVE_HOST_VERSION:=3.3.3};
+: ${PKG_LIBARCHIVE_HOST_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_HOST_VERSION}.tar.gz};
+: ${PKG_LIBARCHIVE_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib"};
+: ${PKG_LMDB_HOST_URLS_GIT:="lmdb=https://github.com/Redfoxmoon3/lmdb.git@mdb.master"};
+: ${PKG_LMDB_HOST_IN_TREE:=1};
+: ${PKG_POPT_HOST_SHA256SUM:=e728ed296fe9f069a0e005003c3d6b2dde3d9cad453422a10d6558616d304cc8};
+: ${PKG_POPT_HOST_VERSION:=1.16};
+: ${PKG_POPT_HOST_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/popt/popt-${PKG_POPT_HOST_VERSION}.tar.gz};
+: ${PKG_RPM_HOST_DEPENDS:="libarchive_host lmdb_host popt_host"};
+: ${PKG_RPM_HOST_SHA256SUM:=ddef45f9601cd12042edfc9b6e37efcca32814e1e0f4bb8682d08144a3e2d230};
+: ${PKG_RPM_HOST_VERSION:=4.15.1};
+: ${PKG_RPM_HOST_URL:=http://ftp.rpm.org/releases/rpm-${PKG_RPM_HOST_VERSION%.*}.x/rpm-${PKG_RPM_HOST_VERSION}.tar.bz2};
+: ${PKG_RPM_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -I${PREFIX}/include/dbus-1.0 -I${PREFIX}/lib/dbus-1.0/include"};
+: ${PKG_RPM_HOST_CONFIGURE_ARGS_EXTRA:="-without-lua --enable-ndb --enable-lmdb --enable-bdb=no --with-crypto=openssl --with-vendor=midipix"};
+: ${PKG_RPM_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib"};
+
+# vim:filetype=sh textwidth=0
