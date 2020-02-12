@@ -43,6 +43,7 @@ patchutils perl python2 python3 ruby smallbasic tk";
 : ${PKG_GDB_LIBTOOL:=rdlibtool};
 : ${PKG_GDB_MAKEFLAGS_BUILD_EXTRA:="SYSROOT_FLAGS=--sysroot=${PREFIX_NATIVE}"};
 : ${PKG_GDB_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gdb/gdb-${PKG_GDB_VERSION}.midipix.patch"};
+: ${PKG_LUNIX_DEPENDS:="lua"};
 : ${PKG_LUNIX_URLS_GIT:=lunix=https://github.com/Redfoxmoon3/lunix.git@master};
 : ${PKG_LUNIX_IN_TREE:=1};
 : ${PKG_LUNIX_MAKEFLAGS_BUILD:="all5.3 libdir=${PREFIX_NATIVE}/lib"};
