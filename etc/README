@@ -1,11 +1,5 @@
-Nota bene
-=========
-
-If you're interested in building Midipix using this script, please join the project's
+> N.B. If you're interested in building Midipix using this script, please join the project's
 IRC channel #midipix on Freenode and ask for the address of the internal repositories.
-
-Obtaining and installing a Midipix distribution
-===============================================
 
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
@@ -18,41 +12,23 @@ A Midipix distribution consists of the following:
   any modern POSIX-compliant \*nix environment, including GNU coreutils, shells,
   libraries such as ncurses, libressl, as well as Perl and Python.
 
-Compressed Midipix distribution tarballs and, separately, source tarballs are,
-at present, produced every four (4) hours UTC after each successful build and
-subsequently signed. This process is fully automated by a portable Bourne shell
-script; all of the above mentioned components are cross-compiled.
+## Build-time dependencies
+* **Alpine Linux**: bzip2 cmake coreutils g++ gawk gcc git grep gzip libintl libmagic libtool linux-headers make musl-dev patch perl-xml-parser procps sed tar wget xz zip zlib-dev
+* **Debian/-derived Linux**: bzip2 cmake curl g++ gawk gcc git grep gzip lzma make patch procps sed tar wget xz-utils zip
 
-Thus, the most hassle-free way to get started with Midipix is to simply download
-the most recent distribution tarball and follow the instructions below. It is,
-however, recommended to anyone intending to use Midipix as a development platform
-to familiarise themselves with the build process. Other reasons to prefer building
-a Midipix distribution yourself include integrating new 3rd party software or local
-runtime component patches. At present, a full build from scratch, excluding tarballs,
-takes between 1 and 2 hours to finish on an 8-core Xeon 3.5 GHz host.
-The build script can be obtained from the following GitHub repository: <https://github.com/lalbornoz/midipix_build>.
+> N.B. Some packages (*coreutils*, *grep*, and *tar*, among others) override
+Alpine's BusyBox utilities of the same name, as the latter are either non-
+conformant or defective.
 
-If you obtained a Midipix distribution tarball, extract it into a directory and
-drive of your choice, henceforth referred to as target directory; the drive can
-be a network drive.
-If you built Midipix yourself, the target directory is equivalent to the ${PREFIX}
-configured in build.vars, which defaults to ${HOME}/midipix.
+## Building a midipix distribution
+Install the above listed build-time dependencies, clone this repository, and run the
+following command line within the latter:  
 
-Previously, this repository contained a shell script for usage within Cygwin
-and a VBS script in order to obtain a Midipix shell environment. These have been
-replaced with <https://git.midipix.org/cgit.cgi/mpackage/plain/distro/bash.cmd>
-from the Midipix distro skeleton[2]. In that respect, and as a general rule,
-midipix_build provides all the bits needed for (cross-)building the framework
-along with the entire collection of third-party software packages, whereas
-mpackage's task is to create a live execution environment (midipix-on-the-fly,
-or mxfly), optionally including with it a set of tarballs for the installation
-of a custom, midipix-based distribution.
+```shell
+./build.sh -a nt64 -b release -D minipix,zipdist -P -v
+```
 
-References:
-* Sun, 24 Apr 2016 09:04:08 +0000 [1] musl FAQ <http://www.musl-libc.org/faq.html>
-* Mon, 14 May 2018 17:15:26 +0000 [2] <https://git.midipix.org/cgit.cgi/mpackage/plain/README>
-
-Linux distribution-related errata
-=================================
-
-Busybox based distributions need the gawk, gsed, and coreutils packages to build perl.
+## References
+* ``Sun, 25 Apr 2016 09:04:08 +0000 [1]`` <a href="http://www.musl-libc.org/faq.html" id="r1">musl FAQ</a>  
+  
+vim:tw=0
