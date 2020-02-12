@@ -263,7 +263,7 @@ fi;
 : ${PKG_NPTH_SHA256SUM:=294a690c1f537b92ed829d867bee537e46be93fbd60b16c04630fbbfcd9db3c2};
 : ${PKG_NPTH_VERSION:=1.5};
 : ${PKG_NPTH_URL:=https://www.gnupg.org/ftp/gcrypt/npth/npth-${PKG_NPTH_VERSION}.tar.bz2};
-: ${PKG_OPENJPEG_DEPENDS:="lcms2"};
+: ${PKG_OPENJPEG_DEPENDS:="lcms2 tiff"};
 : ${PKG_OPENJPEG_SHA256SUM:=63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9};
 : ${PKG_OPENJPEG_VERSION:=2.3.1};
 : ${PKG_OPENJPEG_URL:=https://github.com/uclouvain/openjpeg/archive/v${PKG_OPENJPEG_VERSION}.tar.gz};
