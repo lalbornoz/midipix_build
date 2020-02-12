@@ -54,23 +54,23 @@ buildp_dispatch() {
 	finish_group)	ex_rtl_log_msg suc2 "Finished \`${_group_name}' build group."; ;;
 
 	# Package build
-	start_pkg)	ex_rtl_log_msg info "Starting \`${_pkg_name}' build..."; ;;
+	start_pkg)	ex_rtl_log_msg info "$(printf "[%03d/%03d] Starting \`%s' build..." "${4}" "${5}" "${_pkg_name}")"; ;;
 	finish_pkg)	: $((BUILD_NFINI+=1));
 			if [ "${ARG_VERBOSE:-0}" -ge 2 ]; then
 				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 			fi;
-			ex_rtl_log_msg succ "Finished \`${_pkg_name}' build."; ;;
+			ex_rtl_log_msg succ "$(printf "Finished \`%s' build." "${_pkg_name}")"; ;;
 	fail_pkg)	: $((BUILD_NFAIL+=1));
 			BUILD_PKGS_FAILED="${BUILD_PKGS_FAILED:+${BUILD_PKGS_FAILED} }${_pkg_name}";
 			if [ "${ARG_RELAXED:-0}" -eq 1 ]; then
-				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}', check \`${BUILD_WORKDIR}/${_pkg_name}_stderrout.log' for details.";
+				ex_rtl_log_msg fail "$(printf "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log")";
 			else
 				ex_rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 				cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 				if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
 					echo "${_pkg_name}" > "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
 				fi;
-				ex_rtl_log_msg fail "Build failed in \`${_pkg_name}'.";
+				ex_rtl_log_msg fail "$(printf "Build failed in \`%s'." "${_pkg_name}")";
 				if [ "${ARG_PARALLEL:-0}" -eq 1 ]; then
 					ex_rtl_log_msg fail "Terminating pending builds...";
 					pkill -P "${$}";
@@ -78,10 +78,10 @@ buildp_dispatch() {
 				exit 1;
 			fi; ;;
 	disabled_pkg)	: $((BUILD_NSKIP+=1));
-			ex_rtl_log_msg vnfo "Skipping disabled package \`${_pkg_name}.'"; ;;
+			ex_rtl_log_msg vnfo "$(printf "[%03d/%03d] Skipping disabled package \`%s.'" "${4}" "${5}" "${_pkg_name}")"; ;;
 	skipped_pkg)	: $((BUILD_NSKIP+=1));
-			ex_rtl_log_msg vnfo "Skipping finished package \`${_pkg_name}.'"; ;;
-	step_pkg)	ex_rtl_log_msg vucc "Finished build step ${4} of package \`${_pkg_name}'."; ;;
+			ex_rtl_log_msg vnfo "$(printf "[%03d/%03d] Skipping finished package \`%s.'" "${4}" "${5}" "${_pkg_name}")"; ;;
+	step_pkg)	ex_rtl_log_msg vucc "$(printf "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}")"; ;;
 
 	# Child process
 	exec_finish)	;;
@@ -100,4 +100,4 @@ buildp_dispatch() {
 for __ in $(find subr -name *.subr); do
 	. "${__}"; done; buildp_dispatch start_build "${@}";
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0
