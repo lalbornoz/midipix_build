@@ -3,9 +3,10 @@
 #
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
-apk_tools aria2 bind dropbear fetchmail git gnupg httpd inetutils irssi
-isync ldns lighttpd lynx mailutils microsocks mtr mutt nginx nullmailer
-openlitespeed openssh pacman rsync socat thttpd w3m weechat wget whois";
+apk_tools aria2 bind dropbear fetchmail git gnupg gnutls httpd inetutils
+irssi isync ldns lighttpd lynx mailutils microsocks mtr mutt nginx
+nullmailer openlitespeed opensmtpd openssh pacman rsync socat thttpd
+w3m weechat wget whois";
 : ${PKG_APK_TOOLS_DEPENDS:="libressl"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -44,6 +45,12 @@ openlitespeed openssh pacman rsync socat thttpd w3m weechat wget whois";
 : ${PKG_GNUPG_VERSION:=2.2.19};
 : ${PKG_GNUPG_URL:=https://www.gnupg.org/ftp/gcrypt/gnupg/gnupg-${PKG_GNUPG_VERSION}.tar.bz2};
 : ${PKG_GNUPG_CONFIGURE_ARGS_EXTRA:="--with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libgcrypt-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE} --with-ksba-prefix=${PREFIX_NATIVE} --with-npth-prefix=${PREFIX_NATIVE}"};
+: ${PKG_GNUTLS_DEPENDS:="libnettle libunistring"};
+: ${PKG_GNUTLS_SHA256SUM:=bb9acab8af2ac430edf45faaaa4ed2c51f86e57cb57689be6701aceef4732ca7};
+: ${PKG_GNUTLS_VERSION:=3.6.6};
+: ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
+: ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="--disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --with-included-libtasn1 --without-p11-kit --disable-hardware-acceleration"};
+: ${PKG_GNUTLS_LIBTOOL:=slibtool-shared};
 : ${PKG_HTTPD_SHA256SUM:=f87ec2df1c9fee3e6bfde3c8b855a3ddb7ca1ab20ca877bd0e2b6bf3f05c80b2};
 : ${PKG_HTTPD_VERSION:=2.4.25};
 : ${PKG_HTTPD_URL:=https://xyinn.org/gentoo/distfiles/httpd-${PKG_HTTPD_VERSION}.tar.bz2};
@@ -123,6 +130,12 @@ openlitespeed openssh pacman rsync socat thttpd w3m weechat wget whois";
 : ${PKG_OPENLITESPEED_IN_TREE:=1};
 : ${PKG_OPENLITESPEED_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_OPENLITESPEED_PREFIX:=${PREFIX_NATIVE}/lsws};
+: ${PKG_OPENSMTPD_DEPENDS:="libasr musl_fts"};
+: ${PKG_OPENSMTPD_SHA256SUM:=eb1bedbfb23d9f08f509d92d8efcaf51d56fb2f44492f40ec059d41124a2f1d9};
+: ${PKG_OPENSMTPD_VERSION:=6.6.1p1};
+: ${PKG_OPENSMTPD_URL:=https://www.opensmtpd.org/archives/opensmtpd-${PKG_OPENSMTPD_VERSION}.tar.gz}
+: ${PKG_OPENSMTPD_CONFIGURE_ARGS_EXTRA:="--with-maildir=/var/mail --with-libz=${PREFIX_NATIVE} --with-libevent=${PREFIX_NATIVE}"};
+: ${PKG_OPENSMTPD_IN_TREE:=1};
 : ${PKG_OPENSSH_DEPENDS:="libedit"};
 : ${PKG_OPENSSH_SHA256SUM:=02f5dbef3835d0753556f973cd57b4c19b6b1f6cd24c03445e23ac77ca1b93ff};
 : ${PKG_OPENSSH_VERSION:=8.1p1};

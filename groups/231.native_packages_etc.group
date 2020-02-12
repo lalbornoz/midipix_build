@@ -5,13 +5,13 @@ NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 ca_certificates classpath
 clzip cmake cron curl dante dbus debianutils emacs expat ffmpeg file
-gdbm geoip gettext_tiny ghostscript giflib glib gnuchess gnutls gzip
-hastyhex hexcurse htop icecast imagemagick infounzip infozip jamvm
-john lcms2 less lmdb lolcode lua mc mintty mlogin musl_compat musl_fts
-nano ncdu ncurses ncursestw ncursesw npth openbsd_baseutils openjpeg
-opensmtpd p7zip pcre popt procps_ng qemu qpdf qrencode rpm rw
-shared_mime_info slang sqlite3 tcl tdnf texinfo tiff tmux tzdb utf8proc
-util_linux vim w32api w32lib xorriso xterm xwd xz yabasic zstd";
+gdbm geoip gettext_tiny ghostscript giflib glib gnuchess gzip hastyhex
+hexcurse htop icecast imagemagick infounzip infozip jamvm john lcms2
+less lmdb lolcode lua mc mintty mlogin musl_compat musl_fts nano ncdu
+ncurses ncursestw ncursesw npth openbsd_baseutils openjpeg p7zip pcre
+popt procps_ng qemu qpdf qrencode rpm rw shared_mime_info slang sqlite3
+tcl tdnf texinfo tiff tmux tzdb utf8proc util_linux vim w32api w32lib
+xorriso xterm xwd xz yabasic zstd";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
 : ${PKG_ALSA_LIB_URL:=ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PKG_ALSA_LIB_VERSION}.tar.bz2};
@@ -105,6 +105,7 @@ fi;
 : ${PKG_EXPAT_SHA256SUM:=17b43c2716d521369f82fc2dc70f359860e90fa440bea65b3b85f0b246ea81f2};
 : ${PKG_EXPAT_VERSION:=2.2.6};
 : ${PKG_EXPAT_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_VERSION}.tar.bz2};
+: ${PKG_FFMPEG_DEPENDS:="libshine"};
 : ${PKG_FFMPEG_SHA256SUM:=b684fb43244a5c4caae652af9022ed5d85ce15210835bce054a33fb26033a1a5};
 : ${PKG_FFMPEG_VERSION:=4.1};
 : ${PKG_FFMPEG_URL:=https://ffmpeg.org/releases/ffmpeg-${PKG_FFMPEG_VERSION}.tar.bz2};
@@ -143,11 +144,6 @@ fi;
 : ${PKG_GNUCHESS_SHA256SUM:=9a99e963355706cab32099d140b698eda9de164ebce40a5420b1b9772dd04802};
 : ${PKG_GNUCHESS_VERSION:=6.2.5};
 : ${PKG_GNUCHESS_URL:=http://ftp.gnu.org/gnu/chess/gnuchess-${PKG_GNUCHESS_VERSION}.tar.gz};
-: ${PKG_GNUTLS_SHA256SUM:=bb9acab8af2ac430edf45faaaa4ed2c51f86e57cb57689be6701aceef4732ca7};
-: ${PKG_GNUTLS_VERSION:=3.6.6};
-: ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
-: ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="--disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --with-included-libtasn1 --without-p11-kit --disable-hardware-acceleration"};
-: ${PKG_GNUTLS_LIBTOOL:=slibtool-shared};
 : ${PKG_GZIP_SHA256SUM:=c91f74430bf7bc20402e1f657d0b252cb80aa66ba333a25704512af346633c68};
 : ${PKG_GZIP_VERSION:=1.10};
 : ${PKG_GZIP_URL:=https://ftp.gnu.org/gnu/gzip/gzip-${PKG_GZIP_VERSION}.tar.gz};
@@ -269,16 +265,11 @@ fi;
 : ${PKG_OPENBSD_BASEUTILS_URLS_GIT:="baseutils=https://github.com/ibara/baseutils.git@master"};
 : ${PKG_OPENBSD_BASEUTILS_BUILD_DIR:=baseutils};
 : ${PKG_OPENBSD_BASEUTILS_ENV_VARS_EXTRA:="MANDIR=${PREFIX_NATIVE}/share/man"};
+: ${PKG_OPENJPEG_DEPENDS:="lcms2"};
 : ${PKG_OPENJPEG_SHA256SUM:=63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9};
 : ${PKG_OPENJPEG_VERSION:=2.3.1};
 : ${PKG_OPENJPEG_URL:=https://github.com/uclouvain/openjpeg/archive/v${PKG_OPENJPEG_VERSION}.tar.gz};
 : ${PKG_OPENJPEG_SUBDIR:=openjpeg-${PKG_OPENJPEG_VERSION}};
-: ${PKG_OPENSMTPD_DEPENDS:="musl_fts"};
-: ${PKG_OPENSMTPD_SHA256SUM:=eb1bedbfb23d9f08f509d92d8efcaf51d56fb2f44492f40ec059d41124a2f1d9};
-: ${PKG_OPENSMTPD_VERSION:=6.6.1p1};
-: ${PKG_OPENSMTPD_URL:=https://www.opensmtpd.org/archives/opensmtpd-${PKG_OPENSMTPD_VERSION}.tar.gz}
-: ${PKG_OPENSMTPD_CONFIGURE_ARGS_EXTRA:="--with-maildir=/var/mail --with-libz=${PREFIX_NATIVE} --with-libevent=${PREFIX_NATIVE}"};
-: ${PKG_OPENSMTPD_IN_TREE:=1};
 : ${PKG_P7ZIP_URLS_GIT:="p7zip-midipix.git=https://github.com/Lucía Andrea Illanes Albornoz/p7zip-midipix.git@master"};
 : ${PKG_P7ZIP_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_P7ZIP_IN_TREE:=1};
