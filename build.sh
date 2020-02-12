@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2016, 2017 Lucio Andrés Illanes Albornoz <lucio@lucioillanes.de>
+# Copyright (c) 2016, 2017, 2018, 2019 Lucio Andrés Illanes Albornoz <lucio@lucioillanes.de>
 #
 
 buildp_dispatch() {
