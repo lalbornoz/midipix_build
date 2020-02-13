@@ -97,6 +97,7 @@ buildp_dispatch() {
 	esac; return 0;
 };
 
+cd "$(dirname "${0}")";
 for __ in $(find subr -name *.subr); do
 	. "${__}"; done; buildp_dispatch start_build "${@}";
 
