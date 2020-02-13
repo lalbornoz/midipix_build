@@ -1,5 +1,5 @@
 usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
-                  [-F ipv4|ipv6|offline] [-h] [-P [jobs]] [-r ALL|LAST|name[,..][:step,..]]
+                  [-F ipv4|ipv6|offline] [-h] [-P [jobs]] [-r [*]ALL|LAST|name[,..][:step,..]]
                   [-R] [-v[v[v[v]]]] [--as-needed] [--debug-minipix] [<group>[ ..]]
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build; defaults to debug.
@@ -20,7 +20,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
                           processors on the host system.
                           If -R is not specified and at least one (1) package fails to build,
                           all remaining package builds will be forcibly aborted for convenience.
-        -r ALL[:step,..]|LAST|name[,..][:step,..]
+        -r [*]ALL[:step,..]|LAST|name[,..][:step,..]
                           Restart all packages/the specified comma-separated package(s)
                           completely or at optionally specified comma-separated step(s)
                           or restart the last failed package and resume build.
