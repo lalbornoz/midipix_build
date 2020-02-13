@@ -4,13 +4,13 @@
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 atk at_spi2_atk at_spi2_core cairo dbus_glib fontconfig freetype
-fribidi gdk glew gtk2 gtk3 harfbuzz imlib2 libass libcaca libepoxy
-libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw libXdamage
-libXdmcp libXext libxfce4ui libxfce4util libXfixes libXfont2 libXft
-libXi libxkbfile libXmu libXpm libXt libXtst mesa pango pixman
+freetype_pre fribidi gdk glew gtk2 gtk3 harfbuzz imlib2 libass libcaca
+libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
+libXdamage libXdmcp libXext libxfce4ui libxfce4util libXfixes libXfont2
+libXft libXi libxkbfile libXmu libXpm libXt libXtst mesa pango pixman
 rdesktop rxvt_unicode sdl1 sdl2 st util_macros xcb xcb_proto xcb_util
-xcb_util_image xcb_util_wm xcowsay xeyes xfconf xorgproto Xrender
-xterm xtrans xwd xwin";
+xcb_util_image xcb_util_wm xcowsay xeyes xfconf xorgproto Xrender xterm
+xtrans xwd xwin";
 : ${PKG_ATK_DEPENDS:="glib"};
 : ${PKG_ATK_VERSION:=2.26.0};
 : ${PKG_ATK_SHA256SUM:=eafe49d5c4546cb723ec98053290d7e0b8d85b3fdb123938213acb7bb4178827};
@@ -39,11 +39,18 @@ xterm xtrans xwd xwin";
 : ${PKG_FONTCONFIG_URL:=https://www.freedesktop.org/software/fontconfig/release/fontconfig-${PKG_FONTCONFIG_VERSION}.tar.bz2};
 : ${PKG_FONTCONFIG_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
 : ${PKG_FONTCONFIG_CONFIGURE_ARGS_EXTRA:=--disable-docs};
-: ${PKG_FREETYPE_DEPENDS:="harfbuzz libz"};
+: ${PKG_FREETYPE_DEPENDS:="bzip2 harfbuzz libpng libz"};
 : ${PKG_FREETYPE_SHA256SUM:=e6ffba3c8cef93f557d1f767d7bc3dee860ac7a3aaff588a521e081bc36f4c8a};
 : ${PKG_FREETYPE_VERSION:=2.9};
-: ${PKG_FREETYPE_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/harfbuzz"};
 : ${PKG_FREETYPE_URL:=http://download.savannah.gnu.org/releases/freetype/freetype-${PKG_FREETYPE_VERSION}.tar.bz2};
+: ${PKG_FREETYPE_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/harfbuzz"};
+: ${PKG_FREETYPE_CONFIGURE_ARGS_EXTRA:="--with-bzip2=yes --with-harfbuzz=yes --with-png=yes --with-zlib=yes"};
+: ${PKG_FREETYPE_PRE_DEPENDS:="bzip2 libpng libz"};
+: ${PKG_FREETYPE_PRE_SHA256SUM:=e6ffba3c8cef93f557d1f767d7bc3dee860ac7a3aaff588a521e081bc36f4c8a};
+: ${PKG_FREETYPE_PRE_VERSION:=2.9};
+: ${PKG_FREETYPE_PRE_URL:=http://download.savannah.gnu.org/releases/freetype/freetype-${PKG_FREETYPE_PRE_VERSION}.tar.bz2};
+: ${PKG_FREETYPE_PRE_CONFIGURE_ARGS_EXTRA:="--with-bzip2=yes --with-harfbuzz=no --with-png=yes --with-zlib=yes"};
+: ${PKG_FREETYPE_PRE_RPM_DISABLE:=1};
 : ${PKG_FRIBIDI_SHA256SUM:=6a64f2a687f5c4f203a46fa659f43dd43d1f8b845df8d723107e8a7e6158e4ce};
 : ${PKG_FRIBIDI_VERSION:=1.0.5};
 : ${PKG_FRIBIDI_URL:=https://github.com/fribidi/fribidi/releases/download/v${PKG_FRIBIDI_VERSION}/fribidi-${PKG_FRIBIDI_VERSION}.tar.bz2};
@@ -72,7 +79,7 @@ xterm xtrans xwd xwin";
 : ${PKG_GTK3_URL:=https://download.gnome.org/sources/gtk+/${PKG_GTK3_VERSION%.*}/gtk+-${PKG_GTK3_VERSION}.tar.xz};
 : ${PKG_GTK3_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -I${PREFIX_NATIVE}/include/harfbuzz"};
 : ${PKG_GTK3_CONFIGURE_ARGS_EXTRA:="--disable-cups --disable-papi --disable-cloudprint --enable-gtk2-dependency"};
-: ${PKG_HARFBUZZ_DEPENDS:="glib"};
+: ${PKG_HARFBUZZ_DEPENDS:="freetype_pre glib"};
 : ${PKG_HARFBUZZ_VERSION:=1.7.5};
 : ${PKG_HARFBUZZ_URL:=https://www.freedesktop.org/software/harfbuzz/release/harfbuzz-${PKG_HARFBUZZ_VERSION}.tar.bz2};
 : ${PKG_HARFBUZZ_SHA256SUM:=84574e1b1f65ca694cb8fb6905309665c0368af18a312357f8ff886ee2f29563};
@@ -129,6 +136,7 @@ xterm xtrans xwd xwin";
 : ${PKG_LIBXDAMAGE_SHA256SUM:=7c3fe7c657e83547f4822bfde30a90d84524efb56365448768409b77f05355ad};
 : ${PKG_LIBXDAMAGE_VERSION:=1.1.4};
 : ${PKG_LIBXDAMAGE_URL:=https://x.org/releases/individual/lib/libXdamage-${PKG_LIBXDAMAGE_VERSION}.tar.bz2};
+: ${PKG_LIBXDMCP_DEPENDS:="xorgproto"};
 : ${PKG_LIBXDMCP_SHA256SUM:=81fe09867918fff258296e1e1e159f0dc639cb30d201c53519f25ab73af4e4e2};
 : ${PKG_LIBXDMCP_VERSION:=1.1.2};
 : ${PKG_LIBXDMCP_URL:=https://x.org/releases/individual/lib/libXdmcp-${PKG_LIBXDMCP_VERSION}.tar.bz2};
