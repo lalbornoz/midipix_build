@@ -2,64 +2,31 @@
 # set -o noglob is assumed.
 #
 
-BUILD_ARGS_SPEC="
-	ARCH:arg:-a:
-	ARG_AS_NEEDED:--as-needed:
-	ARG_CLEAN_BUILDS:arg:-C:
-	ARG_DEBUG_MINIPIX:--debug-minipix:
-	ARG_DIST:arg:-D:
-	ARG_FETCH_FORCE:-F:
-	ARG_PARALLEL:optarg:-P:auto
-	ARG_RELAXED:-R:
-	ARG_RESTART:arg:-r:
-	ARG_VERBOSE:selfarg:-v:
-	ARG_VERBOSE:selfarg:-vv:
-	ARG_VERBOSE:selfarg:-vvv:
-	ARG_VERBOSE:selfarg:-vvvv:
-	BUILD:arg:-b:";
-
 build_args() {
-	local _spec="${BUILD_ARGS_SPEC}" _spec_arg="" _found="";
-	while [ ${#} -gt 0 ]; do
-		if [ "${1#-}" = "${1}" ]; then
-			break;
-		fi;
-		for _spec_arg in ${_spec}; do
-			case "${_spec_arg}" in
-			*:${1}:*)
-				case "${_spec_arg#*:}" in
-				arg:*)
-					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${2}"; shift; ;;
-				optarg:*)
-					if [ -n "${2}" ]\
-					&& [ "x${2#-}" = "x${2}" ]; then
-						ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${2}";
-						shift;
-					else
-						ex_rtl_set_var_unsafe "${_spec_arg%%:*}"	\
-							"${_spec_arg##*:}";
-					fi; ;;
-				selfarg:*)
-					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" "${1}"; ;;
-				*)
-					ex_rtl_set_var_unsafe "${_spec_arg%%:*}" 1; ;;
-				esac; _found=1; break; ;;
-			*)	_found=0; ;;
-			esac;
-		done;
-		if [ "${_found:-0}" -eq 0 ]; then
-			exec cat etc/build.usage;
-		else
-			shift;
-		fi;
-	done;
-	if ex_rtl_lmatch "${ARG_DIST}" , tbz2	\
-	|| ex_rtl_lmatch "${ARG_DIST}" , tgz	\
-	|| ex_rtl_lmatch "${ARG_DIST}" , txz	\
-	|| ex_rtl_lmatch "${ARG_DIST}" , zipdist; then
-		if ! ex_rtl_lmatch "${ARG_DIST}" , minipix; then
-			ARG_DIST="${ARG_DIST:+${ARG_DIST},}minipix";
-		fi;
+	local _opt="";
+	while getopts a:Ab:C:dD:FhPr:Rv _opt; do
+	case "${_opt}" in
+	a)	ARCH="${OPTARG}"; ;;
+	A)	ARG_AS_NEEDED=1; ;;
+	b)	BUILD="${OPTARG}"; ;;	
+	C)	ARG_CLEAN_BUILDS="${OPTARG}"; ;;
+	d)	ARG_DEBUG_MINIPIX=1; ;;
+	D)	ARG_DIST="${OPTARG}"; ;;
+	F)	ARG_FETCH_FORCE=1; ;;
+	h)	cat etc/build.usage; exit 0; ;;
+	P)	ARG_PARALLEL="${OPTARG:-auto}"; ;;
+	r)	ARG_RESTART="${OPTARG}"; ;;
+	R)	ARG_RELAXED=1; ;;
+	v)	: $((ARG_VERBOSE+=1)); ;;
+	*)	cat etc/build.usage; exit 1; ;;
+	esac; done; shift $((${OPTIND}-1));
+	if ex_rtl_lmatch "${ARG_DIST}" , zipdist\
+	&& ! ex_rtl_lmatch "${ARG_DIST}" , minipix; then
+		ARG_DIST="${ARG_DIST:+${ARG_DIST},}minipix";
+	fi;
+	if [ -n "${ARG_RESTART}" ]\
+	&& [ "${ARG_RESTART#\*}" != "${ARG_RESTART}" ]; then
+		ARG_RESTART="${ARG_RESTART#\*}"; ARG_RESTART_RECURSIVE=1;
 	fi;
 	case "${ARG_RESTART}" in
 	ALL)	ARG_RESTART_AT=ALL; ;;
@@ -72,12 +39,6 @@ build_args() {
 		fi;
 		ARG_RESTART="$(echo "${ARG_RESTART}" | sed "s/,/ /g")";
 		;;
-	esac;
-	case "${ARG_VERBOSE}" in
-	-v)	ARG_VERBOSE=1; ;;
-	-vv)	ARG_VERBOSE=2; ;;
-	-vvv)	ARG_VERBOSE=3; ;;
-	-vvvv)	ARG_VERBOSE=4; ;;
 	esac;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
