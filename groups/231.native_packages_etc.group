@@ -141,7 +141,7 @@ fi;
 : ${PKG_GIFLIB_VERSION:=5.1.4};
 : ${PKG_GIFLIB_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/giflib/giflib-${PKG_GIFLIB_VERSION}.tar.bz2};
 : ${PKG_GIFLIB_CONFIGURE_ARGS_EXTRA:=--disable-static};
-: ${PKG_GLIB_DEPENDS:="libffi pcre"};
+: ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
 : ${PKG_GLIB_VERSION:=2.54.0};
 : ${PKG_GLIB_URL:=http://ftp.gnome.org/pub/GNOME/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz};
