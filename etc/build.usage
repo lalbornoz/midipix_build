@@ -1,16 +1,16 @@
-usage: ./build.sh [-a nt32|nt64] [-A] [-b debug|release] [-C dir[,..]] [-d] [-D kind[,..]]
-                  [-F ipv4|ipv6|offline] [-h] [-P [jobs]] [-r [*]ALL|LAST|name[,..][:step,..]]
-                  [-R] [-v[v[v[v]]]] [<group>[ ..]]
+usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
+                  [-F ipv4|ipv6|offline] [-h] [-P [jobs]] [-r ALL|LAST|name[,..][:step,..]]
+                  [-R] [-v[v[v[v]]]] [--as-needed] [--debug-minipix] [<group>[ ..]]
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -A                Don't build unless the midipix_build repository has received new commits.
         -b debug|release  Selects debug or release build; defaults to debug.
         -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
                           scripts (prefix,) source directory (src,) and/or destination directory
                           (dest) after successful package builds.
-        -d                Don't strip(1) minipix binaries to facilitate debugging minipix.
         -D kind[,..]      Produce minimal midipix distribution directory (minipix,) package
-                          tarballs (pkg,) RPM binary packages (rpm,) and/or deployable distribution
-                          ZIP archive (zipdist.)
+                          tarballs (pkg,) RPM binary packages (rpm,) compressed and optionally
+                          signed binary and source tarballs containing ${PREFIX} sans ${BUILD_WORKDIR}
+                          (t{bz2,gz,xz},) and/or deployable distribution ZIP archive (zipdist.)
+                          {t{bz2,gz,xz},zipdist} imply minipix.
         -F ipv4|ipv6|offline
                           Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package archives
                           and/or Git repositories or don't download either at all (offline.)
@@ -20,12 +20,10 @@ usage: ./build.sh [-a nt32|nt64] [-A] [-b debug|release] [-C dir[,..]] [-d] [-D 
                           processors on the host system.
                           If -R is not specified and at least one (1) package fails to build,
                           all remaining package builds will be forcibly aborted for convenience.
-        -r [*]ALL[:step,..]|LAST|name[,..][:step,..]
+        -r ALL[:step,..]|LAST|name[,..][:step,..]
                           Restart all packages/the specified comma-separated package(s)
                           completely or at optionally specified comma-separated step(s)
                           or restart the last failed package and resume build.
-                          Prepend w/ `*' to automatically include dependencies.
-
                           Currently defined steps are:
                           fetch_wget, fetch_git, fetch_extract,
                           configure_patch_pre, configure_autotools, configure_patch,
@@ -35,6 +33,8 @@ usage: ./build.sh [-a nt32|nt64] [-A] [-b debug|release] [-C dir[,..]] [-d] [-D 
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)
         -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace during package builds; -vvvv: logs fileops.
+        --as-needed       Don't build unless the midipix_build repository has received new commits.
+        --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
         <group>[ ..]      One of: host_deps, host_deps_rpm, host_toolchain, host_tools, minipix,
                           native_packages, native_runtime, native_toolchain, and/or native_tools.
 
