@@ -24,6 +24,8 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
                           Restart all packages/the specified comma-separated package(s)
                           completely or at optionally specified comma-separated step(s)
                           or restart the last failed package and resume build.
+                          Prepend w/ `*' to automatically include dependencies.
+
                           Currently defined steps are:
                           fetch_wget, fetch_git, fetch_extract,
                           configure_patch_pre, configure_autotools, configure_patch,
