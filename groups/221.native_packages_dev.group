@@ -54,6 +54,7 @@ patchutils perl python2 python3 ruby smallbasic tk";
 : ${PKG_MAKE_SHA256SUM:=e05fdde47c5f7ca45cb697e973894ff4f5d79e13b750ed57d7b66d8defc78e19};
 : ${PKG_MAKE_VERSION:=4.3};
 : ${PKG_MAKE_URL:=https://ftp.gnu.org/gnu/make/make-${PKG_MAKE_VERSION}.tar.gz};
+: ${PKG_MANDOC_DEPENDS:="libz"};
 : ${PKG_MANDOC_SHA256SUM:=b1c9a2f27c487d6be08387aab7602199fd356086631d6e3f471b00c75249082d};
 : ${PKG_MANDOC_VERSION:=1.14.3};
 : ${PKG_MANDOC_URL:=https://midipix.org/mirror/mandoc/mandoc-${PKG_MANDOC_VERSION}.tar.gz};
