@@ -169,7 +169,7 @@ fi;
 : ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-proc --enable-unicode"};
 : ${PKG_HTOP_CFLAGS_CONFIGURE_EXTRA:="--include=sys/sysmacros.h"};
 : ${PKG_HTOP_ENV_VARS_EXTRA:="HTOP_NCURSES_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses-config:HTOP_NCURSES6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses6-config:HTOP_NCURSESW_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw-config:HTOP_NCURSESW6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw6-config"}
-: ${PKG_ICECAST_DEPENDS:="curl"};
+: ${PKG_ICECAST_DEPENDS:="curl expat libressl libxml2 libxslt"};
 : ${PKG_ICECAST_SHA256SUM:=eee7644a6bc703f5705ebe6b79c8d20a66a13cc577c60665e2bc2c34e3a0536d};
 : ${PKG_ICECAST_VERSION:=2.4.99.2-283};
 : ${PKG_ICECAST_URL:=https://people.xiph.org/~epirat/Icecast/icecast-${PKG_ICECAST_VERSION}.tar.gz};
