@@ -28,6 +28,7 @@ zstd";
 : ${PKG_APR_UTIL_ENV_VARS_EXTRA:="LDADD_dbd_sqlite3=-lsqlite3 -lapr-1 -L.libs -laprutil-1"};
 : ${PKG_APR_UTIL_CONFIGURE_ARGS_EXTRA:="--with-apr=${BUILD_WORKDIR}/apr-native-${DEFAULT_TARGET}/obj"};
 : ${PKG_APR_UTIL_INSTALL_FILES:=bin/apu-1-config=${PREFIX}/bin/${DEFAULT_TARGET}-apu-1-config};
+: ${PKG_APR_UTIL_MAKEFLAGS_BUILD:="-j1"};
 : ${PKG_BDWGC_DEPENDS:="libatomic_ops"};
 : ${PKG_BDWGC_URLS_GIT:="bdwgc=https://github.com/ivmai/bdwgc@master"};
 : ${PKG_BMAKE_URLS_GIT:="bmake=https://github.com/arichardson/bmake@master"};
