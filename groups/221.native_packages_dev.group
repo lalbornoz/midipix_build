@@ -78,7 +78,7 @@ patchutils perl python2 python3 ruby smallbasic tk";
 : ${PKG_PERL_ENV_VARS_EXTRA:="TARGET=${DEFAULT_TARGET}"};
 : ${PKG_PERL_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_PERL_SUBDIR:=perl-${PKG_PERL_VERSION}};
-: ${PKG_PYTHON2_DEPENDS:="bzip2 curl gdbm libffi libreadline libressl libz ncursesw sqlite3"};
+: ${PKG_PYTHON2_DEPENDS:="bzip2 curl expat gdbm libffi libreadline libressl libz ncursesw sqlite3"};
 : ${PKG_PYTHON2_SHA256SUM:=18617d1f15a380a919d517630a9cd85ce17ea602f9bbdc58ddc672df4b0239db};
 : ${PKG_PYTHON2_VERSION:=2.7.15};
 : ${PKG_PYTHON2_URL:="https://www.python.org/ftp/python/${PKG_PYTHON2_VERSION}/Python-${PKG_PYTHON2_VERSION}.tgz"};
