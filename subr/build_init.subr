@@ -74,14 +74,23 @@ buildp_init_env() {
 			DEFAULT_BUILD_CPUS=1;
 		fi;
 	fi;
-	if [ "${ARG_PARALLEL}" = auto ]; then
-		ARG_PARALLEL="${DEFAULT_BUILD_CPUS}";
-	fi;
-	ex_rtl_clean_env "${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
-	if ex_rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
-		export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
-	else
-		: $((_rc+=(9-1)));
+	case "${ARG_PARALLEL}" in
+	auto)
+		if [ "${DEFAULT_BUILD_CPUS}" -gt 1 ]; then
+			ARG_PARALLEL=$((${DEFAULT_BUILD_CPUS}/2));
+		else
+			ARG_PARALLEL="${DEFAULT_BUILD_CPUS}";
+		fi; ;;
+	*[^0-9]*)
+		_rc=9; _status="Error: invalid jobs count \`${ARG_PARALLEL}'."; ;;
+	esac;
+	if [ "${_rc}" -eq 0 ]; then
+		ex_rtl_clean_env "${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
+		if ex_rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
+			export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
+		else
+			: $((_rc+=(10-1)));
+		fi;
 	fi;
 	return "${_rc}";
 };
@@ -99,7 +108,7 @@ buildp_init_files() {
 		ex_rtl_fileop mkdir "${PREFIX_RPM}";
 	fi;
 	if [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		_rc=11; _status="Error: another build targeting this architecture and build type is currently in progress.";
+		_rc=12; _status="Error: another build targeting this architecture and build type is currently in progress.";
 	else
 		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 		if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
@@ -135,7 +144,7 @@ buildp_init_getopts() {
 			D)	ARG_DIST="${OPTARG}"; ;;
 			F)	ARG_FETCH_FORCE=1; ;;
 			h)	cat etc/build.usage; exit 0; ;;
-			P)	ARG_PARALLEL="${OPTARG:-auto}"; ;;
+			P)	ARG_PARALLEL="${1#-P}"; ARG_PARALLEL="${ARG_PARALLEL:-auto}"; ;;
 			r)	ARG_RESTART="${OPTARG}"; ;;
 			R)	ARG_RELAXED=1; ;;
 			*)	cat etc/build.usage; exit 1; ;;
