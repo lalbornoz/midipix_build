@@ -175,7 +175,7 @@ fi;
 : ${PKG_ICECAST_VERSION:=2.4.99.2-283};
 : ${PKG_ICECAST_URL:=https://people.xiph.org/~epirat/Icecast/icecast-${PKG_ICECAST_VERSION}.tar.gz};
 : ${PKG_ICECAST_CONFIGURE_ARGS_EXTRA:="--without-speex"};
-: ${PKG_IMAGEMAGICK_DEPENDS:="curl"};
+: ${PKG_IMAGEMAGICK_DEPENDS:="curl xz"};
 : ${PKG_IMAGEMAGICK_SHA256SUM:=67859f9cba97f2c06b5e416898216e49216be00c7cba3dd89896e49331aef96d};
 : ${PKG_IMAGEMAGICK_VERSION:=7.0.9-12};
 : ${PKG_IMAGEMAGICK_URL:=https://imagemagick.org/download/releases/ImageMagick-${PKG_IMAGEMAGICK_VERSION}.tar.xz};

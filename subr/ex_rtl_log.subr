@@ -2,6 +2,17 @@
 # set -o noglob is assumed.
 #
 
+: ${DEFAULT_LOG_MSG_FAIL_COLOUR:=91};
+: ${DEFAULT_LOG_MSG_INFO_COLOUR:=93};
+: ${DEFAULT_LOG_MSG_INF2_COLOUR:=33};
+: ${DEFAULT_LOG_MSG_SUCC_COLOUR:=92};
+: ${DEFAULT_LOG_MSG_SUC2_COLOUR:=32};
+: ${DEFAULT_LOG_MSG_VNFO_COLOUR:=96};
+: ${DEFAULT_LOG_MSG_VUCC_COLOUR:=90};
+: ${DEFAULT_LOG_MSG_VVFO_COLOUR:=96};
+: ${DEFAULT_LOG_MSG_VVVO_COLOUR:=96};
+: ${DEFAULT_LOG_MSG_VVVV_COLOUR:=96};
+
 exp_rtl_log_printf() {
 	local _attrs="${1}" _msg=""; shift; _msg="$(printf "${@}")";
 	if [ "${BUILD_IS_PARENT:-0}" -eq 1 ]; then
