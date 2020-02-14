@@ -73,7 +73,7 @@ xtrans xwd xwin";
 : ${PKG_GTK2_URL:=http://ftp.gnome.org/pub/gnome/sources/gtk+/${PKG_GTK2_VERSION%.*}/gtk+-${PKG_GTK2_VERSION}.tar.xz};
 : ${PKG_GTK2_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -I${PREFIX_NATIVE}/include/pango-1.0 -I${PREFIX_NATIVE}/include/gdk-pixbuf-2.0 -I${PREFIX_NATIVE}/include/atk-1.0 -I${PREFIX_NATIVE}/include/cairo -I${PREFIX_NATIVE}/include/glib-2.0 -I${PREFIX_NATIVE}/include/glib-2.0/gio -I${PREFIX_NATIVE}/lib/glib-2.0/include"};
 : ${PKG_GTK2_CONFIGURE_ARGS_EXTRA:="--disable-cups --disable-papi"};
-: ${PKG_GTK3_DEPENDS:="atk cairo fontconfig freetype gdk glib harfbuzz libepoxy libX11 libXext libXfixes libXi pango"};
+: ${PKG_GTK3_DEPENDS:="atk at_spi2_atk cairo fontconfig freetype gdk glib harfbuzz libepoxy libX11 libXext libXfixes libXi pango"};
 : ${PKG_GTK3_SHA256SUM:=d299612b018cfed7b2c689168ab52b668023708e17c335eb592260d186f15e1f};
 : ${PKG_GTK3_VERSION:=3.22.28};
 : ${PKG_GTK3_URL:=https://download.gnome.org/sources/gtk+/${PKG_GTK3_VERSION%.*}/gtk+-${PKG_GTK3_VERSION}.tar.xz};
