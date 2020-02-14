@@ -275,7 +275,7 @@ xtrans xwd xwin";
 : ${PKG_XEYES_SHA256SUM:=975e98680cd59e1f9439016386609546ed08c284d0f05a95276f96aca6e8a521};
 : ${PKG_XEYES_VERSION:=1.1.1};
 : ${PKG_XEYES_URL:=https://www.x.org/releases/individual/app/xeyes-${PKG_XEYES_VERSION}.tar.bz2};
-: ${PKG_XFCONF_DEPENDS:="glib libxfce4util"};
+: ${PKG_XFCONF_DEPENDS:="dbus_glib glib libxfce4util"};
 : ${PKG_XFCONF_SHA256SUM:=9910eaea8405336415d4d7f3056403f8c67bc23ba0dce251eac35205c603b156};
 : ${PKG_XFCONF_VERSION:=4.12.0};
 : ${PKG_XFCONF_URL:=http://ftp.osuosl.org/pub/blfs/conglomeration/xfconf/xfconf-${PKG_XFCONF_VERSION}.tar.bz2};

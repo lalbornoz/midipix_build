@@ -77,6 +77,7 @@ w3m weechat wget whois";
 : ${PKG_LDNS_VERSION:=1.7.0};
 : ${PKG_LDNS_URL:=https://www.nlnetlabs.nl/downloads/ldns/ldns-${PKG_LDNS_VERSION}.tar.gz};
 : ${PKG_LDNS_CONFIGURE_ARGS_EXTRA:="--with-ssl=${PREFIX_NATIVE} --disable-dane-ta-usage --with-drill --with-examples"};
+: ${PKG_LIGHTTPD_DEPENDS:="bzip2 pcre libressl libz"};
 : ${PKG_LIGHTTPD_SHA256SUM:=1c97225deea33eefba6d4158c2cef27913d47553263516bbe9d2e2760fc43a3f};
 : ${PKG_LIGHTTPD_VERSION:=1.4.45};
 : ${PKG_LIGHTTPD_URL:=http://download.lighttpd.net/lighttpd/releases-${PKG_LIGHTTPD_VERSION%.*}.x/lighttpd-${PKG_LIGHTTPD_VERSION}.tar.xz};
