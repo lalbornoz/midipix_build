@@ -67,13 +67,6 @@ buildp_init_clean_prefix() {
 
 buildp_init_env() {
 	local _rc=0 _vname="" _vname_val=""; _status="";
-	if [ -z "${DEFAULT_BUILD_CPUS}" ]; then
-		if [ -e /proc/cpuinfo ]; then
-			DEFAULT_BUILD_CPUS="$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo)";
-		else
-			DEFAULT_BUILD_CPUS=1;
-		fi;
-	fi;
 	case "${ARG_PARALLEL}" in
 	auto)
 		if [ "${DEFAULT_BUILD_CPUS}" -gt 1 ]; then
@@ -199,6 +192,13 @@ buildp_init_type() {
 
 buildp_init_vars() {
 	local _fname="" _rc=0; _status="";
+	if [ -z "${DEFAULT_BUILD_CPUS}" ]; then
+		if [ -e /proc/cpuinfo ]; then
+			DEFAULT_BUILD_CPUS="$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo)";
+		else
+			DEFAULT_BUILD_CPUS=1;
+		fi;
+	fi;
 	for _fname in	\
 			${HOME}/midipix_build.vars		\
 			${HOME}/.midipix_build.vars		\
