@@ -1,0 +1,100 @@
+#
+# set -o noglob is assumed.
+#
+
+ex_rtl_check_path_vars() {
+	local _vnames="${1}" _rc=0 _vname="" _vname_val=""; _status="";
+	for _vname in ${_vnames}; do
+		_vname_val="$(ex_rtl_get_var_unsafe "${_vname}")";
+		if [ -z "${_vname_val}" ]; then
+			_rc=1; _status="Error: variable \`${_vname}' is empty or unset."; break;
+		elif [ "${_vname_val#* *}" != "${_vname_val}" ]; then
+			_rc=2; _status="Error: variable \`${_vname}' contains one or more whitespace characters."; break;
+		fi;
+	done;
+	return "${_rc}";
+};
+
+ex_rtl_clean_env() {
+	local _env_vars_except="${1}" _env_var="" _env_vars="";
+	_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
+	for _env_var in ${_env_vars}; do
+		if [ "${_env_var#DEFAULT_}" != "${_env_var}" ]\
+		|| [ "${_env_var#PKG_}" != "${_env_var}" ]; then
+			_env_vars_except="${_env_vars_except:+${_env_vars_except} }${_env_var}";
+		fi;
+	done;
+	ex_rtl_unset_vars $(ex_rtl_lfilter "${_env_vars}" "${_env_vars_except}");
+};
+
+ex_rtl_lfilter() {
+	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="" _filterfl="";
+	if [ -z "${_filter}" ]; then
+		echo "${_list}"; return 0;
+	else for _litem in ${_list}; do
+		_filterfl=0;
+		for _litem_filter in ${_filter}; do
+			if [ "${_litem_filter}" = "${_litem}" ]; then
+				_filterfl=1; break;
+			fi;
+		done;
+		if [ "${_filterfl:-0}" -eq 0 ]; then
+			_lnew="${_lnew:+${_lnew} }${_litem}";
+		fi;
+	done; fi;
+	echo "${_lnew}";
+};
+
+ex_rtl_lmatch() {
+	local _cmp="${3}" IFS="${2}"; set -- ${1};
+	while [ ${#} -gt 0 ]; do
+		if [ "${1}" = "${_cmp}" ]; then
+			return 0;
+		fi; shift;
+	done; return 1;
+};
+
+ex_rtl_lsearch() {
+	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="";
+	if [ -z "${_filter}" ]; then
+		echo "${_list}"; return 0;
+	else for _litem in ${_list}; do
+		for _litem_filter in ${_filter}; do
+			if [ "${_litem_filter}" = "${_litem}" ]; then
+				_lnew="${_lnew:+${_lnew} }${_litem}";
+				break;
+			fi;
+		done;
+	done; fi;
+	echo "${_lnew}";
+};
+
+ex_rtl_run_cmd_unsplit() {
+	local _cmd="${1}" _cmdline="" _rc="" IFS; shift;
+	while [ ${#} -gt 0 ]; do
+		[ -n "${1}" ] &&\
+			_cmdline="${_cmdline:+${_cmdline}:}${1}";
+		shift;
+	done;
+	IFS=:; ${_cmd} ${_cmdline}; _rc=$?;
+	return ${_rc};
+};
+
+ex_rtl_set_vars() {
+	local _vname_dst="${1}" _vname_src_tmpls="${2}"			\
+		_vars_set_vname="${3}" _vname_src _vars_set_tmp=""	\
+		_vars_set_old="";
+	for _vname_src in ${_vname_src_tmpls}; do
+		_vname_src="${_vname_src}_${_vname_dst}";
+		_vval_src="$(ex_rtl_get_var_unsafe "${_vname_src}")";
+		if [ -n "${_vval_src}" ]; then
+			ex_rtl_set_var_unsafe "PKG_${_vname_dst}" "${_vval_src}";
+			_vars_set_tmp="${_vars_set_tmp:+${_vars_set_tmp} }PKG_${_vname_dst}";
+		fi;
+	done;
+	_vars_set_old="$(ex_rtl_get_var_unsafe "${_vars_set_vname}")";
+	ex_rtl_set_var_unsafe "${_vars_set_vname}"			\
+		"${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
+};
+
+# vim:filetype=sh
