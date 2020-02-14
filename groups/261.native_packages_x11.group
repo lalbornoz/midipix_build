@@ -144,7 +144,7 @@ xtrans xwd xwin";
 : ${PKG_LIBXEXT_SHA256SUM:=b518d4d332231f313371fdefac59e3776f4f0823bcb23cf7c7305bfb57b16e35};
 : ${PKG_LIBXEXT_VERSION:=1.3.3};
 : ${PKG_LIBXEXT_URL:=https://www.x.org/releases/individual/lib/libXext-${PKG_LIBXEXT_VERSION}.tar.bz2};
-: ${PKG_LIBXFCE4UI_DEPENDS:="glib gtk2 libX11"};
+: ${PKG_LIBXFCE4UI_DEPENDS:="glib gtk2 libX11 libxfce4util xfconf"};
 : ${PKG_LIBXFCE4UI_SHA256SUM:=011d9532337a8d0c4d6d2c4dfc854b4f298dbad0e9513b3495a573673b863987};
 : ${PKG_LIBXFCE4UI_VERSION:=4.12.0};
 : ${PKG_LIBXFCE4UI_URL:=http://mirror.sobukus.de/files/grimoire/xfce/libxfce4ui-${PKG_LIBXFCE4UI_VERSION}.tar.bz2};

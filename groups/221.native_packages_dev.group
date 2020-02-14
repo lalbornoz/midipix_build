@@ -88,7 +88,7 @@ patchutils perl python2 python3 ruby smallbasic tk";
 : ${PKG_PYTHON2_CONFIGURE:=build/sbpython2/configure};
 : ${PKG_PYTHON2_CONFIGURE_ARGS:="--source-dir=../../Python-${PKG_PYTHON2_VERSION} --sysroot=${PREFIX_NATIVE} --prefix= --target=${DEFAULT_TARGET}"};
 : ${PKG_PYTHON2_ENV_VARS_EXTRA:="NATIVE_CFLAGS=-std=c99 -D_XOPEN_SOURCE=700 -I${PREFIX}/include:NATIVE_LDFLAGS=-L${PREFIX}/lib -ltinfo -Wl,-rpath,${PREFIX}/lib"};
-: ${PKG_PYTHON3_DEPENDS:="bzip2 curl gdbm libffi libreadline libressl libz ncursesw sqlite3"};
+: ${PKG_PYTHON3_DEPENDS:="bzip2 curl expat gdbm libffi libreadline libressl libz ncursesw sqlite3 xz"};
 : ${PKG_PYTHON3_SHA256SUM:=ab6193af1921b30f587b302fe385268510e80187ca83ca82d2bfe7ab544c6f91};
 : ${PKG_PYTHON3_VERSION:=3.6.3};
 : ${PKG_PYTHON3_URL:="https://www.python.org/ftp/python/${PKG_PYTHON3_VERSION}/Python-${PKG_PYTHON3_VERSION}.tgz"};

@@ -7,6 +7,7 @@ bash bc busybox calcurse coreutils dash datamash dos2unix ed figlet
 findutils gawk grep mksh moon_buggy mpg123 ninvaders openbsd_baseutils
 rc sbase screen sed sloccount tar tcsh the_silver_searcher toilet tree
 terminally_tetris ubase which zsh";
+: ${PKG_BASH_DEPENDS:="ncurses"};
 : ${PKG_BASH_SHA256SUM:=d86b3392c1202e8ff5a423b302e6284db7f8f435ea9f39b5b1b20fd3ac36dfcb};
 : ${PKG_BASH_VERSION:=4.4};
 : ${PKG_BASH_URL:=https://ftp.gnu.org/gnu/bash/bash-${PKG_BASH_VERSION}.tar.gz};
