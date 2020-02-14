@@ -9,7 +9,7 @@
 exp_pkg_check_depends() {
 	local _group_name="${1}" _pkg_depends="${2}" _pkg_name="${3}" _dependfl=0;
 	if ! [ -n "${_restart}" ]\
-	|| [ "${ARG_RESTART_RECURSIVE:-0}" -eq 1 ]; then
+	|| [ "${ARG_RESTART_RECURSIVE:-0}" -ge 1 ]; then
 		for _pkg_name_depend in ${_pkg_depends}; do
 			if [ -n "$(ex_rtl_lsearch "${_pkgs_wait}" "${_pkg_name_depend}")" ]\
 			|| [ -z "$(ex_rtl_lsearch "${_pkgs_complete}" "${_pkg_name_depend}")" ]; then
