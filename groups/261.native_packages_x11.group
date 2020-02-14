@@ -193,7 +193,7 @@ xtrans xwd xwin";
 : ${PKG_LIBXTST_SHA256SUM:=4655498a1b8e844e3d6f21f3b2c4e2b571effb5fd83199d428a6ba7ea4bf5204};
 : ${PKG_LIBXTST_VERSION:=1.2.3};
 : ${PKG_LIBXTST_URL:=http://www.x.org/releases/individual/lib/libXtst-${PKG_LIBXTST_VERSION}.tar.bz2};
-: ${PKG_MESA_DEPENDS:="libpthread_stubs libX11 libXext xcb"};
+: ${PKG_MESA_DEPENDS:="expat libpthread_stubs libX11 libXext libz xcb"};
 : ${PKG_MESA_SHA256SUM:=694e5c3d37717d23258c1f88bc134223c5d1aac70518d2f9134d6df3ee791eea};
 : ${PKG_MESA_VERSION:=18.0.0};
 : ${PKG_MESA_URL:=https://mesa.freedesktop.org/archive/mesa-${PKG_MESA_VERSION}.tar.xz};
