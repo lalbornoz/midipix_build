@@ -7,7 +7,7 @@ apk_tools aria2 bind dropbear fetchmail git gnupg gnutls httpd inetutils
 irssi isync ldns lighttpd lynx mailutils microsocks mtr mutt nginx
 nullmailer openlitespeed opensmtpd openssh pacman rsync socat thttpd
 w3m weechat wget whois";
-: ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl"};
+: ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
 : ${PKG_APK_TOOLS_URL:=http://git.alpinelinux.org/cgit/apk-tools/snapshot/apk-tools-${PKG_APK_TOOLS_VERSION}.tar.bz2};
@@ -18,7 +18,7 @@ w3m weechat wget whois";
 : ${PKG_ARIA2_VERSION:=1.32.0};
 : ${PKG_ARIA2_URL:=https://github.com/aria2/aria2/releases/download/release-${PKG_ARIA2_VERSION}/aria2-${PKG_ARIA2_VERSION}.tar.xz};
 : ${PKG_ARIA2_DISABLED:=1};
-: ${PKG_BIND_DEPENDS:="curl"};
+: ${PKG_BIND_DEPENDS:="curl libressl"};
 : ${PKG_BIND_SHA256SUM:=6c044e9ea81add9dbbd2f5dfc224964cc6b6e364e43a8d6d8b574d9282651802};
 : ${PKG_BIND_VERSION:=9.13.2};
 : ${PKG_BIND_URL:=https://ftp.isc.org/isc/bind/${PKG_BIND_VERSION}/bind-${PKG_BIND_VERSION}.tar.gz};
@@ -34,7 +34,7 @@ w3m weechat wget whois";
 : ${PKG_FETCHMAIL_VERSION:=6.4.0.beta4};
 : ${PKG_FETCHMAIL_URL:=http://krusty.dt.e-technik.tu-dortmund.de/~ma/fetchmail/fetchmail-${PKG_FETCHMAIL_VERSION}.tar.xz};
 : ${PKG_FETCHMAIL_CONFIGURE_ARGS_EXTRA:="--with-kerberos5=no --with-kerberos=no --with-ssl=${PREFIX_NATIVE}"};
-: ${PKG_GIT_DEPENDS:="curl"};
+: ${PKG_GIT_DEPENDS:="curl libz"};
 : ${PKG_GIT_SHA256SUM:=690f12cc5691e5adaf2dd390eae6f5acce68ae0d9bd9403814f8a1433833f02a};
 : ${PKG_GIT_VERSION:=2.17.1};
 : ${PKG_GIT_URL:=https://github.com/git/git/archive/v${PKG_GIT_VERSION}.tar.gz};
