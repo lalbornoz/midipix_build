@@ -78,7 +78,7 @@ buildp_init_env() {
 	if ex_rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
 		export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
 	else
-		: $((_rc+=(6-1)));
+		: $((_rc+=(9-1)));
 	fi;
 	return "${_rc}";
 };
@@ -96,7 +96,7 @@ buildp_init_files() {
 		ex_rtl_fileop mkdir "${PREFIX_RPM}";
 	fi;
 	if [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		_rc=8; _status="Error: another build targeting this architecture and build type is currently in progress.";
+		_rc=11; _status="Error: another build targeting this architecture and build type is currently in progress.";
 	else
 		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 		if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
@@ -143,10 +143,12 @@ buildp_init_getopts() {
 	done;
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
-	*=*)	ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
-	*)	BUILD_GROUPS="${BUILD_GROUPS:+${BUILD_GROUPS} }${1}"; ;;
+	*=*)		ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+	[^a-zA-Z]*)	_rc=1; _status="Error: build group names must start with [a-zA-Z]."; ;;
+	*[^_a-zA-Z]*)	_rc=2; _status="Error: build group names must not contain [^_a-zA-Z]."; ;;
+	*)		BUILD_GROUPS="${BUILD_GROUPS:+${BUILD_GROUPS} }${1}"; ;;
 	esac; shift; done;
-	return 0;
+	return "${_rc}";
 };
 
 buildp_init_prereqs() {
@@ -157,9 +159,11 @@ buildp_init_prereqs() {
 			mkdir mkfifo mv openssl paste patch pgrep pkill		\
 			printf readlink rm sed seq shuf sort stat tail		\
 			tar test touch tr wget xz >/dev/null; then
-		_rc=1; _status="Error: missing prerequisite package(s).";
+		_rc=3; _status="Error: missing prerequisite package(s).";
 	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
-		_rc=2; _status="Error: awk(1) in \$PATH must be GNU Awk.";
+		_rc=4; _status="Error: awk(1) in \$PATH must be GNU Awk.";
+	elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
+		_rc=5; _status="Error: sed(1) in \$PATH must be GNU sed.";
 	fi;
 	return "${_rc}";
 };
@@ -174,9 +178,9 @@ buildp_init_type() {
 	else
 		if [ "${BUILD}" != debug ]\
 		&& [ "${BUILD}" != release ]; then
-			_rc=3; _status="Error: unknown build type \`${BUILD}'.";
+			_rc=6; _status="Error: unknown build type \`${BUILD}'.";
 		fi;
-		_rc=4; _status="Error: invalid architecture \`${ARCH}'.";
+		_rc=7; _status="Error: invalid architecture \`${ARCH}'.";
 	fi;
 	return "${_rc}";
 };
@@ -199,16 +203,16 @@ buildp_init_vars() {
 		fi;
 	done;
 	if [ -z "${PREFIX}" ]; then
-		_rc=5; _status="Error: \${PREFIX} empty or unset.";
+		_rc=8; _status="Error: \${PREFIX} empty or unset.";
 	fi;
 	return "${_rc}";
 };
 
 build_fini() {
-	: $((BUILD_TIMES_SECS="$(ex_rtl_date %s)"-"${BUILD_TIMES_SECS}"));
-	: $((BUILD_TIMES_HOURS="${BUILD_TIMES_SECS}"/3600));
-	: $((BUILD_TIMES_MINUTES=("${BUILD_TIMES_SECS}"%3600)/60));
-	: $((BUILD_TIMES_SECS=("${BUILD_TIMES_SECS}"%3600)%60));
+	: $((BUILD_TIMES_SECS=$(ex_rtl_date %s)-${BUILD_TIMES_SECS}));
+	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
+	: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
+	: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
 	if [ -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 		ex_rtl_fileop rm ${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME};
 	fi;
