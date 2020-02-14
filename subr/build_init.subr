@@ -1,4 +1,4 @@
-build_ast() {
+buildp_ast() {
 	local _param="${1}" _pids_killed="";
 	rm -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 	case "${_param}" in
@@ -10,32 +10,162 @@ build_ast() {
 	fi;
 };
 
-build_fini() {
-	: $((BUILD_TIMES_SECS=$(ex_rtl_date %s)-${BUILD_TIMES_SECS}));
-	: $((BUILD_TIMES_HOURS=${BUILD_TIMES_SECS}/3600));
-	: $((BUILD_TIMES_MINUTES=(${BUILD_TIMES_SECS}%3600)/60));
-	: $((BUILD_TIMES_SECS=(${BUILD_TIMES_SECS}%3600)%60));
-	if [ -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		ex_rtl_fileop rm ${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME};
+buildp_init_args() {
+	_status="";
+	if [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
+	&& [ -e "${PREFIX}/build.gitref" ]\
+	&& [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
+		_status="Git repository has not changed since last build and --as-needed was specified.";
 	fi;
+	if [ -n "${ARG_RESTART}" ]\
+	&& [ "${ARG_RESTART#\*}" != "${ARG_RESTART}" ]; then
+		ARG_RESTART="${ARG_RESTART#\*}"; ARG_RESTART_RECURSIVE=1;
+	fi;
+	case "${ARG_RESTART}" in
+	ALL)	ARG_RESTART_AT=ALL; ;;
+	LAST)	ARG_RESTART_AT=""; ;;
+	"")	;;
+	*:*)	ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="${ARG_RESTART%:*}"; ;;
+	*)	ARG_RESTART="$(echo "${ARG_RESTART}" | sed "s/,/ /g")"; ARG_RESTART_AT=ALL; ;;
+	esac;
+	if [ "${ARG_RESTART}" = "LAST" ]; then
+		if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
+		&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
+			_last_pkg="$(cat "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}")";
+			ex_rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
+			ex_rtl_state_clear "${BUILD_WORKDIR}" "${_last_pkg}";
+		fi;
+	fi;
+	ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
+	BUILD_IS_PARENT=1;
+	BUILD_DATE_START="$(ex_rtl_date %Y-%m-%d-%H-%M-%S)";
+	BUILD_NFINI="${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}}";
+	BUILD_PKGS_FAILED="";
+	BUILD_TIMES_SECS="$(ex_rtl_date %s)";
+	if [ "${ARG_FETCH_FORCE}" = "ipv4" ]; then
+		DEFAULT_GIT_ARGS="-4${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
+		DEFAULT_WGET_ARGS="-4${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
+	elif [ "${ARG_FETCH_FORCE}" = "ipv6" ]; then
+		DEFAULT_GIT_ARGS="-6${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
+		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
+	fi;
+	return 0;
 };
 
-build_init() {
-	local __="" _env_vars="" _env_vars_except="" _env_var="" _log_last_fname="" _log_last_ts="" _vname="" _vname_val="";
-	umask 022;
-	if ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
-		ex_rtl_log_msg failexit "Error: awk(1) in \$PATH must be GNU Awk.";
+buildp_init_clean_prefix() {
+	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , prefix; then
+		ex_rtl_log_msg info "-C prefix specified, cleaning prefix...";
+		for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do
+			ex_rtl_fileop rm "${PREFIX}/${_pname}";
+		done;
 	fi;
-	if ! which pgrep >/dev/null 2>&1; then
-		ex_rtl_log_msg failexit "Error: missing pgrep.";
-	fi;
-	if [ -z "${DEFAULT_BUILD_CPUS}" ]\
-	&& [ -e /proc/cpuinfo ]; then
-		DEFAULT_BUILD_CPUS=$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo);
+	return 0;
+};
+
+buildp_init_env() {
+	local _rc=0 _vname="" _vname_val=""; _status="";
+	if [ -z "${DEFAULT_BUILD_CPUS}" ]; then
+		if [ -e /proc/cpuinfo ]; then
+			DEFAULT_BUILD_CPUS="$(awk '/^processor/{cpus++} END{print cpus}' /proc/cpuinfo)";
+		else
+			DEFAULT_BUILD_CPUS=1;
+		fi;
 	fi;
 	if [ "${ARG_PARALLEL}" = auto ]; then
 		ARG_PARALLEL="${DEFAULT_BUILD_CPUS}";
 	fi;
+	ex_rtl_clean_env "${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
+	if ex_rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
+		export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
+	else
+		: $((_rc+=(6-1)));
+	fi;
+	return "${_rc}";
+};
+
+buildp_init_exec() {
+	_status=""
+	trap "buildp_ast abort" HUP INT TERM USR1 USR2; trap "buildp_ast exit" EXIT; umask 022;
+	return 0;
+};
+
+buildp_init_files() {
+	local _log_last_fname="" _log_last_ts="" _rc=0; _status=""
+	ex_rtl_fileop mkdir "${BUILD_DLCACHEDIR}" "${BUILD_WORKDIR}";
+	if ex_rtl_lmatch "${ARG_DIST}" , rpm; then
+		ex_rtl_fileop mkdir "${PREFIX_RPM}";
+	fi;
+	if [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+		_rc=8; _status="Error: another build targeting this architecture and build type is currently in progress.";
+	else
+		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
+		if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
+			_log_last_ts="$(stat -c %Y "${DEFAULT_BUILD_LOG_FNAME}")";
+			_log_last_ts="$(awk 'BEGIN {printf(strftime("%Y-%m-%d-%H-%M-%S", '"${_log_last_ts}"'))}')";
+			_log_last_fname="${DEFAULT_BUILD_LOG_FNAME}.${_log_last_ts}";
+			ex_rtl_fileop mv "${DEFAULT_BUILD_LOG_FNAME}" "${_log_last_fname}";
+			ex_rtl_fileop ln_symbolic "${_log_last_fname}" "${DEFAULT_BUILD_LOG_LAST_FNAME}";
+		fi;
+		ex_rtl_fileop touch "${DEFAULT_BUILD_LOG_FNAME}";
+	fi;
+	return "${_rc}";
+};
+
+buildp_init_getopts() {
+	local _opt="" _shiftfl=0; _status="";
+	while [ "${#}" -gt 0 ]; do
+		case "${1}" in
+		--as-needed)	ARG_AS_NEEDED=1; _shiftfl=1; ;;
+		--debug-minipx)	ARG_DEBUG_MINIPIX=1; _shiftfl=1; ;;
+		-v*)		_opt="${1#-}"; while [ -n "${_opt}" ]; do
+					: $((ARG_VERBOSE+=1)); _opt="${_opt#?}";
+				done; _shiftfl=1; ;;
+		*)		_shiftfl=0; ;;
+		esac;
+		if [ "${_shiftfl}" -gt 0 ]; then
+			shift "${_shiftfl}"; continue;
+		elif getopts a:b:C:D:FhPr:R _opt; then
+			case "${_opt}" in
+			a)	ARCH="${OPTARG}"; ;;
+			b)	BUILD="${OPTARG}"; ;;
+			C)	ARG_CLEAN_BUILDS="${OPTARG}"; ;;
+			D)	ARG_DIST="${OPTARG}"; ;;
+			F)	ARG_FETCH_FORCE=1; ;;
+			h)	cat etc/build.usage; exit 0; ;;
+			P)	ARG_PARALLEL="${OPTARG:-auto}"; ;;
+			r)	ARG_RESTART="${OPTARG}"; ;;
+			R)	ARG_RELAXED=1; ;;
+			*)	cat etc/build.usage; exit 1; ;;
+			esac; shift $((${OPTIND}-1));
+		else
+			break;
+		fi;
+	done;
+	while [ ${#} -gt 0 ]; do
+	case "${1}" in
+	*=*)	ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+	*)	BUILD_GROUPS="${BUILD_GROUPS:+${BUILD_GROUPS} }${1}"; ;;
+	esac; shift; done;
+	return 0;
+};
+
+buildp_init_prereqs() {
+	local _rc=0; _status="";
+	if ! which	\
+			awk bunzip2 cat chmod cp date find git grep		\
+			gunzip gzip hostname install kill ln lzip make		\
+			mkdir mkfifo mv openssl paste patch pgrep pkill		\
+			printf readlink rm sed seq shuf sort stat tail		\
+			tar test touch tr wget xz >/dev/null; then
+		_rc=1; _status="Error: missing prerequisite package(s).";
+	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
+		_rc=2; _status="Error: awk(1) in \$PATH must be GNU Awk.";
+	fi;
+	return "${_rc}";
+};
+
+buildp_init_type() {
+	local _rc=0; _status="";
 	: ${ARCH:=nt64}; : ${BUILD:=debug};
 	if [ "${ARCH}" = nt32 ]; then
 		DEFAULT_TARGET="i686-nt32-midipix";
@@ -44,80 +174,62 @@ build_init() {
 	else
 		if [ "${BUILD}" != debug ]\
 		&& [ "${BUILD}" != release ]; then
-			ex_rtl_log_msg failexit "Error: unknown build type \`${BUILD}'.";
+			_rc=3; _status="Error: unknown build type \`${BUILD}'.";
 		fi;
-		ex_rtl_log_msg failexit "Error: invalid architecture \`${ARCH}'.";
+		_rc=4; _status="Error: invalid architecture \`${ARCH}'.";
 	fi;
-	for __ in ${HOME}/midipix_build.vars ${HOME}/.midipix_build.vars ../midipix_build.vars ./vars/env.vars; do
-		[ -e ${__} ] && . ${__};
+	return "${_rc}";
+};
+
+buildp_init_vars() {
+	local _fname="" _rc=0; _status="";
+	for _fname in	\
+			${HOME}/midipix_build.vars		\
+			${HOME}/.midipix_build.vars		\
+			../midipix_build.vars			\
+			./vars/env.vars; do
+		[ -e ${_fname} ] && . ${_fname};
 	done;
-	for __ in $(find ./groups -name *.group | sort); do
-		. "${__}"; __="${__##*/}"; __="${__%.group}";
-		if [ "${__#[0-9][0-9][0-9].*}" != "${__}" ]\
-		&& [ "${__#*[1-9].*}" = "${__}" ]\
-		&& [ "${__}" != "999.invariants.group" ]; then
-			GROUPS_DEFAULT="${GROUPS_DEFAULT:+${GROUPS_DEFAULT} }${__#*.}";
-		fi;
-	done;
-	if [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
-	&& [ -e "${PREFIX}/build.gitref" ]\
-	&& [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
-		ex_rtl_log_msg info "Git repository has not changed since last build and --as-needed was specified.";
-		exit 0;
-	fi;
-	export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
-	if [ "${ARG_FETCH_FORCE}" = "ipv4" ]; then
-		DEFAULT_GIT_ARGS="-4${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
-		DEFAULT_WGET_ARGS="-4${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
-	elif [ "${ARG_FETCH_FORCE}" = "ipv6" ]; then
-		DEFAULT_GIT_ARGS="-6${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
-		DEFAULT_WGET_ARGS="-6${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
-	fi;
-	_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
-	_env_vars_except="${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
-	for _env_var in ${_env_vars}; do
-		if [ "${_env_var#DEFAULT_}" != "${_env_var}" ]\
-		|| [ "${_env_var#PKG_}" != "${_env_var}" ]; then
-			_env_vars_except="${_env_vars_except:+${_env_vars_except} }${_env_var}";
+	for _fname in $(find ./groups -name *.group | sort); do
+		. "${_fname}"; _fname="${_fname##*/}"; _fname="${_fname%.group}";
+		if [ "${_fname#[0-9][0-9][0-9].*}" != "${_fname}" ]\
+		&& [ "${_fname#*[1-9].*}" = "${_fname}" ]\
+		&& [ "${_fname}" != "999.invariants.group" ]; then
+			GROUPS_DEFAULT="${GROUPS_DEFAULT:+${GROUPS_DEFAULT} }${_fname#*.}";
 		fi;
 	done;
-	ex_rtl_unset_vars $(ex_rtl_lfilter "${_env_vars}" "${_env_vars_except}");
-	ex_rtl_fileop mkdir "${BUILD_DLCACHEDIR}" "${BUILD_WORKDIR}";
-	if ex_rtl_lmatch "${ARG_DIST}" , rpm; then
-		ex_rtl_fileop mkdir "${PREFIX_RPM}";
+	if [ -z "${PREFIX}" ]; then
+		_rc=5; _status="Error: \${PREFIX} empty or unset.";
 	fi;
-	if [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		ex_rtl_log_msg failexit "Error: another build targeting this architecture and build type is currently in progress.";
+	return "${_rc}";
+};
+
+build_fini() {
+	: $((BUILD_TIMES_SECS="$(ex_rtl_date %s)"-"${BUILD_TIMES_SECS}"));
+	: $((BUILD_TIMES_HOURS="${BUILD_TIMES_SECS}"/3600));
+	: $((BUILD_TIMES_MINUTES=("${BUILD_TIMES_SECS}"%3600)/60));
+	: $((BUILD_TIMES_SECS=("${BUILD_TIMES_SECS}"%3600)%60));
+	if [ -f "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+		ex_rtl_fileop rm ${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME};
+	fi;
+};
+
+build_init() {
+	local _rc=0 _status="";
+	if ! buildp_init_exec		\
+	|| ! buildp_init_getopts "${@}"	\
+	|| ! buildp_init_prereqs	\
+	|| ! buildp_init_type		\
+	|| ! buildp_init_vars		\
+	|| ! buildp_init_env		\
+	|| ! buildp_init_args		\
+	|| ! buildp_init_files		\
+	|| ! buildp_init_clean_prefix; then
+		_rc="${?}"; ex_rtl_log_msg fail "${_status}"; exit "${_rc}";
+	elif [ -n "${_status}" ]; then
+		ex_rtl_log_msg info "${_status}"; exit 0;
 	else
-		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
-	fi;
-	if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
-		_log_last_ts="$(stat -c %Y "${DEFAULT_BUILD_LOG_FNAME}")";
-		_log_last_ts="$(awk 'BEGIN {printf(strftime("%Y-%m-%d-%H-%M-%S", '"${_log_last_ts}"'))}')";
-		_log_last_fname="${DEFAULT_BUILD_LOG_FNAME}.${_log_last_ts}";
-		ex_rtl_fileop mv "${DEFAULT_BUILD_LOG_FNAME}" "${_log_last_fname}";
-		ex_rtl_fileop ln_symbolic "${_log_last_fname}" "${DEFAULT_BUILD_LOG_LAST_FNAME}";
-	fi;
-	ex_rtl_fileop touch "${DEFAULT_BUILD_LOG_FNAME}";
-	BUILD_IS_PARENT=1;
-	BUILD_DATE_START="$(ex_rtl_date %Y-%m-%d-%H-%M-%S)";
-	BUILD_NFINI="${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}}";
-	BUILD_TIMES_SECS="$(ex_rtl_date %s)";
-	BUILD_PKGS_FAILED="";
-	trap "build_ast abort" HUP INT TERM USR1 USR2; trap "build_ast exit" EXIT;
-	for _vname in ${DEFAULT_CHECK_PATH_VARS}; do
-		_vname_val="$(ex_rtl_get_var_unsafe "${_vname}")";
-		if [ -z "${_vname_val}" ]; then
-			ex_rtl_log_msg failexit "Error: variable \`${_vname}' is empty or unset.";
-		elif [ "${_vname_val#* *}" != "${_vname_val}" ]; then
-			ex_rtl_log_msg failexit "Error: variable \`${_vname}' contains one or more whitespace characters.";
-		fi;
-	done;
-	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , prefix; then
-		ex_rtl_log_msg info "-C prefix specified, cleaning prefix...";
-		for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do
-			ex_rtl_fileop rm "${PREFIX}/${_pname}";
-		done;
+		return "${_rc}";
 	fi;
 };
 

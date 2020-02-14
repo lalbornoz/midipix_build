@@ -7,21 +7,12 @@ buildp_dispatch() {
 		_build_group_meta="" _build_group_lc="" _build_groups_lc="" _last_pkg="" _pkg_restart="" PKGS_FOUND;
 	case "${_msg}" in
 	# Top-level
-	start_build)	shift; build_args "${@}"; build_init;
-			ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
+	start_build)	shift; build_init "${@}";
 			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
 			_build_groups_lc="${BUILD_GROUPS:-${GROUPS_DEFAULT}}";
 			if ! ex_rtl_lmatch "${ARG_DIST}" , rpm; then
 				_build_groups_lc="$(ex_rtl_lfilter "${_build_groups_lc}" "host_deps_rpm")";
-			fi;
-			if [ "${ARG_RESTART}" = "LAST" ]; then
-				if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
-				&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
-					_last_pkg="$(cat "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}")";
-					ex_rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
-					ex_rtl_state_clear "${BUILD_WORKDIR}" "${_last_pkg}";
-				fi;
 			fi;
 			PKGS_FOUND="";
 			for _build_group_lc in ${_build_groups_lc}; do
