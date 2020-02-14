@@ -11,15 +11,18 @@ buildp_ast() {
 };
 
 buildp_init_args() {
-	_status="";
+	local _last_pkg=""; _status="";
 	if [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
 	&& [ -e "${PREFIX}/build.gitref" ]\
 	&& [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
 		_status="Git repository has not changed since last build and --as-needed was specified.";
 	fi;
-	if [ -n "${ARG_RESTART}" ]\
-	&& [ "${ARG_RESTART#\*}" != "${ARG_RESTART}" ]; then
-		ARG_RESTART="${ARG_RESTART#\*}"; ARG_RESTART_RECURSIVE=1;
+	if [ -n "${ARG_RESTART}" ]; then
+		if [ "${ARG_RESTART#\*\*}" != "${ARG_RESTART}" ]; then
+			ARG_RESTART="${ARG_RESTART#\*\*}"; ARG_RESTART_RECURSIVE=2;
+		elif [ "${ARG_RESTART#\*}" != "${ARG_RESTART}" ]; then
+			ARG_RESTART="${ARG_RESTART#\*}"; ARG_RESTART_RECURSIVE=1;
+		fi;
 	fi;
 	case "${ARG_RESTART}" in
 	ALL)	ARG_RESTART_AT=ALL; ;;

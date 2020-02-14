@@ -4,7 +4,7 @@
 
 buildp_dispatch() {
 	local _msg="${1}" _group_name="${2}" _pkg_name="${3}"					\
-		_build_group_meta="" _build_group_lc="" _build_groups_lc="" _last_pkg="" _pkg_restart="" PKGS_FOUND;
+		_build_group_meta="" _build_group_lc="" _build_groups_lc="" _pkg_restart="" PKGS_FOUND;
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_init "${@}";
