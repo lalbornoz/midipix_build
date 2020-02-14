@@ -82,7 +82,7 @@ w3m weechat wget whois";
 : ${PKG_LIGHTTPD_VERSION:=1.4.45};
 : ${PKG_LIGHTTPD_URL:=http://download.lighttpd.net/lighttpd/releases-${PKG_LIGHTTPD_VERSION%.*}.x/lighttpd-${PKG_LIGHTTPD_VERSION}.tar.xz};
 : ${PKG_LIGHTTPD_CONFIGURE_ARGS_EXTRA:="--with-pcre=${PREFIX_NATIVE}"};
-: ${PKG_LYNX_DEPENDS:="ncursesw"};
+: ${PKG_LYNX_DEPENDS:="libressl ncursesw"};
 : ${PKG_LYNX_SHA256SUM:=6980e75cf0d677fd52c116e2e0dfd3884e360970c88c8356a114338500d5bee7};
 : ${PKG_LYNX_VERSION:=2.8.8rel.2};
 : ${PKG_LYNX_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/lynx/lynx${PKG_LYNX_VERSION}.tar.bz2};
