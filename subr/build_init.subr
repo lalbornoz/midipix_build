@@ -164,9 +164,9 @@ buildp_init_prereqs() {
 	if ! which	\
 			awk bunzip2 cat chmod cp date find git grep		\
 			gunzip gzip hostname install kill ln lzip make		\
-			mkdir mkfifo mv openssl paste patch pgrep pkill		\
-			printf readlink rm sed seq sort stat tail tar		\
-			test touch tr wget xz >/dev/null; then
+			mkdir mkfifo mv paste patch pgrep pkill printf		\
+			readlink rm sed seq sha256sum sort stat tail		\
+			tar test touch tr wget xz >/dev/null; then
 		_rc=4; _status="Error: missing prerequisite package(s).";
 	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
 		_rc=5; _status="Error: awk(1) in \$PATH must be GNU Awk.";
