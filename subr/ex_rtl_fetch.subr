@@ -5,6 +5,16 @@
 exp_rtl_fetch_url_git() {
 	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}"	\
 		_oldpwd="";
+	(set -o errexit -o noglob; trap "rm -f \"${BUILD_DLCACHEDIR}/${_subdir%%[/]}.fetching\"" EXIT;
+	while true; do
+		if flock -E 622 -w 3600 4; then
+			break;
+		elif [ "${?}" -eq 622 ]; then
+			continue;
+		else
+			exit "${?}";
+		fi;
+	done;
 	if [ -e "${BUILD_DLCACHEDIR}/${_subdir}" ]; then
 		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
 			git pull ${DEFAULT_GIT_ARGS} origin "${_branch:-main}");
@@ -22,7 +32,12 @@ exp_rtl_fetch_url_git() {
 	_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}";
 	ex_rtl_fileop rm "${_tgtdir}/${_subdir}";
 	ex_rtl_fileop cp "${BUILD_DLCACHEDIR}/${_subdir}" "${_tgtdir}";
-	ex_rtl_fileop cd "${_oldpwd}";
+	ex_rtl_fileop cd "${_oldpwd}";) 4<>"${BUILD_DLCACHEDIR}/${_subdir%%[/]}.fetching";
+	if [ "${?}" -eq 0 ]; then
+		cd "$(pwd)";
+	else
+		return "${?}";
+	fi;
 };
 
 ex_rtl_fetch_urls_git() {
@@ -40,34 +55,38 @@ ex_rtl_fetch_urls_git() {
 		fi;
 		exp_rtl_fetch_url_git "${_tgtdir}" "${_subdir}"	\
 			"${_url}" "${_git_branch}";
-		(ex_rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
-			git submodule update --init);
 	done;
 };
 
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 ex_rtl_fetch_url_wget() {
-	local _url="${1}" _sha256sum_src="${2}" _sha256sum_dst="";
+	local _url="${1}" _sha256sum_src="${2}" _target_fname="${3}" _sha256sum_dst="";
 	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
 		return 0;
+	elif [ -z "${_target_fname}" ]; then
+		_target_fname="$(ex_rtl_basename "${_url}")";
 	fi;
-	if [ -z "${3}" ]; then
-		_url_dst="${BUILD_DLCACHEDIR}/$(ex_rtl_basename "${_url}")";
-	else
-		_url_dst="${BUILD_DLCACHEDIR}/${3}";
-	fi;
-	if [ -e "${_url_dst}.fetched" ]; then
-		return 0;
-	else
-		wget ${DEFAULT_WGET_ARGS} -c -O "${_url_dst}" "${_url}";
-	fi;
-	if [ -n "${_sha256sum_src}" ]; then
-		set -- $(openssl dgst -sha256 "${_url_dst}"); shift $((${#}-1));
-		if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
-			ex_rtl_log_msg failexit "Error: hash mismatch for URL \`${_url}' (downloaded file: ${_sha256sum_dst}, from build variables: ${_sha256sum_src}.)";
+	_url_dst="${BUILD_DLCACHEDIR}/${_target_fname}";
+	(set -o errexit -o noglob; trap "_rc=\"\${?}\" ;rm -f \"${_url_dst}.fetching\"; exit \"\${_rc}\";" EXIT;
+	while true; do
+		if flock -E 622 -w 3600 4; then
+			break;
+		elif [ "${?}" -eq 622 ]; then
+			continue;
+		else
+			exit "${?}";
 		fi;
-	fi;
-	touch "${_url_dst}.fetched";
+	done;
+	if [ ! -e "${_url_dst}.fetched" ]; then
+		wget ${DEFAULT_WGET_ARGS} -O "${_url_dst}" "${_url}";
+		if [ -n "${_sha256sum_src}" ]; then
+			set -- $(openssl dgst -sha256 "${_url_dst}"); shift $((${#}-1));
+			if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
+				ex_rtl_log_msg failexit "Error: hash mismatch for URL \`${_url}' (downloaded file: ${_sha256sum_dst}, from build variables: ${_sha256sum_src}.)";
+			fi;
+		fi;
+		ex_rtl_fileop touch "${_url_dst}.fetched";
+	fi;) 4<>"${_url_dst}.fetching";
 };
 
 # vim:filetype=sh
