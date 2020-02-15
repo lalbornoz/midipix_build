@@ -3,14 +3,14 @@
 #
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
-alsa_lib apr apr_util bdwgc bmake bochs bzip2 classpath clzip cmake
-cron curl dante dbus debianutils emacs expat ffmpeg file gdbm geoip
-gettext_tiny ghostscript giflib glib gnuchess gzip hastyhex hexcurse
-htop icecast imagemagick infounzip infozip jamvm john lcms2 less lmdb
-lolcode lua mintty mlogin musl_compat musl_fts ncdu ncurses ncursestw
-ncursesw npth openjpeg p7zip pcre popt procps_ng qemu qpdf qrencode
-rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo tiff tmux tzdb
-utf8proc util_linux vim w32api w32lib xorriso xz yabasic zstd";
+alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron curl
+dante dbus debianutils emacs expat ffmpeg file gdbm geoip gettext_tiny
+ghostscript giflib glib gnuchess gzip hastyhex hexcurse htop icecast
+imagemagick infounzip infozip john lcms2 less lmdb lolcode lua mintty
+mlogin musl_compat musl_fts ncdu ncurses ncursestw ncursesw npth openjpeg
+p7zip pcre popt procps_ng qemu qpdf qrencode rpm rw shared_mime_info
+slang sqlite3 tcl tdnf texinfo tiff tmux tzdb utf8proc util_linux vim
+w32api w32lib xorriso xz yabasic zstd";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
 : ${PKG_ALSA_LIB_URL:=ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PKG_ALSA_LIB_VERSION}.tar.bz2};
@@ -50,14 +50,6 @@ utf8proc util_linux vim w32api w32lib xorriso xz yabasic zstd";
 : ${PKG_BZIP2_IN_TREE:=1};
 : ${PKG_BZIP2_MAKEFLAGS_BUILD_EXTRA:=-f Makefile-libbz2_so};
 : ${PKG_BZIP2_MAKE_INSTALL_VNAME:=PREFIX};
-: ${PKG_CLASSPATH_SHA256SUM:=f929297f8ae9b613a1a167e231566861893260651d913ad9b6c11933895fecc8};
-: ${PKG_CLASSPATH_VERSION:=0.99};
-: ${PKG_CLASSPATH_URL:=ftp://ftp.gnu.org/gnu/classpath/classpath-${PKG_CLASSPATH_VERSION}.tar.gz};
-: ${PKG_CLASSPATH_CONFIGURE_ARGS_EXTRA:="--disable-plugin --disable-alsa --disable-gtk-peer --disable-gconf-peer --with-gmp=${PREFIX_NATIVE} --with-gmp-include=${PREFIX_NATIVE}/include --with-gmp-lib=${PREFIX_NATIVE}/lib"};
-if ! which javac >/dev/null 2>&1; then
-	: ${PKG_CLASSPATH_DISABLED:=1};
-fi;
-: ${PKG_CLASSPATH_ENV_VARS_EXTRA:="GMP_CFLAGS=-I${PREFIX_NATIVE}/include"};
 : ${PKG_CLZIP_SHA256SUM:=d9d51212afa80371dc2546d278ef8ebbb3cd57c06fdd761b7b204497586d24c0};
 : ${PKG_CLZIP_VERSION:=1.11};
 : ${PKG_CLZIP_URL:=http://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_VERSION}.tar.gz};
@@ -180,15 +172,6 @@ fi;
 : ${PKG_INFOZIP_URLS_GIT:=infozip=https://github.com/Redfoxmoon3/infozip.git@master};
 : ${PKG_INFOZIP_IN_TREE:=1};
 : ${PKG_INFOZIP_CFLAGS_BUILD_EXTRA:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
-: ${PKG_JAMVM_SHA256SUM:=76428e96df0ae9dd964c7a7c74c1e9a837e2f312c39e9a357fa8178f7eff80da};
-: ${PKG_JAMVM_VERSION:=2.0.0};
-: ${PKG_JAMVM_URL:=http://sourceforge.mirrorservice.org/j/ja/jamvm/jamvm/JamVM%20${PKG_JAMVM_VERSION}/jamvm-${PKG_JAMVM_VERSION}.tar.gz};
-: ${PKG_JAMVM_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/lib/libffi-3.2.1/include};
-: ${PKG_JAMVM_CONFIGURE_ARGS_EXTRA:="--enable-trace --with-classpath-install-dir= --enable-ffi"};
-if ! which javac >/dev/null 2>&1; then
-	: ${PKG_JAMVM_DISABLED:=1};
-fi;
-: ${PKG_JAMVM_IN_TREE:=1};
 : ${PKG_JOHN_SHA256SUM:=952cf68369fb5b27f2d112ce7ca1eb16b975c85cbce8c658abb8bc5a20e1b266};
 : ${PKG_JOHN_VERSION:=1.8.0};
 : ${PKG_JOHN_URL:=http://www.openwall.com/john/j/john-${PKG_JOHN_VERSION}.tar.xz};
