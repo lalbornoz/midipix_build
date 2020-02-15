@@ -75,14 +75,14 @@ buildp_init_env() {
 			ARG_PARALLEL="${DEFAULT_BUILD_CPUS}";
 		fi; ;;
 	*[^0-9]*)
-		_rc=9; _status="Error: invalid jobs count \`${ARG_PARALLEL}'."; ;;
+		_rc=10; _status="Error: invalid jobs count \`${ARG_PARALLEL}'."; ;;
 	esac;
 	if [ "${_rc}" -eq 0 ]; then
 		ex_rtl_clean_env "${DEFAULT_CLEAR_ENV_VARS_EXCEPT}";
 		if ex_rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
 			export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
 		else
-			: $((_rc+=(10-1)));
+			: $((_rc+=(11-1)));
 		fi;
 	fi;
 	return "${_rc}";
@@ -101,7 +101,7 @@ buildp_init_files() {
 		ex_rtl_fileop mkdir "${PREFIX_RPM}";
 	fi;
 	if [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		_rc=12; _status="Error: another build targeting this architecture and build type is currently in progress.";
+		_rc=13; _status="Error: another build targeting this architecture and build type is currently in progress.";
 	else
 		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 		if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
@@ -129,7 +129,7 @@ buildp_init_getopts() {
 		esac;
 		if [ "${_shiftfl}" -gt 0 ]; then
 			shift "${_shiftfl}"; continue;
-		elif getopts a:b:C:D:FhPr:R _opt; then
+		elif getopts a:b:C:D:Fhp:Pr:R _opt; then
 			case "${_opt}" in
 			a)	ARCH="${OPTARG}"; ;;
 			b)	BUILD="${OPTARG}"; ;;
@@ -137,22 +137,25 @@ buildp_init_getopts() {
 			D)	ARG_DIST="${OPTARG}"; ;;
 			F)	ARG_FETCH_FORCE=1; ;;
 			h)	cat etc/build.usage; exit 0; ;;
-			P)	ARG_PARALLEL="${1#-P}"; ARG_PARALLEL="${ARG_PARALLEL:-auto}"; ;;
+			p)	ARG_PARALLEL="${OPTARG}"; ;;
+			P)	ARG_PARALLEL="auto"; ;;
 			r)	ARG_RESTART="${OPTARG}"; ;;
 			R)	ARG_RELAXED=1; ;;
 			*)	cat etc/build.usage; exit 1; ;;
-			esac; shift $((${OPTIND}-1));
+			esac; shift $((${OPTIND}-1)); OPTIND=1;
 		else
-			break;
+			_rc=1; _status="Error: invalid argument \`${1}'."; break;
 		fi;
 	done;
-	while [ ${#} -gt 0 ]; do
-	case "${1}" in
-	*=*)		ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
-	[^a-zA-Z]*)	_rc=1; _status="Error: build group names must start with [a-zA-Z]."; ;;
-	*[^_a-zA-Z]*)	_rc=2; _status="Error: build group names must not contain [^_a-zA-Z]."; ;;
-	*)		BUILD_GROUPS="${BUILD_GROUPS:+${BUILD_GROUPS} }${1}"; ;;
-	esac; shift; done;
+	if [ "${_rc}" -eq 0 ]; then
+		while [ ${#} -gt 0 ]; do
+		case "${1}" in
+		*=*)		ex_rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+		[^a-zA-Z]*)	_rc=2; _status="Error: build group names must start with [a-zA-Z]."; ;;
+		*[^_a-zA-Z]*)	_rc=3; _status="Error: build group names must not contain [^_a-zA-Z]."; ;;
+		*)		BUILD_GROUPS="${BUILD_GROUPS:+${BUILD_GROUPS} }${1}"; ;;
+		esac; shift; done;
+	fi;
 	return "${_rc}";
 };
 
@@ -164,11 +167,11 @@ buildp_init_prereqs() {
 			mkdir mkfifo mv openssl paste patch pgrep pkill		\
 			printf readlink rm sed seq shuf sort stat tail		\
 			tar test touch tr wget xz >/dev/null; then
-		_rc=3; _status="Error: missing prerequisite package(s).";
+		_rc=4; _status="Error: missing prerequisite package(s).";
 	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
-		_rc=4; _status="Error: awk(1) in \$PATH must be GNU Awk.";
+		_rc=5; _status="Error: awk(1) in \$PATH must be GNU Awk.";
 	elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
-		_rc=5; _status="Error: sed(1) in \$PATH must be GNU sed.";
+		_rc=6; _status="Error: sed(1) in \$PATH must be GNU sed.";
 	fi;
 	return "${_rc}";
 };
@@ -183,9 +186,9 @@ buildp_init_type() {
 	else
 		if [ "${BUILD}" != debug ]\
 		&& [ "${BUILD}" != release ]; then
-			_rc=6; _status="Error: unknown build type \`${BUILD}'.";
+			_rc=7; _status="Error: unknown build type \`${BUILD}'.";
 		fi;
-		_rc=7; _status="Error: invalid architecture \`${ARCH}'.";
+		_rc=8; _status="Error: invalid architecture \`${ARCH}'.";
 	fi;
 	return "${_rc}";
 };
@@ -215,7 +218,7 @@ buildp_init_vars() {
 		fi;
 	done;
 	if [ -z "${PREFIX}" ]; then
-		_rc=8; _status="Error: \${PREFIX} empty or unset.";
+		_rc=9; _status="Error: \${PREFIX} empty or unset.";
 	fi;
 	return "${_rc}";
 };
