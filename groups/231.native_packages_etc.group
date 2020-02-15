@@ -3,15 +3,14 @@
 #
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
-alsa_lib apr apr_util bdwgc bmake bochs bzip2 ca_certificates classpath
-clzip cmake cron curl dante dbus debianutils emacs expat ffmpeg file
-gdbm geoip gettext_tiny ghostscript giflib glib gnuchess gzip hastyhex
-hexcurse htop icecast imagemagick infounzip infozip jamvm john lcms2
-less lmdb lolcode lua mc mintty mlogin musl_compat musl_fts nano ncdu
-ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng qemu
-qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
-tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xz yabasic
-zstd";
+alsa_lib apr apr_util bdwgc bmake bochs bzip2 classpath clzip cmake
+cron curl dante dbus debianutils emacs expat ffmpeg file gdbm geoip
+gettext_tiny ghostscript giflib glib gnuchess gzip hastyhex hexcurse
+htop icecast imagemagick infounzip infozip jamvm john lcms2 less lmdb
+lolcode lua mintty mlogin musl_compat musl_fts ncdu ncurses ncursestw
+ncursesw npth openjpeg p7zip pcre popt procps_ng qemu qpdf qrencode
+rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo tiff tmux tzdb
+utf8proc util_linux vim w32api w32lib xorriso xz yabasic zstd";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
 : ${PKG_ALSA_LIB_URL:=ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PKG_ALSA_LIB_VERSION}.tar.bz2};
@@ -51,12 +50,6 @@ zstd";
 : ${PKG_BZIP2_IN_TREE:=1};
 : ${PKG_BZIP2_MAKEFLAGS_BUILD_EXTRA:=-f Makefile-libbz2_so};
 : ${PKG_BZIP2_MAKE_INSTALL_VNAME:=PREFIX};
-: ${PKG_CA_CERTIFICATES_DEPENDS:="libressl"};
-: ${PKG_CA_CERTIFICATES_URLS_GIT:="ca-certificates=https://github.com/Redfoxmoon3/ca-certificates@master"};
-: ${PKG_CA_CERTIFICATES_IN_TREE:=1};
-: ${PKG_CA_CERTIFICATES_CFLAGS_BUILD_EXTRA:=-I${PREFIX_NATIVE}/include};
-: ${PKG_CA_CERTIFICATES_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib};
-: ${PKG_CA_CERTIFICATES_ENV_VARS_EXTRA:="HOST_CC=gcc"};
 : ${PKG_CLASSPATH_SHA256SUM:=f929297f8ae9b613a1a167e231566861893260651d913ad9b6c11933895fecc8};
 : ${PKG_CLASSPATH_VERSION:=0.99};
 : ${PKG_CLASSPATH_URL:=ftp://ftp.gnu.org/gnu/classpath/classpath-${PKG_CLASSPATH_VERSION}.tar.gz};
@@ -175,7 +168,7 @@ fi;
 : ${PKG_ICECAST_VERSION:=2.4.99.2-283};
 : ${PKG_ICECAST_URL:=https://people.xiph.org/~epirat/Icecast/icecast-${PKG_ICECAST_VERSION}.tar.gz};
 : ${PKG_ICECAST_CONFIGURE_ARGS_EXTRA:="--without-speex"};
-: ${PKG_IMAGEMAGICK_DEPENDS:="curl xz zstd"};
+: ${PKG_IMAGEMAGICK_DEPENDS:="curl bzip2 libz xz zstd"};
 : ${PKG_IMAGEMAGICK_SHA256SUM:=67859f9cba97f2c06b5e416898216e49216be00c7cba3dd89896e49331aef96d};
 : ${PKG_IMAGEMAGICK_VERSION:=7.0.9-12};
 : ${PKG_IMAGEMAGICK_URL:=https://imagemagick.org/download/releases/ImageMagick-${PKG_IMAGEMAGICK_VERSION}.tar.xz};
@@ -221,13 +214,6 @@ fi;
 : ${PKG_LUA_IN_TREE:=1};
 : ${PKG_LUA_CONFIGURE_ARGS_EXTRA:="--with-readline --with-compat-module"};
 : ${PKG_LUA_INSTALL_FILES:=@liblua.so=lib/liblua.so.0};
-: ${PKG_MC_DEPENDS:="ncursesw"};
-: ${PKG_MC_SHA256SUM:=eb9e56bbb5b2893601d100d0e0293983049b302c5ab61bfb544ad0ee2cc1f2df};
-: ${PKG_MC_VERSION:=4.8.19};
-: ${PKG_MC_URL:=http://ftp.midnight-commander.org/mc-${PKG_MC_VERSION}.tar.xz};
-: ${PKG_MC_CFLAGS_CONFIGURE_EXTRA:="-DNCURSES_INTERNALS -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncursesw"};
-: ${PKG_MC_CONFIGURE_ARGS_EXTRA:="--with-screen=ncurses --x-includes=${PREFIX_NATIVE}/include/X11 --x-libraries=${PREFIX_NATIVE}/lib"};
-: ${PKG_MC_LDFLAGS_BUILD_EXTRA:=-ltinfow};
 : ${PKG_MINTTY_DEPENDS:="w32api w32lib"};
 : ${PKG_MINTTY_URLS_GIT:="mintty=https://github.com/midipix-ports/mintty.git@midipix bmintty=https://github.com/midipix-ports/bmintty.git@main"};
 : ${PKG_MINTTY_CONFIGURE:=bmintty/configure};
@@ -240,11 +226,6 @@ fi;
 : ${PKG_MUSL_FTS_SHA256SUM:=32dfe02768f1d3d91ab04df4fbdb7922cd34cd529ce7081a78c3ca8b8652d1ee};
 : ${PKG_MUSL_FTS_VERSION:=1.2.7};
 : ${PKG_MUSL_FTS_URL:=https://midipix.org/mirror/musl-fts/musl-fts-${PKG_MUSL_FTS_VERSION}.tar.xz};
-: ${PKG_NANO_DEPENDS:="file ncursesw"};
-: ${PKG_NANO_SHA256SUM:=7abb2c2eff69472520becbde4d9421349639cc1cc47f4756ad36c3a66836e52b};
-: ${PKG_NANO_VERSION:=4.5};
-: ${PKG_NANO_URL:=http://www.nano-editor.org/dist/v${PKG_NANO_VERSION%.[0-9]}/nano-${PKG_NANO_VERSION}.tar.gz};
-: ${PKG_NANO_MAKEFLAGS_BUILD:="LIBS=-Wl,-lz,-lmagic,-lncursesw,-ltinfow"};
 : ${PKG_NCDU_DEPENDS:="ncursesw"};
 : ${PKG_NCDU_SHA256SUM:=be31e0e8c13a0189f2a186936f7e298c6390ebdc573bb4a1330bc1fcbf56e13e};
 : ${PKG_NCDU_VERSION:=1.14.1};
@@ -284,7 +265,7 @@ fi;
 : ${PKG_POPT_SHA256SUM:=e728ed296fe9f069a0e005003c3d6b2dde3d9cad453422a10d6558616d304cc8};
 : ${PKG_POPT_VERSION:=1.16};
 : ${PKG_POPT_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/popt/popt-${PKG_POPT_VERSION}.tar.gz};
-: ${PKG_PROCPS_NG_DEPENDS:="ncursesw"};
+: ${PKG_PROCPS_NG_DEPENDS:="ncurses ncursesw"};
 : ${PKG_PROCPS_NG_SHA256SUM:=440af4845fee9f55b721aa456f88259668465ddb37168ea1e2d2ef195f55bbc4};
 : ${PKG_PROCPS_NG_VERSION:=3.3.15};
 : ${PKG_PROCPS_NG_URL:=https://gitlab.com/procps-ng/procps/repository/archive.tar.gz?ref=v${PKG_PROCPS_NG_VERSION}};
@@ -310,7 +291,7 @@ fi;
 : ${PKG_QRENCODE_VERSION:=3.4.4};
 : ${PKG_QRENCODE_URL:=https://fukuchi.org/works/qrencode/qrencode-${PKG_QRENCODE_VERSION}.tar.bz2};
 : ${PKG_QRENCODE_CONFIGURE_ARGS_EXTRA:=--disable-sdltest};
-: ${PKG_RPM_DEPENDS:="curl dbus file libarchive libgcrypt lmdb lua popt"};
+: ${PKG_RPM_DEPENDS:="curl dbus file libarchive libgcrypt libz lmdb lua popt"};
 : ${PKG_RPM_SHA256SUM:=ddef45f9601cd12042edfc9b6e37efcca32814e1e0f4bb8682d08144a3e2d230};
 : ${PKG_RPM_VERSION:=4.15.1};
 : ${PKG_RPM_URL:=http://ftp.rpm.org/releases/rpm-${PKG_RPM_VERSION%.*}.x/rpm-${PKG_RPM_VERSION}.tar.bz2};
