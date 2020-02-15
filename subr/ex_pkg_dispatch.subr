@@ -35,6 +35,7 @@ exp_pkg_dispatch_group() {
 				_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${_pkg_name}";
 				break;
 			elif [ "${_pkg_skipfl:-0}" -eq 1 ]; then
+				_pkgs_found_new="${_pkgs_found_new:+${_pkgs_found_new} }${_pkg_name}";
 				continue;
 			fi;
 		done;
