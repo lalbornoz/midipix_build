@@ -4,9 +4,9 @@
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 bash bc busybox calcurse coreutils dash datamash dos2unix ed figlet
-findutils gawk grep mksh moon_buggy mpg123 ninvaders openbsd_baseutils
-rc sbase screen sed sloccount tar tcsh the_silver_searcher toilet tree
-terminally_tetris ubase which zsh";
+findutils gawk grep mc mksh moon_buggy mpg123 nano ninvaders
+openbsd_baseutils rc sbase screen sed sloccount tar tcsh
+the_silver_searcher toilet tree terminally_tetris ubase which zsh";
 : ${PKG_BASH_DEPENDS:="ncurses"};
 : ${PKG_BASH_SHA256SUM:=d86b3392c1202e8ff5a423b302e6284db7f8f435ea9f39b5b1b20fd3ac36dfcb};
 : ${PKG_BASH_VERSION:=4.4};
@@ -63,6 +63,13 @@ terminally_tetris ubase which zsh";
 : ${PKG_GREP_SHA256SUM:=b960541c499619efd6afe1fa795402e4733c8e11ebf9fafccc0bb4bccdc5b514};
 : ${PKG_GREP_VERSION:=3.3};
 : ${PKG_GREP_URL:=https://ftp.gnu.org/gnu/grep/grep-${PKG_GREP_VERSION}.tar.xz};
+: ${PKG_MC_DEPENDS:="glib libX11 ncursesw"};
+: ${PKG_MC_SHA256SUM:=eb9e56bbb5b2893601d100d0e0293983049b302c5ab61bfb544ad0ee2cc1f2df};
+: ${PKG_MC_VERSION:=4.8.19};
+: ${PKG_MC_URL:=http://ftp.midnight-commander.org/mc-${PKG_MC_VERSION}.tar.xz};
+: ${PKG_MC_CFLAGS_CONFIGURE_EXTRA:="-DNCURSES_INTERNALS -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncursesw"};
+: ${PKG_MC_CONFIGURE_ARGS_EXTRA:="--with-screen=ncurses --x-includes=${PREFIX_NATIVE}/include/X11 --x-libraries=${PREFIX_NATIVE}/lib"};
+: ${PKG_MC_LDFLAGS_BUILD_EXTRA:=-ltinfow};
 : ${PKG_MKSH_SHA256SUM:=8bce3837c386684aa7780f085f1a4dbd5e3e26fb5c528ee0d41ae29af7f39013};
 : ${PKG_MKSH_VERSION:=R54};
 : ${PKG_MKSH_URL:=http://pub.allbsd.org/MirOS/dist/mir/mksh/mksh-${PKG_MKSH_VERSION}.tgz};
@@ -85,6 +92,11 @@ terminally_tetris ubase which zsh";
 : ${PKG_MPG123_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_UTF16_DEFAULT"};
 : ${PKG_MPG123_CONFIGURE_ARGS_EXTRA:="--enable-modules  --with-cpu=generic_dither --with-audio=win32"};
 : ${PKG_MPG123_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lkernel32"};
+: ${PKG_NANO_DEPENDS:="file libz ncursesw"};
+: ${PKG_NANO_SHA256SUM:=7abb2c2eff69472520becbde4d9421349639cc1cc47f4756ad36c3a66836e52b};
+: ${PKG_NANO_VERSION:=4.5};
+: ${PKG_NANO_URL:=http://www.nano-editor.org/dist/v${PKG_NANO_VERSION%.[0-9]}/nano-${PKG_NANO_VERSION}.tar.gz};
+: ${PKG_NANO_MAKEFLAGS_BUILD:="LIBS=-Wl,-lz,-lmagic,-lncursesw,-ltinfow"};
 : ${PKG_NINVADERS_DEPENDS:="ncurses"};
 : ${PKG_NINVADERS_SHA256SUM:=bfbc5c378704d9cf5e7fed288dac88859149bee5ed0850175759d310b61fd30b};
 : ${PKG_NINVADERS_VERSION:=0.1.1};
@@ -164,7 +176,7 @@ terminally_tetris ubase which zsh";
 : ${PKG_WHICH_SHA256SUM:=f4a245b94124b377d8b49646bf421f9155d36aa7614b6ebf83705d3ffc76eaad};
 : ${PKG_WHICH_VERSION:=2.21};
 : ${PKG_WHICH_URL:=https://ftp.gnu.org/gnu/which/which-${PKG_WHICH_VERSION}.tar.gz};
-: ${PKG_ZSH_DEPENDS:="ncursesw"};
+: ${PKG_ZSH_DEPENDS:="ncurses ncursesw"};
 : ${PKG_ZSH_SHA256SUM:=7260292c2c1d483b2d50febfa5055176bd512b32a8833b116177bf5f01e77ee8};
 : ${PKG_ZSH_VERSION:=5.7.1};
 : ${PKG_ZSH_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/zsh/zsh-${PKG_ZSH_VERSION}.tar.xz};

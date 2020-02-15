@@ -3,10 +3,10 @@
 #
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
-apk_tools aria2 bind dropbear fetchmail git gnupg gnutls httpd inetutils
-irssi isync ldns lighttpd lynx mailutils microsocks mtr mutt nginx
-nullmailer openlitespeed opensmtpd openssh pacman rsync socat thttpd
-w3m weechat wget whois";
+apk_tools aria2 bind ca_certificates dropbear fetchmail git gnupg gnutls
+httpd inetutils irssi isync ldns lighttpd lynx mailutils microsocks mtr
+mutt nginx nullmailer openlitespeed opensmtpd openssh pacman rsync socat
+thttpd w3m weechat wget whois";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -24,6 +24,12 @@ w3m weechat wget whois";
 : ${PKG_BIND_URL:=https://ftp.isc.org/isc/bind/${PKG_BIND_VERSION}/bind-${PKG_BIND_VERSION}.tar.gz};
 : ${PKG_BIND_CONFIGURE_ARGS_EXTRA:="--with-libtool --disable-backtrace --with-eddsa=no --with-ecdsa=yes --with-gssapi=no --with-libxml2=no --with-libjson=no --with-openssl=${PREFIX_NATIVE} BUILD_CC=gcc"};
 : ${PKG_BIND_MAKEFLAGS_BUILD:=-j1};
+: ${PKG_CA_CERTIFICATES_DEPENDS:="libressl"};
+: ${PKG_CA_CERTIFICATES_URLS_GIT:="ca-certificates=https://github.com/Redfoxmoon3/ca-certificates@master"};
+: ${PKG_CA_CERTIFICATES_IN_TREE:=1};
+: ${PKG_CA_CERTIFICATES_CFLAGS_BUILD_EXTRA:=-I${PREFIX_NATIVE}/include};
+: ${PKG_CA_CERTIFICATES_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib};
+: ${PKG_CA_CERTIFICATES_ENV_VARS_EXTRA:="HOST_CC=gcc"};
 : ${PKG_DROPBEAR_DEPENDS:="libz"};
 : ${PKG_DROPBEAR_SHA256SUM:=525965971272270995364a0eb01f35180d793182e63dd0b0c3eb0292291644a4};
 : ${PKG_DROPBEAR_VERSION:=2019.78};
@@ -62,7 +68,7 @@ w3m weechat wget whois";
 : ${PKG_INETUTILS_VERSION:=1.9.4};
 : ${PKG_INETUTILS_URL:=https://ftp.gnu.org/gnu/inetutils/inetutils-${PKG_INETUTILS_VERSION}.tar.xz};
 : ${PKG_INETUTILS_CONFIGURE_ARGS_EXTRA:="--disable-ftpd --enable-inetd --disable-rexecd --disable-rlogind --disable-rshd --disable-syslogd --enable-talkd --enable-telnetd --disable-tftpd --disable-uucpd --disable-ftp --disable-dnsdomainname --disable-ping --disable-ping6 --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-logger --enable-hostname --enable-talk --enable-telnet --disable-tftp --disable-whois --disable-ifconfig --disable-traceroute"};
-: ${PKG_IRSSI_DEPENDS:="glib ncurses"};
+: ${PKG_IRSSI_DEPENDS:="glib libressl ncurses"};
 : ${PKG_IRSSI_SHA256SUM:=53182861d4d2be6db35fa7e3f0524a64d2a54a374307574dab5f5362bfea563c};
 : ${PKG_IRSSI_VERSION:=1.2.2};
 : ${PKG_IRSSI_URL:=https://github.com/irssi/irssi/releases/download/${PKG_IRSSI_VERSION}/irssi-${PKG_IRSSI_VERSION}.tar.gz};
@@ -83,7 +89,7 @@ w3m weechat wget whois";
 : ${PKG_LIGHTTPD_VERSION:=1.4.45};
 : ${PKG_LIGHTTPD_URL:=http://download.lighttpd.net/lighttpd/releases-${PKG_LIGHTTPD_VERSION%.*}.x/lighttpd-${PKG_LIGHTTPD_VERSION}.tar.xz};
 : ${PKG_LIGHTTPD_CONFIGURE_ARGS_EXTRA:="--with-pcre=${PREFIX_NATIVE}"};
-: ${PKG_LYNX_DEPENDS:="libressl ncursesw"};
+: ${PKG_LYNX_DEPENDS:="libreadline libressl ncursesw"};
 : ${PKG_LYNX_SHA256SUM:=6980e75cf0d677fd52c116e2e0dfd3884e360970c88c8356a114338500d5bee7};
 : ${PKG_LYNX_VERSION:=2.8.8rel.2};
 : ${PKG_LYNX_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/lynx/lynx${PKG_LYNX_VERSION}.tar.bz2};
@@ -133,13 +139,13 @@ w3m weechat wget whois";
 : ${PKG_OPENLITESPEED_IN_TREE:=1};
 : ${PKG_OPENLITESPEED_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_OPENLITESPEED_PREFIX:=${PREFIX_NATIVE}/lsws};
-: ${PKG_OPENSMTPD_DEPENDS:="libasr libevent libressl musl_fts"};
+: ${PKG_OPENSMTPD_DEPENDS:="libasr libevent libressl libz musl_fts"};
 : ${PKG_OPENSMTPD_SHA256SUM:=eb1bedbfb23d9f08f509d92d8efcaf51d56fb2f44492f40ec059d41124a2f1d9};
 : ${PKG_OPENSMTPD_VERSION:=6.6.1p1};
 : ${PKG_OPENSMTPD_URL:=https://www.opensmtpd.org/archives/opensmtpd-${PKG_OPENSMTPD_VERSION}.tar.gz}
 : ${PKG_OPENSMTPD_CONFIGURE_ARGS_EXTRA:="--with-maildir=/var/mail --with-libz=${PREFIX_NATIVE} --with-libevent=${PREFIX_NATIVE}"};
 : ${PKG_OPENSMTPD_IN_TREE:=1};
-: ${PKG_OPENSSH_DEPENDS:="libedit libressl"};
+: ${PKG_OPENSSH_DEPENDS:="libedit libressl libz"};
 : ${PKG_OPENSSH_SHA256SUM:=02f5dbef3835d0753556f973cd57b4c19b6b1f6cd24c03445e23ac77ca1b93ff};
 : ${PKG_OPENSSH_VERSION:=8.1p1};
 : ${PKG_OPENSSH_URL:=http://artfiles.org/openbsd/OpenSSH/portable/openssh-${PKG_OPENSSH_VERSION}.tar.gz};
@@ -176,14 +182,14 @@ w3m weechat wget whois";
 : ${PKG_W3M_IN_TREE:=1};
 : ${PKG_W3M_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_W3M_SUBDIR:=w3m-0.5.3-git20190105};
-: ${PKG_WEECHAT_DEPENDS:="curl libgcrypt ncursesw"};
+: ${PKG_WEECHAT_DEPENDS:="curl gnutls libgcrypt libz ncursesw"};
 : ${PKG_WEECHAT_SHA256SUM:=5038a47c6e87e56fcd937acc159d89f76845a4128923c100700abaa7c5db7aed};
 : ${PKG_WEECHAT_VERSION:=2.7};
 : ${PKG_WEECHAT_URL:=https://weechat.org/files/src/weechat-${PKG_WEECHAT_VERSION}.tar.gz};
 : ${PKG_WEECHAT_CONFIGURE_ARGS_EXTRA:="--disable-aspell --disable-guile --disable-javascript --disable-lua --disable-perl --disable-python --disable-ruby --disable-tcl"};
 : ${PKG_WEECHAT_ENV_VARS_EXTRA:="CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config:LIBGCRYPT_CONFIG=${PREFIX_NATIVE}/bin/libgcrypt-config:PKGCONFIG=${DEFAULT_TARGET}-pkg-config"};
 : ${PKG_WEECHAT_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfow -Wl,--no-as-needed"};
-: ${PKG_WGET_DEPENDS:="libressl"};
+: ${PKG_WGET_DEPENDS:="libressl libz"};
 : ${PKG_WGET_SHA256SUM:=b39212abe1a73f2b28f4c6cb223c738559caac91d6e416a6d91d4b9d55c9faee};
 : ${PKG_WGET_VERSION:=1.19.5};
 : ${PKG_WGET_URL:=https://ftp.gnu.org/gnu/wget/wget-${PKG_WGET_VERSION}.tar.gz};
