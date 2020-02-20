@@ -164,9 +164,9 @@ buildp_init_prereqs() {
 	for _cmd in	\
 			awk bunzip2 cat chmod cmake cp date find flock g++	\
 			gcc git grep gunzip gzip hostname install kill		\
-			ln lzip make mkdir mkfifo mv paste patch pgrep		\
-			pkill printf readlink rm sed seq sha256sum sort		\
-			stat tail tar test touch tr wget xz zip; do
+			ln lzip make mkdir mkfifo mv paste patch perl		\
+			pgrep pkill printf readlink rm sed seq sha256sum	\
+			sort stat tail tar test touch tr wget xz zip; do
 		if ! which "${_cmd}" >/dev/null; then
 			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
 		fi;
