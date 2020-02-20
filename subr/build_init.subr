@@ -160,14 +160,19 @@ buildp_init_getopts() {
 };
 
 buildp_init_prereqs() {
-	local _rc=0; _status="";
-	if ! which	\
+	local _cmd="" _cmds_missing="" _rc=0; _status="";
+	for _cmd in	\
 			awk bunzip2 cat chmod cp date find flock git	\
 			grep gunzip gzip hostname install kill ln lzip	\
 			make mkdir mkfifo mv paste patch pgrep pkill	\
 			printf readlink rm sed seq sha256sum sort stat	\
-			tail tar test touch tr wget xz >/dev/null; then
-		_rc=4; _status="Error: missing prerequisite package(s).";
+			tail tar test touch tr wget xz; do
+		if ! which "${_cmd}" >/dev/null; then
+			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
+		fi;
+	done;
+	if [ -n "${_cmds_missing}" ]; then
+		_rc=4; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
 	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
 		_rc=5; _status="Error: awk(1) in \$PATH must be GNU Awk.";
 	elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
