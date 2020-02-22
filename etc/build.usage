@@ -42,6 +42,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
                           native_packages, native_runtime, native_toolchain, and/or native_tools.
 
         ${HOME}/midipix_build.vars, ${HOME}/.midipix_build.vars, and/or ../midipix_build.vars will be sourced if present.
+        If either of ${DEFAULT_GITROOT_HEAD} and/or ${DEFAULT_ZIPDIST_SIGN_GPG_KEY} are to be set, export(1) them there.
 
         Examples:
         ./build.sh -r coreutils
