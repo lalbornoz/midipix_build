@@ -11,6 +11,7 @@ NATIVE_RUNTIME_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_DALIST_DEPENDS:="ldso psxtypes"};
 : ${PKG_DALIST_URLS_GIT:=dalist=${DEFAULT_GITROOT}/dalist};
 : ${PKG_DALIST_INSTALL_TARGET_EXTRA:=install-lib};
+: ${PKG_LDSO_DEPENDS:="psxtypes"};
 : ${PKG_LDSO_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
 : ${PKG_LDSO_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO"};
 : ${PKG_LDSO_CONFIGURE_ARGS_EXTRA:=--disable-shared};
