@@ -8,7 +8,7 @@ HOST_TOOLCHAIN_PACKAGES="
 binutils_host binutils_host_mingw32 gcc_full_host gcc_libstdcpp_v3_host
 gcc_runtime_host gcc_stage1_cross_mingw32 gcc_stage1_host gmp_host
 ldso_host mpc_host mpfr_host musl_full_host musl_no_complex_host nasm_host
-psxstub_host";
+psxstub_host psxtypes_host";
 HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_BINUTILS_HOST_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
 : ${PKG_BINUTILS_HOST_VERSION:=2.24.51};
@@ -70,7 +70,7 @@ HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_GMP_HOST_CONFIGURE_ARGS:="--disable-assembly --disable-nls --prefix="};
 : ${PKG_GMP_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gmp/gmp-${PKG_GMP_HOST_VERSION}.midipix.patch"};
 : ${PKG_GMP_HOST_PREFIX:=${PREFIX}};
-: ${PKG_LDSO_HOST_DEPENDS:="gcc_stage1_host musl_full_host"};
+: ${PKG_LDSO_HOST_DEPENDS:="gcc_stage1_host musl_full_host psxtypes_host"};
 : ${PKG_LDSO_HOST_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
 : ${PKG_LDSO_HOST_BUILD_TYPE:=cross};
 : ${PKG_LDSO_HOST_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO -I${PREFIX_CROSS}/include"};
@@ -122,5 +122,10 @@ HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_PSXSTUB_HOST_BUILD_STEPS_DISABLE:=build};
 : ${PKG_PSXSTUB_HOST_ENV_VARS_EXTRA:=TARGET=${DEFAULT_TARGET}};
 : ${PKG_PSXSTUB_HOST_IN_TREE:=1};
+: ${PKG_PSXTYPES_HOST_DEPENDS:="gcc_stage1_host"};
+: ${PKG_PSXTYPES_HOST_URLS_GIT:=psxtypes=${DEFAULT_GITROOT}/psxtypes};
+: ${PKG_PSXTYPES_HOST_BUILD_STEPS_DISABLE:=build};
+: ${PKG_PSXTYPES_HOST_CONFIGURE_ARGS:="--disable-nls --prefix="};
+: ${PKG_PSXTYPES_HOST_IN_TREE:=1};
 
 # vim:filetype=sh textwidth=0
