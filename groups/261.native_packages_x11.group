@@ -167,7 +167,7 @@ xtrans xwd xwin";
 : ${PKG_LIBXFT_VERSION:=2.3.1};
 : ${PKG_LIBXFT_URL:=https://www.x.org/releases/individual/lib/libXft-${PKG_LIBXFT_VERSION}.tar.bz2};
 : ${PKG_LIBXFT_CFLAGS_BUILD_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
-: ${PKG_LIBXI_DEPENDS:="libX11 libXext libXfixes xorgproto"};
+: ${PKG_LIBXI_DEPENDS:="libX11 libXext libXfixes util_macros xorgproto"};
 : ${PKG_LIBXI_SHA256SUM:=463cc5370191404bc0f8a450fdbf6d9159efbbf274e5e0f427a60191fed9cf4b};
 : ${PKG_LIBXI_VERSION:=1.7.9};
 : ${PKG_LIBXI_URL:=https://x.org/releases/individual/lib/libXi-${PKG_LIBXI_VERSION}.tar.gz};
