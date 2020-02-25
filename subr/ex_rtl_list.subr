@@ -59,4 +59,17 @@ ex_rtl_lsearch() {
 	echo "${_lnew}";
 };
 
+ex_rtl_lunfold_depends() {
+	local _vname_template="${1}" _depends="" _name="" _names=""; shift;
+	for _name in "${@}"; do
+		if _depends="$(ex_rtl_get_var_unsafe -u "$(eval printf \"%s\" \""${_vname_template}"\")")"\
+		&& [ -n "${_depends}" ]; then
+			_depends="$(ex_rtl_lunfold_depends "${_vname_template}" ${_depends})";
+			_names="$(ex_rtl_lconcat "${_names}" "${_depends}")";
+		fi;
+		_names="$(ex_rtl_lconcat "${_names}" "${_name}")";
+	done;
+	echo "${_names}";
+};
+
 # vim:filetype=sh
