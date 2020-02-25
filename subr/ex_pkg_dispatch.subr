@@ -84,7 +84,7 @@ exp_pkg_dispatch_packages() {
 # @_restart:		optional comma-separated list of package names to rebuild
 # @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
 #
-# Return:		zero (0) on success, non-zero (>0) on failure, ${EX_PKG_NSKIPPED}, ${EX_PKG_NAMES}, and ${PKG_COMPLETE} set post-return.
+# Return:		zero (0) on success, non-zero (>0) on failure, ${EX_PKG_NAMES} and ${PKG_COMPLETE} set post-return.
 #
 exp_pkg_expand_packages() {
 	local _group_name="${1}" _restart="${2}" _restart_recursive="${3}" _pkg_name="" _pkg_names="";
@@ -99,12 +99,14 @@ exp_pkg_expand_packages() {
 		for _pkg_name in ${_pkg_names}; do
 			if [ -n "$(ex_rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" ]; then
 				PKG_COMPLETE="$(ex_rtl_lconcat "${PKG_COMPLETE}" "${_pkg_name}")";
-				: $((EX_PKG_NSKIPPED+=1)); _pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+				_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+				"${_dispatch_fn}" disabled_pkg "${_group_name}" "${_pkg_name}";
 			elif ex_pkg_state_test "${_pkg_name}" finish\
 			&& ! ex_rtl_lmatch "${_restart}" "${_pkg_name}"\
 			&& [ "${_restart_recursive:-0}" -ne 2 ]; then
 				PKG_COMPLETE="$(ex_rtl_lconcat "${PKG_COMPLETE}" "${_pkg_name}")";
-				: $((EX_PKG_NSKIPPED+=1)); _pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+				_pkg_names="$(ex_rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+				"${_dispatch_fn}" skipped_pkg "${_group_name}" "${_pkg_name}";
 			fi;
 		done;
 		EX_PKG_NAMES="${_pkg_names}"; return 0;
@@ -120,12 +122,12 @@ exp_pkg_expand_packages() {
 # @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
 # @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
 #
-# Return:		zero (0) on success, non-zero (>0) on failure, ${EX_PKG_NAMES} and ${EX_PKG_NSKIPPED} set post-return.
+# Return:		zero (0) on success, non-zero (>0) on failure, ${EX_PKG_NAMES} set post-return.
 #
 ex_pkg_dispatch() {
 	local	_dispatch_fn="${1}" _group_name="${2}" _njobs_max="${3}" _restart="${4}" _restart_at="${5}"			\
 		_restart_recursive="${6}" _pipe_msg="" _pipe_path="${BUILD_WORKDIR}/build.fifo" _pkg_name=""			\
-		_script_rc=0 NJOBS=0 PKG_COMPLETE="" PKG_COUNT=0 PKG_COUNT_MAX=0 PKG_NAMES="" PKG_WAIT=""; EX_PKG_NSKIPPED=0; EX_PKG_NAMES="";
+		_script_rc=0 NJOBS=0 PKG_COMPLETE="" PKG_COUNT=0 PKG_COUNT_MAX=0 PKG_NAMES="" PKG_WAIT=""; EX_PKG_NAMES="";
 	if "${_dispatch_fn}" start_group "${_group_name}" ""; then
 		if ex_rtl_fileop mkdir "${BUILD_WORKDIR}"\
 		&& ex_rtl_log_msg vnfo "Resolving \`${_group_name}' dependencies..."\
