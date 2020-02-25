@@ -1,34 +1,29 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
+pkgp_fetch_extract_type() {
+	local _fname="${1}";
+	if [ "${1##*.tar.}" != "${1}" ]; then
+		echo "${1##*.tar.}";
+	elif [ "${1##*.t}" != "${1}" ]; then
+		echo "${1##*.t}";
+	fi;
+};
+
 pkg_fetch_extract() {
-	local _chainport_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_*}/${PKG_NAME%%_*}-${PKG_VERSION}.midipix.patch"
-		_chainport_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_*}" _oldpwd="";
 	if [ -n "${PKG_URL}" ]\
 	&& [ "${PKG_URL_TYPE:-wget}" = wget ]; then
-		_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}";
-		ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}";
-		if [ "${PKG_FNAME##*.tar.}" = "bz2" ]\
-		|| [ "${PKG_FNAME##*.t}" = "bz2" ]; then
-			bunzip2 -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -;
-		elif [ "${PKG_FNAME##*.tar.}" = "gz" ]\
-		|| [ "${PKG_FNAME##*.t}" = "gz" ]; then
-			gunzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -;
-		elif [ "${PKG_FNAME##*.tar.}" = "lz" ]\
-		|| [ "${PKG_FNAME##*.t}" = "lz" ]; then
-			lzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -;
-		elif [ "${PKG_FNAME##*.tar.}" = "xz" ]\
-		|| [ "${PKG_FNAME##*.t}" = "xz" ]; then
-			xz -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -;
-		else
-			tar -C "${PKG_BASE_DIR}" -xf "${BUILD_DLCACHEDIR}/${PKG_FNAME}";
-		fi;
-		ex_rtl_fileop cd "${_oldpwd}";
-	fi;
-	if [ -e "${_chainport_patch_fname}" ]; then
-		ex_rtl_fileop mkdir "${_chainport_patch_dname}";
-		ex_rtl_fileop cp "${_chainport_patch_fname}" "${_chainport_patch_dname}";
+		_oldpwd="${PWD}"; ex_rtl_fileop cd "${PKG_BASE_DIR}" || return "${?}";
+		ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}" || return "${?}";
+		case "$(pkgp_fetch_extract_type "${PKG_NAME}")" in
+		bz2)	bunzip2 -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf - || return "${?}"; ;;
+		gz)	gunzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf - || return "${?}"; ;;
+		lz)	lzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf - || return "${?}"; ;;
+		xz)	xz -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf - || return "${?}"; ;;
+		*)	tar -C "${PKG_BASE_DIR}" -xf "${BUILD_DLCACHEDIR}/${PKG_FNAME}" || return "${?}"; ;;
+		esac;
+		ex_rtl_fileop cd "${_oldpwd}" || return "${?}";
 	fi;
 };
 

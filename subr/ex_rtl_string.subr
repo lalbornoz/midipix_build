@@ -1,0 +1,83 @@
+#
+# set +o errexit -o noglob is assumed.
+#
+
+ex_rtl_tolower() {
+	local _s="${1}" _s_new="";
+	while [ -n "${_s}" ]; do
+	case "${_s}" in
+	A*)     _s_new="${_s_new:+${_s_new}}a"; _s="${_s#A}"; ;;
+	B*)     _s_new="${_s_new:+${_s_new}}b"; _s="${_s#B}"; ;;
+	C*)     _s_new="${_s_new:+${_s_new}}c"; _s="${_s#C}"; ;;
+	D*)     _s_new="${_s_new:+${_s_new}}d"; _s="${_s#D}"; ;;
+	E*)     _s_new="${_s_new:+${_s_new}}e"; _s="${_s#E}"; ;;
+	F*)     _s_new="${_s_new:+${_s_new}}f"; _s="${_s#F}"; ;;
+	G*)     _s_new="${_s_new:+${_s_new}}g"; _s="${_s#G}"; ;;
+	H*)     _s_new="${_s_new:+${_s_new}}h"; _s="${_s#H}"; ;;
+	I*)     _s_new="${_s_new:+${_s_new}}i"; _s="${_s#I}"; ;;
+	J*)     _s_new="${_s_new:+${_s_new}}j"; _s="${_s#J}"; ;;
+	K*)     _s_new="${_s_new:+${_s_new}}k"; _s="${_s#K}"; ;;
+	L*)     _s_new="${_s_new:+${_s_new}}l"; _s="${_s#L}"; ;;
+	M*)     _s_new="${_s_new:+${_s_new}}m"; _s="${_s#M}"; ;;
+	N*)     _s_new="${_s_new:+${_s_new}}n"; _s="${_s#N}"; ;;
+	O*)     _s_new="${_s_new:+${_s_new}}o"; _s="${_s#O}"; ;;
+	P*)     _s_new="${_s_new:+${_s_new}}p"; _s="${_s#P}"; ;;
+	Q*)     _s_new="${_s_new:+${_s_new}}q"; _s="${_s#Q}"; ;;
+	R*)     _s_new="${_s_new:+${_s_new}}r"; _s="${_s#R}"; ;;
+	S*)     _s_new="${_s_new:+${_s_new}}s"; _s="${_s#S}"; ;;
+	T*)     _s_new="${_s_new:+${_s_new}}t"; _s="${_s#T}"; ;;
+	U*)     _s_new="${_s_new:+${_s_new}}u"; _s="${_s#U}"; ;;
+	V*)     _s_new="${_s_new:+${_s_new}}v"; _s="${_s#V}"; ;;
+	W*)     _s_new="${_s_new:+${_s_new}}w"; _s="${_s#W}"; ;;
+	X*)     _s_new="${_s_new:+${_s_new}}x"; _s="${_s#X}"; ;;
+	Y*)     _s_new="${_s_new:+${_s_new}}y"; _s="${_s#Y}"; ;;
+	Z*)     _s_new="${_s_new:+${_s_new}}z"; _s="${_s#Z}"; ;;
+	[^A-Z]*)
+		_s_new="${_s_new:+${_s_new}}${_s%%[A-Z]*}";
+		while [ "${_s#[^A-Z]}" != "${_s}" ]; do
+			_s="${_s#[^A-Z]}";
+		done; ;;
+	esac; done;
+	echo "${_s_new}";
+};
+
+ex_rtl_toupper() {
+	local _s="${1}" _s_new="";
+	while [ -n "${_s}" ]; do
+	case "${_s}" in
+	a*)     _s_new="${_s_new:+${_s_new}}A"; _s="${_s#a}"; ;;
+	b*)     _s_new="${_s_new:+${_s_new}}B"; _s="${_s#b}"; ;;
+	c*)     _s_new="${_s_new:+${_s_new}}C"; _s="${_s#c}"; ;;
+	d*)     _s_new="${_s_new:+${_s_new}}D"; _s="${_s#d}"; ;;
+	e*)     _s_new="${_s_new:+${_s_new}}E"; _s="${_s#e}"; ;;
+	f*)     _s_new="${_s_new:+${_s_new}}F"; _s="${_s#f}"; ;;
+	g*)     _s_new="${_s_new:+${_s_new}}G"; _s="${_s#g}"; ;;
+	h*)     _s_new="${_s_new:+${_s_new}}H"; _s="${_s#h}"; ;;
+	i*)     _s_new="${_s_new:+${_s_new}}I"; _s="${_s#i}"; ;;
+	j*)     _s_new="${_s_new:+${_s_new}}J"; _s="${_s#j}"; ;;
+	k*)     _s_new="${_s_new:+${_s_new}}K"; _s="${_s#k}"; ;;
+	l*)     _s_new="${_s_new:+${_s_new}}L"; _s="${_s#l}"; ;;
+	m*)     _s_new="${_s_new:+${_s_new}}M"; _s="${_s#m}"; ;;
+	n*)     _s_new="${_s_new:+${_s_new}}N"; _s="${_s#n}"; ;;
+	o*)     _s_new="${_s_new:+${_s_new}}O"; _s="${_s#o}"; ;;
+	p*)     _s_new="${_s_new:+${_s_new}}P"; _s="${_s#p}"; ;;
+	q*)     _s_new="${_s_new:+${_s_new}}Q"; _s="${_s#q}"; ;;
+	r*)     _s_new="${_s_new:+${_s_new}}R"; _s="${_s#r}"; ;;
+	s*)     _s_new="${_s_new:+${_s_new}}S"; _s="${_s#s}"; ;;
+	t*)     _s_new="${_s_new:+${_s_new}}T"; _s="${_s#t}"; ;;
+	u*)     _s_new="${_s_new:+${_s_new}}U"; _s="${_s#u}"; ;;
+	v*)     _s_new="${_s_new:+${_s_new}}V"; _s="${_s#v}"; ;;
+	w*)     _s_new="${_s_new:+${_s_new}}W"; _s="${_s#w}"; ;;
+	x*)     _s_new="${_s_new:+${_s_new}}X"; _s="${_s#x}"; ;;
+	y*)     _s_new="${_s_new:+${_s_new}}Y"; _s="${_s#y}"; ;;
+	z*)     _s_new="${_s_new:+${_s_new}}Z"; _s="${_s#z}"; ;;
+	[^a-z]*)
+		_s_new="${_s_new:+${_s_new}}${_s%%[a-z]*}";
+		while [ "${_s#[^a-z]}" != "${_s}" ]; do
+			_s="${_s#[^a-z]}";
+		done; ;;
+	esac; done;
+	echo "${_s_new}";
+};
+
+# vim:filetype=sh

@@ -1,17 +1,17 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 pkg_install_subdirs() {
 	local _spec="";
-	for _spec in "${PKG_INSTALL_FILES_DESTDIR}"		\
+	for _spec in \
+			"${PKG_INSTALL_FILES_DESTDIR}"		\
 			"${PKG_INSTALL_FILES_DESTDIR_EXTRA}"; do
-		ex_rtl_install "${PKG_DESTDIR}" ${_spec};
+		ex_rtl_install "${PKG_DESTDIR}" ${_spec} || return "${?}";
 	done;
 	if [ "${PKG_PREFIX%/}" = "${PREFIX_NATIVE%/}" ]; then
 		ex_rtl_install					\
-			"${PKG_DESTDIR}/${DEFAULT_TARGET}"	\
-			${PKG_INSTALL_FILES_DESTDIR};
+			"${PKG_DESTDIR}/${DEFAULT_TARGET}" ${PKG_INSTALL_FILES_DESTDIR} || return "${?}";
 	fi;
 };
 

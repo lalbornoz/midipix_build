@@ -1,24 +1,20 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 pkg_configure_patch() {
-	local _pkg_name="${PKG_NAME}" _pkg_name_full="" _patch_dir="" _patch_fname="" _patches_done="";
-	if [ -z "${_pkg_name}" ]; then
-		continue;
-	else
-		_pkg_name_full="${_pkg_name}${PKG_VERSION:+-${PKG_VERSION}}";
-		_patch_dir="${MIDIPIX_BUILD_PWD}/patches";
-	fi;
-	set +o noglob; for _patch_fname in 						\
-			${_patch_dir}/${_pkg_name}/*.patch				\
-			${_patch_dir}/${_pkg_name_full}.local.patch			\
-			${_patch_dir}/${_pkg_name_full}.local@${BUILD_HNAME}.patch	\
-			"${PKG_PATCHES_EXTRA}"; do
+	local	_patch_dir="${MIDIPIX_BUILD_PWD}/patches" _patch_fname=""		\
+		_patches_done="" _pkg_name_full="${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}";
+	set +o noglob;
+	for _patch_fname in \
+			"${_patch_dir}/${_pkg_name}/"*.patch				\
+			"${_patch_dir}/${_pkg_name_full}.local.patch"			\
+			"${_patch_dir}/${_pkg_name_full}.local@${BUILD_HNAME}.patch"	\
+			${PKG_PATCHES_EXTRA}; do
 		if [ -r "${_patch_fname}" ]\
-		&& ! ex_rtl_lmatch "${_patches_done}" " " "${_patch_fname}"; then
-			patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}";
-			_patches_done="${_patches_done:+${_patches_done} }${_patch_fname}";
+		&& ! ex_rtl_lmatch "${_patches_done}" "${_patch_fname}"; then
+			patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}" || return "${?}";
+			_patches_done="$(ex_rtl_lconcat "${_patches_done}" "${_patch_fname}")";
 		fi;
 	done; set -o noglob;
 };

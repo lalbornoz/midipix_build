@@ -1,13 +1,13 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 pkg_fetch_download() {
 	if [ -n "${PKG_URL}" ]; then
-		ex_rtl_fetch_url_wget "${PKG_URL}" "${PKG_SHA256SUM}" "${PKG_FNAME}";
+		ex_rtl_fetch_url_wget "${PKG_URL}" "${PKG_SHA256SUM}" "${PKG_FNAME}" || return "${?}";
 	fi;
 	if [ -n "${PKG_URLS_GIT}" ]; then
-		ex_rtl_fetch_urls_git "${PKG_BASE_DIR}" ${PKG_URLS_GIT};
+		ex_rtl_fetch_urls_git "${PKG_BASE_DIR}" ${PKG_URLS_GIT} || return "${?}";
 	fi;
 };
 

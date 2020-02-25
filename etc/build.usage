@@ -29,10 +29,9 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
 
                           Currently defined steps are:
                           fetch_wget, fetch_git, fetch_extract,
-                          configure_patch_pre, configure_autotools, configure_patch,
-                          configure, build, install_subdirs, install_make,
-                          install_files, install_libs, install_pkgconfig, install_purge_la,
-                          install_strip, install, and install_rpm.
+                          configure_patch_pre, configure_autotools, configure_patch, configure,
+                          build,
+                          install_subdirs, install_make, install_files, install_libs, install, and install_rpm.
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)
         -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace during package builds; -vvvv: logs fileops.

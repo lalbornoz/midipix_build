@@ -1,18 +1,11 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 pkg_configure() {
+	local _rc=0;
 	if [ -x "${PKG_CONFIGURE}" ]; then
-		if [ -n "${PKG_PKG_CONFIG}" ]; then
-			export PKG_CONFIG="${PKG_PKG_CONFIG}";
-		fi;
-		if [ -n "${PKG_PKG_CONFIG_PATH}" ]; then
-			export PKG_CONFIG_PATH="${PKG_PKG_CONFIG_PATH}";
-		fi;
-		if [ -n "${PKG_PYTHON}" ]; then
-			export PYTHON="${PKG_PYTHON}";
-		fi;
+		ex_rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}" PYTHON "${PKG_PYTHON}";
 		AR="${PKG_AR}"												\
 		CC="${PKG_CC}"												\
 		RANLIB="${PKG_RANLIB}"											\
@@ -20,10 +13,10 @@ pkg_configure() {
 		CPPFLAGS="${PKG_CFLAGS_CONFIGURE}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"		\
 		CXXFLAGS="${PKG_CXXFLAGS_CONFIGURE}${PKG_CXXFLAGS_CONFIGURE_EXTRA:+ ${PKG_CXXFLAGS_CONFIGURE_EXTRA}}"	\
 		LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"	\
-		${PKG_CONFIGURE}											\
-			${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG};
-		unset PKG_CONFIG PKG_CONFIG_PATH PYTHON;
+		"${PKG_CONFIGURE}" ${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG}; _rc="${?}"
+		ex_rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}" PYTHON "${PKG_PYTHON}";
 	fi;
+	return "${?}";
 };
 
 # vim:filetype=sh

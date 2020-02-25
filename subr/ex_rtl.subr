@@ -1,5 +1,5 @@
 #
-# set -o noglob is assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 EXP_RTL_IFS="${IFS}";
@@ -7,13 +7,10 @@ EXP_RTL_IFS="${IFS}";
 ex_rtl_basename() { echo "${1##*/}"; };
 ex_rtl_date() { command date "+${1:-${DEFAULT_TIMESTAMP_FMT}}"; };
 ex_rtl_dirname() { echo "${1%/*}"; };
-ex_rtl_get_var_unsafe() { eval echo \${${1}}; };
 ex_rtl_pop_IFS() { IFS="${EXP_RTL_IFS}"; };
 ex_rtl_push_IFS() { EXP_RTL_IFS="${IFS}"; IFS="${1}"; };
-ex_rtl_try_run() { if ex_rtl_test_cmd "${1}"; then "${@}"; fi; };
 ex_rtl_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 ex_rtl_test_cmd() { command -v "${1}" >/dev/null; };
-ex_rtl_toupper() { echo "${1}" | tr a-z A-Z; };
 ex_rtl_uniq() { echo "${@}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; };
 ex_rtl_unset_vars() { while [ ${#} -gt 0 ]; do unset "${1}"; shift; done; };
 

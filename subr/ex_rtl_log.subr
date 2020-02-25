@@ -1,5 +1,5 @@
 #
-# set -o noglob is assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 : ${DEFAULT_LOG_MSG_FAIL_COLOUR:=91};
@@ -15,7 +15,9 @@
 
 exp_rtl_log_printf() {
 	local _attrs="${1}" _msg=""; shift; _msg="$(printf "${@}")";
-	if [ "${BUILD_IS_PARENT:-0}" -eq 1 ]; then
+	if [ "${BUILD_IS_PARENT:-0}" -eq 1 ]\
+	&& [ -n "${DEFAULT_BUILD_LOG_FNAME}" ]\
+	&& [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
 		printf "%s\n" "${_msg}" >> "${DEFAULT_BUILD_LOG_FNAME}";
 	fi;
 	printf "\033[0m\033[${_attr}m%s\033[0m\n" "${_msg}";
