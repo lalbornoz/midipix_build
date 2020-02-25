@@ -124,7 +124,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_LIBFFI_HOST_URL:=ftp://sourceware.org/pub/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.tar.gz};
 : ${PKG_LIBFFI_HOST_INSTALL_FILES:="@../lib/libffi-3.2.1/include/ffi.h=include/ffi.h @../lib/libffi-3.2.1/include/ffitarget.h=include/ffitarget.h"};
 : ${PKG_LIBFFI_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.midipix.patch"};
-: ${PKG_LIBREADLINE_HOST_DEPENDS:="ncurses_host"};
+: ${PKG_LIBREADLINE_HOST_DEPENDS:="ncurses_host ncursestw_host ncursesw_host"};
 : ${PKG_LIBREADLINE_HOST_SHA256SUM:=750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334};
 : ${PKG_LIBREADLINE_HOST_VERSION:=7.0};
 : ${PKG_LIBREADLINE_HOST_URL:=ftp://ftp.gnu.org/gnu/readline/readline-${PKG_LIBREADLINE_HOST_VERSION}.tar.gz};
