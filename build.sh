@@ -3,39 +3,42 @@
 #
 
 buildp_dispatch() {
-	local _msg="${1}" _group_name="${2}" _pkg_name="${3}"					\
-		_build_group_meta="" _build_group_lc="" _build_groups_lc="" _pkg_restart="" PKGS_FOUND;
+	local	_msg="${1}" _group_name="${2}" _pkg_name="${3}"			\
+		_build_group_lc="" _build_group_meta="" _build_groups_lc=""	\
+		_njobs_max=0 _pkg_names="" _pkg_restart="" _rc=0;
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_init "${@}";
 			ex_rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 			ex_rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
 			_build_groups_lc="${BUILD_GROUPS:-${GROUPS_DEFAULT}}";
-			if ! ex_rtl_lmatch "${ARG_DIST}" , rpm; then
+			if ! ex_rtl_lmatch "${ARG_DIST}" "rpm" ","; then
 				_build_groups_lc="$(ex_rtl_lfilter "${_build_groups_lc}" "host_deps_rpm")";
 			fi;
-			PKGS_FOUND="";
+			if [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
+				_njobs_max="${DEFAULT_BUILD_CPUS}";
+			fi;
 			for _build_group_lc in ${_build_groups_lc}; do
-				ex_pkg_dispatch "${_build_group_lc}"				\
-						"${ARG_RESTART}" "${ARG_RESTART_AT}"		\
-						buildp_dispatch PKGS_FOUND;
-				if [ ${?} -ne 0 ]; then
+				ex_pkg_dispatch buildp_dispatch "${_build_group_lc}" "${_njobs_max}"	\
+						"${ARG_RESTART}" "${ARG_RESTART_AT}" "${ARG_RESTART_RECURSIVE}"; _rc="${?}";
+				: $((_nskipped+=${EX_PKG_NSKIPPED})); _pkg_names="$(ex_rtl_lconcat "${_pkg_names}" "${EX_PKG_NAMES}")";
+				if [ "${_rc}" -ne 0 ]; then
 					break;
 				fi;
 			done;
 			for _pkg_restart in ${ARG_RESTART}; do
-				if ! ex_rtl_lmatch "ALL LAST" " " "${_pkg_restart}"		\
-				&& ! ex_rtl_lmatch "${PKGS_FOUND}" " " "${_pkg_restart}"; then
+				if ! ex_rtl_lmatch "${_pkg_restart}" "ALL LAST"\
+				&& ! ex_rtl_lmatch "${_pkg_names}" "${_pkg_restart}"; then
 					ex_rtl_log_msg failexit "Error: package \`${_pkg_restart}' unknown.";
 				fi;
 			done;
-			if ! ex_pkg_dispatch "invariants" "ALL" "ALL" buildp_dispatch ""; then
+			if ! ex_pkg_dispatch buildp_dispatch "invariants" "${_njobs_max}" "ALL" "ALL" 2; then
 				break;
 			fi;
 			buildp_dispatch finish_build; ;;
 	finish_build)	build_fini;
-			ex_rtl_log_msg info "${BUILD_NFINI} finished, ${BUILD_NSKIP} skipped, and ${BUILD_NFAIL} failed builds in ${BUILD_NBUILT} build script(s).";
-			ex_rtl_log_msg info "Build time: ${BUILD_TIMES_HOURS} hour(s), ${BUILD_TIMES_MINUTES} minute(s), and ${BUILD_TIMES_SECS} second(s).";
+			ex_rtl_log_msg info "${BUILD_NFINI:-0} finished, ${_nskipped:-0} skipped, and ${BUILD_NFAIL:-0} failed builds in ${BUILD_NBUILT:-0} build script(s).";
+			ex_rtl_log_msg info "Build time: ${BUILD_TIMES_HOURS:-0} hour(s), ${BUILD_TIMES_MINUTES:-0} minute(s), and ${BUILD_TIMES_SECS:-0} second(s).";
 			if [ -n "${BUILD_PKGS_FAILED}" ]; then
 				ex_rtl_log_msg failexit "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
 			fi; ;;
@@ -68,18 +71,13 @@ buildp_dispatch() {
 				fi;
 				exit 1;
 			fi; ;;
-	disabled_pkg)	: $((BUILD_NSKIP+=1));
-			ex_rtl_log_msg vnfo "$(printf "[%03d/%03d] Skipping disabled package \`%s.'" "${4}" "${5}" "${_pkg_name}")"; ;;
-	skipped_pkg)	: $((BUILD_NSKIP+=1));
-			ex_rtl_log_msg vnfo "$(printf "[%03d/%03d] Skipping finished package \`%s.'" "${4}" "${5}" "${_pkg_name}")"; ;;
 	step_pkg)	ex_rtl_log_msg vucc "$(printf "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}")"; ;;
 
 	# Child process
 	exec_finish)	;;
 	exec_missing)	ex_rtl_log_msg failexit "Error: package \`${_pkg_name}' missing in build.vars."; ;;
 	exec_start)	if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
-				ex_rtl_log_env_vars "build"		\
-					$(set | awk -F= '/^PKG_/{print $1}' | sort);
+				ex_rtl_log_env_vars "build" $(set | awk -F= '/^PKG_/{print $1}' | sort);
 			fi;
 			if [ "${ARG_VERBOSE:-0}" -ge 3 ]; then
 				set -o xtrace;
@@ -88,7 +86,7 @@ buildp_dispatch() {
 	esac; return 0;
 };
 
-cd "$(dirname "${0}")";
+set +o errexit -o noglob; cd "$(dirname "${0}")";
 for __ in $(find subr -name *.subr); do
 	. "${__}"; done; buildp_dispatch start_build "${@}";
 

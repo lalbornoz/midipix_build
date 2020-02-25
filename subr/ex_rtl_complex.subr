@@ -1,5 +1,5 @@
 #
-# set -o noglob is assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 ex_rtl_check_path_vars() {
@@ -27,6 +27,53 @@ ex_rtl_clean_env() {
 	ex_rtl_unset_vars $(ex_rtl_lfilter "${_env_vars}" "${_env_vars_except}");
 };
 
+ex_rtl_exists_any() {
+	local _subdir="${1}"; shift;
+	while [ "${#}" -gt 0 ]; do
+		if [ -e "${_subdir}/${1}" ]; then
+			return 0;
+		else
+			shift;
+		fi;
+	done; return 1;
+};
+
+ex_rtl_export_vars() {
+	local _unsetfl=0; [ "x${1}" = "x-u" ] && { _unsetfl=1; shift; };
+	while [ "${#}" -ge 2 ]; do
+		if [ -n "${2}" ]; then
+			if [ "${_unsetfl:-0}" -eq 0 ]; then
+				ex_rtl_set_var_unsafe "${1}" "${2}"; export "${1}";
+			else
+				unset "${1}";
+			fi;
+		fi;
+		shift 2;
+	done;
+};
+
+ex_rtl_get_var_unsafe() {
+	local _vname="";
+	if [ "x${1}" = "x-u" ]; then
+		shift; _vname="$(ex_rtl_toupper "${1}")";
+	else
+		_vname="${1}";
+	fi;
+	eval echo \${${_vname}};
+};
+
+ex_rtl_head() {
+	local _pattern="${1}" _s="${2}";
+	while true; do
+		if [ "${_s%%${_pattern}}" = "${_s}" ]; then
+			break;
+		else
+			_s="${_s%%${_pattern}}";
+		fi;
+	done;
+	echo "${_s}";
+};
+
 ex_rtl_kill_tree() {
 	local _pid="${1}" _signal="TERM" _pid_child="" _pid_top="";
 	for _pid_top in $(pgrep -P "${_pid}"); do
@@ -35,48 +82,6 @@ ex_rtl_kill_tree() {
 		done;
 		_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_top}"; kill "-${_signal}" "${_pid_top}" 2>/dev/null;
 	done;
-};
-
-ex_rtl_lfilter() {
-	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="" _filterfl="";
-	if [ -z "${_filter}" ]; then
-		echo "${_list}"; return 0;
-	else for _litem in ${_list}; do
-		_filterfl=0;
-		for _litem_filter in ${_filter}; do
-			if [ "${_litem_filter}" = "${_litem}" ]; then
-				_filterfl=1; break;
-			fi;
-		done;
-		if [ "${_filterfl:-0}" -eq 0 ]; then
-			_lnew="${_lnew:+${_lnew} }${_litem}";
-		fi;
-	done; fi;
-	echo "${_lnew}";
-};
-
-ex_rtl_lmatch() {
-	local _cmp="${3}" IFS="${2}"; set -- ${1};
-	while [ ${#} -gt 0 ]; do
-		if [ "${1}" = "${_cmp}" ]; then
-			return 0;
-		fi; shift;
-	done; return 1;
-};
-
-ex_rtl_lsearch() {
-	local _list="${1}" _filter="${2}" _lnew="" _litem="" _litem_filter="";
-	if [ -z "${_filter}" ]; then
-		echo "${_list}"; return 0;
-	else for _litem in ${_list}; do
-		for _litem_filter in ${_filter}; do
-			if [ "${_litem_filter}" = "${_litem}" ]; then
-				_lnew="${_lnew:+${_lnew} }${_litem}";
-				break;
-			fi;
-		done;
-	done; fi;
-	echo "${_lnew}";
 };
 
 ex_rtl_run_cmd_unsplit() {
@@ -91,10 +96,9 @@ ex_rtl_run_cmd_unsplit() {
 };
 
 ex_rtl_set_vars() {
-	local _vname_dst="${1}" _vname_src_tmpls="${2}"			\
-		_vars_set_vname="${3}" _vname_src _vars_set_tmp=""	\
-		_vars_set_old="";
-	for _vname_src in ${_vname_src_tmpls}; do
+	local	_vars_set_vname="${1}" _vname_dst="${2}" _vname_src_tmpls="${3}"	\
+		_vars_set_old="" _vars_set_tmp="" _vname_src="";
+	for _vname_src in $(ex_rtl_toupper "${_vname_src_tmpls}"); do
 		_vname_src="${_vname_src}_${_vname_dst}";
 		_vval_src="$(ex_rtl_get_var_unsafe "${_vname_src}")";
 		if [ -n "${_vval_src}" ]; then
@@ -103,7 +107,7 @@ ex_rtl_set_vars() {
 		fi;
 	done;
 	_vars_set_old="$(ex_rtl_get_var_unsafe "${_vars_set_vname}")";
-	ex_rtl_set_var_unsafe "${_vars_set_vname}"			\
+	ex_rtl_set_var_unsafe "${_vars_set_vname}"					\
 		"${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
 };
 

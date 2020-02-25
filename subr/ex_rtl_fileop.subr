@@ -1,102 +1,111 @@
 #
-# set -o noglob is assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 exp_rtl_fileop_check() {
 	local _prefix="${1}" _pname="" _rname=""; shift;
-	while [ ${#} -gt 0 ]; do
+	while [ "${#}" -gt 0 ]; do
 		return 0;
 	shift; done;
 };
 
 ex_rtl_fileop() {
-	local _op="${1}" _src="" _dst=""; shift;
+	local _op="${1}" _dst="" _install_args="" _rc=0 _src=""; shift;
 	case "${_op}" in
 	cd)	if [ \( -z "${1}" \) -o ! \( -L "${1}" -o -e "${1}" \) ]; then
 			ex_rtl_log_msg failexit "Invalid or non-existent directory \`${1}'.";
-		else
+		elif exp_rtl_fileop_check "${PREFIX}" "${1}"; then
 			ex_rtl_log_msg vvvv "Changing working directory to \`${1}'.";
-			exp_rtl_fileop_check "${PREFIX}" "${1}";
-			cd -- "${1}";
+			cd -- "${1}"; _rc="${?}";
 		fi; ;;
 	cp_follow)
-		if [ ${#} -lt 2 ]; then
+		if [ "${#}" -lt 2 ]; then
 			ex_rtl_log_msg failexit "Missing parameters (in: cp_follow ${*}.)";
-		else
+		elif exp_rtl_fileop_check "${PREFIX}" "${*}"; then
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
 			ex_rtl_log_msg vvvv "Copying \`${_src}' into \`${_dst}' w/ -pLR.";
-			exp_rtl_fileop_check "${PREFIX}" "${*}";
-			cp -pLR -- "${@}";
+			cp -pLR -- "${@}"; _rc="${?}";
 		fi; ;;
-	cp)	if [ ${#} -lt 2 ]; then
+	cp)	if [ "${#}" -lt 2 ]; then
 			ex_rtl_log_msg failexit "Missing parameters (in: cp ${*}.)";
-		else
+		elif exp_rtl_fileop_check "${PREFIX}" "${*}"; then
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
 			ex_rtl_log_msg vvvv "Copying \`${_src}' into \`${_dst}' w/ -pPR.";
-			exp_rtl_fileop_check "${PREFIX}" "${*}";
-			cp -pPR -- "${@}";
+			cp -pPR -- "${@}"; _rc="${?}";
+		fi; ;;
+	install)
+		if [ "${#}" -lt 2 ]; then
+			ex_rtl_log_msg failexit "Missing parameters (in: install ${*}.)";
+		else	_dst="$(while [ ""${#}"" -gt 2 ]; do shift; done; echo "${2}")";
+			_install_args="$(while [ ""${#}"" -gt 2 ]; do echo "${1}"; shift; done)";
+			_src="$(while [ ""${#}"" -gt 2 ]; do shift; done; echo "${1}")";
+			if exp_rtl_fileop_check "${PREFIX}" "${_dst}" "${_src}"; then
+				ex_rtl_log_msg vvvv "Installing \`${_src}' into \`${_dst}' w/ ${_install_args}.";
+				install "${@}"; _rc="${?}";
+			fi;
 		fi; ;;
 	ln_symbolic)
 		if [ \( -z "${1}" \) -o \( -z "${2}" \) ]; then
 			ex_rtl_log_msg failexit "Missing parameters (in: ln_symbolic ${*}.)";
-		else
-			exp_rtl_fileop_check "${PREFIX}" "${2}";
+		elif exp_rtl_fileop_check "${PREFIX}" "${2}"; then
 			if ex_rtl_fileop test "${2}"; then
 				ex_rtl_fileop rm "${2}";
 			fi;
-			ex_rtl_log_msg vvvv "Linking \`${1}' to \`${2}' w/ -fs";
-			ln -fs -- "${1}" "${2}";
+			if [ "${?}" -eq 0 ]; then
+				ex_rtl_log_msg vvvv "Linking \`${1}' to \`${2}' w/ -fs";
+				ln -fs -- "${1}" "${2}"; _rc="${?}";
+			fi;
 		fi; ;;
 	mv)	if [ \( -z "${1}" \) -o \( -z "${2}" \) ]; then
 			ex_rtl_log_msg failexit "Missing parameters (in: mv ${*}.)";
-		else
+		elif exp_rtl_fileop_check "${PREFIX}" "${1}" "${2}"; then
 			ex_rtl_log_msg vvvv "Moving \`${1}' to \`${2}' w/ -fs";
-			exp_rtl_fileop_check "${PREFIX}" "${1}" "${2}";
-			mv -f -- "${1}" "${2}";
+			mv -f -- "${1}" "${2}"; _rc="${?}";
 		fi; ;;
 	mkdir|mkfifo|rm|source_opt|test|touch)
-		while [ ${#} -gt 0 ]; do
+		while [ \( "${?}" -eq 0 \) -a \( ""${#}"" -gt 0 \) ]; do
 			if [ -z "${1}" ]; then
 				ex_rtl_log_msg failexit "Missing parameters (in: ${_op} ${*}.)";
 			elif [ "${_op}" = mkdir ]\
-			&& [ ! -d "${1}" ]; then
-				exp_rtl_fileop_check "${PREFIX}" "${1}";
+			&& [ ! -d "${1}" ]\
+			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
 				if ex_rtl_fileop test "${1}"; then
 					ex_rtl_fileop rm "${1}";
 				fi;
 				ex_rtl_log_msg vvvv "Making directory \`${1}'.";
-				mkdir -p -- "${1}";
-			elif [ "${_op}" = mkfifo ]; then
-				exp_rtl_fileop_check "${PREFIX}" "${1}";
+				mkdir -p -- "${1}"; _rc="${?}";
+			elif [ "${_op}" = mkfifo ]\
+			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
 				if ex_rtl_fileop test "${1}"; then
 					ex_rtl_fileop rm "${1}";
 				fi;
 				ex_rtl_log_msg vvvv "Creating FIFO \`${1}'.";
 				exp_rtl_fileop_check "${PREFIX}" "${1}";
-				mkfifo -- "${1}";
+				mkfifo -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = rm ]\
-			&& ex_rtl_fileop test "${1}"; then
+			&& ex_rtl_fileop test "${1}"\
+			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
 				ex_rtl_log_msg vvvv "Removing directory or file \`${1}'.";
-				exp_rtl_fileop_check "${PREFIX}" "${1}";
-				rm -rf -- "${1}";
+				rm -rf -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = source_opt ]\
-			&& ex_rtl_fileop test "${1}"; then
+			&& ex_rtl_fileop test "${1}"\
+			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
 				ex_rtl_log_msg vvvv "Sourcing file \`${1}'.";
-				exp_rtl_fileop_check "${PREFIX}" "${1}";
-				. "${1}";
+				. "${1}"; _rc="${?}";
 			elif [ "${_op}" = test ]\
+			&& exp_rtl_fileop_check "${PREFIX}" "${1}"\
 			&& ! [ \( -L "${1}" \) -o \( -e "${1}" \) ]; then
 				return 1;
-			elif [ "${_op}" = touch ]; then
+			elif [ "${_op}" = touch ]\
+			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
 				ex_rtl_log_msg vvvv "Touching file \`${1}'.";
-				exp_rtl_fileop_check "${PREFIX}" "${1}";
-				touch -- "${1}";
+				touch -- "${1}"; _rc="${?}";
 			fi; shift;
 		done; ;;
 	*)	ex_rtl_log_msg failexit "Error: ex_rtl_fileop() called w/ invalid parameter(s): ${*}"; ;;
-	esac; return 0;
+	esac; return "${_rc}";
 };
 
 # vim:filetype=sh

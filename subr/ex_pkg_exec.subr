@@ -1,7 +1,15 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
+#
+# exp_pkg_exec_pre() - XXX
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
 exp_pkg_exec_pre() {
 	local _group_name="${1}" _pkg_name="${2}" _restart_at="${3}";
 	if [ -z "${PKG_URL}" ]\
@@ -11,57 +19,88 @@ exp_pkg_exec_pre() {
 		"${_dispatch_fn}" exec_missing "${_group_name}" "${_pkg_name}";
 		return 1;
 	elif ! ex_pkg_state_test "${_pkg_name}" "start" "${_restart_at}"; then
-		if [ "${PKG_NO_CLEAN_BASE_DIR:-0}" -eq 0 ]; then
-			ex_rtl_fileop rm "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}";
-			ex_rtl_fileop mkdir "${PKG_BASE_DIR}";
+		if [ "${PKG_NO_CLEAN_BASE_DIR:-0}" -eq 0 ]\
+		&& ! ex_rtl_fileop rm "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}"\
+		|| ! ex_rtl_fileop mkdir "${PKG_BASE_DIR}"; then
+			return "${?}";
 		fi;
-		ex_rtl_fileop mkdir "${PKG_BUILD_DIR}" "${PKG_DESTDIR}";
-		ex_pkg_state_set "${_pkg_name}" "start";
+		if ! ex_rtl_fileop mkdir "${PKG_BUILD_DIR}" "${PKG_DESTDIR}"\
+		|| ! ex_pkg_state_set "${_pkg_name}" "start"; then
+			return "${?}";
+		fi;
 	fi;
 	ex_rtl_fileop cd "${PKG_BUILD_DIR}";
 };
 
-ex_pkg_exec() {
-	local _group_name="${1}" _pkg_name="${2}" _restart_at="${3}"			\
-		_step="" _step_cmd="" _step_cmd_pfx="" _step_rc="";
-	trap "if [ \${?} -eq 0 ]; then							\
-		echo \"done ${_group_name} ${_pkg_name}\" >&3;				\
-	      else									\
-		echo \"fail ${_group_name} ${_pkg_name}\" >&3;				\
-		pkill -U "${$}";							\
-	      fi;" EXIT HUP INT TERM USR1 USR2;
-	exp_pkg_exec_pre "${_group_name}" "${_pkg_name}" "${_restart_at}";
-	"${_dispatch_fn}" exec_start "${_group_name}" "${_pkg_name}";
-	if ex_rtl_test_cmd "pkg_${_pkg_name}_all"; then
-		"pkg_${_pkg_name}_all" "${_restart_at}";
-	else	set -- ${PKG_BUILD_STEPS};
-		while [ ${#} -gt 0 ]; do
-			_step="${1}"; shift;
-			if ex_pkg_state_test "${_pkg_name}" "${_step}"			\
-					"${_restart_at}"; then
-				continue;
-			else	ex_rtl_try_run						\
-					"pkg_${_pkg_name}_${_step}_pre"			\
-					"${_group_name}" "${_pkg_name}" "${_restart_at}";
-				if ex_rtl_test_cmd "pkg_${_pkg_name}_${_step}"; then
-					ex_rtl_try_run "pkg_${_pkg_name}_${_step}"	\
-						"${_group_name}" "${_pkg_name}" "${_restart_at}";
-				else
-					ex_rtl_try_run "pkg_${_step}"			\
-						"${_group_name}" "${_pkg_name}" "${_restart_at}";
-				fi;
-				ex_rtl_try_run						\
-					"pkg_${_pkg_name}_${_step}_post"		\
-					"${_group_name}" "${_pkg_name}" "${_restart_at}";
-
-			fi;
-			echo "step ${_group_name} ${_pkg_name} ${_step}" >&3;
-			"${_dispatch_fn}" exec_step "${_group_name}" "${_pkg_name}" "${_step}";
-			ex_pkg_state_set "${_pkg_name}" "${_step}" "${1:+-${1}}";
-		done;
+#
+# exp_pkg_exec_step() - XXX
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+# @_step:		build step to execute
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_exec_step() {
+	local	_group_name="${1}" _pkg_name="${2}" _restart_at="${3}" _step="${4}"	\
+		_fn_name="" _pkg_step_fn="" _rc=0;
+	if ex_rtl_test_cmd "pkg_${_pkg_name}_${_step}"; then
+		_pkg_step_fn="pkg_${_pkg_name}_${_step}";
+	else
+		_pkg_step_fn="pkg_${_step}";
 	fi;
-	"${_dispatch_fn}" exec_finish "${_group_name}" "${_pkg_name}";
-	ex_pkg_state_set "${_pkg_name}" finish;
+	for _fn_name in \
+			"pkg_${_pkg_name}_${_step}_pre"	\
+			"${_pkg_step_fn}"		\
+			"pkg_${_pkg_name}_${_step}_post"; do
+		if ex_rtl_test_cmd "${_fn_name}"\
+		&& ! "${_fn_name}" "${_group_name}" "${_pkg_name}" "${_restart_at}"; then
+			_rc=1; break;
+		fi;
+	done;
+	return "${_rc}";
+};
+
+#
+# exp_pkg_exec() - XXX
+# @_dispatch_fn:	top-level dispatch function name
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_exec() {
+	local	_dispatch_fn="${1}" _group_name="${2}" _pkg_name="${3}" _restart_at="${4}"	\
+		_rc=0 _step="" _step_next="";
+	trap "if [ \${?} -eq 0 ]; then								\
+		echo \"done ${_group_name} ${_pkg_name}\" >&3;					\
+	      else										\
+		echo \"fail ${_group_name} ${_pkg_name}\" >&3;					\
+		pkill -U "${$}";								\
+	      fi;" EXIT HUP INT TERM USR1 USR2;
+	if exp_pkg_exec_pre "${_group_name}" "${_pkg_name}" "${_restart_at}"\
+	&& "${_dispatch_fn}" exec_start "${_group_name}" "${_pkg_name}"; then
+		if ex_rtl_test_cmd "pkg_${_pkg_name}_all"; then
+			"pkg_${_pkg_name}_all" "${_restart_at}";
+		else	set -- ${PKG_BUILD_STEPS};
+			while [ ${#} -gt 0 ]; do
+				_step="${1}"; _step_next="${2}"; shift;
+				if ex_pkg_state_test "${_pkg_name}" "${_step}" "${_restart_at}"; then
+					continue;
+				elif ! exp_pkg_exec_step "${_group_name}" "${_pkg_name}" "${_restart_at}" "${_step}"; then
+					_rc=1; break;
+				else
+					echo "step ${_group_name} ${_pkg_name} ${_step}" >&3;
+					"${_dispatch_fn}" exec_step "${_group_name}" "${_pkg_name}" "${_step}";
+					ex_pkg_state_set "${_pkg_name}" "${_step}" "${_step_next:+-${_step_next}}";
+				fi;
+			done;
+		fi;
+		"${_dispatch_fn}" exec_finish "${_group_name}" "${_pkg_name}";
+		ex_pkg_state_set "${_pkg_name}" finish;
+	fi;
+	return "${_rc}";
 };
 
 # vim:filetype=sh

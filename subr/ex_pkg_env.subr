@@ -1,49 +1,20 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
-exp_pkg_env_source() {
-	local _group_name="${1}" _pkg_name="${2}"				\
-		_group_name_uc="" _pkg_name_uc="" _pkg_name_inherit_uc=""	\
-		_build_type_uc="" _vname_dst="" _vars_set="";
-	ex_rtl_fileop source_opt "vars/${_pkg_name}.vars";
-	_group_name_uc="$(ex_rtl_toupper "${_group_name}")";
-	_pkg_name_uc="$(ex_rtl_toupper "${_pkg_name}")";
-	ex_rtl_set_vars BUILD_TYPE						\
-		"DEFAULT ${_group_name_uc} PKG_${_pkg_name_uc}"			\
-		_vars_set;
-	_build_type_uc="$(ex_rtl_toupper "${PKG_BUILD_TYPE}")";
-	ex_rtl_set_vars INHERIT_FROM "PKG_${_pkg_name_uc}" _vars_set;
-	_pkg_name_inherit_uc="$(ex_rtl_toupper "${PKG_INHERIT_FROM}")";
-	for _vname_dst in $(ex_rtl_lfilter					\
-			"${DEFAULT_BUILD_VARS}" BUILD_TYPE); do
-		if [ -n "${_pkg_name_inherit_uc}" ]; then
-			ex_rtl_set_vars "${_vname_dst}"				\
-				"DEFAULT DEFAULT_${_build_type_uc}		\
-				${_group_name_uc}				\
-				PKG_${_pkg_name_inherit_uc}			\
-				PKG_${_pkg_name_uc}" _vars_set;
-		else
-			ex_rtl_set_vars "${_vname_dst}"				\
-				"DEFAULT DEFAULT_${_build_type_uc}		\
-				${_group_name_uc} PKG_${_pkg_name_uc}"		\
-				_vars_set;
-		fi;
-	done;
-	ex_rtl_unset_vars $(ex_rtl_lfilter					\
-		"$(set | awk -F= '/^PKG_/{print $1}' | sort)"			\
-		"${_vars_set}");
-};
-
-ex_pkg_env() {
-	local _group_name="${1}" _pkg_name="${2}" _restart_at="${3}" _vname="";
-	exp_pkg_env_source "${_group_name}" "${_pkg_name}";
+#
+# exp_pkg_env_defaults() - set package variable defaults for single named package
+# @_pkg_name:		single package name
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_env_defaults() {
+	local _pkg_name="${1}";
 	: ${PKG_NAME:="${_pkg_name}"};
 	: ${MIDIPIX_BUILD_PWD:="$(pwd)"};
 	: ${PKG_BASE_DIR:="${BUILD_WORKDIR}/${_pkg_name}-${PKG_BUILD_TYPE}-${PKG_TARGET}"};
 	: ${PKG_FNAME:="${PKG_URL##*/}"};
-	: ${PKG_BUILD_STEPS:="$(ex_rtl_lfilter "${DEFAULT_BUILD_STEPS}"		\
-		"${PKG_BUILD_STEPS_DISABLE}")"};
+	: ${PKG_BUILD_STEPS:="$(ex_rtl_lfilter "${DEFAULT_BUILD_STEPS}" "${PKG_BUILD_STEPS_DISABLE}")"};
 	if [ -z "${PKG_SUBDIR}" ]; then
 		if [ -n "${PKG_URLS_GIT}" ]; then
 			PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
@@ -61,12 +32,82 @@ ex_pkg_env() {
 	PKG_BUILD_DIR="${PKG_BASE_DIR}/${PKG_BUILD_DIR}";
 	PKG_CONFIGURE="${PKG_BASE_DIR}/${PKG_CONFIGURE:-${PKG_SUBDIR}/configure}";
 	PKG_DESTDIR="${PKG_BASE_DIR}/${PKG_DESTDIR:-destdir}";
+};
+
+#
+# exp_pkg_env_set() - set package variables for single named package
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+#
+# Sets package variables from either defaults, defaults specific to build type,
+# build group, package to inherit from if any, or package for a single named
+# package, exports variables optionally named in ${PKG_ENV_VARS_EXTRA}, and
+# clears the package variable namespace.
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_env_set() {
+	local _group_name="${1}" _pkg_name="${2}" _var_prefixes="" _vars_set="" _vname="";
+	ex_rtl_set_vars _vars_set BUILD_TYPE "DEFAULT ${_group_name} PKG_${_pkg_name}";
+	ex_rtl_set_vars _vars_set INHERIT_FROM "PKG_${_pkg_name}";
+	_var_prefixes="$(ex_rtl_toupper "DEFAULT DEFAULT_${PKG_BUILD_TYPE} ${_group_name}")";
+	for _vname in $(ex_rtl_lfilter "${DEFAULT_BUILD_VARS}" BUILD_TYPE); do
+		if [ -n "${PKG_INHERIT_FROM}" ]; then
+			ex_rtl_set_vars _vars_set "${_vname}"	\
+				"$(ex_rtl_lconcat "${_var_prefixes}" "$(ex_rtl_toupper "PKG_${PKG_INHERIT_FROM} PKG_${_pkg_name}")")"
+		else
+			ex_rtl_set_vars _vars_set "${_vname}"	\
+				"$(ex_rtl_lconcat "${_var_prefixes}" "$(ex_rtl_toupper "PKG_${_pkg_name}")")";
+		fi;
+	done;
 	ex_rtl_push_IFS :; for _vname in ${PKG_ENV_VARS_EXTRA}; do
 		export "${_vname}";
 	done; ex_rtl_pop_IFS;
+	ex_rtl_unset_vars $(ex_rtl_lfilter			\
+		"$(set | awk -F= '/^PKG_/{print $1}' | sort)"	\
+		"${_vars_set}");
 };
 
-ex_pkg_state_set() { ex_rtl_state_set "${BUILD_WORKDIR}" "${@}"; };
-ex_pkg_state_test() { ex_rtl_state_test "${BUILD_WORKDIR}" "${@}"; };
+#
+# ex_pkg_env() - set package variables for single named package
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_env() {
+	local _group_name="${1}" _pkg_name="${2}" _restart_at="${3}" _vname="";
+	ex_rtl_fileop source_opt "vars/${_pkg_name}.vars";
+	if ! exp_pkg_env_set "${_group_name}" "${_pkg_name}"\
+	|| ! exp_pkg_env_defaults "${_pkg_name}"; then
+		return "${?}";
+	fi;
+};
+
+#
+# ex_pkg_state_set() - update build step status for single named package
+# @_workdir:		pathname to temporary build directory
+# @_pkg_name:		single package name
+# @${@}:		list of build steps
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_state_set() {
+	ex_rtl_state_set "${BUILD_WORKDIR}" "${@}";
+};
+
+#
+# ex_pkg_state_test() - test build step status of single named package
+# @_workdir:		pathname to temporary build directory
+# @_pkg_name:		single package name
+# @_build_step:		build step to test status of
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_state_test() {
+	ex_rtl_state_test "${BUILD_WORKDIR}" "${@}";
+};
 
 # vim:filetype=sh

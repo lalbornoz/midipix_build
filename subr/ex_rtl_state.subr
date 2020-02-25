@@ -1,5 +1,5 @@
 #
-# set -o noglob is assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 ex_rtl_state_clear() {
@@ -33,7 +33,7 @@ ex_rtl_state_test() {
 	elif [ "${_restart_at}" = "ALL" ]; then
 		return 1;
 	else
-		! ex_rtl_lmatch "${_restart_at}" , "${_build_step}";
+		! ex_rtl_lmatch "${_restart_at}" "${_build_step}" ",";
 	fi;
 };
 

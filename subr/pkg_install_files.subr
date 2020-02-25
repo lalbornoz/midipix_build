@@ -1,10 +1,47 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
-pkg_install_files() {
+pkgp_install_files() {
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
-		ex_rtl_install -v "${PKG_DESTDIR}" ${PKG_INSTALL_FILES};
+		ex_rtl_install -v "${PKG_DESTDIR}" ${PKG_INSTALL_FILES} || return "${?}";
+	fi;
+};
+
+pkgp_install_files_pkgconfig() {
+	local _pc_path="";
+	for _pc_path in $(find "${PKG_DESTDIR}" -name \*.pc); do
+		if grep -Eq '^libdir=[^$]+$' "${_pc_path}"; then
+			sed -i"" -e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
+				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'			\
+					"${_pc_path}" || return "${?}";
+		fi;
+	done;
+};
+
+pkgp_install_files_strip() {
+	local _bin_path="" _tree_root="${PKG_DESTDIR}";
+	if [ -e "${_tree_root}" ]\
+	&& [ "${BUILD}" = release ]\
+	&& [ "${PKG_BUILD_TYPE}" = native ]; then
+		if [ "${PKG_NAME%_minipix}" != "${PKG_NAME}" ]\
+		&& [ "${ARG_DEBUG_MINIPIX:-0}" -eq 1 ]; then
+			return 0;
+		fi;
+		for _bin_path in $(find "${_tree_root}" -perm /a=x -type f); do
+			if objdump -sj .debug_info "${_bin_path}" >/dev/null 2>&1; then
+				ex_rtl_log_msg info "Stripping ${_bin_path}...";
+				"${PKG_TARGET}-strip" "${_bin_path}" || return "${?}";
+			fi;
+		done;
+	fi;
+};
+
+pkg_install_files() {
+	if ! pkgp_install_files\
+	|| ! pkgp_install_files_pkgconfig\
+	|| ! pkgp_install_files_strip; then
+		return "${?}";
 	fi;
 };
 
