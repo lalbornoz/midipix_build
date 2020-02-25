@@ -5,7 +5,7 @@
 buildp_dispatch() {
 	local	_msg="${1}" _group_name="${2}" _pkg_name="${3}"			\
 		_build_group_lc="" _build_group_meta="" _build_groups_lc=""	\
-		_njobs_max=1 _pkg_names="" _pkg_restart="" _rc=0;
+		_pkg_names="" _pkg_restart="" _rc=0;
 	case "${_msg}" in
 	# Top-level
 	start_build)	shift; build_init "${@}";
@@ -15,13 +15,10 @@ buildp_dispatch() {
 			if ! ex_rtl_lmatch "${ARG_DIST}" "rpm" ","; then
 				_build_groups_lc="$(ex_rtl_lfilter "${_build_groups_lc}" "host_deps_rpm")";
 			fi;
-			if [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
-				_njobs_max="${ARG_PARALLEL}";
-			fi;
 			for _build_group_lc in ${_build_groups_lc}; do
-				ex_pkg_dispatch buildp_dispatch "${_build_group_lc}" "${_njobs_max}"	\
+				ex_pkg_dispatch buildp_dispatch "${_build_group_lc}" "${ARG_PARALLEL:-1}"	\
 						"${ARG_RESTART}" "${ARG_RESTART_AT}" "${ARG_RESTART_RECURSIVE}"; _rc="${?}";
-				: $((_nskipped+=${EX_PKG_NSKIPPED})); _pkg_names="$(ex_rtl_lconcat "${_pkg_names}" "${EX_PKG_NAMES}")";
+				_pkg_names="$(ex_rtl_lconcat "${_pkg_names}" "${EX_PKG_NAMES}")";
 				if [ "${_rc}" -ne 0 ]; then
 					break;
 				fi;
@@ -32,12 +29,12 @@ buildp_dispatch() {
 					ex_rtl_log_msg failexit "Error: package \`${_pkg_restart}' unknown.";
 				fi;
 			done;
-			if ! ex_pkg_dispatch buildp_dispatch "invariants" "${_njobs_max}" "ALL" "ALL" 2; then
+			if ! ex_pkg_dispatch buildp_dispatch "invariants" "${ARG_PARALLEL:-1}" "ALL" "ALL" 2; then
 				break;
 			fi;
 			buildp_dispatch finish_build; ;;
 	finish_build)	build_fini;
-			ex_rtl_log_msg info "${BUILD_NFINI:-0} finished, ${_nskipped:-0} skipped, and ${BUILD_NFAIL:-0} failed builds in ${BUILD_NBUILT:-0} build script(s).";
+			ex_rtl_log_msg info "${BUILD_NFINI:-0} finished, ${BUILD_NSKIP:-0} skipped, and ${BUILD_NFAIL:-0} failed package(s).";
 			ex_rtl_log_msg info "Build time: ${BUILD_TIMES_HOURS:-0} hour(s), ${BUILD_TIMES_MINUTES:-0} minute(s), and ${BUILD_TIMES_SECS:-0} second(s).";
 			if [ -n "${BUILD_PKGS_FAILED}" ]; then
 				ex_rtl_log_msg failexit "Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
@@ -71,6 +68,10 @@ buildp_dispatch() {
 				fi;
 				exit 1;
 			fi; ;;
+	disabled_pkg)	: $((BUILD_NSKIP+=1));
+			ex_rtl_log_msg vnfo "$(printf "Skipping disabled package \`%s.'" "${_pkg_name}")"; ;;
+	skipped_pkg)	: $((BUILD_NSKIP+=1));
+			ex_rtl_log_msg vnfo "$(printf "Skipping finished package \`%s.'" "${_pkg_name}")"; ;;
 	step_pkg)	ex_rtl_log_msg vucc "$(printf "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}")"; ;;
 
 	# Child process

@@ -40,11 +40,9 @@ buildp_init_args() {
 		fi;
 	fi;
 	ex_rtl_log_set_vnfo_lvl "${ARG_VERBOSE:-0}";
-	BUILD_IS_PARENT=1;
-	BUILD_DATE_START="$(ex_rtl_date %Y-%m-%d-%H-%M-%S)";
-	BUILD_NFINI="${BUILD_NSKIP:=${BUILD_NFAIL:=${BUILD_NBUILT:=0}}}";
-	BUILD_PKGS_FAILED="";
-	BUILD_TIMES_SECS="$(ex_rtl_date %s)";
+	BUILD_DATE_START="$(ex_rtl_date %Y-%m-%d-%H-%M-%S)"; BUILD_IS_PARENT=1;
+	BUILD_NFAIL="${BUILD_NFINI:=${BUILD_NSKIP:=0}}";
+	BUILD_PKGS_FAILED=""; BUILD_TIMES_SECS="$(ex_rtl_date %s)";
 	if [ "${ARG_FETCH_FORCE}" = "ipv4" ]; then
 		DEFAULT_GIT_ARGS="-4${DEFAULT_GIT_ARGS:+ ${DEFAULT_GIT_ARGS}}";
 		DEFAULT_WGET_ARGS="-4${DEFAULT_WGET_ARGS:+ ${DEFAULT_WGET_ARGS}}";
