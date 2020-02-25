@@ -112,7 +112,7 @@ libudns libunistring libuv libvorbis libxml2 libxslt libz libzip";
 : ${PKG_LIBRESSL_URL:=http://ftp.eu.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${PKG_LIBRESSL_VERSION}.tar.gz};
 : ${PKG_LIBRESSL_CFLAGS_CONFIGURE_EXTRA:=-D__MIDIPIX};
 : ${PKG_LIBRESSL_CONFIGURE_ARGS_EXTRA:=--disable-asm --enable-nc};
-: ${PKG_LIBREADLINE_DEPENDS:="ncurses"};
+: ${PKG_LIBREADLINE_DEPENDS:="ncurses ncursestw ncursesw"};
 : ${PKG_LIBREADLINE_SHA256SUM:=750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334};
 : ${PKG_LIBREADLINE_VERSION:=7.0};
 : ${PKG_LIBREADLINE_URL:=ftp://ftp.gnu.org/gnu/readline/readline-${PKG_LIBREADLINE_VERSION}.tar.gz};
