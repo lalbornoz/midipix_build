@@ -1,20 +1,18 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 pkg_clean() {
-	local _dir="";
-	if [ -n "${PKG_NO_CLEAN}" ]; then
-		return 0;
-	fi;
-	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , build; then
-		ex_rtl_fileop rm "${PKG_BUILD_DIR}";
-	fi;
-	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , dest; then
-		ex_rtl_fileop rm "${PKG_DESTDIR}";
-	fi;
-	if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" , src; then
-		ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}";
+	if [ "${PKG_NO_CLEAN:-0}" -eq 0 ]; then
+		if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" "build" ","; then
+			ex_rtl_fileop rm "${PKG_BUILD_DIR}" || return "${?}";
+		fi;
+		if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" "dest" ","; then
+			ex_rtl_fileop rm "${PKG_DESTDIR}" || return "${?}";
+		fi;
+		if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" "src" ","; then
+			ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}" || return "${?}";
+		fi;
 	fi;
 };
 

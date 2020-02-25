@@ -2,7 +2,7 @@
 IRC channel #midipix on Freenode and ask for the address of the internal repositories.
 
 > N.B. If in doubt, consult the fault-tolerant & highly optimised 3D laser show-equipped
-usage screen w/ ./build.sh -h or a hungry lion may eat you alive.
+usage screen w/ ./build.sh -h or a hungry lion might eat you alive.
 
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,

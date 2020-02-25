@@ -1,62 +1,59 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
-pkgp_install_lib_check() {
-	local _so_path="${1}" _so_ver="${1##*.so}";
-	if [ -z "${_so_path}" ]; then
-		return 1;
-	else while [ -n "${_so_ver}" ]; do
-		if [ "${_so_ver#[0-9.]}" = "${_so_ver}" ]; then
-			return 1;
-		else
-			_so_ver="${_so_ver#[0-9.]}";
-		fi;
-	done; return 0; fi;
+pkgp_install_libs_purge_la() {
+	local _la_path="";
+	for _la_path in $(find "${PKG_DESTDIR}" -type f -name \*.la); do
+		ex_rtl_fileop rm "${_la_path}" || return "${?}";
+	done;
 };
 
-pkgp_install_lib_link() {
-	local _so_path="${1}" _so_dir="${2}" _lib_name="${3}"					\
-		_lib_link_tgt="" _lib_link_path="";
-	_lib_link_path="${_so_path%.so*}.lib.a";
-	_lib_link_tgt="$(find "${_so_dir}"							\
-			-name "${_lib_name%%.*}.*.lib.a"					|\
-			sort | tail -1)";
-	if [ -n "${_lib_link_tgt}" ]\
+pkgp_install_libs_shared_link() {
+	local _lib_name="${1}" _so_dir="${2}" _so_path="${3}" _lib_link_path="${3%.so*}.lib.a" _lib_link_tgt="";
+	if _lib_link_tgt="$(find "${_so_dir}" -name "${_lib_name%%.*}.*.lib.a" | sort | tail -1)"\
+	&& [ -n "${_lib_link_tgt}" ]\
 	&& [ "${_lib_link_tgt}" != "${_lib_link_path}" ]; then
-		ex_rtl_fileop rm "${_lib_link_path}";
-		ex_rtl_fileop ln_symbolic "$(ex_rtl_basename "${_lib_link_tgt}")"		\
-			"${_lib_link_path}";
+		if ! ex_rtl_fileop rm "${_lib_link_path}"\
+		|| ! ex_rtl_fileop ln_symbolic "$(ex_rtl_basename "${_lib_link_tgt}")" "${_lib_link_path}"; then
+			return 1;
+		fi;
 	fi;
 };
 
-pkg_install_libs() {
-	local _so_src_path="" _so_dst_dir="" _lib_src_path="" _lib_name="" _lib_dst_path="";
+pkgp_install_libs_shared() {
+	local _lib_dst_path="" _lib_name="" _lib_src_path="" _so_dst_dir="" _so_src_path="";
 	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
-		for _so_src_path in								\
-			$(find	"${PKG_DESTDIR}"						\
+		for _so_src_path in \
+			$(find	"${PKG_DESTDIR}"							  \
 				\(  -name "*.so" -or -name "*.so.*" \) -print);
-		do	if ! pkgp_install_lib_check "${_so_src_path}"				\
-			|| [ "$(readlink -f "${_so_src_path}")" = "/dev/null" ]; then
-				continue;
-			else	_so_dst_dir="${_so_src_path%/*}";
+		do	if [ "$(readlink -f "${_so_path}")" != "/dev/null" ]\
+			&& [ -z "$(ex_rtl_head "[0-9.]" "${_so_src_path##*.so}")" ]; then
 				case "${_so_src_path}" in
 				*.so)	_lib_src_path="${_so_src_path%%.so}.lib.a"; ;;
 				*.so.*)	_lib_src_path="${_so_src_path%%.so.*}.${_so_src_path##*.so.}.lib.a"; ;;
 				esac;
+				_so_dst_dir="${_so_src_path%/*}";
 				_lib_name="$(ex_rtl_basename "${_lib_src_path}")";
 				_lib_dst_path="${_so_dst_dir}/${_lib_name}";
+				if [ ! -L "${_lib_src_path}" ]\
+				&& [ ! -e "${_lib_dst_path}" ]; then
+					(ex_rtl_fileop cd "$(ex_rtl_dirname "${_so_src_path}")" 	&&\
+					perk -e "$(ex_rtl_basename "${_so_src_path}")"			 |\
+						"${PKG_TARGET}-mdso"					  \
+							-i "$(ex_rtl_basename "${_lib_dst_path}")"	  \
+							-n "$(ex_rtl_basename "${_so_src_path}")" -) || return "${?}";
+				fi;
+				pkgp_install_libs_shared_link "${_lib_name}" "${_so_dst_dir}" "${_so_src_path}" || return "${?}";
 			fi;
-			if [ ! -L "${_lib_src_path}" ]\
-			&& [ ! -e "${_lib_dst_path}" ]; then
-				(ex_rtl_fileop cd "$(ex_rtl_dirname "${_so_src_path}")";
-				perk -e "$(ex_rtl_basename "${_so_src_path}")"			|\
-					"${PKG_TARGET}-mdso"					\
-						-i "$(ex_rtl_basename "${_lib_dst_path}")"	\
-						-n "$(ex_rtl_basename "${_so_src_path}")" -);
-			fi;
-			pkgp_install_lib_link "${_so_src_path}" "${_so_dst_dir}" "${_lib_name}";
 		done;
+	fi;
+};
+
+pkg_install_libs() {
+	if ! pkgp_install_libs_purge_la\
+	|| ! pkgp_install_libs_shared; then
+		return 1;
 	fi;
 };
 

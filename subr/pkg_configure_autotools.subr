@@ -1,63 +1,51 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 pkg_configure_autotools() {
-	local _script_fname="" _subdir_tgt="";
-	if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" -o						\
-	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" -o						\
-	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.in" -o						\
-	     -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/config.guess" ]; then
-		if [ -n "${PKG_PKG_CONFIG}" ]; then
-			export PKG_CONFIG="${PKG_PKG_CONFIG}";
-		fi;
-		if [ -n "${PKG_PKG_CONFIG_PATH}" ]; then
-			export PKG_CONFIG_PATH="${PKG_PKG_CONFIG_PATH}";
-		fi;
+	local _config_cache="" _fname="" _subdir_tgt="";
+	if ex_rtl_exists_any "${PKG_BASE_DIR}/${PKG_SUBDIR}"							\
+			"config.guess" "configure.ac" "configure.in" "configure";
+	then	ex_rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}";
 		if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" ]\
 		&& [ ! -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]; then
-			for _script_fname in bootstrap bootstrap.sh autogen.sh ""; do
-				if [ -z "${_script_fname}" ]; then
-					(ex_rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf)\
-						|| exit 1 && break;
-				elif [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${_script_fname}" ]; then
-					for _subdir_tgt in "${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux" "${PKG_BASE_DIR}/${PKG_SUBDIR}"; do
-						if [ -e "${_subdir_tgt}" ]; then
-							echo install -m 0700				\
-								"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
-								"${_subdir_tgt}/config.sub";
-							install -m 0700					\
-								"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
-								"${_subdir_tgt}/config.sub";
-							break;
+			for _fname in bootstrap bootstrap.sh autogen.sh; do
+				if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${_fname}" ]; then
+					for _subdir_tgt in \
+							"${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux"		\
+							"${PKG_BASE_DIR}/${PKG_SUBDIR}";
+					do	if [ -e "${_subdir_tgt}" ]; then
+							ex_rtl_fileop install -m 0700				\
+								"${MIDIPIX_BUILD_PWD}/etc/config.sub"		\
+								"${_subdir_tgt}/config.sub" || return "${?}" && break;
 						fi;
 					done;
-					(ex_rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&		\
-						/bin/sh "${_script_fname}") || exit 1 && break;
+					(ex_rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&			\
+						/bin/sh "${_fname}") || return "${?}" && break;
 				fi;
 			done;
+			(ex_rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf) || return "${?}";
 		fi;
-		find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.sub					\
-			-exec echo mv -- {} {}.orig \;							\
-			-exec mv -- {} {}.orig \;							\
-			-exec echo install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;		\
-			-exec install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" {} \;;
-		if [ "${PKG_BUILD_TYPE}" != host ]; then
-			if [ -n "${PKG_CONFIG_CACHE}" ]; then
-				echo "${PKG_CONFIG_CACHE}"						|\
-					tr " " "\n" > "${PKG_BUILD_DIR}/config.cache";
-				if [ -n "${PKG_CONFIG_CACHE_LOCAL}" ]; then
-					echo "${PKG_CONFIG_CACHE_LOCAL}"				|\
-						tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache";
-				fi;
-				if [ -n "${PKG_CONFIG_CACHE_EXTRA}" ]; then
-					echo "${PKG_CONFIG_CACHE_EXTRA}"				|\
-						tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache";
-				fi;
+		for _fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.sub); do
+			if ! ex_rtl_fileop mv "${_fname}" "${_fname}.orig"\
+			|| ! ex_rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" "${_fname}"; then
+				return 1;
 			fi;
-			sed -i"" "s,%PREFIX%,${PKG_PREFIX},g" "${PKG_BUILD_DIR}/config.cache";
+		done
+		if [ "${PKG_BUILD_TYPE}" != host ]; then
+			if ! ex_rtl_fileop touch "${PKG_BUILD_DIR}/config.cache"; then
+				return 1;
+			else	for _config_cache in \
+						"${PKG_CONFIG_CACHE}"						\
+						"${PKG_CONFIG_CACHE_LOCAL}"					\
+						"${PKG_CONFIG_CACHE_EXTRA}";
+				do	echo "${_config_cache}"							|\
+						tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache" || return "${?}";
+				done;
+				sed -i"" "s,%PREFIX%,${PKG_PREFIX},g" "${PKG_BUILD_DIR}/config.cache" || return "${?}";
+			fi;
 		fi;
-		unset PKG_CONFIG PKG_CONFIG_PATH;
+		ex_rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}";
 	fi;
 };
 

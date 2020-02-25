@@ -1,30 +1,27 @@
 #
-# set -o errexit -o noglob are assumed.
+# set +o errexit -o noglob is assumed.
 #
 
 pkg_install() {
 	local _pkglist_name="";
-	ex_rtl_fileop mkdir "${PKG_PREFIX}";
-	find "${PKG_DESTDIR}"				\
-		-type d -exec chmod 0755 {} \;;
-	find "${PKG_DESTDIR}"				\
-		\( -not -perm /0111 \)			\
-		-type f -exec chmod 0644 {} \;;
-	find "${PKG_DESTDIR}"				\
-		-perm /0111 -type f -exec chmod 0755 {} \;;
-	tar -C "${PKG_DESTDIR}" -cpf - .		|\
-		tar -C "${PKG_PREFIX}" --overwrite -xpf -;
-	if ex_rtl_lmatch "${ARG_DIST}" , pkg; then
-		tar -C "${PKG_DESTDIR}" -cpf - .	|\
-			gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"
-	fi;
-	if [ "${PKG_PKGLIST_DISABLE:-0}" -eq 0 ]; then
-		if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]; then
-			touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
+	if ! ex_rtl_fileop mkdir "${PKG_PREFIX}"\
+	|| ! find "${PKG_DESTDIR}" -type d -exec chmod 0755 {} \;\
+	|| ! find "${PKG_DESTDIR}" \( -not -perm /0111 \) -type f -exec chmod 0644 {} \;\
+	|| ! find "${PKG_DESTDIR}" -perm /0111 -type f -exec chmod 0755 {} \;\
+	|| ! tar -C "${PKG_DESTDIR}" -cpf - . | tar -C "${PKG_PREFIX}" --overwrite -xpf -; then
+		return "${?}";
+	else
+		if ex_rtl_lmatch "${ARG_DIST}" "pkg" ","; then
+			tar -C "${PKG_DESTDIR}" -cpf - . |\
+				gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz" || return "${?}";
 		fi;
-		_pkglist_name="${PKG_BASE_DIR##*/}";
-		_pkglist_name="${_pkglist_name%%-*}";
-		echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}";
+		if [ "${PKG_PKGLIST_DISABLE:-0}" -eq 0 ]; then
+			if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]; then
+				touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" || return "${?}";
+			fi;
+			_pkglist_name="${PKG_BASE_DIR##*/}"; _pkglist_name="${_pkglist_name%%-*}";
+			echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" || return "${?}";
+		fi;
 	fi;
 };
 
