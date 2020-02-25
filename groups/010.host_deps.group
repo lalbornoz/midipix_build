@@ -200,7 +200,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_PYTHON2_HOST_CONFIGURE_ARGS:="--source-dir=../../Python-${PKG_PYTHON2_HOST_VERSION} --prefix=${PREFIX}"};
 : ${PKG_PYTHON2_HOST_ENV_VARS_EXTRA:="NATIVE_LDFLAGS=-Wl,-rpath,${PREFIX}/lib"};
 : ${PKG_PYTHON2_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= EXEC_PREFIX= BINDIR=/bin SBINDIR=/sbin LIBDIR=/lib INCLUDEDIR=/include OLDINCLUDEDIR=/include MANDIR=/share/man DOCDIR=/share/doc LIBEXECDIR=/libexec"};
-: ${PKG_PYTHON3_HOST_DEPENDS:="gdbm_host libressl_host libz_host ncurses_host ncursesw_host sqlite3_host xz_host"};
+: ${PKG_PYTHON3_HOST_DEPENDS:="gdbm_host libreadline libressl_host libz_host ncurses_host ncursesw_host sqlite3_host xz_host"};
 : ${PKG_PYTHON3_HOST_SHA256SUM:=ab6193af1921b30f587b302fe385268510e80187ca83ca82d2bfe7ab544c6f91};
 : ${PKG_PYTHON3_HOST_VERSION:=3.6.3};
 : ${PKG_PYTHON3_HOST_URL:="https://www.python.org/ftp/python/${PKG_PYTHON3_HOST_VERSION}/Python-${PKG_PYTHON3_HOST_VERSION}.tgz"};
