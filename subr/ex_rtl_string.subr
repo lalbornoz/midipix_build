@@ -32,10 +32,10 @@ ex_rtl_tolower() {
 	X*)     _s_new="${_s_new:+${_s_new}}x"; _s="${_s#X}"; ;;
 	Y*)     _s_new="${_s_new:+${_s_new}}y"; _s="${_s#Y}"; ;;
 	Z*)     _s_new="${_s_new:+${_s_new}}z"; _s="${_s#Z}"; ;;
-	[^A-Z]*)
-		_s_new="${_s_new:+${_s_new}}${_s%%[A-Z]*}";
-		while [ "${_s#[^A-Z]}" != "${_s}" ]; do
-			_s="${_s#[^A-Z]}";
+	[^ABCDEFGHIJKLMNOPQRSTUVWXYZ]*)
+		_s_new="${_s_new:+${_s_new}}${_s%%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*}";
+		while [ "${_s#[^ABCDEFGHIJKLMNOPQRSTUVWXYZ]}" != "${_s}" ]; do
+			_s="${_s#[^ABCDEFGHIJKLMNOPQRSTUVWXYZ]}";
 		done; ;;
 	esac; done;
 	echo "${_s_new}";
@@ -71,10 +71,10 @@ ex_rtl_toupper() {
 	x*)     _s_new="${_s_new:+${_s_new}}X"; _s="${_s#x}"; ;;
 	y*)     _s_new="${_s_new:+${_s_new}}Y"; _s="${_s#y}"; ;;
 	z*)     _s_new="${_s_new:+${_s_new}}Z"; _s="${_s#z}"; ;;
-	[^a-z]*)
-		_s_new="${_s_new:+${_s_new}}${_s%%[a-z]*}";
-		while [ "${_s#[^a-z]}" != "${_s}" ]; do
-			_s="${_s#[^a-z]}";
+	[^abcdefghijklmnopqrstuvwxyz]*)
+		_s_new="${_s_new:+${_s_new}}${_s%%[abcdefghijklmnopqrstuvwxyz]*}";
+		while [ "${_s#[^abcdefghijklmnopqrstuvwxyz]}" != "${_s}" ]; do
+			_s="${_s#[^abcdefghijklmnopqrstuvwxyz]}";
 		done; ;;
 	esac; done;
 	echo "${_s_new}";
