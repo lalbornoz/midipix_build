@@ -14,10 +14,10 @@
 exp_pkg_check_depends() {
 	local	_pkg_complete="${1}" _pkg_name="${2}" _pkg_wait="${3}" _restart_recursive="${4}"	\
 		_pkg_depends="" _pkg_name_depend="" _dependfl=0;
-	if _pkg_depends="$(exp_pkg_expand_depends $(ex_rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+	if _pkg_depends="$(ex_rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(ex_rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
 	&& [ -n "${_pkg_depends}" ]\
 	&& ! [ -n "${_restart}" ] || [ "${_restart_recursive:-0}" -ge 1 ]; then
-		for _pkg_name_depend in ${_pkg_depends}; do
+		for _pkg_name_depend in $(ex_rtl_uniq ${_pkg_depends}); do
 			if ! ex_rtl_lmatch "${_pkg_complete}" "${_pkg_name_depend}"\
 			|| ex_rtl_lmatch "${_pkg_wait}" "${_pkg_name_depend}"; then
 				_dependfl=1; break;
@@ -79,25 +79,6 @@ exp_pkg_dispatch_packages() {
 };
 
 #
-# exp_pkg_expand_depends() - expand list of package names to amended and ordered list according to dependency constraints
-# @${@}:		list of package names
-#
-# Return:		zero (0) on success, non-zero (>0) on failure, list of packages on stdout
-#
-exp_pkg_expand_depends() {
-	local _pkg_depends="" _pkg_name="" _pkg_names="";
-	for _pkg_name in "${@}"; do
-		if _pkg_depends="$(ex_rtl_get_var_unsafe -u "PKG_${_pkg_name}_DEPENDS")"\
-		&& [ -n "${_pkg_depends}" ]; then
-			_pkg_depends="$(exp_pkg_expand_depends ${_pkg_depends})";
-			_pkg_names="$(ex_rtl_lconcat "${_pkg_names}" "${_pkg_depends}")";
-		fi;
-		_pkg_names="$(ex_rtl_lconcat "${_pkg_names}" "${_pkg_name}")";
-	done;
-	echo "${_pkg_names}";
-};
-
-#
 # exp_pkg_expand_packages() - expand build group name to list of packages ordered and filtered according to dependency and restart constraints
 # @_group_name:		build group name
 # @_restart:		optional comma-separated list of package names to rebuild
@@ -113,7 +94,7 @@ exp_pkg_expand_packages() {
 			_pkg_names="$(ex_rtl_lsearch "${_pkg_names}" "${_restart}")";
 		fi;
 		if ! [ -n "${_restart}" ] || [ "${_restart_recursive:-0}" -ge 1 ]; then
-			_pkg_names="$(ex_rtl_uniq $(exp_pkg_expand_depends ${_pkg_names}))";
+			_pkg_names="$(ex_rtl_uniq $(ex_rtl_lunfold_depends 'PKG_${_name}_DEPENDS' ${_pkg_names}))";
 		fi;
 		for _pkg_name in ${_pkg_names}; do
 			if [ -n "$(ex_rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" ]; then
