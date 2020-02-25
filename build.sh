@@ -16,7 +16,7 @@ buildp_dispatch() {
 				_build_groups_lc="$(ex_rtl_lfilter "${_build_groups_lc}" "host_deps_rpm")";
 			fi;
 			if [ "${ARG_PARALLEL:-0}" -gt 1 ]; then
-				_njobs_max="${DEFAULT_BUILD_CPUS}";
+				_njobs_max="${ARG_PARALLEL}";
 			fi;
 			for _build_group_lc in ${_build_groups_lc}; do
 				ex_pkg_dispatch buildp_dispatch "${_build_group_lc}" "${_njobs_max}"	\
