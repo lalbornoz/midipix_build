@@ -2,10 +2,10 @@
 # set +o errexit -o noglob is assumed.
 #
 
-ex_rtl_check_path_vars() {
+rtl_check_path_vars() {
 	local _vnames="${1}" _rc=0 _vname="" _vname_val=""; _status="";
 	for _vname in ${_vnames}; do
-		_vname_val="$(ex_rtl_get_var_unsafe "${_vname}")";
+		_vname_val="$(rtl_get_var_unsafe "${_vname}")";
 		if [ -z "${_vname_val}" ]; then
 			_rc=1; _status="Error: variable \`${_vname}' is empty or unset."; break;
 		elif [ "${_vname_val#* *}" != "${_vname_val}" ]; then
@@ -15,7 +15,7 @@ ex_rtl_check_path_vars() {
 	return "${_rc}";
 };
 
-ex_rtl_clean_env() {
+rtl_clean_env() {
 	local _env_vars_except="${1}" _env_var="" _env_vars="";
 	_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
 	for _env_var in ${_env_vars}; do
@@ -24,10 +24,10 @@ ex_rtl_clean_env() {
 			_env_vars_except="${_env_vars_except:+${_env_vars_except} }${_env_var}";
 		fi;
 	done;
-	ex_rtl_unset_vars $(ex_rtl_lfilter "${_env_vars}" "${_env_vars_except}");
+	rtl_unset_vars $(rtl_lfilter "${_env_vars}" "${_env_vars_except}");
 };
 
-ex_rtl_exists_any() {
+rtl_exists_any() {
 	local _subdir="${1}"; shift;
 	while [ "${#}" -gt 0 ]; do
 		if [ -e "${_subdir}/${1}" ]; then
@@ -38,12 +38,12 @@ ex_rtl_exists_any() {
 	done; return 1;
 };
 
-ex_rtl_export_vars() {
+rtl_export_vars() {
 	local _unsetfl=0; [ "x${1}" = "x-u" ] && { _unsetfl=1; shift; };
 	while [ "${#}" -ge 2 ]; do
 		if [ -n "${2}" ]; then
 			if [ "${_unsetfl:-0}" -eq 0 ]; then
-				ex_rtl_set_var_unsafe "${1}" "${2}"; export "${1}";
+				rtl_set_var_unsafe "${1}" "${2}"; export "${1}";
 			else
 				unset "${1}";
 			fi;
@@ -52,17 +52,17 @@ ex_rtl_export_vars() {
 	done;
 };
 
-ex_rtl_get_var_unsafe() {
+rtl_get_var_unsafe() {
 	local _vname="";
 	if [ "x${1}" = "x-u" ]; then
-		shift; _vname="$(ex_rtl_toupper "${1}")";
+		shift; _vname="$(rtl_toupper "${1}")";
 	else
 		_vname="${1}";
 	fi;
 	eval echo \${${_vname}};
 };
 
-ex_rtl_head() {
+rtl_head() {
 	local _pattern="${1}" _s="${2}";
 	while true; do
 		if [ "${_s%%${_pattern}}" = "${_s}" ]; then
@@ -74,7 +74,7 @@ ex_rtl_head() {
 	echo "${_s}";
 };
 
-ex_rtl_kill_tree() {
+rtl_kill_tree() {
 	local _pid="${1}" _signal="TERM" _pid_child="" _pid_top="";
 	for _pid_top in $(pgrep -P "${_pid}"); do
 		for _pid_child in $(pgrep -P "${_pid_top}" 2>/dev/null); do
@@ -84,7 +84,7 @@ ex_rtl_kill_tree() {
 	done;
 };
 
-ex_rtl_run_cmd_unsplit() {
+rtl_run_cmd_unsplit() {
 	local _cmd="${1}" _cmdline="" _rc="" IFS; shift;
 	while [ ${#} -gt 0 ]; do
 		[ -n "${1}" ] &&\
@@ -95,19 +95,19 @@ ex_rtl_run_cmd_unsplit() {
 	return ${_rc};
 };
 
-ex_rtl_set_vars() {
+rtl_set_vars() {
 	local	_vars_set_vname="${1}" _vname_dst="${2}" _vname_src_tmpls="${3}"	\
 		_vars_set_old="" _vars_set_tmp="" _vname_src="";
-	for _vname_src in $(ex_rtl_toupper "${_vname_src_tmpls}"); do
+	for _vname_src in $(rtl_toupper "${_vname_src_tmpls}"); do
 		_vname_src="${_vname_src}_${_vname_dst}";
-		_vval_src="$(ex_rtl_get_var_unsafe "${_vname_src}")";
+		_vval_src="$(rtl_get_var_unsafe "${_vname_src}")";
 		if [ -n "${_vval_src}" ]; then
-			ex_rtl_set_var_unsafe "PKG_${_vname_dst}" "${_vval_src}";
+			rtl_set_var_unsafe "PKG_${_vname_dst}" "${_vval_src}";
 			_vars_set_tmp="${_vars_set_tmp:+${_vars_set_tmp} }PKG_${_vname_dst}";
 		fi;
 	done;
-	_vars_set_old="$(ex_rtl_get_var_unsafe "${_vars_set_vname}")";
-	ex_rtl_set_var_unsafe "${_vars_set_vname}"					\
+	_vars_set_old="$(rtl_get_var_unsafe "${_vars_set_vname}")";
+	rtl_set_var_unsafe "${_vars_set_vname}"					\
 		"${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
 };
 

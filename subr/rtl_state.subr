@@ -2,38 +2,38 @@
 # set +o errexit -o noglob is assumed.
 #
 
-ex_rtl_state_clear() {
+rtl_state_clear() {
 	local _workdir="${1}" _pkg_name="${2}" _pkg_fname="";
 	for _pkg_fname in $(find "${_workdir}"				\
 			-maxdepth 1 -mindepth 1 -name .${_pkg_name}.\* -type f); do
-		ex_rtl_fileop rm "${_pkg_fname}";
+		rtl_fileop rm "${_pkg_fname}";
 	done;
 };
 
-ex_rtl_state_set() {
+rtl_state_set() {
 	local _workdir="${1}" _pkg_fname="${2}" _done_fname_pfx="";
 	_done_fname_pfx="${_workdir}/.${_pkg_fname}";
 	shift 2; while [ ${#} -ge 1 ]; do
 		if [ -z "${1}" ]; then
 			shift; continue;
 		elif [ "${1#-}" != "${1}" ]; then
-			ex_rtl_fileop rm "${_done_fname_pfx}.${1#-}";
+			rtl_fileop rm "${_done_fname_pfx}.${1#-}";
 		else
-			ex_rtl_fileop touch "${_done_fname_pfx}.${1}";
+			rtl_fileop touch "${_done_fname_pfx}.${1}";
 		fi;
 	shift; done;
 };
 
-ex_rtl_state_test() {
+rtl_state_test() {
 	local _workdir="${1}" _pkg_name="${2}" _build_step="${3}"	\
 		_restart_at="${4}" _done_fname="";
 	_done_fname="${_workdir}/.${_pkg_name}.${_build_step}";
 	if [ -z "${_restart_at}" ]; then
-		ex_rtl_fileop test "${_done_fname}";
+		rtl_fileop test "${_done_fname}";
 	elif [ "${_restart_at}" = "ALL" ]; then
 		return 1;
 	else
-		! ex_rtl_lmatch "${_restart_at}" "${_build_step}" ",";
+		! rtl_lmatch "${_restart_at}" "${_build_step}" ",";
 	fi;
 };
 

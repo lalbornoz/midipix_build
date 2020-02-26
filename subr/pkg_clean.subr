@@ -4,14 +4,14 @@
 
 pkg_clean() {
 	if [ "${PKG_NO_CLEAN:-0}" -eq 0 ]; then
-		if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" "build" ","; then
-			ex_rtl_fileop rm "${PKG_BUILD_DIR}" || return "${?}";
+		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "build" ","; then
+			rtl_fileop rm "${PKG_BUILD_DIR}" || return "${?}";
 		fi;
-		if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" "dest" ","; then
-			ex_rtl_fileop rm "${PKG_DESTDIR}" || return "${?}";
+		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "dest" ","; then
+			rtl_fileop rm "${PKG_DESTDIR}" || return "${?}";
 		fi;
-		if ex_rtl_lmatch "${ARG_CLEAN_BUILDS}" "src" ","; then
-			ex_rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}" || return "${?}";
+		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "src" ","; then
+			rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}" || return "${?}";
 		fi;
 	fi;
 };

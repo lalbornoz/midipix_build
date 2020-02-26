@@ -2,7 +2,17 @@
 # set +o errexit -o noglob is assumed.
 #
 
-ex_rtl_tolower() {
+rtl_isnumber() {
+	local _s="${1}" _rc=0;
+	while [ -n "${_s}" ]; do
+	case "${_s}" in
+	[0-9]*)	_s="${_s#[0-9]}"; ;;
+	*)	_rc=1; break; ;;
+	esac; done;
+	return "${_rc}";
+};
+
+rtl_tolower() {
 	local _s="${1}" _s_new="";
 	while [ -n "${_s}" ]; do
 	case "${_s}" in
@@ -41,7 +51,7 @@ ex_rtl_tolower() {
 	echo "${_s_new}";
 };
 
-ex_rtl_toupper() {
+rtl_toupper() {
 	local _s="${1}" _s_new="";
 	while [ -n "${_s}" ]; do
 	case "${_s}" in

@@ -12,9 +12,9 @@ pkg_configure_patch() {
 			"${_patch_dir}/${_pkg_name_full}.local@${BUILD_HNAME}.patch"	\
 			${PKG_PATCHES_EXTRA}; do
 		if [ -r "${_patch_fname}" ]\
-		&& ! ex_rtl_lmatch "${_patches_done}" "${_patch_fname}"; then
+		&& ! rtl_lmatch "${_patches_done}" "${_patch_fname}"; then
 			patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}" || return "${?}";
-			_patches_done="$(ex_rtl_lconcat "${_patches_done}" "${_patch_fname}")";
+			_patches_done="$(rtl_lconcat "${_patches_done}" "${_patch_fname}")";
 		fi;
 	done; set -o noglob;
 };

@@ -4,7 +4,7 @@
 
 pkg_install_rpm() {
 	local _pkg_url="" _pkg_version_full="" _pkg_version_rpm="" _rc=0;
-	if ex_rtl_lmatch "${ARG_DIST}" "rpm" ","\
+	if rtl_lmatch "${ARG_DIST}" "rpm" ","\
 	&& [ "${PKG_RPM_DISABLE:-0}" -eq 0 ]\
 	&& [ -x "$(which rpmbuild 2>/dev/null)" ]; then
 		if [ -n "${PKG_URL}" ]; then
@@ -17,7 +17,7 @@ pkg_install_rpm() {
 				_pkg_url="Unknown";
 			fi;
 		fi;
-		if ! ex_rtl_fileop cp "${MIDIPIX_BUILD_PWD}/etc/package.spec"					\
+		if ! rtl_fileop cp "${MIDIPIX_BUILD_PWD}/etc/package.spec"					\
 				"${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec"; then
 			return 1;
 		else	while true; do
@@ -41,8 +41,8 @@ pkg_install_rpm() {
 			done;
 			if ! find "${PREFIX_RPM}/${PKG_NAME}-${_pkg_version_rpm}/RPMS"				\
 				-iname \*.rpm -exec cp -pP {} "${PREFIX_RPM}/" \;				\
-			|| ! ex_rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${_pkg_version_rpm}"			\
-			|| ! ex_rtl_fileop cp "${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec" "${PREFIX_RPM}/"; then
+			|| ! rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${_pkg_version_rpm}"			\
+			|| ! rtl_fileop cp "${PKG_BASE_DIR}/${PKG_NAME}-${_pkg_version_rpm}.spec" "${PREFIX_RPM}/"; then
 				return "${?}";
 			fi;
 		fi;
