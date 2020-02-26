@@ -5,6 +5,7 @@ NATIVE_RUNTIME_BUILD_TYPE="native";
 NATIVE_RUNTIME_CFLAGS_CONFIGURE="${DEFAULT_CFLAGS_RUNTIME}";
 NATIVE_RUNTIME_CONFIGURE_ARGS="--prefix= --strict --host=${DEFAULT_TARGET}";
 NATIVE_RUNTIME_ENV_VARS_EXTRA="CFLAGS_PATH=-I${PREFIX_NATIVE}/include:LDFLAGS_PATH=-L${PREFIX_NATIVE}/lib";
+NATIVE_RUNTIME_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools native_toolchain native_tools";
 NATIVE_RUNTIME_PACKAGES="
 dalist ldso ntapi ntcon ntctty ntux pemagine psxscl psxscl_strace psxtypes ptycon sltdl u16ports";
 NATIVE_RUNTIME_PREFIX="${PREFIX_NATIVE}";
