@@ -2,6 +2,7 @@
 # Build group native_toolchain
 #
 NATIVE_TOOLCHAIN_CONFIGURE_ARGS="--disable-nls --host=${DEFAULT_TARGET} --program-prefix= --prefix=/ --target=${DEFAULT_TARGET}";
+NATIVE_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools native_tools";
 NATIVE_TOOLCHAIN_PACKAGES="
 binutils binutils_mingw32 gcc_full gcc_stage1_native_mingw32 gmp mpc mpfr musl_full ";
 NATIVE_TOOLCHAIN_PREFIX="${PREFIX_NATIVE}";

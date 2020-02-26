@@ -2,6 +2,7 @@
 # Build group native_tools
 #
 NATIVE_TOOLS_CONFIGURE_ARGS="--disable-nls --host=${DEFAULT_TARGET} --program-prefix= --prefix=/ --target=${DEFAULT_TARGET}";
+NATIVE_TOOLS_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools";
 NATIVE_TOOLS_MAKEFLAGS_INSTALL="PREFIX= prefix=";
 NATIVE_TOOLS_PACKAGES="
 mdso perk pkgconf slibtool";
