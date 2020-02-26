@@ -1,6 +1,7 @@
 #
 # Build group native_packages (x11)
 #
+GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 atk at_spi2_atk at_spi2_core cairo dbus_glib fontconfig freetype

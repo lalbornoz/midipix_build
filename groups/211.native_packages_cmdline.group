@@ -1,6 +1,7 @@
 #
 # Build group native_packages (cmdline)
 #
+GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 bash bc busybox calcurse coreutils dash datamash dos2unix ed figlet

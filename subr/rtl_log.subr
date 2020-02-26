@@ -23,9 +23,9 @@ exp_rtl_log_printf() {
 	printf "\033[0m\033[${_attr}m%s\033[0m\n" "${_msg}";
 };
 
-ex_rtl_log_env_vars() {
+rtl_log_env_vars() {
 	local _nvar=1 _arg="" _arg_len_max=0;
-	ex_rtl_log_msg info "Variables for this ${1:-build}:"; shift;
+	rtl_log_msg info "Variables for this ${1:-build}:"; shift;
 	while [ ${_nvar} -le ${#} ]; do
 		_arg="$(eval echo \${${_nvar}})";
 		_arg="${_arg%%=*}";
@@ -34,18 +34,18 @@ ex_rtl_log_env_vars() {
 		fi; : $((_nvar+=1));
 	done;
 	while [ ${#} -gt 0 ]; do
-		ex_rtl_log_msg info "$(printf			\
+		rtl_log_msg info "$(printf			\
 			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
-			"${1%%=*}" "$(ex_rtl_get_var_unsafe ${1#*=})")";
+			"${1%%=*}" "$(rtl_get_var_unsafe ${1#*=})")";
 		shift;
 	done;
 };
 
-ex_rtl_log_set_vnfo_lvl() {
+rtl_log_set_vnfo_lvl() {
 	EXP_RTL_LOG_VNFO_LVL="${1}";
 };
 
-ex_rtl_log_msg() {
+rtl_log_msg() {
 	local _lvl="${1}" _lvl_uc="" _attr=""; shift;
 	if [ "${_lvl}" = vnfo ]\
 	|| [ "${_lvl}" = vucc ]\
@@ -61,12 +61,12 @@ ex_rtl_log_msg() {
 	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 4 ]; then
 		return;
 	fi;
-	_lvl_uc="$(ex_rtl_toupper "${_lvl%exit}")";
-	_attr="$(ex_rtl_get_var_unsafe "DEFAULT_LOG_MSG_${_lvl_uc}_COLOUR")";
+	_lvl_uc="$(rtl_toupper "${_lvl%exit}")";
+	_attr="$(rtl_get_var_unsafe "DEFAULT_LOG_MSG_${_lvl_uc}_COLOUR")";
 	if [ ${#} -gt 1 ]; then
-		exp_rtl_log_printf "${_attrs}" "==> %s %s %s" "$(ex_rtl_date)" "${1}" "$*";
+		exp_rtl_log_printf "${_attrs}" "==> %s %s %s" "$(rtl_date)" "${1}" "$*";
 	else
-		exp_rtl_log_printf "${_attrs}" "==> %s %s" "$(ex_rtl_date)" "${1}";
+		exp_rtl_log_printf "${_attrs}" "==> %s %s" "$(rtl_date)" "${1}";
 	fi;
 	if [ ${_lvl} = failexit ]; then
 		exit 1;

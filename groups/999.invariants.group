@@ -1,6 +1,7 @@
 #
 # Build group invariants
 #
+INVARIANTS_FORCE=1;
 INVARIANTS_NO_LOG_VARS=1;
 INVARIANTS_PACKAGES="invariants_digest invariants_gitref invariants_minipix invariants_zipdist";
 : ${PKG_INVARIANTS_TARBALLS:="invariants_digest invariants_minipix"};
