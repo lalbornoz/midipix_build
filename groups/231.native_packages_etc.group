@@ -1,6 +1,7 @@
 #
 # Build group native_packages (etc)
 #
+GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron curl

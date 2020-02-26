@@ -17,8 +17,8 @@ pkgp_configure_patch_pre_chainport() {
 	local	_chainport_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_*}/${PKG_NAME%%_*}-${PKG_VERSION}.midipix.patch"\
 		_chainport_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_*}" _oldpwd="";
 	if [ -e "${_chainport_patch_fname}" ]; then
-		ex_rtl_fileop mkdir "${_chainport_patch_dname}" || return "${?}";
-		ex_rtl_fileop cp "${_chainport_patch_fname}" "${_chainport_patch_dname}" || return "${?}";
+		rtl_fileop mkdir "${_chainport_patch_dname}" || return "${?}";
+		rtl_fileop cp "${_chainport_patch_fname}" "${_chainport_patch_dname}" || return "${?}";
 	fi;
 };
 

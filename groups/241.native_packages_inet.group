@@ -1,6 +1,7 @@
 #
 # Build group native_packages (inet)
 #
+GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 apk_tools aria2 bind ca_certificates dropbear fetchmail git gnupg gnutls

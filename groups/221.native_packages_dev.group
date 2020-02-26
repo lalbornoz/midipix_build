@@ -1,6 +1,7 @@
 #
 # Build group native_packages (dev)
 #
+GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="
 ${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
 bison chicken cparser diffutils flex gdb lunix m4 make mandoc nasm patch

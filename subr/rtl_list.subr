@@ -2,7 +2,7 @@
 # set +o errexit -o noglob is assumed.
 #
 
-ex_rtl_lconcat() {
+rtl_lconcat() {
 	local _list="${1}" _litem_new="${2}" _sep="${3:- }" IFS="${3:-${IFS}}";
 	if [ -n "${_list}" ]; then
 		printf "%s%s%s" "${_list}" "${_sep}" "${_litem_new}";
@@ -11,7 +11,7 @@ ex_rtl_lconcat() {
 	fi;
 };
 
-ex_rtl_lfilter() {
+rtl_lfilter() {
 	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS}}"	\
 		_filterfl="" _litem="" _litem_filter="" _lnew="";
 	if [ -z "${_filter}" ]; then
@@ -30,7 +30,7 @@ ex_rtl_lfilter() {
 	echo "${_lnew}";
 };
 
-ex_rtl_llength() {
+rtl_llength() {
 	local _list="${1}" _sep="${2:- }" IFS="${2:-${IFS}}" _litem="" _llength=0;
 	for _litem in ${_list}; do
 		: $((_llength+=1));
@@ -38,12 +38,12 @@ ex_rtl_llength() {
 	echo "${_llength}";
 };
 
-ex_rtl_lmatch() {
+rtl_lmatch() {
 	local _list="${1}" _item="${2}" _sep="${3}";
-	[ -n "$(ex_rtl_lsearch "${_list}" "${_item}" "${_sep}")" ];
+	[ -n "$(rtl_lsearch "${_list}" "${_item}" "${_sep}")" ];
 };
 
-ex_rtl_lsearch() {
+rtl_lsearch() {
 	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS}}"	\
 		_litem="" _litem_filter="" _lnew="";
 	if [ -z "${_filter}" ]; then
@@ -59,15 +59,15 @@ ex_rtl_lsearch() {
 	echo "${_lnew}";
 };
 
-ex_rtl_lunfold_depends() {
+rtl_lunfold_depends() {
 	local _vname_template="${1}" _depends="" _name="" _names=""; shift;
 	for _name in "${@}"; do
-		if _depends="$(ex_rtl_get_var_unsafe -u "$(eval printf \"%s\" \""${_vname_template}"\")")"\
+		if _depends="$(rtl_get_var_unsafe -u "$(eval printf \"%s\" \""${_vname_template}"\")")"\
 		&& [ -n "${_depends}" ]; then
-			_depends="$(ex_rtl_lunfold_depends "${_vname_template}" ${_depends})";
-			_names="$(ex_rtl_lconcat "${_names}" "${_depends}")";
+			_depends="$(rtl_lunfold_depends "${_vname_template}" ${_depends})";
+			_names="$(rtl_lconcat "${_names}" "${_depends}")";
 		fi;
-		_names="$(ex_rtl_lconcat "${_names}" "${_name}")";
+		_names="$(rtl_lconcat "${_names}" "${_name}")";
 	done;
 	echo "${_names}";
 };

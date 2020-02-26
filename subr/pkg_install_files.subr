@@ -4,7 +4,7 @@
 
 pkgp_install_files() {
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
-		ex_rtl_install -v "${PKG_DESTDIR}" ${PKG_INSTALL_FILES} || return "${?}";
+		rtl_install -v "${PKG_DESTDIR}" ${PKG_INSTALL_FILES} || return "${?}";
 	fi;
 };
 
@@ -30,7 +30,7 @@ pkgp_install_files_strip() {
 		fi;
 		for _bin_path in $(find "${_tree_root}" -perm /a=x -type f); do
 			if objdump -sj .debug_info "${_bin_path}" >/dev/null 2>&1; then
-				ex_rtl_log_msg info "Stripping ${_bin_path}...";
+				rtl_log_msg info "Stripping ${_bin_path}...";
 				"${PKG_TARGET}-strip" "${_bin_path}" || return "${?}";
 			fi;
 		done;
