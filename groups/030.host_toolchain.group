@@ -3,6 +3,7 @@
 #
 HOST_TOOLCHAIN_BUILD_TYPE="host";
 HOST_TOOLCHAIN_CONFIGURE_ARGS="--disable-nls --prefix= --target=${DEFAULT_TARGET}";
+HOST_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm host_tools";
 HOST_TOOLCHAIN_MAKEFLAGS_INSTALL_EXTRA="prefix= PREFIX=";
 HOST_TOOLCHAIN_PACKAGES="
 binutils_host binutils_host_mingw32 gcc_full_host gcc_libstdcpp_v3_host

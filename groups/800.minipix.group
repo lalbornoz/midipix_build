@@ -5,6 +5,7 @@ MINIPIX_CFLAGS_CONFIGURE="${DEFAULT_CFLAGS:+${DEFAULT_CFLAGS} }--sysroot=${PREFI
 MINIPIX_CXXFLAGS_CONFIGURE="${DEFAULT_CXXFLAGS:+${DEFAULT_CXXFLAGS} }--sysroot=${PREFIX_NATIVE}";
 MINIPIX_CONFIG_CACHE_LOCAL="${CONFIG_CACHE_GNULIB}";
 MINIPIX_CONFIGURE_ARGS="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET}";
+MINIPIX_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools native_packages native_toolchain native_tools";
 MINIPIX_LDFLAGS_BUILD="--sysroot=${PREFIX_NATIVE} -mvrfs";
 MINIPIX_LDFLAGS_CONFIGURE="--sysroot=${PREFIX_NATIVE} -mvrfs";
 MINIPIX_MAKEFLAGS_INSTALL="PREFIX= prefix=";
