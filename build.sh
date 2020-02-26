@@ -31,7 +31,7 @@ buildp_dispatch_fail_pkg() {
 };
 
 buildp_dispatch_group_state() {
-	local _group_name="${1}";
+	local _msg="${1}" _group_name="${2}";
 	case "${_msg}" in
 	finish_group)	rtl_log_msg suc2 "Finished \`${_group_name}' build group."; ;;
 	start_group)	rtl_log_msg inf2 "Starting \`${_group_name}' build group..."; ;;

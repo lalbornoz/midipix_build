@@ -207,21 +207,21 @@ buildp_init_vars() {
 		else
 			for _fname in $(find ./groups -name *.group | sort); do
 				rtl_fileop source_opt "${_fname}";
-				if [ -n "${BUILD_TARGET}" ]; then
-					_target="${BUILD_TARGET}"; unset BUILD_TARGET;
+				if [ -n "${GROUP_TARGET}" ]; then
+					_target="${GROUP_TARGET}"; unset GROUP_TARGET;
 				else
 					_fname="${_fname##*/}"; _fname="${_fname%.group}"; _target="${_fname#*.}";
 				fi;
 				_default_build_groups="$(rtl_lconcat "${_default_build_groups}" "${_target}")";
 			done;
+			_default_build_groups="$(rtl_uniq "${_default_build_groups}")";
 			if ! rtl_lmatch "${ARG_DIST}" "rpm" ","; then
 				_default_build_groups="$(rtl_lfilter "${_default_build_groups}" "host_deps_rpm")";
 			fi;
 			if [ -z "${BUILD_GROUPS}" ]; then
 				BUILD_GROUPS="${_default_build_groups}";
 			fi;
-			BUILD_GROUPS="$(rtl_lfilter "${BUILD_GROUPS}" "invariants")";
-			BUILD_GROUPS="$(rtl_lconcat "${BUILD_GROUPS}" "invariants")";
+			BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "invariants")" "invariants")";
 		fi;
 	fi;
 	return "${_rc}";
