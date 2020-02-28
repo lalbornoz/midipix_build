@@ -6,6 +6,7 @@ NATIVE_TOOLS_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools";
 NATIVE_TOOLS_MAKEFLAGS_INSTALL="PREFIX= prefix=";
 NATIVE_TOOLS_PACKAGES="
 mdso perk pkgconf slibtool";
+NATIVE_TOOLS_PKG_CONFIG_PATH="${PREFIX_NATIVE}/lib/pkgconfig";
 NATIVE_TOOLS_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_MDSO_URLS_GIT:="mdso=${DEFAULT_GITROOT}/mdso"};
 : ${PKG_MDSO_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET}"};
