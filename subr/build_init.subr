@@ -82,7 +82,7 @@ buildp_init_env() {
 				pgrep pkill printf readlink rm sed seq sha256sum	\
 				sort stat tail tar test touch tr wget xz zip; do
 			if ! which "${_cmd}" >/dev/null 2>&1; then
-				_cmds_missing="$(rtl_lconcat "${_cmds_missing}" "${_cmd}")";
+				_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
 			fi;
 		done;
 		if [ -n "${_cmds_missing}" ]; then
