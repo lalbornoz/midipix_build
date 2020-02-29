@@ -74,6 +74,74 @@ additional overrides, particularly ``${DEFAULT_GITROOT_HEAD}``.
 | PREFIX_ROOT      | ${HOME}/midipix                 | Absolute pathname to top-level directory                                      |
 | PREFIX_RPM       | ${PREFIX}/rpm                   | Absolute pathname to package RPM archive root directory                       |
 
+The following variables are package-specific and receive their value from either
+top-level defaults defined in ``midipix.env``, build group-specific defaults from
+the build group the package pertains to and defined in its corresponding file beneath
+``groups/``, or package-specific overrides defined either in the latter and/or in
+its corresponding file beneath ``vars/``. The minimum set of package variables that
+must be provided is ``SHA256SUM, URL, VERSION`` and ``URLS_GIT``, respectively.
+
+| Package variable name       | Description                                                                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| AR                          | Command- or pathname of toolchain library archive editor (ar(1))                                                                        |
+| BASE_DIR                    | Absolute pathname to package build root directory beneath ${BUILD_WORKDIR}                                                              |
+| BUILD_DIR                   | Directory name of package build directory beneath ${PKG_BASE_DIR}                                                                       |
+| BUILD_STEPS_DISABLE         | List of build steps to disable during package build                                                                                     |
+| BUILD_TYPE                  | Cross-compiled toolchain (cross,) host (host,) or cross-compiled package build type                                                     |
+| CC                          | Command- or pathname of toolchain C compiler (cc(1))                                                                                    |
+| CFLAGS_BUILD_EXTRA          | Additional C compiler flags during package (make(1)) build                                                                              |
+| CFLAGS_CONFIGURE            | C compiler flags during package (autotools or similar) configuration                                                                    |
+| CFLAGS_CONFIGURE_EXTRA      | Additional C compiler flags during package (GNU autotools or similar) configuration                                                     |
+| CONFIG_CACHE                | List of GNU autotools configuration cache variables                                                                                     |
+| CONFIG_CACHE_EXTRA          | Additional list of GNU autotools configuration cache variables                                                                          |
+| CONFIG_CACHE_LOCAL          | Additional list of GNU autotools configuration cache variables                                                                          |
+| CONFIGURE                   | Command- or pathname to package (GNU autotools or similar) configuration script                                                         |
+| CONFIGURE_ARGS              | List of arguments to package (GNU autotools or similar) configuration script                                                            |
+| CONFIGURE_ARGS_EXTRA        | Additional list of arguments to package (GNU autotools or similar) configuration script                                                 |
+| CXX                         | Command- or pathname of toolchain C++ compiler (c++(1))                                                                                 |
+| CXXFLAGS_CONFIGURE          | List of C++ compiler flags during package (autotools or similar) configuration                                                          |
+| CXXFLAGS_CONFIGURE_EXTRA    | Additional list of C++ compiler flags during package (autotools or similar) configuration                                               |
+| DEPENDS                     | List of package-package dependencies                                                                                                    |
+| DESTDIR                     | Directory name of package installation destination directory beneath ${PKG_BASE_DIR}                                                    |
+| DISABLED                    | Disable package                                                                                                                         |
+| ENV_VARS_EXTRA              | List of double colon-separated environment variable equality sign-separated name-value pairs to set during package build                |
+| FNAME                       | Filename of package archive file                                                                                                        |
+| GITROOT                     | midipix packages Git URL prefix                                                                                                         |
+| INHERIT_FROM                | Inherit variables from named package                                                                                                    |
+| INSTALL_FILES               | Whitespace-separated list of files to manually install into the package installation destination directory beneath ${PKG_BASE_DIR}      |
+| INSTALL_FILES_DESTDIR       | Whitespace-separated list of files to initialise the package installation destination directory beneath ${PKG_BASE_DIR} with            |
+| INSTALL_FILES_DESTDIR_EXTRA | Additional whitespace-separated list of files to initialise the package installation destination directory beneath ${PKG_BASE_DIR} with |
+| INSTALL_TARGET              | Name of package build make(1) installation target                                                                                       |
+| INSTALL_TARGET_EXTRA        | Additional name of package build make(1) installation target                                                                            |
+| IN_TREE                     | Build package in-tree within ${PKG_SUBDIR}                                                                                              |
+| LDFLAGS_BUILD_EXTRA         | Additional linker flags during package (make(1)) build                                                                                  |
+| LDFLAGS_CONFIGURE           | Linker flags during package (autotools or similar) configuration                                                                        |
+| LDFLAGS_CONFIGURE_EXTRA     | Additional linker flags during package (autotools or similar) configuration                                                             |
+| LIBTOOL                     | Command- or pathname of libtool                                                                                                         |
+| MAKE                        | Command line of make(1)                                                                                                                 |
+| MAKEFLAGS_BUILD             | List of make(1) flags during package (make(1)) build                                                                                    |
+| MAKEFLAGS_BUILD_EXTRA       | Additional list of make(1) flags during package (make(1)) build                                                                         |
+| MAKEFLAGS_INSTALL           | List of make(1) flags during package (make(1)) installation                                                                             |
+| MAKEFLAGS_INSTALL_EXTRA     | Additional list of make(1) flags during package (make(1)) installation                                                                  |
+| MAKE_INSTALL_VNAME          | Variable name of make(1) installation destination directory variable during package (make(1)) installation                              |
+| NO_CLEAN                    | Inhibit cleaning of package build directory beneath ${PKG_BASE_DIR} pre-finish                                                          |
+| NO_CLEAN_BASE_DIR           | Inhibit cleaning of package build root directory beneath ${BUILD_WORKDIR}                                                               |
+| NO_LOG_VARS                 | Inhibit logging of build & package variables pre-package build                                                                          |
+| PATCHES_EXTRA               | Additional list of patches to apply                                                                                                     |
+| PKG_CONFIG                  | Command- or pathname of pkg-config(1)                                                                                                   |
+| PKG_CONFIG_PATH             | pkg-config(1) search path                                                                                                               |
+| PKGLIST_DISABLE             | Inhibit inclusion into ${PREFIX}/pkglist.${PKG_BUILD_TYPE}                                                                              |
+| PREFIX                      | Absolute pathname of top-level installation directory and package search path                                                           |
+| PYTHON                      | Command- or pathname of Python                                                                                                          |
+| RANLIB                      | Command- or pathname of toolchain library archive index generator (ranlib(1))                                                           |
+| RPM_DISABLE                 | Inhibit creation of RPM archive                                                                                                         |
+| SHA256SUM                   | SHA-256 message digest of package archive                                                                                               |
+| SUBDIR                      | Name of extracted archive or git-{clone,pull}(1)'d directory                                                                            |
+| TARGET                      | Dash-separated {build,host,target} triplet                                                                                              |
+| URL                         | URL to package archive                                                                                                                  |
+| URLS_GIT                    | List of package Git URL(s) (*name*=*URL*@*branch*)                                                                                      |
+| VERSION                     | Package version                                                                                                                         |
+
 ## References
 * ``Sun, 25 Apr 2016 09:04:08 +0000 [1]`` <a href="http://www.musl-libc.org/faq.html" id="r1">musl FAQ</a>  
   
