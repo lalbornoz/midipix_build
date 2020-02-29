@@ -8,7 +8,7 @@
 # @_pkg_name:			single package name
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:		zero (0) on success, non-zero (>0) on failure
+# Return:			zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_env_defaults() {
 	local _build_steps_default="${1}" _pkg_name="${2}" _workdir="${3}";
@@ -80,16 +80,12 @@ exp_pkg_env_set() {
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:		zero (0) on success, non-zero (>0) on failure
+# Return:			zero (0) on success, non-zero (>0) on failure
 #
 ex_pkg_env() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _group_name="${3}"	\
 		_pkg_name="${4}" _restart_at="${5}" _workdir="${6}" _vname="";
-	if [ "${_group_name}" = "dist" ]; then
-		rtl_fileop source_opt "dist/${_pkg_name}.dist";
-	else
-		rtl_fileop source_opt "vars/${_pkg_name}.vars";
-	fi;
+	rtl_fileop source_opt "vars/${_pkg_name}.vars" "${_group_name}/${_pkg_name}.${_group_name}";
 	if ! exp_pkg_env_set "${_build_vars_default}" "${_group_name}" "${_pkg_name}"\
 	|| ! exp_pkg_env_defaults "${_build_steps_default}" "${_pkg_name}" "${_workdir}"; then
 		return "${?}";
