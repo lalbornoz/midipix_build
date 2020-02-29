@@ -4,6 +4,7 @@ IRC channel #midipix on Freenode and ask for the address of the internal reposit
 > N.B. If in doubt, consult the fault-tolerant & highly optimised 3D laser show-equipped
 usage screen w/ ./build.sh -h or a hungry lion might eat you alive.
 
+## Building a midipix distribution
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
   and binutils,
@@ -15,7 +16,14 @@ A Midipix distribution consists of the following:
   any modern POSIX-compliant \*nix environment, including GNU coreutils, shells,
   libraries such as ncurses, libressl, as well as Perl and Python.
 
-## Build-time dependencies
+Install the build-time dependencies listed below, clone this repository, and run the
+following command line within the latter:  
+
+```shell
+./build.sh -a nt64 -b release -D minipix,zipdist -P -v
+```
+
+### Build-time dependencies
 * **Alpine Linux**: binutils bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip libc-dev linux-headers lzip make musl-dev net-tools patch perl perl-xml-parser procps sed tar util-linux wget xz zip
 * **Debian/-derived Linux**: binutils bzip2 clzip cmake coreutils curl findutils g++ gawk gcc git grep gzip hostname libc6-dev libxml-parser-perl lzma make patch perl procps sed tar util-linux wget xz-utils zip
 * **OpenSUSE Linux**: binutils bzip2 cmake coreutils curl findutils gawk gcc gcc-c++ git grep gzip hostname linux-glibc-devel lzip make patch perl perl-XML-Parser procps sed tar util-linux wget xz zip
@@ -25,14 +33,6 @@ A Midipix distribution consists of the following:
 > N.B. Some packages (*coreutils*, *grep*, and *tar*, among others) override
 Alpine's BusyBox utilities of the same name, as the latter are either non-
 conformant or defective.
-
-## Building a midipix distribution
-Install the above listed build-time dependencies, clone this repository, and run the
-following command line within the latter:  
-
-```shell
-./build.sh -a nt64 -b release -D minipix,zipdist -P -v
-```
 
 ## Non-exhaustive list of build variables
 The following variables are primarily defined in ``midipix.env`` and may be overriden
