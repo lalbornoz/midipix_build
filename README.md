@@ -1,1 +1,1 @@
-etc/README
+etc/README.md
