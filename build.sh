@@ -69,15 +69,16 @@ buildp_dispatch() {
 		buildp_dispatch_pkg_state "${_msg}" "${@}"; ;;
 	finish_group|start_group)
 		buildp_dispatch_group_state "${_msg}" "${@}"; ;;
-	*)	if command -v "buildp_dispatch_${_msg}"; then
+	*)	if command -v "buildp_dispatch_${_msg}" >/dev/null 2>&1; then
 			"buildp_dispatch_${_msg}" "${@}";
 		fi; ;;
 	esac;
 };
 
 build() {
-	local	_build_date_start="" _build_time_hours=0 _build_time_mins=0 _build_time_secs=0	\
-		BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0 BUILD_PKGS_FAILED="" EX_PKG_DISPATCH_UNKNOWN="";
+	local	_build_time_hours=0 _build_time_mins=0 _build_time_secs=0	\
+		BUILD_DATE_START="" BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0	\
+		BUILD_PKGS_FAILED="" EX_PKG_DISPATCH_UNKNOWN="";
 	if trap "buildp_ast abort" HUP INT TERM USR1 USR2\
 	&& trap "buildp_ast exit" EXIT\
 	&& . ./subr/build_init.subr && build_init "${@}"; then
