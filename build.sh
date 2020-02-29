@@ -10,10 +10,15 @@ buildp_ast() {
 	if [ -n "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 		rtl_fileop rm "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 	fi;
-	if rtl_kill_tree "${$}" "TERM"\
-	&& [ -n "${RTL_KILL_TREE_PIDS}" ]; then
-		rtl_log_msg vnfo "Killed PIDs ${RTL_KILL_TREE_PIDS}";
-	fi;
+	while true; do
+		RTL_KILL_TREE_PIDS="";
+		if rtl_kill_tree "${$}" "TERM"\
+		&& [ -n "${RTL_KILL_TREE_PIDS}" ]; then
+			rtl_log_msg vnfo "Killed PIDs ${RTL_KILL_TREE_PIDS}";
+		else
+			break;
+		fi;
+	done;
 };
 
 buildp_dispatch_fail_pkg() {
