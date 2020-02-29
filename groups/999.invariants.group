@@ -4,7 +4,7 @@
 INVARIANTS_FORCE=1;
 INVARIANTS_NO_LOG_VARS=1;
 INVARIANTS_PACKAGES="invariants_digest invariants_gitref invariants_minipix invariants_zipdist";
-: ${PKG_INVARIANTS_TARBALLS:="invariants_digest invariants_minipix"};
-: ${PKG_INVARIANTS_ZIPDIST:="invariants_minipix"};
+: ${PKG_INVARIANTS_TARBALLS_DEPENDS:="invariants_digest invariants_minipix"};
+: ${PKG_INVARIANTS_ZIPDIST_DEPENDS:="invariants_minipix"};
 
 # vim:filetype=sh textwidth=0
