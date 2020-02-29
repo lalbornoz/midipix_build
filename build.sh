@@ -92,7 +92,7 @@ build() {
 	&& trap "buildp_ast exit" EXIT\
 	&& . ./subr/build_init.subr && build_init "${@}"; then
 		BUILD_DATE_START="$(rtl_date %Y-%m-%d-%H-%M-%S)"; _build_time_secs="$(rtl_date %s)";
-		rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${_build_date_start}.";
+		rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 		rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
 		if ! ex_pkg_dispatch "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"		\
 				buildp_dispatch "${BUILD_GROUPS}" "${ARG_PARALLEL:-1}"		\
