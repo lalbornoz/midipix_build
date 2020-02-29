@@ -43,6 +43,7 @@ buildp_dispatch_pkg_state() {
 	case "${_msg}" in
 	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg vnfo "$(printf "Skipping disabled package \`%s.'" "${_pkg_name}")"; ;;
 	missing_pkg)	rtl_log_msg failexit "Error: package \`${_pkg_name}' missing in build.vars."; ;;
+	msg_pkg)	shift 3; rtl_log_msg vucc "$(printf "%s/%s: %s" "${_group_name}" "${_pkg_name}" "${*}")"; ;;
 	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg vnfo "$(printf "Skipping finished package \`%s.'" "${_pkg_name}")"; ;;
 	start_pkg)	rtl_log_msg info "$(printf "[%03d/%03d] Starting \`%s' build..." "${4}" "${5}" "${_pkg_name}")"; ;;
 	step_pkg)	rtl_log_msg vucc "$(printf "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}")"; ;;
@@ -65,7 +66,7 @@ buildp_dispatch_pkg_state() {
 buildp_dispatch() {
 	local _msg="${1}"; shift;
 	case "${_msg}" in
-	disabled_pkg|finish_pkg|missing_pkg|skipped_pkg|start_pkg|start_pkg_child|step_pkg)
+	disabled_pkg|finish_pkg|missing_pkg|msg_pkg|skipped_pkg|start_pkg|start_pkg_child|step_pkg)
 		buildp_dispatch_pkg_state "${_msg}" "${@}"; ;;
 	finish_group|start_group)
 		buildp_dispatch_group_state "${_msg}" "${@}"; ;;
