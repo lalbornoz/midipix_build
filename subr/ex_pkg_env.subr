@@ -85,7 +85,11 @@ exp_pkg_env_set() {
 ex_pkg_env() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _group_name="${3}"	\
 		_pkg_name="${4}" _restart_at="${5}" _workdir="${6}" _vname="";
-	rtl_fileop source_opt "vars/${_pkg_name}.vars";
+	if [ "${_group_name}" = "dist" ]; then
+		rtl_fileop source_opt "dist/${_pkg_name}.dist";
+	else
+		rtl_fileop source_opt "vars/${_pkg_name}.vars";
+	fi;
 	if ! exp_pkg_env_set "${_build_vars_default}" "${_group_name}" "${_pkg_name}"\
 	|| ! exp_pkg_env_defaults "${_build_steps_default}" "${_pkg_name}" "${_workdir}"; then
 		return "${?}";

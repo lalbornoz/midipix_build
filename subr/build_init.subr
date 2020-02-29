@@ -231,7 +231,9 @@ buildp_init_vars() {
 			if [ -z "${BUILD_GROUPS}" ]; then
 				BUILD_GROUPS="${_default_build_groups}";
 			fi;
-			BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "invariants")" "invariants")";
+			if [ -n "${ARG_DIST}" ]; then
+				BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "dist")" "dist")";
+			fi;
 			for _group in ${BUILD_GROUPS}; do
 				if ! rtl_lmatch "${_groups}" "${_group}"; then
 					_rc=1; _status="Error: unknown build group \`${_group}'."; break;
