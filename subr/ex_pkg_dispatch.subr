@@ -61,6 +61,8 @@ exp_pkg_dispatch_group() {
 			fi; ;;
 		fail)	: $((EXP_PKG_DISPATCH_NJOBS-=1)); _rc=1;
 			"${_dispatch_fn}" fail_pkg ${_pipe_msg#fail }; ;;
+		msg_pkg)
+			"${_dispatch_fn}" msg_pkg ${_pipe_msg#msg_pkg }; ;;
 		step)	"${_dispatch_fn}" step_pkg ${_pipe_msg#step }; ;;
 		esac; done <>"${_pipe_path}";
 		if [ -n "${EXP_PKG_NAMES}" ] && [ "${_rc}" -eq 0 ]; then
