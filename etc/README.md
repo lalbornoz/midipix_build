@@ -34,6 +34,20 @@ following command line within the latter:
 Alpine's BusyBox utilities of the same name, as the latter are either non-
 conformant or defective.
 
+## Common tasks
+Rebuild set of packages in isolation, along w/ their dependencies, if any, as needed,
+or forcibly, respectively:
+```shell
+./build.sh [ ... ] -r mc,zsh
+./build.sh [ ... ] -r \*mc,zsh
+./build.sh [ ... ] -r \*\*mc,zsh
+```
+
+Rebuild entire build group:
+```shell
+./build.sh [ ... ] -r ALL native_runtime
+```
+
 ## Non-exhaustive list of build variables
 The following variables are primarily defined in ``midipix.env`` and may be overriden
 on a per-build basis on the command-line after the last argument, if any, e.g.:
@@ -59,20 +73,6 @@ additional overrides, particularly ``${DEFAULT_GITROOT_HEAD}``.
 | PREFIX_NATIVE    | ${PREFIX}/native                | Absolute pathname to cross-compiled packages root directory                   |
 | PREFIX_ROOT      | ${HOME}/midipix                 | Absolute pathname to top-level directory                                      |
 | PREFIX_RPM       | ${PREFIX}/rpm                   | Absolute pathname to package RPM archive root directory                       |
-
-## Common tasks
-Rebuild set of packages in isolation, along w/ their dependencies, if any, as needed,
-or forcibly, respectively:
-```shell
-./build.sh [ ... ] -r mc,zsh
-./build.sh [ ... ] -r \*mc,zsh
-./build.sh [ ... ] -r \*\*mc,zsh
-```
-
-Rebuild entire build group:
-```shell
-./build.sh [ ... ] -r ALL native_runtime
-```
 
 ## References
 * ``Sun, 25 Apr 2016 09:04:08 +0000 [1]`` <a href="http://www.musl-libc.org/faq.html" id="r1">musl FAQ</a>  
