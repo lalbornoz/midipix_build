@@ -3,22 +3,25 @@
 #
 
 buildp_ast() {
-	local _param="${1}" RTL_KILL_TREE_PIDS="";
+	local _param="${1}" _pids="" _pids_niter=0 RTL_KILL_TREE_PIDS="";
 	if [ "${_param}" = "abort" ]; then
 		rtl_log_msg failexit "Build aborted.";
 	fi;
 	if [ -n "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 		rtl_fileop rm "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 	fi;
-	while true; do
-		RTL_KILL_TREE_PIDS="";
-		if rtl_kill_tree "${$}" "TERM"\
-		&& [ -n "${RTL_KILL_TREE_PIDS}" ]; then
-			rtl_log_msg vnfo "Killed PIDs ${RTL_KILL_TREE_PIDS}";
-		else
+	while [ "${_pids_niter}" -lt 8 ]; do
+		_pids="$(rtl_lconcat "${_pids}" "${RTL_KILL_TREE_PIDS}")"; RTL_KILL_TREE_PIDS="";
+		if ! rtl_kill_tree "${$}" "TERM"\
+		|| [ -z "${RTL_KILL_TREE_PIDS}" ]; then
 			break;
+		else
+			: $((_pids_niter+=1));
 		fi;
 	done;
+	if [ -n "${_pids}" ]; then
+		rtl_log_msg vnfo "Killed PIDs ${_pids}";
+	fi;
 };
 
 buildp_dispatch_fail_pkg() {
