@@ -212,7 +212,14 @@ buildp_init_vars() {
 				else
 					_fname="${_fname##*/}"; _fname="${_fname%.group}"; _target="${_fname#*.}";
 				fi;
-				_default_build_groups="$(rtl_lconcat "${_default_build_groups}" "${_target}")";
+				if [ -n "${GROUP_AUTO}" ]; then
+					if [ "${GROUP_AUTO:-0}" -ne 0 ]; then
+						_default_build_groups="$(rtl_lconcat "${_default_build_groups}" "${_target}")";
+					fi;
+					unset GROUP_AUTO;
+				else
+					_default_build_groups="$(rtl_lconcat "${_default_build_groups}" "${_target}")";
+				fi;
 			done;
 			_default_build_groups="$(rtl_uniq "${_default_build_groups}")";
 			if ! rtl_lmatch "${ARG_DIST}" "rpm" ","; then
