@@ -201,7 +201,7 @@ buildp_init_vars() {
 		fi;
 		rtl_fileop source_opt							\
 			"${HOME}/midipix_build.vars" "${HOME}/.midipix_build.vars"	\
-			../midipix_build.vars ./vars/env.vars;
+			../midipix_build.vars ./midipix.env;
 		if [ -z "${PREFIX}" ]; then
 			_rc=1; _status="Error: \${PREFIX} empty or unset.";
 		else
