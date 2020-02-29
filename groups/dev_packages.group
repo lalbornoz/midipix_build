@@ -1,6 +1,7 @@
 #
 # Build group dev_packages
 #
+GROUP_AUTO=0;
 DEV_PACKAGES_CFLAGS_CONFIGURE="${DEFAULT_CFLAGS:+${DEFAULT_CFLAGS} }--sysroot=${PREFIX_NATIVE}";
 DEV_PACKAGES_CONFIG_CACHE_LOCAL="${CONFIG_CACHE_GNULIB}";
 DEV_PACKAGES_CONFIGURE_ARGS="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET}";
