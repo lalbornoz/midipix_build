@@ -2,7 +2,7 @@
 # set +o errexit -o noglob is assumed.
 #
 
-pkg_invariants_digest_all() {
+pkg_dist_digest_all() {
 	local _fname="";
 	if rtl_lmatch "${ARG_DIST}" "tbz2" ","	\
 	|| rtl_lmatch "${ARG_DIST}" "tgz" ","	\
