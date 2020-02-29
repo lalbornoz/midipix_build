@@ -75,13 +75,17 @@ rtl_head() {
 };
 
 rtl_kill_tree() {
-	local _pid="${1}" _signal="TERM" _pid_child="" _pid_top="";
-	for _pid_top in $(pgrep -P "${_pid}"); do
-		for _pid_child in $(pgrep -P "${_pid_top}" 2>/dev/null); do
-			_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_child}"; kill "-${_signal}" "${_pid_child}" 2>/dev/null;
+	local _pid="${1}" _signal="${2:-TERM}" _pid_child="" _pids="";
+	if _pids="$(pgrep -P "${_pid}")"\
+	&& [ -n "${_pids}" ]; then
+		for _pid_child in ${_pids}; do
+			rtl_kill_tree "${_pid_child}" "${_signal}";
 		done;
-		_pids_killed="${_pids_killed:+${_pids_killed} }${_pid_top}"; kill "-${_signal}" "${_pid_top}" 2>/dev/null;
-	done;
+	fi;
+	if [ "${_pid:-0}" -ne "${$}" ]\
+	&& kill "-${_signal}" "${_pid}" 2>/dev/null; then
+		RTL_KILL_TREE_PIDS="$(rtl_lconcat "${RTL_KILL_TREE_PIDS}" "${_pid}")";
+	fi;
 };
 
 rtl_run_cmd_unsplit() {
