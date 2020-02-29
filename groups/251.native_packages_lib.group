@@ -180,7 +180,7 @@ libudns libunistring libuv libvorbis libxml2 libxslt libz libzip";
 : ${PKG_LIBZ_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
 : ${PKG_LIBZ_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET} --enable-shared"};
 : ${PKG_LIBZ_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
-: ${PKG_LIBZIP_DEPENDS:="bzip2 libz musl_fts"};
+: ${PKG_LIBZIP_DEPENDS:="bzip2 gnutls libnettle libz musl_fts"};
 : ${PKG_LIBZIP_SHA256SUM:=a6cd804b4b3cffd997bd563fec693eb7eb052c225909a98a620689c2befb699b};
 : ${PKG_LIBZIP_VERSION:=1.6.0};
 : ${PKG_LIBZIP_URL:=https://libzip.org/download/libzip-${PKG_LIBZIP_VERSION}.tar.xz};
