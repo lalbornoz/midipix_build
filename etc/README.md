@@ -78,8 +78,11 @@ The following variables are package-specific and receive their value from either
 top-level defaults defined in ``midipix.env``, build group-specific defaults from
 the build group the package pertains to and defined in its corresponding file beneath
 ``groups/``, or package-specific overrides defined either in the latter and/or in
-its corresponding file beneath ``vars/``. The minimum set of package variables that
-must be provided is ``SHA256SUM, URL, VERSION`` and ``URLS_GIT``, respectively.
+its corresponding file beneath ``vars/``. Additionally, overrides may be specified
+on a per-build basis on the command-line after the last argument, with each variable
+prefixed w/ ``PKG_``, e.g.: ``./build.sh [ ... ] PKG_ZSH_CC="/bin/false"``.
+The minimum set of package variables that must be provided is ``SHA256SUM, URL, VERSION``
+and ``URLS_GIT``, respectively.
 
 | Package variable name       | Description                                                                                                                             |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
