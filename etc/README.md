@@ -43,9 +43,58 @@ or forcibly, respectively:
 ./build.sh [ ... ] -r \*\*mc,zsh
 ```
 
+Restart the ``configure``, ``build``, and ``install`` steps of the ``coreutils`` package.
+```shell
+./build.sh -r coreutils:configure,build,install
+```
+
 Rebuild entire build group:
 ```shell
 ./build.sh [ ... ] -r ALL native_runtime
+```
+
+## Fault-tolerant & highly optimised 3D laser show-equipped usage screen
+```
+usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]] [-F ipv4|ipv6|offline]
+                  [-h] [-p jobs] [-P] [-r [*[*]]ALL|LAST|name[,..][:step,..]] [-R] [-v[v[v[v]]]]
+                  [--as-needed] [--debug-minipix] [<group>[ ..]]
+
+        -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release  Selects debug or release build; defaults to debug.
+        -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
+                          scripts (prefix,) source directory (src,) and/or destination directory
+                          (dest) after successful package builds.
+        -D kind[,..]      Produce minimal midipix distribution directory (minipix,) RPM binary
+                          packages (rpm,) and/or deployable distribution ZIP archive (zipdist.)
+                          zipdist implies minipix.
+        -F ipv4|ipv6|offline
+                          Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package archives
+                          and/or Git repositories or don't download either at all (offline.)
+        -h                Show this screen.
+        -p jobs           Enables parallelisation at group-level, whenever applicable.
+        -P                The maximum count of jobs defaults to the number of logical
+                          processors on the host system divided by two (2.)
+                          If -R is not specified and at least one (1) package fails to build,
+                          all remaining package builds will be forcibly aborted for convenience.
+        -r [*[*]]ALL[:step,..]|LAST|name[,..][:step,..]
+                          Restart all packages/the specified comma-separated package(s)
+                          completely or at optionally specified comma-separated step(s)
+                          or restart the last failed package and resume build.
+                          Prepend w/ `*' to automatically include dependencies and `**' to
+                          forcibly rebuild all dependencies.
+
+                          Currently defined steps are:
+                          fetch_wget, fetch_git, fetch_extract,
+                          configure_patch_pre, configure_autotools, configure_patch, configure,
+                          build,
+                          install_subdirs, install_make, install_files, install_libs, install, and install_rpm.
+        -R                Ignore build failures, skip printing package logs, and continue
+                          building (relaxed mode.)
+        -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace during package builds; -vvvv: logs fileops.
+        --as-needed       Don't build unless the midipix_build repository has received new commits.
+        --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
+        <group>[ ..]      One of: host_deps, host_deps_rpm, host_toolchain, host_tools, minipix,
+                          native_packages, native_runtime, native_toolchain, and/or native_tools.
 ```
 
 ## Non-exhaustive list of build variables
@@ -109,6 +158,7 @@ and ``URLS_GIT``, respectively.
 | DISABLED                    | Disable package                                                                                                                         |
 | ENV_VARS_EXTRA              | List of double colon-separated environment variable equality sign-separated name-value pairs to set during package build                |
 | FNAME                       | Filename of package archive file                                                                                                        |
+| FORCE_AUTORECONF            | Forcibly run autoreconf -fiv prior to package (GNU autotools or similar) configuration                                                  |
 | GITROOT                     | midipix packages Git URL prefix                                                                                                         |
 | INHERIT_FROM                | Inherit variables from named package                                                                                                    |
 | INSTALL_FILES               | Whitespace-separated list of files to manually install into the package installation destination directory beneath ${PKG_BASE_DIR}      |

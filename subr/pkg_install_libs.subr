@@ -5,7 +5,9 @@
 pkgp_install_libs_purge_la() {
 	local _la_path="";
 	for _la_path in $(find "${PKG_DESTDIR}" -type f -name \*.la); do
-		rtl_fileop rm "${_la_path}" || return "${?}";
+		if ! rtl_fileop rm "${_la_path}"; then
+			return 1;
+		fi;
 	done;
 };
 
@@ -25,7 +27,7 @@ pkgp_install_libs_shared() {
 	local _lib_dst_path="" _lib_name="" _lib_src_path="" _so_dst_dir="" _so_src_path="";
 	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
 		for _so_src_path in \
-			$(find	"${PKG_DESTDIR}"							  \
+			$(find	"${PKG_DESTDIR}"							  	\
 				\(  -name "*.so" -or -name "*.so.*" \) -print);
 		do	if [ "$(readlink -f "${_so_path}")" != "/dev/null" ]\
 			&& [ -z "$(rtl_head "[0-9.]" "${_so_src_path##*.so}")" ]; then
@@ -38,13 +40,17 @@ pkgp_install_libs_shared() {
 				_lib_dst_path="${_so_dst_dir}/${_lib_name}";
 				if [ ! -L "${_lib_src_path}" ]\
 				&& [ ! -e "${_lib_dst_path}" ]; then
-					(rtl_fileop cd "$(rtl_dirname "${_so_src_path}")" 	&&\
-					perk -e "$(rtl_basename "${_so_src_path}")"			 |\
-						"${PKG_TARGET}-mdso"					  \
-							-i "$(rtl_basename "${_lib_dst_path}")"	  \
-							-n "$(rtl_basename "${_so_src_path}")" -) || return "${?}";
+					if ! (rtl_fileop cd "$(rtl_dirname "${_so_src_path}")" 	&&		\
+							perk -e "$(rtl_basename "${_so_src_path}")"		|\
+								"${PKG_TARGET}-mdso"				\
+									-i "$(rtl_basename "${_lib_dst_path}")"	\
+									-n "$(rtl_basename "${_so_src_path}")" -); then
+						return 1;
+					fi;
 				fi;
-				pkgp_install_libs_shared_link "${_lib_name}" "${_so_dst_dir}" "${_so_src_path}" || return "${?}";
+				if ! pkgp_install_libs_shared_link "${_lib_name}" "${_so_dst_dir}" "${_so_src_path}"; then
+					return 1;
+				fi;
 			fi;
 		done;
 	fi;

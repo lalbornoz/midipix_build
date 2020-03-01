@@ -7,6 +7,10 @@ pkg_configure_autotools() {
 	if rtl_exists_any "${PKG_BASE_DIR}/${PKG_SUBDIR}"							\
 			"config.guess" "configure.ac" "configure.in" "configure";
 	then	rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}";
+		if [ "${PKG_FORCE_AUTORECONF:-0}" -eq 1 ]\
+		&& ! (cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoreconf -fiv); then
+			return 1;
+		fi;
 		if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" ]\
 		&& [ ! -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]; then
 			for _fname in bootstrap bootstrap.sh autogen.sh; do
@@ -15,16 +19,26 @@ pkg_configure_autotools() {
 							"${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux"		\
 							"${PKG_BASE_DIR}/${PKG_SUBDIR}";
 					do	if [ -e "${_subdir_tgt}" ]; then
-							rtl_fileop install -m 0700				\
-								"${MIDIPIX_BUILD_PWD}/etc/config.sub"		\
-								"${_subdir_tgt}/config.sub" || return "${?}" && break;
+							if ! rtl_fileop install -m 0700				\
+									"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
+									"${_subdir_tgt}/config.sub"; then
+								return 1;
+							else
+								break;
+							fi;
 						fi;
 					done;
-					(rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&			\
-						/bin/sh "${_fname}") || return "${?}" && break;
+					if ! (rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&			\
+							/bin/sh "${_fname}"); then
+						return 1;
+					else
+						break;
+					fi;
 				fi;
 			done;
-			(rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf) || return "${?}";
+			if ! (rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf); then
+				return 1;
+			fi;
 		fi;
 		for _fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.sub); do
 			if ! rtl_fileop mv "${_fname}" "${_fname}.orig"\
@@ -39,10 +53,14 @@ pkg_configure_autotools() {
 						"${PKG_CONFIG_CACHE}"						\
 						"${PKG_CONFIG_CACHE_LOCAL}"					\
 						"${PKG_CONFIG_CACHE_EXTRA}";
-				do	echo "${_config_cache}"							|\
-						tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache" || return "${?}";
+				do	if ! echo "${_config_cache}"						|\
+							tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache"; then
+						return 1;
+					fi;
 				done;
-				sed -i"" "s,%PREFIX%,${PKG_PREFIX},g" "${PKG_BUILD_DIR}/config.cache" || return "${?}";
+				if ! sed -i"" "s,%PREFIX%,${PKG_PREFIX},g" "${PKG_BUILD_DIR}/config.cache"; then
+					return 1;
+				fi;
 			fi;
 		fi;
 		rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}";

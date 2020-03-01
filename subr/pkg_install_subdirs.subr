@@ -7,11 +7,14 @@ pkg_install_subdirs() {
 	for _spec in \
 			"${PKG_INSTALL_FILES_DESTDIR}"		\
 			"${PKG_INSTALL_FILES_DESTDIR_EXTRA}"; do
-		rtl_install "${PKG_DESTDIR}" ${_spec} || return "${?}";
+		if ! rtl_install "${PKG_DESTDIR}" ${_spec}; then
+			return 1;
+		fi;
 	done;
 	if [ "${PKG_PREFIX%/}" = "${PREFIX_NATIVE%/}" ]; then
-		rtl_install					\
-			"${PKG_DESTDIR}/${DEFAULT_TARGET}" ${PKG_INSTALL_FILES_DESTDIR} || return "${?}";
+		if ! rtl_install "${PKG_DESTDIR}/${DEFAULT_TARGET}" ${PKG_INSTALL_FILES_DESTDIR}; then
+			return 1;
+		fi;
 	fi;
 };
 

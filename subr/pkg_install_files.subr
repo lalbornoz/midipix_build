@@ -4,17 +4,20 @@
 
 pkgp_install_files() {
 	if [ -n "${PKG_INSTALL_FILES}" ]; then
-		rtl_install -v "${PKG_DESTDIR}" ${PKG_INSTALL_FILES} || return "${?}";
+		if ! rtl_install -v "${PKG_DESTDIR}" ${PKG_INSTALL_FILES}; then
+			return 1;
+		fi;
 	fi;
 };
 
 pkgp_install_files_pkgconfig() {
 	local _pc_path="";
 	for _pc_path in $(find "${PKG_DESTDIR}" -name \*.pc); do
-		if grep -Eq '^libdir=[^$]+$' "${_pc_path}"; then
-			sed -i"" -e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
+		if grep -Eq '^libdir=[^$]+$' "${_pc_path}"\
+		&& ! sed -i""	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
 				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'			\
-					"${_pc_path}" || return "${?}";
+				"${_pc_path}"; then
+			return 1;
 		fi;
 	done;
 };
@@ -31,7 +34,9 @@ pkgp_install_files_strip() {
 		for _bin_path in $(find "${_tree_root}" -perm /a=x -type f); do
 			if objdump -sj .debug_info "${_bin_path}" >/dev/null 2>&1; then
 				rtl_log_msg info "Stripping ${_bin_path}...";
-				"${PKG_TARGET}-strip" "${_bin_path}" || return "${?}";
+				if ! "${PKG_TARGET}-strip" "${_bin_path}"; then
+					return 1;
+				fi;
 			fi;
 		done;
 	fi;
@@ -41,7 +46,7 @@ pkg_install_files() {
 	if ! pkgp_install_files\
 	|| ! pkgp_install_files_pkgconfig\
 	|| ! pkgp_install_files_strip; then
-		return "${?}";
+		return 1;
 	fi;
 };
 

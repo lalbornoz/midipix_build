@@ -15,8 +15,8 @@ pkg_configure() {
 		LDFLAGS="${PKG_LDFLAGS_CONFIGURE}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"	\
 		"${PKG_CONFIGURE}" ${PKG_CONFIGURE_ARGS} ${PKG_CONFIGURE_ARGS_EXTRA} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG}; _rc="${?}"
 		rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}" PYTHON "${PKG_PYTHON}";
+		return "${_rc}";
 	fi;
-	return "${?}";
 };
 
 # vim:filetype=sh

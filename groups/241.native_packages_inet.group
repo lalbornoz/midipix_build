@@ -2,12 +2,11 @@
 # Build group native_packages (inet)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="
-${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
+NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 apk_tools aria2 bind ca_certificates dropbear fetchmail git gnupg gnutls
 httpd inetutils irssi isync ldns lighttpd lynx mailutils microsocks mtr
 mutt nginx nullmailer openlitespeed opensmtpd openssh pacman rsync socat
-thttpd w3m weechat wget whois";
+thttpd w3m weechat wget whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -128,6 +127,7 @@ thttpd w3m weechat wget whois";
 : ${PKG_NULLMAILER_VERSION:=2.2}
 : ${PKG_NULLMAILER_URL:=https://github.com/bruceg/nullmailer/archive/${PKG_NULLMAILER_VERSION}.tar.gz};
 : ${PKG_NULLMAILER_CONFIGURE_ARGS_EXTRA:="--enable-tls"}
+: ${PKG_NULLMAILER_FORCE_AUTORECONF:=1};
 : ${PKG_NULLMAILER_IN_TREE:=1}
 : ${PKG_NULLMAILER_SUBDIR:=nullmailer-${PKG_NULLMAILER_VERSION}};
 : ${PKG_OPENLITESPEED_SHA256SUM:=11cea34ebb0d72e5c620c61dce9ee4982474311dc5f35e0737a6b6d760bcf577};

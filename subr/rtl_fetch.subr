@@ -36,7 +36,7 @@ exp_rtl_fetch_url_git() {
 	if [ "${?}" -eq 0 ]; then
 		cd "$(pwd)";
 	else
-		return "${?}";
+		return 1;
 	fi;
 };
 

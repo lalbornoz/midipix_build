@@ -4,10 +4,14 @@
 
 pkg_fetch_download() {
 	if [ -n "${PKG_URL}" ]; then
-		rtl_fetch_url_wget "${PKG_URL}" "${PKG_SHA256SUM}" "${PKG_FNAME}" || return "${?}";
+		if ! rtl_fetch_url_wget "${PKG_URL}" "${PKG_SHA256SUM}" "${PKG_FNAME}"; then
+			return 1;
+		fi;
 	fi;
 	if [ -n "${PKG_URLS_GIT}" ]; then
-		rtl_fetch_urls_git "${PKG_BASE_DIR}" ${PKG_URLS_GIT} || return "${?}";
+		if ! rtl_fetch_urls_git "${PKG_BASE_DIR}" ${PKG_URLS_GIT}; then
+			return 1;
+		fi;
 	fi;
 };
 

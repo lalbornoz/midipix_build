@@ -2,8 +2,8 @@
 # Build group host_deps_rpm
 #
 HOST_DEPS_RPM_BUILD_TYPE="host";
-HOST_DEPS_RPM_CFLAGS_CONFIGURE="${DEFAULT_CFLAGS_HOST:+${DEFAULT_CFLAGS_HOST} }-I${PREFIX}/include";
-HOST_DEPS_RPM_CXXFLAGS_CONFIGURE="${DEFAULT_CXXFLAGS_HOST:+${DEFAULT_CXXFLAGS_HOST} }-I${PREFIX}/include";
+HOST_DEPS_RPM_CFLAGS_CONFIGURE="$(rtl_lconcat "${DEFAULT_CFLAGS_HOST}" "-I${PREFIX}/include")";
+HOST_DEPS_RPM_CXXFLAGS_CONFIGURE="$(rtl_lconcat "${DEFAULT_CXXFLAGS_HOST}" "-I${PREFIX}/include")";
 HOST_DEPS_RPM_CONFIGURE_ARGS="--disable-nls --prefix=${PREFIX}";
 HOST_DEPS_RPM_GROUP_DEPENDS="host_deps host_tools";
 HOST_DEPS_RPM_LDFLAGS_CONFIGURE="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
@@ -26,7 +26,7 @@ HOST_DEPS_RPM_PREFIX="${PREFIX}";
 : ${PKG_RPM_HOST_VERSION:=4.15.1};
 : ${PKG_RPM_HOST_URL:=http://ftp.rpm.org/releases/rpm-${PKG_RPM_HOST_VERSION%.*}.x/rpm-${PKG_RPM_HOST_VERSION}.tar.bz2};
 : ${PKG_RPM_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -I${PREFIX}/include/dbus-1.0 -I${PREFIX}/lib/dbus-1.0/include"};
-: ${PKG_RPM_HOST_CONFIGURE_ARGS_EXTRA:="-without-lua --enable-ndb --enable-lmdb --enable-bdb=no --with-crypto=openssl --with-vendor=midipix"};
+: ${PKG_RPM_HOST_CONFIGURE_ARGS_EXTRA:="--enable-bdb=no --enable-ndb --enable-lmdb --with-crypto=openssl --with-vendor=midipix --without-lua"};
 : ${PKG_RPM_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib"};
 
 # vim:filetype=sh textwidth=0

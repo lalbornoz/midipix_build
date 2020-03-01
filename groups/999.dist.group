@@ -3,8 +3,7 @@
 #
 DIST_FORCE=1;
 DIST_NO_LOG_VARS=1;
-DIST_PACKAGES="dist_digest dist_gitref dist_minipix dist_zipdist";
-: ${PKG_DIST_TARBALLS_DEPENDS:="dist_digest dist_minipix"};
+DIST_PACKAGES="dist_gitref dist_minipix dist_zipdist";
 : ${PKG_DIST_ZIPDIST_DEPENDS:="dist_minipix"};
 
 # vim:filetype=sh textwidth=0
