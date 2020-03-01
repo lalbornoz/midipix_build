@@ -3,7 +3,7 @@
 #
 
 buildp_ast() {
-	local _param="${1}" _pids="" _pids_niter=0 RTL_KILL_TREE_PIDS="";
+	local _param="${1}" _pids="" _pids_niter=0 _pkg_name="" RTL_KILL_TREE_PIDS="";
 	if [ "${_param}" = "abort" ]; then
 		rtl_log_msg failexit "Build aborted.";
 	fi;
@@ -21,6 +21,12 @@ buildp_ast() {
 	done;
 	if [ -n "${_pids}" ]; then
 		rtl_log_msg vnfo "Killed PIDs ${_pids}";
+	fi;
+	if [ -n "${EX_PKG_DISPATCH_WAIT}" ]; then
+		for _pkg_name in ${EX_PKG_DISPATCH_WAIT}; do
+			rtl_state_clear "${BUILD_WORKDIR}" "${_pkg_name}";
+		done;
+		rtl_log_msg vnfo "Reset package state for: ${EX_PKG_DISPATCH_WAIT}";
 	fi;
 };
 
