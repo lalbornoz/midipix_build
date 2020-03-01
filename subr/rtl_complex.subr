@@ -21,7 +21,7 @@ rtl_clean_env() {
 	for _env_var in ${_env_vars}; do
 		if [ "${_env_var#DEFAULT_}" != "${_env_var}" ]\
 		|| [ "${_env_var#PKG_}" != "${_env_var}" ]; then
-			_env_vars_except="${_env_vars_except:+${_env_vars_except} }${_env_var}";
+			_env_vars_except="$(rtl_lconcat "${_env_vars_except}" "${_env_var}")";
 		fi;
 	done;
 	rtl_unset_vars $(rtl_lfilter "${_env_vars}" "${_env_vars_except}");
@@ -107,12 +107,12 @@ rtl_set_vars() {
 		_vval_src="$(rtl_get_var_unsafe "${_vname_src}")";
 		if [ -n "${_vval_src}" ]; then
 			rtl_set_var_unsafe "PKG_${_vname_dst}" "${_vval_src}";
-			_vars_set_tmp="${_vars_set_tmp:+${_vars_set_tmp} }PKG_${_vname_dst}";
+			_vars_set_tmp="$(rtl_lconcat "${_vars_set_tmp}" "PKG_${_vname_dst}")";
 		fi;
 	done;
 	_vars_set_old="$(rtl_get_var_unsafe "${_vars_set_vname}")";
 	rtl_set_var_unsafe "${_vars_set_vname}"					\
-		"${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
+		"$(rtl_lconcat "${_vars_set_old}" "${_vars_set_tmp}")";
 };
 
 # vim:filetype=sh

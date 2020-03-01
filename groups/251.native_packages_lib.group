@@ -2,13 +2,12 @@
 # Build group native_packages (libs)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="
-${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
+NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 libarchive libasr libassuan libatomic_ops libdmtx libedit libelf libevent
 libfetch libffi libfirm libflac libgcrypt libgpg_error libjpeg_turbo
 libksba libnettle libogg libpcap libpipeline libpng libreadline libredwg
 libressl libsasl2 libshine libsndfile libsolv libtelnet libtheora libtirpc
-libudns libunistring libuv libvorbis libxml2 libxslt libz libzip";
+libudns libunistring libuv libvorbis libxml2 libxslt libz libzip")";
 : ${PKG_LIBARCHIVE_SHA256SUM:=ba7eb1781c9fbbae178c4c6bad1c6eb08edab9a1496c64833d1715d022b30e2e};
 : ${PKG_LIBARCHIVE_VERSION:=3.3.3};
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.gz};
@@ -16,6 +15,7 @@ libudns libunistring libuv libvorbis libxml2 libxslt libz libzip";
 : ${PKG_LIBASR_SHA256SUM:=9cd88e0172e6d426438875e09229d1d473d56db546d02b630f9dd14db226d68d};
 : ${PKG_LIBASR_VERSION:=1.0.3};
 : ${PKG_LIBASR_URL:=https://www.opensmtpd.org/archives/libasr-${PKG_LIBASR_VERSION}.tar.gz};
+: ${PKG_LIBASR_FORCE_AUTORECONF:=1};
 : ${PKG_LIBASR_IN_TREE:=1};
 : ${PKG_LIBASSUAN_DEPENDS:="libgpg_error"};
 : ${PKG_LIBASSUAN_SHA256SUM:=91bcb0403866b4e7c4bc1cc52ed4c364a9b5414b3994f718c70303f7f765e702};
@@ -75,6 +75,7 @@ libudns libunistring libuv libvorbis libxml2 libxslt libz libzip";
 : ${PKG_LIBGPG_ERROR_SHA256SUM:=babd98437208c163175c29453f8681094bcaf92968a15cafb1a276076b33c97c};
 : ${PKG_LIBGPG_ERROR_VERSION:=1.36};
 : ${PKG_LIBGPG_ERROR_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${PKG_LIBGPG_ERROR_VERSION}.tar.bz2};
+: ${PKG_LIBGPG_ERROR_FORCE_AUTORECONF:=1};
 : ${PKG_LIBGPG_ERROR_IN_TREE:=1};
 : ${PKG_LIBJPEG_TURBO_SHA256SUM:=acb8599fe5399af114287ee5907aea4456f8f2c1cc96d26c28aebfdf5ee82fed};
 : ${PKG_LIBJPEG_TURBO_VERSION:=2.0.2};

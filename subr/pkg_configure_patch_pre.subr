@@ -7,8 +7,9 @@ pkgp_configure_patch_pre() {
 	for _patch_path in \
 			"${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}_pre.local.patch"		\
 			"${MIDIPIX_BUILD_PWD}/patches/${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}_pre.local@${BUILD_HNAME}.patch"; do
-		if [ -r "${_patch_path}" ]; then
-			patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_path}" || return "${?}";
+		if [ -r "${_patch_path}" ]\
+		&& ! patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_path}"; then
+			return 1;
 		fi;
 	done;
 };
@@ -17,8 +18,10 @@ pkgp_configure_patch_pre_chainport() {
 	local	_chainport_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_*}/${PKG_NAME%%_*}-${PKG_VERSION}.midipix.patch"\
 		_chainport_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_*}" _oldpwd="";
 	if [ -e "${_chainport_patch_fname}" ]; then
-		rtl_fileop mkdir "${_chainport_patch_dname}" || return "${?}";
-		rtl_fileop cp "${_chainport_patch_fname}" "${_chainport_patch_dname}" || return "${?}";
+		if ! rtl_fileop mkdir "${_chainport_patch_dname}"\
+		|| ! rtl_fileop cp "${_chainport_patch_fname}" "${_chainport_patch_dname}"; then
+			return 1;
+		fi;
 	fi;
 };
 

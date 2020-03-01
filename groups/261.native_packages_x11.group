@@ -2,8 +2,7 @@
 # Build group native_packages (x11)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="
-${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
+NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 atk at_spi2_atk at_spi2_core cairo dbus_glib fontconfig freetype
 freetype_pre fribidi gdk glew gtk2 gtk3 harfbuzz imlib2 libass libcaca
 libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
@@ -11,7 +10,7 @@ libXdamage libXdmcp libXext libxfce4ui libxfce4util libXfixes libXfont2
 libXft libXi libxkbfile libXmu libXpm libXt libXtst mesa pango pixman
 rdesktop rxvt_unicode sdl1 sdl2 st util_macros xcb xcb_proto xcb_util
 xcb_util_image xcb_util_wm xcowsay xeyes xfconf xorgproto Xrender xterm
-xtrans xwd xwin";
+xtrans xwd xwin")";
 : ${PKG_ATK_DEPENDS:="glib"};
 : ${PKG_ATK_VERSION:=2.26.0};
 : ${PKG_ATK_SHA256SUM:=eafe49d5c4546cb723ec98053290d7e0b8d85b3fdb123938213acb7bb4178827};
@@ -294,6 +293,7 @@ xtrans xwd xwin";
 : ${PKG_XTERM_URL:=ftp://ftp.invisible-island.net/xterm/xterm-${PKG_XTERM_VERSION}.tgz};
 : ${PKG_XTERM_CONFIGURE_ARGS_EXTRA:="--disable-setuid --disable-setgid --disable-full-tgetent --enable-ansi-color --enable-88-color --enable-256-color --enable-broken-osc --enable-broken-st --enable-load-vt-fonts --enable-i18n --enable-doublechars --enable-warnings --enable-tcap-query --enable-logging --enable-dabbrev --enable-freetype --enable-luit --enable-mini-luit --enable-narrowproto --enable-exec-xterm --enable-sixel-graphics --with-utempter"};
 : ${PKG_XTERM_ENV_VARS_EXTRA:=LIBS=-lncurses -ltinfo};
+: ${PKG_XTRANS_DEPENDS:="util_macros"};
 : ${PKG_XTRANS_SHA256SUM:=adbd3b36932ce4c062cd10f57d78a156ba98d618bdb6f50664da327502bc8301};
 : ${PKG_XTRANS_VERSION:=1.3.5};
 : ${PKG_XTRANS_URL:=https://www.x.org/releases/individual/lib/xtrans-${PKG_XTRANS_VERSION}.tar.bz2};

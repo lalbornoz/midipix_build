@@ -5,8 +5,32 @@ HOST_TOOLS_BUILD_TYPE="host";
 HOST_TOOLS_CONFIGURE_ARGS="--disable-nls --prefix=${PREFIX}";
 HOST_TOOLS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_TOOLS_PACKAGES="
-pkgconf_host slibtool_host";
+autoconf_host automake_host gettext_tiny_host install_strip_host
+libtool_host m4_host pkgconf_host slibtool_host";
 HOST_TOOLS_PREFIX="${PREFIX}";
+: ${PKG_AUTOCONF_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOCONF_HOST_SHA256SUM:=64ebcec9f8ac5b2487125a86a7760d2591ac9e1d3dbd59489633f9de62a57684};
+: ${PKG_AUTOCONF_HOST_VERSION:=2.69};
+: ${PKG_AUTOCONF_HOST_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_HOST_VERSION}.tar.xz};
+: ${PKG_AUTOMAKE_HOST_DEPENDS:="autoconf_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOMAKE_HOST_SHA256SUM:=5d05bb38a23fd3312b10aea93840feec685bdf4a41146e78882848165d3ae921};
+: ${PKG_AUTOMAKE_HOST_VERSION:=1.16.1};
+: ${PKG_AUTOMAKE_HOST_URL:=https://ftp.gnu.org/gnu/automake/automake-${PKG_AUTOMAKE_HOST_VERSION}.tar.xz};
+: ${PKG_GETTEXT_TINY_HOST_DEPENDS:="pkgconf_host slibtool_host"};
+: ${PKG_GETTEXT_TINY_HOST_SHA256SUM:=95fdc541bc7bda2f93d9768533bfa9b82a4d4cd447e059e95450150bdd690e9f};
+: ${PKG_GETTEXT_TINY_HOST_VERSION:=0.3.1};
+: ${PKG_GETTEXT_TINY_HOST_URL:=http://ftp.barfooze.de/pub/sabotage/tarballs/gettext-tiny-${PKG_GETTEXT_TINY_HOST_VERSION}.tar.xz};
+: ${PKG_GETTEXT_TINY_HOST_BUILD_DIR:=gettext-tiny-${PKG_GETTEXT_TINY_HOST_VERSION}};
+: ${PKG_GETTEXT_TINY_HOST_MAKEFLAGS_BUILD_EXTRA:="prefix=${PREFIX}"};
+: ${PKG_INSTALL_STRIP_HOST_NO_LOG_VARS:=1};
+: ${PKG_LIBTOOL_HOST_DEPENDS:="autoconf_host automake_host pkgconf_host slibtool_host"}:
+: ${PKG_LIBTOOL_HOST_SHA256SUM:=7c87a8c2c8c0fc9cd5019e402bed4292462d00a718a7cd5f11218153bf28b26f};
+: ${PKG_LIBTOOL_HOST_VERSION:=2.4.6};
+: ${PKG_LIBTOOL_HOST_URL:=https://ftp.gnu.org/gnu/libtool/libtool-${PKG_LIBTOOL_HOST_VERSION}.tar.xz};
+: ${PKG_M4_HOST_DEPENDS:="pkgconf_host slibtool_host"};
+: ${PKG_M4_HOST_SHA256SUM:=f2c1e86ca0a404ff281631bdc8377638992744b175afb806e25871a24a934e07};
+: ${PKG_M4_HOST_VERSION:=1.4.18};
+: ${PKG_M4_HOST_URL:=https://ftp.gnu.org/gnu/m4/m4-${PKG_M4_HOST_VERSION}.tar.xz};
 : ${PKG_PKGCONF_HOST_DEPENDS:="slibtool_host"};
 : ${PKG_PKGCONF_HOST_SHA256SUM:=61f0b31b0d5ea0e862b454a80c170f57bad47879c0c42bd8de89200ff62ea210};
 : ${PKG_PKGCONF_HOST_VERSION:=1.6.3};

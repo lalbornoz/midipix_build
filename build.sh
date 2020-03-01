@@ -20,7 +20,7 @@ buildp_ast() {
 		fi;
 	done;
 	if [ -n "${_pids}" ]; then
-		rtl_log_msg vnfo "Killed PIDs ${_pids}";
+		rtl_log_msg vnfo "Killed PIDs $(rtl_uniq ${_pids})";
 	fi;
 	if [ -n "${EX_PKG_DISPATCH_WAIT}" ]; then
 		for _pkg_name in ${EX_PKG_DISPATCH_WAIT}; do

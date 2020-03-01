@@ -2,10 +2,9 @@
 # Build group native_packages (dev)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="
-${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
-bison chicken cparser diffutils flex gdb lunix m4 make mandoc nasm patch
-patchutils perl python2 python3 ruby smallbasic tk";
+NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
+bison chicken cparser diffutils flex gdb lua lunix m4 make mandoc nasm
+patch patchutils perl python2 python3 ruby smallbasic tk")";
 : ${PKG_BISON_SHA256SUM:=55e4a023b1b4ad19095a5f8279f0dc048fa29f970759cea83224a6d5e7a3a641};
 : ${PKG_BISON_VERSION:=3.5};
 : ${PKG_BISON_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_VERSION}.tar.xz};
@@ -44,6 +43,13 @@ patchutils perl python2 python3 ruby smallbasic tk";
 : ${PKG_GDB_LIBTOOL:=rdlibtool};
 : ${PKG_GDB_MAKEFLAGS_BUILD_EXTRA:="SYSROOT_FLAGS=--sysroot=${PREFIX_NATIVE}"};
 : ${PKG_GDB_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gdb/gdb-${PKG_GDB_VERSION}.midipix.patch"};
+: ${PKG_LUA_SHA256SUM:=f681aa518233bc407e23acf0f5887c884f17436f000d453b2491a9f11a52400c};
+: ${PKG_LUA_VERSION:=5.3.4};
+: ${PKG_LUA_URL:=https://www.lua.org/ftp/lua-${PKG_LUA_VERSION}.tar.gz};
+: ${PKG_LUA_IN_TREE:=1};
+: ${PKG_LUA_CONFIGURE_ARGS_EXTRA:="--with-readline --with-compat-module"};
+: ${PKG_LUA_FORCE_AUTORECONF:=1};
+: ${PKG_LUA_INSTALL_FILES:=@liblua.so=lib/liblua.so.0};
 : ${PKG_LUNIX_DEPENDS:="lua"};
 : ${PKG_LUNIX_URLS_GIT:=lunix=https://github.com/Redfoxmoon3/lunix.git@master};
 : ${PKG_LUNIX_IN_TREE:=1};

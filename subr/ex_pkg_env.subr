@@ -88,7 +88,7 @@ ex_pkg_env() {
 	rtl_fileop source_opt "vars/${_pkg_name}.vars" "${_group_name}/${_pkg_name}.${_group_name}";
 	if ! exp_pkg_env_set "${_build_vars_default}" "${_group_name}" "${_pkg_name}"\
 	|| ! exp_pkg_env_defaults "${_build_steps_default}" "${_pkg_name}" "${_workdir}"; then
-		return "${?}";
+		return 1;
 	fi;
 };
 

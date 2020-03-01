@@ -10,13 +10,27 @@ exp_rtl_fileop_check() {
 };
 
 rtl_fileop() {
-	local _op="${1}" _dst="" _install_args="" _rc=0 _src=""; shift;
+	local _op="${1}" _dst="" _mode="" _install_args="" _owner="" _rc=0 _src=""; shift;
 	case "${_op}" in
 	cd)	if [ \( -z "${1}" \) -o ! \( -L "${1}" -o -e "${1}" \) ]; then
 			rtl_log_msg failexit "Invalid or non-existent directory \`${1}'.";
 		elif exp_rtl_fileop_check "${PREFIX}" "${1}"; then
 			rtl_log_msg vvvv "Changing working directory to \`${1}'.";
 			cd -- "${1}"; _rc="${?}";
+		fi; ;;
+	chmod)	if [ "${#}" -lt 2 ]; then
+			rtl_log_msg failexit "Missing parameters (in: chmod ${*}.)";
+		elif _mode="${1}" && shift\
+		&&   exp_rtl_fileop_check "${PREFIX}" "${*}"; then
+			rtl_log_msg vvvv "Changing file mode bits of \`${*}' to \`${_mode}'.";
+			chmod -- "${_mode}" "${@}"; _rc="${?}";
+		fi; ;;
+	chown)	if [ "${#}" -lt 2 ]; then
+			rtl_log_msg failexit "Missing parameters (in: chown ${*}.)";
+		elif _owner="${1}" && shift\
+		&&   exp_rtl_fileop_check "${PREFIX}" "${*}"; then
+			rtl_log_msg vvvv "Changing file owner of \`${*}' to \`${_owner}'.";
+			chown -- "${_owner}" "${@}"; _rc="${?}";
 		fi; ;;
 	cp_follow)
 		if [ "${#}" -lt 2 ]; then

@@ -3,24 +3,40 @@
 #
 
 pkg_install() {
-	local _pkglist_name="";
-	if ! rtl_fileop mkdir "${PKG_PREFIX}"\
-	|| ! find "${PKG_DESTDIR}" -type d -exec chmod 0755 {} \;\
-	|| ! find "${PKG_DESTDIR}" \( -not -perm /0111 \) -type f -exec chmod 0644 {} \;\
-	|| ! find "${PKG_DESTDIR}" -perm /0111 -type f -exec chmod 0755 {} \;\
-	|| ! tar -C "${PKG_DESTDIR}" -cpf - . | tar -C "${PKG_PREFIX}" --overwrite -xpf -; then
-		return "${?}";
-	else
-		if rtl_lmatch "${ARG_DIST}" "pkg" ","; then
-			tar -C "${PKG_DESTDIR}" -cpf - . |\
-				gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz" || return "${?}";
-		fi;
-		if [ "${PKG_PKGLIST_DISABLE:-0}" -eq 0 ]; then
-			if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]; then
-				touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" || return "${?}";
+	local _fname="" _ifs_old="${IFS}" _pkglist_name="" IFS;
+	if ! rtl_fileop mkdir "${PKG_PREFIX}"; then
+		return 1;
+	else	IFS="
+";		for _fname in $(find "${PKG_DESTDIR}" -type d); do
+			if ! rtl_fileop chmod 0755 "${_fname}"; then
+				return 1;
 			fi;
-			_pkglist_name="${PKG_BASE_DIR##*/}"; _pkglist_name="${_pkglist_name%%-*}";
-			echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" || return "${?}";
+		done;
+		for _fname in $(find "${PKG_DESTDIR}" \( -not -perm /0111 \) -type f); do
+			if ! rtl_fileop chmod 0644 "${_fname}"; then
+				return 1;
+			fi;
+		done;
+		for _fname in $(find "${PKG_DESTDIR}" -perm /0111 -type f); do
+			if ! rtl_fileop chmod 0755 "${_fname}"; then
+				return 1;
+			fi;
+		done; IFS="${_ifs_old}";
+		if ! tar -C "${PKG_DESTDIR}" -cpf - . | tar -C "${PKG_PREFIX}" --overwrite -xpf -; then
+			return 1;
+		elif rtl_lmatch "${ARG_DIST}" "pkg" ","\
+		&& ! tar -C "${PKG_DESTDIR}" -cpf - . | gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"; then
+			return 1;
+		elif [ "${PKG_PKGLIST_DISABLE:-0}" -eq 0 ]; then
+			if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]\
+			&& ! touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}"; then
+				return 1;
+			else
+				_pkglist_name="${PKG_BASE_DIR##*/}"; _pkglist_name="${_pkglist_name%%-*}";
+				if ! echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}"; then
+					return 1;
+				fi;
+			fi;
 		fi;
 	fi;
 };
