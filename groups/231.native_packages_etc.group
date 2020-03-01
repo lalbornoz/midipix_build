@@ -2,16 +2,15 @@
 # Build group native_packages (etc)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="
-${NATIVE_PACKAGES_PACKAGES:+${NATIVE_PACKAGES_PACKAGES} }
+NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron curl
 dante dbus debianutils emacs expat ffmpeg file gdbm geoip gettext_tiny
 ghostscript giflib glib gnuchess gzip hastyhex hexcurse htop icecast
-imagemagick infounzip infozip john lcms2 less lmdb lolcode lua mintty
-mlogin musl_compat musl_fts ncdu ncurses ncursestw ncursesw npth openjpeg
-p7zip pcre popt procps_ng qemu qpdf qrencode rpm rw shared_mime_info
-slang sqlite3 tcl tdnf texinfo tiff tmux tzdb utf8proc util_linux vim
-w32api w32lib xorriso xz yabasic zstd";
+imagemagick infounzip infozip john lcms2 less lmdb lolcode mintty mlogin
+musl_compat musl_fts ncdu ncurses ncursestw ncursesw npth openjpeg p7zip
+pcre popt procps_ng qemu qpdf qrencode rpm rw shared_mime_info slang
+sqlite3 tcl tdnf texinfo tiff tmux tzdb utf8proc util_linux vim w32api
+w32lib xorriso xz yabasic zstd")";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
 : ${PKG_ALSA_LIB_URL:=ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PKG_ALSA_LIB_VERSION}.tar.bz2};
@@ -192,12 +191,6 @@ w32api w32lib xorriso xz yabasic zstd";
 : ${PKG_LMDB_IN_TREE:=1};
 : ${PKG_LOLCODE_URLS_GIT:="lci=https://github.com/justinmeza/lci.git@master"};
 : ${PKG_LOLCODE_BUILD_DIR:=lci};
-: ${PKG_LUA_SHA256SUM:=f681aa518233bc407e23acf0f5887c884f17436f000d453b2491a9f11a52400c};
-: ${PKG_LUA_VERSION:=5.3.4};
-: ${PKG_LUA_URL:=https://www.lua.org/ftp/lua-${PKG_LUA_VERSION}.tar.gz};
-: ${PKG_LUA_IN_TREE:=1};
-: ${PKG_LUA_CONFIGURE_ARGS_EXTRA:="--with-readline --with-compat-module"};
-: ${PKG_LUA_INSTALL_FILES:=@liblua.so=lib/liblua.so.0};
 : ${PKG_MINTTY_DEPENDS:="w32api w32lib"};
 : ${PKG_MINTTY_URLS_GIT:="mintty=https://github.com/midipix-ports/mintty.git@midipix bmintty=https://github.com/midipix-ports/bmintty.git@main"};
 : ${PKG_MINTTY_CONFIGURE:=bmintty/configure};
@@ -205,6 +198,7 @@ w32api w32lib xorriso xz yabasic zstd";
 : ${PKG_MINTTY_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib/w32lib};
 : ${PKG_MLOGIN_URLS_GIT:="mlogin=https://github.com/Redfoxmoon3/mlogin.git@master"};
 : ${PKG_MLOGIN_BUILD_DIR:=mlogin};
+: ${PKG_MLOGIN_FORCE_AUTORECONF:=1};
 : ${PKG_MUSL_COMPAT_URLS_GIT:=musl_compat=https://github.com/Redfoxmoon3/musl-compat.git@master};
 : ${PKG_MUSL_COMPAT_BUILD_DIR:=musl_compat};
 : ${PKG_MUSL_FTS_SHA256SUM:=32dfe02768f1d3d91ab04df4fbdb7922cd34cd529ce7081a78c3ca8b8652d1ee};
@@ -311,6 +305,7 @@ w32api w32lib xorriso xz yabasic zstd";
 : ${PKG_TDNF_VERSION:=2.0.0-alpha.1};
 : ${PKG_TDNF_URL:=https://github.com/vmware/tdnf/archive/v${PKG_TDNF_VERSION}.tar.gz};
 : ${PKG_TDNF_CONFIGURE_ARGS_EXTRA:="--disable-static"};
+: ${PKG_TDNF_FORCE_AUTORECONF:=1};
 : ${PKG_TDNF_IN_TREE:=1};
 : ${PKG_TDNF_SUBDIR:=tdnf-${PKG_TDNF_VERSION}};
 : ${PKG_TEXINFO_SHA256SUM:=988403c1542d15ad044600b909997ba3079b10e03224c61188117f3676b02caa};

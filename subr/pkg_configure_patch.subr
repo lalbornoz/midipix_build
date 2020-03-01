@@ -13,8 +13,11 @@ pkg_configure_patch() {
 			${PKG_PATCHES_EXTRA}; do
 		if [ -r "${_patch_fname}" ]\
 		&& ! rtl_lmatch "${_patches_done}" "${_patch_fname}"; then
-			patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}" || return "${?}";
-			_patches_done="$(rtl_lconcat "${_patches_done}" "${_patch_fname}")";
+			if ! patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}"; then
+				set -o noglob; return 1;
+			else
+				_patches_done="$(rtl_lconcat "${_patches_done}" "${_patch_fname}")";
+			fi;
 		fi;
 	done; set -o noglob;
 };

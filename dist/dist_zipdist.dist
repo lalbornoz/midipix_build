@@ -13,35 +13,41 @@ pkg_dist_zipdist_all() {
 			fi;
 		done;
 		_dist_fname="${DEFAULT_ZIPDIST_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.zip";
-		if [ -e "${BUILD_WORKDIR}/zipdist" ]; then
-			rtl_fileop rm "${BUILD_WORKDIR}/zipdist";
-		fi;
-		rtl_fileop mkdir "${BUILD_WORKDIR}/zipdist";
-		"${BUILD_WORKDIR}/mpackage/mpackage.sh"				\
-			--defroot="${DEFAULT_ZIPDIST_DEFROOT}"			\
-			--flysyms						\
-			--minroot="${PREFIX_MINIPIX}"				\
-			--objroot="${BUILD_WORKDIR}"				\
-			--pkgroot="${BUILD_WORKDIR}/zipdist/pkgroot"		\
-			--product=Midipix					\
-			--subset="${_pkglist_fname}"				\
-			--symbols						\
-			--sysroot="${BUILD_WORKDIR}/zipdist/sysroot"		\
-			--target="${DEFAULT_TARGET}"				\
-			--tmproot="${BUILD_WORKDIR}/zipdist/tmproot"		\
-			--zipfile="${PREFIX}/${_dist_fname}";
-		echo "msg_pkg dist dist_zipdist Finished building deployable distribution ZIP archive." >&3;
-		rtl_log_msg info "Finished building deployable distribution ZIP archive.";
-		if [ -n "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" ]\
-		&& [ -x "$(which gpg 2>/dev/null)" ]\
-		&& gpg --list-keys "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" >/dev/null 2>&1; then
-			echo "msg_pkg dist dist_zipdist Signing deployable distribution ZIP archive..." >&3;
-			rtl_log_msg info "Signing deployable distribution ZIP archive...";
-			gpg --armor --passphrase-file /dev/null			\
-				--local-user "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}"	\
-				--sign "${PREFIX}/${_dist_fname}";
-			echo "msg_pkg dist dist_zipdist Signed deployable distribution ZIP archive." >&3;
-			rtl_log_msg info "Signed deployable distribution ZIP archive.";
+		if [ -e "${BUILD_WORKDIR}/zipdist" ]\
+		&& ! rtl_fileop rm "${BUILD_WORKDIR}/zipdist"; then
+			return 1;
+		elif ! rtl_fileop mkdir "${BUILD_WORKDIR}/zipdist"; then
+			return 1;
+		elif ! "${BUILD_WORKDIR}/mpackage/mpackage.sh"				\
+				--defroot="${DEFAULT_ZIPDIST_DEFROOT}"			\
+				--flysyms						\
+				--minroot="${PREFIX_MINIPIX}"				\
+				--objroot="${BUILD_WORKDIR}"				\
+				--pkgroot="${BUILD_WORKDIR}/zipdist/pkgroot"		\
+				--product=Midipix					\
+				--subset="${_pkglist_fname}"				\
+				--symbols						\
+				--sysroot="${BUILD_WORKDIR}/zipdist/sysroot"		\
+				--target="${DEFAULT_TARGET}"				\
+				--tmproot="${BUILD_WORKDIR}/zipdist/tmproot"		\
+				--zipfile="${PREFIX}/${_dist_fname}"; then
+			return 1;
+		else
+			echo "msg_pkg dist dist_zipdist Finished building deployable distribution ZIP archive." >&3;
+			rtl_log_msg info "Finished building deployable distribution ZIP archive.";
+			if [ -n "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" ]\
+			&& [ -x "$(which gpg 2>/dev/null)" ]\
+			&& gpg --list-keys "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" >/dev/null 2>&1; then
+				echo "msg_pkg dist dist_zipdist Signing deployable distribution ZIP archive..." >&3;
+				rtl_log_msg info "Signing deployable distribution ZIP archive...";
+				if ! gpg --armor --passphrase-file /dev/null		\
+					--local-user "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}"	\
+					--sign "${PREFIX}/${_dist_fname}"; then
+					return 1;
+				fi;
+				echo "msg_pkg dist dist_zipdist Signed deployable distribution ZIP archive." >&3;
+				rtl_log_msg info "Signed deployable distribution ZIP archive.";
+			fi;
 		fi;
 	fi;
 };
