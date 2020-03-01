@@ -80,6 +80,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_GDB_HOST_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX}/lib"};
 : ${PKG_GDB_HOST_LIBTOOL:=rdlibtool};
 : ${PKG_GDB_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gdb/gdb-${PKG_GDB_HOST_VERSION}.midipix.patch"};
+: ${PKG_GDBM_HOST_DEPENDS:="libreadline_host ncurses_host"};
 : ${PKG_GDBM_HOST_SHA256SUM:=86e613527e5dba544e73208f42b78b7c022d4fa5a6d5498bf18c8d6f745b91dc};
 : ${PKG_GDBM_HOST_VERSION:=1.18.1};
 : ${PKG_GDBM_HOST_URL:=ftp://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_GDBM_HOST_VERSION}.tar.gz};
