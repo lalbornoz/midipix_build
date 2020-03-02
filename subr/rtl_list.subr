@@ -38,6 +38,12 @@ rtl_llength() {
 	echo "${_llength}";
 };
 
+rtl_llift() {
+	local _list="${1}" _sep="${2}" _sep_new="${3}" IFS; IFS="${_sep}";
+	set -- ${_list}; IFS="${_sep_new}";
+	echo "${*}";
+};
+
 rtl_lmatch() {
 	local _list="${1}" _item="${2}" _sep="${3}";
 	[ -n "$(rtl_lsearch "${_list}" "${_item}" "${_sep}")" ];
