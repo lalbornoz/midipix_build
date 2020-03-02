@@ -24,9 +24,6 @@ pkg_install() {
 		done; IFS="${_ifs_old}";
 		if ! tar -C "${PKG_DESTDIR}" -cpf - . | tar -C "${PKG_PREFIX}" --overwrite -xpf -; then
 			return 1;
-		elif rtl_lmatch "${ARG_DIST}" "pkg" ","\
-		&& ! tar -C "${PKG_DESTDIR}" -cpf - . | gzip -c -9 - > "${PKG_BASE_DIR}/${PKG_NAME}.tgz"; then
-			return 1;
 		elif [ "${PKG_PKGLIST_DISABLE:-0}" -eq 0 ]; then
 			if [ ! -e "${PREFIX}/pkglist.${PKG_BUILD_TYPE}" ]\
 			&& ! touch "${PREFIX}/pkglist.${PKG_BUILD_TYPE}"; then
