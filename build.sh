@@ -91,8 +91,8 @@ buildp_dispatch() {
 };
 
 build() {
-	local	_build_time_hours=0 _build_time_mins=0 _build_time_secs=0	\
-		BUILD_DATE_START="" BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0	\
+	local	_build_time_hours=0 _build_time_mins=0 _build_time_secs=0 _pkg_name=""		\
+		BUILD_DATE_START="" BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0			\
 		BUILD_PKGS_FAILED="" EX_PKG_DISPATCH_UNKNOWN="";
 	if trap "buildp_ast abort" HUP INT TERM USR1 USR2\
 	&& trap "buildp_ast exit" EXIT\
@@ -104,7 +104,9 @@ build() {
 				buildp_dispatch "${BUILD_GROUPS}" "${ARG_PARALLEL:-1}"		\
 				"${BUILD_WORKDIR}/build.fifo" "${ARG_RESTART}"			\
 				"${ARG_RESTART_AT}" "${ARG_RESTART_RECURSIVE}" "${BUILD_WORKDIR}"; then
-			rtl_log_msg failexit "Error: package \`${EX_PKG_DISPATCH_UNKNOWN}' unknown.";
+			for _pkg_name in ${EX_PKG_DISPATCH_UNKNOWN}; do
+				rtl_log_msg fail "Error: package \`${_pkg_name}' unknown.";
+			done; exit 1;
 		else	: $((_build_time_secs=$(rtl_date %s)-${_build_time_secs}));
 			: $((_build_time_hours=${_build_time_secs}/3600));
 			: $((_build_time_minutes=(${_build_time_secs}%3600)/60));
