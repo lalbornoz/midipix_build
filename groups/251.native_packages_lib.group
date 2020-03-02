@@ -128,6 +128,7 @@ libudns libunistring libuv libvorbis libxml2 libxslt libz libzip")";
 : ${PKG_LIBSASL2_VERSION:=2.1.26};
 : ${PKG_LIBSASL2_URL:=https://midipix.zv.io/cyrus-sasl/cyrus-sasl-${PKG_LIBSASL2_VERSION}.tar.gz};
 : ${PKG_LIBSASL2_CONFIGURE_ARGS_EXTRA:="--cache-file=../obj/config.cache"};
+: ${PKG_LIBSASL2_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_LIBSHINE_SHA256SUM:=58e61e70128cf73f88635db495bfc17f0dde3ce9c9ac070d505a0cd75b93d384};
 : ${PKG_LIBSHINE_VERSION:=3.1.1};
 : ${PKG_LIBSHINE_URL:=https://github.com/toots/shine/releases/download/${PKG_LIBSHINE_VERSION}/shine-${PKG_LIBSHINE_VERSION}.tar.gz};
