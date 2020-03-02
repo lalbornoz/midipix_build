@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron curl
 dante dbus debianutils emacs expat ffmpeg file gdbm geoip gettext_tiny
-ghostscript giflib glib gnuchess gzip hastyhex hexcurse htop icecast
+ghostscript giflib gnuchess gzip hastyhex hexcurse htop icecast
 imagemagick infounzip infozip john lcms2 less lmdb lolcode mintty mlogin
 musl_compat musl_fts ncdu ncurses ncursestw ncursesw npth openjpeg p7zip
 pcre popt procps_ng qemu qpdf qrencode rpm rw shared_mime_info slang
@@ -127,11 +127,6 @@ w32lib xorriso xz yabasic zstd")";
 : ${PKG_GIFLIB_VERSION:=5.1.4};
 : ${PKG_GIFLIB_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/giflib/giflib-${PKG_GIFLIB_VERSION}.tar.bz2};
 : ${PKG_GIFLIB_CONFIGURE_ARGS_EXTRA:=--disable-static};
-: ${PKG_GLIB_DEPENDS:="libffi libz pcre python3"};
-: ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
-: ${PKG_GLIB_VERSION:=2.54.0};
-: ${PKG_GLIB_URL:=http://ftp.gnome.org/pub/GNOME/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz};
-: ${PKG_GLIB_CONFIGURE_ARGS_EXTRA:="--disable-dtrace --disable-libelf --disable-libmount --with-python=${PREFIX_NATIVE}/bin/python3"};
 : ${PKG_GNUCHESS_DEPENS:="ncurses"};
 : ${PKG_GNUCHESS_SHA256SUM:=9a99e963355706cab32099d140b698eda9de164ebce40a5420b1b9772dd04802};
 : ${PKG_GNUCHESS_VERSION:=6.2.5};

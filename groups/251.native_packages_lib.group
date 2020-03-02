@@ -3,11 +3,17 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-libarchive libasr libassuan libatomic_ops libdmtx libedit libelf libevent
-libfetch libffi libfirm libflac libgcrypt libgpg_error libjpeg_turbo
-libksba libnettle libogg libpcap libpipeline libpng libreadline libredwg
-libressl libsasl2 libshine libsndfile libsolv libtelnet libtheora libtirpc
-libudns libunistring libuv libvorbis libxml2 libxslt libz libzip")";
+glib libarchive libasr libassuan libatomic_ops libdmtx libedit libelf
+libevent libfetch libffi libfirm libflac libgcrypt libgpg_error
+libjpeg_turbo libksba libnettle libogg libpcap libpipeline libpng
+libreadline libredwg libressl libsasl2 libshine libsndfile libsolv
+libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
+libxslt libz libzip")";
+: ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
+: ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
+: ${PKG_GLIB_VERSION:=2.54.0};
+: ${PKG_GLIB_URL:=http://ftp.gnome.org/pub/GNOME/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz};
+: ${PKG_GLIB_CONFIGURE_ARGS_EXTRA:="--disable-dtrace --disable-libelf --disable-libmount --with-python=${PREFIX}/bin/python3"};
 : ${PKG_LIBARCHIVE_SHA256SUM:=ba7eb1781c9fbbae178c4c6bad1c6eb08edab9a1496c64833d1715d022b30e2e};
 : ${PKG_LIBARCHIVE_VERSION:=3.3.3};
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.gz};
