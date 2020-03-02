@@ -152,7 +152,7 @@ exp_pkg_dispatch_packages() {
 # @_group_names:		build group name(s)
 # @_njobs_max:			maximum count of simultaneous jobs
 # @_pipe_path:			pathname to build FIFO
-# @_restart:			optional comma-separated list of package names to rebuild
+# @_restart:			optional whitespace-separated list of package names to rebuild
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL
 # @_restart_recursive:		optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
 # @_workdir:			pathname to build-specific temporary directory
@@ -166,7 +166,7 @@ ex_pkg_dispatch() {
 		_pkg_name="" _pkg_names="" _rc=0							\
 		EXP_PKG_COMPLETE EXP_PKG_DISABLED EXP_PKG_FINISHED EXP_PKG_DISPATCH_COUNT		\
 		EXP_PKG_DISPATCH_COUNT_MAX EXP_PKG_DISPATCH_NJOBS EXP_PKG_NAMES;
-	EX_PKG_DISPATCH_UNKNOWN=""; EX_PKG_DISPATCH_WAIT="";
+	EX_PKG_DISPATCH_WAIT="";
 	for _group_name in $(rtl_uniq $(rtl_lunfold_depends '${_name}_GROUP_DEPENDS' ${_group_names})); do
 		EXP_PKG_COMPLETE="" EXP_PKG_DISABLED="" EXP_PKG_FINISHED="";
 		EXP_PKG_DISPATCH_COUNT=0 EXP_PKG_DISPATCH_COUNT_MAX=0 EXP_PKG_DISPATCH_NJOBS=0;
@@ -193,7 +193,7 @@ ex_pkg_dispatch() {
 	done;
 	if ! rtl_lmatch "${_restart}" "ALL LAST"; then
 		for _pkg_name in ${_restart}; do
-			if ! rtl_lmatch "${_pkg_names}" "${_restart}"; then
+			if ! rtl_lmatch "${_pkg_names}" "${_pkg_name}"; then
 				EX_PKG_DISPATCH_UNKNOWN="$(rtl_lconcat "${EX_PKG_DISPATCH_UNKNOWN}" "${_pkg_name}")";
 			fi;
 		done;

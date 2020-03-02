@@ -30,7 +30,7 @@ ex_pkg_check_depends() {
 #
 # ex_pkg_expand_packages() - expand build group name to list of packages ordered and filtered according to dependency and restart constraints
 # @_group_name:		build group name
-# @_restart:		optional comma-separated list of package names to rebuild
+# @_restart:		optional whitespace-separated list of package names to rebuild
 # @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
 #
 # Return:		zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_COMPLETE}, ${EXP_PKG_DISABLED}, ${EXP_PKG_FINISHED}, and ${EXP_PKG_NAMES} set post-return.
