@@ -22,7 +22,7 @@ pkg_install() {
 				return 1;
 			fi;
 		done; IFS="${_ifs_old}";
-		(set +o errexit -o noglob; trap "rm -f \"${BUILD_DLCACHEDIR}/install.lock\"" EXIT;
+		(set +o errexit -o noglob; trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
 		date; echo trying to grab lock
 		while true; do
 			if flock -E 622 -w 600 4; then
