@@ -20,8 +20,8 @@ buildp_init_args() {
 	ALL)	ARG_RESTART_AT=ALL; ARG_RESTART_RECURSIVE=2; ;;
 	LAST)	ARG_RESTART_AT=ALL; ARG_RESTART_RECURSIVE=0; ;;
 	"")	;;
-	*:*)	ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="$(echo "${ARG_RESTART%%:*}" | sed "s/,/ /g")"; ;;
-	*)	ARG_RESTART="$(echo "${ARG_RESTART}" | sed "s/,/ /g")"; ARG_RESTART_AT=ALL; ;;
+	*:*)	ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="$(rtl_llift "${ARG_RESTART%%:*}" "," " ")"; ;;
+	*)	ARG_RESTART="$(rtl_llift "${ARG_RESTART}" "," " ")"; ARG_RESTART_AT=ALL; ;;
 	esac;
 	if [ "${ARG_RESTART}" = "LAST" ]; then
 		if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
