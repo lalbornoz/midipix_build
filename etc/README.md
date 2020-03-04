@@ -7,19 +7,20 @@ internal repositories required in order to build Midipix.
 
 1. [What is midipix, and how is it different?](#1-what-is-midipix-and-how-is-it-different)  
 2. [Building a midipix distribution](#2-building-a-midipix-distribution)  
-	2.1. [Build-time dependencies](#2-1-build-time-dependencies)  
-		2.1.1. [Alpine-specific notate bene](2-1-1-alpine-specific-notate-bene)  
-	2.2. [Deployment](#2-2-deployment)  
-	2.3. [System requirements](#2-3-system-requirements)  
+	2.1. [Build-time dependencies](#21-build-time-dependencies)  
+		2.1.1. [Alpine-specific notate bene](#211-alpine-specific-notate-bene)  
+	2.2. [Deployment](#22-deployment)  
+	2.3. [System requirements](#23-system-requirements)  
 3. [Common tasks](#3-common-tasks)  
-	3.1. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#3-1-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
-5. [Build variables](#5-build-variables)  
-	5.1. [Package variables](#5-1-package-variables)  
-6. [References](#6-references)  
+	3.1. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#31-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
+4. [Build variables](#4-build-variables)  
+	4.1. [Package variables](#41-package-variables)  
+5. [References](#5-references)  
 
 [//]: "}}}"
 
 [//]: # "{{{ 1. What is midipix, and how is it different?"
+## 1. What is midipix, and how is it different?
 
 midipix[\[3](#r3)] is a development environment that lets you create programs for
 Windows using the standard C and POSIX APIs. No compromises made, no shortcuts
@@ -55,7 +56,7 @@ A Midipix distribution consists of the following:
   any modern POSIX-compliant \*nix environment, including GNU coreutils, shells,
   libraries such as ncurses, libressl, as well as Perl and Python.
 
-Install the build-time dependencies listed in [2.1](#2-1-build-time-dependencies),  
+Install the build-time dependencies listed in section [2.1](#21-build-time-dependencies),
 clone this repository, and run the following command line:
 
 ```shell
@@ -64,7 +65,7 @@ clone this repository, and run the following command line:
 
 By default, the build will take place within ``${HOME}/midipix/nt64/release``
 and package archive files and/or Git repositores will be downloaded into
-``${HOME}/midipix/dlcache``. Consult [\[3.1](#3-1-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)][\[5](#5-build-variables)][\[5.1](#5-1-package-variables)]
+``${HOME}/midipix/dlcache``. Consult sections [3.1](#31-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen), [4](#4-build-variables), and [4.1](#41-package-variables)
 for the list of available build variables and how to override them.
   
 [Back to top](#table-of-contents)
@@ -210,8 +211,8 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
 
 [//]: # "}}}"
 
-[//]: # "{{{ 5. Build variables"
-## 5. Build variables
+[//]: # "{{{ 4. Build variables"
+## 4. Build variables
 
 The following variables are primarily defined in ``midipix.env`` and may be
 overriden on a per-build basis on the command-line after the last argument,
@@ -242,8 +243,8 @@ may contain additional overrides, particularly ``${DEFAULT_GITROOT_HEAD}``.
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 5.1. Package variables"
-## 5.1. Package variables
+[//]: # "{{{ 4.1. Package variables"
+## 4.1. Package variables
 
 The following variables are package-specific and receive their value from either
 top-level defaults defined in ``midipix.env``, build group-specific defaults
@@ -323,8 +324,8 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 
 [//]: # "}}}"
 
-[//]: # "{{{ 6. References"
-## 6. References
+[//]: # "{{{ 5. References"
+## 5. References
 
 * ``Sun, 25 Apr 2016 09:04:08 +0000 [1]`` <a href="https://www.musl-libc.org/faq.html" id="r1">musl FAQ</a>  
 * ``Wed, 04 Mar 2020 12:57:39 +0000 [2]`` <a href="https://midipix.org/" id="r2">midipix</a>  
