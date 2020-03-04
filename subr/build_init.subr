@@ -72,32 +72,14 @@ buildp_init_defaults() {
 };
 
 buildp_init_env() {
-	local _cmd="" _cmds_missing="" _fname="" _rc=0; _status="";
+	local _fname="" _rc=0; _status="";
 	if ! cd "$(dirname "${0}")" || ! umask 022; then
 		printf "Error: failed to setup environment.\n"; exit 1;
 	else	for _fname in $(find subr -name *.subr); do
 			if ! . "${_fname}"; then
 				printf "Error: failed to source \`%s'.\n" "${_fname}"; exit 1;
 			fi;
-		done;
-		for _cmd in	\
-				awk bunzip2 cat chmod cmake cp date find flock g++	\
-				gcc git grep gunzip gzip hostname install kill		\
-				ln lzip make mkdir mkfifo mv paste patch perl		\
-				pgrep pkill printf readlink rm sed seq sha256sum	\
-				sort stat tail tar test touch tr wget xz zip; do
-			if ! which "${_cmd}" >/dev/null 2>&1; then
-				_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
-			fi;
-		done;
-		if [ -n "${_cmds_missing}" ]; then
-			_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
-		elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
-			_rc=1; _status="Error: awk(1) in \$PATH must be GNU Awk.";
-		elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
-			_rc=1; _status="Error: sed(1) in \$PATH must be GNU sed.";
-		fi;
-	fi;
+		done; fi;
 	return "${_rc}";
 };
 
@@ -179,6 +161,28 @@ buildp_init_getopts() {
 	return "${_rc}";
 };
 
+buildp_init_prereqs() {
+	local _cmd="" _cmds_missing="" _rc=0; _status="";
+	for _cmd in	\
+			awk bunzip2 cat chmod cmake cp date find flock g++	\
+			gcc git grep gunzip gzip hostname install kill		\
+			ln lzip make mkdir mkfifo mv paste patch perl		\
+			pgrep pkill printf readlink rm sed seq sha256sum	\
+			sort stat tail tar test touch tr wget xz zip; do
+		if ! which "${_cmd}" >/dev/null 2>&1; then
+			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
+		fi;
+	done;
+	if [ -n "${_cmds_missing}" ]; then
+		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
+	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
+		_rc=1; _status="Error: awk(1) in \$PATH must be GNU Awk.";
+	elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
+		_rc=1; _status="Error: sed(1) in \$PATH must be GNU sed.";
+	fi;
+	return "${_rc}";
+};
+
 buildp_init_vars() {
 	local _default_build_groups="" _fname="" _group="" _groups="" _rc=0; _status="";
 	if ! rtl_lmatch "${ARCH}" "nt32 nt64"; then
@@ -250,6 +254,7 @@ build_init() {
 	if ! buildp_init_env		\
 	|| ! buildp_init_defaults	\
 	|| ! buildp_init_getopts "${@}"	\
+	|| ! buildp_init_prereqs	\
 	|| ! buildp_init_vars		\
 	|| ! buildp_init_args		\
 	|| ! buildp_init_files; then
