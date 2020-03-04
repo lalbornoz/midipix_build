@@ -74,8 +74,13 @@ buildp_init_defaults() {
 buildp_init_env() {
 	local _cmd="" _cmds_missing="" _fname="" _rc=0; _status="";
 	if ! cd "$(dirname "${0}")" || ! umask 022; then
-		_rc=1; _status="Error: failed to setup environment";
-	else 	for _cmd in	\
+		printf "Error: failed to setup environment.\n"; exit 1;
+	else	for _fname in $(find subr -name *.subr); do
+			if ! . "${_fname}"; then
+				printf "Error: failed to source \`%s'.\n" "${_fname}"; exit 1;
+			fi;
+		done;
+		for _cmd in	\
 				awk bunzip2 cat chmod cmake cp date find flock g++	\
 				gcc git grep gunzip gzip hostname install kill		\
 				ln lzip make mkdir mkfifo mv paste patch perl		\
@@ -91,11 +96,7 @@ buildp_init_env() {
 			_rc=1; _status="Error: awk(1) in \$PATH must be GNU Awk.";
 		elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
 			_rc=1; _status="Error: sed(1) in \$PATH must be GNU sed.";
-		else for _fname in $(find subr -name *.subr); do
-			if ! . "${_fname}"; then
-				_rc=1; _status="Error: failed to source \`${_fname}'."; break;
-			fi;
-		done; fi;
+		fi;
 	fi;
 	return "${_rc}";
 };
