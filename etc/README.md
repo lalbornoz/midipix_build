@@ -22,20 +22,22 @@ internal repositories required in order to build Midipix.
 [//]: # "{{{ 1. What is midipix, and how is it different?"
 ## 1. What is midipix, and how is it different?
 
-midipix[\[3](#r3)] is a development environment that lets you create programs for
-Windows using the standard C and POSIX APIs. No compromises made, no shortcuts
-taken.
-
-If you are interested in cross-platform programming that reclaims the notion of
-write once, compile everywhere; if you believe that the 'standard' in the C
-Standard Library should not be a null signifier; and if you like cooking your
-code without #ifdef hell and low-level minutiae, then this page is for you.
-
+midipix is a development environment that lets you create programs
+for Windows using the standard C and POSIX APIs. No compromises made,
+no shortcuts taken.  
+  
+If you are interested in cross-platform programming that reclaims
+the notion of write once, compile everywhere; if you believe that the
+'standard' in the C Standard Library should not be a null signifier;
+and if you like cooking your code without #ifdef hell and low-level
+minutiae, then this page is for you.  
+  
 midipix makes cross-platform programming better, simpler and faster,
-specifically by bringing a modern, conforming C Runtime Library to the Windows
-platform. While the idea itself is not new, the approach taken in midipix to
-code portability is radically different from that found in other projects.
-
+specifically by bringing a modern, conforming C Runtime Library to the
+Windows platform. While the idea itself is not new, the approach taken
+in midipix to code portability is radically different from that found
+in other projects.  
+  
 *(reproduced from [\[3](#r3)])*
   
 [Back to top](#table-of-contents)
@@ -66,7 +68,11 @@ clone this repository, and run the following command line:
 By default, the build will take place within ``${HOME}/midipix/nt64/release``
 and package archive files and/or Git repositores will be downloaded into
 ``${HOME}/midipix/dlcache``. Consult sections [3.1](#31-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen), [4](#4-build-variables), and [4.1](#41-package-variables)
-for the list of available build variables and how to override them.
+for the list of available build variables and how to override them.  
+Parallelisation is enabled by the above command line for both packages that
+can be built independently of each other and make(1) child processes via ``-j``,
+limited to the amount of logical processors on the build host divided by two
+(2).
   
 [Back to top](#table-of-contents)
 
@@ -122,10 +128,10 @@ following hardware at minimum:
 * 7200 RPM SATA 3.1 HDD
 * 6 GB RAM
 
-| Target architecture | Build type | Distribution kinds selected | Average build time | Disk space required |
-| ------------------- | ---------- | --------------------------- | ------------------ | ------------------- |
-| nt64                | debug      | minipix,rpm,zipdist         | 2 hours            | 57.60 GB            |
-| nt64                | release    | minipix,rpm,zipdist         | 1 hours 45 minutes | 35.16 GB            |
+| Target architecture | Build type | Distribution kinds selected | Average build time | Disk space required | Peak RAM usage |
+| ------------------- | ---------- | --------------------------- | ------------------ | ------------------- | -------------- |
+| nt64                | debug      | (none)                      | 2 hours            | 57.60 GB            | ? GB           |
+| nt64                | release    | (none)                      | 1 hours 45 minutes | 35.16 GB            | 1.52 GB        |
 
 Package archive files and/or Git repositories additionally consume at least
 1.70 GB.
@@ -203,8 +209,9 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
         -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace during package builds; -vvvv: logs fileops.
         --as-needed       Don't build unless the midipix_build repository has received new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
-        <group>[ ..]      One of: host_deps, host_deps_rpm, host_toolchain, host_tools, minipix,
-                          native_packages, native_runtime, native_toolchain, and/or native_tools.
+        <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm, host_toolchain,
+                          host_tools, minipix, native_packages, native_runtime, native_toolchain,
+                          native_tools.
 ```
   
 [Back to top](#table-of-contents)
