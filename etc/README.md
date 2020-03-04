@@ -1,20 +1,53 @@
-> N.B. If you're interested in building Midipix using this script, please join the project's
-IRC channel #midipix on Freenode and ask for the address of the internal repositories.
+> N.B. If you're interested in building Midipix using this script, please join
+the project's IRC channel #midipix on Freenode and ask for the address of the
+internal repositories required in order to build Midipix.
 
-> N.B. If in doubt, consult the fault-tolerant & highly optimised 3D laser show-equipped
-usage screen w/ ./build.sh -h or a hungry lion might eat you alive.
-
+[//]: # "{{{ Table of contents"
 # Table of Contents  
-[Building a midipix distribution](#building-a-midipix-distribution)  
-[Common tasks](#common-tasks)  
-[Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
-[Non-exhaustive list of build variables](#non-exhaustive-list-of-build-variables)
 
-## Building a midipix distribution
+1. [What is midipix, and how is it different?](#1-what-is-midipix-and-how-is-it-different)  
+2. [Building a midipix distribution](#2-building-a-midipix-distribution)  
+	2.1. [Build-time dependencies](#2-1-build-time-dependencies)  
+		2.1.1. [Alpine-specific notate bene](2-1-1-alpine-specific-notate-bene)  
+	2.2. [Deployment](#2-2-deployment)  
+	2.3. [System requirements](#2-3-system-requirements)  
+3. [Common tasks](#3-common-tasks)  
+	3.1. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#3-1-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
+5. [Build variables](#5-build-variables)  
+	5.1. [Package variables](#5-1-package-variables)  
+6. [References](#6-references)  
+
+[//]: "}}}"
+
+[//]: # "{{{ 1. What is midipix, and how is it different?"
+
+midipix[\[3](#r3)] is a development environment that lets you create programs for
+Windows using the standard C and POSIX APIs. No compromises made, no shortcuts
+taken.
+
+If you are interested in cross-platform programming that reclaims the notion of
+write once, compile everywhere; if you believe that the 'standard' in the C
+Standard Library should not be a null signifier; and if you like cooking your
+code without #ifdef hell and low-level minutiae, then this page is for you.
+
+midipix makes cross-platform programming better, simpler and faster,
+specifically by bringing a modern, conforming C Runtime Library to the Windows
+platform. While the idea itself is not new, the approach taken in midipix to
+code portability is radically different from that found in other projects.
+
+*(reproduced from [\[3](#r3)])*
+  
+[Back to top](#table-of-contents)
+
+[//]: "}}}"
+
+[//]: # "{{{ 2. Building a midipix distribution"
+## 2. Building a midipix distribution
+
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
   and binutils,
-* musl, a lightweight, fast, simple, and free libc[1] used by Midipix,
+* musl, a lightweight, fast, simple, and free libc[\[1](#r1)] used by Midipix,
 * the Midipix runtime components that bridge the gap between the libc and the
   executive subsystems of all Windows NT-derived Windows OS starting with and
   including Windows XP, and
@@ -22,34 +55,99 @@ A Midipix distribution consists of the following:
   any modern POSIX-compliant \*nix environment, including GNU coreutils, shells,
   libraries such as ncurses, libressl, as well as Perl and Python.
 
-Install the build-time dependencies listed below, clone this repository, and run the
-following command line within the latter:  
+Install the build-time dependencies listed in [2.1](#2-1-build-time-dependencies),  
+clone this repository, and run the following command line:
 
 ```shell
 ./build.sh -a nt64 -b release -D minipix,zipdist -P -v
 ```
 
-### Build-time dependencies
-* **Alpine Linux**: binutils bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip libc-dev linux-headers lzip make musl-dev net-tools patch perl perl-xml-parser procps sed tar util-linux wget xz zip
-* **Debian/-derived Linux**: binutils bzip2 clzip cmake coreutils curl findutils g++ gawk gcc git grep gzip hostname libc6-dev libxml-parser-perl lzma make patch perl procps sed tar util-linux wget xz-utils zip
-* **OpenSUSE Linux**: binutils bzip2 cmake coreutils curl findutils gawk gcc gcc-c++ git grep gzip hostname linux-glibc-devel lzip make patch perl perl-XML-Parser procps sed tar util-linux wget xz zip
+By default, the build will take place within ``${HOME}/midipix/nt64/release``
+and package archive files and/or Git repositores will be downloaded into
+``${HOME}/midipix/dlcache``. Consult [\[3.1](#3-1-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)][\[5](#5-build-variables)][\[5.1](#5-1-package-variables)]
+for the list of available build variables and how to override them.
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 2.1. Build-time dependencies"
+### 2.1. Build-time dependencies
+
+* **Alpine Linux**: binutils bzip2 cmake coreutils curl findutils g++ gawk gcc
+		    git grep gzip libc-dev linux-headers lzip make musl-dev
+		    net-tools patch perl perl-xml-parser procps sed tar
+		    util-linux wget xz zip
+* **Debian/-derived Linux**: binutils bzip2 clzip cmake coreutils curl findutils
+			     g++ gawk gcc git grep gzip hostname libc6-dev
+			     libxml-parser-perl lzma make patch perl procps sed
+			     tar util-linux wget xz-utils zip
+* **OpenSUSE Linux**: binutils bzip2 cmake coreutils curl findutils gawk gcc
+		      gcc-c++ git grep gzip hostname linux-glibc-devel lzip make
+		      patch perl perl-XML-Parser procps sed tar util-linux wget
+		      xz zip
 
 > N.B. Busybox is not supported.
+  
+[Back to top](#table-of-contents)
 
-> N.B. Some packages (*coreutils*, *grep*, and *tar*, among others) override
-Alpine's BusyBox utilities of the same name, as the latter are either non-
-conformant or defective.
+[//]: # "}}}"
+[//]: # "{{{ 2.1.1. Alpine-specific notate bene"
+#### 2.1.1. Alpine-specific notate bene
 
-## Common tasks
-Rebuild set of packages in isolation, along w/ their dependencies, if any, as needed,
-or forcibly, respectively:
+Some packages (*coreutils*, *grep*, and *tar*, among others) override Alpine's
+BusyBox utilities of the same name, as the latter are either non-conformant or
+defective.
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 2.2. Deployment"
+### 2.2. Deployment
+
+On successful completion of the build, a ZIP archive containing the Midipix
+distribution will be created. Extract its contents on the target machine, run
+``bash.bat``, and then ``/install.sh`` inside the resulting self-contained
+Midipix installation shell window.
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 2.3. System requirements"
+### 2.3. System requirements
+
+The following system requirements are assessed on build hosts equipped with the
+following hardware at minimum:
+* Intel(R) Xeon(R) CPU W3520 @ 2.67GHz (8 cores)
+* 7200 RPM SATA 3.1 HDD
+* 6 GB RAM
+
+| Target architecture | Build type | Distribution kinds selected | Average build time | Disk space required |
+| ------------------- | ---------- | --------------------------- | ------------------ | ------------------- |
+| nt64                | debug      | minipix,rpm,zipdist         | 2 hours            | 57.60 GB            |
+| nt64                | release    | minipix,rpm,zipdist         | 1 hours 45 minutes | 35.16 GB            |
+
+Package archive files and/or Git repositories additionally consume at least
+1.70 GB.
+
+*(last update: Wed, 04 Mar 2020 14:07:26 +0000)*
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+
+[//]: # "{{{ 3. Common tasks"
+## 3. Common tasks
+
+Rebuild set of packages in isolation, along w/ their dependencies, if any, as
+needed, or forcibly, respectively:
 ```shell
 ./build.sh [ ... ] -r mc,zsh
 ./build.sh [ ... ] -r \*mc,zsh
 ./build.sh [ ... ] -r \*\*mc,zsh
 ```
 
-Restart the ``configure``, ``build``, and ``install`` steps of the ``coreutils`` package.
+Restart the ``configure``, ``build``, and ``install`` steps of the ``coreutils``
+package.
 ```shell
 ./build.sh -r coreutils:configure,build,install
 ```
@@ -58,8 +156,13 @@ Rebuild entire build group:
 ```shell
 ./build.sh [ ... ] -r ALL native_runtime
 ```
+  
+[Back to top](#table-of-contents)
 
-## Fault-tolerant & highly optimised 3D laser show-equipped usage screen
+[//]: # "}}}"
+[//]: # "{{{ 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen"
+## 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
+
 ```
 usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]] [-F ipv4|ipv6|offline]
                   [-h] [-p jobs] [-P] [-r [*[*]]ALL|LAST|name[,..][:step,..]] [-R] [-v[v[v[v]]]]
@@ -102,18 +205,25 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-D kind[,..]]
         <group>[ ..]      One of: host_deps, host_deps_rpm, host_toolchain, host_tools, minipix,
                           native_packages, native_runtime, native_toolchain, and/or native_tools.
 ```
+  
+[Back to top](#table-of-contents)
 
-## Non-exhaustive list of build variables
-The following variables are primarily defined in ``midipix.env`` and may be overriden
-on a per-build basis on the command-line after the last argument, if any, e.g.:
+[//]: # "}}}"
+
+[//]: # "{{{ 5. Build variables"
+## 5. Build variables
+
+The following variables are primarily defined in ``midipix.env`` and may be
+overriden on a per-build basis on the command-line after the last argument,
+if any, e.g.:
 
 ```shell
 ./build.sh -a nt64 -b release -D minipix,zipdist -P -v PREFIX_ROOT="${HOME}/midipix_tmp"
 ```
 
-Furthermore, ``${HOME}/midipix_build.vars``, ``${HOME}/.midipix_build.vars``, and/or
-``../midipix_build.vars`` are sourced during build initialisation and may contain
-additional overrides, particularly ``${DEFAULT_GITROOT_HEAD}``.
+Furthermore, ``${HOME}/midipix_build.vars``, ``${HOME}/.midipix_build.vars``,
+and/or ``../midipix_build.vars`` are sourced during build initialisation and
+may contain additional overrides, particularly ``${DEFAULT_GITROOT_HEAD}``.
 
 | Variable name    | Default value                   | Description                                                                   |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------- |
@@ -128,16 +238,24 @@ additional overrides, particularly ``${DEFAULT_GITROOT_HEAD}``.
 | PREFIX_NATIVE    | ${PREFIX}/native                | Absolute pathname to cross-compiled packages root directory                   |
 | PREFIX_ROOT      | ${HOME}/midipix                 | Absolute pathname to top-level directory                                      |
 | PREFIX_RPM       | ${PREFIX}/rpm                   | Absolute pathname to package RPM archive root directory                       |
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 5.1. Package variables"
+## 5.1. Package variables
 
 The following variables are package-specific and receive their value from either
-top-level defaults defined in ``midipix.env``, build group-specific defaults from
-the build group the package pertains to and defined in its corresponding file beneath
-``groups/``, or package-specific overrides defined either in the latter and/or in
-its corresponding file beneath ``vars/``. Additionally, overrides may be specified
-on a per-build basis on the command-line after the last argument, with each variable
-prefixed w/ ``PKG_``, e.g.: ``./build.sh [ ... ] PKG_ZSH_CC="/bin/false"``.
-The minimum set of package variables that must be provided is ``SHA256SUM, URL, VERSION``
-and ``URLS_GIT``, respectively.
+top-level defaults defined in ``midipix.env``, build group-specific defaults
+from the build group the package pertains to and defined in its corresponding
+file beneath ``groups/``, or package-specific overrides defined either in the
+latter and/or in its corresponding file beneath ``vars/``. Additionally,
+overrides may be specified on a per-build basis on the command-line after the
+last argument, with each variable prefixed w/ ``PKG_``, e.g.: ``./build.sh
+[ ... ] PKG_ZSH_CC="/bin/false"``.  
+  
+The minimum set of package variables that must be provided is ``SHA256SUM, URL,
+VERSION`` and/or ``URLS_GIT``, respectively.
 
 | Package variable name       | Description                                                                                                                             |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
@@ -200,8 +318,20 @@ and ``URLS_GIT``, respectively.
 | URL                         | URL to package archive                                                                                                                  |
 | URLS_GIT                    | List of package Git URL(s) (*name*=*URL*@*branch*)                                                                                      |
 | VERSION                     | Package version                                                                                                                         |
-
-## References
-* ``Sun, 25 Apr 2016 09:04:08 +0000 [1]`` <a href="http://www.musl-libc.org/faq.html" id="r1">musl FAQ</a>  
   
-vim:tw=0
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+
+[//]: # "{{{ 6. References"
+## 6. References
+
+* ``Sun, 25 Apr 2016 09:04:08 +0000 [1]`` <a href="https://www.musl-libc.org/faq.html" id="r1">musl FAQ</a>  
+* ``Wed, 04 Mar 2020 12:57:39 +0000 [2]`` <a href="https://midipix.org/" id="r2">midipix</a>  
+* ``Wed, 04 Mar 2020 13:36:19 +0000 [3]`` <a href="https://midipix.org/#sec-midipix" id="r3">midipix - what is midipix, and how is it different?</a>  
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+  
+[modeline]: # ( vim: set ff=dos tw=0: )
