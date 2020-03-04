@@ -62,7 +62,7 @@ Install the build-time dependencies listed in section [2.1](#21-build-time-depen
 clone this repository, and run the following command line:
 
 ```shell
-./build.sh -a nt64 -b release -D minipix,zipdist -P -v
+./build.sh -a nt64 -b release -P -v
 ```
 
 By default, the build will take place within ``${HOME}/midipix/nt64/release``
@@ -128,10 +128,10 @@ following hardware at minimum:
 * 7200 RPM SATA 3.1 HDD
 * 6 GB RAM
 
-| Target architecture | Build type | Distribution kinds selected | Average build time | Disk space required | Peak RAM usage |
-| ------------------- | ---------- | --------------------------- | ------------------ | ------------------- | -------------- |
-| nt64                | debug      | (none)                      | 2 hours            | 57.60 GB            | ? GB           |
-| nt64                | release    | (none)                      | 1 hours 45 minutes | 35.16 GB            | 1.52 GB        |
+| Target architecture | Build type | Distribution kinds selected | Average build time | Disk space required |
+| ------------------- | ---------- | --------------------------- | ------------------ | ------------------- |
+| nt64                | debug      | (none)                      | 2 hours            | 57.60 GB            |
+| nt64                | release    | (none)                      | 1 hours 45 minutes | 35.16 GB            |
 
 Package archive files and/or Git repositories additionally consume at least
 1.70 GB.
