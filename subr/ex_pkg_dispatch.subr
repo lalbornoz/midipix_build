@@ -30,7 +30,7 @@ exp_pkg_dispatch_complete() {
 # @_njobs_max:			maximum count of simultaneous jobs
 # @_pipe_path:			pathname to build FIFO
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL
-# @_restart_recursive:		optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
+# @_restart_recursive:		optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
 # @_workdir:			pathname to build-specific temporary directory
 #
 # Return:			zero (0) on success, non-zero (>0) on failure.
@@ -120,7 +120,7 @@ exp_pkg_dispatch_package() {
 # @_pipe_path:			pathname to parent-child process FIFO
 # @_pkg_complete:		list of completed packages
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL
-# @_restart_recursive:		optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
+# @_restart_recursive:		optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
 # @_workdir:			pathname to build-specific temporary directory
 #
 # Return:			zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_DISPATCH_NJOBS}, ${EXP_PKG_DISPATCH_COUNT}, ${EXP_PKG_NAMES}, and ${EX_PKG_DISPATCH_WAIT} may be mutated post-return.
