@@ -7,7 +7,7 @@
 # @_pkg_complete:	list of completed packages
 # @_pkg_name:		single package name
 # @_pkg_wait:		list of in-progress packages
-# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
+# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
 #
 # Return:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
 #
@@ -15,14 +15,16 @@ ex_pkg_check_depends() {
 	local	_pkg_complete="${1}" _pkg_name="${2}" _pkg_wait="${3}" _restart_recursive="${4}"	\
 		_pkg_depends="" _pkg_name_depend="" _dependfl=0;
 	if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
-	&& [ -n "${_pkg_depends}" ]\
-	&& ! [ -n "${_restart}" ] || [ "${_restart_recursive:-0}" -ge 1 ]; then
-		for _pkg_name_depend in $(rtl_uniq ${_pkg_depends}); do
-			if ! rtl_lmatch "${_pkg_complete}" "${_pkg_name_depend}"\
-			|| rtl_lmatch "${_pkg_wait}" "${_pkg_name_depend}"; then
-				_dependfl=1; break;
-			fi;
-		done;
+	&& [ -n "${_pkg_depends}" ]; then
+		if [ -z "${_restart}" ]\
+		|| [ "${_restart_recursive:-0}" -ge 1 ]; then
+			for _pkg_name_depend in $(rtl_uniq ${_pkg_depends}); do
+				if ! rtl_lmatch "${_pkg_complete}" "${_pkg_name_depend}"\
+				|| rtl_lmatch "${_pkg_wait}" "${_pkg_name_depend}"; then
+					_dependfl=1; break;
+				fi;
+			done;
+		fi;
 	fi;
 	return "${_dependfl}";
 };
@@ -31,28 +33,34 @@ ex_pkg_check_depends() {
 # ex_pkg_expand_packages() - expand build group name to list of packages ordered and filtered according to dependency and restart constraints
 # @_group_name:		build group name
 # @_restart:		optional whitespace-separated list of package names to rebuild
-# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2.)
+# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
 #
 # Return:		zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_COMPLETE}, ${EXP_PKG_DISABLED}, ${EXP_PKG_FINISHED}, and ${EXP_PKG_NAMES} set post-return.
 #
 ex_pkg_expand_packages() {
 	local	_group_name="${1}" _restart="${2}" _restart_recursive="${3}"	\
-		_pkg_name="" _pkg_names="" _restart_check=0;
+		_pkg_depends="" _pkg_name="" _pkg_names="" _restart_check=0;
 	EXP_PKG_COMPLETE=""; EXP_PKG_DISABLED=""; EXP_PKG_FINISHED=""; EXP_PKG_NAMES="";
 	if _pkg_names="$(rtl_get_var_unsafe -u "${_group_name}_PACKAGES")"\
 	&& [ -n "${_pkg_names}" ]; then
-		if [ -n "${_restart}" ] && ! rtl_lmatch "${_restart}" "ALL LAST"; then
-			_pkg_names="$(rtl_lsearch "${_pkg_names}" "${_restart}")";
-		fi;
-		if ! [ -n "${_restart}" ] || [ "${_restart_recursive:-0}" -ge 1 ]; then
-			_pkg_names="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' ${_pkg_names}))";
+		if [ "${_restart_recursive:-0}" -ne 3 ]; then
+			if [ -n "${_restart}" ] && ! rtl_lmatch "${_restart}" "ALL LAST"; then
+				_pkg_names="$(rtl_lsearch "${_pkg_names}" "${_restart}")";
+			fi;
+			if [ -z "${_restart}" ]\
+			|| [ "${_restart_recursive:-0}" -eq 1 ]\
+			|| [ "${_restart_recursive:-0}" -eq 2 ]; then
+				_pkg_names="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' ${_pkg_names}))";
+			fi;
 		fi;
 		for _pkg_name in ${_pkg_names}; do
-			if [ "${_restart}" = "ALL" ]\
-			|| rtl_lmatch "${_restart}" "${_pkg_name}"; then
-				_restart_check=1;
-			else
-				_restart_check=0;
+			if [ "${_restart_recursive:-0}" -ne 3 ]; then
+				if [ "${_restart}" = "ALL" ]\
+				|| rtl_lmatch "${_restart}" "${_pkg_name}"; then
+					_restart_check=1;
+				else
+					_restart_check=0;
+				fi;
 			fi;
 			if [ -n "$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" ]; then
 				EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
@@ -61,10 +69,18 @@ ex_pkg_expand_packages() {
 			elif ex_pkg_state_test "${_pkg_name}" finish\
 			&& [ "${_restart_check:-0}" -eq 0 ]\
 			&& [ "${_restart_recursive:-0}" -ne 2 ]\
+			&& [ "${_restart_recursive:-0}" -ne 3 ]\
 			&& [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]; then
 				EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
 				EXP_PKG_FINISHED="$(rtl_lconcat "${EXP_PKG_FINISHED}" "${_pkg_name}")";
 				_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+			fi;
+			if [ "${_restart_recursive:-0}" -eq 3 ]; then
+				if ! _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+				|| [ -z "${_pkg_depends}" ]\
+				|| ! rtl_lmatch "${_pkg_depends}" "${_restart}"; then
+					_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+				fi;
 			fi;
 		done;
 		EXP_PKG_NAMES="${_pkg_names}";

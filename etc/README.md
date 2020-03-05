@@ -206,8 +206,9 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]
                           Restart the specified comma-separated package(s) completely or
                           at optionally specified comma-separated list of build steps.
 
-                          Prepend w/ `*' to automatically include dependencies and `**' to
-                          forcibly rebuild all dependencies.
+                          Prepend w/ `*' to automatically include dependencies, `**' to
+                          forcibly rebuild all dependencies, and `***` to forcibly rebuild
+                          all packages that depend on the specified package(s).
 
                           Currently defined build steps are:
                           fetch_wget, fetch_git, fetch_extract, configure_patch_pre,
@@ -223,7 +224,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]
                           new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
-                          host_toolchain, host_tools, minipix, native_packages, 
+                          host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
 ```
   

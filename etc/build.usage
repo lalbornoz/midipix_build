@@ -1,6 +1,6 @@
-usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]   [-h]   [-p jobs]   [-P]  [-r ALL|LAST]
-                  [-r [*[*]]name[,..][:step,..]] [-R] [-v[v[v[v]]]] [--as-needed]
+usage: ./build.sh [-a nt32|nt64]   [-b debug|release]   [-C dir[,..]]   [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]    [-h]    [-p jobs]    [-P]    [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:step,..]]  [-R] [-v[v[v[v]]]]  [--as-needed]
                   [--debug-minipix] [<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
@@ -25,12 +25,13 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]
 
         -r ALL|LAST       Restart all packages or the last failed package and resume
                           build, resp.
-        -r [*[*]]name[,..][:step,..]
+        -r [*[*[*]]]name[,..][:step,..]
                           Restart the specified comma-separated package(s) completely or
                           at optionally specified comma-separated list of build steps.
 
-                          Prepend w/ `*' to automatically include dependencies and `**' to
-                          forcibly rebuild all dependencies.
+                          Prepend w/ `*' to automatically include dependencies, `**' to
+                          forcibly rebuild all dependencies, and `***` to forcibly rebuild
+                          all packages that depend on the specified package(s).
 
                           Currently defined build steps are:
                           fetch_wget, fetch_git, fetch_extract, configure_patch_pre,
@@ -46,5 +47,5 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]
                           new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
-                          host_toolchain, host_tools, minipix, native_packages, 
+                          host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
