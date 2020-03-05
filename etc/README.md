@@ -3,7 +3,7 @@ the project's IRC channel #midipix on Freenode and ask for the address of the
 internal repositories required in order to build Midipix.
 
 [//]: # "{{{ Table of contents"
-# Table of Contents  
+# Table of Contents
 
 1. [What is midipix, and how is it different?](#1-what-is-midipix-and-how-is-it-different)  
 2. [Building a midipix distribution](#2-building-a-midipix-distribution)  
@@ -265,7 +265,24 @@ of package build steps and how they are overriden.
 [//]: # "{{{ 3.3. Addressing build failure"
 ## 3.3. Addressing build failure
 
-
+During package build, standard error and output are redirected into a log file beneath
+``${BUILD_WORKDIR}`` named ``${PKG_NAME}_stderrout.log``, following a package variable
+dump. If ``-vv`` was specified, package logs will additionally be printed to standard
+output. If ``-vvv`` was specified, ``xtrace`` will be set during package builds for
+rudimentary debugging purposes. Additionally, packages using GNU autotools will, if
+package configuration failed or appears relevant, log the configuration process in detail
+in, most usually, ``${PKG_BUILD_DIR}/config.log``.  
+  
+Execute the following command line in order to obtain a package build shell environment:
+```shell
+export MAKE="make LIBTOOL=slibtool";	# Unless ${PKG_LIBTOOL} is set to any value other than `slibtool'
+export PATH="<build's $PREFIX} value>/bin:${PATH:+:${PATH}}";
+cd "<build's $PREFIX} value>/tmp/<package name>-*/";
+```
+  
+Consult sections [3.2](#32-adding-a-package), [3.4](#34-patches-and-vars-files), [4](#4-build-variables),
+[4.1](#41-build-steps), and [4.2](#42-package-variables) for further information
+concerning the package build process.
   
 [Back to top](#table-of-contents)
 
