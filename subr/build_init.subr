@@ -10,7 +10,9 @@ buildp_init_args() {
 		_status="Git repository has not changed since last build and --as-needed was specified.";
 	fi;
 	if [ -n "${ARG_RESTART}" ]; then
-		if [ "${ARG_RESTART#\*\*}" != "${ARG_RESTART}" ]; then
+		if [ "${ARG_RESTART#\*\*\*}" != "${ARG_RESTART}" ]; then
+			ARG_RESTART="${ARG_RESTART#\*\*\*}"; ARG_RESTART_RECURSIVE=3;
+		elif [ "${ARG_RESTART#\*\*}" != "${ARG_RESTART}" ]; then
 			ARG_RESTART="${ARG_RESTART#\*\*}"; ARG_RESTART_RECURSIVE=2;
 		elif [ "${ARG_RESTART#\*}" != "${ARG_RESTART}" ]; then
 			ARG_RESTART="${ARG_RESTART#\*}"; ARG_RESTART_RECURSIVE=1;
