@@ -100,9 +100,9 @@ build() {
 		BUILD_DATE_START="$(rtl_date %Y-%m-%d-%H-%M-%S)"; _build_time_secs="$(rtl_date %s)";
 		rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 		rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
-		if ! ex_pkg_dispatch "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"		\
-				buildp_dispatch "${BUILD_GROUPS}" "${ARG_PARALLEL:-1}"		\
-				"${BUILD_WORKDIR}/build.fifo" "${ARG_RESTART}"			\
+		if ! ex_pkg_dispatch "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"			\
+				buildp_dispatch "${BUILD_GROUPS}" "${BUILD_GROUPS_INHIBIT_DEPS:-0}"	\
+				"${ARG_PARALLEL:-1}" "${BUILD_WORKDIR}/build.fifo" "${ARG_RESTART}"	\
 				"${ARG_RESTART_AT}" "${ARG_RESTART_RECURSIVE}" "${BUILD_WORKDIR}"; then
 			for _pkg_name in ${EX_PKG_DISPATCH_UNKNOWN}; do
 				rtl_log_msg fail "Error: package \`${_pkg_name}' unknown.";

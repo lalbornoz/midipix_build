@@ -150,6 +150,7 @@ exp_pkg_dispatch_packages() {
 # @_build_vars_default:		list of default build variables
 # @_dispatch_fn:		top-level dispatch function name
 # @_group_names:		build group name(s)
+# @_groups_inhibit_deps:	inhibit group-group dependency expansion
 # @_njobs_max:			maximum count of simultaneous jobs
 # @_pipe_path:			pathname to build FIFO
 # @_restart:			optional whitespace-separated list of package names to rebuild
@@ -161,13 +162,16 @@ exp_pkg_dispatch_packages() {
 #
 ex_pkg_dispatch() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _dispatch_fn="${3}"		\
-		_group_names="${4}" _njobs_max="${5}" _pipe_path="${6}" _restart="${7}"			\
-		_restart_at="${8}" _restart_recursive="${9}" _workdir="${10}"				\
+		_group_names="${4}" _groups_inhibit_deps="${5}" _njobs_max="${6}" _pipe_path="${7}"	\
+		_restart="${8}" _restart_at="${9}" _restart_recursive="${10}" _workdir="${11}"		\
 		_pkg_name="" _pkg_names="" _rc=0							\
 		EXP_PKG_COMPLETE EXP_PKG_DISABLED EXP_PKG_FINISHED EXP_PKG_DISPATCH_COUNT		\
 		EXP_PKG_DISPATCH_COUNT_MAX EXP_PKG_DISPATCH_NJOBS EXP_PKG_NAMES;
 	EX_PKG_DISPATCH_WAIT="";
-	for _group_name in $(rtl_uniq $(rtl_lunfold_depends '${_name}_GROUP_DEPENDS' ${_group_names})); do
+	if [ "${_groups_inhibit_deps:-0}" -eq 0 ]; then
+		_group_names="$(rtl_uniq $(rtl_lunfold_depends '${_name}_GROUP_DEPENDS' ${_group_names}))";
+	fi;
+	for _group_name in ${_group_names}; do
 		EXP_PKG_COMPLETE="" EXP_PKG_DISABLED="" EXP_PKG_FINISHED="";
 		EXP_PKG_DISPATCH_COUNT=0 EXP_PKG_DISPATCH_COUNT_MAX=0 EXP_PKG_DISPATCH_NJOBS=0;
 		EXP_PKG_NAMES="" EX_PKG_DISPATCH_WAIT="";
