@@ -175,10 +175,10 @@ Rebuild entire build group:
 ## 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
 
 ```
-usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]   [-h]   [-p jobs]   [-P]  [-r ALL|LAST]
-                  [-r [*[*]]name[,..][:step,..]] [-R] [-v[v[v[v]]]] [--as-needed]
-                  [--debug-minipix] [<group>|<variable name>=<variable override>[ ..]]
+usage: ./build.sh [-a nt32|nt64]   [-b debug|release]   [-C dir[,..]] [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]    [-h]    [-p jobs]   [-P]   [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:step,..]] [-R] [-v[v[v[v]]]] [--as-needed]
+                  [--debug-minipix] [[*]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build; defaults to debug.
@@ -202,7 +202,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]
 
         -r ALL|LAST       Restart all packages or the last failed package and resume
                           build, resp.
-        -r [*[*]]name[,..][:step,..]
+        -r [*[*[*]]]name[,..][:step,..]
                           Restart the specified comma-separated package(s) completely or
                           at optionally specified comma-separated list of build steps.
 
@@ -226,6 +226,8 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release] [-C dir[,..]] [-D kind[,..]
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
                           host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
+
+                          Prepend w/ `*' to inhibit group-group dependency expansion.
 ```
   
 [Back to top](#table-of-contents)
