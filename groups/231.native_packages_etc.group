@@ -247,7 +247,7 @@ w32lib xorriso xz yabasic zstd")";
 : ${PKG_PROCPS_NG_MAKEFLAGS_BUILD:="LIBS=-Wl,-lncurses,-ltinfo"};
 : ${PKG_PROCPS_NG_FNAME:=procps_ng-${PKG_PROCPS_NG_VERSION}.tar.gz};
 : ${PKG_PROCPS_NG_SUBDIR:=procps-v${PKG_PROCPS_NG_VERSION}-7bb949bcba13c107fa0f45d2d0298b1ad6b6d6cc};
-: ${PKG_QEMU_DEPENDS:="curl glib pixman w32api w32lib"};
+: ${PKG_QEMU_DEPENDS:="curl glib libX11 pixman w32api w32lib"};
 : ${PKG_QEMU_SHA256SUM:=6a0508df079a0a33c2487ca936a56c12122f105b8a96a44374704bef6c69abfc};
 : ${PKG_QEMU_VERSION:=3.1.0};
 : ${PKG_QEMU_URL:=https://download.qemu.org/qemu-${PKG_QEMU_VERSION}.tar.xz};
