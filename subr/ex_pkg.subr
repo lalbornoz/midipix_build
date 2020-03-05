@@ -38,8 +38,9 @@ ex_pkg_check_depends() {
 # Return:		zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_COMPLETE}, ${EXP_PKG_DISABLED}, ${EXP_PKG_FINISHED}, and ${EXP_PKG_NAMES} set post-return.
 #
 ex_pkg_expand_packages() {
-	local	_group_name="${1}" _restart="${2}" _restart_recursive="${3}"	\
-		_pkg_depends="" _pkg_name="" _pkg_names="" _restart_check=0;
+	local	_group_name="${1}" _restart="${2}" _restart_recursive="${3}"		\
+		_pkg_depends="" _pkg_name="" _pkg_name_depend="" _pkg_names=""		\
+		_pkg_rdepends="" _restartfl=0;
 	EXP_PKG_COMPLETE=""; EXP_PKG_DISABLED=""; EXP_PKG_FINISHED=""; EXP_PKG_NAMES="";
 	if _pkg_names="$(rtl_get_var_unsafe -u "${_group_name}_PACKAGES")"\
 	&& [ -n "${_pkg_names}" ]; then
@@ -47,42 +48,68 @@ ex_pkg_expand_packages() {
 			if [ -n "${_restart}" ] && ! rtl_lmatch "${_restart}" "ALL LAST"; then
 				_pkg_names="$(rtl_lsearch "${_pkg_names}" "${_restart}")";
 			fi;
-			if [ -z "${_restart}" ]\
-			|| [ "${_restart_recursive:-0}" -eq 1 ]\
-			|| [ "${_restart_recursive:-0}" -eq 2 ]; then
+			if [ -n "${_restart}" ]\
+			&& [ "${_restart_recursive:-0}" -ge 1 ]\
+			&& [ "${_restart_recursive:-0}" -le 2 ]; then
 				_pkg_names="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' ${_pkg_names}))";
 			fi;
-		fi;
-		for _pkg_name in ${_pkg_names}; do
-			if [ "${_restart_recursive:-0}" -ne 3 ]; then
+			for _pkg_name in ${_pkg_names}; do
 				if [ "${_restart}" = "ALL" ]\
 				|| rtl_lmatch "${_restart}" "${_pkg_name}"; then
-					_restart_check=1;
+					_restartfl=1;
 				else
-					_restart_check=0;
+					_restartfl=0;
 				fi;
-			fi;
-			if [ -n "$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" ]; then
-				EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
-				EXP_PKG_DISABLED="$(rtl_lconcat "${EXP_PKG_DISABLED}" "${_pkg_name}")";
-				_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
-			elif ex_pkg_state_test "${_pkg_name}" finish\
-			&& [ "${_restart_check:-0}" -eq 0 ]\
-			&& [ "${_restart_recursive:-0}" -ne 2 ]\
-			&& [ "${_restart_recursive:-0}" -ne 3 ]\
-			&& [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]; then
-				EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
-				EXP_PKG_FINISHED="$(rtl_lconcat "${EXP_PKG_FINISHED}" "${_pkg_name}")";
-				_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
-			fi;
-			if [ "${_restart_recursive:-0}" -eq 3 ]; then
-				if ! _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
-				|| [ -z "${_pkg_depends}" ]\
-				|| ! rtl_lmatch "${_pkg_depends}" "${_restart}"; then
+				if [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" = "x1" ]; then
+					EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
+					EXP_PKG_DISABLED="$(rtl_lconcat "${EXP_PKG_DISABLED}" "${_pkg_name}")";
+					_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+				elif ex_pkg_state_test "${_pkg_name}" finish\
+				&& [ "${_restartfl:-0}" -eq 0 ]\
+				&& [ "${_restart_recursive:-0}" -ne 2 ]\
+				&& [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]; then
+					EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
+					EXP_PKG_FINISHED="$(rtl_lconcat "${EXP_PKG_FINISHED}" "${_pkg_name}")";
 					_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
 				fi;
-			fi;
-		done;
+			done;
+		else	for _pkg_name_depend in ${_restart}; do
+				for _pkg_name in ${_pkg_names}; do
+					if [ "${_pkg_name}" != "${_pkg_name_depend}" ]\
+					&& [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" != "x1" ]\
+					&& _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+					&& [ -n "${_pkg_depends}" ]\
+					&& rtl_lmatch "${_pkg_depends}" "${_pkg_name_depend}"; then
+						_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "${_pkg_name}")";
+					fi;
+				done;
+			done;
+			_pkg_names="";
+			for _pkg_name in ${_pkg_rdepends}; do
+				if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+				&& [ -n "${_pkg_depends}" ]; then
+					for _pkg_name_depend in ${_pkg_depends}; do
+						if [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name_depend}_DISABLED")" = "x1" ]; then
+							EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name_depend}")";
+							EXP_PKG_DISABLED="$(rtl_lconcat "${EXP_PKG_DISABLED}" "${_pkg_name_depend}")";
+						elif ex_pkg_state_test "${_pkg_name_depend}" finish\
+						&& [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]\
+						&& ! rtl_lmatch "${_pkg_rdepends}" "${_pkg_name_depend}"; then
+							EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name_depend}")";
+							EXP_PKG_FINISHED="$(rtl_lconcat "${EXP_PKG_FINISHED}" "${_pkg_name_depend}")";
+						elif ! ex_pkg_state_test "${_pkg_name_depend}" finish\
+						|| [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" = "x1" ]; then
+							_pkg_names="$(rtl_lconcat "${_pkg_names}" "${_pkg_name_depend}")";
+						fi;
+					done;
+				fi;
+				_pkg_names="$(rtl_lconcat "${_pkg_names}" "${_pkg_name}")";
+			done;
+			EXP_PKG_COMPLETE="$(rtl_uniq ${EXP_PKG_COMPLETE})";
+			EXP_PKG_DISABLED="$(rtl_uniq ${EXP_PKG_DISABLED})";
+			EXP_PKG_FINISHED="$(rtl_uniq ${EXP_PKG_FINISHED})";
+			_pkg_names="$(rtl_uniq ${_pkg_names})";
+		fi;
 		EXP_PKG_NAMES="${_pkg_names}";
 	fi;
 	return 0;
