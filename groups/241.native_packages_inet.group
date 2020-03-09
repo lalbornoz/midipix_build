@@ -3,10 +3,10 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-apk_tools aria2 bind ca_certificates dropbear fetchmail git gnupg gnutls
-httpd inetutils irssi isync ldns lighttpd lynx mailutils microsocks mtr
-mutt nginx nullmailer openlitespeed opensmtpd openssh pacman rsync socat
-thttpd w3m weechat wget whois")";
+apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg
+gnutls httpd inetutils irssi isync ldns lighttpd lynx mailutils microsocks
+mtr mutt nginx nullmailer openlitespeed opensmtpd openssh pacman rsync
+socat thttpd w3m weechat wget whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -30,6 +30,11 @@ thttpd w3m weechat wget whois")";
 : ${PKG_CA_CERTIFICATES_CFLAGS_BUILD_EXTRA:=-I${PREFIX_NATIVE}/include};
 : ${PKG_CA_CERTIFICATES_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_CA_CERTIFICATES_ENV_VARS_EXTRA:="HOST_CC=gcc"};
+: ${PKG_CURL_DEPENDS:="gnutls"};
+: ${PKG_CURL_SHA256SUM:=b724240722276a27f6e770b952121a3afd097129d8c9fe18e6272dc34192035a};
+: ${PKG_CURL_VERSION:=7.68.0};
+: ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
+: ${PKG_CURL_CONFIGURE_ARGS_EXTRA:="--disable-symbol-hiding --enable-shared --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-ca-path=/etc/ssl/certs --with-gnutls --without-ssl"};
 : ${PKG_DROPBEAR_DEPENDS:="libz"};
 : ${PKG_DROPBEAR_SHA256SUM:=525965971272270995364a0eb01f35180d793182e63dd0b0c3eb0292291644a4};
 : ${PKG_DROPBEAR_VERSION:=2019.78};
