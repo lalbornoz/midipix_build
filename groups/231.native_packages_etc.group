@@ -3,14 +3,14 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron curl
-dante dbus debianutils emacs expat ffmpeg file gdbm geoip gettext_tiny
-ghostscript giflib gnuchess gzip hastyhex hexcurse htop icecast
-imagemagick infounzip infozip john lcms2 less lmdb lolcode mintty mlogin
-musl_compat musl_fts ncdu ncurses ncursestw ncursesw npth openjpeg p7zip
-pcre popt procps_ng qemu qpdf qrencode rpm rw shared_mime_info slang
-sqlite3 tcl tdnf texinfo tiff tmux tzdb utf8proc util_linux vim w32api
-w32lib xorriso xz yabasic zstd")";
+alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
+debianutils emacs expat ffmpeg file gdbm geoip gettext_tiny ghostscript
+giflib gnuchess gzip hastyhex hexcurse htop icecast imagemagick infounzip
+infozip john lcms2 less lmdb lolcode mintty mlogin musl_compat musl_fts
+ncdu ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng
+qemu qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
+tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xz yabasic
+zstd")";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
 : ${PKG_ALSA_LIB_URL:=ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PKG_ALSA_LIB_VERSION}.tar.bz2};
@@ -64,10 +64,6 @@ w32lib xorriso xz yabasic zstd")";
 : ${PKG_CRON_URLS_GIT:="pkg-cron=https://github.com/lalbornoz/pkg-cron@master"};
 : ${PKG_CRON_ENV_VARS_EXTRA:="CC=${DEFAULT_TARGET}-gcc:CFLAGS=${NATIVE_PACKAGES_CFLAGS_CONFIGURE} -D__GNU__"};
 : ${PKG_CRON_IN_TREE:=1};
-: ${PKG_CURL_SHA256SUM:=b724240722276a27f6e770b952121a3afd097129d8c9fe18e6272dc34192035a};
-: ${PKG_CURL_VERSION:=7.68.0};
-: ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
-: ${PKG_CURL_CONFIGURE_ARGS_EXTRA:="--disable-symbol-hiding --enable-shared --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-ca-path=/etc/ssl/certs --with-gnutls --without-ssl"};
 : ${PKG_DANTE_DEPENDS:="libtirpc"};
 : ${PKG_DANTE_SHA256SUM:=4c97cff23e5c9b00ca1ec8a95ab22972813921d7fbf60fc453e3e06382fc38a7};
 : ${PKG_DANTE_VERSION:=1.4.2};
