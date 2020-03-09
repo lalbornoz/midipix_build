@@ -118,7 +118,10 @@ On successful completion of the build, a ZIP archive containing the Midipix
 distribution will be created inside ``${PREFIX}`` (see section [4](#4-build-variables).)
 Extract its contents on the target machine, run ``bash.bat``, and then
 ``/install.sh`` inside the resulting self-contained Midipix installation shell
-window.
+window.  
+  
+N.B. The pathname of the target directory containing ``bash.bat`` and all other
+distribution files must not contain whitespaces.
   
 [Back to top](#table-of-contents)
 
