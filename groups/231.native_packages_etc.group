@@ -276,7 +276,7 @@ zstd")";
 : ${PKG_SHARED_MIME_INFO_URL:=http://freedesktop.org/~hadess/shared-mime-info-${PKG_SHARED_MIME_INFO_VERSION}.tar.xz};
 : ${PKG_SHARED_MIME_INFO_CONFIGURE_ARGS_EXTRA:=--disable-update-mimedb};
 : ${PKG_SHARED_MIME_INFO_MAKEFLAGS_BUILD:=-j1};
-: ${PKG_SLANG_DEPENDS:="ncursesw"};
+: ${PKG_SLANG_DEPENDS:="libpng ncursesw"};
 : ${PKG_SLANG_SHA256SUM:=fc9e3b0fc4f67c3c1f6d43c90c16a5c42d117b8e28457c5b46831b8b5d3ae31a};
 : ${PKG_SLANG_VERSION:=2.3.2};
 : ${PKG_SLANG_URL:=https://www.jedsoft.org/releases/slang/slang-${PKG_SLANG_VERSION}.tar.bz2};
