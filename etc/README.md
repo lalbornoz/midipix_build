@@ -66,7 +66,7 @@ Install the build-time dependencies listed in section [2.1](#21-build-time-depen
 clone this repository, and run the following command line:
 
 ```shell
-./build.sh -a nt64 -b release -P -v
+./build.sh -a nt64 -b release -D zipdist -P -v
 ```
 
 By default, the build will take place within ``${HOME}/midipix/nt64/release``
@@ -120,7 +120,7 @@ Extract its contents on the target machine, run ``bash.bat``, and then
 ``/install.sh`` inside the resulting self-contained Midipix installation shell
 window.  
   
-N.B. The pathname of the target directory containing ``bash.bat`` and all other
+> N.B. The pathname of the target directory containing ``bash.bat`` and all other
 distribution files must not contain whitespaces.
   
 [Back to top](#table-of-contents)
@@ -161,14 +161,15 @@ needed, or forcibly, respectively:
 ```
 
 Restart the ``configure``, ``build``, and ``install`` steps of the ``coreutils``
-package.
+package:
 ```shell
 ./build.sh -r coreutils:configure,build,install
 ```
 
-Rebuild entire build group:
+Rebuild entire build groups including or excluding group dependencies, respectively:
 ```shell
 ./build.sh [ ... ] -r ALL native_runtime
+./build.sh [ ... ] -r ALL \*native_runtime
 ```
   
 [Back to top](#table-of-contents)
@@ -283,10 +284,10 @@ package configuration failed or appears relevant, log the configuration process 
 in, most usually, ``${PKG_BUILD_DIR}/config.log``.  
 
 If ``--dump-on-abort`` was specified, a subset of the variables set and environment
-variables will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump`` which may subsequently
+variables will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``, which may subsequently
 be used in order to obtain a package build shell environment with ``pkgtool.sh``, e.g.:  
   
-```shell
+```
 midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh mc
 ==> 2020/03/11 15:46:28 Launching shell `/usr/bin/zsh' within package environment and `/home/midipix_build/midipix/nt64/debug/tmp'.
 ==> 2020/03/11 15:46:28 Run $R to rebuild `mc'.
@@ -299,9 +300,9 @@ Consult sections [3.2](#32-adding-a-package), [3.4](#34-patches-and-vars-files),
 [4.1](#41-build-steps), and [4.2](#42-package-variables) for further information
 concerning the package build process.  
   
-> N.B. When using ``pkgtool.sh`` on a build w/ build variables (see [4](#4-build-variables))
-overriden on command line or via the environment, ensure that they are included in the
-``pkgtool.sh`` command line or exported.
+> N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4](#4-build-variables))
+overriden on the command line or via the environment, ensure that they are included in the
+``pkgtool.sh`` command line or exported, respectively.
   
 [Back to top](#table-of-contents)
 
