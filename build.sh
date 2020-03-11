@@ -36,7 +36,7 @@ buildp_dispatch_fail_pkg() {
 	if [ "${ARG_RELAXED:-0}" -eq 1 ]; then
 		rtl_log_msg fail "$(printf "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log")";
 		if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
-			rtl_log_msg vnfo "Logged environment dump for failed package \`${_pkg_name}' to \`${BUILD_WORKDIR}/${_pkg_name}.dump'.";
+			rtl_log_msg info "Logged environment dump for failed package \`${_pkg_name}' to \`${BUILD_WORKDIR}/${_pkg_name}.dump'.";
 		fi;
 	else	rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 		cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
@@ -45,8 +45,8 @@ buildp_dispatch_fail_pkg() {
 		fi;
 		rtl_log_msg fail "$(printf "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log")";
 		if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
-			rtl_log_msg vnfo "Logged environment dump for failed package \`${_pkg_name}' to \`${BUILD_WORKDIR}/${_pkg_name}.dump'.";
-			rtl_log_msg vnfo "Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a ${ARCH} -b ${BUILD} ${_pkg_name} PREFIX=\"${PREFIX}\"";
+			rtl_log_msg info "Logged environment dump for failed package \`${_pkg_name}' to \`${BUILD_WORKDIR}/${_pkg_name}.dump'.";
+			rtl_log_msg info "Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a ${ARCH} -b ${BUILD} ${_pkg_name} PREFIX=\"${PREFIX}\"";
 		fi;
 		exit 1;
 	fi;
