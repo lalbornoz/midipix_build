@@ -162,18 +162,22 @@ buildp_init_getopts() {
 		fi;
 	done;
 	if [ "${_rc}" -eq 0 ]; then
-		while [ ${#} -gt 0 ]; do
-		if [ "${1#\*}" != "${1}" ]; then
-			BUILD_GROUPS_INHIBIT_DEPS=1; _arg="${1#\*}";
-		else
-			_arg="${1}";
+		if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]\
+		&& [ "${ARG_RELAXED:-0}" -eq 1 ]; then
+			_rc=1; _status="Error: --dump-on-abort excludes -R.";
+		else	while [ ${#} -gt 0 ]; do
+			if [ "${1#\*}" != "${1}" ]; then
+				BUILD_GROUPS_INHIBIT_DEPS=1; _arg="${1#\*}";
+			else
+				_arg="${1}";
+			fi;
+			case "${_arg}" in
+			*=*)		rtl_set_var_unsafe "${_arg%%=*}" "${_arg#*=}"; ;;
+			[^a-zA-Z]*)	_rc=1; _status="Error: build group names must start with [a-zA-Z] (in argument \`${_arg}'.)"; ;;
+			*[^_a-zA-Z]*)	_rc=1; _status="Error: build group names must not contain [^_a-zA-Z] (in argument \`${_arg}'.)"; ;;
+			*)		BUILD_GROUPS="$(rtl_lconcat "${BUILD_GROUPS}" "${_arg}")"; ;;
+			esac; shift; done;
 		fi;
-		case "${_arg}" in
-		*=*)		rtl_set_var_unsafe "${_arg%%=*}" "${_arg#*=}"; ;;
-		[^a-zA-Z]*)	_rc=1; _status="Error: build group names must start with [a-zA-Z] (in argument \`${_arg}'.)"; ;;
-		*[^_a-zA-Z]*)	_rc=1; _status="Error: build group names must not contain [^_a-zA-Z] (in argument \`${_arg}'.)"; ;;
-		*)		BUILD_GROUPS="$(rtl_lconcat "${BUILD_GROUPS}" "${_arg}")"; ;;
-		esac; shift; done;
 	fi;
 	return "${_rc}";
 };
