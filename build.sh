@@ -99,14 +99,14 @@ buildp_dispatch() {
 };
 
 build() {
-	local	_build_time_hours=0 _build_time_mins=0 _build_time_secs=0 _pkg_name=""		\
-		BUILD_DATE_START="" BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0			\
+	local	_build_time_hours=0 _build_time_mins=0 _build_time_secs=0 _pkg_name=""			\
+		BUILD_DATE_START="" BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0				\
 		BUILD_PKGS_FAILED="" EX_PKG_DISPATCH_UNKNOWN="";
 	if ! cd "$(dirname "${0}")"; then
 		printf "Error: failed to setup environment.\n"; exit 1;
-	elif trap "buildp_ast abort" HUP INT TERM USR1 USR2\
-	&&   trap "buildp_ast exit" EXIT\
-	&&   . ./subr/build_init.subr && build_init "${@}"; then
+	elif . ./subr/build_init.subr && build_init "${@}"\
+	&&   trap "buildp_ast abort" HUP INT TERM USR1 USR2\
+	&&   trap "buildp_ast exit" EXIT; then
 		BUILD_DATE_START="$(rtl_date %Y-%m-%d-%H-%M-%S)"; _build_time_secs="$(rtl_date %s)";
 		rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 		rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
