@@ -12,6 +12,17 @@ rtl_isnumber() {
 	return "${_rc}";
 };
 
+rtl_subst() {
+	local _s="${1}" _find="${2}" _replace="${3}" _prefix="" _s_new="";
+	while [ -n "${_s}" ]; do
+	case "${_s}" in
+	*${_find}*)	_prefix="${_s%%${_find}*}"; _s="${_s#*${_find}}";
+			_s_new="${_s_new:+${_s_new}}${_prefix}${_replace}"; ;;
+	*)		_s_new="${_s_new:+${_s_new}}${_s}"; _s=""; ;;
+	esac; done;
+	echo "${_s_new}";
+};
+
 rtl_tolower() {
 	local _s="${1}" _s_new="";
 	while [ -n "${_s}" ]; do

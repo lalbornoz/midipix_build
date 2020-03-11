@@ -35,12 +35,20 @@ buildp_dispatch_fail_pkg() {
 	: $((BUILD_NFAIL+=1)); BUILD_PKGS_FAILED="$(rtl_lconcat "${BUILD_PKGS_FAILED}" "${_pkg_name}")";
 	if [ "${ARG_RELAXED:-0}" -eq 1 ]; then
 		rtl_log_msg fail "$(printf "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log")";
+		if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
+			rtl_log_msg vnfo "Logged environment dump for failed package \`${_pkg_name}' to \`${BUILD_WORKDIR}/${_pkg_name}.dump'.";
+		fi;
 	else	rtl_log_msg fail "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 		cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
 			printf "%s" "${_pkg_name}" > "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
 		fi;
-		rtl_log_msg failexit "$(printf "Build failed in \`%s'." "${_pkg_name}")";
+		rtl_log_msg fail "$(printf "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log")";
+		if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
+			rtl_log_msg vnfo "Logged environment dump for failed package \`${_pkg_name}' to \`${BUILD_WORKDIR}/${_pkg_name}.dump'.";
+			rtl_log_msg vnfo "Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a ${ARCH} -b ${BUILD} ${_pkg_name} PREFIX=\"${PREFIX}\"";
+		fi;
+		exit 1;
 	fi;
 };
 
@@ -94,9 +102,11 @@ build() {
 	local	_build_time_hours=0 _build_time_mins=0 _build_time_secs=0 _pkg_name=""		\
 		BUILD_DATE_START="" BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0			\
 		BUILD_PKGS_FAILED="" EX_PKG_DISPATCH_UNKNOWN="";
-	if trap "buildp_ast abort" HUP INT TERM USR1 USR2\
-	&& trap "buildp_ast exit" EXIT\
-	&& . ./subr/build_init.subr && build_init "${@}"; then
+	if ! cd "$(dirname "${0}")"; then
+		printf "Error: failed to setup environment.\n"; exit 1;
+	elif trap "buildp_ast abort" HUP INT TERM USR1 USR2\
+	&&   trap "buildp_ast exit" EXIT\
+	&&   . ./subr/build_init.subr && build_init "${@}"; then
 		BUILD_DATE_START="$(rtl_date %Y-%m-%d-%H-%M-%S)"; _build_time_secs="$(rtl_date %s)";
 		rtl_log_msg info "Build started by ${BUILD_USER:=${USER}}@${BUILD_HNAME:=$(hostname)} at ${BUILD_DATE_START}.";
 		rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};

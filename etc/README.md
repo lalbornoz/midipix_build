@@ -178,10 +178,11 @@ Rebuild entire build group:
 ## 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
 
 ```
-usage: ./build.sh [-a nt32|nt64]   [-b debug|release]   [-C dir[,..]] [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]    [-h]    [-p jobs]   [-P]   [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:step,..]] [-R] [-v[v[v[v]]]] [--as-needed]
-                  [--debug-minipix] [[*]<group>|<variable name>=<variable override>[ ..]]
+usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]    [-h]    [-p jobs]    [-P]   [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:step,..]]  [-R] [-v[v[v[v]]]] [--as-needed]
+                  [--debug-minipix] [--dump-on-abort]
+                  [[*]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build; defaults to debug.
@@ -226,11 +227,16 @@ usage: ./build.sh [-a nt32|nt64]   [-b debug|release]   [-C dir[,..]] [-D kind[,
         --as-needed       Don't build unless the midipix_build repository has received
                           new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
+        --dump-on-abort   Produce package environment dump files on build failure to be
+                          used in conjuction with pkg_shell.sh script.
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
                           host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
 
                           Prepend w/ `*' to inhibit group-group dependency expansion.
+
+        <variable name>=<variable override>[ ..]
+                          Override build or package variable.
 ```
   
 [Back to top](#table-of-contents)
@@ -275,17 +281,27 @@ output. If ``-vvv`` was specified, ``xtrace`` will be set during package builds 
 rudimentary debugging purposes. Additionally, packages using GNU autotools will, if
 package configuration failed or appears relevant, log the configuration process in detail
 in, most usually, ``${PKG_BUILD_DIR}/config.log``.  
+
+If ``--dump-on-abort`` was specified, a subset of the variables set and environment
+variables will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump`` which may subsequently
+be used in order to obtain a package build shell environment with ``pkgtool.sh``, e.g.:  
   
-Execute the following command line in order to obtain a package build shell environment:
 ```shell
-export MAKE="make LIBTOOL=slibtool";	# Unless ${PKG_LIBTOOL} is set to any value other than `slibtool'
-export PATH="<build's $PREFIX} value>/bin:${PATH:+:${PATH}}";
-cd "<build's $PREFIX} value>/tmp/<package name>-*/";
+midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh mc
+==> 2020/03/11 15:46:28 Launching shell `/usr/bin/zsh' within package environment and `/home/midipix_build/midipix/nt64/debug/tmp'.
+==> 2020/03/11 15:46:28 Run $R to rebuild `mc'.
+==> 2020/03/11 15:46:28 Run $RS <step> to restart the specified build step of `mc'
+==> 2020/03/11 15:46:28 Run $D to automatically regenerate the patch for `mc'.
+midipix_build@sandbox:(src/midipix_build)> $
 ```
   
 Consult sections [3.2](#32-adding-a-package), [3.4](#34-patches-and-vars-files), [4](#4-build-variables),
 [4.1](#41-build-steps), and [4.2](#42-package-variables) for further information
-concerning the package build process.
+concerning the package build process.  
+  
+> N.B. When using ``pkgtool.sh`` on a build w/ build variables (see [4](#4-build-variables))
+overriden on command line or via the environment, ensure that they are included in the
+``pkgtool.sh`` command line or exported.
   
 [Back to top](#table-of-contents)
 
@@ -323,15 +339,13 @@ for a list of package build steps and how they are overriden.
 
 The following variables are primarily defined in ``midipix.env`` and may be
 overriden on a per-build basis on the command-line after the last option
-argument, if any, e.g.:
+argument, if any, the environment, and/or ``${HOME}/midipix_build.vars``,
+``${HOME}/.midipix_build.vars``, and/or ``../midipix_build.vars``, e.g.:
 
 ```shell
 ./build.sh -a nt64 -b release -D minipix,zipdist -P -v PREFIX_ROOT="${HOME}/midipix_tmp"
+env ARCH=nt64 BUILD=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D minipix,zipdist -P -v
 ```
-
-Furthermore, ``${HOME}/midipix_build.vars``, ``${HOME}/.midipix_build.vars``,
-and/or ``../midipix_build.vars`` are sourced during build initialisation and
-may contain additional overrides, particularly ``${DEFAULT_GITROOT_HEAD}``.
 
 | Variable name    | Default value                   | Description                                                                   |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------- |

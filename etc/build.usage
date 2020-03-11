@@ -1,7 +1,8 @@
-usage: ./build.sh [-a nt32|nt64]   [-b debug|release]   [-C dir[,..]] [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]    [-h]    [-p jobs]   [-P]   [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:step,..]] [-R] [-v[v[v[v]]]] [--as-needed]
-                  [--debug-minipix] [[*]<group>|<variable name>=<variable override>[ ..]]
+usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]    [-h]    [-p jobs]    [-P]   [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:step,..]]  [-R] [-v[v[v[v]]]] [--as-needed]
+                  [--debug-minipix] [--dump-on-abort]
+                  [[*]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build; defaults to debug.
@@ -46,8 +47,13 @@ usage: ./build.sh [-a nt32|nt64]   [-b debug|release]   [-C dir[,..]] [-D kind[,
         --as-needed       Don't build unless the midipix_build repository has received
                           new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
+        --dump-on-abort   Produce package environment dump files on build failure to be
+                          used in conjuction with pkg_shell.sh script.
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
                           host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
 
                           Prepend w/ `*' to inhibit group-group dependency expansion.
+
+        <variable name>=<variable override>[ ..]
+                          Override build or package variable.
