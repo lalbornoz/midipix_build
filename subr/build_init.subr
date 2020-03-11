@@ -49,9 +49,9 @@ buildp_init_defaults() {
 
 	# Command-line arguments
 	: ${ARCH:="nt64"}; : ${BUILD:="debug"};
-	ARG_AS_NEEDED=0; ARG_CLEAN_BUILDS=""; ARG_DEBUG_MINIPIX=0; ARG_DUMP_ON_ABORT=0;
-	ARG_DIST=""; ARG_FETCH_FORCE=0; ARG_PARALLEL=1; ARG_RELAXED=0; ARG_RESTART="";
-	ARG_VERBOSE=0;
+	ARG_AS_NEEDED=0; ARG_CLEAN_BUILDS=""; ARG_DEBUG_MINIPIX=0; ARG_DUMP_IN="";
+	ARG_DUMP_ON_ABORT=0; ARG_DIST=""; ARG_FETCH_FORCE=0; ARG_PARALLEL=1; ARG_RELAXED=0;
+	ARG_RESTART=""; ARG_VERBOSE=0;
 
 	# Build parameters & state
 	BUILD_HNAME=""; BUILD_IS_PARENT=1; BUILD_GROUPS=""; BUILD_GROUPS_INHIBIT_DEPS=0;
@@ -126,6 +126,11 @@ buildp_init_getopts() {
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		--as-needed)	ARG_AS_NEEDED=1; _shiftfl=1; ;;
+		--dump-in)	if [ "${#}" -ge 2 ]; then
+					ARG_DUMP_IN="${2}"; ARG_DUMP_ON_ABORT=1; _shiftfl=2;
+				else
+					_rc=1; _status="Error: missing argument to option --dump-in.";
+				fi; ;;
 		--dump-on-abort)
 				ARG_DUMP_ON_ABORT=1; _shiftfl=1; ;;
 		--debug-minipx)	ARG_DEBUG_MINIPIX=1; _shiftfl=1; ;;
@@ -134,7 +139,9 @@ buildp_init_getopts() {
 				done; _shiftfl=1; ;;
 		*)		_shiftfl=0; ;;
 		esac;
-		if [ "${_shiftfl}" -gt 0 ]; then
+		if [ "${_rc}" -ne 0 ]; then
+			break;
+		elif [ "${_shiftfl}" -gt 0 ]; then
 			shift "${_shiftfl}"; continue;
 		elif getopts a:b:C:D:Fhp:Pr:R _opt; then
 			case "${_opt}" in

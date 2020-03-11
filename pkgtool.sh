@@ -56,15 +56,36 @@ pkgtoolp_update_diff() {
 	fi;
 };
 
+pkgtoolp_env() {
+	local _rc=0; _status="";
+	if [ ! -e "${BUILD_WORKDIR}/${PKG_NAME}.dump" ]; then
+		rtl_log_msg fail "Warning: failed to locate environment dump for package \`${PKG_NAME}' in \`${BUILD_WORKDIR}'.";
+		rtl_log_msg info "Rebuilding package \`${PKG_NAME}' w/ --dump-in build...";
+		(export	ARCH BUILD						\
+			BUILD_DLCACHEDIR BUILD_WORKDIR				\
+			PREFIX PREFIX_CROSS PREFIX_MINGW32 PREFIX_MINIPIX	\
+			PREFIX_NATIVE PREFIX_ROOT PREFIX_RPM;
+		./build.sh -a "${ARCH}" -b "${BUILD}" --dump-in build -P -r "${PKG_NAME}" -v);
+		if [ ! -e "${BUILD_WORKDIR}/${PKG_NAME}.dump" ]; then
+			_rc=1; _status="Error: failed to locate environment dump for package \`${PKG_NAME}' in \`${BUILD_WORKDIR}'.";
+		fi;
+	else
+		_rc=0;
+	fi;
+	if [ "${_rc:-0}" -eq 0 ]\
+	&& ! . "${BUILD_WORKDIR}/${PKG_NAME}.dump"; then
+		_rc=1; _status="Error: failed to source environment dump for package \`${PKG_NAME}' from \`${BUILD_WORKDIR}'.";
+	fi; return "${_rc}";
+};
+	
 pkgtool() {
+	local _status="";
 	if ! cd "$(dirname "${0}")"\
 	|| ! . ./subr/pkgtool_init.subr\
 	|| ! pkgtool_init "${@}"; then
 		printf "Error: failed to setup environment.\n"; exit 1;
-	elif [ ! -e "${BUILD_WORKDIR}/${PKG_NAME}.dump" ]; then
-		rtl_log_msg failexit "Error: failed to locate environment dump for package \`${PKG_NAME}' in \`${BUILD_WORKDIR}'.";
-	elif ! . "${BUILD_WORKDIR}/${PKG_NAME}.dump"; then
-		rtl_log_msg failexit "Error: failed to source environment dump for package \`${PKG_NAME}' from \`${BUILD_WORKDIR}'.";
+	elif ! pkgtoolp_env; then
+		rtl_log_msg failexit "${_status}";
 	elif ! rtl_fileop cd "${PKG_BUILD_DIR}"; then
 		rtl_log_msg failexit "Error: failed to change working directory to \`${PKG_BUILD_DIR}'.";
 	elif [ -n "${ARG_RESTART_AT}" ]; then
