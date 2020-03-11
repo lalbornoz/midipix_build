@@ -1,0 +1,133 @@
+#
+# set +o errexit -o noglob is assumed.
+#
+
+pkgtoolp_init_defaults() {
+	: ${ARCH:="nt64"}; : ${BUILD:="debug"}; : ${PKG_NAME:=""};
+	: ${BUILD_WORKDIR:=""}; : ${PREFIX=""};
+	ARG_RESTART_AT=""; ARG_UPDATE_DIFF=0;
+};
+
+pkgtoolp_init_env() {
+	local _fname="" _rc=0; _status="";
+	if ! umask 022; then
+		printf "Error: failed to setup environment.\n"; exit 1;
+	else	for _fname in $(find subr -name *.subr); do
+			if ! . "${_fname}"; then
+				printf "Error: failed to source \`%s'.\n" "${_fname}"; exit 1;
+			fi;
+		done; fi;
+	return "${_rc}";
+};
+
+pkgtoolp_init_getopts() {
+	local _opt="" _shiftfl=0 _rc=0 OPTIND=0; _status="";
+	while [ "${#}" -gt 0 ]; do
+		case "${1}" in
+		--update-diff)
+			ARG_UPDATE_DIFF=1; _shiftfl=1; ;;
+		--restart-at)
+			if [ "${#}" -lt 2 ]\
+			|| [ -z "${2}" ]; then
+				_rc=1; _status="Error: missing argument for option --restart-at.";
+			else
+				ARG_RESTART_AT="${2}"; _shiftfl=2;
+			fi; ;;
+		*)	_shiftfl=0; ;;
+		esac;
+		if [ "${_rc:-0}" -ne 0 ]; then
+			break;
+		elif [ "${_shiftfl:-0}" -gt 0 ]; then
+			shift "${_shiftfl}"; continue;
+		elif getopts a:b:C:D:Fhp:Pr:R _opt; then
+			case "${_opt}" in
+			a)	ARCH="${OPTARG}"; ;;
+			b)	BUILD="${OPTARG}"; ;;
+			h)	pkgtoolp_usage; exit 0; ;;
+			*)	pkgtoolp_usage; exit 1; ;;
+			esac; shift $((${OPTIND}-1)); OPTIND=1;
+		else
+			break;
+		fi;
+	done;
+	if [ "${_rc}" -eq 0 ]; then
+		while [ "${#}" -gt 0 ]; do
+		case "${1}" in
+		*=*)	rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+		*)	if [ "${#}" -ne 1 ]; then
+				_rc=1; _status="Error: invalid argument \`${1}'.";
+			fi; break; ;;
+		esac; shift; done;
+		if [ "${_rc:-0}" -eq 0 ]; then
+			if [ "${#}" -ne 1 ]\
+			&& [ -z "${PKG_NAME}" ]; then
+				_rc=1; _status="Error: missing package name.";
+			elif [ "${#}" -eq 1 ]; then
+				PKG_NAME="${1}";
+			fi;
+		fi;
+	fi;
+	return "${_rc}";
+};
+
+pkgtoolp_init_prereqs() {
+	local _cmd="" _cmds_missing="" _rc=0; _status="";
+	for _cmd in	\
+			awk bunzip2 cat chmod cmake cp date find flock g++	\
+			gcc git grep gunzip gzip hostname install kill		\
+			ln lzip make mkdir mkfifo mv paste patch perl		\
+			pgrep pkill printf readlink rm sed seq sha256sum	\
+			sort stat tail tar test touch tr wget xz zip; do
+		if ! which "${_cmd}" >/dev/null 2>&1; then
+			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
+		fi;
+	done;
+	if [ -n "${_cmds_missing}" ]; then
+		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
+	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
+		_rc=1; _status="Error: awk(1) in \$PATH must be GNU Awk.";
+	elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
+		_rc=1; _status="Error: sed(1) in \$PATH must be GNU sed.";
+	fi;
+	return "${_rc}";
+};
+
+pkgtoolp_init_vars() {
+	local _rc=0; _status="";
+	if ! rtl_lmatch "${ARCH}" "nt32 nt64"; then
+		_rc=1; _status="Error: invalid architecture \`${ARCH}'.";
+	elif ! rtl_lmatch "${BUILD}" "debug release"; then
+		_rc=1; _status="Error: unknown build type \`${BUILD}'.";
+	else	case "${ARCH}" in
+		nt32)	DEFAULT_TARGET="i686-nt32-midipix"; ;;
+		nt64)	DEFAULT_TARGET="x86_64-nt64-midipix"; ;;
+		esac;
+		rtl_fileop source_opt							\
+			"${HOME}/midipix_build.vars" "${HOME}/.midipix_build.vars"	\
+			../midipix_build.vars ./midipix.env;
+		if [ -z "${PREFIX}" ]; then
+			_rc=1; _status="Error: \${PREFIX} empty or unset.";
+		fi; fi;
+	return "${_rc}";
+};
+
+pkgtoolp_usage() {
+	echo "usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] name" >&2;
+};
+
+pkgtool_init() {
+	local _fname="" _rc=0 _status="";
+	if ! pkgtoolp_init_env			\
+	|| ! pkgtoolp_init_defaults		\
+	|| ! pkgtoolp_init_getopts "${@}"	\
+	|| ! pkgtoolp_init_prereqs		\
+	|| ! pkgtoolp_init_vars; then
+		_rc="${?}"; rtl_log_msg fail "${_status}"; exit "${_rc}";
+	elif [ -n "${_status}" ]; then
+		rtl_log_msg info "${_status}"; exit 0;
+	else
+		return "${_rc}";
+	fi;
+};
+
+# vim:filetype=sh

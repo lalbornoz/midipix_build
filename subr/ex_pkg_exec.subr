@@ -2,6 +2,21 @@
 # set +o errexit -o noglob is assumed.
 #
 
+exp_pkg_exec_filter_vars_fn() {
+	local _vname="${1}";
+	case "${_vname}" in
+	DEFAULT|PKG_*)
+		return 0; ;;
+	BUILD_DLCACHEDIR|BUILD_WORKDIR|MIDIPIX_BUILD_PWD)
+		return 0; ;;
+	CONFIG_CACHE_GNULIB)
+		return 0; ;;
+	PREFIX|PREFIX_CROSS|PREFIX_MINGW32|PREFIX_MINIPIX|PREFIX_NATIVE|PREFIX_RPM)
+		return 0; ;;
+	*)	return 1; ;;
+	esac;
+};
+
 #
 # exp_pkg_exec_pre() - XXX
 # @_group_name:		build group name
@@ -102,6 +117,11 @@ ex_pkg_exec() {
 			|| [ "${_restart_at}" = "ALL" ]; then
 				ex_pkg_state_set "${_pkg_name}" finish;
 			fi;
+		elif [ "${_rc:-0}" -ne 0 ]\
+		&&   [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
+			printf "" > "${BUILD_WORKDIR}/${_pkg_name}.dump";
+			rtl_filter_vars exp_pkg_exec_filter_vars_fn >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
+			export >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
 		fi;
 	fi;
 	return "${_rc}";
