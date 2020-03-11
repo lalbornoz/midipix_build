@@ -48,14 +48,14 @@ buildp_init_defaults() {
 	local _rc=0; _status="";
 
 	# Command-line arguments
-	ARCH="nt64"; BUILD="debug";
-	ARG_AS_NEEDED=0; ARG_CLEAN_BUILDS=""; ARG_DEBUG_MINIPIX=0; ARG_DIST="";
-	ARG_FETCH_FORCE=0; ARG_PARALLEL=1; ARG_RELAXED=0; ARG_RESTART=""; ARG_VERBOSE=0;
+	: ${ARCH:="nt64"}; : ${BUILD:="debug"};
+	ARG_AS_NEEDED=0; ARG_CLEAN_BUILDS=""; ARG_DEBUG_MINIPIX=0; ARG_DUMP_ON_ABORT=0;
+	ARG_DIST=""; ARG_FETCH_FORCE=0; ARG_PARALLEL=1; ARG_RELAXED=0; ARG_RESTART="";
+	ARG_VERBOSE=0;
 
 	# Build parameters & state
-	BUILD_DLCACHEDIR=""; BUILD_HNAME=""; BUILD_IS_PARENT=1; BUILD_GROUPS="";
-	BUILD_GROUPS_INHIBIT_DEPS=0; BUILD_TARGET=""; BUILD_USER=""; BUILD_WORKDIR="";
-	MIDIPIX_BUILD_PWD=""; PREFIX=""; PREFIX_RPM="";
+	BUILD_HNAME=""; BUILD_IS_PARENT=1; BUILD_GROUPS=""; BUILD_GROUPS_INHIBIT_DEPS=0;
+	BUILD_TARGET=""; BUILD_USER=""; MIDIPIX_BUILD_PWD="";
 
 	# Global defaults
 	DEFAULT_BUILD_CPUS=1;
@@ -76,7 +76,7 @@ buildp_init_defaults() {
 
 buildp_init_env() {
 	local _fname="" _rc=0; _status="";
-	if ! cd "$(dirname "${0}")" || ! umask 022; then
+	if ! umask 022; then
 		printf "Error: failed to setup environment.\n"; exit 1;
 	else	for _fname in $(find subr -name *.subr); do
 			if ! . "${_fname}"; then
@@ -97,7 +97,7 @@ buildp_init_files() {
 	elif ! rtl_clean_env "${DEFAULT_CLEAR_ENV_VARS_EXCEPT}"; then
 		_rc=1; _status="Error: failed to clean environment.";
 	elif ! rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
-		_rc=1; _status="Error: one or more variable containing pathname(s) contains whitespace character(s).";
+		_rc=1; _status="${_status}";
 	else
 		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 		if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
@@ -126,6 +126,8 @@ buildp_init_getopts() {
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		--as-needed)	ARG_AS_NEEDED=1; _shiftfl=1; ;;
+		--dump-on-abort)
+				ARG_DUMP_ON_ABORT=1; _shiftfl=1; ;;
 		--debug-minipx)	ARG_DEBUG_MINIPIX=1; _shiftfl=1; ;;
 		-v*)		_opt="${1#-}"; while [ -n "${_opt}" ]; do
 					: $((ARG_VERBOSE+=1)); _opt="${_opt#?}";

@@ -52,6 +52,41 @@ rtl_export_vars() {
 	done;
 };
 
+rtl_filter_vars() {
+	local _fn="${1}" _fnfl=0 _qchar="" _var_spec="" _vars="" _vname="" IFS="
+";	for _var_spec in $(set); do
+		case "${_qchar}" in
+		"\"")	if [ "${_var_spec%\"}" != "${_var_spec}" ]; then
+				_qchar="";
+			fi;
+			if [ "${_fnfl:-0}" -eq 1 ]; then
+				_vars="$(rtl_lconcat "${_vars}" "${_var_spec}" "\n")";
+			fi;
+			continue; ;;
+		"\'")	if [ "${_var_spec%\'}" != "${_var_spec}" ]; then
+				_qchar="";
+			fi;
+			if [ "${_fnfl:-0}" -eq 1 ]; then
+				_vars="$(rtl_lconcat "${_vars}" "${_var_spec}" "\n")";
+			fi;
+			continue; ;;
+		*)	case "${_var_spec}" in
+			[^=]*=\"*\")	_qchar=""; _vname="${_var_spec%%=\"*}"; ;;
+			[^=]*=\"*)	_qchar="\""; _vname="${_var_spec%%=\"*}"; ;;
+			[^=]*=\'*\')	_qchar=""; _vname="${_var_spec%%=\'*}"; ;;
+			[^=]*=\'*)	_qchar="\'"; _vname="${_var_spec%%=\'*}"; ;;
+			[^=]*=*)	_qchar=""; _vname="${_var_spec%%=*}"; ;;
+			esac; ;;
+		esac;
+		if "${_fn}" "${_vname}"; then
+			_vars="$(rtl_lconcat "${_vars}" "${_var_spec}" "\n")"; _fnfl=1;
+		else
+			_fnfl=0;
+		fi;
+	done;
+	echo "${_vars}";
+};
+
 rtl_get_var_unsafe() {
 	local _vname="";
 	if [ "x${1}" = "x-u" ]; then
