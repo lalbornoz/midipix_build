@@ -10,3 +10,18 @@ diff -ru slang-2.3.2.orig/modules/Makefile.in slang-2.3.2/modules/Makefile.in
  CC_SHARED_FLAGS = @CC_SHARED_FLAGS@
  CC_SHARED 	= $(CC) $(INCS) $(CC_SHARED_FLAGS) $(CFLAGS)
  CONFIG_DIR	= @CONFIG_DIR@
+diff --git a/slsh/Makefile.in b/slsh/Makefile.in
+index cba9d81..78e6054 100644
+--- a/slsh/Makefile.in
++++ b/slsh/Makefile.in
+@@ -15,7 +15,7 @@ exec_prefix 	= @exec_prefix@
+ datarootdir	= @datarootdir@
+ INST_LIB_DIR	= @libdir@
+ SLANG_INST_INC	= -I@includedir@
+-SLANG_INST_LIB	= -L$(INST_LIB_DIR)
++#SLANG_INST_LIB	= -L$(INST_LIB_DIR)
+ #---------------------------------------------------------------------------
+ SLANG_SRCINC	= -I@SRCDIR@
+ SLANG_ELFLIB	= -L@ELFDIR@#  for dynamically linked
+-- 
+2.24.0

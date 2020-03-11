@@ -152,8 +152,42 @@ index c9de9c1..285e45f 100644
 +  print pkg_namespace "msgidxof (int code)";
    print "{";
    print "  return (0 ? 0";
- 
+
 -- 
 2.11.0
+diff -ru a/configure.ac b/configure.ac 
+--- a/configure.ac  2019-03-19 04:56:05.000000000 -0400
++++ b/configure.ac  2020-03-11 12:27:31.000000000 -0400
+@@ -549,19 +549,19 @@
+     fi
+     ;;
+ esac
+-case "$libdir" in
+-  /usr/lib|/usr/lib64|/lib|/lib64) ;;
+-  '${exec_prefix}/lib')
+-    if test "$exec_prefix" = "NONE"; then
+-      if test "$prefix" != / -a "$prefix" != /usr; then
+-        GPG_ERROR_CONFIG_LIBS="-L$libdir $GPG_ERROR_CONFIG_LIBS"
+-      fi
+-    elif test "$exec_prefix" != / -a "$exec_prefix" != /usr; then
+-      GPG_ERROR_CONFIG_LIBS="-L$libdir $GPG_ERROR_CONFIG_LIBS"
+-    fi
+-    ;;
+-  *) GPG_ERROR_CONFIG_LIBS="-L$libdir $GPG_ERROR_CONFIG_LIBS" ;;
+-esac
++#case "$libdir" in
++#  /usr/lib|/usr/lib64|/lib|/lib64) ;;
++#  '${exec_prefix}/lib')
++#    if test "$exec_prefix" = "NONE"; then
++#      if test "$prefix" != / -a "$prefix" != /usr; then
++#        GPG_ERROR_CONFIG_LIBS="-L$libdir $GPG_ERROR_CONFIG_LIBS"
++#      fi
++#    elif test "$exec_prefix" != / -a "$exec_prefix" != /usr; then
++#      GPG_ERROR_CONFIG_LIBS="-L$libdir $GPG_ERROR_CONFIG_LIBS"
++#    fi
++#    ;;
++#  *) GPG_ERROR_CONFIG_LIBS="-L$libdir $GPG_ERROR_CONFIG_LIBS" ;;
++#esac
 
-
+ AC_SUBST(GPG_ERROR_CONFIG_LIBS)
+ AC_SUBST(GPG_ERROR_CONFIG_CFLAGS)
