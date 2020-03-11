@@ -48,7 +48,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[
                           new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
         --dump-on-abort   Produce package environment dump files on build failure to be
-                          used in conjuction with pkg_shell.sh script.
+                          used in conjuction with pkg_shell.sh script (excludes -R.)
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
                           host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
