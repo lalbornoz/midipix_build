@@ -12,6 +12,7 @@
 : ${DEFAULT_LOG_MSG_VVFO_COLOUR:=96};
 : ${DEFAULT_LOG_MSG_VVVO_COLOUR:=96};
 : ${DEFAULT_LOG_MSG_VVVV_COLOUR:=96};
+: ${DEFAULT_LOG_MSG_WARN_COLOUR:=31};
 
 exp_rtl_log_printf() {
 	local _attrs="${1}" _msg=""; shift; _msg="$(printf "${@}")";
