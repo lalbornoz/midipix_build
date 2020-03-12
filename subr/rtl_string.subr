@@ -12,6 +12,15 @@ rtl_isnumber() {
 	return "${_rc}";
 };
 
+rtl_match() {
+	local _s="${1}" _find="${2}";
+	if [ "${_s#${_find}}" != "${_s}" ]; then
+		return 0;
+	else
+		return 1;
+	fi;
+};
+
 rtl_subst() {
 	local _s="${1}" _find="${2}" _replace="${3}" _prefix="" _s_new="";
 	while [ -n "${_s}" ]; do
