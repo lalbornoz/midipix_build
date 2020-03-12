@@ -1,6 +1,6 @@
---- curl-7.68.0/configure.orig	2020-01-05 16:07:42.000000000 +0000
-+++ curl-7.68.0/configure	2020-03-11 16:54:00.333580319 +0000
-@@ -14426,6 +14426,16 @@
+--- curl-7.61.0/configure.orig	2018-07-09 07:52:18.000000000 +0100
++++ curl-7.61.0/configure	2020-03-12 08:51:25.825416713 +0000
+@@ -14553,6 +14553,16 @@
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -17,7 +17,7 @@
  netbsdelf*-gnu)
    version_type=linux
    need_lib_prefix=no
-@@ -17268,903 +17278,6 @@
+@@ -17336,875 +17346,6 @@
      #
    fi
  
@@ -149,12 +149,7 @@
 -  fi
 -    if test "x$cross_compiling" != "xyes" &&
 -    test "$tmp_compiler_works" = "yes"; then
--
--
--   old=$LD_LIBRARY_PATH
--   LD_LIBRARY_PATH=$CURL_LIBRARY_PATH:$old
--   export LD_LIBRARY_PATH
--   if test "$cross_compiling" = yes; then :
+-    if test "$cross_compiling" = yes; then :
 -  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 -$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 -as_fn_error $? "cannot run test program while cross compiling
@@ -180,10 +175,12 @@
 -
 -_ACEOF
 -if ac_fn_c_try_run "$LINENO"; then :
--  tmp_compiler_works="yes"
+-
+-      tmp_compiler_works="yes"
 -
 -else
--  tmp_compiler_works="no"
+-
+-      tmp_compiler_works="no"
 -      echo " " >&6
 -      echo "run-fail: test program exited with status $ac_status" >&6
 -      echo " " >&6
@@ -192,8 +189,6 @@
 -rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
 -  conftest.$ac_objext conftest.beam conftest.$ac_ext
 -fi
--
--   LD_LIBRARY_PATH=$old # restore
 -
 -  fi
 -    if test "$tmp_compiler_works" = "yes"; then
@@ -399,12 +394,7 @@
 -  fi
 -    if test "x$cross_compiling" != "xyes" &&
 -    test "$tmp_compiler_works" = "yes"; then
--
--
--   old=$LD_LIBRARY_PATH
--   LD_LIBRARY_PATH=$CURL_LIBRARY_PATH:$old
--   export LD_LIBRARY_PATH
--   if test "$cross_compiling" = yes; then :
+-    if test "$cross_compiling" = yes; then :
 -  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 -$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 -as_fn_error $? "cannot run test program while cross compiling
@@ -430,10 +420,12 @@
 -
 -_ACEOF
 -if ac_fn_c_try_run "$LINENO"; then :
--  tmp_compiler_works="yes"
+-
+-      tmp_compiler_works="yes"
 -
 -else
--  tmp_compiler_works="no"
+-
+-      tmp_compiler_works="no"
 -      echo " " >&6
 -      echo "run-fail: test program exited with status $ac_status" >&6
 -      echo " " >&6
@@ -442,8 +434,6 @@
 -rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
 -  conftest.$ac_objext conftest.beam conftest.$ac_ext
 -fi
--
--   LD_LIBRARY_PATH=$old # restore
 -
 -  fi
 -    if test "$tmp_compiler_works" = "yes"; then
@@ -574,7 +564,6 @@
 -          #
 -                    if test "$compiler_num" -ge "295"; then
 -            tmp_CFLAGS="$tmp_CFLAGS -Wno-long-long"
--            tmp_CFLAGS="$tmp_CFLAGS -Wbad-function-cast"
 -          fi
 -          #
 -                    if test "$compiler_num" -ge "296"; then
@@ -597,7 +586,6 @@
 -          #
 -                    if test "$compiler_num" -ge "304"; then
 -            tmp_CFLAGS="$tmp_CFLAGS -Wdeclaration-after-statement"
--            tmp_CFLAGS="$tmp_CFLAGS -Wold-style-definition"
 -          fi
 -          #
 -                    if test "$compiler_num" -ge "400"; then
@@ -613,7 +601,6 @@
 -            tmp_CFLAGS="$tmp_CFLAGS -Wmissing-parameter-type -Wempty-body"
 -            tmp_CFLAGS="$tmp_CFLAGS -Wclobbered -Wignored-qualifiers"
 -            tmp_CFLAGS="$tmp_CFLAGS -Wconversion -Wno-sign-conversion -Wvla"
--                        tmp_CFLAGS="$tmp_CFLAGS -ftree-vrp"
 -          fi
 -          #
 -                    if test "$compiler_num" -ge "405"; then
@@ -626,20 +613,11 @@
 -            tmp_CFLAGS="$tmp_CFLAGS -Wdouble-promotion"
 -          fi
 -          #
--                    if test "$compiler_num" -ge "408"; then
--            tmp_CFLAGS="$tmp_CFLAGS -Wformat=2"
--          fi
--          #
--                    if test "$compiler_num" -ge "500"; then
--            tmp_CFLAGS="$tmp_CFLAGS -Warray-bounds=2"
--          fi
--          #
 -                    if test "$compiler_num" -ge "600"; then
 -            tmp_CFLAGS="$tmp_CFLAGS -Wshift-negative-value"
 -            tmp_CFLAGS="$tmp_CFLAGS -Wshift-overflow=2"
--            tmp_CFLAGS="$tmp_CFLAGS -Wnull-dereference -fdelete-null-pointer-checks"
+-            tmp_CFLAGS="$tmp_CFLAGS -Wnull-dereference"
 -            tmp_CFLAGS="$tmp_CFLAGS -Wduplicated-cond"
--            tmp_CFLAGS="$tmp_CFLAGS -Wunused-const-variable"
 -          fi
 -          #
 -                    if test "$compiler_num" -ge "700"; then
@@ -648,7 +626,6 @@
 -            tmp_CFLAGS="$tmp_CFLAGS -Walloc-zero"
 -            tmp_CFLAGS="$tmp_CFLAGS -Wformat-overflow=2"
 -            tmp_CFLAGS="$tmp_CFLAGS -Wformat-truncation=2"
--            tmp_CFLAGS="$tmp_CFLAGS -Wimplicit-fallthrough=4"
 -          fi
 -          #
 -        fi
@@ -837,12 +814,7 @@
 -  fi
 -    if test "x$cross_compiling" != "xyes" &&
 -    test "$tmp_compiler_works" = "yes"; then
--
--
--   old=$LD_LIBRARY_PATH
--   LD_LIBRARY_PATH=$CURL_LIBRARY_PATH:$old
--   export LD_LIBRARY_PATH
--   if test "$cross_compiling" = yes; then :
+-    if test "$cross_compiling" = yes; then :
 -  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 -$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 -as_fn_error $? "cannot run test program while cross compiling
@@ -868,10 +840,12 @@
 -
 -_ACEOF
 -if ac_fn_c_try_run "$LINENO"; then :
--  tmp_compiler_works="yes"
+-
+-      tmp_compiler_works="yes"
 -
 -else
--  tmp_compiler_works="no"
+-
+-      tmp_compiler_works="no"
 -      echo " " >&6
 -      echo "run-fail: test program exited with status $ac_status" >&6
 -      echo " " >&6
@@ -880,8 +854,6 @@
 -rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
 -  conftest.$ac_objext conftest.beam conftest.$ac_ext
 -fi
--
--   LD_LIBRARY_PATH=$old # restore
 -
 -  fi
 -    if test "$tmp_compiler_works" = "yes"; then
