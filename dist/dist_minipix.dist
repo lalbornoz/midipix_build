@@ -2,18 +2,6 @@
 # set +o errexit -o noglob is assumed.
 #
 
-pkgp_dist_minipix_is_newer() {
-	local _new_fname="${1}" _new_ts="" _old_dname="${2}" _old_ts="";
-	if ! _old_ts="$(stat -c %Y "${_old_dname%%/}/${_new_fname##*/}" 2>/dev/null)"	\
-	|| !  _new_ts="$(stat -c %Y "${_new_fname}" 2>/dev/null)"; then
-		return 0;
-	elif [ "${_new_ts}" -gt "${_old_ts}" ]; then
-		return 0;
-	else
-		return 1;
-	fi;
-};
-
 pkg_dist_minipix_all() {
 	local _dname="" _fname="" _pname="";
 	if rtl_lmatch "${ARG_DIST}" "minipix" ","; then
@@ -25,14 +13,14 @@ pkg_dist_minipix_all() {
 		done;
 		for _fname in clear reset tset; do
 			if [ -e "${PREFIX_NATIVE}/bin/${_fname}" ]\
-			&& pkgp_dist_minipix_is_newer "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin"\
+			&& rtl_is_newer "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin"; then
 				return 1;
 			fi;
 		done;
-		for _pname in $([ -e "${PREFIX}/minipix_dist/bin" ] && find "${PREFIX}/minipix_dist/bin"	\
+		for _pname in $([ -e "${PREFIX}/minipix_dist/bin" ] && find "${PREFIX}/minipix_dist/bin"\
 				-maxdepth 1 -perm /a=x -type f -and \( -not -name "lib*" \)); do
-			if pkgp_dist_minipix_is_newer "${_pname}" "${PREFIX_MINIPIX}/bin"\
+			if rtl_is_newer "${_pname}" "${PREFIX_MINIPIX}/bin/${_pname##*/}"\
 			&& ! rtl_fileop cp_follow "${_pname}" "${PREFIX_MINIPIX}/bin"; then
 				return 1;
 			fi;
@@ -43,7 +31,7 @@ pkg_dist_minipix_all() {
 				libu16ports.so.0 libtinfo.so.6 libtinfow.so.6 libunistring.so.2			\
 				libuuid.so.1; do
 			if [ -e "${PREFIX_NATIVE}/lib/${_fname}" ]\
-			&& pkgp_dist_minipix_is_newer "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin"\
+			&& rtl_is_newer "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin"; then
 				return 1;
 			fi;
@@ -56,7 +44,7 @@ pkg_dist_minipix_all() {
 		done;
 		for _fname in nano vim; do
 			if [ -e "${PREFIX}/minipix_dist/share/${_fname}" ]\
-			&& pkgp_dist_minipix_is_newer "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share"\
+			&& rtl_is_newer "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share"; then
 				return 1;
 			fi;
@@ -76,7 +64,7 @@ pkg_dist_minipix_all() {
 				return 1;
 			fi;
 			if [ -e "${PREFIX_NATIVE}/${_dname}/${_fname}" ]\
-			&& pkgp_dist_minipix_is_newer "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}"\
+			&& rtl_is_newer "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}"; then
 				return 1;
 			fi;

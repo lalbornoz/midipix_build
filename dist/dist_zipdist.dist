@@ -8,7 +8,7 @@ pkg_dist_zipdist_all() {
 		echo "msg_pkg dist dist_zipdist Building deployable distribution ZIP archive..." >&3;
 		rtl_log_msg info "Finished building deployable distribution ZIP archive.";
 		for _pkg_name in $(cat "${_pkglist_fname}"); do
-			if ! stat "${BUILD_WORKDIR}/${_pkg_name}-native-${DEFAULT_TARGET}" >/dev/null 2>&1; then
+			if [ ! -e "${BUILD_WORKDIR}/${_pkg_name}-native-${DEFAULT_TARGET}" ]; then
 				rtl_log_msg failexit "Error: missing package build directory for package \`${_pkg_name}'.";
 			fi;
 		done;

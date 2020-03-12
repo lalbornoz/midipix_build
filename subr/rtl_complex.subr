@@ -87,6 +87,21 @@ rtl_filter_vars() {
 	echo "${_vars}";
 };
 
+rtl_get_cpu_count() {
+	local _line="" _ncpus=0 _rc=0 _sname="$(uname -s 2>/dev/null)"; _status="";
+	case "${_sname}" in
+	Linux)	if [ ! -e "/proc/cpuinfo" ]; then
+			_rc=1; _status="Error: /proc/cpuinfo non-existent.";
+		else	while read -r _line; do
+				if rtl_match "${_line}" "processor*:"; then
+					: $((_ncpus+=1));
+				fi;
+			done < /proc/cpuinfo; echo "${_ncpus}";
+		fi; ;;
+	*)	_rc=1; _status="Error: unknown platform \`${_sname}'."; ;;
+	esac; return "${_rc}";
+};
+
 rtl_get_var_unsafe() {
 	local _vname="";
 	if [ "x${1}" = "x-u" ]; then
@@ -107,6 +122,15 @@ rtl_head() {
 		fi;
 	done;
 	echo "${_s}";
+};
+
+rtl_is_newer() {
+	local _new_fname="${1}" _old_fname="${2}";
+	if [ -n "$(find -name "${_new_fname}" -newer "${_old_fname}" 2>/dev/null)" ]; then
+		return 0;
+	else
+		return 1;
+	fi;
 };
 
 rtl_kill_tree() {
