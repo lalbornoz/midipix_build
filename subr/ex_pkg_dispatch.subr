@@ -129,8 +129,9 @@ exp_pkg_dispatch_packages() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _dispatch_fn="${3}"		\
 		_group_name="${4}" _njobs_max="${5}" _pipe_path="${6}" _pkg_complete="${7}"		\
 		_restart_at="${8}" _restart_recursive="${9}" _workdir="${10}"				\
-		_njob=0 _pkg_depends="" _pkg_name="";
-	for _njob in $(seq 1 $((${_njobs_max}-${EXP_PKG_DISPATCH_NJOBS}))); do
+		_foundfl=0 _njob=0 _pkg_depends="" _pkg_name="";
+	while [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -lt "${_njobs_max}" ]; do
+		_foundfl=0;
 		for _pkg_name in ${EXP_PKG_NAMES}; do
 			if ! rtl_lmatch "${_pkg_complete}" "${_pkg_name}"\
 			&& ! rtl_lmatch "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}"\
@@ -138,9 +139,12 @@ exp_pkg_dispatch_packages() {
 				exp_pkg_dispatch_package "${_build_steps_default}"			\
 					"${_build_vars_default}" "${_dispatch_fn}"			\
 					"${_group_name}" "${_pkg_name}" "${_restart_at}"		\
-					"${_workdir}"; break;
+					"${_workdir}"; _foundfl=1; break;
 			fi;
 		done;
+		if [ "${_foundfl:-0}" -eq 0 ]; then
+			break;
+		fi;
 	done;
 };
 

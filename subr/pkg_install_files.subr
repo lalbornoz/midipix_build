@@ -13,9 +13,9 @@ pkgp_install_files() {
 pkgp_install_files_pkgconfig() {
 	local _pc_path="";
 	for _pc_path in $(find "${PKG_DESTDIR}" -name \*.pc); do
-		if grep -Eq '^libdir=[^$]+$' "${_pc_path}"\
-		&& ! sed -i""	-e '/^libdir=[^$]\+$/s/^libdir=\(.\+\)$/libdir=${exec_prefix}\1/'	\
-				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'			\
+		if [ -n "$(sed -ne '/^libdir=[^$]*$/p' "${_pc_path}")" ]			\
+		&& ! sed -i""	-e '/^libdir=[^$]*$/s/^libdir=\(.*\)$/libdir=${exec_prefix}\1/'	\
+				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'		\
 				"${_pc_path}"; then
 			return 1;
 		fi;
