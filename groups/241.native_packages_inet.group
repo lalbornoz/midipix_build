@@ -35,6 +35,7 @@ socat thttpd w3m weechat wget whois")";
 : ${PKG_CURL_VERSION:=7.61.0};
 : ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
 : ${PKG_CURL_CONFIGURE_ARGS_EXTRA:="--disable-symbol-hiding --enable-shared --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-ca-path=/etc/ssl/certs --with-gnutls --without-ssl"};
+: ${PKG_CURL_MAKEFLAGS_BUILD_EXTRA:="V=99"};
 : ${PKG_DROPBEAR_DEPENDS:="libz"};
 : ${PKG_DROPBEAR_SHA256SUM:=525965971272270995364a0eb01f35180d793182e63dd0b0c3eb0292291644a4};
 : ${PKG_DROPBEAR_VERSION:=2019.78};
