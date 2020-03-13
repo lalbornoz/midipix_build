@@ -22,6 +22,27 @@ exp_pkg_dispatch_complete() {
 };
 
 #
+# exp_pkg_dispatch_expand_packages() - expand build group name to list of packages ordered and filtered according to dependency and restart constraints
+# @_group_name:		build group name
+# @_restart:		optional whitespace-separated list of package names to rebuild
+# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
+#
+# Return:		zero (0) on success, non-zero (>0) on failure, ${EX_PKG_DISABLED}, ${EX_PKG_FINISHED}, and ${EX_PKG_NAMES} set post-return.
+#
+exp_pkg_dispatch_expand_packages() {
+	local _group_name="${1}" _restart="${2}" _restart_recursive="${3}" _pkg_names="";
+	EX_PKG_DISABLED=""; EX_PKG_FINISHED=""; EX_PKG_NAMES="";
+	if _pkg_names="$(rtl_get_var_unsafe -u "${_group_name}_PACKAGES")"\
+	&& [ -n "${_pkg_names}" ]; then
+		if [ "${_restart_recursive:-0}" -ne 3 ]; then
+			ex_pkg_unfold_depends "${_group_name}" "${_pkg_names}" "${_restart}" "${_restart_recursive}" 1;
+		else	ex_pkg_unfold_rdepends "${_group_name}" "${_pkg_names}" "${_restart}" 1;
+		fi;
+	fi;
+	return 0;
+};
+
+#
 # exp_pkg_dispatch_group() - dispatch a single build group
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
@@ -43,18 +64,19 @@ exp_pkg_dispatch_group() {
 	while true; do
 		while [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -gt 0 ] && read _pipe_msg; do
 		case "${_pipe_msg%% *}" in
-		done)	: $((EXP_PKG_DISPATCH_NJOBS-=1)); _pkg_name="${_pipe_msg#done * }";
+		done)	_pkg_name="${_pipe_msg#done * }"; : $((EXP_PKG_DISPATCH_NJOBS-=1));
+			EX_PKG_FINISHED="$(rtl_lconcat "${EX_PKG_FINISHED}" "${_pkg_name}")";
 			"${_dispatch_fn}" finish_pkg ${_pipe_msg#done };
-			EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
-			EXP_PKG_NAMES="$(rtl_lfilter "${EXP_PKG_NAMES}" "${_pkg_name}")";
+			EX_PKG_NAMES="$(rtl_lfilter "${EX_PKG_NAMES}" "${_pkg_name}")";
 			EX_PKG_DISPATCH_WAIT="$(rtl_lfilter "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}")";
-			if [ -n "${EXP_PKG_NAMES}" ] && [ "${_rc}" -eq 0 ]; then
+			if [ -n "${EX_PKG_NAMES}" ] && [ "${_rc}" -eq 0 ]; then
 				if [ "${EXP_PKG_DISPATCH_NJOBS}" -ne "${_njobs_max}" ]; then
 					exp_pkg_dispatch_packages "${_build_steps_default}"	\
 						"${_build_vars_default}" "${_dispatch_fn}"	\
 						"${_group_name}" "${_njobs_max}"		\
-						"${_pipe_path}" "${EXP_PKG_COMPLETE}"		\
-						"${_restart_at}" "${_restart_recursive}" "${_workdir}";
+						"${_pipe_path}" "${EX_PKG_DISABLED}"		\
+						"${EX_PKG_FINISHED}" "${_restart_at}"		\
+						"${_restart_recursive}" "${_workdir}";
 				fi;
 			elif [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -eq 0 ]; then
 				break;
@@ -65,13 +87,14 @@ exp_pkg_dispatch_group() {
 			"${_dispatch_fn}" msg_pkg ${_pipe_msg#msg_pkg }; ;;
 		step)	"${_dispatch_fn}" step_pkg ${_pipe_msg#step }; ;;
 		esac; done <>"${_pipe_path}";
-		if [ -n "${EXP_PKG_NAMES}" ] && [ "${_rc}" -eq 0 ]; then
+		if [ -n "${EX_PKG_NAMES}" ] && [ "${_rc}" -eq 0 ]; then
 			if [ "${EXP_PKG_DISPATCH_NJOBS}" -ne "${_njobs_max}" ]; then
 				exp_pkg_dispatch_packages "${_build_steps_default}"		\
 					"${_build_vars_default}" "${_dispatch_fn}"		\
 					"${_group_name}" "${_njobs_max}" "${_pipe_path}"	\
-					"${EXP_PKG_COMPLETE}" "${_restart_at}"			\
-					"${_restart_recursive}" "${_workdir}";
+					"${EX_PKG_DISABLED}" "${EX_PKG_FINISHED}"		\
+					"${_restart_at}" "${_restart_recursive}"		\
+					"${_workdir}";
 			fi;
 		elif [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -eq 0 ]; then
 			break;
@@ -91,7 +114,7 @@ exp_pkg_dispatch_group() {
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:			zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_DISPATCH_NJOBS}, ${EXP_PKG_DISPATCH_COUNT}, ${EXP_PKG_NAMES}, and ${EX_PKG_DISPATCH_WAIT} may be mutated post-return.
+# Return:			zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_DISPATCH_NJOBS}, ${EXP_PKG_DISPATCH_COUNT}, ${EX_PKG_NAMES}, and ${EX_PKG_DISPATCH_WAIT} may be mutated post-return.
 #
 exp_pkg_dispatch_package() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _dispatch_fn="${3}"	\
@@ -100,7 +123,7 @@ exp_pkg_dispatch_package() {
 		: $((EXP_PKG_DISPATCH_NJOBS+=1)); : $((EXP_PKG_DISPATCH_COUNT+=1)); EX_PKG_DISPATCH_WAIT="$(rtl_lconcat "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}")";
 		(set +o errexit -o noglob; BUILD_IS_PARENT=0;
 		if ex_pkg_env "${_build_steps_default}" "${_build_vars_default}"		\
-				"${_group_name}" "${_pkg_name}" "${_restart_at}" "${_workdir}"; then
+				"${_group_name}" 0 "${_pkg_name}" "${_restart_at}" "${_workdir}"; then
 			ex_pkg_exec "${_dispatch_fn}" "${_group_name}" "${_pkg_name}" "${_restart_at}";
 		else
 			return 1;
@@ -118,24 +141,27 @@ exp_pkg_dispatch_package() {
 # @_group_name:			build group name
 # @_njobs_max:			maximum count of simultaneous jobs
 # @_pipe_path:			pathname to parent-child process FIFO
-# @_pkg_complete:		list of completed packages
+# @_pkg_disabled:		list of disabled packages
+# @_pkg_finished:		list of finished packages
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL
 # @_restart_recursive:		optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:			zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_DISPATCH_NJOBS}, ${EXP_PKG_DISPATCH_COUNT}, ${EXP_PKG_NAMES}, and ${EX_PKG_DISPATCH_WAIT} may be mutated post-return.
+# Return:			zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_DISPATCH_NJOBS}, ${EXP_PKG_DISPATCH_COUNT}, ${EX_PKG_NAMES}, and ${EX_PKG_DISPATCH_WAIT} may be mutated post-return.
 #
 exp_pkg_dispatch_packages() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _dispatch_fn="${3}"		\
-		_group_name="${4}" _njobs_max="${5}" _pipe_path="${6}" _pkg_complete="${7}"		\
-		_restart_at="${8}" _restart_recursive="${9}" _workdir="${10}"				\
+		_group_name="${4}" _njobs_max="${5}" _pipe_path="${6}" _pkg_disabled="${7}"		\
+		_pkg_finished="${8}" _restart_at="${9}" _restart_recursive="${10}" _workdir="${11}"	\
 		_foundfl=0 _njob=0 _pkg_depends="" _pkg_name="";
 	while [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -lt "${_njobs_max}" ]; do
 		_foundfl=0;
-		for _pkg_name in ${EXP_PKG_NAMES}; do
-			if ! rtl_lmatch "${_pkg_complete}" "${_pkg_name}"\
+		for _pkg_name in ${EX_PKG_NAMES}; do
+			if ! rtl_lmatch "${_pkg_disabled}" "${_pkg_name}"\
+			&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name}"\
 			&& ! rtl_lmatch "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}"\
-			&& ex_pkg_check_depends "${_pkg_complete}" "${_pkg_name}" "${EX_PKG_DISPATCH_WAIT}" "${_restart_recursive}"; then
+			&& ex_pkg_check_depends "${_pkg_disabled}" "${_pkg_finished}" "${_pkg_name}"	\
+					"${EX_PKG_DISPATCH_WAIT}" "${_restart_recursive}"; then
 				exp_pkg_dispatch_package "${_build_steps_default}"			\
 					"${_build_vars_default}" "${_dispatch_fn}"			\
 					"${_group_name}" "${_pkg_name}" "${_restart_at}"		\
@@ -169,25 +195,23 @@ ex_pkg_dispatch() {
 		_group_names="${4}" _groups_inhibit_deps="${5}" _njobs_max="${6}" _pipe_path="${7}"	\
 		_restart="${8}" _restart_at="${9}" _restart_recursive="${10}" _workdir="${11}"		\
 		_pkg_name="" _pkg_names="" _rc=0							\
-		EXP_PKG_COMPLETE EXP_PKG_DISABLED EXP_PKG_FINISHED EXP_PKG_DISPATCH_COUNT		\
-		EXP_PKG_DISPATCH_COUNT_MAX EXP_PKG_DISPATCH_NJOBS EXP_PKG_NAMES;
-	EX_PKG_DISPATCH_WAIT="";
+		EX_PKG_DISABLED EX_PKG_FINISHED EX_PKG_NAMES EXP_PKG_DISPATCH_COUNT			\
+		EXP_PKG_DISPATCH_COUNT_MAX EXP_PKG_DISPATCH_NJOBS; EX_PKG_DISPATCH_WAIT="";
 	if [ "${_groups_inhibit_deps:-0}" -eq 0 ]; then
 		_group_names="$(rtl_uniq $(rtl_lunfold_depends '${_name}_GROUP_DEPENDS' ${_group_names}))";
 	fi;
 	for _group_name in ${_group_names}; do
-		EXP_PKG_COMPLETE="" EXP_PKG_DISABLED="" EXP_PKG_FINISHED="";
-		EXP_PKG_DISPATCH_COUNT=0 EXP_PKG_DISPATCH_COUNT_MAX=0 EXP_PKG_DISPATCH_NJOBS=0;
-		EXP_PKG_NAMES="" EX_PKG_DISPATCH_WAIT="";
+		EX_PKG_DISABLED=""; EX_PKG_DISPATCH_WAIT=""; EX_PKG_FINISHED=""; EX_PKG_NAMES="";
+		EXP_PKG_DISPATCH_COUNT=0; EXP_PKG_DISPATCH_COUNT_MAX=0; EXP_PKG_DISPATCH_NJOBS=0;
 		if "${_dispatch_fn}" start_group "${_group_name}" ""; then
 			if rtl_fileop mkdir "${_workdir}"\
 			&& rtl_log_msg vnfo "Resolving \`${_group_name}' dependencies..."\
-			&& ex_pkg_expand_packages "${_group_name}" "${_restart}" "${_restart_recursive}"\
-			&& exp_pkg_dispatch_complete "${_dispatch_fn}" "${_group_name}" "${EXP_PKG_DISABLED}" "${EXP_PKG_FINISHED}"\
+			&& exp_pkg_dispatch_expand_packages "${_group_name}" "${_restart}" "${_restart_recursive}"\
+			&& exp_pkg_dispatch_complete "${_dispatch_fn}" "${_group_name}" "${EX_PKG_DISABLED}" "${EX_PKG_FINISHED}"\
 			&& rtl_log_msg vnfo "Resolved \`${_group_name}' dependencies."\
-			&& EXP_PKG_DISPATCH_COUNT_MAX="$(rtl_llength "${EXP_PKG_NAMES}")"\
+			&& EXP_PKG_DISPATCH_COUNT_MAX="$(rtl_llength "${EX_PKG_NAMES}")"\
 			&& [ "${EXP_PKG_DISPATCH_COUNT_MAX}" -gt 0 ]; then
-				_pkg_names="$(rtl_lconcat "${_pkg_names}" "${EXP_PKG_NAMES}")";
+				_pkg_names="$(rtl_lconcat "${_pkg_names}" "${EX_PKG_NAMES}")";
 				exp_pkg_dispatch_group "${_build_steps_default}"			\
 					"${_build_vars_default}" "${_dispatch_fn}" "${_group_name}"	\
 					"${_njobs_max}" "${_pipe_path}" "${_restart_at}"		\

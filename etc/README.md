@@ -17,6 +17,7 @@ internal repositories required in order to build Midipix.
 	3.3. [Addressing build failure](#33-addressing-build-failure)  
 	3.4. [Patches and ``vars`` files](#34-patches-and-vars-files)  
 	3.5. [``pkgtool.sh``](#35-pkgtoolsh)  
+		3.5.1. [``-s``: package build shell environment](#351-s-package-build-shell-environment)  
 4. [Build variables](#4-build-variables)  
 	4.1. [Build steps](#41-build-steps)  
 	4.2. [Package variables](#42-package-variables)  
@@ -84,19 +85,18 @@ amount of logical processors on the build host divided by two (2).
 [//]: # "{{{ 2.1. Build-time dependencies"
 ### 2.1. Build-time dependencies
 
-* **Alpine Linux**: binutils bzip2 cmake coreutils curl findutils g++ gawk gcc
+* **Alpine Linux**: awk binutils bzip2 cmake coreutils curl findutils g++ gcc
 		    git grep gzip libc-dev linux-headers lzip make musl-dev
 		    net-tools patch perl perl-xml-parser procps sed tar
 		    util-linux wget xz zip
-* **Debian/-derived Linux**: binutils bzip2 clzip cmake coreutils curl findutils
-			     g++ gawk gcc git grep gzip hostname libc6-dev
-			     libxml-parser-perl lzma make patch perl procps sed
-			     tar util-linux wget xz-utils zip
+* **Debian/-derived Linux**: awk binutils bzip2 clzip cmake coreutils curl findutils
+			     g++ gcc git grep gzip hostname libc6-dev libxml-parser-perl
+			     lzma make patch perl procps sed tar util-linux wget xz-utils zip
 * **OpenSUSE Linux**: binutils bzip2 cmake coreutils curl findutils gawk gcc
 		      gcc-c++ git grep gzip hostname linux-glibc-devel lzip make
 		      patch perl perl-XML-Parser procps sed tar util-linux wget
 		      xz zip
-
+  
 > N.B. Busybox is not supported.
   
 [Back to top](#table-of-contents)
@@ -117,12 +117,16 @@ defective.
 
 On successful completion of the build, a ZIP archive containing the Midipix
 distribution will be created inside ``${PREFIX}`` (see section [4](#4-build-variables).)
-Extract its contents on the target machine, run ``bash.bat``, and then
-``/install.sh`` inside the resulting self-contained Midipix installation shell
-window.  
+Create a directory on the target machine and extract the contents of the distribution
+ZIP archive into it, run ``bash.bat``, and then ``/install.sh`` inside the resulting
+self-contained Midipix installation shell window.  
   
 > N.B. The pathname of the target directory containing ``bash.bat`` and all other
-distribution files must not contain whitespaces.
+distribution files must not contain whitespaces.  
+  
+> N.B. The Midipix installer defaults to ``/dev/fs/c/midipix (C:\midipix)``. If left
+unchanged, the distribution ZIP archive must not be extracted into a directory of the
+same pathname.  
   
 [Back to top](#table-of-contents)
 
@@ -287,7 +291,7 @@ in, most usually, ``${PKG_BUILD_DIR}/config.log``.
 If ``--dump-on-abort`` was specified, a subset of the variables set and environment
 variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``, which may
 subsequently be used in order to obtain a package build shell environment with the
-``pkgtool.sh`` script (see section [3.5](#35-pkgtoolsh).)
+``pkgtool.sh`` script (see sections [3.5](#35-pkgtoolsh)[3.5.1](#351-s-package-build-shell-environment).)
   
 [Back to top](#table-of-contents)
 
@@ -322,13 +326,43 @@ for a list of package build steps and how they are overriden.
 [//]: # "{{{ 3.5. ``pkgtool.sh``"
 ## 3.5. ``pkgtool.sh``
 
+```
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-r|-s|-t]
+                    [<variable name>=<variable override>[ ..]] name
+
+        -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release  Selects debug or release build; defaults to debug.
+        -i                List package variables and dependencies of single named package.
+        -r                List reverse dependencies of single named package.
+        -s                Enter interactive package build shell environment for single
+                          named package; requires a package dump file. If the package
+                          has not been built yet or built successfully, it will be rebuilt
+                          at build steps up until, by default, the `build' build step and
+                          forcibly aborted and dumped prior to enterting the shell.
+        -t                Produce tarball of package build root directory and build log
+                          file for the purpose of distribution given build failure.
+
+        <variable name>=<variable override>[ ..]
+                          Override build variable.
+```
+  
+> N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4](#4-build-variables))
+overriden on the command line or via the environment, ensure that they are included in the
+``pkgtool.sh`` command line, preceding the package name, or exported, respectively.
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 3.5.1. -s: package build shell environment"
+### 3.5.1. -s: package build shell environment
+
 When ``build.sh`` is executed with the ``--dump-on-abort`` option, a subset of the
 variables set and environment variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``
 on build failure, which may subsequently be used in order to obtain a package build shell
 environment with the ``pkgtool.sh`` script, e.g.:  
   
 ```
-midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh -a nt64 -b debug mc
+midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh -a nt64 -b debug -s mc
 ==> 2020/03/11 15:46:28 Launching shell `/usr/bin/zsh' within package environment and `/home/midipix_build/midipix/nt64/debug/tmp'.
 ==> 2020/03/11 15:46:28 Run $R to rebuild `mc'.
 ==> 2020/03/11 15:46:28 Run $RS <step> to restart the specified build step of `mc'
@@ -344,10 +378,6 @@ write ``${BUILD_WORKDIR}/${PKG_NAME}.dump`` as above prior to entering the shell
 Consult sections [3.2](#32-adding-a-package), [3.4](#34-patches-and-vars-files), [4](#4-build-variables),
 [4.1](#41-build-steps), and [4.2](#42-package-variables) for further information
 concerning the package build process.  
-  
-> N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4](#4-build-variables))
-overriden on the command line or via the environment, ensure that they are included in the
-``pkgtool.sh`` command line, preceding the package name, or exported, respectively.
   
 [Back to top](#table-of-contents)
 

@@ -5,7 +5,38 @@
 pkgtoolp_init_defaults() {
 	: ${ARCH:="nt64"}; : ${BUILD:="debug"}; : ${PKG_NAME:=""};
 	: ${BUILD_WORKDIR:=""}; : ${PREFIX=""};
-	ARG_RESTART_AT=""; ARG_UPDATE_DIFF=0;
+	ARG_INFO=0; ARG_RESTART_AT=""; ARG_RDEPENDS=0;
+	ARG_UPDATE_DIFF=0; ARG_SHELL=0; ARG_TARBALL=0;
+	BUILD_GROUPS="";
+};
+
+pkgtoolp_init_dump() {
+	local _rc=0; _status="";
+	if [ -n "${ARG_RESTART_AT}" ]\
+	|| [ "${ARG_UPDATE_DIFF:-0}" -eq 1 ]\
+	|| [ "${ARG_SHELL:-0}" -eq 1 ]; then
+		if [ ! -e "${BUILD_WORKDIR}/${PKG_NAME}.dump" ]; then
+			rtl_log_msg warn "Warning: failed to locate environment dump for package \`${PKG_NAME}' in \`${BUILD_WORKDIR}'.";
+			rtl_log_msg info "Rebuilding package \`${PKG_NAME}' w/ --dump-in build...";
+			(export	ARCH BUILD						\
+				BUILD_DLCACHEDIR BUILD_WORKDIR				\
+				PREFIX PREFIX_CROSS PREFIX_MINGW32 PREFIX_MINIPIX	\
+				PREFIX_NATIVE PREFIX_ROOT PREFIX_RPM;
+			./build.sh -a "${ARCH}" -b "${BUILD}" --dump-in build -P -r "${PKG_NAME}" -v);
+			if [ ! -e "${BUILD_WORKDIR}/${PKG_NAME}.dump" ]; then
+				_rc=1; _status="Error: failed to locate environment dump for package \`${PKG_NAME}' in \`${BUILD_WORKDIR}'.";
+			fi;
+		else
+			_rc=0;
+		fi;
+		if [ "${_rc:-0}" -eq 0 ]\
+		&& ! . "${BUILD_WORKDIR}/${PKG_NAME}.dump"; then
+			_rc=1; _status="Error: failed to source environment dump for package \`${PKG_NAME}' from \`${BUILD_WORKDIR}'.";
+		elif [ "${_rc:-0}" -eq 0 ]\
+		&&   ! rtl_fileop cd "${PKG_BUILD_DIR}"; then
+			_rc=1; _status="Error: failed to change working directory to \`${PKG_BUILD_DIR}'.";
+		fi;
+	fi; return "${_rc}";
 };
 
 pkgtoolp_init_env() {
@@ -39,18 +70,30 @@ pkgtoolp_init_getopts() {
 			break;
 		elif [ "${_shiftfl:-0}" -gt 0 ]; then
 			shift "${_shiftfl}"; continue;
-		elif getopts a:b:C:D:Fhp:Pr:R _opt; then
+		elif getopts a:b:hirst _opt; then
 			case "${_opt}" in
 			a)	ARCH="${OPTARG}"; ;;
 			b)	BUILD="${OPTARG}"; ;;
-			h)	pkgtoolp_usage; exit 0; ;;
-			*)	pkgtoolp_usage; exit 1; ;;
+			h)	cat etc/pkgtool.usage; exit 0; ;;
+			i)	ARG_INFO=1; ;;
+			r)	ARG_RDEPENDS=1; ;;
+			s)	ARG_SHELL=1; ;;
+			t)	ARG_TARBALL=1; ;;
+			*)	cat etc/pkgtool.usage; exit 1; ;;
 			esac; shift $((${OPTIND}-1)); OPTIND=1;
 		else
 			break;
 		fi;
 	done;
 	if [ "${_rc}" -eq 0 ]; then
+		if [ "$((${ARG_INFO:-0} + ${ARG_RDEPENDS:-0} + ${ARG_SHELL:-0} + ${ARG_TARBALL:-0}))" -gt 1 ]; then
+			cat etc/pkgtool.usage; rtl_log_msg failexit "Error: only one of -i, -r, -s, or -t must be specified.";
+		elif [ "$((${ARG_INFO:-0} + ${ARG_RDEPENDS:-0} + ${ARG_SHELL:-0} + ${ARG_TARBALL:-0}))" -eq 0 ]; then
+			if [ -z "${ARG_RESTART_AT}" ]\
+			&& [ "${ARG_UPDATE_DIFF:-0}" -eq 0 ]; then
+				cat etc/pkgtool.usage; rtl_log_msg failexit "Error: one of -i, -r, -s, or -t must be specified.";
+			fi;
+		fi;
 		while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		*=*)	rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
@@ -70,24 +113,71 @@ pkgtoolp_init_getopts() {
 	return "${_rc}";
 };
 
+pkgtoolp_init_groups() {
+	local _default_build_groups="" _fname="" _group="" _groups="" _rc=0; _status="";
+	if [ "${ARG_INFO:-0}" -eq 1 ]\
+	|| [ "${ARG_RDEPENDS:-0}" -eq 1 ]\
+	|| [ "${ARG_TARBALL:-0}" -eq 1 ]; then
+		for _fname in $(find ./groups -name *.group | sort); do
+			rtl_fileop source_opt "${_fname}";
+			if [ -n "${GROUP_TARGET}" ]; then
+				_group="${GROUP_TARGET}"; unset GROUP_TARGET;
+			else
+				_group="${_fname##*/}"; _group="${_group%.group}"; _group="${_group#*.}";
+			fi;
+			if ! rtl_lmatch "${_groups}" "${_group}"; then
+				_groups="$(rtl_lconcat "${_groups}" "${_group}")";
+				if [ -n "${GROUP_AUTO}" ]; then
+					if [ "${GROUP_AUTO:-0}" -ne 0 ]; then
+						_default_build_groups="$(rtl_lconcat "${_default_build_groups}" "${_group}")";
+					fi;
+					unset GROUP_AUTO;
+				else
+					_default_build_groups="$(rtl_lconcat "${_default_build_groups}" "${_group}")";
+				fi;
+			fi;
+		done;
+		_default_build_groups="$(rtl_uniq "${_default_build_groups}")";
+		BUILD_GROUPS="${_default_build_groups}";
+	fi; return "${_rc}";
+};
+
+pkgtoolp_init_package() {
+	local _foundfl=0 _group_name="" _pkg_names="" _rc=0; _status="";
+	if [ "${ARG_INFO:-0}" -eq 1 ]\
+	|| [ "${ARG_RDEPENDS:-0}" -eq 1 ]\
+	|| [ "${ARG_TARBALL:-0}" -eq 1 ]; then
+		for _group_name in ${BUILD_GROUPS}; do
+			if ! _pkg_names="$(rtl_get_var_unsafe -u "${_group_name}_PACKAGES")"\
+			|| [ -z "${_pkg_names}" ]; then
+				rtl_log_msg warn "Warning: ignoring non-existent or invalid build group \`${_build_group}'.";
+			elif rtl_lmatch "${_pkg_names}" "${PKG_NAME}"; then
+				_foundfl=1;
+			fi;
+		done;
+		if [ "${_foundfl:-0}" -eq 0 ]; then
+			_rc=1; _status="Error: package \`${PKG_NAME}' unknown.";
+		fi;
+	fi; return "${_rc}";
+};
+
 pkgtoolp_init_prereqs() {
 	local _cmd="" _cmds_missing="" _rc=0; _status="";
 	for _cmd in	\
-			awk bunzip2 cat chmod cmake cp date find flock g++	\
-			gcc git grep gunzip gzip hostname install kill		\
-			ln lzip make mkdir mkfifo mv paste patch perl		\
-			pgrep pkill printf readlink rm sed seq sha256sum	\
-			sort stat tail tar test touch tr wget xz zip; do
+			awk bunzip2 bzip2 cat chmod cmake cp date find flock	\
+			g++ gcc git grep gunzip gzip hostname install kill	\
+			ln lzip make mkdir mkfifo mktemp mv paste patch perl	\
+			pgrep pkill printf readlink rm sed sha256sum sort	\
+			tail tar test touch tr uniq wget xz zip; do
 		if ! which "${_cmd}" >/dev/null 2>&1; then
 			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
 		fi;
 	done;
 	if [ -n "${_cmds_missing}" ]; then
 		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
-	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
-		_rc=1; _status="Error: awk(1) in \$PATH must be GNU Awk.";
-	elif ! sed --version 2>/dev/null | grep -q "^GNU sed "; then
-		_rc=1; _status="Error: sed(1) in \$PATH must be GNU sed.";
+	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;		\
+			sed -i'' -e '' "${FNAME}" >/dev/null 2>&1; }); then
+		_rc=1; _status="Error: sed(1) in \${PATH} does not support the \`-i' option.";
 	fi;
 	return "${_rc}";
 };
@@ -111,17 +201,16 @@ pkgtoolp_init_vars() {
 	return "${_rc}";
 };
 
-pkgtoolp_usage() {
-	echo "usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] name" >&2;
-};
-
 pkgtool_init() {
 	local _fname="" _rc=0 _status="";
 	if ! pkgtoolp_init_env			\
 	|| ! pkgtoolp_init_defaults		\
 	|| ! pkgtoolp_init_getopts "${@}"	\
 	|| ! pkgtoolp_init_prereqs		\
-	|| ! pkgtoolp_init_vars; then
+	|| ! pkgtoolp_init_vars			\
+	|| ! pkgtoolp_init_dump			\
+	|| ! pkgtoolp_init_groups		\
+	|| ! pkgtoolp_init_package; then
 		_rc="${?}"; rtl_log_msg fail "${_status}"; exit "${_rc}";
 	elif [ -n "${_status}" ]; then
 		rtl_log_msg info "${_status}"; exit 0;
