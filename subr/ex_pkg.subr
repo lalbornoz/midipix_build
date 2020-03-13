@@ -4,7 +4,8 @@
 
 #
 # ex_pkg_check_depends() - check single named package for unsatisfied dependencies
-# @_pkg_complete:	list of completed packages
+# @_pkg_disabled:	list of disabled packages
+# @_pkg_finished:	list of finished packages
 # @_pkg_name:		single package name
 # @_pkg_wait:		list of in-progress packages
 # @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
@@ -12,15 +13,18 @@
 # Return:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
 #
 ex_pkg_check_depends() {
-	local	_pkg_complete="${1}" _pkg_name="${2}" _pkg_wait="${3}" _restart_recursive="${4}"	\
+	local	_pkg_disabled="${1}" _pkg_finished="${2}" _pkg_name="${3}"	\
+		_pkg_wait="${4}" _restart_recursive="${5}"			\
 		_pkg_depends="" _pkg_name_depend="" _dependfl=0;
-	if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+	if _pkg_depends="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS")))"\
 	&& [ -n "${_pkg_depends}" ]; then
 		if [ -z "${_restart}" ]\
 		|| [ "${_restart_recursive:-0}" -ge 1 ]; then
 			for _pkg_name_depend in $(rtl_uniq ${_pkg_depends}); do
-				if ! rtl_lmatch "${_pkg_complete}" "${_pkg_name_depend}"\
-				|| rtl_lmatch "${_pkg_wait}" "${_pkg_name_depend}"; then
+				if ! rtl_lmatch "${_pkg_disabled}" "${_pkg_name_depend}"\
+				&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name_depend}"; then
+					_dependfl=1; break;
+				elif rtl_lmatch "${_pkg_wait}" "${_pkg_name_depend}"; then
 					_dependfl=1; break;
 				fi;
 			done;
@@ -30,89 +34,137 @@ ex_pkg_check_depends() {
 };
 
 #
-# ex_pkg_expand_packages() - expand build group name to list of packages ordered and filtered according to dependency and restart constraints
-# @_group_name:		build group name
-# @_restart:		optional whitespace-separated list of package names to rebuild
-# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
+# ex_pkg_find_package() - find build group a single named package belongs to
+# @_group_names:	build group names
+# @_pkg_name:		single named package
 #
-# Return:		zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_COMPLETE}, ${EXP_PKG_DISABLED}, ${EXP_PKG_FINISHED}, and ${EXP_PKG_NAMES} set post-return.
+# Return:		zero (0) on success, non-zero (>0) if package not found, group name on stdout if package was found.
 #
-ex_pkg_expand_packages() {
-	local	_group_name="${1}" _restart="${2}" _restart_recursive="${3}"		\
-		_pkg_depends="" _pkg_name="" _pkg_name_depend="" _pkg_names=""		\
-		_pkg_rdepends="" _restartfl=0;
-	EXP_PKG_COMPLETE=""; EXP_PKG_DISABLED=""; EXP_PKG_FINISHED=""; EXP_PKG_NAMES="";
+ex_pkg_find_package() {
+	local _group_names="${1}" _pkg_name="${2}" _group_name="" _pkg_names="";
+	for _group_name in ${_group_names}; do
+		if _pkg_names="$(rtl_get_var_unsafe -u "${_group_name}_PACKAGES")"\
+		&& [ -n "${_pkg_names}" ]\
+		&& rtl_lmatch "${_pkg_names}" "${_pkg_name}"; then
+			_foundfl=1; break;
+		fi;
+	done;
+	case "${_foundfl:-0}" in
+	0)	return 1; ;;
+	1)	echo "${_group_name}"; return 0; ;;
+	esac;
+};
+
+#
+# ex_pkg_get_packages() - get list of packages belonging to single named build group
+# @_group_name:	build group name
+#
+# Return:	zero (0) on success, non-zero (>0) on failure, list of package names on stdout on success.
+#
+ex_pkg_get_packages() {
+	local _group_name="${1}" _pkg_names="";
 	if _pkg_names="$(rtl_get_var_unsafe -u "${_group_name}_PACKAGES")"\
 	&& [ -n "${_pkg_names}" ]; then
-		if [ "${_restart_recursive:-0}" -ne 3 ]; then
-			if [ -n "${_restart}" ] && ! rtl_lmatch "${_restart}" "ALL LAST"; then
-				_pkg_names="$(rtl_lsearch "${_pkg_names}" "${_restart}")";
-			fi;
-			if [ -n "${_restart}" ]\
-			&& [ "${_restart_recursive:-0}" -ge 1 ]\
-			&& [ "${_restart_recursive:-0}" -le 2 ]; then
-				_pkg_names="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' ${_pkg_names}))";
-			fi;
-			for _pkg_name in ${_pkg_names}; do
-				if [ "${_restart}" = "ALL" ]\
-				|| rtl_lmatch "${_restart}" "${_pkg_name}"; then
-					_restartfl=1;
-				else
-					_restartfl=0;
-				fi;
-				if [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" = "x1" ]; then
-					EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
-					EXP_PKG_DISABLED="$(rtl_lconcat "${EXP_PKG_DISABLED}" "${_pkg_name}")";
-					_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
-				elif ex_pkg_state_test "${_pkg_name}" finish\
-				&& [ "${_restartfl:-0}" -eq 0 ]\
-				&& [ "${_restart_recursive:-0}" -ne 2 ]\
-				&& [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]; then
-					EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name}")";
-					EXP_PKG_FINISHED="$(rtl_lconcat "${EXP_PKG_FINISHED}" "${_pkg_name}")";
-					_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
-				fi;
-			done;
-		else	for _pkg_name_depend in ${_restart}; do
-				for _pkg_name in ${_pkg_names}; do
-					if [ "${_pkg_name}" != "${_pkg_name_depend}" ]\
-					&& [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" != "x1" ]\
-					&& _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
-					&& [ -n "${_pkg_depends}" ]\
-					&& rtl_lmatch "${_pkg_depends}" "${_pkg_name_depend}"; then
-						_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "${_pkg_name}")";
-					fi;
-				done;
-			done;
-			_pkg_names="";
-			for _pkg_name in ${_pkg_rdepends}; do
-				if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
-				&& [ -n "${_pkg_depends}" ]; then
-					for _pkg_name_depend in ${_pkg_depends}; do
-						if [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name_depend}_DISABLED")" = "x1" ]; then
-							EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name_depend}")";
-							EXP_PKG_DISABLED="$(rtl_lconcat "${EXP_PKG_DISABLED}" "${_pkg_name_depend}")";
-						elif ex_pkg_state_test "${_pkg_name_depend}" finish\
-						&& [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]\
-						&& ! rtl_lmatch "${_pkg_rdepends}" "${_pkg_name_depend}"; then
-							EXP_PKG_COMPLETE="$(rtl_lconcat "${EXP_PKG_COMPLETE}" "${_pkg_name_depend}")";
-							EXP_PKG_FINISHED="$(rtl_lconcat "${EXP_PKG_FINISHED}" "${_pkg_name_depend}")";
-						elif ! ex_pkg_state_test "${_pkg_name_depend}" finish\
-						|| [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" = "x1" ]; then
-							_pkg_names="$(rtl_lconcat "${_pkg_names}" "${_pkg_name_depend}")";
-						fi;
-					done;
-				fi;
-				_pkg_names="$(rtl_lconcat "${_pkg_names}" "${_pkg_name}")";
-			done;
-			EXP_PKG_COMPLETE="$(rtl_uniq ${EXP_PKG_COMPLETE})";
-			EXP_PKG_DISABLED="$(rtl_uniq ${EXP_PKG_DISABLED})";
-			EXP_PKG_FINISHED="$(rtl_uniq ${EXP_PKG_FINISHED})";
-			_pkg_names="$(rtl_uniq ${_pkg_names})";
-		fi;
-		EXP_PKG_NAMES="${_pkg_names}";
+		echo "${_pkg_names}"; return 0;
+	else
+		return 1;
 	fi;
-	return 0;
+};
+
+#
+# ex_pkg_unfold_depends() - unfold list of package names into dependency-expanded set of complete, disabled, finished, and outstanding package names
+# @_group_name:		build group name
+# @_pkg_names:		list of package names
+# @_restart:		optional whitespace-separated list of package names to rebuild
+# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
+# @_test_finished:	only exclude disabled packages from ${EX_PKG_NAMES} (0,) split finished packages into ${EX_PKG_FINISHED}
+#
+# Return:		zero (0) on success, non-zero (>0) on failure, ${EX_PKG_DISABLED}, ${EX_PKG_FINISHED}, and ${EX_PKG_NAMES} set post-return.
+#
+ex_pkg_unfold_depends() {
+	local	_group_name="${1}" _pkg_names="${2}" _restart="${3}"	\
+		_restart_recursive="${4}" _test_finished="${5}"		\
+		_pkg_name="" _restartfl=0;
+	if [ -n "${_restart}" ] && ! rtl_lmatch "${_restart}" "ALL LAST"; then
+		_pkg_names="$(rtl_lsearch "${_pkg_names}" "${_restart}")";
+	fi;
+	if [ -n "${_restart}" ]\
+	&& [ "${_restart_recursive:-0}" -ge 1 ]\
+	&& [ "${_restart_recursive:-0}" -le 2 ]; then
+		_pkg_names="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' ${_pkg_names}))";
+	fi;
+	for _pkg_name in ${_pkg_names}; do
+		if [ "${_restart}" = "ALL" ]\
+		|| rtl_lmatch "${_restart}" "${_pkg_name}"; then
+			_restartfl=1;
+		else
+			_restartfl=0;
+		fi;
+		if [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" = "x1" ]; then
+			EX_PKG_DISABLED="$(rtl_lconcat "${EX_PKG_DISABLED}" "${_pkg_name}")";
+			_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+		elif [ "${_test_finished:-1}" -eq 1 ]\
+		&&   ex_pkg_state_test "${_pkg_name}" finish\
+		&&   [ "${_restartfl:-0}" -eq 0 ]\
+		&&   [ "${_restart_recursive:-0}" -ne 2 ]\
+		&&   [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]; then
+			EX_PKG_FINISHED="$(rtl_lconcat "${EX_PKG_FINISHED}" "${_pkg_name}")";
+			_pkg_names="$(rtl_lfilter "${_pkg_names}" "${_pkg_name}")";
+		fi;
+	done;
+	EX_PKG_DISABLED="$(rtl_uniq ${EX_PKG_DISABLED})";
+	EX_PKG_FINISHED="$(rtl_uniq ${EX_PKG_FINISHED})";
+	EX_PKG_NAMES="$(rtl_uniq ${_pkg_names})";
+};
+
+#
+# ex_pkg_unfold_rdepends() - unfold list of package names into reverse dependency-expanded set of complete, disabled, finished, and outstanding package names
+# @_group_name:		build group name
+# @_pkg_names:		list of package names
+# @_restart:		optional whitespace-separated list of package names to rebuild
+# @_restart_recursive:	optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
+# @_test_finished:	only exclude disabled packages from ${EX_PKG_NAMES} (0,) split finished packages into ${EX_PKG_FINISHED}
+#
+# Return:		zero (0) on success, non-zero (>0) on failure, ${EX_PKG_DISABLED}, ${EX_PKG_FINISHED}, and ${EX_PKG_NAMES} set post-return.
+#
+ex_pkg_unfold_rdepends() {
+	local	_group_name="${1}" _pkg_names="${2}" _restart="${3}" _test_finished="${4}"	\
+		_pkg_depends="" _pkg_name="" _pkg_name_depend="" _pkg_rdepends="" _restartfl=0;
+	for _pkg_name_depend in ${_restart}; do
+		for _pkg_name in ${_pkg_names}; do
+			if [ "${_pkg_name}" != "${_pkg_name_depend}" ]\
+			&& [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_DISABLED")" != "x1" ]\
+			&& _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+			&& [ -n "${_pkg_depends}" ]\
+			&& rtl_lmatch "${_pkg_depends}" "${_pkg_name_depend}"; then
+				_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "${_pkg_name}")";
+			fi;
+		done;
+	done;
+	_pkg_names="";
+	for _pkg_name in ${_pkg_rdepends}; do
+		if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+		&& [ -n "${_pkg_depends}" ]; then
+			for _pkg_name_depend in ${_pkg_depends}; do
+				if [ "x$(rtl_get_var_unsafe -u "PKG_${_pkg_name_depend}_DISABLED")" = "x1" ]; then
+					EX_PKG_DISABLED="$(rtl_lconcat "${EX_PKG_DISABLED}" "${_pkg_name_depend}")";
+				elif [ "${_test_finished:-1}" -eq 1 ]\
+				&&   ex_pkg_state_test "${_pkg_name_depend}" finish\
+				&&   [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" != "x1" ]\
+				&&   ! rtl_lmatch "${_pkg_rdepends}" "${_pkg_name_depend}"; then
+					EX_PKG_FINISHED="$(rtl_lconcat "${EX_PKG_FINISHED}" "${_pkg_name_depend}")";
+				elif [ "${_test_finished:-1}" -eq 0 ]\
+				||   ! ex_pkg_state_test "${_pkg_name_depend}" finish\
+				||   [ "x$(rtl_get_var_unsafe -u "${_group_name}_FORCE")" = "x1" ]; then
+					_pkg_names="$(rtl_lconcat "${_pkg_names}" "${_pkg_name_depend}")";
+				fi;
+			done;
+		fi;
+		_pkg_names="$(rtl_lconcat "${_pkg_names}" "${_pkg_name}")";
+	done;
+	EX_PKG_DISABLED="$(rtl_uniq ${EX_PKG_DISABLED})";
+	EX_PKG_FINISHED="$(rtl_uniq ${EX_PKG_FINISHED})";
+	EX_PKG_NAMES="$(rtl_uniq ${_pkg_names})";
 };
 
 # vim:filetype=sh textwidth=0

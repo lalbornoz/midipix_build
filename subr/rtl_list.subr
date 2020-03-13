@@ -65,6 +65,11 @@ rtl_lsearch() {
 	echo "${_lnew}";
 };
 
+rtl_lsort() {
+	local _list="${1}" _sep="${2:- }";
+	printf "%s" "${_list}" | tr "${_sep}" "\n" | sort | paste -s -d "${_sep}";
+};
+
 rtl_lunfold_depends() {
 	local _vname_template="${1}" _depends="" _name="" _names=""; shift;
 	for _name in "${@}"; do
