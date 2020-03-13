@@ -164,11 +164,9 @@ pkgtoolp_init_package() {
 pkgtoolp_init_prereqs() {
 	local _cmd="" _cmds_missing="" _rc=0; _status="";
 	for _cmd in	\
-			awk bunzip2 bzip2 cat chmod cmake cp date find flock	\
-			g++ gcc git grep gunzip gzip hostname install kill	\
-			ln lzip make mkdir mkfifo mktemp mv paste patch perl	\
-			pgrep pkill printf readlink rm sed sha256sum sort	\
-			tail tar test touch tr uniq wget xz zip; do
+			awk bzip2 cat chmod cp date find grep hostname mkdir	\
+			mktemp mv paste printf readlink rm sed sort tar test	\
+			touch tr uniq; do
 		if ! which "${_cmd}" >/dev/null 2>&1; then
 			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
 		fi;
