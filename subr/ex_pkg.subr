@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 #
@@ -130,14 +130,14 @@ ex_pkg_load_groups() {
 	local  _build_groups="" _fname="" _group="" _groups="";
 	for _fname in $(find ./groups -name *.group | sort); do
 		rtl_fileop source_opt "${_fname}";
-		if [ -n "${GROUP_TARGET}" ]; then
+		if [ -n "${GROUP_TARGET:-}" ]; then
 			_group="${GROUP_TARGET}"; unset GROUP_TARGET;
 		else
 			_group="${_fname##*/}"; _group="${_group%.group}"; _group="${_group#*.}";
 		fi;
 		if ! rtl_lmatch "${_groups}" "${_group}"; then
 			_groups="$(rtl_lconcat "${_groups}" "${_group}")";
-			if [ -n "${GROUP_AUTO}" ]; then
+			if [ -n "${GROUP_AUTO:-}" ]; then
 				if [ "${GROUP_AUTO:-0}" -ne 0 ]; then
 					_build_groups="$(rtl_lconcat "${_build_groups}" "${_group}")";
 				fi;

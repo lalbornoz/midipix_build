@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 buildp_init_args() {
@@ -11,86 +11,72 @@ buildp_init_args() {
 	&& [ -e "${PREFIX}/build.gitref" ]\
 	&& [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
 		_rc=0; _status="Git repository has not changed since last build and --as-needed was specified.";
-	else	case "${ARG_PARALLEL}" in
-		auto)	if ! ARG_PARALLEL="$(rtl_get_cpu_count)"; then
-				_rc=1; _status="Error: failed to get CPU count.";
-			else
-				ARG_PARALLEL=$((${ARG_PARALLEL}/2));
-			fi; ;;
-		"")	ARG_PARALLEL=1; ;;
-		*)	if ! rtl_isnumber "${ARG_PARALLEL}"; then
-				_rc=1; _status="Error: invalid jobs count \`${ARG_PARALLEL}'.";
-			fi; ;;
+	else	case "${ARG_FETCH_FORCE}" in
+		ipv4)	DEFAULT_GIT_ARGS="$(rtl_lconcat "-4" "${DEFAULT_GIT_ARGS}")";
+			DEFAULT_WGET_ARGS="$(rtl_lconcat "-4" "${DEFAULT_GIT_ARGS}")"; ;;
+		ipv6)	DEFAULT_GIT_ARGS="$(rtl_lconcat "-6" "${DEFAULT_GIT_ARGS}")";
+			DEFAULT_WGET_ARGS="$(rtl_lconcat "-6" "${DEFAULT_GIT_ARGS}")"; ;;
+		esac;
+		case "${ARG_RESTART}" in
+		\*\*\*[a-zA-Z]*)
+				ARG_RESTART="${ARG_RESTART#\*\*\*}"; ARG_RESTART_RECURSIVE=3; ;;
+		\*\*[a-zA-Z]*)	ARG_RESTART="${ARG_RESTART#\*\*}"; ARG_RESTART_RECURSIVE=2; ;;
+		\*[a-zA-Z]*)	ARG_RESTART="${ARG_RESTART#\*}"; ARG_RESTART_RECURSIVE=1; ;;
+		ALL)		ARG_RESTART_AT=ALL; ARG_RESTART_RECURSIVE=2; ;;
+		LAST)		ARG_RESTART_AT=ALL; ARG_RESTART_RECURSIVE=0;
+				if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
+				&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
+					_last_pkg="$(cat "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}")";
+					rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
+					rtl_state_clear "${BUILD_WORKDIR}" "${_last_pkg}";
+					ARG_RESTART="${_last_pkg}";
+				else
+					_rc=1; _status="Error: cannot rebuild last failed package.";
+				fi; ;;
 		esac;
 		if [ "${_rc:-0}" -eq 0 ]; then
-			DEFAULT_BUILD_CPUS="${ARG_PARALLEL}";
-			case "${ARG_FETCH_FORCE}" in
-			ipv4)	DEFAULT_GIT_ARGS="$(rtl_lconcat "-4" "${DEFAULT_GIT_ARGS}")";
-				DEFAULT_WGET_ARGS="$(rtl_lconcat "-4" "${DEFAULT_GIT_ARGS}")"; ;;
-			ipv6)	DEFAULT_GIT_ARGS="$(rtl_lconcat "-6" "${DEFAULT_GIT_ARGS}")";
-				DEFAULT_WGET_ARGS="$(rtl_lconcat "-6" "${DEFAULT_GIT_ARGS}")"; ;;
-			esac;
 			case "${ARG_RESTART}" in
-			\*\*\*[a-zA-Z]*)
-					ARG_RESTART="${ARG_RESTART#\*\*\*}"; ARG_RESTART_RECURSIVE=3; ;;
-			\*\*[a-zA-Z]*)	ARG_RESTART="${ARG_RESTART#\*\*}"; ARG_RESTART_RECURSIVE=2; ;;
-			\*[a-zA-Z]*)	ARG_RESTART="${ARG_RESTART#\*}"; ARG_RESTART_RECURSIVE=1; ;;
-			ALL)		ARG_RESTART_AT=ALL; ARG_RESTART_RECURSIVE=2; ;;
-			LAST)		ARG_RESTART_AT=ALL; ARG_RESTART_RECURSIVE=0;
-					if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
-					&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
-						_last_pkg="$(cat "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}")";
-						rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
-						rtl_state_clear "${BUILD_WORKDIR}" "${_last_pkg}";
-						ARG_RESTART="${_last_pkg}";
-					else
-						_rc=1; _status="Error: cannot rebuild last failed package.";
-					fi; ;;
+			*:*)		ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="$(rtl_llift "${ARG_RESTART%%:*}" "," " ")"; ;;
+			*)		ARG_RESTART="$(rtl_llift "${ARG_RESTART}" "," " ")"; ARG_RESTART_AT=ALL; ;;
 			esac;
-			if [ "${_rc:-0}" -eq 0 ]; then
-				case "${ARG_RESTART}" in
-				*:*)		ARG_RESTART_AT="${ARG_RESTART#*:}"; ARG_RESTART="$(rtl_llift "${ARG_RESTART%%:*}" "," " ")"; ;;
-				*)		ARG_RESTART="$(rtl_llift "${ARG_RESTART}" "," " ")"; ARG_RESTART_AT=ALL; ;;
-				esac;
-				if ! ex_pkg_load_groups; then
-					_rc=1; _status="Error: failed to load build groups.";
-				else	if ! rtl_lmatch "${ARG_DIST}" "rpm" ","; then
-						EX_PKG_BUILD_GROUPS="$(rtl_lfilter "${EX_PKG_BUILD_GROUPS}" "host_deps_rpm")";
+			if ! ex_pkg_load_groups; then
+				_rc=1; _status="Error: failed to load build groups.";
+			else	if ! rtl_lmatch "${ARG_DIST}" "rpm" ","; then
+					EX_PKG_BUILD_GROUPS="$(rtl_lfilter "${EX_PKG_BUILD_GROUPS}" "host_deps_rpm")";
+				fi;
+				if [ -z "${BUILD_GROUPS}" ]; then
+					BUILD_GROUPS="${EX_PKG_BUILD_GROUPS}";
+				else	for _group in ${BUILD_GROUPS}; do
+						if ! rtl_lmatch "${EX_PKG_BUILD_GROUPS}" "${_group}"; then
+							_rc=1; _status="Error: unknown build group \`${_group}'."; break;
+						fi;
+					done;
+				fi;
+				if [ "${_rc:-0}" -eq 0 ]; then
+					if [ -n "${ARG_DIST}" ]; then
+						BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "dist")" "dist")";
 					fi;
-					if [ -z "${BUILD_GROUPS}" ]; then
-						BUILD_GROUPS="${EX_PKG_BUILD_GROUPS}";
-					else	for _group in ${BUILD_GROUPS}; do
-							if ! rtl_lmatch "${EX_PKG_BUILD_GROUPS}" "${_group}"; then
-								_rc=1; _status="Error: unknown build group \`${_group}'."; break;
+					if [ -n "${ARG_RESTART}" ]; then
+						for _pkg_name in ${ARG_RESTART}; do
+							if ! ex_pkg_find_package "${BUILD_GROUPS}" "${_pkg_name}" >/dev/null; then
+								_pkg_names_unknown="$(rtl_lconcat "${_pkg_names_unknown}" "${_pkg_name}")";
 							fi;
 						done;
+						case "$(rtl_llength "${_pkg_names_unknown}")" in
+						0)	;;
+						1)	_rc=1; _status="Error: unknown package \`${_pkg_names_unknown}'."; ;;
+						*)	_rc=1; _status="Error: unknown packages: $(rtl_subst "${_pkg_names_unknown}" " " ", ")"; ;;
+						esac;
 					fi;
-					if [ "${_rc:-0}" -eq 0 ]; then
-						if [ -n "${ARG_DIST}" ]; then
-							BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "dist")" "dist")";
-						fi;
-						if [ -n "${ARG_RESTART}" ]; then
-							for _pkg_name in ${ARG_RESTART}; do
-								if ! ex_pkg_find_package "${BUILD_GROUPS}" "${_pkg_name}" >/dev/null; then
-									_pkg_names_unknown="$(rtl_lconcat "${_pkg_names_unknown}" "${_pkg_name}")";
-								fi;
-							done;
-							case "$(rtl_llength "${_pkg_names_unknown}")" in
-							0)	;;
-							1)	_rc=1; _status="Error: unknown package \`${_pkg_names_unknown}'."; ;;
-							*)	_rc=1; _status="Error: unknown packages: $(rtl_subst "${_pkg_names_unknown}" " " ", ")"; ;;
-							esac;
-						fi;
-						if [ "${_rc}" -eq 0 ]; then
-							case "${ARG_VERBOSE:-0}" in
-							0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
-							1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-							2)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-							3)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-							4)	rtl_fileop_set_log 1; rtl_log_set_lvl 3; ;;
-							*)	_rc=1; _status="Error: invalid verbosity level (max. -vvvv)"; ;;
-							esac;
-						fi;
+					if [ "${_rc}" -eq 0 ]; then
+						case "${ARG_VERBOSE:-0}" in
+						0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
+						1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+						2)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+						3)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+						4)	rtl_fileop_set_log 1; rtl_log_set_lvl 3; ;;
+						*)	_rc=1; _status="Error: invalid verbosity level (max. -vvvv)"; ;;
+						esac;
 					fi;
 				fi;
 			fi;
@@ -156,7 +142,7 @@ buildp_init_getopts() {
 	: ${ARCH:="nt64"}; : ${BUILD:="debug"};
 	ARG_AS_NEEDED=0; ARG_CLEAN_BUILDS=""; ARG_DEBUG_MINIPIX=0; ARG_DIST=1; ARG_DUMP_IN="";
 	ARG_DUMP_ON_ABORT=0; ARG_FETCH_FORCE=0; ARG_PARALLEL=1; ARG_RELAXED=0; ARG_RESTART="";
-	ARG_VERBOSE=0;
+	ARG_RESTART_AT=""; ARG_RESTART_RECURSIVE=""; ARG_VERBOSE=0;
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		--as-needed)	ARG_AS_NEEDED=1; _shiftfl=1; ;;
@@ -209,6 +195,22 @@ buildp_init_getopts() {
 			*)		BUILD_GROUPS="$(rtl_lconcat "${BUILD_GROUPS}" "${_arg}")"; ;;
 			esac; shift;
 		done;
+		if [ "${_rc:-0}" -eq 0 ]; then
+			case "${ARG_PARALLEL}" in
+			auto)	if ! ARG_PARALLEL="$(rtl_get_cpu_count)"; then
+					_rc=1; _status="Error: failed to get CPU count.";
+				else
+					ARG_PARALLEL=$((${ARG_PARALLEL}/2));
+				fi; ;;
+			"")	ARG_PARALLEL=1; ;;
+			*)	if ! rtl_isnumber "${ARG_PARALLEL}"; then
+					_rc=1; _status="Error: invalid jobs count \`${ARG_PARALLEL}'.";
+				fi; ;;
+			esac;
+			if [ "${_rc:-0}" -eq 0 ]; then
+				DEFAULT_BUILD_CPUS="${ARG_PARALLEL}";
+			fi;
+		fi;
 	fi;
 	return "${_rc}";
 };

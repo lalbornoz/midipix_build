@@ -146,6 +146,6 @@ build() {
 	fi;
 };
 
-set +o errexit -o noglob; build "${@}";
+set +o errexit -o noglob -o nounset; build "${@}";
 
 # vim:filetype=sh textwidth=0

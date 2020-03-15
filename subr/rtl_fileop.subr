@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 #
@@ -28,28 +28,28 @@ rtl_fileop() {
 	case "${_op}" in
 	cd)	if [ \( -z "${1}" \) -o ! \( -L "${1}" -o -e "${1}" \) ]; then
 			rtl_log_msg fatalexit "Invalid or non-existent directory \`%s'." "${1}";
-		elif rtlp_fileop_check "${PREFIX}" "${1}"; then
+		elif rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 			rtlp_fileop_log "Changing working directory to \`${1}'.";
 			cd -- "${1}"; _rc="${?}";
 		fi; ;;
 	chmod)	if [ "${#}" -lt 2 ]; then
 			rtl_log_msg fatalexit "Missing parameters (in: chmod %s.)" "${*}";
 		elif _mode="${1}" && shift\
-		&&   rtlp_fileop_check "${PREFIX}" "${*}"; then
+		&&   rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			rtlp_fileop_log "Changing file mode bits of \`${*}' to \`${_mode}'.";
 			chmod -- "${_mode}" "${@}"; _rc="${?}";
 		fi; ;;
 	chown)	if [ "${#}" -lt 2 ]; then
 			rtl_log_msg fatalexit "Missing parameters (in: chown %s.)" "${*}";
 		elif _owner="${1}" && shift\
-		&&   rtlp_fileop_check "${PREFIX}" "${*}"; then
+		&&   rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			rtlp_fileop_log "Changing file owner of \`${*}' to \`${_owner}'.";
 			chown -- "${_owner}" "${@}"; _rc="${?}";
 		fi; ;;
 	cp_follow)
 		if [ "${#}" -lt 2 ]; then
 			rtl_log_msg fatalexit "Missing parameters (in: cp_follow %s}.)" "${*}";
-		elif rtlp_fileop_check "${PREFIX}" "${*}"; then
+		elif rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
 			rtlp_fileop_log "Copying \`${_src}' into \`${_dst}' w/ -pLR.";
@@ -57,7 +57,7 @@ rtl_fileop() {
 		fi; ;;
 	cp)	if [ "${#}" -lt 2 ]; then
 			rtl_log_msg fatalexit "Missing parameters (in: cp %s.)" "${*}";
-		elif rtlp_fileop_check "${PREFIX}" "${*}"; then
+		elif rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
 			rtlp_fileop_log "Copying \`${_src}' into \`${_dst}' w/ -pPR.";
@@ -69,7 +69,7 @@ rtl_fileop() {
 		else	_dst="$(while [ ""${#}"" -gt 2 ]; do shift; done; printf "%s" "${2}")";
 			_install_args="$(while [ ""${#}"" -gt 2 ]; do printf "%s" "${1}"; shift; done)";
 			_src="$(while [ ""${#}"" -gt 2 ]; do shift; done; printf "%s" "${1}")";
-			if rtlp_fileop_check "${PREFIX}" "${_dst}" "${_src}"; then
+			if rtlp_fileop_check "${PREFIX:-}" "${_dst}" "${_src}"; then
 				rtlp_fileop_log "Installing \`${_src}' into \`${_dst}' w/ ${_install_args}.";
 				install "${@}"; _rc="${?}";
 			fi;
@@ -77,7 +77,7 @@ rtl_fileop() {
 	ln_symbolic)
 		if [ \( -z "${1}" \) -o \( -z "${2}" \) ]; then
 			rtl_log_msg fatalexit "Missing parameters (in: ln_symbolic %s.)" "${*}";
-		elif rtlp_fileop_check "${PREFIX}" "${2}"; then
+		elif rtlp_fileop_check "${PREFIX:-}" "${2}"; then
 			if rtl_fileop test "${2}"; then
 				rtl_fileop rm "${2}";
 			fi;
@@ -88,7 +88,7 @@ rtl_fileop() {
 		fi; ;;
 	mv)	if [ \( -z "${1}" \) -o \( -z "${2}" \) ]; then
 			rtl_log_msg fatalexit "Missing parameters (in: mv %s.)" "${*}";
-		elif rtlp_fileop_check "${PREFIX}" "${1}" "${2}"; then
+		elif rtlp_fileop_check "${PREFIX:-}" "${1}" "${2}"; then
 			rtlp_fileop_log "Moving \`${1}' to \`${2}' w/ -fs";
 			mv -f -- "${1}" "${2}"; _rc="${?}";
 		fi; ;;
@@ -98,36 +98,36 @@ rtl_fileop() {
 				rtl_log_msg fatalexit "Missing parameters (in: %s %s.)" "${_op}" "${*}";
 			elif [ "${_op}" = mkdir ]\
 			&& [ ! -d "${1}" ]\
-			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				if rtl_fileop test "${1}"; then
 					rtl_fileop rm "${1}";
 				fi;
 				rtlp_fileop_log "Making directory \`${1}'.";
 				mkdir -p -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = mkfifo ]\
-			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				if rtl_fileop test "${1}"; then
 					rtl_fileop rm "${1}";
 				fi;
 				rtlp_fileop_log "Creating FIFO \`${1}'.";
-				rtlp_fileop_check "${PREFIX}" "${1}";
+				rtlp_fileop_check "${PREFIX:-}" "${1}";
 				mkfifo -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = rm ]\
 			&& rtl_fileop test "${1}"\
-			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				rtlp_fileop_log "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = source_opt ]\
 			&& rtl_fileop test "${1}"\
-			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				rtlp_fileop_log "Sourcing file \`${1}'.";
 				. "${1}"; _rc="${?}";
 			elif [ "${_op}" = test ]\
-			&& rtlp_fileop_check "${PREFIX}" "${1}"\
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"\
 			&& ! [ \( -L "${1}" \) -o \( -e "${1}" \) ]; then
 				return 1;
 			elif [ "${_op}" = touch ]\
-			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				rtlp_fileop_log "Touching file \`${1}'.";
 				touch -- "${1}"; _rc="${?}";
 			fi; shift;

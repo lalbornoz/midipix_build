@@ -1,12 +1,12 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkg_install_subdirs() {
 	local _spec="";
 	for _spec in \
-			"${PKG_INSTALL_FILES_DESTDIR}"		\
-			"${PKG_INSTALL_FILES_DESTDIR_EXTRA}"; do
+			"${PKG_INSTALL_FILES_DESTDIR:-}"	\
+			"${PKG_INSTALL_FILES_DESTDIR_EXTRA:-}"; do
 		if ! rtl_install "${PKG_DESTDIR}" ${_spec}; then
 			return 1;
 		fi;

@@ -1,27 +1,35 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkg_build() {
-	local _no_autoconf="";
-	if [ ! -x "${PKG_CONFIGURE}" ]; then
+	local _libtool="" _no_autoconf="";
+	case "${PKG_LIBTOOL:-}" in
+	"")	_libtool=""; ;;
+	none)	_libtool=""; ;;
+	*)	_libtool="${PKG_LIBTOOL}"; ;;
+	esac;
+	if [ ! -x "${PKG_CONFIGURE:-}" ]; then
 		_no_autoconf=1;
 	fi;
 	# N.B.	We only specify CC= here if the current package does not use GNU
 	#	autoconf as it often abuses it by appending -std={gnu99,...} to it
 	#	instead of amending CFLAGS.
-	rtl_run_cmd_unsplit make						\
-		${PKG_MAKEFLAGS_BUILD}						\
-		${PKG_MAKEFLAGS_BUILD_EXTRA}					\
-		"AR=${PKG_AR}" "${_no_autoconf:+CC=${PKG_CC}}"			\
-		"RANLIB=${PKG_RANLIB}"						\
-		"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"		\
-		"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"	\
-		"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"		\
-		"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"\
-		"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"		\
-		"${PKG_PKG_CONFIG_PATH:+PKG_CONFIG_PATH=${PKG_PKG_CONFIG_PATH}}"\
-		"LIBTOOL=${PKG_LIBTOOL:-slibtool}";
+	rtl_run_cmd_unsplit make							\
+		${PKG_MAKEFLAGS_BUILD:-}						\
+		${PKG_MAKEFLAGS_BUILD_EXTRA:-}						\
+		"AR=${PKG_AR}" "${_no_autoconf:+CC=${PKG_CC}}" "RANLIB=${PKG_RANLIB}"	\
+		"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"			\
+		"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"		\
+		"${PKG_CPPFLAGS_BUILD:+CPPFLAGS=${PKG_CPPFLAGS_BUILD}}"			\
+		"${PKG_CPPFLAGS_BUILD_EXTRA:+CPPFLAGS+=${PKG_CPPFLAGS_BUILD_EXTRA}}"	\
+		"${PKG_CXXFLAGS_BUILD:+CXXFLAGS=${PKG_CXXFLAGS_BUILD}}"			\
+		"${PKG_CXXFLAGS_BUILD_EXTRA:+CXXFLAGS+=${PKG_CXXFLAGS_BUILD_EXTRA}}"	\
+		"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"			\
+		"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"	\
+		"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"			\
+		"${PKG_PKG_CONFIG_PATH:+PKG_CONFIG_PATH=${PKG_PKG_CONFIG_PATH}}"	\
+		${_libtool:+"LIBTOOL=${_libtool}"};
 };
 
 # vim:filetype=sh

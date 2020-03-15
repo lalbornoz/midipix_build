@@ -1,12 +1,12 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkg_configure_autotools() {
 	local _config_cache="" _fname="" _subdir_tgt="";
 	if rtl_exists_any "${PKG_BASE_DIR}/${PKG_SUBDIR}"							\
 			"config.guess" "configure.ac" "configure.in" "configure";
-	then	rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}";
+	then	rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH:-}";
 		if [ "${PKG_FORCE_AUTORECONF:-0}" -eq 1 ]\
 		&& ! (cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoreconf -fiv); then
 			return 1;
@@ -50,10 +50,11 @@ pkg_configure_autotools() {
 			if ! rtl_fileop touch "${PKG_BUILD_DIR}/config.cache"; then
 				return 1;
 			else	for _config_cache in \
-						"${PKG_CONFIG_CACHE}"						\
-						"${PKG_CONFIG_CACHE_LOCAL}"					\
-						"${PKG_CONFIG_CACHE_EXTRA}";
-				do	if ! printf "%s" "${_config_cache}"					|\
+						"${PKG_CONFIG_CACHE:-}"						\
+						"${PKG_CONFIG_CACHE_LOCAL:-}"					\
+						"${PKG_CONFIG_CACHE_EXTRA:-}";
+				do	if [ -n "${_config_cache}" ]\
+					&& ! printf "%s\n" "${_config_cache}"					|\
 							tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache"; then
 						return 1;
 					fi;
@@ -63,7 +64,7 @@ pkg_configure_autotools() {
 				fi;
 			fi;
 		fi;
-		rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH}";
+		rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH:-}";
 	fi;
 };
 

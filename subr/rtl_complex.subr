@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 rtl_check_path_vars() {
@@ -117,7 +117,7 @@ rtl_get_var_unsafe() {
 	else
 		_vname="${1}";
 	fi;
-	eval echo \${${_vname}};
+	eval echo \${${_vname}} 2>/dev/null;
 };
 
 rtl_get_vars_fast() {
