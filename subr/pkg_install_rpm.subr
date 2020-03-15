@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkg_install_rpm() {
@@ -7,9 +7,9 @@ pkg_install_rpm() {
 	if rtl_lmatch "${ARG_DIST}" "rpm" ","\
 	&& [ "${PKG_RPM_DISABLE:-0}" -eq 0 ]\
 	&& [ -x "$(which rpmbuild 2>/dev/null)" ]; then
-		if [ -n "${PKG_URL}" ]; then
+		if [ -n "${PKG_URL:-}" ]; then
 			_pkg_url="${PKG_URL}"; _pkg_version_full="${PKG_VERSION}"; _pkg_version_rpm="${PKG_VERSION%%-*}";
-		elif [ -n "${PKG_URLS_GIT}" ]; then
+		elif [ -n "${PKG_URLS_GIT:-}" ]; then
 			_pkg_version_rpm="$(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse HEAD)";
 			_pkg_version_full="${_pkg_version_rpm} ($(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse --abbrev-ref HEAD))";
 			_pkg_url="${PKG_URLS_GIT%% *}"; _pkg_url="${_pkg_url##*=}"; _pkg_url="${_pkg_url%%@*}";

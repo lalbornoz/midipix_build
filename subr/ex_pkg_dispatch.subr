@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 #
@@ -129,7 +129,7 @@ exp_pkg_dispatch_package() {
 			printf \"fail %s %s\n\" \"${_group_name}\" \"${_pkg_name}\" >&3;	\
 			pkill -U "${$}";							\
 		      fi;" EXIT HUP INT TERM USR1 USR2;
-		set +o errexit -o noglob; BUILD_IS_PARENT=0; rtl_log_set_fname ""; rtl_log_set_no_attr 1;
+		set +o errexit -o noglob -o nounset; BUILD_IS_PARENT=0; rtl_log_set_fname ""; rtl_log_set_no_attr 1;
 		if ex_pkg_env "${_build_steps_default}" "${_build_vars_default}"		\
 				"${_group_name}" 0 "${_pkg_name}" "${_restart_at}" "${_workdir}"; then
 			ex_pkg_exec "${_dispatch_fn}" "${_group_name}" "${_pkg_name}" "${_restart_at}";

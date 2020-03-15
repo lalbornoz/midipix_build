@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 rtl_state_clear() {
@@ -25,8 +25,7 @@ rtl_state_set() {
 };
 
 rtl_state_test() {
-	local _workdir="${1}" _pkg_name="${2}" _build_step="${3}"	\
-		_restart_at="${4}" _done_fname="";
+	local _workdir="${1}" _pkg_name="${2}" _build_step="${3}" _restart_at="${4:-}" _done_fname="";
 	_done_fname="${_workdir}/.${_pkg_name}.${_build_step}";
 	if [ -z "${_restart_at}" ]; then
 		rtl_fileop test "${_done_fname}";

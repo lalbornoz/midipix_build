@@ -1,16 +1,22 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkg_install_make() {
-	rtl_run_cmd_unsplit make							\
-		${PKG_MAKEFLAGS_INSTALL}						\
-		${PKG_MAKEFLAGS_INSTALL_EXTRA}						\
-		AR=${PKG_AR} CC=${PKG_CC} RANLIB=${PKG_RANLIB}				\
-		"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"			\
-		"LIBTOOL=${PKG_LIBTOOL:-slibtool}"					\
-		"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"			\
-		${PKG_INSTALL_TARGET:=install};
+	local _libtool="";
+	case "${PKG_LIBTOOL:-}" in
+	"")	_libtool=""; ;;
+	none)	_libtool=""; ;;
+	*)	_libtool="${PKG_LIBTOOL}"; ;;
+	esac;
+	rtl_run_cmd_unsplit make					\
+		${PKG_MAKEFLAGS_INSTALL:-}				\
+		${PKG_MAKEFLAGS_INSTALL_EXTRA:-}			\
+		AR="${PKG_AR}" CC="${PKG_CC}" RANLIB="${PKG_RANLIB}"	\
+		"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"	\
+		${_libtool:+"LIBTOOL=${_libtool}"}			\
+		"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
+		${PKG_INSTALL_TARGET:-install};
 };
 
 # vim:filetype=sh

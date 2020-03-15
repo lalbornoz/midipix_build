@@ -15,7 +15,7 @@ pkgtoolp_info() {
 			"${_group_name}" 1 "${_pkg_name}" "" "${BUILD_WORKDIR}"; then
 		_rc=1; _status="Error: failed to set package environment for \`${_pkg_name}'.";
 	else	rtl_log_env_vars "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
-		if [ -z "${PKG_DEPENDS}" ]; then
+		if [ -z "${PKG_DEPENDS:-}" ]; then
 			rtl_log_msg info "Package \`%s' has no dependencies." "${_pkg_name}";
 		else	rtl_log_msg info "Direct dependencies of \`%s': %s" "${_pkg_name}" "${PKG_DEPENDS}";
 			if ! ex_pkg_unfold_depends 1 1 "${_group_name}" "${_pkg_names}" "${_pkg_name}" 0; then
@@ -186,6 +186,6 @@ pkgtool() {
 	fi;
 };
 
-set +o errexit -o noglob; pkgtool "${@}";
+set +o errexit -o noglob -o nounset; pkgtool "${@}";
 
 # vim:filetype=sh textwidth=0
