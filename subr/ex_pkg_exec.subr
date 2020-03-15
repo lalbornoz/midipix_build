@@ -88,12 +88,6 @@ exp_pkg_exec_step() {
 ex_pkg_exec() {
 	local	_dispatch_fn="${1}" _group_name="${2}" _pkg_name="${3}" _restart_at="${4}"	\
 		_rc=0 _step="" _step_next="";
-	trap "if [ \${?} -eq 0 ]; then								\
-		echo \"done ${_group_name} ${_pkg_name}\" >&3;					\
-	      else										\
-		echo \"fail ${_group_name} ${_pkg_name}\" >&3;					\
-		pkill -U "${$}";								\
-	      fi;" EXIT HUP INT TERM USR1 USR2;
 	if exp_pkg_exec_pre "${_group_name}" "${_pkg_name}" "${_restart_at}"\
 	&& "${_dispatch_fn}" start_pkg_child "${_group_name}" "${_pkg_name}"; then
 		if rtl_test_cmd "pkg_${_pkg_name}_all"; then
@@ -112,7 +106,7 @@ ex_pkg_exec() {
 				elif ! exp_pkg_exec_step "${_group_name}" "${_pkg_name}" "${_restart_at}" "${_step}"; then
 					_rc=1; break;
 				else
-					echo "step ${_group_name} ${_pkg_name} ${_step}" >&3;
+					printf "step %s %s %s\n" "${_group_name}" "${_pkg_name}" "${_step}" >&3;
 					ex_pkg_state_set "${_pkg_name}" "${_step}" "${_step_next:+-${_step_next}}";
 				fi;
 			done;

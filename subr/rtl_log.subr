@@ -2,77 +2,76 @@
 # set +o errexit -o noglob is assumed.
 #
 
-: ${DEFAULT_LOG_MSG_FAIL_COLOUR:=91};
-: ${DEFAULT_LOG_MSG_INFO_COLOUR:=93};
-: ${DEFAULT_LOG_MSG_INF2_COLOUR:=33};
-: ${DEFAULT_LOG_MSG_SUCC_COLOUR:=92};
-: ${DEFAULT_LOG_MSG_SUC2_COLOUR:=32};
-: ${DEFAULT_LOG_MSG_VNFO_COLOUR:=96};
-: ${DEFAULT_LOG_MSG_VUCC_COLOUR:=90};
-: ${DEFAULT_LOG_MSG_VVFO_COLOUR:=96};
-: ${DEFAULT_LOG_MSG_VVVO_COLOUR:=96};
-: ${DEFAULT_LOG_MSG_VVVV_COLOUR:=96};
-: ${DEFAULT_LOG_MSG_WARN_COLOUR:=31};
+#
+# Private globals and subroutines
+#
+RTLP_LOG_NO_ATTR=0;
+RTLP_LOG_FNAME="";
+RTLP_LOG_LVL="0";
+rtl_log_set_fname() { RTLP_LOG_FNAME="${1}"; };
+rtl_log_set_lvl() { RTLP_LOG_LVL="${1}"; };
+rtl_log_set_no_attr() { RTLP_LOG_NO_ATTR="${1}"; };
 
-exp_rtl_log_printf() {
-	local _attrs="${1}" _msg=""; shift; _msg="$(printf "${@}")";
-	if [ "${BUILD_IS_PARENT:-0}" -eq 1 ]\
-	&& [ -n "${DEFAULT_BUILD_LOG_FNAME}" ]\
-	&& [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
-		printf "%s\n" "${_msg}" >> "${DEFAULT_BUILD_LOG_FNAME}";
+rtlp_log_printf() {
+	local _attr="${1}" _fmt="${2}"; shift 2; _msg="$(printf "${_fmt}" "${@}")";
+	if [ -n "${RTLP_LOG_FNAME}" ]; then
+		printf "%s\n" "${_msg}" >> "${RTLP_LOG_FNAME}";
 	fi;
-	printf "\033[0m\033[${_attr}m%s\033[0m\n" "${_msg}";
+	if [ "${RTLP_LOG_NO_ATTR:-0}" -eq 0 ]; then
+		printf "\033[0m\033[${_attr}m%s\033[0m\n" "${_msg}";
+	else
+		printf "%s\n" "${_msg}";
+	fi;
 };
 
+#
+# Public globals
+#
+RTL_LOG_MSG_FATAL_COLOUR=91;		# Bright red
+RTL_LOG_MSG_WARNING_COLOUR=31;		# Dark red
+RTL_LOG_MSG_SUCCESS_COLOUR=33;		# Dark yellow
+RTL_LOG_MSG_SUCCESS_END_COLOUR=32;	# Dark green
+RTL_LOG_MSG_INFO_COLOUR=93;		# Bright yellow
+RTL_LOG_MSG_INFO_END_COLOUR=92;		# Bright green
+RTL_LOG_MSG_NOTICE_COLOUR=96;		# Bright cyan
+RTL_LOG_MSG_VERBOSE_COLOUR=90;		# Dark grey
+RTL_LOG_MSG_DEBUG_COLOUR=36;		# Dark cyan
+
+
 rtl_log_env_vars() {
-	local _nvar=1 _arg="" _arg_len_max=0;
+	local _arg_len_max=0;
 	rtl_log_msg info "Variables for this ${1:-build}:"; shift;
-	while [ ${_nvar} -le ${#} ]; do
-		_arg="$(eval echo \${${_nvar}})";
-		_arg="${_arg%%=*}";
-		if [ ${#_arg} -gt ${_arg_len_max} ]; then
-			_arg_len_max=${#_arg};
-		fi; : $((_nvar+=1));
-	done;
-	while [ ${#} -gt 0 ]; do
-		rtl_log_msg info "$(printf			\
+	_arg_len_max="$(rtl_lmax "${@}")";
+	while [ "${#}" -gt 0 ]; do
+		rtl_log_msg info				\
 			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
-			"${1%%=*}" "$(rtl_get_var_unsafe ${1#*=})")";
+			"${1%%=*}" "$(rtl_get_var_unsafe "${1#*=}")";
 		shift;
 	done;
 };
 
-rtl_log_set_vnfo_lvl() {
-	EXP_RTL_LOG_VNFO_LVL="${1}";
-};
-
 rtl_log_msg() {
-	local _lvl="${1}" _lvl_uc="" _attr=""; shift;
-	if [ "${_lvl}" = vnfo ]\
-	|| [ "${_lvl}" = vucc ]\
-	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 1 ]; then
-		return;
-	elif [ "${_lvl}" = vvfo ]\
-	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 2 ]; then
-		return;
-	elif [ "${_lvl}" = vvvo ]\
-	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 3 ]; then
-		return;
-	elif [ "${_lvl}" = vvvv ]\
-	&& [ "${EXP_RTL_LOG_VNFO_LVL:-0}" -lt 4 ]; then
-		return;
-	fi;
-	_lvl_uc="$(rtl_toupper "${_lvl%exit}")";
-	_attr="$(rtl_get_var_unsafe "DEFAULT_LOG_MSG_${_lvl_uc}_COLOUR")";
-	if [ ${#} -gt 1 ]; then
-		exp_rtl_log_printf "${_attrs}" "==> %s %s %s" "$(rtl_date)" "${1}" "$*";
-	else
-		exp_rtl_log_printf "${_attrs}" "==> %s %s" "$(rtl_date)" "${1}";
-	fi;
-	if [ ${_lvl} = failexit ]; then
+	local _lvl="${1}" _fmt="${2}" _attr=""; shift 2;
+	case "${RTLP_LOG_LVL:-0}" in
+	0)	rtl_lmatch "notice verbose debug" "${_lvl}" && return; ;;
+	1)	rtl_lmatch "verbose debug" "${_lvl}" && return; ;;
+	2)	rtl_lmatch "debug" "${_lvl}" && return; ;;
+	3)	;;
+	esac;
+	case "${_lvl}" in
+	fatal|fatalexit)	_attr="${RTL_LOG_MSG_FATAL_COLOUR}"; ;;
+	warning)		_attr="${RTL_LOG_MSG_WARNING_COLOUR}"; ;;
+	success)		_attr="${RTL_LOG_MSG_SUCCESS_COLOUR}"; ;;
+	success_end)		_attr="${RTL_LOG_MSG_SUCCESS_END_COLOUR}"; ;;
+	info)			_attr="${RTL_LOG_MSG_INFO_COLOUR}"; ;;
+	info_end)		_attr="${RTL_LOG_MSG_INFO_END_COLOUR}"; ;;
+	notice)			_attr="${RTL_LOG_MSG_NOTICE_COLOUR}"; ;;
+	verbose)		_attr="${RTL_LOG_MSG_VERBOSE_COLOUR}"; ;;
+	debug)			_attr="${RTL_LOG_MSG_DEBUG_COLOUR}"; ;;
+	esac;
+	rtlp_log_printf "${_attr}" "==> %s ${_fmt}" "$(rtl_date)" "${@}";
+	if [ "x${_lvl}" = "xfatalexit" ]; then
 		exit 1;
-	else
-		return 0;
 	fi;
 };
 

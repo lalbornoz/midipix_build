@@ -15,7 +15,7 @@ rtl_lfilter() {
 	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS}}"	\
 		_filterfl="" _litem="" _litem_filter="" _lnew="";
 	if [ -z "${_filter}" ]; then
-		echo "${_list}"; return 0;
+		printf "%s" "${_list}"; return 0;
 	else for _litem in ${_list}; do
 		_filterfl=0;
 		for _litem_filter in ${_filter}; do
@@ -27,7 +27,7 @@ rtl_lfilter() {
 			_lnew="${_lnew:+${_lnew}${_sep}}${_litem}";
 		fi;
 	done; fi;
-	echo "${_lnew}";
+	printf "%s" "${_lnew}";
 };
 
 rtl_llength() {
@@ -35,13 +35,13 @@ rtl_llength() {
 	for _litem in ${_list}; do
 		: $((_llength+=1));
 	done;
-	echo "${_llength}";
+	printf "%s" "${_llength}";
 };
 
 rtl_llift() {
 	local _list="${1}" _sep="${2}" _sep_new="${3}" IFS; IFS="${_sep}";
 	set -- ${_list}; IFS="${_sep_new}";
-	echo "${*}";
+	printf "%s" "${*}";
 };
 
 rtl_lmatch() {
@@ -49,11 +49,21 @@ rtl_lmatch() {
 	[ -n "$(rtl_lsearch "${_list}" "${_item}" "${_sep}")" ];
 };
 
+rtl_lmax() {
+	local _len=0 _len_max=0;
+	while [ "${#}" -gt 0 ]; do
+		_len="${#1}";
+		if [ "${_len}" -gt "${_len_max}" ]; then
+			_len_max="${_len}";
+		fi; shift;
+	done; printf "%s" "${_len_max}";
+};
+
 rtl_lsearch() {
 	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS}}"	\
 		_litem="" _litem_filter="" _lnew="";
 	if [ -z "${_filter}" ]; then
-		echo "${_list}"; return 0;
+		printf "%s" "${_list}"; return 0;
 	else for _litem in ${_list}; do
 		for _litem_filter in ${_filter}; do
 			if [ "${_litem_filter}" = "${_litem}" ]; then
@@ -62,7 +72,7 @@ rtl_lsearch() {
 			fi;
 		done;
 	done; fi;
-	echo "${_lnew}";
+	printf "%s" "${_lnew}";
 };
 
 rtl_lsort() {
@@ -80,7 +90,7 @@ rtl_lunfold_depends() {
 		fi;
 		_names="$(rtl_lconcat "${_names}" "${_name}")";
 	done;
-	echo "${_names}";
+	printf "%s" "${_names}";
 };
 
 # vim:filetype=sh

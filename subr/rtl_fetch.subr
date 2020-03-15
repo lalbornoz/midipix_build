@@ -82,7 +82,8 @@ rtl_fetch_url_wget() {
 		if [ -n "${_sha256sum_src}" ]; then
 			set -- $(sha256sum "${_url_dst}");
 			if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
-				rtl_log_msg failexit "Error: hash mismatch for URL \`${_url}' (downloaded file: ${_sha256sum_dst}, from build variables: ${_sha256sum_src}.)";
+				rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (downloaded file: %s, from build variables: %s.)"\
+						"${_url}" "${_sha256sum_dst}" "${_sha256sum_src}";
 			fi;
 		fi;
 		rtl_fileop touch "${_url_dst}.fetched";
