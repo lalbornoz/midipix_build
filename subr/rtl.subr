@@ -2,16 +2,11 @@
 # set +o errexit -o noglob is assumed.
 #
 
-EXP_RTL_IFS="${IFS}";
-
-rtl_basename() { echo "${1##*/}"; };
+rtl_basename() { local _fname="${1##*/}"; printf "%s" "${_fname}"; };
 rtl_date() { command date "+${1:-${DEFAULT_TIMESTAMP_FMT}}"; };
-rtl_dirname() { echo "${1%/*}"; };
-rtl_pop_IFS() { IFS="${EXP_RTL_IFS}"; };
-rtl_push_IFS() { EXP_RTL_IFS="${IFS}"; IFS="${1}"; };
 rtl_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 rtl_test_cmd() { command -v "${1}" >/dev/null; };
-rtl_uniq() { echo "${@}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; };
+rtl_uniq() { if [ "${#}" -gt 0 ]; then printf "%s" "${*}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; fi; };
 rtl_unset_vars() { while [ ${#} -gt 0 ]; do unset "${1}"; shift; done; };
 
 # vim:filetype=sh

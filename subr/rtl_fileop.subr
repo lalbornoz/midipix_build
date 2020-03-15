@@ -2,123 +2,137 @@
 # set +o errexit -o noglob is assumed.
 #
 
-exp_rtl_fileop_check() {
+#
+# Private globals and subroutines
+#
+RTLP_FILEOP_LOG=0;
+rtl_fileop_set_log() { RTLP_FILEOP_LOG="${1}"; };
+
+rtlp_fileop_check() {
 	local _prefix="${1}" _pname="" _rname=""; shift;
 	while [ "${#}" -gt 0 ]; do
 		return 0;
 	shift; done;
 };
 
+rtlp_fileop_log() {
+	local _msg="${1}";
+	if [ "${RTLP_FILEOP_LOG:-0}" -eq 1 ]; then
+		rtl_log_msg debug "${_msg}";
+	fi;
+};
+
+
 rtl_fileop() {
 	local _op="${1}" _dst="" _mode="" _install_args="" _owner="" _rc=0 _src=""; shift;
 	case "${_op}" in
 	cd)	if [ \( -z "${1}" \) -o ! \( -L "${1}" -o -e "${1}" \) ]; then
-			rtl_log_msg failexit "Invalid or non-existent directory \`${1}'.";
-		elif exp_rtl_fileop_check "${PREFIX}" "${1}"; then
-			rtl_log_msg vvvv "Changing working directory to \`${1}'.";
+			rtl_log_msg fatalexit "Invalid or non-existent directory \`%s'." "${1}";
+		elif rtlp_fileop_check "${PREFIX}" "${1}"; then
+			rtlp_fileop_log "Changing working directory to \`${1}'.";
 			cd -- "${1}"; _rc="${?}";
 		fi; ;;
 	chmod)	if [ "${#}" -lt 2 ]; then
-			rtl_log_msg failexit "Missing parameters (in: chmod ${*}.)";
+			rtl_log_msg fatalexit "Missing parameters (in: chmod %s.)" "${*}";
 		elif _mode="${1}" && shift\
-		&&   exp_rtl_fileop_check "${PREFIX}" "${*}"; then
-			rtl_log_msg vvvv "Changing file mode bits of \`${*}' to \`${_mode}'.";
+		&&   rtlp_fileop_check "${PREFIX}" "${*}"; then
+			rtlp_fileop_log "Changing file mode bits of \`${*}' to \`${_mode}'.";
 			chmod -- "${_mode}" "${@}"; _rc="${?}";
 		fi; ;;
 	chown)	if [ "${#}" -lt 2 ]; then
-			rtl_log_msg failexit "Missing parameters (in: chown ${*}.)";
+			rtl_log_msg fatalexit "Missing parameters (in: chown %s.)" "${*}";
 		elif _owner="${1}" && shift\
-		&&   exp_rtl_fileop_check "${PREFIX}" "${*}"; then
-			rtl_log_msg vvvv "Changing file owner of \`${*}' to \`${_owner}'.";
+		&&   rtlp_fileop_check "${PREFIX}" "${*}"; then
+			rtlp_fileop_log "Changing file owner of \`${*}' to \`${_owner}'.";
 			chown -- "${_owner}" "${@}"; _rc="${?}";
 		fi; ;;
 	cp_follow)
 		if [ "${#}" -lt 2 ]; then
-			rtl_log_msg failexit "Missing parameters (in: cp_follow ${*}.)";
-		elif exp_rtl_fileop_check "${PREFIX}" "${*}"; then
+			rtl_log_msg fatalexit "Missing parameters (in: cp_follow %s}.)" "${*}";
+		elif rtlp_fileop_check "${PREFIX}" "${*}"; then
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
-			rtl_log_msg vvvv "Copying \`${_src}' into \`${_dst}' w/ -pLR.";
+			rtlp_fileop_log "Copying \`${_src}' into \`${_dst}' w/ -pLR.";
 			cp -pLR -- "${@}"; _rc="${?}";
 		fi; ;;
 	cp)	if [ "${#}" -lt 2 ]; then
-			rtl_log_msg failexit "Missing parameters (in: cp ${*}.)";
-		elif exp_rtl_fileop_check "${PREFIX}" "${*}"; then
+			rtl_log_msg fatalexit "Missing parameters (in: cp %s.)" "${*}";
+		elif rtlp_fileop_check "${PREFIX}" "${*}"; then
 			_src="${*}"; _src="${_src% *}";
 			_dst="${*}"; _dst="${_dst##* }";
-			rtl_log_msg vvvv "Copying \`${_src}' into \`${_dst}' w/ -pPR.";
+			rtlp_fileop_log "Copying \`${_src}' into \`${_dst}' w/ -pPR.";
 			cp -pPR -- "${@}"; _rc="${?}";
 		fi; ;;
 	install)
 		if [ "${#}" -lt 2 ]; then
-			rtl_log_msg failexit "Missing parameters (in: install ${*}.)";
-		else	_dst="$(while [ ""${#}"" -gt 2 ]; do shift; done; echo "${2}")";
-			_install_args="$(while [ ""${#}"" -gt 2 ]; do echo "${1}"; shift; done)";
-			_src="$(while [ ""${#}"" -gt 2 ]; do shift; done; echo "${1}")";
-			if exp_rtl_fileop_check "${PREFIX}" "${_dst}" "${_src}"; then
-				rtl_log_msg vvvv "Installing \`${_src}' into \`${_dst}' w/ ${_install_args}.";
+			rtl_log_msg fatalexit "Missing parameters (in: install %s.)" "${*}";
+		else	_dst="$(while [ ""${#}"" -gt 2 ]; do shift; done; printf "%s" "${2}")";
+			_install_args="$(while [ ""${#}"" -gt 2 ]; do printf "%s" "${1}"; shift; done)";
+			_src="$(while [ ""${#}"" -gt 2 ]; do shift; done; printf "%s" "${1}")";
+			if rtlp_fileop_check "${PREFIX}" "${_dst}" "${_src}"; then
+				rtlp_fileop_log "Installing \`${_src}' into \`${_dst}' w/ ${_install_args}.";
 				install "${@}"; _rc="${?}";
 			fi;
 		fi; ;;
 	ln_symbolic)
 		if [ \( -z "${1}" \) -o \( -z "${2}" \) ]; then
-			rtl_log_msg failexit "Missing parameters (in: ln_symbolic ${*}.)";
-		elif exp_rtl_fileop_check "${PREFIX}" "${2}"; then
+			rtl_log_msg fatalexit "Missing parameters (in: ln_symbolic %s.)" "${*}";
+		elif rtlp_fileop_check "${PREFIX}" "${2}"; then
 			if rtl_fileop test "${2}"; then
 				rtl_fileop rm "${2}";
 			fi;
 			if [ "${?}" -eq 0 ]; then
-				rtl_log_msg vvvv "Linking \`${1}' to \`${2}' w/ -fs";
+				rtlp_fileop_log "Linking \`${1}' to \`${2}' w/ -fs";
 				ln -fs -- "${1}" "${2}"; _rc="${?}";
 			fi;
 		fi; ;;
 	mv)	if [ \( -z "${1}" \) -o \( -z "${2}" \) ]; then
-			rtl_log_msg failexit "Missing parameters (in: mv ${*}.)";
-		elif exp_rtl_fileop_check "${PREFIX}" "${1}" "${2}"; then
-			rtl_log_msg vvvv "Moving \`${1}' to \`${2}' w/ -fs";
+			rtl_log_msg fatalexit "Missing parameters (in: mv %s.)" "${*}";
+		elif rtlp_fileop_check "${PREFIX}" "${1}" "${2}"; then
+			rtlp_fileop_log "Moving \`${1}' to \`${2}' w/ -fs";
 			mv -f -- "${1}" "${2}"; _rc="${?}";
 		fi; ;;
 	mkdir|mkfifo|rm|source_opt|test|touch)
 		while [ \( "${?}" -eq 0 \) -a \( ""${#}"" -gt 0 \) ]; do
 			if [ -z "${1}" ]; then
-				rtl_log_msg failexit "Missing parameters (in: ${_op} ${*}.)";
+				rtl_log_msg fatalexit "Missing parameters (in: %s %s.)" "${_op}" "${*}";
 			elif [ "${_op}" = mkdir ]\
 			&& [ ! -d "${1}" ]\
-			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
+			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
 				if rtl_fileop test "${1}"; then
 					rtl_fileop rm "${1}";
 				fi;
-				rtl_log_msg vvvv "Making directory \`${1}'.";
+				rtlp_fileop_log "Making directory \`${1}'.";
 				mkdir -p -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = mkfifo ]\
-			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
+			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
 				if rtl_fileop test "${1}"; then
 					rtl_fileop rm "${1}";
 				fi;
-				rtl_log_msg vvvv "Creating FIFO \`${1}'.";
-				exp_rtl_fileop_check "${PREFIX}" "${1}";
+				rtlp_fileop_log "Creating FIFO \`${1}'.";
+				rtlp_fileop_check "${PREFIX}" "${1}";
 				mkfifo -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = rm ]\
 			&& rtl_fileop test "${1}"\
-			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
-				rtl_log_msg vvvv "Removing directory or file \`${1}'.";
+			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+				rtlp_fileop_log "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}"; _rc="${?}";
 			elif [ "${_op}" = source_opt ]\
 			&& rtl_fileop test "${1}"\
-			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
-				rtl_log_msg vvvv "Sourcing file \`${1}'.";
+			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+				rtlp_fileop_log "Sourcing file \`${1}'.";
 				. "${1}"; _rc="${?}";
 			elif [ "${_op}" = test ]\
-			&& exp_rtl_fileop_check "${PREFIX}" "${1}"\
+			&& rtlp_fileop_check "${PREFIX}" "${1}"\
 			&& ! [ \( -L "${1}" \) -o \( -e "${1}" \) ]; then
 				return 1;
 			elif [ "${_op}" = touch ]\
-			&& exp_rtl_fileop_check "${PREFIX}" "${1}"; then
-				rtl_log_msg vvvv "Touching file \`${1}'.";
+			&& rtlp_fileop_check "${PREFIX}" "${1}"; then
+				rtlp_fileop_log "Touching file \`${1}'.";
 				touch -- "${1}"; _rc="${?}";
 			fi; shift;
 		done; ;;
-	*)	rtl_log_msg failexit "Error: rtl_fileop() called w/ invalid parameter(s): ${*}"; ;;
+	*)	rtl_log_msg fatalexit "Error: rtl_fileop() called w/ invalid parameter(s): %s" "${*}"; ;;
 	esac; return "${_rc}";
 };
 

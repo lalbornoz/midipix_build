@@ -157,24 +157,33 @@ Package archive files and/or Git repositories additionally consume at least
 [//]: # "{{{ 3. Common tasks"
 ## 3. Common tasks
 
-Rebuild set of packages in isolation, along w/ their dependencies, if any, as
-needed, or forcibly, respectively:
+Rebuild set of packages in isolation:
 ```shell
 ./build.sh [ ... ] -r mc,zsh
+```
+  
+Rebuild set of packages along w/ their dependencies, if any, as needed, or forcibly,
+respectively:
+```shell
 ./build.sh [ ... ] -r \*mc,zsh
 ./build.sh [ ... ] -r \*\*mc,zsh
 ```
-
+  
+Forcibly rebuild all reverse dependencies of a set of packages:
+```shell
+./build.sh [ ... ] -r \*\*\*glib,libflac
+```
+  
 Restart the ``configure``, ``build``, and ``install`` steps of the ``coreutils``
 package:
 ```shell
 ./build.sh -r coreutils:configure,build,install
 ```
-
+  
 Rebuild entire build groups including or excluding group dependencies, respectively:
 ```shell
 ./build.sh [ ... ] -r ALL native_runtime
-./build.sh [ ... ] -r ALL \*native_runtime
+./build.sh [ ... ] -r ALL =native_runtime
 ```
   
 [Back to top](#table-of-contents)
@@ -188,7 +197,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[
                   [-F ipv4|ipv6|offline]    [-h]    [-p jobs]    [-P]   [-r ALL|LAST]
                   [-r [*[*[*]]]name[,..][:step,..]]  [-R] [-v[v[v[v]]]] [--as-needed]
                   [--debug-minipix] [--dump-on-abort]
-                  [[*]<group>|<variable name>=<variable override>[ ..]]
+                  [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build; defaults to debug.
@@ -239,7 +248,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[
                           host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
 
-                          Prepend w/ `*' to inhibit group-group dependency expansion.
+                          Prepend w/ `=' to inhibit group-group dependency expansion.
 
         <variable name>=<variable override>[ ..]
                           Override build or package variable.
@@ -253,11 +262,11 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[
 
 Packages are grouped into *build groups* according to sets of common package
 variable defaults, such as ``${PKG_CFLAGS_CONFIGURE}, ${PKG_LDFLAGS_CONFIGURE}``
-and ``${PKG_CONFIGURE_ARGS}``, and semantic associativity, such as the ``native_runtime``
-build group comprising the Midipix runtime components. Packages may belong to
-more than one build group such as when subsumed by a shorthand build group e.g.
-the ``dev_packages`` build group, as long as the default set of build groups or
-as overriden on the command line does not entail group membership conflicts.  
+and ``${PKG_CONFIGURE_ARGS}``, and semantic interrelatedness, such as the
+``native_runtime`` build group comprising the Midipix runtime components.
+Packages may belong to more than one build group such as when subsumed by a shorthand
+build group e.g. the ``dev_packages`` build group, as long as the default set of build
+groups or as overriden on the command line does not entail group membership conflicts.  
   
 Build groups files beneath ``groups/`` named ``[0-9][0-9][0-9].<group name>.group``
 contain package variable defaults, the alphabetically sorted list of contained
