@@ -21,6 +21,15 @@ rtl_match() {
 	fi;
 };
 
+rtl_matchr() {
+	local _s="${1}" _find="${2}";
+	if [ "${_s%${_find}}" != "${_s}" ]; then
+		return 0;
+	else
+		return 1;
+	fi;
+};
+
 rtl_subst() {
 	local _s="${1}" _find="${2}" _replace="${3}" _prefix="" _s_new="";
 	while [ -n "${_s}" ]; do
@@ -29,7 +38,7 @@ rtl_subst() {
 			_s_new="${_s_new:+${_s_new}}${_prefix}${_replace}"; ;;
 	*)		_s_new="${_s_new:+${_s_new}}${_s}"; _s=""; ;;
 	esac; done;
-	echo "${_s_new}";
+	printf "%s" "${_s_new}";
 };
 
 rtl_tolower() {
@@ -68,7 +77,7 @@ rtl_tolower() {
 			_s="${_s#[^ABCDEFGHIJKLMNOPQRSTUVWXYZ]}";
 		done; ;;
 	esac; done;
-	echo "${_s_new}";
+	printf "%s" "${_s_new}";
 };
 
 rtl_toupper() {
@@ -107,7 +116,7 @@ rtl_toupper() {
 			_s="${_s#[^abcdefghijklmnopqrstuvwxyz]}";
 		done; ;;
 	esac; done;
-	echo "${_s_new}";
+	printf "%s" "${_s_new}";
 };
 
 # vim:filetype=sh

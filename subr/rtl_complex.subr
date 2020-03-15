@@ -27,6 +27,13 @@ rtl_clean_env() {
 	rtl_unset_vars $(rtl_lfilter "${_env_vars}" "${_env_vars_except}");
 };
 
+rtl_dirname() {
+	local _dname="${1%/*}";
+	while rtl_matchr "${_dname}" "*/"; do
+		_dname="${_dname%/}";
+	done; printf "%s" "${_dname:-/}";
+};
+
 rtl_exists_any() {
 	local _subdir="${1}"; shift;
 	while [ "${#}" -gt 0 ]; do
@@ -79,12 +86,13 @@ rtl_filter_vars() {
 			esac; ;;
 		esac;
 		if "${_fn}" "${_vname}"; then
-			_vars="$(rtl_lconcat "${_vars}" "${_var_spec}" "\n")"; _fnfl=1;
+			_vars="${_vars:+${_vars}
+}${_var_spec}"; _fnfl=1;
 		else
 			_fnfl=0;
 		fi;
 	done;
-	echo "${_vars}";
+	printf "%s" "${_vars}";
 };
 
 rtl_get_cpu_count() {
@@ -96,7 +104,7 @@ rtl_get_cpu_count() {
 				if rtl_match "${_line}" "processor*:"; then
 					: $((_ncpus+=1));
 				fi;
-			done < /proc/cpuinfo; echo "${_ncpus}";
+			done < /proc/cpuinfo; printf "%s" "${_ncpus}";
 		fi; ;;
 	*)	_rc=1; _status="Error: unknown platform \`${_sname}'."; ;;
 	esac; return "${_rc}";
@@ -112,6 +120,11 @@ rtl_get_var_unsafe() {
 	eval echo \${${_vname}};
 };
 
+rtl_get_vars_fast() {
+	local _pattern="${1}";
+	set | awk -F= '/'"${_pattern}"'/{print $1}' | sort;
+};
+
 rtl_head() {
 	local _pattern="${1}" _s="${2}";
 	while true; do
@@ -121,7 +134,7 @@ rtl_head() {
 			_s="${_s%%${_pattern}}";
 		fi;
 	done;
-	echo "${_s}";
+	printf "%s" "${_s}";
 };
 
 rtl_is_newer() {

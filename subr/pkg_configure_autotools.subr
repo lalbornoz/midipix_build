@@ -53,7 +53,7 @@ pkg_configure_autotools() {
 						"${PKG_CONFIG_CACHE}"						\
 						"${PKG_CONFIG_CACHE_LOCAL}"					\
 						"${PKG_CONFIG_CACHE_EXTRA}";
-				do	if ! echo "${_config_cache}"						|\
+				do	if ! printf "%s" "${_config_cache}"					|\
 							tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache"; then
 						return 1;
 					fi;

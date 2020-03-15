@@ -5,9 +5,9 @@
 pkgp_fetch_extract_type() {
 	local _fname="${1}";
 	if [ "${1##*.tar.}" != "${1}" ]; then
-		echo "${1##*.tar.}";
+		printf "%s" "${1##*.tar.}";
 	elif [ "${1##*.t}" != "${1}" ]; then
-		echo "${1##*.t}";
+		printf "%s" "${1##*.t}";
 	fi;
 };
 

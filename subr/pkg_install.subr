@@ -23,7 +23,7 @@ pkg_install() {
 			fi;
 		done; IFS="${_ifs_old}";
 		(set +o errexit -o noglob; trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
-		date; echo trying to grab lock
+		date;
 		while true; do
 			if flock -E 622 -w 600 4; then
 				break;
@@ -44,7 +44,7 @@ pkg_install() {
 				return 1;
 			else
 				_pkglist_name="${PKG_BASE_DIR##*/}"; _pkglist_name="${_pkglist_name%%-*}";
-				if ! echo "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}"; then
+				if ! printf "%s" "${_pkglist_name}" >> "${PREFIX}/pkglist.${PKG_BUILD_TYPE}"; then
 					return 1;
 				fi;
 			fi;
