@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkg_configure_patch() {
@@ -10,7 +10,7 @@ pkg_configure_patch() {
 			"${_patch_dir}/${_pkg_name}/"*.patch				\
 			"${_patch_dir}/${_pkg_name_full}.local.patch"			\
 			"${_patch_dir}/${_pkg_name_full}.local@${BUILD_HNAME}.patch"	\
-			${PKG_PATCHES_EXTRA}; do
+			${PKG_PATCHES_EXTRA:-}; do
 		if [ -r "${_patch_fname}" ]\
 		&& ! rtl_lmatch "${_patches_done}" "${_patch_fname}"; then
 			if ! patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}"; then

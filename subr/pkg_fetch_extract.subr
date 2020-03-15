@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkgp_fetch_extract_type() {
@@ -12,7 +12,7 @@ pkgp_fetch_extract_type() {
 };
 
 pkg_fetch_extract() {
-	if [ -n "${PKG_URL}" ]; then
+	if [ -n "${PKG_URL:-}" ]; then
 		_oldpwd="${PWD}";
 		if ! rtl_fileop cd "${PKG_BASE_DIR}"\
 		|| ! rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}"; then

@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 #
@@ -15,17 +15,23 @@ exp_pkg_env_defaults() {
 	: ${PKG_NAME:="${_pkg_name}"};
 	: ${MIDIPIX_BUILD_PWD:="$(pwd)"};
 	: ${PKG_BASE_DIR:="${_workdir}/${_pkg_name}-${PKG_BUILD_TYPE}-${PKG_TARGET}"};
-	: ${PKG_FNAME:="${PKG_URL##*/}"};
-	: ${PKG_BUILD_STEPS:="$(rtl_lfilter "${_build_steps_default}" "${PKG_BUILD_STEPS_DISABLE}")"};
-	if [ -z "${PKG_SUBDIR}" ]; then
-		if [ -n "${PKG_URLS_GIT}" ]; then
+	if [ -n "${PKG_BUILD_STEPS_DISABLE:-}" ]; then
+		: ${PKG_BUILD_STEPS:="$(rtl_lfilter "${_build_steps_default}" "${PKG_BUILD_STEPS_DISABLE:-}")"};
+	else
+		: ${PKG_BUILD_STEPS:="${_build_steps_default}"};
+	fi;
+	if [ -n "${PKG_URL:-}" ]; then
+		: ${PKG_FNAME:="${PKG_URL##*/}"};
+	fi;
+	if [ -z "${PKG_SUBDIR:-}" ]; then
+		if [ -n "${PKG_URLS_GIT:-}" ]; then
 			PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
-		else case "${PKG_FNAME}" in
+		else case "${PKG_FNAME:-}" in
 		*.t*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;
 		*)	PKG_SUBDIR="${_pkg_name}"; ;;
 		esac; fi;
 	fi;
-	if [ -z "${PKG_BUILD_DIR}" ]; then
+	if [ -z "${PKG_BUILD_DIR:-}" ]; then
 		case "${PKG_IN_TREE:-0}" in
 		0) PKG_BUILD_DIR="obj"; ;;
 		1) PKG_BUILD_DIR="${PKG_SUBDIR}"; ;;
@@ -57,7 +63,7 @@ exp_pkg_env_set() {
 	rtl_set_vars _vars_set INHERIT_FROM "PKG_${_pkg_name}";
 	_var_prefixes="$(rtl_toupper "DEFAULT DEFAULT_${PKG_BUILD_TYPE} ${_group_name}")";
 	for _vname in $(rtl_lfilter "${_build_vars_default}" BUILD_TYPE); do
-		if [ -n "${PKG_INHERIT_FROM}" ]; then
+		if [ -n "${PKG_INHERIT_FROM:-}" ]; then
 			rtl_set_vars _vars_set "${_vname}"			\
 				"$(rtl_lconcat "${_var_prefixes}"		\
 				"$(rtl_toupper "PKG_${PKG_INHERIT_FROM} PKG_${_pkg_name}")")"
@@ -67,7 +73,7 @@ exp_pkg_env_set() {
 				"$(rtl_toupper "PKG_${_pkg_name}")")";
 		fi;
 	done;
-	IFS0="${IFS}"; IFS=":"; for _vname in ${PKG_ENV_VARS_EXTRA}; do
+	IFS0="${IFS}"; IFS=":"; for _vname in ${PKG_ENV_VARS_EXTRA:-}; do
 		export "${_vname}";
 	done; IFS="${IFS0}";
 	if [ "${_nounset:-0}" -eq 0 ]; then

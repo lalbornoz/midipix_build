@@ -92,7 +92,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_GLIB_HOST_BUILD_STEPS_DISABLE:=configure_patch};
 : ${PKG_GLIB_HOST_CONFIGURE_ARGS_EXTRA:="--with-pcre=internal --with-python=${PREFIX}/bin/python3 --disable-dtrace --disable-libelf --disable-libmount"};
 : ${PKG_GLIB_HOST_CFLAGS_BUILD_EXTRA:="-Wno-missing-include-dirs -Wno-format-nonliteral -Wno-format-overflow"};
-: ${PKG_GLIB_HOST_ENV_VARS_EXTRA:="LIBFFI_CFLAGS=-I${PREFIX}/lib/libffi-${PKG_LIBFFI_HOST_VERSION}/include:LIBFFI_LIBS=-L${PREFIX}/lib -lffi"};
+: ${PKG_GLIB_HOST_ENV_VARS_EXTRA:="LIBFFI_CFLAGS=-I${PREFIX}/lib/libffi-3.2.1/include:LIBFFI_LIBS=-L${PREFIX}/lib -lffi"};
 : ${PKG_GLIB_HOST_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX}/lib};
 : ${PKG_GPERF_HOST_SHA256SUM:=588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2};
 : ${PKG_GPERF_HOST_VERSION:=3.1};

@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 rtl_lconcat() {
@@ -45,7 +45,7 @@ rtl_llift() {
 };
 
 rtl_lmatch() {
-	local _list="${1}" _item="${2}" _sep="${3}";
+	local _list="${1}" _item="${2}" _sep="${3:- }";
 	[ -n "$(rtl_lsearch "${_list}" "${_item}" "${_sep}")" ];
 };
 

@@ -1,5 +1,5 @@
 #
-# set +o errexit -o noglob is assumed.
+# set +o errexit -o noglob -o nounset is assumed.
 #
 
 pkgp_configure_patch_pre() {
@@ -15,8 +15,11 @@ pkgp_configure_patch_pre() {
 };
 
 pkgp_configure_patch_pre_chainport() {
-	local	_chainport_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_*}/${PKG_NAME%%_*}-${PKG_VERSION}.midipix.patch"\
-		_chainport_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_*}" _oldpwd="";
+	local _chainport_patch_dname="" _chainport_patch_fname="" _oldpwd="";
+	_chainport_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_*}";
+	if [ -n "${PKG_VERSION:-}" ]; then
+		_chainport_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_*}/${PKG_NAME%%_*}-${PKG_VERSION}.midipix.patch";
+	fi;
 	if [ -e "${_chainport_patch_fname}" ]; then
 		if ! rtl_fileop mkdir "${_chainport_patch_dname}"\
 		|| ! rtl_fileop cp "${_chainport_patch_fname}" "${_chainport_patch_dname}"; then
