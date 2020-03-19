@@ -74,7 +74,7 @@ pkgtoolp_init_getopts() {
 		done;
 		if [ "${_rc:-0}" -eq 0 ]; then
 			if [ "${#}" -ne 1 ]\
-			&& [ -z "${PKGTOOL_PKG_NAME}" ]; then
+			&& [ -z "${PKGTOOL_PKG_NAME:-}" ]; then
 				_rc=1; _status="Error: missing package name.";
 			elif [ "${#}" -eq 1 ]; then
 				PKGTOOL_PKG_NAME="${1}"; export PKGTOOL_PKG_NAME;
@@ -83,29 +83,32 @@ pkgtoolp_init_getopts() {
 	fi; return "${_rc}";
 };
 
+pkgtoolp_init_getopts_help() {
+	local _opt="";
+	while getopts a:b:hirst _opt 2>/dev/null; do
+	case "${_opt}" in
+	h)	cat etc/build.usage; exit 0; ;;
+	esac; done; shift $((${OPTIND}-1));
+};
+
 pkgtoolp_init_prereqs() {
-	local _cmd="" _cmds_missing="" _rc=0; _status="";
-	for _cmd in	\
+	if ! rtl_check_prereqs \
 			awk bzip2 cat chmod cp date find grep hostname mkdir	\
 			mktemp mv paste printf readlink rm sed sort tar test	\
-			touch tr uniq; do
-		if ! which "${_cmd}" >/dev/null 2>&1; then
-			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
-		fi;
-	done;
-	if [ -n "${_cmds_missing}" ]; then
-		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
+			touch tr uniq; then
+		printf "%s\n" "${_status}" >&2; exit 1;
 	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;		\
 			sed -i'' -e '' "${FNAME}" >/dev/null 2>&1; }); then
-		_rc=1; _status="Error: sed(1) in \${PATH} does not support the \`-i' option.";
-	fi; return "${_rc}";
+		printf "Error: sed(1) in \${PATH} does not support the \`-i' option.\n" >&2; exit 1;
+	fi;
 };
 
 pkgtool_init() {
 	local _fname="" _rc=0; _status="";
 	if ! pkgtoolp_init_env			\
-	|| ! pkgtoolp_init_getopts "${@}"	\
+	|| ! pkgtoolp_init_getopts_help "${@}"	\
 	|| ! pkgtoolp_init_prereqs		\
+	|| ! pkgtoolp_init_getopts "${@}"	\
 	|| ! ex_pkg_load_vars			\
 	|| ! pkgtoolp_init_args; then
 		_rc=1; _status="${_status}";
