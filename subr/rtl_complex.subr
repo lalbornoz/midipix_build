@@ -15,6 +15,19 @@ rtl_check_path_vars() {
 	return "${_rc}";
 };
 
+rtl_check_prereqs() {
+	local _cmd="" _cmds_missing="" _rc=0; _status="";
+	for _cmd in "${@}"; do
+		if ! which "${_cmd}" >/dev/null 2>&1; then
+			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
+		fi;
+	done;
+	if [ -n "${_cmds_missing}" ]; then
+		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
+	fi;
+	return "${_rc}";
+};
+
 rtl_clean_env() {
 	local _env_vars_except="${1}" _env_var="" _env_vars="";
 	_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
@@ -171,6 +184,29 @@ rtl_kill_tree() {
 	&& kill "-${_signal}" "${_pid}" 2>/dev/null; then
 		RTL_KILL_TREE_PIDS="$(rtl_lconcat "${RTL_KILL_TREE_PIDS}" "${_pid}")";
 	fi;
+};
+
+rtl_prompt() {
+	local _fmt="${1}" _choice=""; shift;
+	printf "${_fmt}? (y|N) " "${@}";
+	read -r _choice;
+	case "${_choice}" in
+	[yY])	_choice=1; ;;
+	*)	_choice=0; ;;
+	esac;
+	return "${_choice}";
+};
+
+rtl_rc() {
+	local _nflag="${1}" _cmd="${2}"; shift 2;
+	case "${_nflag}" in
+	1)	     if [ "${#}" -gt 0 ]; then
+			rtl_log_msg notice "Command line: %s %s" "${_cmd}" "${*}";
+		else
+			rtl_log_msg notice "Command line: %s" "${_cmd}";
+		fi; ;;
+	*)	"${_cmd}" "${@}";
+	esac;
 };
 
 rtl_run_cmd_unsplit() {
