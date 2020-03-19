@@ -95,6 +95,19 @@ rtl_filter_vars() {
 	printf "%s" "${_vars}";
 };
 
+rtl_flock_acquire() {
+	local _fd="${1}" _conflict_exit_code="${2:-622}" _wait="${3:-3600}"
+	while true; do
+		if flock -E "${_conflict_exit_code}" -w "${_wait}" "${_fd}"; then
+			break;
+		elif [ "${?}" -eq "${_conflict_exit_code}" ]; then
+			continue;
+		else
+			return "${?}";
+		fi;
+	done;
+};
+
 rtl_get_cpu_count() {
 	local _line="" _ncpus=0 _rc=0 _sname="$(uname -s 2>/dev/null)"; _status="";
 	case "${_sname}" in
