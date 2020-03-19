@@ -22,17 +22,8 @@ pkg_install() {
 				return 1;
 			fi;
 		done; IFS="${_ifs_old}";
-		(set +o errexit -o noglob; trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
-		date;
-		while true; do
-			if flock -E 622 -w 600 4; then
-				break;
-			elif [ "${?}" -eq 622 ]; then
-				continue;
-			else
-				exit "${?}";
-			fi;
-		done;
+		(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}"; date;
+		trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
 		if ! tar -C "${PKG_DESTDIR}" -cpf - . | tar -C "${PKG_PREFIX}" --overwrite -xpf -; then
 			exit 1;
 		fi) 4<>"${BUILD_WORKDIR}/install.lock";

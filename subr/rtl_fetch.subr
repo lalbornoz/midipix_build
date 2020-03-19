@@ -6,16 +6,8 @@ exp_rtl_fetch_url_git() {
 	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}"	\
 		_oldpwd="";
 	(set -o errexit -o noglob -o nounset;
+	rtl_flock_acquire 4 || exit "${?}";
 	trap "rm -f \"${BUILD_DLCACHEDIR}/${_subdir%%[/]}.fetching\"" EXIT;
-	while true; do
-		if flock -E 622 -w 3600 4; then
-			break;
-		elif [ "${?}" -eq 622 ]; then
-			continue;
-		else
-			exit "${?}";
-		fi;
-	done;
 	if [ -e "${BUILD_DLCACHEDIR}/${_subdir}" ]; then
 		(rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
 			git pull ${DEFAULT_GIT_ARGS} origin "${_branch:-main}");
@@ -69,16 +61,8 @@ rtl_fetch_url_wget() {
 	fi;
 	_url_dst="${BUILD_DLCACHEDIR}/${_target_fname}";
 	(set -o errexit -o noglob -o nounset;
+	rtl_flock_acquire 4 || exit "${?}";
 	trap "_rc=\"\${?}\" ;rm -f \"${_url_dst}.fetching\"; exit \"\${_rc}\";" EXIT;
-	while true; do
-		if flock -E 622 -w 3600 4; then
-			break;
-		elif [ "${?}" -eq 622 ]; then
-			continue;
-		else
-			exit "${?}";
-		fi;
-	done;
 	if [ ! -e "${_url_dst}.fetched" ]; then
 		wget ${DEFAULT_WGET_ARGS} -O "${_url_dst}" "${_url}";
 		if [ -n "${_sha256sum_src}" ]; then
