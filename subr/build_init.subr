@@ -91,9 +91,9 @@ buildp_init_env() {
 	elif ! umask 022; then
 		printf "Error: failed to set umask(2).\n" >&2; exit 1;
 	elif ! BUILD_HNAME="$(hostname)"; then
-		_rc=1; _status="Error: failed to obtain hostname.";
+		printf "Error: failed to obtain hostname." >&2; exit 1;
 	elif ! BUILD_USER="$(id -nu)"; then
-		_rc=1; _status="Error: failed to obtain username.";
+		printf "Error: failed to obtain username." >&2; exit 1;
 	else	for _fname in $(find subr -name *.subr); do
 			if ! . "${_fname}"; then
 				printf "Error: failed to source \`%s'.\n" "${_fname}"; exit 1;
@@ -215,34 +215,36 @@ buildp_init_getopts() {
 	return "${_rc}";
 };
 
+buildp_init_getopts_help() {
+	local _opt="";
+	while getopts a:b:C:D:Fhp:Pr:R _opt 2>/dev/null; do
+	case "${_opt}" in
+	h)	cat etc/build.usage; exit 0; ;;
+	esac; done; shift $((${OPTIND}-1));
+};
+
 buildp_init_prereqs() {
-	local _cmd="" _cmds_missing="" _rc=0; _status="";
-	for _cmd in	\
+	if ! rtl_check_prereqs \
 			awk bunzip2 bzip2 cat chmod cmake cp date find flock	\
 			g++ gcc git grep gunzip gzip hostname id install kill	\
 			ln lzip make mkdir mkfifo mktemp mv paste patch perl	\
 			pgrep pkill printf readlink rm sed sha256sum sort	\
-			tail tar test touch tr uniq wget xz zip; do
-		if ! which "${_cmd}" >/dev/null 2>&1; then
-			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
-		fi;
-	done;
-	if [ -n "${_cmds_missing}" ]; then
-		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
+			tail tar test touch tr uniq wget xz zip; then
+		printf "%s\n" "${_status}" >&2; exit 1;
 	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;		\
 			sed -i'' -e '' "${FNAME}" >/dev/null 2>&1; }); then
-		_rc=1; _status="Error: sed(1) in \${PATH} does not support the \`-i' option.";
+		printf "Error: sed(1) in \${PATH} does not support the \`-i' option.\n" >&2; exit 1;
 	fi;
-	return "${_rc}";
 };
 
 build_init() {
 	local _rc=0; _status="";
-	if ! buildp_init_env		\
-	|| ! buildp_init_getopts "${@}"	\
-	|| ! buildp_init_prereqs	\
-	|| ! ex_pkg_load_vars		\
-	|| ! buildp_init_args		\
+	if ! buildp_init_env			\
+	|| ! buildp_init_getopts_help "${@}"	\
+	|| ! buildp_init_prereqs		\
+	|| ! buildp_init_getopts "${@}"		\
+	|| ! ex_pkg_load_vars			\
+	|| ! buildp_init_args			\
 	|| ! buildp_init_files; then
 		_rc=1; _status="${_status}";
 	fi; return "${_rc}";
