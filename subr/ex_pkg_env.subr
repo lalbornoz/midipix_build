@@ -73,7 +73,7 @@ exp_pkg_env_set() {
 				"$(rtl_toupper "PKG_${_pkg_name}")")";
 		fi;
 	done;
-	IFS0="${IFS}"; IFS=":"; for _vname in ${PKG_ENV_VARS_EXTRA:-}; do
+	IFS0="${IFS:- }"; IFS=":"; for _vname in ${PKG_ENV_VARS_EXTRA:-}; do
 		export "${_vname}";
 	done; IFS="${IFS0}";
 	if [ "${_nounset:-0}" -eq 0 ]; then
