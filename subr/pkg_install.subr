@@ -3,7 +3,7 @@
 #
 
 pkg_install() {
-	local _fname="" _ifs_old="${IFS}" _pkglist_name="" IFS;
+	local _fname="" _ifs_old="${IFS:- }" _pkglist_name="" IFS;
 	if ! rtl_fileop mkdir "${PKG_PREFIX}"; then
 		return 1;
 	else	IFS="

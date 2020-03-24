@@ -3,7 +3,7 @@
 #
 
 rtl_lconcat() {
-	local _list="${1}" _litem_new="${2}" _sep="${3:- }" IFS="${3:-${IFS}}";
+	local _list="${1}" _litem_new="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}";
 	if [ -n "${_list}" ]; then
 		printf "%s%s%s" "${_list}" "${_sep}" "${_litem_new}";
 	else
@@ -12,7 +12,7 @@ rtl_lconcat() {
 };
 
 rtl_lfilter() {
-	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS}}"	\
+	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}"\
 		_filterfl="" _litem="" _litem_filter="" _lnew="";
 	if [ -z "${_filter}" ]; then
 		printf "%s" "${_list}"; return 0;
@@ -31,7 +31,7 @@ rtl_lfilter() {
 };
 
 rtl_llength() {
-	local _list="${1}" _sep="${2:- }" IFS="${2:-${IFS}}" _litem="" _llength=0;
+	local _list="${1}" _sep="${2:- }" IFS="${2:-${IFS:- }}" _litem="" _llength=0;
 	for _litem in ${_list}; do
 		: $((_llength+=1));
 	done;
@@ -60,7 +60,7 @@ rtl_lmax() {
 };
 
 rtl_lsearch() {
-	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS}}"	\
+	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}"\
 		_litem="" _litem_filter="" _lnew="";
 	if [ -z "${_filter}" ]; then
 		printf "%s" "${_list}"; return 0;
