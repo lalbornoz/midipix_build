@@ -44,7 +44,7 @@ Windows platform. While the idea itself is not new, the approach taken
 in midipix to code portability is radically different from that found
 in other projects.  
   
-*(reproduced from [\[2](#r2)])*
+*(reproduced from &lbrack;[2](https://midipix.org/#sec-midipix)&rbrack;)*
   
 [Back to top](#table-of-contents)
 
@@ -56,7 +56,7 @@ in other projects.
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
   and binutils,
-* musl, a lightweight, fast, simple, and free libc[\[1](#r1)] used by Midipix,
+* musl, a lightweight, fast, simple, and free libc&lbrack;[1](https://www.musl-libc.org/faq.html)&rbrack; used by Midipix,
 * the Midipix runtime components that bridge the gap between the libc and the
   executive subsystems of all Windows NT-derived Windows OS starting with and
   including Windows XP, and
