@@ -57,19 +57,19 @@ exp_pkg_env_defaults() {
 # Return:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_env_set() {
-	local	_build_vars_default="${1}" _group_name="${2}" _nounset="${3}"	\
+	local	_build_vars_default="${1}" _group_name="${2}" _nounset="${3}"\
 		_pkg_name="${4}" _var_prefixes="" _vars_set="" _vname="" IFS IFS0;
 	rtl_set_vars _vars_set BUILD_TYPE "DEFAULT ${_group_name} PKG_${_pkg_name}";
 	rtl_set_vars _vars_set INHERIT_FROM "PKG_${_pkg_name}";
 	_var_prefixes="$(rtl_toupper "DEFAULT DEFAULT_${PKG_BUILD_TYPE} ${_group_name}")";
 	for _vname in $(rtl_lfilter "${_build_vars_default}" BUILD_TYPE); do
 		if [ -n "${PKG_INHERIT_FROM:-}" ]; then
-			rtl_set_vars _vars_set "${_vname}"			\
-				"$(rtl_lconcat "${_var_prefixes}"		\
+			rtl_set_vars _vars_set "${_vname}"				\
+				"$(rtl_lconcat "${_var_prefixes}"			\
 				"$(rtl_toupper "PKG_${PKG_INHERIT_FROM} PKG_${_pkg_name}")")"
 		else
-			rtl_set_vars _vars_set "${_vname}"			\
-				"$(rtl_lconcat "${_var_prefixes}"		\
+			rtl_set_vars _vars_set "${_vname}"				\
+				"$(rtl_lconcat "${_var_prefixes}"			\
 				"$(rtl_toupper "PKG_${_pkg_name}")")";
 		fi;
 	done;
@@ -77,8 +77,8 @@ exp_pkg_env_set() {
 		export "${_vname}";
 	done; IFS="${IFS0}";
 	if [ "${_nounset:-0}" -eq 0 ]; then
-		rtl_unset_vars $(rtl_lfilter					\
-			"$(set | sed -ne '/^PKG_[^=]*=/s/=.*$//p')"		\
+		rtl_unset_vars $(rtl_lfilter						\
+			"$(set | sed -ne '/^PKG_[^=]*=/s/=.*$//p' | paste -s -d " ")"	\
 			"${_vars_set}");
 	fi;
 };
