@@ -1,0 +1,27 @@
+--- w3m-0.5.3-git20190105/configure.orig	2019-01-05 08:41:27.000000000 +0000
++++ w3m-0.5.3-git20190105/configure	2020-03-27 20:13:55.976911257 +0000
+@@ -7361,24 +7361,6 @@
+ _ACEOF
+ 
+ 
+-for lib in bsd BSD 44bsd socket nsl dld dl
+-do
+- lib=$lib
+- { $as_echo "$as_me:${as_lineno-$LINENO}: checking for -l$lib" >&5
+-$as_echo_n "checking for -l$lib... " >&6; }
+- extlib="not found"
+- for dir in /lib /usr/lib /usr/local/lib /usr/ucblib /usr/ccslib /usr/ccs/lib /lib64 /usr/lib64
+- do
+-   if test -f $dir/lib$lib.a -o -f $dir/lib$lib.so ; then
+-    LIBS="$LIBS -l$lib"
+-    extlib="found at $dir"
+-    break
+-   fi
+- done
+- { $as_echo "$as_me:${as_lineno-$LINENO}: result: $extlib" >&5
+-$as_echo "$extlib" >&6; }
+-done
+-
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking if IPv6 support is enabled" >&5
+ $as_echo_n "checking if IPv6 support is enabled... " >&6; }
+ # Check whether --enable-ipv6 was given.
