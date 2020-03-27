@@ -1,5 +1,6 @@
---- curl-7.61.0/configure.orig	2018-07-09 07:52:18.000000000 +0100
-+++ curl-7.61.0/configure	2020-03-12 08:51:25.825416713 +0000
+diff -ru a/configure b/configure
+--- a/configure	2018-07-09 07:52:18.000000000 +0100
++++ b/configure	2020-03-12 08:51:25.825416713 +0000
 @@ -14553,6 +14553,16 @@
    dynamic_linker='GNU/Linux ld.so'
    ;;
@@ -893,3 +894,19 @@
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if compiler halts on compilation errors" >&5
  $as_echo_n "checking if compiler halts on compilation errors... " >&6; }
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+diff -ru a/curl-config.in b/curl-config.in
+--- a/curl-config.in	2018-06-14 10:31:24.000000000 -0400
++++ b/curl-config.in	2020-03-27 15:39:03.029645413 -0400
+@@ -143,11 +143,7 @@
+         ;;
+ 
+     --libs)
+-        if test "X@libdir@" != "X/usr/lib" -a "X@libdir@" != "X/usr/lib64"; then
+-           CURLLIBDIR="-L@libdir@ "
+-        else
+-           CURLLIBDIR=""
+-        fi
++        CURLLIBDIR=""
+         if test "X@REQUIRE_LIB_DEPS@" = "Xyes"; then
+           echo ${CURLLIBDIR}-lcurl @LIBCURL_LIBS@
+         else
