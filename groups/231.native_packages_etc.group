@@ -296,6 +296,7 @@ zstd")";
 : ${PKG_TDNF_VERSION:=2.0.0-alpha.1};
 : ${PKG_TDNF_URL:=https://github.com/vmware/tdnf/archive/v${PKG_TDNF_VERSION}.tar.gz};
 : ${PKG_TDNF_CONFIGURE_ARGS_EXTRA:="--disable-static"};
+: ${PKG_TDNF_ENV_VARS_EXTRA:="LIBSOLV_LIBS=-lsolv:LIBSOLVEXT_LIBS=-lsolvext"};
 : ${PKG_TDNF_FORCE_AUTORECONF:=1};
 : ${PKG_TDNF_IN_TREE:=1};
 : ${PKG_TDNF_SUBDIR:=tdnf-${PKG_TDNF_VERSION}};
