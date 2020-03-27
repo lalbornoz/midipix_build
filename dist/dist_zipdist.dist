@@ -35,7 +35,7 @@ pkg_dist_zipdist_all() {
 		else
 			echo "msg_pkg dist dist_zipdist Finished building deployable distribution ZIP archive." >&3;
 			rtl_log_msg info "Finished building deployable distribution ZIP archive.";
-			if [ -n "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" ]\
+			if [ -n "${DEFAULT_ZIPDIST_SIGN_GPG_KEY:-}" ]\
 			&& [ -x "$(which gpg 2>/dev/null)" ]\
 			&& gpg --list-keys "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 				echo "msg_pkg dist dist_zipdist Signing deployable distribution ZIP archive..." >&3;
