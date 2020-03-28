@@ -104,3 +104,19 @@ diff -ru a/misc/gen-pkgconfig.in b/misc/gen-pkgconfig.in
  @MAKE_PC_FILES@			done \
  @MAKE_PC_FILES@			;; \
  @MAKE_PC_FILES@		(*) \
+diff -ru a/misc/ncurses-config.in b/misc/ncurses-config.in
+--- a/misc/ncurses-config.in 2018-01-20 00:27:18.000000000 +0000
++++ b/misc/ncurses-config.in 2020-03-11 15:38:05.000000000 +0000
+@@ -111,12 +111,7 @@
+ 		;;
+ 	--libs)
+-		if test "$libdir" = /usr/lib
+-		then
+-			LIBDIR=
+-		else
+-			LIBDIR=-L$libdir
+-		fi
++		LIBDIR=
+ 		if test @TINFO_NAME@ = @LIB_NAME@ ; then
+ 		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
+ 			$LIBDIR @EXTRA_LDFLAGS@ -l${THIS} @LIBS@
