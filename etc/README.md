@@ -410,6 +410,7 @@ env ARCH=nt64 BUILD=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D mini
 | ARCH             | nt64                            | Target 32-bit (nt32) or 64-bit (nt64) architecture                            |
 | BUILD            | debug                           | Build w/ debugging (debug) or release compiler flags                          |
 | BUILD_DLCACHEDIR | ${PREFIX_ROOT}/dlcache          | Absolute pathname to package downloads cache root directory                   |
+| BUILD_HNAME      | $(hostname)                     | Build system hostname                                                         |
 | BUILD_WORKDIR    | ${PREFIX}/tmp                   | Absolute pathname to temporary package build root directory                   |
 | PREFIX           | ${PREFIX_ROOT}/${ARCH}/${BUILD} | Absolute pathname to architecture- & build type-specific build root directory |
 | PREFIX_CROSS     | ${PREFIX}/${DEFAULT_TARGET}     | Absolute pathname to toolchain root directory                                 |
