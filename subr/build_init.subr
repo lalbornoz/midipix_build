@@ -4,7 +4,10 @@
 
 buildp_init_args() {
 	local _group="" _last_pkg="" _pkg_names_unknown="" _rc=0; _status="";
-	if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]\
+	if [ -z "${BUILD_HNAME:-}" ]\
+	&& ! BUILD_HNAME="$(hostname)"; then
+		_rc=1; _status="Error: failed to obtain hostname.";
+	elif [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]\
 	&& [ "${ARG_RELAXED:-0}" -eq 1 ]; then
 		_rc=1; _status="Error: --dump-on-abort excludes -R.";
 	elif [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
@@ -90,8 +93,6 @@ buildp_init_env() {
 		printf "Error: failed to change working directory to \`${0%/*}'." >&2; exit 1;
 	elif ! umask 022; then
 		printf "Error: failed to set umask(2).\n" >&2; exit 1;
-	elif ! BUILD_HNAME="$(hostname)"; then
-		printf "Error: failed to obtain hostname." >&2; exit 1;
 	elif ! BUILD_USER="$(id -nu)"; then
 		printf "Error: failed to obtain username." >&2; exit 1;
 	else	for _fname in $(find subr -name *.subr); do
