@@ -126,12 +126,14 @@ buildp_init_files() {
 		fi;
 		rtl_fileop touch "${DEFAULT_BUILD_LOG_FNAME}"; rtl_log_set_fname "${DEFAULT_BUILD_LOG_FNAME}";
 		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "prefix" ","; then
+			trap "rm -f \"${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}\" 2>/dev/null; rtl_log_msg fatalexit \"Build aborted.\"" HUP INT TERM USR1 USR2;
 			rtl_log_msg info "-C prefix specified, cleaning prefix...";
 			for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do
 				if ! rtl_fileop rm "${PREFIX}/${_pname}"; then
 					_rc=1; _status="Error: failed to remove \`${PREFIX}/${_pname}'."; break;
 				fi;
 			done;
+			trap - EXIT HUP INT TERM USR1 USR2;
 		fi;
 		export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
 	fi;
