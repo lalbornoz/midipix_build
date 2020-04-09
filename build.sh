@@ -7,9 +7,6 @@ buildp_ast() {
 	if [ "${_param}" = "abort" ]; then
 		rtl_log_msg fatalexit "Build aborted.";
 	fi;
-	if [ -n "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		rtl_fileop rm "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
-	fi;
 	while [ "${_pids_niter}" -lt 8 ]; do
 		_pids="$(rtl_lconcat "${_pids}" "${RTL_KILL_TREE_PIDS}")"; RTL_KILL_TREE_PIDS="";
 		if ! rtl_kill_tree "${$}" "TERM"\
@@ -27,6 +24,9 @@ buildp_ast() {
 			rtl_state_clear "${BUILD_WORKDIR}" "${_pkg_name}";
 		done;
 		rtl_log_msg notice "Reset package state for: %s" "${EX_PKG_DISPATCH_WAIT}";
+	fi;
+	if [ -n "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
+		rtl_fileop rm "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 	fi;
 };
 
