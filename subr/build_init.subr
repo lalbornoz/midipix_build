@@ -173,7 +173,11 @@ buildp_init_getopts() {
 			F)	ARG_FETCH_FORCE=1; ;;
 			h)	cat etc/build.usage; exit 0; ;;
 			p)	ARG_PARALLEL="${OPTARG}"; ;;
-			P)	ARG_PARALLEL="auto"; ;;
+			P)	ARG_PARALLEL="auto";
+				if [ -n "${2:-}" ]\
+				&& rtl_isnumber "${2}"; then
+					_rc=1; _status="Error: maximum parallelisation job count is set with the \`-p jobs' option."; break
+				fi; ;;
 			r)	ARG_RESTART="${OPTARG}"; ;;
 			R)	ARG_RELAXED=1; ;;
 			*)	cat etc/build.usage; exit 1; ;;
