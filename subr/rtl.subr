@@ -3,7 +3,7 @@
 #
 
 rtl_basename() { local _fname="${1##*/}"; printf "%s" "${_fname}"; };
-rtl_date() { command date "+${1:-${DEFAULT_TIMESTAMP_FMT}}"; };
+rtl_date() { command date "+${1:-${DEFAULT_TIMESTAMP_FMT:-"%Y/%m/%d %H:%M:%S"}}"; };
 rtl_set_var_unsafe() { [ -n "${2}" ] && eval ${1}=\"${2}\" || return 0; };
 rtl_test_cmd() { command -v "${1}" >/dev/null; };
 rtl_uniq() { if [ "${#}" -gt 0 ]; then printf "%s" "${*}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; fi; };
