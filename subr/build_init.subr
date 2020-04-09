@@ -133,7 +133,7 @@ buildp_init_files() {
 					_rc=1; _status="Error: failed to remove \`${PREFIX}/${_pname}'."; break;
 				fi;
 			done;
-			trap - EXIT HUP INT TERM USR1 USR2;
+			trap - HUP INT TERM USR1 USR2;
 		fi;
 		export PATH="${PREFIX}/bin${PATH:+:${PATH}}";
 	fi;
