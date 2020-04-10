@@ -1,0 +1,33 @@
+diff -ru libressl-2.9.1.orig/man/Makefile.in libressl-2.9.1/man/Makefile.in
+--- libressl-2.9.1.orig/man/Makefile.in	2019-04-13 19:22:41.000000000 +0200
++++ libressl-2.9.1/man/Makefile.in	2019-05-13 18:40:40.831028028 +0200
+@@ -3024,14 +3024,6 @@
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ 	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
+@@ -5421,14 +5413,6 @@
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ 	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
