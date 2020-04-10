@@ -87,7 +87,7 @@ pkgtoolp_init_getopts_help() {
 	local _opt="";
 	while getopts a:b:hirst _opt 2>/dev/null; do
 	case "${_opt}" in
-	h)	cat etc/build.usage; exit 0; ;;
+	h)	cat etc/pkgtool.usage; exit 0; ;;
 	esac; done; shift $((${OPTIND}-1));
 };
 
