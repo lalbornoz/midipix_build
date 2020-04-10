@@ -193,8 +193,8 @@ libxslt libz libzip")";
 : ${PKG_LIBZ_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET} --enable-shared"};
 : ${PKG_LIBZ_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
 : ${PKG_LIBZIP_DEPENDS:="bzip2 gnutls libnettle libz musl_fts"};
-: ${PKG_LIBZIP_SHA256SUM:=a6cd804b4b3cffd997bd563fec693eb7eb052c225909a98a620689c2befb699b};
-: ${PKG_LIBZIP_VERSION:=1.6.0};
+: ${PKG_LIBZIP_SHA256SUM:=705dac7a671b3f440181481e607b0908129a9cf1ddfcba75d66436c0e7d33641};
+: ${PKG_LIBZIP_VERSION:=1.6.1};
 : ${PKG_LIBZIP_URL:=https://libzip.org/download/libzip-${PKG_LIBZIP_VERSION}.tar.xz};
 
 # vim:filetype=sh textwidth=0
