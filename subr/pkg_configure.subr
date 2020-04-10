@@ -7,7 +7,7 @@ pkg_configure() {
 	if [ -x "${PKG_CONFIGURE:-}" ]; then
 		rtl_export_vars	\
 			PKG_CONFIG "${PKG_PKG_CONFIG:-}"								\
-			PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH:-}"							\
+			PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}"							\
 			PYTHON "${PKG_PYTHON:-}";
 		AR="${PKG_AR}"												\
 		CC="${PKG_CC}"												\
@@ -20,7 +20,7 @@ pkg_configure() {
 		_rc="${?}"
 		rtl_export_vars	-u \
 			PKG_CONFIG "${PKG_PKG_CONFIG:-}"								\
-			PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH:-}"							\
+			PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}"							\
 			PYTHON "${PKG_PYTHON:-}";
 		return "${_rc}";
 	fi;
