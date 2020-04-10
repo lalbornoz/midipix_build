@@ -4,9 +4,9 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg
-gnutls httpd inetutils irssi isync ldns lighttpd lynx mailutils microsocks
-mtr mutt nginx nullmailer openlitespeed opensmtpd openssh pacman rsync
-socat thttpd w3m weechat wget whois")";
+gnutls httpd icecast inetutils irssi isync ldns lighttpd lynx mailutils
+microsocks mtr mutt nginx nullmailer openlitespeed opensmtpd openssh
+pacman rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -69,6 +69,11 @@ socat thttpd w3m weechat wget whois")";
 : ${PKG_HTTPD_URL:=https://xyinn.org/gentoo/distfiles/httpd-${PKG_HTTPD_VERSION}.tar.bz2};
 : ${PKG_HTTPD_CONFIGURE_ARGS_EXTRA:="--with-apr=${PREFIX}/bin/${DEFAULT_TARGET}-apr-1-config --with-apr-util=${PREFIX}/bin/${DEFAULT_TARGET}-apu-1-config"};
 : ${PKG_HTTPD_DISABLED:=1};
+: ${PKG_ICECAST_DEPENDS:="curl expat libressl libvorbis libxml2 libxslt"};
+: ${PKG_ICECAST_SHA256SUM:=eee7644a6bc703f5705ebe6b79c8d20a66a13cc577c60665e2bc2c34e3a0536d};
+: ${PKG_ICECAST_VERSION:=2.4.99.2-283};
+: ${PKG_ICECAST_URL:=https://people.xiph.org/~epirat/Icecast/icecast-${PKG_ICECAST_VERSION}.tar.gz};
+: ${PKG_ICECAST_CONFIGURE_ARGS_EXTRA:="--without-speex"};
 : ${PKG_INETUTILS_DEPENDS:="ncurses"};
 : ${PKG_INETUTILS_SHA256SUM:=849d96f136effdef69548a940e3e0ec0624fc0c81265296987986a0dd36ded37};
 : ${PKG_INETUTILS_VERSION:=1.9.4};
