@@ -5,10 +5,10 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
 debianutils emacs expat ffmpeg file gdbm geoip gettext_tiny ghostscript
-giflib gnuchess gzip hastyhex hexcurse htop icecast imagemagick infounzip
-infozip john lcms2 less lmdb lolcode mintty mlogin musl_compat musl_fts
-ncdu ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng
-qemu qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
+giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
+john lcms2 less lmdb lolcode mintty mlogin musl_compat musl_fts ncdu
+ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng qemu
+qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xz yabasic
 zstd")";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
@@ -146,11 +146,6 @@ zstd")";
 : ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-proc --enable-unicode --verbose"};
 : ${PKG_HTOP_CFLAGS_CONFIGURE_EXTRA:="--include=sys/sysmacros.h"};
 : ${PKG_HTOP_ENV_VARS_EXTRA:="HTOP_NCURSES_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses-config:HTOP_NCURSES6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses6-config:HTOP_NCURSESW_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw-config:HTOP_NCURSESW6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw6-config"}
-: ${PKG_ICECAST_DEPENDS:="curl expat libressl libvorbis libxml2 libxslt"};
-: ${PKG_ICECAST_SHA256SUM:=eee7644a6bc703f5705ebe6b79c8d20a66a13cc577c60665e2bc2c34e3a0536d};
-: ${PKG_ICECAST_VERSION:=2.4.99.2-283};
-: ${PKG_ICECAST_URL:=https://people.xiph.org/~epirat/Icecast/icecast-${PKG_ICECAST_VERSION}.tar.gz};
-: ${PKG_ICECAST_CONFIGURE_ARGS_EXTRA:="--without-speex"};
 : ${PKG_IMAGEMAGICK_DEPENDS:="curl bzip2 libz xz zstd"};
 : ${PKG_IMAGEMAGICK_SHA256SUM:=67859f9cba97f2c06b5e416898216e49216be00c7cba3dd89896e49331aef96d};
 : ${PKG_IMAGEMAGICK_VERSION:=7.0.9-12};
