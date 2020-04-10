@@ -6,7 +6,7 @@ pkg_configure_autotools() {
 	local _config_cache="" _fname="" _subdir_tgt="";
 	if rtl_exists_any "${PKG_BASE_DIR}/${PKG_SUBDIR}"							\
 			"config.guess" "configure.ac" "configure.in" "configure";
-	then	rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH:-}";
+	then	rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}";
 		if [ "${PKG_FORCE_AUTORECONF:-0}" -eq 1 ]\
 		&& ! (cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoreconf -fiv); then
 			return 1;
@@ -64,7 +64,7 @@ pkg_configure_autotools() {
 				fi;
 			fi;
 		fi;
-		rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_PATH "${PKG_PKG_CONFIG_PATH:-}";
+		rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}";
 	fi;
 };
 

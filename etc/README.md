@@ -525,7 +525,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | NO_LOG_VARS                 | Inhibit logging of build & package variables pre-package build                                                                              |
 | PATCHES_EXTRA               | Additional list of patches to apply                                                                                                         |
 | PKG_CONFIG                  | Command- or pathname of ``pkg-config(1)``                                                                                                   |
-| PKG_CONFIG_PATH             | ``pkg-config(1)`` search path                                                                                                               |
+| PKG_CONFIG_LIBDIR           | ``pkg-config(1)`` search directory                                                                                                          |
 | PKGLIST_DISABLE             | Inhibit inclusion into ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}``                                                                              |
 | PREFIX                      | Absolute pathname of top-level installation directory and package search path                                                               |
 | PYTHON                      | Command- or pathname of Python                                                                                                              |

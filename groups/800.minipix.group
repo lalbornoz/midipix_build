@@ -16,7 +16,7 @@ gdb_minipix grep_minipix gzip_minipix infounzip_minipix infozip_minipix
 less_minipix nano_minipix patch_minipix python2_minipix sed_minipix
 tar_minipix vim_minipix wget_minipix which_minipix xz_minipix
 mintty_minipix ntctty_minipix ntux_minipix perk_minipix ptycon_minipix";
-MINIPIX_PKG_CONFIG_PATH="${PREFIX_NATIVE}/lib/pkgconfig";
+MINIPIX_PKG_CONFIG_LIBDIR="${PREFIX_NATIVE}/lib/pkgconfig";
 MINIPIX_PKGLIST_DISABLE=1;
 MINIPIX_PREFIX="${PREFIX}/minipix_dist";
 MINIPIX_RPM_DISABLE=1;
