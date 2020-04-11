@@ -19,6 +19,7 @@ libxslt libz libzip")";
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.gz};
 : ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_LIBARCHIVE_LIBTOOL:=rdlibtool};
+: ${PKG_LIBARCHIVE_MAKEFLAGS_BUILD_EXTRA:="V=99"};
 : ${PKG_LIBASR_SHA256SUM:=9cd88e0172e6d426438875e09229d1d473d56db546d02b630f9dd14db226d68d};
 : ${PKG_LIBASR_VERSION:=1.0.3};
 : ${PKG_LIBASR_URL:=https://www.opensmtpd.org/archives/libasr-${PKG_LIBASR_VERSION}.tar.gz};
