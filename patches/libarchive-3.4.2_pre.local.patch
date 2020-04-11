@@ -1,0 +1,20 @@
+diff -ru libarchive-3.4.2.orig/configure libarchive-3.4.2/configure
+--- libarchive-3.4.2.orig/configure	2020-02-11 23:58:01.000000000 +0100
++++ libarchive-3.4.2/configure	2020-04-11 15:58:45.493648584 +0200
+@@ -12062,6 +12062,16 @@
+   dynamic_linker='NetBSD ld.elf_so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
