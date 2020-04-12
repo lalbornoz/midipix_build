@@ -61,7 +61,7 @@ buildp_init_args() {
 					if [ -n "${ARG_DIST}" ]; then
 						BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "dist")" "dist")";
 					fi;
-					if [ -n "${ARG_RESTART}" ]; then
+					if [ -n "${ARG_RESTART}" ] && ! rtl_lmatch "${ARG_RESTART}" "ALL LAST"; then
 						for _pkg_name in ${ARG_RESTART}; do
 							if ! ex_pkg_find_package "${BUILD_GROUPS}" "${_pkg_name}" >/dev/null; then
 								_pkg_names_unknown="$(rtl_lconcat "${_pkg_names_unknown}" "${_pkg_name}")";
