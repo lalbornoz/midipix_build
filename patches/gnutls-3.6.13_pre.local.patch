@@ -1,0 +1,20 @@
+diff -ru gnutls-3.6.13.orig/configure gnutls-3.6.13/configure
+--- gnutls-3.6.13.orig/configure	2020-03-30 20:56:14.000000000 +0200
++++ gnutls-3.6.13/configure	2020-04-12 15:19:56.629453170 +0200
+@@ -58313,6 +58313,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
