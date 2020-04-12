@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 glib libarchive libasr libassuan libatomic_ops libdmtx libedit libelf
 libevent libfetch libffi libfirm libflac libgcrypt libgpg_error
 libjpeg_turbo libksba libnettle libogg libpcap libpipeline libpng
-libreadline libredwg libressl libsasl2 libshine libsndfile libsolv
+libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
 libxslt libz libzip")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
@@ -152,6 +152,12 @@ libxslt libz libzip")";
 : ${PKG_LIBSOLV_VERSION:=0.6.34};
 : ${PKG_LIBSOLV_URL:=https://github.com/openSUSE/libsolv/archive/${PKG_LIBSOLV_VERSION}.tar.gz};
 : ${PKG_LIBSOLV_SUBDIR:=libsolv-${PKG_LIBSOLV_VERSION}};
+: ${PKG_LIBTASN1_SHA256SUM:=0e0fb0903839117cb6e3b56e68222771bebf22ad7fc2295a0ed7d576e8d4329d};
+: ${PKG_LIBTASN1_VERSION:=4.16.0};
+: ${PKG_LIBTASN1_URL:=https://ftp.gnu.org/gnu/libtasn1/libtasn1-${PKG_LIBTASN1_VERSION}.tar.gz};
+: ${PKG_LIBTASN1_CONFIGURE_ARGS_EXTRA:="--disable-static"};
+: ${PKG_LIBTASN1_CFLAGS_CONFIGURE_EXTRA:=-std=c99};
+: ${PKG_LIBTASN1_LIBTOOL=rdlibtool};
 : ${PKG_LIBTELNET_DEPENDS:="libz"};
 : ${PKG_LIBTELNET_SHA256SUM:=d2f01a9dc0cc01777844b6d27f0f836dad9a4b9a32a31c7bbde0762480262f25};
 : ${PKG_LIBTELNET_VERSION:=0.23};
