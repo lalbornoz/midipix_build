@@ -519,6 +519,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | MAKEFLAGS_BUILD_EXTRA       | Additional list of ``make(1)`` flags during package ``make(1)``) build                                                                      |
 | MAKEFLAGS_INSTALL           | List of ``make(1)`` flags during package ``make(1)``) installation                                                                          |
 | MAKEFLAGS_INSTALL_EXTRA     | Additional list of ``make(1)`` flags during package ``make(1)``) installation                                                               |
+| MAKEFLAGS_VERBOSITY         | Variable-value pair to pass to ``make(1)`` in order to force echo-back of command lines prior to execution                                  |
 | MAKE_INSTALL_VNAME          | Variable name of ``make(1)`` installation destination directory variable during package ``make(1)``) installation                           |
 | NO_CLEAN                    | Inhibit cleaning of package build directory beneath ``${PKG_BASE_DIR}`` pre-finish                                                          |
 | NO_CLEAN_BASE_DIR           | Inhibit cleaning of package build root directory beneath ``${BUILD_WORKDIR}``                                                               |

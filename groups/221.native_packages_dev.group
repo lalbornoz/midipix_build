@@ -112,6 +112,7 @@ patch patchutils perl python2 python3 ruby smallbasic tk")";
 : ${PKG_RUBY_URL:=https://cache.ruby-lang.org/pub/ruby/${PKG_RUBY_VERSION%.*}/ruby-${PKG_RUBY_VERSION}.tar.gz};
 : ${PKG_RUBY_CONFIGURE_ARGS_EXTRA:="--disable-install-rdoc --with-baseruby=${PREFIX}/bin/ruby --with-out-ext=fiddle,openssl"};
 : ${PKG_RUBY_MAKEFLAGS_BUILD:=-j1};
+: ${PKG_RUBY_MAKEFLAGS_VERBOSITY:="none"};
 : ${PKG_SMALLBASIC_URLS_GIT:="SmallBASIC=https://github.com/smallbasic/SmallBASIC@master"};
 : ${PKG_SMALLBASIC_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
 : ${PKG_SMALLBASIC_IN_TREE:=1};
