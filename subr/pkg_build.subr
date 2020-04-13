@@ -29,7 +29,8 @@ pkg_build() {
 		"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"	\
 		"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"			\
 		"${PKG_PKG_CONFIG_LIBDIR:+PKG_CONFIG_LIBDIR=${PKG_PKG_CONFIG_LIBDIR}}"	\
-		${_libtool:+"LIBTOOL=${_libtool}"};
+		${_libtool:+"LIBTOOL=${_libtool}"}					\
+		V=99;
 };
 
 # vim:filetype=sh

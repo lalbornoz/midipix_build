@@ -308,6 +308,5 @@ xtrans xwd xwin")";
 : ${PKG_XWIN_CONFIGURE_ARGS_EXTRA:="--enable-xwin --disable-xorg --disable-dri --disable-dri2 --disable-dri3 --disable-pciaccess --disable-glx"};
 : ${PKG_XWIN_DISABLED:=1};
 : ${PKG_XWIN_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib/"};
-: ${PKG_XWIN_MAKEFLAGS_BUILD_EXTRA:=V=99};
 
 # vim:filetype=sh textwidth=0
