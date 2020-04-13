@@ -3,12 +3,15 @@
 #
 
 pkg_build() {
-	local _libtool="" _no_autoconf="";
+	local _libtool="" _makeflags_verbosity="${PKG_MAKEFLAGS_VERBOSITY:-none}" _no_autoconf="";
 	case "${PKG_LIBTOOL:-}" in
 	"")	_libtool=""; ;;
 	none)	_libtool=""; ;;
 	*)	_libtool="${PKG_LIBTOOL}"; ;;
 	esac;
+	if [ "${_makeflags_verbosity}" = "none" ]; then
+		_makeflags_verbosity="";
+	fi;
 	if [ ! -x "${PKG_CONFIGURE:-}" ]; then
 		_no_autoconf=1;
 	fi;
@@ -30,7 +33,7 @@ pkg_build() {
 		"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"			\
 		"${PKG_PKG_CONFIG_LIBDIR:+PKG_CONFIG_LIBDIR=${PKG_PKG_CONFIG_LIBDIR}}"	\
 		${_libtool:+"LIBTOOL=${_libtool}"}					\
-		V=99;
+		${_makeflags_verbosity};
 };
 
 # vim:filetype=sh
