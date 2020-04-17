@@ -29,7 +29,7 @@ pkgp_install_libs_shared() {
 		for _so_src_path in \
 			$(find	"${PKG_DESTDIR}"							  	\
 				\(  -name "*.so" -or -name "*.so.*" \) -print);
-		do	if [ "$(readlink -f "${_so_path}")" != "/dev/null" ]\
+		do	if [ "$(readlink -f "${_so_src_path}")" != "/dev/null" ]\
 			&& [ -z "$(rtl_head "[0-9.]" "${_so_src_path##*.so}")" ]; then
 				case "${_so_src_path}" in
 				*.so)	_lib_src_path="${_so_src_path%%.so}.lib.a"; ;;
