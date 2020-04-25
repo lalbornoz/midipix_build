@@ -10,53 +10,6 @@ diff -ru --new-file httpd-2.4.25.orig/build/rules.mk.in httpd-2.4.25/build/rules
  MOD_LINK = $(LIBTOOL) --mode=link $(CC) $(ALL_CFLAGS) -static $(LT_LDFLAGS) $(ALL_LDFLAGS) -o $@
  
  # Cross compile commands
-diff -ru --new-file httpd-2.4.25.orig/configure httpd-2.4.25/configure
---- httpd-2.4.25.orig/configure	2016-12-16 19:24:48.000000000 +0100
-+++ httpd-2.4.25/configure	2017-01-27 01:11:14.103967531 +0100
-@@ -8828,13 +8828,6 @@
- CPPFLAGS=$apr_old_cppflags
- 
- 
--  if test $ac_cv_define_APR_HAS_DSO = "no"; then
--    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Missing DSO support - building static modules by default." >&5
--$as_echo "$as_me: WARNING: Missing DSO support - building static modules by default." >&2;}
--    module_default=static
--  fi
--
--
-   # Check whether --enable-modules was given.
- if test "${enable_modules+set}" = set; then :
-   enableval=$enable_modules;
-@@ -13645,9 +13638,9 @@
- 
- case "x$enable_so" in
-     "xyes")
--        if test $ac_cv_define_APR_HAS_DSO = "no"; then
--            as_fn_error $? "mod_so has been requested but cannot be built on your system" "$LINENO" 5
--        fi
-+        #if test $ac_cv_define_APR_HAS_DSO = "no"; then
-+        #    as_fn_error $? "mod_so has been requested but cannot be built on your system" "$LINENO" 5
-+        #fi
-         ;;
-     "xshared")
-         as_fn_error $? "mod_so can not be built as a shared DSO" "$LINENO" 5
-@@ -13693,16 +13686,6 @@
-   APACHE_VAR_SUBST="$APACHE_VAR_SUBST INSTALL_DSO"
- 
- 
--
--if test "$sharedobjs" = "yes"; then
--    if test $ac_cv_define_APR_HAS_DSO = "no"; then
--        as_fn_error $? "shared objects have been requested but cannot be built since mod_so cannot be built" "$LINENO" 5
--    elif test $enable_so = "no"; then
--        as_fn_error $? "shared objects have been requested but cannot be built since mod_so was disabled" "$LINENO" 5
--    fi
--fi
--
--
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable mod_so" >&5
- $as_echo_n "checking whether to enable mod_so... " >&6; }
-     # Check whether --enable-so was given.
 diff -ru --new-file httpd-2.4.25.orig/server/test_char.h httpd-2.4.25/server/test_char.h
 --- httpd-2.4.25.orig/server/test_char.h	1970-01-01 01:00:00.000000000 +0100
 +++ httpd-2.4.25/server/test_char.h	2017-01-26 20:25:06.654810000 +0100
