@@ -1,0 +1,26 @@
+diff -ru httpd-2.4.25.orig/server/Makefile.in httpd-2.4.25/server/Makefile.in
+--- httpd-2.4.25.orig/server/Makefile.in	2013-10-02 14:20:14.000000000 +0200
++++ httpd-2.4.25/server/Makefile.in	2020-04-25 20:35:23.286880934 +0200
+@@ -16,22 +16,11 @@
+ 	eoc_bucket.c eor_bucket.c core_filters.c \
+ 	util_expr_parse.c util_expr_scan.c util_expr_eval.c
+ 
+-LTLIBRARY_DEPENDENCIES = test_char.h
+-
+ TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
+ 
+ include $(top_builddir)/build/rules.mk
+ include $(top_srcdir)/build/library.mk
+ 
+-gen_test_char_OBJECTS = gen_test_char.lo
+-gen_test_char: $(gen_test_char_OBJECTS)
+-	$(LINK) $(EXTRA_LDFLAGS) $(gen_test_char_OBJECTS) $(EXTRA_LIBS)
+-
+-test_char.h: gen_test_char
+-	./gen_test_char > test_char.h
+-
+-util.lo: test_char.h
+-
+ EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR)
+ EXPORT_DIRS_APR = $(APR_INCLUDEDIR) $(APU_INCLUDEDIR)
+ 

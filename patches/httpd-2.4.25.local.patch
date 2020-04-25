@@ -60,19 +60,3 @@ diff -ru --new-file httpd-2.4.25.orig/server/test_char.h httpd-2.4.25/server/tes
 +    0x17e,0x17e,0x17e,0x17e,0x17e,0x17e,0x17e,0x17e
 +};
  
---- httpd-2.4.25/server/Makefile.in.orig	2013-10-02 12:20:14.000000000 +0000
-+++ httpd-2.4.25/server/Makefile.in	2017-02-02 23:55:21.521675844 +0000
-@@ -23,10 +23,10 @@
- include $(top_builddir)/build/rules.mk
- include $(top_srcdir)/build/library.mk
- 
--gen_test_char_OBJECTS = gen_test_char.lo
--gen_test_char: $(gen_test_char_OBJECTS)
--	$(LINK) $(EXTRA_LDFLAGS) $(gen_test_char_OBJECTS) $(EXTRA_LIBS)
-+gen_test_char: gen_test_char.o
-+	gcc -I$(shell x86_64-nt64-midipix-apr-1-config --includedir) -o $@ $<
- 
-+#If this file is missing, you're doing something wrong...
- test_char.h: gen_test_char
- 	./gen_test_char > test_char.h
- 
