@@ -1,0 +1,21 @@
+diff -ru apr-1.6.5.orig/configure apr-1.6.5/configure
+--- apr-1.6.5.orig/configure    2018-09-10 23:14:53.000000000 +0200
++++ apr-1.6.5/configure 2020-04-25 19:12:30.858759347 +0200
+@@ -17277,6 +17277,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
+
