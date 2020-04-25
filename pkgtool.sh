@@ -50,21 +50,27 @@ pkgtoolp_restart_at() {
 };
 
 pkgtoolp_rdepends() {
-	local	_pkg_name="${1}" _group_name="" _pkg_names="" _rc=0\
-		EX_PKG_BUILD_GROUPS="" EX_PKG_DISABLED="" EX_PKG_FINISHED="" EX_PKG_NAMES=""; _status="";
+	local	_pkg_name="${1}" _group_name="" _pkg_depends="" _pkg_name_rdepend="" _pkg_names=""\
+		_pkg_rdepends="" _rc=0 EX_PKG_BUILD_GROUPS="" EX_PKG_DISABLED="" EX_PKG_RDEPENDS_DIRECT=""; _status="";
 	if ! ex_pkg_load_groups; then
 		_rc=1; _status="Error: failed to load build groups.";
 	elif ! _group_name="$(ex_pkg_find_package "${EX_PKG_BUILD_GROUPS}" "${_pkg_name}")"; then
 		_rc=1; _status="Error: unknown package \`${_pkg_name}'.";
 	elif ! _pkg_names="$(ex_pkg_get_packages "${_group_name}")"; then
 		_rc=1; _status="Error: failed to expand package list of build group \`${_group_name}'.";
-	elif ! ex_pkg_unfold_rdepends "${_group_name}" "${_pkg_names}" "${_pkg_name}" 0; then
+	elif ! ex_pkg_unfold_rdepends_direct "${_group_name}" "${_pkg_names}" "${_pkg_name}"; then
 		_rc=1; _status="Error: failed to unfold reverse dependency-expanded package name list for \`${_pkg_name}'.";
-	elif [ -z "${EX_PKG_NAMES}" ] && [ -z "${EX_PKG_DISABLED}" ]; then
+	elif [ -z "${EX_PKG_DISABLED}" ] && [ -z "${EX_PKG_RDEPENDS_DIRECT}" ]; then
 		rtl_log_msg info "Package \`%s' has no reverse dependencies." "${_pkg_name}";
-	else	if [ -n "${EX_PKG_NAMES}" ]; then
-			rtl_log_msg info "Reverse dependencies of \`%s': %s"\
-					"${_pkg_name}" "$(rtl_lsort "${EX_PKG_NAMES}")";
+	else	for _pkg_name_rdepend in $(rtl_lsort "${EX_PKG_RDEPENDS_DIRECT}"); do
+			_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "${_pkg_name_rdepend}")";
+			if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
+			&& [ -n "${_pkg_depends}" ]; then
+				_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "[33m${_pkg_depends}[93m")";
+			fi;
+		done;
+		if [ -n "${_pkg_rdepends}" ]; then
+			rtl_log_msg info "Reverse dependencies of \`%s': %s" "${_pkg_name}" "${_pkg_rdepends}";
 		fi;
 		if [ -n "${EX_PKG_DISABLED}" ]; then
 			rtl_log_msg info "Reverse dependencies of \`%s' (disabled packages:) %s"\
