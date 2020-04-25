@@ -15,6 +15,7 @@ pkgtoolp_info() {
 			"${_group_name}" 1 "${_pkg_name}" "" "${BUILD_WORKDIR}"; then
 		_rc=1; _status="Error: failed to set package environment for \`${_pkg_name}'.";
 	else	rtl_log_env_vars "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
+		rtl_log_msg info "Build group: %s" "${_group_name}";
 		if [ -z "${PKG_DEPENDS:-}" ]; then
 			rtl_log_msg info "Package \`%s' has no dependencies." "${_pkg_name}";
 		else	rtl_log_msg info "Direct dependencies of \`%s': %s" "${_pkg_name}" "${PKG_DEPENDS}";
