@@ -22,7 +22,7 @@ zstd")";
 : ${PKG_APR_CONFIGURE_ARGS_EXTRA:="--with-devrandom=/dev/urandom"};
 : ${PKG_APR_LIBTOOL:=rdlibtool};
 : ${PKG_APR_NO_CLEAN:=1};
-: ${PKG_APR_UTIL_DEPENDS:="apr expat sqlite3"};
+: ${PKG_APR_UTIL_DEPENDS:="apr expat libressl sqlite3"};
 : ${PKG_APR_UTIL_SHA256SUM:=d3e12f7b6ad12687572a3a39475545a072608f4ba03a6ce8a3778f607dd0035b};
 : ${PKG_APR_UTIL_VERSION:=1.6.1};
 : ${PKG_APR_UTIL_URL:=https://archive.apache.org/dist/apr/apr-util-${PKG_APR_UTIL_VERSION}.tar.bz2};
