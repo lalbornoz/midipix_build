@@ -115,6 +115,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_PV_SHA256SUM:=608ef935f7a377e1439c181c4fc188d247da10d51a19ef79bcdee5043b0973f1};
 : ${PKG_PV_VERSION:=1.6.6};
 : ${PKG_PV_URL:=https://www.ivarch.com/programs/sources/pv-${PKG_PV_VERSION}.tar.bz2};
+: ${PKG_PV_DEBUG_CONFIGURE_ARGS_EXTRA:=--enable-debugging};
 : ${PKG_PV_MAKEFLAGS_BUILD:="LD=${DEFAULT_TARGET}-ld"};
 : ${PKG_RC_DEPENDS:="libreadline ncurses"};
 : ${PKG_RC_SHA256SUM:=5ed26334dd0c1a616248b15ad7c90ca678ae3066fa02c5ddd0e6936f9af9bfd8};
