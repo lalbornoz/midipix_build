@@ -5,7 +5,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[
                   [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release  Selects debug or release build; defaults to debug.
+        -b debug|release  Selects debug or release build kind; defaults to debug.
         -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
                           scripts (prefix,) source directory (src,) and/or destination
                           directory (dest) after successful package builds.

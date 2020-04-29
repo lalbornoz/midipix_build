@@ -46,7 +46,7 @@ buildp_dispatch_fail_pkg() {
 	if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
 		rtl_log_msg info "Logged environment dump for failed package \`%s' to \`%s'." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}.dump";
 		rtl_log_msg info "Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a %s -b %s \"%s\" PREFIX=\"%s\""\
-				"${ARCH}" "${BUILD}" "${_pkg_name}" "${PREFIX}";
+				"${ARCH}" "${BUILD_KIND}" "${_pkg_name}" "${PREFIX}";
 	fi;
 	if [ "${ARG_RELAXED:-0}" -eq 0 ]; then
 		exit 1;
