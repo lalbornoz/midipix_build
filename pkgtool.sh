@@ -89,7 +89,7 @@ pkgtoolp_shell() {
 		rtl_log_msg info "Run \$R to rebuild \`%s'." "${_pkg_name}";
 		rtl_log_msg info "Run \$RS <step> to restart the specified build step of \`%s'" "${_pkg_name}";
 		rtl_log_msg info "Run \$D to automatically regenerate the patch for \`%s'." "${_pkg_name}";
-		export	ARCH BUILD						\
+		export	ARCH BUILD_KIND						\
 			BUILD_DLCACHEDIR BUILD_WORKDIR				\
 			MAKE="make LIBTOOL=${PKG_LIBTOOL:-slibtool}"		\
 			MIDIPIX_BUILD_PWD					\
@@ -172,7 +172,7 @@ pkgtoolp_update_diff() {
 };
 
 pkgtool() {
-	local _rc=0 _status="" BUILD_GROUPS="" ARCH BUILD BUILD_WORKDIR PKGTOOL_PKGNAME PREFIX;
+	local _rc=0 _status="" BUILD_GROUPS="" ARCH BUILD_KIND BUILD_WORKDIR PKGTOOL_PKGNAME PREFIX;
 	if ! . "${0%/*}/subr/pkgtool_init.subr"; then
 		_rc=1; printf "Error: failed to source \`${0%/*}/subr/pkgtool_init.subr'." >&2;
 	elif ! pkgtool_init "${@}"; then
