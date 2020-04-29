@@ -9,13 +9,13 @@ HOST_DEPS_GROUP_DEPENDS="host_tools";
 HOST_DEPS_LDFLAGS_CONFIGURE="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 HOST_DEPS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_DEPS_PACKAGES="
-bison_host bmake_host bzip2_host chainport_host clang_host clzip_host
-cmake_host dbus_glib_host dbus_host expat_host file_host flex_host
-gdb_host gdbm_host glib_host gperf_host infounzip_host infozip_host
-intltool_host libffi_host libreadline_host libressl_host libz_host
-libzip_host llvm_host mdso_host mpackage_host musl_fts_host ncurses_host
-ncursestw_host ncursesw_host pcre_host perk_host python2_host python3_host
-ruby_host sqlite3_host texinfo_host tzdb_host xz_host";
+bison_host bmake_host bzip2_host ca_certificates_host chainport_host
+clang_host clzip_host cmake_host dbus_glib_host dbus_host expat_host
+file_host flex_host gdb_host gdbm_host glib_host gperf_host infounzip_host
+infozip_host intltool_host libffi_host libreadline_host libressl_host
+libz_host libzip_host llvm_host mdso_host mpackage_host musl_fts_host
+ncurses_host ncursestw_host ncursesw_host pcre_host perk_host python2_host
+python3_host ruby_host sqlite3_host texinfo_host tzdb_host xz_host";
 HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_BISON_HOST_SHA256SUM:=55e4a023b1b4ad19095a5f8279f0dc048fa29f970759cea83224a6d5e7a3a641};
 : ${PKG_BISON_HOST_VERSION:=3.5};
@@ -29,6 +29,12 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_BZIP2_HOST_IN_TREE:=1};
 : ${PKG_BZIP2_HOST_MAKEFLAGS_BUILD_EXTRA:=-f Makefile-libbz2_so};
 : ${PKG_BZIP2_HOST_MAKE_INSTALL_VNAME:=PREFIX};
+: ${PKG_CA_CERTIFICATES_HOST_DEPENDS:="libressl_host"};
+: ${PKG_CA_CERTIFICATES_HOST_URLS_GIT:="ca-certificates=https://github.com/Redfoxmoon3/ca-certificates@master"};
+: ${PKG_CA_CERTIFICATES_HOST_IN_TREE:=1};
+: ${PKG_CA_CERTIFICATES_HOST_CFLAGS_BUILD_EXTRA:=-I${PREFIX}/include};
+: ${PKG_CA_CERTIFICATES_HOST_LDFLAGS_BUILD_EXTRA:=-L${PREFIX}/lib};
+: ${PKG_CA_CERTIFICATES_HOST_ENV_VARS_EXTRA:="HOST_CC=gcc"};
 : ${PKG_CHAINPORT_HOST_URLS_GIT:="chainport=${DEFAULT_GITROOT}/ports/chainport"};
 : ${PKG_CHAINPORT_HOST_BUILD_STEPS_DISABLE:="build"};
 : ${PKG_CHAINPORT_HOST_NO_LOG_VARS:=1};
