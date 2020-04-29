@@ -240,6 +240,8 @@ buildp_init_prereqs() {
 			pgrep pkill printf readlink rm sed sha256sum sort	\
 			stat tail tar test touch tr uniq wget xz zip; then
 		printf "%s\n" "${_status}" >&2; exit 1;
+	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
+		printf "Error: awk(1) in \$PATH must be GNU Awk." >&2; exit 1;
 	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;		\
 			sed -i'' -e '' "${FNAME}" >/dev/null 2>&1; }); then
 		printf "Error: sed(1) in \${PATH} does not support the \`-i' option.\n" >&2; exit 1;
