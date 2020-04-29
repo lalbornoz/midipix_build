@@ -140,7 +140,7 @@ following hardware at minimum:
 * 7200 RPM SATA 3.1 HDD
 * 6 GB RAM
 
-| Target architecture | Build type | Distribution kinds selected | Average build time | Disk space required | Peak RAM usage |
+| Target architecture | Build kind | Distribution kinds selected | Average build time | Disk space required | Peak RAM usage |
 | ------------------- | ---------- | --------------------------- | ------------------ | ------------------- | -------------- |
 | nt64                | debug      | (none)                      | 2 hours            | 57.62 GB            | 3.55 GB        |
 | nt64                | release    | (none)                      | 1 hours 45 minutes | 36.51 GB            | 3.21 GB        |
@@ -200,7 +200,7 @@ usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[
                   [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release  Selects debug or release build; defaults to debug.
+        -b debug|release  Selects debug or release build kind; defaults to debug.
         -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
                           scripts (prefix,) source directory (src,) and/or destination
                           directory (dest) after successful package builds.
@@ -340,7 +340,7 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-r|-s|-t]
                     [<variable name>=<variable override>[ ..]] name
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release  Selects debug or release build; defaults to debug.
+        -b debug|release  Selects debug or release build kind; defaults to debug.
         -i                List package variables and dependencies of single named package.
         -r                List reverse dependencies of single named package.
         -s                Enter interactive package build shell environment for single
@@ -405,20 +405,20 @@ argument, if any, the environment, and/or ``${HOME}/midipix_build.vars``,
 env ARCH=nt64 BUILD=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D minipix,zipdist -P -v
 ```
 
-| Variable name    | Default value                   | Description                                                                   |
-| ---------------- | ------------------------------- | ----------------------------------------------------------------------------- |
-| ARCH             | nt64                            | Target 32-bit (nt32) or 64-bit (nt64) architecture                            |
-| BUILD            | debug                           | Build w/ debugging (debug) or release compiler flags                          |
-| BUILD_DLCACHEDIR | ${PREFIX_ROOT}/dlcache          | Absolute pathname to package downloads cache root directory                   |
-| BUILD_HNAME      | $(hostname)                     | Build system hostname                                                         |
-| BUILD_WORKDIR    | ${PREFIX}/tmp                   | Absolute pathname to temporary package build root directory                   |
-| PREFIX           | ${PREFIX_ROOT}/${ARCH}/${BUILD} | Absolute pathname to architecture- & build type-specific build root directory |
-| PREFIX_CROSS     | ${PREFIX}/${DEFAULT_TARGET}     | Absolute pathname to toolchain root directory                                 |
-| PREFIX_MINGW32   | ${PREFIX}/x86_64-w64-mingw32    | Absolute pathname to MinGW toolchain root directory                           |
-| PREFIX_MINIPIX   | ${PREFIX}/minipix               | Absolute pathname to minipix distribution root directory                      |
-| PREFIX_NATIVE    | ${PREFIX}/native                | Absolute pathname to cross-compiled packages root directory                   |
-| PREFIX_ROOT      | ${HOME}/midipix                 | Absolute pathname to top-level directory                                      |
-| PREFIX_RPM       | ${PREFIX}/rpm                   | Absolute pathname to package RPM archive root directory                       |
+| Variable name    | Default value                        | Description                                                                   |
+| ---------------- | ------------------------------------ | ----------------------------------------------------------------------------- |
+| ARCH             | nt64                                 | Target 32-bit (nt32) or 64-bit (nt64) architecture                            |
+| BUILD_DLCACHEDIR | ${PREFIX_ROOT}/dlcache               | Absolute pathname to package downloads cache root directory                   |
+| BUILD_HNAME      | $(hostname)                          | Build system hostname                                                         |
+| BUILD_KIND       | debug                                | Build w/ debugging (debug) or release compiler flags                          |
+| BUILD_WORKDIR    | ${PREFIX}/tmp                        | Absolute pathname to temporary package build root directory                   |
+| PREFIX           | ${PREFIX_ROOT}/${ARCH}/${BUILD_KIND} | Absolute pathname to architecture- & build type-specific build root directory |
+| PREFIX_CROSS     | ${PREFIX}/${DEFAULT_TARGET}          | Absolute pathname to toolchain root directory                                 |
+| PREFIX_MINGW32   | ${PREFIX}/x86_64-w64-mingw32         | Absolute pathname to MinGW toolchain root directory                           |
+| PREFIX_MINIPIX   | ${PREFIX}/minipix                    | Absolute pathname to minipix distribution root directory                      |
+| PREFIX_NATIVE    | ${PREFIX}/native                     | Absolute pathname to cross-compiled packages root directory                   |
+| PREFIX_ROOT      | ${HOME}/midipix                      | Absolute pathname to top-level directory                                      |
+| PREFIX_RPM       | ${PREFIX}/rpm                        | Absolute pathname to package RPM archive root directory                       |
   
 [Back to top](#table-of-contents)
 
@@ -472,15 +472,15 @@ latter and/or in its corresponding file beneath ``vars/``, with one of the follo
 prefixes:
 
 | Variable name prefix				|
-| --------------------------------------------- |
+| ---------------------------------------------	|
 | DEFAULT					|
-| DEFAULT_``<build type>``			|
-| DEFAULT_``<group name>``			|
-| ``<group name>``				|
-| PKG_``<parent package name>``			|
-| PKG_``<parent package name>``_``<build>``	|
-| PKG_``<package name>``			|
-| PKG_``<package name>``_``<build>``		|
+| DEFAULT_``${BUILD_TYPE}``			|
+| DEFAULT_``${GROUP_NAME}``			|
+| ``${GROUP_NAME}``				|
+| PKG_``${INHERIT_FROM}``			|
+| PKG_``${INHERIT_FROM}``_``${BUILD_KIND}``	|
+| PKG_``${NAME}``				|
+| PKG_``${NAME}``_``${BUILD_KIND}``		|
 
 Additionally, overrides may be specified on a per-build basis on the command-
 line after the last argument, with each variable prefixed w/ ``PKG_``, e.g.:
@@ -566,4 +566,4 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 
 [//]: # "}}}"
   
-[modeline]: # ( vim: set ff=dos tw=0: )
+[modeline]: # ( vim: set tw=0: )

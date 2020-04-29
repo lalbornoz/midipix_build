@@ -25,7 +25,7 @@ pkgp_install_files_pkgconfig() {
 pkgp_install_files_strip() {
 	local _bin_path="" _tree_root="${PKG_DESTDIR}";
 	if [ -e "${_tree_root}" ]\
-	&& [ "${BUILD}" = release ]\
+	&& [ "${BUILD_KIND}" = release ]\
 	&& [ "${PKG_BUILD_TYPE}" = native ]; then
 		if [ "${PKG_NAME%_minipix}" != "${PKG_NAME}" ]\
 		&& [ "${ARG_DEBUG_MINIPIX:-0}" -eq 1 ]; then

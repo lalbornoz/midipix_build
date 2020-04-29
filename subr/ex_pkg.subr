@@ -106,8 +106,8 @@ ex_pkg_load_vars() {
 	local _rc=0; _status="";
 	if ! rtl_lmatch "${ARCH}" "nt32 nt64"; then
 		_rc=1; _status="Error: invalid architecture \`${ARCH}'.";
-	elif ! rtl_lmatch "${BUILD}" "debug release"; then
-		_rc=1; _status="Error: unknown build type \`${BUILD}'.";
+	elif ! rtl_lmatch "${BUILD_KIND}" "debug release"; then
+		_rc=1; _status="Error: unknown build type \`${BUILD_KIND}'.";
 	else	case "${ARCH}" in
 		nt32)	DEFAULT_TARGET="i686-nt32-midipix"; ;;
 		nt64)	DEFAULT_TARGET="x86_64-nt64-midipix"; ;;
