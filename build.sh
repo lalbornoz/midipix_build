@@ -3,6 +3,7 @@
 #
 
 buildp_ast() {
+	trap '' HUP INT TERM USR1 USR2;
 	local _param="${1}" _pids="" _pids_niter=0 _pkg_name="" RTL_KILL_TREE_PIDS="";
 	if [ "${_param}" = "abort" ]; then
 		rtl_log_msg fatalexit "Build aborted.";
