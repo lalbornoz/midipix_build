@@ -78,7 +78,7 @@ ex_pkg_load_dump() {
 	if [ ! -e "${_workdir}/${_pkg_name}.dump" ]; then
 		rtl_log_msg warning "Warning: failed to locate environment dump for package \`%s' in \`%s'." "${_pkg_name}" "${_workdir}";
 		rtl_log_msg info "Rebuilding package \`%s' w/ --dump-in _build..." "${_pkg_name}";
-		(export	ARCH BUILD BUILD_DLCACHEDIR BUILD_WORKDIR		\
+		(export	ARCH BUILD_KIND BUILD_DLCACHEDIR BUILD_WORKDIR		\
 			PREFIX PREFIX_CROSS PREFIX_MINGW32 PREFIX_MINIPIX	\
 			PREFIX_NATIVE PREFIX_ROOT PREFIX_RPM;
 		./build.sh --dump-in _build -P -r "${_pkg_name}" -v);
