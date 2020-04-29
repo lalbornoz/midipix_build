@@ -66,11 +66,11 @@ exp_pkg_env_set() {
 		if [ -n "${PKG_INHERIT_FROM:-}" ]; then
 			rtl_set_vars _vars_set "${_vname}"				\
 				"$(rtl_lconcat "${_var_prefixes}"			\
-				"$(rtl_toupper "PKG_${PKG_INHERIT_FROM} PKG_${_pkg_name}")")"
+				"$(rtl_toupper "PKG_${PKG_INHERIT_FROM} PKG_${PKG_INHERIT_FROM}_${BUILD} PKG_${_pkg_name} PKG_${_pkg_name}_${BUILD}")")";
 		else
 			rtl_set_vars _vars_set "${_vname}"				\
 				"$(rtl_lconcat "${_var_prefixes}"			\
-				"$(rtl_toupper "PKG_${_pkg_name}")")";
+				"$(rtl_toupper "PKG_${_pkg_name} PKG_${_pkg_name}_${BUILD}")")";
 		fi;
 	done;
 	IFS0="${IFS:- }"; IFS=":"; for _vname in ${PKG_ENV_VARS_EXTRA:-}; do
