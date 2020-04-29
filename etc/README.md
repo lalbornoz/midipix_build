@@ -85,19 +85,19 @@ amount of logical processors on the build host divided by two (2).
 [//]: # "{{{ 2.1. Build-time dependencies"
 ### 2.1. Build-time dependencies
 
-* **Alpine Linux**: awk binutils bzip2 cmake coreutils curl findutils g++ gcc
+* **Alpine Linux**: binutils bzip2 cmake coreutils curl findutils g++ gawk gcc
 		    git grep gzip libc-dev linux-headers lzip make musl-dev
 		    net-tools patch perl perl-xml-parser procps sed tar
 		    util-linux wget xz zip
-* **Debian/-derived Linux**: awk binutils bzip2 clzip cmake coreutils curl findutils
-			     g++ gcc git grep gzip hostname libc6-dev libxml-parser-perl
-			     lzma make patch perl procps sed tar util-linux wget xz-utils zip
+* **Debian/-derived Linux**: binutils bzip2 clzip cmake coreutils curl findutils g++ gawk
+			     gcc git grep gzip hostname libc6-dev libxml-parser-perl lzma
+			     make patch perl procps sed tar util-linux wget xz-utils zip
 * **OpenSUSE Linux**: binutils bzip2 cmake coreutils curl findutils gawk gcc
 		      gcc-c++ git grep gzip hostname linux-glibc-devel lzip make
 		      patch perl perl-XML-Parser procps sed tar util-linux wget
 		      xz zip
   
-> N.B. Busybox is not supported.
+> N.B. Busybox is not supported. Awk implementations other than GNU Awk are not supported.
   
 [Back to top](#table-of-contents)
 
@@ -127,6 +127,10 @@ distribution files must not contain whitespaces.
 > N.B. The Midipix installer defaults to ``/dev/fs/c/midipix (C:\midipix)``. If left
 unchanged, the distribution ZIP archive must not be extracted into a directory of the
 same pathname.  
+  
+> N.B. The user installing and using Midipix must have been delegated the ``SeCreateSymbolicLinkPrivilege``
+("Create symbolic links") privilege&lbrack;[3](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-rights-assignment)&rbrack; and additionally be a non-administrator account
+owing to the UAC-related filtering policy of tokens introduced by Windows Vista&lbrack;[4](https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/bb530410%28v%3dmsdn%2e10%29)&rbrack;.  
   
 [Back to top](#table-of-contents)
 
@@ -402,7 +406,7 @@ argument, if any, the environment, and/or ``${HOME}/midipix_build.vars``,
 
 ```shell
 ./build.sh -a nt64 -b release -D minipix,zipdist -P -v PREFIX_ROOT="${HOME}/midipix_tmp"
-env ARCH=nt64 BUILD=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D minipix,zipdist -P -v
+env ARCH=nt64 BUILD_KIND=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D minipix,zipdist -P -v
 ```
 
 | Variable name    | Default value                        | Description                                                                   |
@@ -561,6 +565,8 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 
 * ``Sun, 25 Apr 2016 09:04:08 +0000 [1]`` <a href="https://www.musl-libc.org/faq.html" id="r1">musl FAQ</a>  
 * ``Wed, 04 Mar 2020 13:36:19 +0000 [2]`` <a href="https://midipix.org/#sec-midipix" id="r2">midipix - what is midipix, and how is it different?</a>  
+* ``Wed, 29 Apr 2020 23:33:34 +0100 [3]`` <a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-rights-assignment" id="r3">User Rights Assignment (Windows 10) - Windows security | Microsoft Docs</a>  
+* ``Wed, 29 Apr 2020 23:33:50 +0100 [4]`` <a href="https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/bb530410%28v%3dmsdn%2e10%29" id="r4">Windows Vista Application Development Requirements for User Account Control Compatibility | Microsoft Docs</a>  
   
 [Back to top](#table-of-contents)
 
