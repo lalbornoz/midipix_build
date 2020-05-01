@@ -25,11 +25,11 @@ pkg_dist_minipix_all() {
 				return 1;
 			fi;
 		done;
-		for _fname in libc.so libcrypto.so.45 libexpat.so.1 liblzma.so.5 libmagic.so.1			\
+		for _fname in libc.so libcrypto.so.46 libexpat.so.1 liblzma.so.5 libmagic.so.1			\
 				libncurses.so.6 libncursesw.so.6 libpcre.so.1 libperk.so.0			\
-				libpsxscl.so libpython2.7.so.1 libreadline.so.7 libssl.so.47			\
-				libu16ports.so.0 libtinfo.so.6 libtinfow.so.6 libunistring.so.2			\
-				libuuid.so.1 libz.so.1.2; do
+				libpsxscl.so libpython2.7.so.1 libreadline.so.7 libssl.so.48			\
+				libu16ports.so.0 libtinfo.so.6 libtinfo.so libtinfow.so.6			\
+				libtinfow.so libunistring.so.2 libuuid.so.1 libz.so.1; do
 			if [ -e "${PREFIX_NATIVE}/lib/${_fname}" ]\
 			&& rtl_is_newer "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin"; then
