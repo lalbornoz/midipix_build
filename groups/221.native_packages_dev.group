@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bison chicken cparser diffutils flex gdb lua lunix m4 make mandoc nasm
-patch patchutils perl python2 python3 ruby smallbasic tk")";
+patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_BISON_SHA256SUM:=55e4a023b1b4ad19095a5f8279f0dc048fa29f970759cea83224a6d5e7a3a641};
 : ${PKG_BISON_VERSION:=3.5};
 : ${PKG_BISON_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_VERSION}.tar.xz};
@@ -113,6 +113,10 @@ patch patchutils perl python2 python3 ruby smallbasic tk")";
 : ${PKG_RUBY_CONFIGURE_ARGS_EXTRA:="--disable-install-rdoc --with-baseruby=${PREFIX}/bin/ruby --with-out-ext=fiddle,openssl"};
 : ${PKG_RUBY_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_RUBY_MAKEFLAGS_VERBOSITY:="none"};
+: ${PKG_SBSIGNTOOLS_DEPENDS:="libressl"};
+: ${PKG_SBSIGNTOOLS_URLS_GIT:=sbsigntools-master=https://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git@master};
+: ${PKG_SBSIGNTOOLS_SUBDIR:=sbsigntools-master};
+: ${PKG_SBSIGNTOOLS_IN_TREE:=1};
 : ${PKG_SMALLBASIC_URLS_GIT:="SmallBASIC=https://github.com/smallbasic/SmallBASIC@master"};
 : ${PKG_SMALLBASIC_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
 : ${PKG_SMALLBASIC_IN_TREE:=1};
