@@ -80,7 +80,7 @@
 +
 --- nginx-1.11.3.dist/objs/ngx_auto_config.h	1970-01-01 00:00:00.000000000 +0000
 +++ nginx-1.11.3/objs/ngx_auto_config.h	2017-02-02 18:25:55.660944596 +0000
-@@ -0,0 +1,459 @@
+@@ -0,0 +1,444 @@
 +#define NGX_CONFIGURE " --prefix="
 +
 +#ifndef NGX_COMPILER
@@ -108,23 +108,8 @@
 +#endif
 +
 +
-+#ifndef NGX_HAVE_EPOLL
-+#define NGX_HAVE_EPOLL  1
-+#endif
-+
-+
 +#ifndef NGX_HAVE_CLEAR_EVENT
 +#define NGX_HAVE_CLEAR_EVENT  1
-+#endif
-+
-+
-+#ifndef NGX_HAVE_EPOLLRDHUP
-+#define NGX_HAVE_EPOLLRDHUP  1
-+#endif
-+
-+
-+#ifdef NGX_HAVE_EPOLLEXCLUSIVE
-+#undef NGX_HAVE_EPOLLEXCLUSIVE
 +#endif
 +
 +
@@ -542,7 +527,7 @@
 +
 --- nginx-1.11.3.dist/objs/ngx_modules.c	1970-01-01 00:00:00.000000000 +0000
 +++ nginx-1.11.3/objs/ngx_modules.c	2017-02-02 18:11:45.262857053 +0000
-@@ -0,0 +1,159 @@
+@@ -0,0 +1,156 @@
 +
 +#include <ngx_config.h>
 +#include <ngx_core.h>
@@ -555,7 +540,6 @@
 +extern ngx_module_t  ngx_regex_module;
 +extern ngx_module_t  ngx_events_module;
 +extern ngx_module_t  ngx_event_core_module;
-+extern ngx_module_t  ngx_epoll_module;
 +extern ngx_module_t  ngx_http_module;
 +extern ngx_module_t  ngx_http_core_module;
 +extern ngx_module_t  ngx_http_log_module;
@@ -605,7 +589,6 @@
 +    &ngx_regex_module,
 +    &ngx_events_module,
 +    &ngx_event_core_module,
-+    &ngx_epoll_module,
 +    &ngx_http_module,
 +    &ngx_http_core_module,
 +    &ngx_http_log_module,
@@ -657,7 +640,6 @@
 +    "ngx_regex_module",
 +    "ngx_events_module",
 +    "ngx_event_core_module",
-+    "ngx_epoll_module",
 +    "ngx_http_module",
 +    "ngx_http_core_module",
 +    "ngx_http_log_module",
@@ -704,7 +686,7 @@
 +
 --- nginx-1.11.3.dist/objs/Makefile	1970-01-01 00:00:00.000000000 +0000
 +++ nginx-1.11.3/objs/Makefile	2017-02-02 18:37:11.770727563 +0000
-@@ -0,0 +1,1205 @@
+@@ -0,0 +1,1196 @@
 +
 +CPP =	$(CC) -E
 +LINK =	$(CC)
@@ -872,7 +854,6 @@
 +	objs/src/os/unix/ngx_dlopen.o \
 +	objs/src/os/unix/ngx_process_cycle.o \
 +	objs/src/os/unix/ngx_linux_init.o \
-+	objs/src/event/modules/ngx_epoll_module.o \
 +	objs/src/os/unix/ngx_linux_sendfile_chain.o \
 +	objs/src/core/ngx_regex.o \
 +	objs/src/http/ngx_http.o \
@@ -989,7 +970,6 @@
 +	objs/src/os/unix/ngx_dlopen.o \
 +	objs/src/os/unix/ngx_process_cycle.o \
 +	objs/src/os/unix/ngx_linux_init.o \
-+	objs/src/event/modules/ngx_epoll_module.o \
 +	objs/src/os/unix/ngx_linux_sendfile_chain.o \
 +	objs/src/core/ngx_regex.o \
 +	objs/src/http/ngx_http.o \
@@ -1493,13 +1473,6 @@
 +	$(CC) -c $(CFLAGS) $(CORE_INCS) \
 +		-o objs/src/os/unix/ngx_linux_init.o \
 +		src/os/unix/ngx_linux_init.c
-+
-+
-+objs/src/event/modules/ngx_epoll_module.o:	$(CORE_DEPS) \
-+	src/event/modules/ngx_epoll_module.c
-+	$(CC) -c $(CFLAGS) $(CORE_INCS) \
-+		-o objs/src/event/modules/ngx_epoll_module.o \
-+		src/event/modules/ngx_epoll_module.c
 +
 +
 +objs/src/os/unix/ngx_linux_sendfile_chain.o:	$(CORE_DEPS) \
