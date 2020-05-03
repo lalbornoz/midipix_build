@@ -6,16 +6,23 @@ HOST_TOOLCHAIN_CONFIGURE_ARGS="--disable-nls --prefix= --target=${DEFAULT_TARGET
 HOST_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm host_tools";
 HOST_TOOLCHAIN_MAKEFLAGS_INSTALL_EXTRA="prefix= PREFIX=";
 HOST_TOOLCHAIN_PACKAGES="
-binutils_host binutils_host_mingw32 gcc_full_host gcc_libstdcpp_v3_host
-gcc_runtime_host gcc_stage1_cross_mingw32 gcc_stage1_host gmp_host
-ldso_host mpc_host mpfr_host musl_full_host musl_no_complex_host nasm_host
-psxstub_host psxtypes_host";
+binutils_build binutils_host binutils_host_mingw32 gcc_full_host
+gcc_libstdcpp_v3_host gcc_runtime_host gcc_stage1_cross_mingw32
+gcc_stage1_host gmp_host ldso_host mpc_host mpfr_host musl_full_host
+musl_no_complex_host nasm_host psxstub_host psxtypes_host";
 HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
+: ${PKG_BINUTILS_BUILD_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
+: ${PKG_BINUTILS_BUILD_VERSION:=2.24.51};
+: ${PKG_BINUTILS_BUILD_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_BUILD_VERSION}.tar.bz2};
+: ${PKG_BINUTILS_BUILD_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --enable-install-libbfd --prefix=${PREFIX}"};
+: ${PKG_BINUTILS_BUILD_LIBTOOL:=slibtool-static};
+: ${PKG_BINUTILS_BUILD_PREFIX:=${PREFIX}};
 : ${PKG_BINUTILS_HOST_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
 : ${PKG_BINUTILS_HOST_VERSION:=2.24.51};
 : ${PKG_BINUTILS_HOST_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_HOST_VERSION}.tar.bz2};
 : ${PKG_BINUTILS_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -g2 -O0"};
 : ${PKG_BINUTILS_HOST_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --prefix=${PREFIX} --target=${DEFAULT_TARGET} --with-sysroot=${PREFIX_CROSS}"};
+: ${PKG_BINUTILS_HOST_DEPENDS:="binutils_build"};
 : ${PKG_BINUTILS_HOST_INSTALL_FILES:="@${DEFAULT_TARGET}-windmc=bin/windmc @${DEFAULT_TARGET}-windres=bin/windres"};
 : ${PKG_BINUTILS_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib"};
 : ${PKG_BINUTILS_HOST_LIBTOOL:=slibtool-static};
