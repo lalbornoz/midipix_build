@@ -68,7 +68,7 @@ buildp_dispatch_pkg_state() {
 	missing_pkg)	rtl_log_msg fatalexit "Error: unknown package \`%s'." "${_pkg_name}"; ;;
 	msg_pkg)	shift 3; rtl_log_msg verbose "%s/%s: %s" "${_group_name}" "${_pkg_name}" "${*}"; ;;
 	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg verbose "Skipping finished package \`%s'." "${_pkg_name}"; ;;
-	start_pkg)	rtl_log_msg info "[%03d/%03d] Starting \`%s' build..." "${4}" "${5}" "${_pkg_name}"; ;;
+	start_pkg)	rtl_log_msg info "[% 3d%%] [%03d/%03d] Starting \`%s' build..." "$(((100*${4} + ${5}/2)/${5}))" "${4}" "${5}" "${_pkg_name}"; ;;
 	step_pkg)	rtl_log_msg verbose "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}"; ;;
 	finish_pkg)
 		: $((BUILD_NFINI+=1));
