@@ -9,15 +9,21 @@ HOST_DEPS_GROUP_DEPENDS="host_tools";
 HOST_DEPS_LDFLAGS_CONFIGURE="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 HOST_DEPS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_DEPS_PACKAGES="
-bison_host bmake_host bzip2_host ca_certificates_host chainport_host
-clang_host clzip_host cmake_host dbus_glib_host dbus_host expat_host
-file_host flex_host gdb_host gdbm_host glib_host gperf_host infounzip_host
-infozip_host intltool_host libffi_host libreadline_host libressl_host
-libz_host libzip_host llvm_host mdso_host mpackage_host musl_fts_host
-ncurses_host ncursestw_host ncursesw_host pcre_host perk_host python2_host
-python3_host ruby_host sbsigntools_host sqlite3_host texinfo_host tzdb_host
-util_linux_host xz_host";
+binutils_build bison_host bmake_host bzip2_host ca_certificates_host
+chainport_host clang_host clzip_host cmake_host dbus_glib_host dbus_host
+expat_host file_host flex_host gdb_host gdbm_host glib_host gperf_host
+infounzip_host infozip_host intltool_host libffi_host libreadline_host
+libressl_host libz_host libzip_host llvm_host mdso_host mpackage_host
+musl_fts_host ncurses_host ncursestw_host ncursesw_host pcre_host
+perk_host python2_host python3_host ruby_host sbsigntools_host
+sqlite3_host texinfo_host tzdb_host util_linux_host xz_host";
 HOST_DEPS_PREFIX="${PREFIX}";
+: ${PKG_BINUTILS_BUILD_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
+: ${PKG_BINUTILS_BUILD_VERSION:=2.24.51};
+: ${PKG_BINUTILS_BUILD_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_BUILD_VERSION}.tar.bz2};
+: ${PKG_BINUTILS_BUILD_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --enable-install-libbfd --prefix=${PREFIX}"};
+: ${PKG_BINUTILS_BUILD_LIBTOOL:=slibtool-static};
+: ${PKG_BINUTILS_BUILD_PREFIX:=${PREFIX}};
 : ${PKG_BISON_HOST_SHA256SUM:=55e4a023b1b4ad19095a5f8279f0dc048fa29f970759cea83224a6d5e7a3a641};
 : ${PKG_BISON_HOST_VERSION:=3.5};
 : ${PKG_BISON_HOST_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_HOST_VERSION}.tar.xz};
