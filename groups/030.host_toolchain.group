@@ -16,7 +16,6 @@ HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_BINUTILS_HOST_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_HOST_VERSION}.tar.bz2};
 : ${PKG_BINUTILS_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -g2 -O0"};
 : ${PKG_BINUTILS_HOST_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --prefix=${PREFIX} --target=${DEFAULT_TARGET} --with-sysroot=${PREFIX_CROSS}"};
-: ${PKG_BINUTILS_HOST_DEPENDS:="binutils_build"};
 : ${PKG_BINUTILS_HOST_INSTALL_FILES:="@${DEFAULT_TARGET}-windmc=bin/windmc @${DEFAULT_TARGET}-windres=bin/windres"};
 : ${PKG_BINUTILS_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib"};
 : ${PKG_BINUTILS_HOST_LIBTOOL:=slibtool-static};
