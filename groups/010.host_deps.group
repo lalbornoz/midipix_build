@@ -211,7 +211,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_RUBY_HOST_CFLAGS_CONFIGURE:="-g0 -O1 -DHAVE_RL_USERNAME_COMPLETION_FUNCTION=1"};
 : ${PKG_RUBY_HOST_CONFIGURE_ARGS_EXTRA:="--disable-install-rdoc --with-out-ext=fiddle,openssl"};
 : ${PKG_RUBY_HOST_MAKEFLAGS_VERBOSITY:="none"};
-: ${PKG_SBSIGNTOOLS_HOST_DEPENDS:="libressl_host binutils_build"};
+: ${PKG_SBSIGNTOOLS_HOST_DEPENDS:="binutils_build libressl_host util_linux_host"};
 : ${PKG_SBSIGNTOOLS_HOST_URLS_GIT:=sbsigntools-master=https://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git@master};
 : ${PKG_SBSIGNTOOLS_HOST_SUBDIR:=sbsigntools-master};
 : ${PKG_SBSIGNTOOLS_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/opt/include"};
