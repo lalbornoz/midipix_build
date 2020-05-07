@@ -15,8 +15,8 @@ file_host flex_host gdb_host gdbm_host glib_host gperf_host infounzip_host
 infozip_host intltool_host libffi_host libreadline_host libressl_host
 libz_host libzip_host llvm_host mdso_host mpackage_host musl_fts_host
 ncurses_host ncursestw_host ncursesw_host pcre_host perk_host python2_host
-python3_host ruby_host sqlite3_host texinfo_host tzdb_host util_linux_host
-xz_host";
+python3_host ruby_host sbsigntools_host sqlite3_host texinfo_host tzdb_host
+util_linux_host xz_host";
 HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_BISON_HOST_SHA256SUM:=55e4a023b1b4ad19095a5f8279f0dc048fa29f970759cea83224a6d5e7a3a641};
 : ${PKG_BISON_HOST_VERSION:=3.5};
@@ -204,6 +204,10 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_RUBY_HOST_CFLAGS_CONFIGURE:="-g0 -O1 -DHAVE_RL_USERNAME_COMPLETION_FUNCTION=1"};
 : ${PKG_RUBY_HOST_CONFIGURE_ARGS_EXTRA:="--disable-install-rdoc --with-out-ext=fiddle,openssl"};
 : ${PKG_RUBY_HOST_MAKEFLAGS_VERBOSITY:="none"};
+: ${PKG_SBSIGNTOOLS_HOST_DEPENDS:="libressl_host binutils_build"};
+: ${PKG_SBSIGNTOOLS_HOST_URLS_GIT:=sbsigntools-master=https://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git@master};
+: ${PKG_SBSIGNTOOLS_HOST_SUBDIR:=sbsigntools-master};
+: ${PKG_SBSIGNTOOLS_HOST_IN_TREE:=1};
 : ${PKG_SQLITE3_HOST_DEPENDS:="libreadline_host ncurses_host"};
 : ${PKG_SQLITE3_HOST_SHA256SUM:=65cc0c3e9366f50c0679c5ccd31432cea894bc4a3e8947dabab88c8693263615};
 : ${PKG_SQLITE3_HOST_VERSION:=3160200};
