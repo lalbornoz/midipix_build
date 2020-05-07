@@ -75,7 +75,7 @@ buildp_dispatch_pkg_state() {
 		if [ "${ARG_VERBOSE:-0}" -ge 2 ]; then
 			cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		fi;
-		rtl_log_msg info_end "Finished \`%s' build." "${_pkg_name}"; ;;
+		rtl_log_msg info_end "[% 3d%%] [%03d/%03d] Finished \`%s' build." "$(((100*${4} + ${5}/2)/${5}))" "${4}" "${5}" "${_pkg_name}"; ;;
 	start_pkg_child)
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 			rtl_log_env_vars "build" $(rtl_get_vars_fast "^PKG_");

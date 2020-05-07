@@ -68,7 +68,7 @@ exp_pkg_dispatch_group() {
 		case "${_pipe_msg%% *}" in
 		done)	_pkg_name="${_pipe_msg#done * }"; : $((EXP_PKG_DISPATCH_NJOBS-=1));
 			EX_PKG_FINISHED="$(rtl_lconcat "${EX_PKG_FINISHED}" "${_pkg_name}")";
-			"${_dispatch_fn}" finish_pkg ${_pipe_msg#done };
+			"${_dispatch_fn}" finish_pkg ${_pipe_msg#done } "${EXP_PKG_DISPATCH_COUNT}" "${EXP_PKG_DISPATCH_COUNT_MAX}";
 			EX_PKG_NAMES="$(rtl_lfilter "${EX_PKG_NAMES}" "${_pkg_name}")";
 			EX_PKG_DISPATCH_WAIT="$(rtl_lfilter "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}")";
 			if [ -n "${EX_PKG_NAMES}" ] && [ "${_rc}" -eq 0 ]; then
