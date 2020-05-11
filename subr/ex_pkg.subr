@@ -105,7 +105,7 @@ ex_pkg_load_dump() {
 # Return:	zero (0) on success, non-zero (>0) on failure, build variables post-return on success.
 #
 ex_pkg_load_vars() {
-	local _rc=0; _status="";
+	local _rc=0 _fname=""; _status="";
 	if ! rtl_lmatch "${ARCH}" "nt32 nt64"; then
 		_rc=1; _status="Error: invalid architecture \`${ARCH}'.";
 	elif ! rtl_lmatch "${BUILD_KIND}" "debug release"; then
@@ -114,9 +114,16 @@ ex_pkg_load_vars() {
 		nt32)	DEFAULT_TARGET="i686-nt32-midipix"; ;;
 		nt64)	DEFAULT_TARGET="x86_64-nt64-midipix"; ;;
 		esac;
-		rtl_fileop source_opt							\
-			"${HOME}/midipix_build.vars" "${HOME}/.midipix_build.vars"	\
-			../midipix_build.vars ./midipix.env;
+		for _fname in	\
+				"${HOME}/midipix_build.vars"	\
+				"${HOME}/.midipix_build.vars"	\
+				../midipix_build.vars		\
+				./midipix.env; do
+			if [ -r "${_fname}" ]; then
+				rtl_log_msg notice "Sourcing \`%s'." "${_fname}";
+				rtl_fileop source "${_fname}";
+			fi;
+		done;
 		if [ -z "${PREFIX}" ]; then
 			_rc=1; _status="Error: \${PREFIX} empty or unset.";
 		fi;

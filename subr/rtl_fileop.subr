@@ -92,7 +92,7 @@ rtl_fileop() {
 			rtlp_fileop_log "Moving \`${1}' to \`${2}' w/ -fs";
 			mv -f -- "${1}" "${2}"; _rc="${?}";
 		fi; ;;
-	mkdir|mkfifo|rm|source_opt|test|touch)
+	mkdir|mkfifo|rm|source|source_opt|test|touch)
 		while [ \( "${?}" -eq 0 \) -a \( ""${#}"" -gt 0 \) ]; do
 			if [ -z "${1}" ]; then
 				rtl_log_msg fatalexit "Missing parameters (in: %s %s.)" "${_op}" "${*}";
@@ -117,6 +117,10 @@ rtl_fileop() {
 			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				rtlp_fileop_log "Removing directory or file \`${1}'.";
 				rm -rf -- "${1}"; _rc="${?}";
+			elif [ "${_op}" = source ]\
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
+				rtlp_fileop_log "Sourcing file \`${1}'.";
+				. "${1}"; _rc="${?}";
 			elif [ "${_op}" = source_opt ]\
 			&& rtl_fileop test "${1}"\
 			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
