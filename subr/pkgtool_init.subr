@@ -29,7 +29,7 @@ pkgtoolp_init_env() {
 };
 
 pkgtoolp_init_getopts() {
-	local _opt="" _shiftfl=0 _rc=0 OPTIND=0; _status=""; : ${ARCH:="nt64"}; : ${BUILD:="debug"};
+	local _opt="" _shiftfl=0 _rc=0 OPTIND=0; _status=""; : ${ARCH:="nt64"}; : ${BUILD_KIND:="debug"};
 	ARG_INFO=0; ARG_RESTART_AT=""; ARG_RDEPENDS=0; ARG_UPDATE_DIFF=0; ARG_SHELL=0; ARG_TARBALL=0;
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
