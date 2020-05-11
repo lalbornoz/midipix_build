@@ -3,8 +3,8 @@
 #
 
 pkgtoolp_info() {
-	local	_pkg_name="${1}" _group_name="" _pkg_name_uc="$(rtl_toupper "${1}")" _pkg_names="" _rc=0\
-		EX_PKG_BUILD_GROUPS="" EX_PKG_DISABLED="" EX_PKG_FINISHED="" EX_PKG_NAMES=""; _status="";
+	local	_pkg_name="${1}" _group_name="" _pkg_name_uc="$(rtl_toupper "${1}")" _fname="" _pkg_names=""\
+		_rc=0 EX_PKG_BUILD_GROUPS="" EX_PKG_DISABLED="" EX_PKG_FINISHED="" EX_PKG_NAMES=""; _status="";
 	if ! ex_pkg_load_groups; then
 		_rc=1; _status="Error: failed to load build groups.";
 	elif ! _group_name="$(ex_pkg_find_package "${EX_PKG_BUILD_GROUPS}" "${_pkg_name}")"; then
@@ -14,7 +14,8 @@ pkgtoolp_info() {
 	elif ! ex_pkg_env "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"\
 			"${_group_name}" 1 "${_pkg_name}" "" "${BUILD_WORKDIR}"; then
 		_rc=1; _status="Error: failed to set package environment for \`${_pkg_name}'.";
-	else	rtl_log_env_vars "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
+	else	_pkg_version="$(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_VERSION")";
+		rtl_log_env_vars "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
 		rtl_log_msg info "Build group: %s" "${_group_name}";
 		if [ -z "${PKG_DEPENDS:-}" ]; then
 			rtl_log_msg info "Package \`%s' has no dependencies." "${_pkg_name}";
@@ -32,6 +33,20 @@ pkgtoolp_info() {
 				fi;
 			fi;
 		fi;
+		set +o noglob;
+		for _fname in	\
+				"vars/${_pkg_name}.vars"								\
+				"patches/${_pkg_name}/"*.patch								\
+				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}.local.patch"			\
+				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}.local@${BUILD_HNAME}.patch"	\
+				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}_pre.local.patch"			\
+				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}_pre.local@${BUILD_HNAME}.patch"	\
+				"${BUILD_WORKDIR}/chainport/patches/${_pkg_name%%_*}/${_pkg_name%%_*}-${_pkg_version}.midipix.patch"; do
+			if [ -e "${_fname}" ]; then
+				sha256sum "${_fname}";
+			fi;
+		done;
+		set -o noglob;
 	fi; return "${_rc}";
 };
 
