@@ -73,16 +73,6 @@ buildp_init_args() {
 						*)	_rc=1; _status="Error: unknown packages: $(rtl_subst "${_pkg_names_unknown}" " " ", ")"; ;;
 						esac;
 					fi;
-					if [ "${_rc}" -eq 0 ]; then
-						case "${ARG_VERBOSE:-0}" in
-						0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
-						1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-						2)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-						3)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-						4)	rtl_fileop_set_log 1; rtl_log_set_lvl 3; ;;
-						*)	_rc=1; _status="Error: invalid verbosity level (max. -vvvv)"; ;;
-						esac;
-					fi;
 				fi;
 			fi;
 		fi;
@@ -218,6 +208,14 @@ buildp_init_getopts() {
 			esac;
 			if [ "${_rc:-0}" -eq 0 ]; then
 				DEFAULT_BUILD_CPUS="${ARG_PARALLEL}";
+				case "${ARG_VERBOSE:-0}" in
+				0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
+				1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+				2)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+				3)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+				4)	rtl_fileop_set_log 1; rtl_log_set_lvl 3; ;;
+				*)	_rc=1; _status="Error: invalid verbosity level (max. -vvvv)"; ;;
+				esac;
 			fi;
 		fi;
 	fi;
