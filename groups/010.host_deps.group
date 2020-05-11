@@ -17,6 +17,7 @@ libressl_host libz_host libzip_host llvm_host mdso_host mpackage_host
 musl_fts_host ncurses_host ncursestw_host ncursesw_host pcre_host
 perk_host python2_host python3_host ruby_host sbsigntools_host
 sqlite3_host texinfo_host tzdb_host util_linux_host xz_host";
+HOST_DEPS_PKG_CONFIG="${PREFIX}/bin/pkgconf";
 HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_BINUTILS_BUILD_DEPENDS:="texinfo_host"};
 : ${PKG_BINUTILS_BUILD_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
