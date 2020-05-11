@@ -158,9 +158,9 @@ exp_pkg_dispatch_package() {
 # Return:			zero (0) on success, non-zero (>0) on failure, ${EXP_PKG_DISPATCH_NJOBS}, ${EXP_PKG_DISPATCH_COUNT}, ${EX_PKG_NAMES}, and ${EX_PKG_DISPATCH_WAIT} may be mutated post-return.
 #
 exp_pkg_dispatch_packages() {
-	local	_build_steps_default="${1}" _build_vars_default="${2}" _checkfl="${3}"		\
-		_dispatch_fn="${4}" _group_name="${5}" _njobs_max="${6}" _pipe_path="${7}"	\
-		_pkg_disabled="${8}" _pkg_finished="${9}" _restart_at="${10}" _workdir="${11}"	\
+	local	_build_steps_default="${1}" _build_vars_default="${2}" _checkfl="${3}"\
+		_dispatch_fn="${4}" _group_name="${5}" _njobs_max="${6}" _pipe_path="${7}"\
+		_pkg_disabled="${8}" _pkg_finished="${9}" _restart_at="${10}" _workdir="${11}"\
 		_foundfl=0 _njob=0 _pkg_depends="" _pkg_name="";
 	while [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -lt "${_njobs_max}" ]; do
 		_foundfl=0;
@@ -169,7 +169,7 @@ exp_pkg_dispatch_packages() {
 			&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name}"\
 			&& ! rtl_lmatch "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}"\
 			&& ex_pkg_check_depends "${_checkfl}" "${_pkg_disabled}" "${_pkg_finished}"	\
-					"${_pkg_name}" "${EX_PKG_DISPATCH_WAIT}"; then
+					"${_pkg_name}" "${EX_PKG_NAMES}" "${EX_PKG_DISPATCH_WAIT}"; then
 				exp_pkg_dispatch_package "${_build_steps_default}"			\
 					"${_build_vars_default}" "${_dispatch_fn}"			\
 					"${_group_name}" "${_pkg_name}" "${_restart_at}"		\

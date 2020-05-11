@@ -8,17 +8,20 @@
 # @_pkg_disabled:	list of disabled packages
 # @_pkg_finished:	list of finished packages
 # @_pkg_name:		single package name
+# @_pkg_names:		list of package names
 # @_pkg_wait:		list of in-progress packages
 #
 # Return:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
 #
 ex_pkg_check_depends() {
-	local	_checkfl="${1}" _pkg_disabled="${2}" _pkg_finished="${3}" _pkg_name="${4}" _pkg_wait="${5}"\
+	local	_checkfl="${1}" _pkg_disabled="${2}" _pkg_finished="${3}" _pkg_name="${4}" _pkg_names="${5}" _pkg_wait="${6}"\
 		_dependfl=0 _pkg_depends="" _pkg_name_depend="";
 	if [ "${_checkfl:-0}" -eq 1 ]\
 	&& _pkg_depends="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS")))"; then
 		for _pkg_name_depend in $(rtl_uniq ${_pkg_depends}); do
-			if ! rtl_lmatch "${_pkg_disabled}" "${_pkg_name_depend}"\
+			if ! rtl_lmatch "${_pkg_names}" "${_pkg_name_depend}"; then
+				rtl_log_msg fatalexit "Error: dependency \`%s' of \`%s' unknown." "${_pkg_name_depend}" "${_pkg_name}";
+			elif ! rtl_lmatch "${_pkg_disabled}" "${_pkg_name_depend}"\
 			&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name_depend}"; then
 				_dependfl=1; break;
 			elif rtl_lmatch "${_pkg_wait}" "${_pkg_name_depend}"; then
