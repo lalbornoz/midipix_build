@@ -169,7 +169,7 @@ exp_pkg_dispatch_packages() {
 			&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name}"\
 			&& ! rtl_lmatch "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}"\
 			&& ex_pkg_check_depends "${_checkfl}" "${_pkg_disabled}" "${_pkg_finished}"	\
-					"${_pkg_name}" "${EX_PKG_NAMES}" "${EX_PKG_DISPATCH_WAIT}"; then
+					"${_pkg_name}" "${EX_PKG_NAMES}"; then
 				exp_pkg_dispatch_package "${_build_steps_default}"			\
 					"${_build_vars_default}" "${_dispatch_fn}"			\
 					"${_group_name}" "${_pkg_name}" "${_restart_at}"		\
