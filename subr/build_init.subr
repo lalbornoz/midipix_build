@@ -176,13 +176,7 @@ buildp_init_getopts() {
 			R)	ARG_RELAXED=1; ;;
 			*)	cat etc/build.usage; exit 1; ;;
 			esac; shift $((${OPTIND}-1)); OPTIND=1;
-		else
-			break;
-		fi;
-	done;
-	if [ "${_rc:-0}" -eq 0 ]; then
-		while [ ${#} -gt 0 ]; do
-			if [ "${1#=}" != "${1}" ]; then
+		else	if rtl_match "${1}" "=*"; then
 				BUILD_GROUPS_INHIBIT_DEPS=1; _arg="${1#=}";
 			else
 				_arg="${1}";
@@ -193,30 +187,30 @@ buildp_init_getopts() {
 			*[^_a-zA-Z]*)	_rc=1; _status="Error: build group names must not contain [^_a-zA-Z] (in argument \`${_arg}'.)"; ;;
 			*)		BUILD_GROUPS="$(rtl_lconcat "${BUILD_GROUPS}" "${_arg}")"; ;;
 			esac; shift;
-		done;
+		fi;
+	done;
+	if [ "${_rc:-0}" -eq 0 ]; then
+		case "${ARG_PARALLEL}" in
+		auto)	if ! ARG_PARALLEL="$(rtl_get_cpu_count)"; then
+				_rc=1; _status="Error: failed to get CPU count.";
+			else
+				ARG_PARALLEL=$((${ARG_PARALLEL}/2));
+			fi; ;;
+		"")	ARG_PARALLEL=1; ;;
+		*)	if ! rtl_isnumber "${ARG_PARALLEL}"; then
+				_rc=1; _status="Error: invalid jobs count \`${ARG_PARALLEL}'.";
+			fi; ;;
+		esac;
 		if [ "${_rc:-0}" -eq 0 ]; then
-			case "${ARG_PARALLEL}" in
-			auto)	if ! ARG_PARALLEL="$(rtl_get_cpu_count)"; then
-					_rc=1; _status="Error: failed to get CPU count.";
-				else
-					ARG_PARALLEL=$((${ARG_PARALLEL}/2));
-				fi; ;;
-			"")	ARG_PARALLEL=1; ;;
-			*)	if ! rtl_isnumber "${ARG_PARALLEL}"; then
-					_rc=1; _status="Error: invalid jobs count \`${ARG_PARALLEL}'.";
-				fi; ;;
+			DEFAULT_BUILD_CPUS="${ARG_PARALLEL}";
+			case "${ARG_VERBOSE:-0}" in
+			0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
+			1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+			2)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+			3)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+			4)	rtl_fileop_set_log 1; rtl_log_set_lvl 3; ;;
+			*)	_rc=1; _status="Error: invalid verbosity level (max. -vvvv)"; ;;
 			esac;
-			if [ "${_rc:-0}" -eq 0 ]; then
-				DEFAULT_BUILD_CPUS="${ARG_PARALLEL}";
-				case "${ARG_VERBOSE:-0}" in
-				0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
-				1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-				2)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-				3)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-				4)	rtl_fileop_set_log 1; rtl_log_set_lvl 3; ;;
-				*)	_rc=1; _status="Error: invalid verbosity level (max. -vvvv)"; ;;
-				esac;
-			fi;
 		fi;
 	fi;
 	return "${_rc}";
