@@ -68,7 +68,7 @@ pkgtoolp_init_getopts() {
 			case "${1}" in
 			*=*)	rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
 			*)	if [ "${#}" -ne 1 ]; then
-					_rc=1; _status="Error: invalid argument \`${1}'.";
+					_rc=1; _status="Error: invalid command line \`${*}'.";
 				fi; break; ;;
 			esac; shift;
 		done;
