@@ -68,14 +68,14 @@ buildp_dispatch_pkg_state() {
 	missing_pkg)	rtl_log_msg fatalexit "Error: unknown package \`%s'." "${_pkg_name}"; ;;
 	msg_pkg)	shift 3; rtl_log_msg verbose "%s/%s: %s" "${_group_name}" "${_pkg_name}" "${*}"; ;;
 	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg verbose "Skipping finished package \`%s'." "${_pkg_name}"; ;;
-	start_pkg)	rtl_log_msg info "[% 3d%%] [%03d/%03d] Starting \`%s' build..." "$(((100*${4} + ${5}/2)/${5}))" "${4}" "${5}" "${_pkg_name}"; ;;
+	start_pkg)	rtl_log_msg info "[% 3d%%] [%03d/%03d] Starting \`%s' build..." "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
 	step_pkg)	rtl_log_msg verbose "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}"; ;;
 	finish_pkg)
 		: $((BUILD_NFINI+=1));
 		if [ "${ARG_VERBOSE:-0}" -ge 2 ]; then
 			cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		fi;
-		rtl_log_msg info_end "Finished \`%s' build." "${_pkg_name}"; ;;
+		rtl_log_msg info_end "[% 3d%%] [%03d/%03d] Finished \`%s' build." "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
 	start_pkg_child)
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 			rtl_log_env_vars "build" $(rtl_get_vars_fast "^PKG_");
