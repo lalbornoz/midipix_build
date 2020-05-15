@@ -3,9 +3,9 @@
 #
 
 pkgp_install_perms() {
-	local _destdir="${1}" _fname="" _ifs_old="${IFS:- }" IFS;
-	IFS="
-";	for _fname in $(find "${_destdir}" -type d); do
+	local _destdir="${1}" _fname="" IFS;
+	rtl_set_IFS_nl;
+	for _fname in $(find "${_destdir}" -type d); do
 		if ! rtl_fileop chmod 0755 "${_fname}"; then
 			return 1;
 		fi;
