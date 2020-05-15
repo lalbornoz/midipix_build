@@ -192,6 +192,13 @@ rtl_kill_tree() {
 	fi;
 };
 
+rtl_percentage() {
+	local _in="${1}" _max="${2}" _perc;
+	_perc="$((100 * ${_in} + ${_max} / 2))";
+	_perc="$((${_perc} ? ${_perc} / ${_max} : ${_perc}))";
+	printf "%d\n" "${_perc}";
+};
+
 rtl_prompt() {
 	local _fmt="${1}" _choice=""; shift;
 	printf "${_fmt}? (y|N) " "${@}";

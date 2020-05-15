@@ -61,17 +61,14 @@ exp_pkg_dispatch_expand_packages() {
 exp_pkg_dispatch_group() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _checkfl="${3}"\
 		_dispatch_fn="${4}" _group_name="${5}" _njobs_max="${6}" _pipe_path="${7}"\
-		_restart_at="${8}" _workdir="${9}" _pipe_msg="" _pkg_name="" _rc=0 _status_percentage="";
+		_restart_at="${8}" _workdir="${9}" _pipe_msg="" _pkg_name="" _rc=0 _status_percentage=0;
 	rtl_fileop mkfifo "${_pipe_path}";
 	while true; do
 		while [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -gt 0 ] && read _pipe_msg; do
 		case "${_pipe_msg%% *}" in
 		done)	_pkg_name="${_pipe_msg#done * }"; : $((EXP_PKG_DISPATCH_COUNT_CUR+=1)); : $((EXP_PKG_DISPATCH_NJOBS-=1));
 			EX_PKG_FINISHED="$(rtl_lconcat "${EX_PKG_FINISHED}" "${_pkg_name}")";
-			_status_percentage="$(((100 * ${EXP_PKG_DISPATCH_COUNT_CUR} + ${EXP_PKG_DISPATCH_COUNT_MAX} / 2)))";
-			if [ "${_status_percentage}" -gt 0 ]; then
-				_status_percentage="$((${_status_percentage} / ${EXP_PKG_DISPATCH_COUNT_MAX}))";
-			fi;
+			_status_percentage="$(rtl_percentage "${EXP_PKG_DISPATCH_COUNT_CUR}" "${EXP_PKG_DISPATCH_COUNT_MAX}")";
 			"${_dispatch_fn}" finish_pkg ${_pipe_msg#done } "${EXP_PKG_DISPATCH_COUNT_MAX}" "${_status_percentage}";
 			EX_PKG_NAMES="$(rtl_lfilter "${EX_PKG_NAMES}" "${_pkg_name}")";
 			EX_PKG_DISPATCH_WAIT="$(rtl_lfilter "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}")";
@@ -124,11 +121,8 @@ exp_pkg_dispatch_group() {
 #
 exp_pkg_dispatch_package() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _dispatch_fn="${3}"\
-		_group_name="${4}" _pkg_name="${5}" _restart_at="${6}" _workdir="${7}"\
-		_status_percentage="$((100 * ${EXP_PKG_DISPATCH_COUNT_CUR} + (${EXP_PKG_DISPATCH_COUNT_MAX} / 2)))";
-	if [ "${_status_percentage}" -gt 0 ]; then
-		_status_percentage="$((${_status_percentage} / ${EXP_PKG_DISPATCH_COUNT_MAX}))";
-	fi;
+		_group_name="${4}" _pkg_name="${5}" _restart_at="${6}" _workdir="${7}" _status_percentage=0;
+	_status_percentage="$(rtl_percentage "${EXP_PKG_DISPATCH_COUNT_CUR}" "${EXP_PKG_DISPATCH_COUNT_MAX}")";
 	if "${_dispatch_fn}" start_pkg "${_group_name}" "${_pkg_name}" "$((${EXP_PKG_DISPATCH_COUNT}+1))" "${EXP_PKG_DISPATCH_COUNT_MAX}" "${_status_percentage}"; then
 		: $((EXP_PKG_DISPATCH_NJOBS+=1)); : $((EXP_PKG_DISPATCH_COUNT+=1)); EX_PKG_DISPATCH_WAIT="$(rtl_lconcat "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}")";
 		(trap "if [ \${?} -eq 0 ]; then											\
