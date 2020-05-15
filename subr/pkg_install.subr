@@ -2,31 +2,41 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+pkgp_install_perms() {
+	local _destdir="${1}" _fname="" _ifs_old="${IFS:- }" IFS;
+	IFS="
+";	for _fname in $(find "${_destdir}" -type d); do
+		if ! rtl_fileop chmod 0755 "${_fname}"; then
+			return 1;
+		fi;
+	done;
+	for _fname in $(find "${_destdir}" \( -not -perm /0111 \) -type f); do
+		if ! rtl_fileop chmod 0644 "${_fname}"; then
+			return 1;
+		fi;
+	done;
+	for _fname in $(find "${_destdir}" -perm /0111 -type f); do
+		if ! rtl_fileop chmod 0755 "${_fname}"; then
+			return 1;
+		fi;
+	done;
+};
+
 pkg_install() {
-	local _fname="" _ifs_old="${IFS:- }" _pkglist_name="" IFS;
+	local _destdir="" _destdir_prefix="" _ifs_old="${IFS:- }" _pkglist_name="" IFS;
 	if ! rtl_fileop mkdir "${PKG_PREFIX}"; then
 		return 1;
-	else	IFS="
-";		for _fname in $(find "${PKG_DESTDIR}" -type d); do
-			if ! rtl_fileop chmod 0755 "${_fname}"; then
-				return 1;
+	else	for _destdir in "${PKG_DESTDIR}:${PKG_PREFIX}" "${PKG_DESTDIR_HOST}:${PREFIX}"; do
+			IFS=":"; set -- ${_destdir}; IFS="${_ifs_old}"; _destdir="${1}"; _destdir_prefix="${2}";
+			if [ -e "${_destdir}" ]; then
+				pkgp_install_perms "${_destdir}";
+				(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}"; date;
+				trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
+				if ! tar -C "${_destdir}" -cpf - . | tar -C "${_destdir_prefix}" --overwrite -xpf -; then
+					exit 1;
+				fi) 4<>"${BUILD_WORKDIR}/install.lock";
 			fi;
 		done;
-		for _fname in $(find "${PKG_DESTDIR}" \( -not -perm /0111 \) -type f); do
-			if ! rtl_fileop chmod 0644 "${_fname}"; then
-				return 1;
-			fi;
-		done;
-		for _fname in $(find "${PKG_DESTDIR}" -perm /0111 -type f); do
-			if ! rtl_fileop chmod 0755 "${_fname}"; then
-				return 1;
-			fi;
-		done; IFS="${_ifs_old}";
-		(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}"; date;
-		trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
-		if ! tar -C "${PKG_DESTDIR}" -cpf - . | tar -C "${PKG_PREFIX}" --overwrite -xpf -; then
-			exit 1;
-		fi) 4<>"${BUILD_WORKDIR}/install.lock";
 		if [ "${?}" -ne 0 ]; then
 			return 1;
 		elif [ "${PKG_PKGLIST_DISABLE:-0}" -eq 0 ]; then

@@ -35,7 +35,7 @@ exp_pkg_exec_pre() {
 		return 1;
 	elif ! ex_pkg_state_test "${_pkg_name}" "start" "${_restart_at}"; then
 		if [ "${PKG_NO_CLEAN_BASE_DIR:-0}" -eq 0 ]\
-		&& ! rtl_fileop rm "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}"\
+		&& ! rtl_fileop rm "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"\
 		|| ! rtl_fileop mkdir "${PKG_BASE_DIR}"; then
 			return 1;
 		fi;

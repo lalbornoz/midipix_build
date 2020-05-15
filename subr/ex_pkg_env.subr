@@ -40,6 +40,7 @@ exp_pkg_env_defaults() {
 	PKG_BUILD_DIR="${PKG_BASE_DIR}/${PKG_BUILD_DIR}";
 	PKG_CONFIGURE="${PKG_BASE_DIR}/${PKG_CONFIGURE:-${PKG_SUBDIR}/configure}";
 	PKG_DESTDIR="${PKG_BASE_DIR}/${PKG_DESTDIR:-destdir}";
+	PKG_DESTDIR_HOST="${PKG_BASE_DIR}/${PKG_DESTDIR_HOST:-destdir_host}";
 };
 
 #

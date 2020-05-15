@@ -12,6 +12,9 @@ pkg_clean() {
 		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "dest" ","; then
 			if ! rtl_fileop rm "${PKG_DESTDIR}"; then
 				return 1;
+			elif [ -e "${PKG_DESTDIR_HOST}" ]\
+			&&   ! rtl_fileop rm "${PKG_DESTDIR_HOST}"; then
+				return 1;
 			fi;
 		fi;
 		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "src" ","; then
