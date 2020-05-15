@@ -61,15 +61,17 @@ exp_pkg_dispatch_expand_packages() {
 exp_pkg_dispatch_group() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _checkfl="${3}"\
 		_dispatch_fn="${4}" _group_name="${5}" _njobs_max="${6}" _pipe_path="${7}"\
-		_restart_at="${8}" _workdir="${9}" _pipe_msg="" _pkg_name="" _rc=0 _status_percentage=0;
+		_restart_at="${8}" _workdir="${9}" _perc_group=0 _perc_pkg=0 _pipe_msg=""\
+		_pkg_name="" _rc=0;
 	rtl_fileop mkfifo "${_pipe_path}";
 	while true; do
 		while [ "${EXP_PKG_DISPATCH_NJOBS:-0}" -gt 0 ] && read _pipe_msg; do
 		case "${_pipe_msg%% *}" in
 		done)	_pkg_name="${_pipe_msg#done * }"; : $((EXP_PKG_DISPATCH_COUNT_CUR+=1)); : $((EXP_PKG_DISPATCH_NJOBS-=1));
 			EX_PKG_FINISHED="$(rtl_lconcat "${EX_PKG_FINISHED}" "${_pkg_name}")";
-			_status_percentage="$(rtl_percentage "${EXP_PKG_DISPATCH_COUNT_CUR}" "${EXP_PKG_DISPATCH_COUNT_MAX}")";
-			"${_dispatch_fn}" finish_pkg ${_pipe_msg#done } "${EXP_PKG_DISPATCH_COUNT_MAX}" "${_status_percentage}";
+			_perc_group="$(rtl_percentage "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}")";
+			_perc_pkg="$(rtl_percentage "${EXP_PKG_DISPATCH_COUNT_CUR}" "${EXP_PKG_DISPATCH_COUNT_MAX}")";
+			"${_dispatch_fn}" finish_pkg ${_pipe_msg#done } "${EXP_PKG_DISPATCH_COUNT_MAX}" "${_perc_group}" "${_perc_pkg}";
 			EX_PKG_NAMES="$(rtl_lfilter "${EX_PKG_NAMES}" "${_pkg_name}")";
 			EX_PKG_DISPATCH_WAIT="$(rtl_lfilter "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}")";
 			if [ -n "${EX_PKG_NAMES}" ] && [ "${_rc}" -eq 0 ]; then
@@ -121,9 +123,11 @@ exp_pkg_dispatch_group() {
 #
 exp_pkg_dispatch_package() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _dispatch_fn="${3}"\
-		_group_name="${4}" _pkg_name="${5}" _restart_at="${6}" _workdir="${7}" _status_percentage=0;
-	_status_percentage="$(rtl_percentage "${EXP_PKG_DISPATCH_COUNT_CUR}" "${EXP_PKG_DISPATCH_COUNT_MAX}")";
-	if "${_dispatch_fn}" start_pkg "${_group_name}" "${_pkg_name}" "$((${EXP_PKG_DISPATCH_COUNT}+1))" "${EXP_PKG_DISPATCH_COUNT_MAX}" "${_status_percentage}"; then
+		_group_name="${4}" _pkg_name="${5}" _restart_at="${6}" _workdir="${7}"\
+		_perc_group=0 _perc_pkg=0;
+	_perc_group="$(rtl_percentage "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}")";
+	_perc_pkg="$(rtl_percentage "${EXP_PKG_DISPATCH_COUNT_CUR}" "${EXP_PKG_DISPATCH_COUNT_MAX}")";
+	if "${_dispatch_fn}" start_pkg "${_group_name}" "${_pkg_name}" "$((${EXP_PKG_DISPATCH_COUNT}+1))" "${EXP_PKG_DISPATCH_COUNT_MAX}" "${_perc_group}" "${_perc_pkg}"; then
 		: $((EXP_PKG_DISPATCH_NJOBS+=1)); : $((EXP_PKG_DISPATCH_COUNT+=1)); EX_PKG_DISPATCH_WAIT="$(rtl_lconcat "${EX_PKG_DISPATCH_WAIT}" "${_pkg_name}")";
 		(trap "if [ \${?} -eq 0 ]; then											\
 			printf \"done %s %s %d\n\" \"${_group_name}\" \"${_pkg_name}\" \"${EXP_PKG_DISPATCH_COUNT}\" >&3;	\
@@ -204,9 +208,10 @@ ex_pkg_dispatch() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _dispatch_fn="${3}"		\
 		_group_names="${4}" _groups_inhibit_deps="${5}" _njobs_max="${6}" _pipe_path="${7}"	\
 		_restart="${8}" _restart_at="${9}" _restart_recursive="${10}" _workdir="${11}"		\
-		_checkfl=1 _forcefl=0 _pkg_name="" _pkg_names="" _rc=0 _reversefl=0			\
+		_checkfl=1 _forcefl=0 _perc_group=0 _pkg_name="" _pkg_names="" _rc=0 _reversefl=0	\
 		EX_PKG_DISABLED EX_PKG_FINISHED EX_PKG_NAMES EXP_PKG_DISPATCH_COUNT			\
-		EXP_PKG_DISPATCH_COUNT_CUR EXP_PKG_DISPATCH_COUNT_MAX EXP_PKG_DISPATCH_NJOBS; EX_PKG_DISPATCH_WAIT="";
+		EXP_PKG_DISPATCH_COUNT_CUR EXP_PKG_DISPATCH_COUNT_MAX EXP_PKG_DISPATCH_GROUP_CUR	\
+		EXP_PKG_DISPATCH_GROUP_MAX EXP_PKG_DISPATCH_NJOBS; EX_PKG_DISPATCH_WAIT="";
 	case "${_groups_inhibit_deps:-0}" in
 	0)	_group_names="$(rtl_uniq $(rtl_lunfold_depends '${_name}_GROUP_DEPENDS' ${_group_names}))";
 	esac;
@@ -218,10 +223,12 @@ ex_pkg_dispatch() {
 		3)	_checkfl=1; _forcefl=1; _reversefl=1; ;;
 		esac;
 	fi;
+	EXP_PKG_DISPATCH_GROUP_CUR=0; EXP_PKG_DISPATCH_GROUP_MAX="$(rtl_llength "${_group_names}")";
 	for _group_name in ${_group_names}; do
 		EX_PKG_DISABLED=""; EX_PKG_DISPATCH_WAIT=""; EX_PKG_FINISHED=""; EX_PKG_NAMES="";
 		EXP_PKG_DISPATCH_COUNT=0; EXP_PKG_DISPATCH_COUNT_CUR=0; EXP_PKG_DISPATCH_COUNT_MAX=0; EXP_PKG_DISPATCH_NJOBS=0;
-		if "${_dispatch_fn}" start_group "${_group_name}" ""; then
+		_perc_group="$(rtl_percentage "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}")";
+		if "${_dispatch_fn}" start_group "${_group_name}" "" "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}" "${_perc_group}"; then
 			if rtl_fileop mkdir "${_workdir}"\
 			&& rtl_log_msg notice "Resolving \`%s' dependencies..." "${_group_name}"\
 			&& exp_pkg_dispatch_expand_packages "${_checkfl}" "${_forcefl}" "${_group_name}" "${_restart}" "${_reversefl}"\
@@ -235,7 +242,9 @@ ex_pkg_dispatch() {
 					"${_group_name}" "${_njobs_max}" "${_pipe_path}"		\
 					"${_restart_at}" "${_workdir}"; _rc="${?}";
 			fi;
-			"${_dispatch_fn}" finish_group "${_group_name}" "";
+			: $((EXP_PKG_DISPATCH_GROUP_CUR+=1));
+			_perc_group="$(rtl_percentage "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}")";
+			"${_dispatch_fn}" finish_group "${_group_name}" "" "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}" "${_perc_group}";
 			if [ "${_rc}" -ne 0 ]; then
 				break;
 			fi;
