@@ -73,8 +73,9 @@ rtl_export_vars() {
 };
 
 rtl_filter_vars() {
-	local _fn="${1}" _fnfl=0 _qchar="" _var_spec="" _vars="" _vname="" IFS="
-";	for _var_spec in $(set); do
+	local _fn="${1}" _fnfl=0 _qchar="" _var_spec="" _vars="" _vname="" IFS;
+	rtl_set_IFS_nl;
+	for _var_spec in $(set); do
 		case "${_qchar}" in
 		"\"")	if [ "${_var_spec%\"}" != "${_var_spec}" ]; then
 				_qchar="";
