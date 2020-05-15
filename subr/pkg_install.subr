@@ -23,11 +23,11 @@ pkgp_install_perms() {
 };
 
 pkg_install() {
-	local _destdir="" _destdir_prefix="" _ifs_old="${IFS:- }" _pkglist_name="" IFS;
+	local _destdir="" _destdir_prefix="" _pkglist_name="";
 	if ! rtl_fileop mkdir "${PKG_PREFIX}"; then
 		return 1;
 	else	for _destdir in "${PKG_DESTDIR}:${PKG_PREFIX}" "${PKG_DESTDIR_HOST}:${PREFIX}"; do
-			IFS=":"; set -- ${_destdir}; IFS="${_ifs_old}"; _destdir="${1}"; _destdir_prefix="${2}";
+			rtl_lassign "_destdir _destdir_prefix" ":" "${_destdir}";
 			if [ -e "${_destdir}" ]; then
 				pkgp_install_perms "${_destdir}";
 				(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}"; date;

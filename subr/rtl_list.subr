@@ -2,6 +2,20 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+rtl_lassign() {
+	local	_vnames="${1}" _sep="${2}" _vname="" _vval=""\
+		IFS RTL_LFIRST_HEAD="" RTL_LFIRST_TAIL="";
+	IFS="${_sep}"; shift 2;
+	for _vval in ${@}; do
+		if ! rtl_lfirst "${_vnames}" " "; then
+			return 1;
+		else
+			_vname="${RTL_LFIRST_HEAD}"; _vnames="${RTL_LFIRST_TAIL}";
+			rtl_set_var_unsafe "${_vname}" "${_vval}";
+		fi;
+	done;
+};
+
 rtl_lconcat() {
 	local _list="${1}" _litem_new="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}";
 	if [ -n "${_list}" ]; then
@@ -28,6 +42,16 @@ rtl_lfilter() {
 		fi;
 	done; fi;
 	printf "%s" "${_lnew}";
+};
+
+rtl_lfirst() {
+	local _list="${1}" _sep="${2}" IFS; IFS="${_sep}";
+	set -- ${_list}; RTL_LFIRST_HEAD="${1}";
+	if [ "${#}" -ge 0 ]; then
+		shift; RTL_LFIRST_TAIL="${*}";
+	else
+		RTL_LFIRST_TAIL="";
+	fi;
 };
 
 rtl_llength() {
