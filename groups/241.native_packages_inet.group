@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg
 gnutls httpd icecast inetutils irssi isync ldns lighttpd lynx mailutils
 microsocks mtr mutt nginx nullmailer openlitespeed opensmtpd openssh
-pacman rsync socat thttpd w3m weechat wget whois")";
+pacman proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -172,6 +172,13 @@ pacman rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_PACMAN_URL:=https://projects.archlinux.org/pacman.git/snapshot/pacman-${PKG_PACMAN_VERSION}.tar.gz};
 : ${PKG_PACMAN_CONFIGURE_ARGS_EXTRA:=--disable-doc};
 : ${PKG_PACMAN_DISABLED:=1};
+: ${PKG_PROXYTUNNEL_SHA256SUM:=6495430e9c60d3df53824a7a0f3bea9953a89d083a3718c72db04dc4d40755ac};
+: ${PKG_PROXYTUNNEL_VERSION:=1.10.20200507}
+: ${PKG_PROXYTUNNEL_URL:=https://github.com/proxytunnel/proxytunnel/archive/v${PKG_PROXYTUNNEL_VERSION}.tar.gz};
+: ${PKG_PROXYTUNNEL_SUBDIR:=proxytunnel-${PKG_PROXYTUNNEL_VERSION}};
+: ${PKG_PROXYTUNNEL_BUILD_DIR:=${PKG_PROXYTUNNEL_SUBDIR}};
+: ${PKG_PROXYTUNNEL_CFLAGS_BUILD_EXTRA:="-Wall -g3 -O0 --sysroot=${PREFIX_NATIVE}"};
+: ${PKG_PROXYTUNNEL_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib -lssl -lcrypto"};
 : ${PKG_RSYNC_SHA256SUM:=55cc554efec5fdaad70de921cd5a5eeb6c29a95524c715f3bbf849235b0800c0};
 : ${PKG_RSYNC_VERSION:=3.1.3};
 : ${PKG_RSYNC_URL:=https://download.samba.org/pub/rsync/src/rsync-${PKG_RSYNC_VERSION}.tar.gz};
