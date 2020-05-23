@@ -1,11 +1,12 @@
-diff -ru proxytunnel-1.10.20200507.orig/Makefile proxytunnel-1.10.20200507/Makefile
---- proxytunnel-1.10.20200507.orig/Makefile	2020-05-07 17:17:41.000000000 +0200
-+++ proxytunnel-1.10.20200507/Makefile	2020-05-22 12:14:53.409128241 +0200
-@@ -90,7 +90,6 @@
+--- proxytunnel-1.10.20200507/Makefile.orig	2020-05-07 16:17:41.000000000 +0100
++++ proxytunnel-1.10.20200507/Makefile	2020-05-23 14:36:53.315471714 +0100
+@@ -89,8 +89,7 @@
+ 
  install:
  	install -d $(DESTDIR)$(bindir)
- 	install -p -m555 $(name) $(DESTDIR)$(bindir)
+-	install -p -m555 $(name) $(DESTDIR)$(bindir)
 -	$(MAKE) -C docs install
++	install -p -m755 $(name) $(DESTDIR)$(bindir)
  
  .c.o:
  	$(CC) $(CFLAGS) $(OPTFLAGS) -c -o $@ $<
