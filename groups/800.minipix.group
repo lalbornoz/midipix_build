@@ -14,7 +14,7 @@ bash_minipix bzip2_minipix coreutils_minipix dash_minipix
 diffutils_minipix dropbear_minipix findutils_minipix gawk_minipix
 gdb_minipix grep_minipix gzip_minipix infounzip_minipix infozip_minipix
 less_minipix libz_minipix nano_minipix patch_minipix python2_minipix
-sed_minipix tar_minipix vim_minipix wget_minipix which_minipix xz_minipix
+sed_minipix tar_minipix tpax_minipix vim_minipix wget_minipix which_minipix xz_minipix
 mintty_minipix ntctty_minipix ntux_minipix perk_minipix ptycon_minipix";
 MINIPIX_PKG_CONFIG_LIBDIR="${PREFIX_NATIVE}/lib/pkgconfig";
 MINIPIX_PKGLIST_DISABLE=1;
@@ -79,5 +79,7 @@ MINIPIX_RPM_DISABLE=1;
 : ${PKG_PTYCON_MINIPIX_INHERIT_FROM:=ptycon};
 : ${PKG_PTYCON_MINIPIX_CONFIGURE_ARGS:="--prefix= --strict --host=${DEFAULT_TARGET}"};
 : ${PKG_PTYCON_MINIPIX_ENV_VARS_EXTRA:="CFLAGS_PATH=-I${PREFIX_NATIVE}/include:LDFLAGS_PATH=-L${PREFIX_NATIVE}/lib"};
+: ${PKG_TPAX_MINIPIX_INHERIT_FROM:=tpax};
+: ${PKG_TPAX_MINIPIX_INHERIT_CONFIGURE_ARGS:="--prefix --strict --host=${DEFAULT_TARGET}"};
 
 # vim:filetype=sh textwidth=0

@@ -6,7 +6,7 @@ HOST_TOOLS_CONFIGURE_ARGS="--disable-nls --prefix=${PREFIX}";
 HOST_TOOLS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_TOOLS_PACKAGES="
 autoconf_host automake_host gettext_tiny_host install_strip_host
-libtool_host m4_host pkgconf_host slibtool_host";
+libtool_host m4_host pkgconf_host slibtool_host tpax_host";
 HOST_TOOLS_PREFIX="${PREFIX}";
 : ${PKG_AUTOCONF_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
 : ${PKG_AUTOCONF_HOST_SHA256SUM:=64ebcec9f8ac5b2487125a86a7760d2591ac9e1d3dbd59489633f9de62a57684};
@@ -39,5 +39,7 @@ HOST_TOOLS_PREFIX="${PREFIX}";
 : ${PKG_PKGCONF_HOST_CONFIGURE_ARGS:="--prefix=${PREFIX} --with-system-libdir=${PREFIX_NATIVE}/lib --with-system-includedir=${PREFIX_NATIVE}/include --with-pkg-config-dir=${PREFIX_NATIVE}/lib/pkgconfig --with-personality-dir=${PREFIX_NATIVE}/share/pkgconfig/personality.d"};
 : ${PKG_SLIBTOOL_HOST_URLS_GIT:="slibtool=${DEFAULT_GITROOT}/slibtool"};
 : ${PKG_SLIBTOOL_HOST_CONFIGURE_ARGS:=--prefix=};
+: ${PKG_TPAX_HOST_URLS_GIT:="tpax=https://pagure.midipix.org/cross/tpax.git@main"};
+: ${PKG_TPAX_HOST_CONFIGURE_ARGS:=--prefix=};
 
 # vim:filetype=sh textwidth=0
