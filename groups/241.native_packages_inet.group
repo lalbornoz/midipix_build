@@ -172,6 +172,7 @@ pacman proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_PACMAN_URL:=https://projects.archlinux.org/pacman.git/snapshot/pacman-${PKG_PACMAN_VERSION}.tar.gz};
 : ${PKG_PACMAN_CONFIGURE_ARGS_EXTRA:=--disable-doc};
 : ${PKG_PACMAN_DISABLED:=1};
+: ${PKG_PROXYTUNNEL_DEPENDS:="libressl"};
 : ${PKG_PROXYTUNNEL_SHA256SUM:=6495430e9c60d3df53824a7a0f3bea9953a89d083a3718c72db04dc4d40755ac};
 : ${PKG_PROXYTUNNEL_VERSION:=1.10.20200507}
 : ${PKG_PROXYTUNNEL_URL:=https://github.com/proxytunnel/proxytunnel/archive/v${PKG_PROXYTUNNEL_VERSION}.tar.gz};
