@@ -400,9 +400,9 @@ concerning the package build process.
 ## 4. Build variables
 
 The following variables are primarily defined in ``midipix.env`` and may be
-overriden on a per-build basis on the command-line after the last option
-argument, if any, the environment, and/or ``${HOME}/midipix_build.vars``,
-``${HOME}/.midipix_build.vars``, and/or ``../midipix_build.vars``, e.g.:
+overriden on a per-build basis on the command-line, the environment, and/or
+``${HOME}/midipix_build.vars``, ``${HOME}/.midipix_build.vars``, and/or
+``../midipix_build.vars``, e.g.:
 
 ```shell
 ./build.sh -a nt64 -b release -D minipix,zipdist -P -v PREFIX_ROOT="${HOME}/midipix_tmp"
@@ -487,7 +487,7 @@ prefixes:
 | PKG_``${NAME}``_``${BUILD_KIND}``		|
 
 Additionally, overrides may be specified on a per-build basis on the command-
-line after the last argument, with each variable prefixed w/ ``PKG_``, e.g.:
+line, with each variable prefixed w/ ``PKG_``, e.g.:
 ``./build.sh [ ... ] PKG_ZSH_CC="/usr/bin/clang"``.  
   
 The minimum set of package variables that must be provided is ``SHA256SUM, URL,
