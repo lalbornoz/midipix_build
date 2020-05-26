@@ -10,6 +10,30 @@ pkgp_install_files() {
 	fi;
 };
 
+pkgp_install_files_perms() {
+	local _destdir="" _fname="" IFS;
+	for _destdir in "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"; do
+		if [ -e "${_destdir}" ]; then
+			rtl_set_IFS_nl;
+			for _fname in $(find "${_destdir}" -type d); do
+				if ! rtl_fileop chmod 0755 "${_fname}"; then
+					return 1;
+				fi;
+			done;
+			for _fname in $(find "${_destdir}" \( -not -perm /0111 \) -type f); do
+				if ! rtl_fileop chmod 0644 "${_fname}"; then
+					return 1;
+				fi;
+			done;
+			for _fname in $(find "${_destdir}" -perm /0111 -type f); do
+				if ! rtl_fileop chmod 0755 "${_fname}"; then
+					return 1;
+				fi;
+			done;
+		fi;
+	done;
+};
+
 pkgp_install_files_pkgconfig() {
 	local _pc_path="";
 	for _pc_path in $(find "${PKG_DESTDIR}" -name \*.pc); do
@@ -44,6 +68,7 @@ pkgp_install_files_strip() {
 
 pkg_install_files() {
 	if ! pkgp_install_files\
+	|| ! pkgp_install_files_perms\
 	|| ! pkgp_install_files_pkgconfig\
 	|| ! pkgp_install_files_strip; then
 		return 1;

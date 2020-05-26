@@ -2,26 +2,6 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
-pkgp_install_perms() {
-	local _destdir="${1}" _fname="" IFS;
-	rtl_set_IFS_nl;
-	for _fname in $(find "${_destdir}" -type d); do
-		if ! rtl_fileop chmod 0755 "${_fname}"; then
-			return 1;
-		fi;
-	done;
-	for _fname in $(find "${_destdir}" \( -not -perm /0111 \) -type f); do
-		if ! rtl_fileop chmod 0644 "${_fname}"; then
-			return 1;
-		fi;
-	done;
-	for _fname in $(find "${_destdir}" -perm /0111 -type f); do
-		if ! rtl_fileop chmod 0755 "${_fname}"; then
-			return 1;
-		fi;
-	done;
-};
-
 pkg_install() {
 	local _destdir="" _destdir_prefix="" _pkglist_name="";
 	if ! rtl_fileop mkdir "${PKG_PREFIX}"; then
@@ -29,7 +9,6 @@ pkg_install() {
 	else	for _destdir in "${PKG_DESTDIR}:${PKG_PREFIX}" "${PKG_DESTDIR_HOST}:${PREFIX}"; do
 			rtl_lassign "_destdir _destdir_prefix" ":" "${_destdir}";
 			if [ -e "${_destdir}" ]; then
-				pkgp_install_perms "${_destdir}";
 				(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}"; date;
 				trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
 				if ! tar -C "${_destdir}" -cpf - . | tar -C "${_destdir_prefix}" --overwrite -xpf -; then
