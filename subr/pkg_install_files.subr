@@ -47,22 +47,26 @@ pkgp_install_files_pkgconfig() {
 };
 
 pkgp_install_files_strip() {
-	local _bin_path="" _tree_root="${PKG_DESTDIR}";
-	if [ -e "${_tree_root}" ]\
-	&& [ "${BUILD_KIND}" = release ]\
-	&& [ "${PKG_BUILD_TYPE}" = native ]; then
-		if [ "${PKG_NAME%_minipix}" != "${PKG_NAME}" ]\
-		&& [ "${ARG_DEBUG_MINIPIX:-0}" -eq 1 ]; then
-			return 0;
+	local _bin_path="" _stripfl=0 _tree_root="${PKG_DESTDIR}";
+	if [ -e "${_tree_root}" ]; then
+		if rtl_match "${PKG_NAME}" "*_minipix"; then
+			: $((_stripfl=(${ARG_DEBUG_MINIPIX:-0} ? 0 : 1)));
+		elif [ "${BUILD_KIND}" = release ]\
+		&&   [ "${PKG_BUILD_TYPE}" = native ]; then
+			_stripfl=1;
+		else
+			_stripfl=0;
 		fi;
-		for _bin_path in $(find "${_tree_root}" -perm /a=x -type f); do
-			if objdump -sj .debug_frame -j .debug_info "${_bin_path}" >/dev/null 2>&1; then
-				rtl_log_msg info "Stripping %s..." "${_bin_path}";
-				if ! "${PKG_TARGET}-strip" "${_bin_path}"; then
-					return 1;
+		if [ "${_stripfl:-0}" -eq 1 ]; then
+			for _bin_path in $(find "${_tree_root}" -perm /a=x -type f); do
+				if objdump -sj .debug_frame -j .debug_info "${_bin_path}" >/dev/null 2>&1; then
+					rtl_log_msg info "Stripping %s..." "${_bin_path}";
+					if ! "${PKG_TARGET}-strip" "${_bin_path}"; then
+						return 1;
+					fi;
 				fi;
-			fi;
-		done;
+			done;
+		fi;
 	fi;
 };
 
