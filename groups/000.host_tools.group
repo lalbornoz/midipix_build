@@ -39,7 +39,7 @@ HOST_TOOLS_PREFIX="${PREFIX}";
 : ${PKG_PKGCONF_HOST_CONFIGURE_ARGS:="--prefix=${PREFIX} --with-system-libdir=${PREFIX_NATIVE}/lib --with-system-includedir=${PREFIX_NATIVE}/include --with-pkg-config-dir=${PREFIX_NATIVE}/lib/pkgconfig --with-personality-dir=${PREFIX_NATIVE}/share/pkgconfig/personality.d"};
 : ${PKG_SLIBTOOL_HOST_URLS_GIT:="slibtool=${DEFAULT_GITROOT}/slibtool"};
 : ${PKG_SLIBTOOL_HOST_CONFIGURE_ARGS:=--prefix=};
-: ${PKG_TPAX_HOST_URLS_GIT:="tpax=https://pagure.midipix.org/cross/tpax.git@main"};
+: ${PKG_TPAX_HOST_URLS_GIT:="tpax=https://git.midipix.org/tpax@main"};
 : ${PKG_TPAX_HOST_CONFIGURE_ARGS:=--prefix=};
 
 # vim:filetype=sh textwidth=0
