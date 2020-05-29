@@ -1,0 +1,28 @@
+From 047b306ec03d4d83c66653f75de448e697cb8c0c Mon Sep 17 00:00:00 2001
+From: Neal Gompa <ngompa13@gmail.com>
+Date: Fri, 29 May 2020 19:17:58 -0400
+Subject: [PATCH] CMakeLists: Disable building Python stuff for now
+
+We do not need the Python bindings at the moment...
+
+Signed-off-by: Neal Gompa <ngompa13@gmail.com>
+---
+ CMakeLists.txt | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 25ee54e..b126bb0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -66,8 +66,6 @@ set(LIB_TDNF_CLI tdnfcli)
+ add_subdirectory("${PROJECT_SOURCE_DIR}/common")
+ add_subdirectory("${PROJECT_SOURCE_DIR}/client")
+ add_subdirectory("${PROJECT_SOURCE_DIR}/plugins")
+-add_subdirectory("${PROJECT_SOURCE_DIR}/python")
+ add_subdirectory("${PROJECT_SOURCE_DIR}/resources")
+ add_subdirectory("${PROJECT_SOURCE_DIR}/solv")
+ add_subdirectory("${PROJECT_SOURCE_DIR}/tools")
+-add_subdirectory("${PROJECT_SOURCE_DIR}/pytests")
+-- 
+2.26.1
+
