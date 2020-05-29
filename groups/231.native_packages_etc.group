@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
 emacs expat ffmpeg file gdbm geoip gettext_tiny ghostscript
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
-john lcms2 less lolcode mintty mlogin musl_compat musl_fts ncdu
+john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xz yabasic
@@ -169,6 +169,10 @@ zstd")";
 : ${PKG_LESS_SHA256SUM:=ff165275859381a63f19135a8f1f6c5a194d53ec3187f94121ecd8ef0795fe3d};
 : ${PKG_LESS_VERSION:=551};
 : ${PKG_LESS_URL:=http://www.greenwoodsoftware.com/less/less-${PKG_LESS_VERSION}.tar.gz};
+: ${PKG_LIBMETALINK_DEPENDS:="expat"};
+: ${PKG_LIBMETALINK_SHA256SUM:=0753ae1152d970dc3bf327d0ce5cfefeca2f1ab13294b115e64811163a68fd4f};
+: ${PKG_LIBMETALINK_VERSION:=0.1.3};
+: ${PKG_LIBMETALINK_URL:=https://launchpad.net/libmetalink/trunk/libmetalink-${PKG_LIBMETALINK_VERSION}/+download/libmetalink-${PKG_LIBMETALINK_VERSION}.tar.bz2};
 : ${PKG_LOLCODE_URLS_GIT:="lci=https://github.com/justinmeza/lci.git@master"};
 : ${PKG_LOLCODE_BUILD_DIR:=lci};
 : ${PKG_MINTTY_DEPENDS:="w32api w32lib"};
