@@ -25,7 +25,7 @@ pacman proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_BIND_CONFIGURE_ARGS_EXTRA:="--with-libtool --disable-backtrace --with-eddsa=no --with-ecdsa=yes --with-gssapi=no --with-libxml2=no --with-libjson=no --with-openssl=${PREFIX_NATIVE} BUILD_CC=gcc"};
 : ${PKG_BIND_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_CA_CERTIFICATES_DEPENDS:="libressl"};
-: ${PKG_CA_CERTIFICATES_URLS_GIT:="ca-certificates=https://github.com/Redfoxmoon3/ca-certificates@master"};
+: ${PKG_CA_CERTIFICATES_URLS_GIT:="ca-certificates=https://dev.midipix.org/distro/cacerts.git@main"};
 : ${PKG_CA_CERTIFICATES_IN_TREE:=1};
 : ${PKG_CA_CERTIFICATES_CFLAGS_BUILD_EXTRA:=-I${PREFIX_NATIVE}/include};
 : ${PKG_CA_CERTIFICATES_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib};
