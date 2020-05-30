@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
-debianutils emacs expat ffmpeg file gdbm geoip gettext_tiny ghostscript
+emacs expat ffmpeg file gdbm geoip gettext_tiny ghostscript
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng qemu
@@ -77,12 +77,6 @@ zstd")";
 : ${PKG_DBUS_URL:=https://dbus.freedesktop.org/releases/dbus/dbus-${PKG_DBUS_VERSION}.tar.gz};
 : ${PKG_DBUS_SHA256SUM:=7fd9d0536f7ec2f2afc94b84d5b5487f88c464e8d47c661d8e0b54aa83974bfa};
 : ${PKG_DBUS_CONFIGURE_ARGS_EXTRA:="--disable-tests --with-x=no"};
-: ${PKG_DEBIANUTILS_SHA256SUM:=099f1e8a7278b26145a2ba2dda84c4118403bfab38c8d7070a6235a7ffcb55ed};
-: ${PKG_DEBIANUTILS_VERSION:=4.8.6.1};
-: ${PKG_DEBIANUTILS_URL:=http://http.debian.net/debian/pool/main/d/debianutils/debianutils_${PKG_DEBIANUTILS_VERSION}.tar.xz};
-: ${PKG_DEBIANUTILS_SUBDIR:=debianutils};
-: ${PKG_DEBIANUTILS_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_DEBIANUTILS_INSTALL_FILES:="../obj/run-parts=bin/ ../debianutils/run-parts.8=share/man/man8/"};
 : ${PKG_EMACS_DEPENDS:="freetype gnutls libjpeg_turbo libz ncurses"};
 : ${PKG_EMACS_SHA256SUM:=1cf4fc240cd77c25309d15e18593789c8dbfba5c2b44d8f77c886542300fd32c};
 : ${PKG_EMACS_VERSION:=26.1};
