@@ -51,7 +51,7 @@ pkgtoolp_init_getopts() {
 		elif getopts a:b:hirst _opt; then
 			case "${_opt}" in
 			a)	ARCH="${OPTARG}"; ;;
-			b)	BUILD="${OPTARG}"; ;;
+			b)	BUILD_KIND="${OPTARG}"; ;;
 			h)	cat etc/pkgtool.usage; exit 0; ;;
 			i)	ARG_INFO=1; ;;
 			r)	ARG_RDEPENDS=1; ;;
