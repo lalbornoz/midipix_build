@@ -1,3 +1,201 @@
+--- ffmpeg-4.1/libpostproc/postprocess_template.c.orig  2020-06-01 00:08:00.042230818 +0200
++++ ffmpeg-4.1/libpostproc/postprocess_template.c       2020-06-01 00:12:40.651393371 +0200
+@@ -440,7 +440,7 @@
+         "paddusb %%mm0, %%mm0                   \n\t"
+         "psubusb %%mm0, %%mm4                   \n\t"
+         "pcmpeqb %%mm7, %%mm4                   \n\t" // d <= QP ? -1 : 0
+-        "psubusb "MANGLE(b01)", %%mm3           \n\t"
++        "psubusb "LOCAL_MANGLE(b01)", %%mm3    \n\t"
+         "pand %%mm4, %%mm3                      \n\t" // d <= QP ? d : 0
+
+         PAVGB(%%mm7, %%mm3)                           // d/2
+@@ -620,13 +620,13 @@
+
+         PMINUB(%%mm2, %%mm1, %%mm4)                   // MIN(|lenergy|,|renergy|)/8
+         "movq %2, %%mm4                         \n\t" // QP //FIXME QP+1 ?
+-        "paddusb "MANGLE(b01)", %%mm4           \n\t"
++        "paddusb "LOCAL_MANGLE(b01)", %%mm4     \n\t"
+         "pcmpgtb %%mm3, %%mm4                   \n\t" // |menergy|/8 < QP
+         "psubusb %%mm1, %%mm3                   \n\t" // d=|menergy|/8-MIN(|lenergy|,|renergy|)/8
+         "pand %%mm4, %%mm3                      \n\t"
+
+         "movq %%mm3, %%mm1                      \n\t"
+-//        "psubusb "MANGLE(b01)", %%mm3           \n\t"
++//        "psubusb "MANGLE(b01)", %%mm3         \n\t"
+         PAVGB(%%mm7, %%mm3)
+         PAVGB(%%mm7, %%mm3)
+         "paddusb %%mm1, %%mm3                   \n\t"
+@@ -643,7 +643,7 @@
+         "pand %%mm0, %%mm3                      \n\t"
+         PMINUB(%%mm5, %%mm3, %%mm0)
+
+-        "psubusb "MANGLE(b01)", %%mm3           \n\t"
++        "psubusb "LOCAL_MANGLE(b01)", %%mm3     \n\t"
+         PAVGB(%%mm7, %%mm3)
+
+         "movq (%%"FF_REG_a", %1, 2), %%mm0      \n\t"
+@@ -675,7 +675,7 @@
+         "movq (%%"FF_REG_a", %1), %%mm3         \n\t" // l2
+         "pxor %%mm6, %%mm2                      \n\t" // -l5-1
+         "movq %%mm2, %%mm5                      \n\t" // -l5-1
+-        "movq "MANGLE(b80)", %%mm4              \n\t" // 128
++        "movq "LOCAL_MANGLE(b80)", %%mm4        \n\t" // 128
+         "lea (%%"FF_REG_a", %1, 4), %%"FF_REG_c"\n\t"
+         PAVGB(%%mm3, %%mm2)                           // (l2-l5+256)/2
+         PAVGB(%%mm0, %%mm4)                           // ~(l4-l3)/4 + 128
+@@ -687,7 +687,7 @@
+         "pxor %%mm6, %%mm2                      \n\t" // -l1-1
+         PAVGB(%%mm3, %%mm2)                           // (l2-l1+256)/2
+         PAVGB((%0), %%mm1)                            // (l0-l3+256)/2
+-        "movq "MANGLE(b80)", %%mm3              \n\t" // 128
++        "movq "LOCAL_MANGLE(b80)", %%mm3        \n\t" // 128
+         PAVGB(%%mm2, %%mm3)                           // ~(l2-l1)/4 + 128
+         PAVGB(%%mm1, %%mm3)                           // ~(l0-l3)/4 +(l2-l1)/8 + 128
+         PAVGB(%%mm2, %%mm3)                           // ~(l0-l3)/8 +5(l2-l1)/16 + 128
+@@ -697,14 +697,14 @@
+         "movq (%%"FF_REG_c", %1, 2), %%mm1      \n\t" // l7
+         "pxor %%mm6, %%mm1                      \n\t" // -l7-1
+         PAVGB((%0, %1, 4), %%mm1)                     // (l4-l7+256)/2
+-        "movq "MANGLE(b80)", %%mm2              \n\t" // 128
++        "movq "LOCAL_MANGLE(b80)", %%mm2        \n\t" // 128
+         PAVGB(%%mm5, %%mm2)                           // ~(l6-l5)/4 + 128
+         PAVGB(%%mm1, %%mm2)                           // ~(l4-l7)/4 +(l6-l5)/8 + 128
+         PAVGB(%%mm5, %%mm2)                           // ~(l4-l7)/8 +5(l6-l5)/16 + 128
+ // mm0=128-q, mm2=renergy/16 + 128, mm3=lenergy/16 + 128, mm4= menergy/16 + 128
+
+-        "movq "MANGLE(b00)", %%mm1              \n\t" // 0
+-        "movq "MANGLE(b00)", %%mm5              \n\t" // 0
++        "movq "LOCAL_MANGLE(b00)", %%mm1        \n\t" // 0
++        "movq "LOCAL_MANGLE(b00)", %%mm5        \n\t" // 0
+         "psubb %%mm2, %%mm1                     \n\t" // 128 - renergy/16
+         "psubb %%mm3, %%mm5                     \n\t" // 128 - lenergy/16
+         PMAXUB(%%mm1, %%mm2)                          // 128 + |renergy/16|
+@@ -713,7 +713,7 @@
+
+ // mm0=128-q, mm3=128 + MIN(|lenergy|,|renergy|)/16, mm4= menergy/16 + 128
+
+-        "movq "MANGLE(b00)", %%mm7              \n\t" // 0
++        "movq "LOCAL_MANGLE(b00)", %%mm7        \n\t" // 0
+         "movq %2, %%mm2                         \n\t" // QP
+         PAVGB(%%mm6, %%mm2)                           // 128 + QP/2
+         "psubb %%mm6, %%mm2                     \n\t"
+@@ -727,13 +727,13 @@
+ // mm0=128-q, mm1= SIGN(menergy), mm2= |menergy|/16 < QP/2, mm4= d/16
+
+         "movq %%mm4, %%mm3                      \n\t" // d
+-        "psubusb "MANGLE(b01)", %%mm4           \n\t"
++        "psubusb "LOCAL_MANGLE(b01)", %%mm4     \n\t"
+         PAVGB(%%mm7, %%mm4)                           // d/32
+         PAVGB(%%mm7, %%mm4)                           // (d + 32)/64
+         "paddb %%mm3, %%mm4                     \n\t" // 5d/64
+         "pand %%mm2, %%mm4                      \n\t"
+
+-        "movq "MANGLE(b80)", %%mm5              \n\t" // 128
++        "movq "LOCAL_MANGLE(b80)", %%mm5        \n\t" // 128
+         "psubb %%mm0, %%mm5                     \n\t" // q
+         "paddsb %%mm6, %%mm5                    \n\t" // fix bad rounding
+         "pcmpgtb %%mm5, %%mm7                   \n\t" // SIGN(q)
+@@ -990,10 +990,10 @@
+         "psubusw %%mm1, %%mm5                   \n\t" // ld
+
+
+-        "movq "MANGLE(w05)", %%mm2              \n\t" // 5
++        "movq "LOCAL_MANGLE(w05)", %%mm2        \n\t" // 5
+         "pmullw %%mm2, %%mm4                    \n\t"
+         "pmullw %%mm2, %%mm5                    \n\t"
+-        "movq "MANGLE(w20)", %%mm2              \n\t" // 32
++        "movq "LOCAL_MANGLE(w20)", %%mm2        \n\t" // 32
+         "paddw %%mm2, %%mm4                     \n\t"
+         "paddw %%mm2, %%mm5                     \n\t"
+         "psrlw $6, %%mm4                        \n\t"
+@@ -1186,7 +1186,7 @@
+         "psubb %%mm7, %%mm6                     \n\t" // max - min
+         "push %4                              \n\t"
+         "movd %%mm6, %k4                        \n\t"
+-        "cmpb "MANGLE(deringThreshold)", %b4    \n\t"
++        "cmpb "LOCAL_MANGLE(deringThreshold)", %b4    \n\t"
+         "pop %4                               \n\t"
+         " jb 1f                                 \n\t"
+         PAVGB(%%mm0, %%mm7)                           // a=(max + min)/2
+@@ -1212,9 +1212,9 @@
+         "psubusb %%mm7, %%mm0                   \n\t"
+         "psubusb %%mm7, %%mm2                   \n\t"
+         "psubusb %%mm7, %%mm3                   \n\t"
+-        "pcmpeqb "MANGLE(b00)", %%mm0           \n\t" // L10 > a ? 0 : -1
+-        "pcmpeqb "MANGLE(b00)", %%mm2           \n\t" // L20 > a ? 0 : -1
+-        "pcmpeqb "MANGLE(b00)", %%mm3           \n\t" // L00 > a ? 0 : -1
++        "pcmpeqb "LOCAL_MANGLE(b00)", %%mm0     \n\t" // L10 > a ? 0 : -1
++        "pcmpeqb "LOCAL_MANGLE(b00)", %%mm2     \n\t" // L20 > a ? 0 : -1
++        "pcmpeqb "LOCAL_MANGLE(b00)", %%mm3     \n\t" // L00 > a ? 0 : -1
+         "paddb %%mm2, %%mm0                     \n\t"
+         "paddb %%mm3, %%mm0                     \n\t"
+
+@@ -1235,9 +1235,9 @@
+         "psubusb %%mm7, %%mm2                   \n\t"
+         "psubusb %%mm7, %%mm4                   \n\t"
+         "psubusb %%mm7, %%mm5                   \n\t"
+-        "pcmpeqb "MANGLE(b00)", %%mm2           \n\t" // L11 > a ? 0 : -1
+-        "pcmpeqb "MANGLE(b00)", %%mm4           \n\t" // L21 > a ? 0 : -1
+-        "pcmpeqb "MANGLE(b00)", %%mm5           \n\t" // L01 > a ? 0 : -1
++        "pcmpeqb "LOCAL_MANGLE(b00)", %%mm2     \n\t" // L11 > a ? 0 : -1
++        "pcmpeqb "LOCAL_MANGLE(b00)", %%mm4     \n\t" // L21 > a ? 0 : -1
++        "pcmpeqb "LOCAL_MANGLE(b00)", %%mm5     \n\t" // L01 > a ? 0 : -1
+         "paddb %%mm4, %%mm2                     \n\t"
+         "paddb %%mm5, %%mm2                     \n\t"
+ // 0, 2, 3, 1
+@@ -1262,7 +1262,7 @@
+         "psubusb " #lx ", " #t1 "               \n\t"\
+         "psubusb " #lx ", " #t0 "               \n\t"\
+         "psubusb " #lx ", " #sx "               \n\t"\
+-        "movq "MANGLE(b00)", " #lx "            \n\t"\
++        "movq "LOCAL_MANGLE(b00)", " #lx "      \n\t"\
+         "pcmpeqb " #lx ", " #t1 "               \n\t" /* src[-1] > a ? 0 : -1*/\
+         "pcmpeqb " #lx ", " #t0 "               \n\t" /* src[+1] > a ? 0 : -1*/\
+         "pcmpeqb " #lx ", " #sx "               \n\t" /* src[0]  > a ? 0 : -1*/\
+@@ -1278,8 +1278,8 @@
+         PMINUB(t1, pplx, t0)\
+         "paddb " #sx ", " #ppsx "               \n\t"\
+         "paddb " #psx ", " #ppsx "              \n\t"\
+-        "#paddb "MANGLE(b02)", " #ppsx "        \n\t"\
+-        "pand "MANGLE(b08)", " #ppsx "          \n\t"\
++        "#paddb "LOCAL_MANGLE(b02)", " #ppsx "  \n\t"\
++        "pand "LOCAL_MANGLE(b08)", " #ppsx "    \n\t"\
+         "pcmpeqb " #lx ", " #ppsx "             \n\t"\
+         "pand " #ppsx ", " #pplx "              \n\t"\
+         "pandn " #dst ", " #ppsx "              \n\t"\
+@@ -2200,7 +2200,7 @@
+ #else //L1_DIFF
+ #if defined (FAST_L2_DIFF)
+         "pcmpeqb %%mm7, %%mm7                   \n\t"
+-        "movq "MANGLE(b80)", %%mm6              \n\t"
++        "movq "LOCAL_MANGLE(b80)", %%mm6        \n\t"
+         "pxor %%mm0, %%mm0                      \n\t"
+ #define REAL_L2_DIFF_CORE(a, b)\
+         "movq " #a ", %%mm5                     \n\t"\
+@@ -2704,8 +2704,8 @@
+             "movq %%mm6, %%mm1                      \n\t"
+             "psllw $2, %%mm0                        \n\t"
+             "psllw $2, %%mm1                        \n\t"
+-            "paddw "MANGLE(w04)", %%mm0             \n\t"
+-            "paddw "MANGLE(w04)", %%mm1             \n\t"
++            "paddw "LOCAL_MANGLE(w04)", %%mm0       \n\t"
++            "paddw "LOCAL_MANGLE(w04)", %%mm1       \n\t"
+
+ #define NEXT\
+             "movq (%0), %%mm2                       \n\t"\
+@@ -3011,10 +3011,10 @@
+             "psubusw %%mm1, %%mm5                   \n\t" // ld
+
+
+-            "movq "MANGLE(w05)", %%mm2              \n\t" // 5
++            "movq "LOCAL_MANGLE(w05)", %%mm2        \n\t" // 5
+             "pmullw %%mm2, %%mm4                    \n\t"
+             "pmullw %%mm2, %%mm5                    \n\t"
+-            "movq "MANGLE(w20)", %%mm2              \n\t" // 32
++            "movq "LOCAL_MANGLE(w20)", %%mm2        \n\t" // 32
+             "paddw %%mm2, %%mm4                     \n\t"
+             "paddw %%mm2, %%mm5                     \n\t"
+             "psrlw $6, %%mm4                        \n\t"
 --- ffmpeg-4.1/libswscale/x86/rgb2rgb_template.c.orig	2018-11-05 23:22:26.000000000 +0000
 +++ ffmpeg-4.1/libswscale/x86/rgb2rgb_template.c	2019-01-16 00:16:40.272000000 +0000
 @@ -114,14 +114,14 @@
