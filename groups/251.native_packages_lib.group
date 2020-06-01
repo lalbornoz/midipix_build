@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-glib libarchive libasr libassuan libatomic_ops libdmtx libedit libeditline libelf
+glib lame libarchive libasr libassuan libatomic_ops libdmtx libedit libeditline libelf
 libevent libfetch libffi libfirm libflac libgcrypt libgpg_error
 libjpeg_turbo libksba libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libtasn1
@@ -14,6 +14,11 @@ libxslt libz libzip")";
 : ${PKG_GLIB_VERSION:=2.54.0};
 : ${PKG_GLIB_URL:=http://ftp.gnome.org/pub/GNOME/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz};
 : ${PKG_GLIB_CONFIGURE_ARGS_EXTRA:="--disable-dtrace --disable-libelf --disable-libmount --with-python=${PREFIX}/bin/python3"};
+: ${PKG_LAME_SHA256SUM:=ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e};
+: ${PKG_LAME_VERSION:=3.100};
+: ${PKG_LAME_URL:=https://sourceforge.mirrorservice.org/l/la/lame/lame/3.100/lame-${PKG_LAME_VERSION}.tar.gz};
+: ${PKG_LAME_CONFIGURE_ARGS_EXTRA:="--enable-nasm"};
+: ${PKG_LAME_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfo -Wl,--no-as-needed"};
 : ${PKG_LIBARCHIVE_SHA256SUM:=ee1e749213c108cb60d53147f18c31a73d6717d7e3d2481c157e1b34c881ea39};
 : ${PKG_LIBARCHIVE_VERSION:=3.4.3};
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.gz};
