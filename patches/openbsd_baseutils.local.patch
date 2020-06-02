@@ -11,6 +11,28 @@ index be8d065..41ffd57 100644
  	if (fd == -1) {
  		if (!in_sig)
  			syswarn(1, errno, "Unable to restore mode and times"
+diff --git a/libopenbsd/pwd.c b/libopenbsd/pwd.c
+index d087150..5d29e3f 100644
+--- a/libopenbsd/pwd.c
++++ b/libopenbsd/pwd.c
+@@ -20,11 +20,15 @@ gid_from_group(const char *name, gid_t *gid)
+ 	return 0;
+ }
+ 
++const char group_nogroup[] = "nogroup";
++
+ const char *
+ group_from_gid(gid_t gid, int nogroup)
+ {
+-
+-	return (getgrgid(gid)->gr_name);
++	struct group *grp;
++	return (grp =getgrgid(gid))
++		? grp->gr_name
++		: group_nogroup;
+ }
+ 
+ int
 --- baseutils/pax/Makefile.orig	2020-05-24 11:18:45.017286972 +0100
 +++ baseutils/pax/Makefile	2020-06-02 09:56:05.077777147 +0100
 @@ -2,7 +2,7 @@
