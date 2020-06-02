@@ -3,7 +3,7 @@
 #
 
 pkg_build() {
-	local _libtool="" _makeflags_verbosity="${PKG_MAKEFLAGS_VERBOSITY:-none}" _no_autoconf="";
+	local _libtool="" _makeflags_verbosity="${PKG_MAKEFLAGS_VERBOSITY:-none}" _no_autoconf="" _subdir="";
 	case "${PKG_LIBTOOL:-}" in
 	"")	_libtool=""; ;;
 	none)	_libtool=""; ;;
@@ -15,25 +15,34 @@ pkg_build() {
 	if [ ! -x "${PKG_CONFIGURE:-}" ]; then
 		_no_autoconf=1;
 	fi;
-	# N.B.	We only specify CC= here if the current package does not use GNU
-	#	autoconf as it often abuses it by appending -std={gnu99,...} to it
-	#	instead of amending CFLAGS.
-	rtl_run_cmd_unsplit make							\
-		${PKG_MAKEFLAGS_BUILD:-}						\
-		${PKG_MAKEFLAGS_BUILD_EXTRA:-}						\
-		"AR=${PKG_AR}" "${_no_autoconf:+CC=${PKG_CC}}" "RANLIB=${PKG_RANLIB}"	\
-		"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"			\
-		"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"		\
-		"${PKG_CPPFLAGS_BUILD:+CPPFLAGS=${PKG_CPPFLAGS_BUILD}}"			\
-		"${PKG_CPPFLAGS_BUILD_EXTRA:+CPPFLAGS+=${PKG_CPPFLAGS_BUILD_EXTRA}}"	\
-		"${PKG_CXXFLAGS_BUILD:+CXXFLAGS=${PKG_CXXFLAGS_BUILD}}"			\
-		"${PKG_CXXFLAGS_BUILD_EXTRA:+CXXFLAGS+=${PKG_CXXFLAGS_BUILD_EXTRA}}"	\
-		"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"			\
-		"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"	\
-		"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"			\
-		"${PKG_PKG_CONFIG_LIBDIR:+PKG_CONFIG_LIBDIR=${PKG_PKG_CONFIG_LIBDIR}}"	\
-		${_libtool:+"LIBTOOL=${_libtool}"}					\
-		${_makeflags_verbosity};
+	for _subdir in ${PKG_MAKE_SUBDIRS:-:}; do
+		if [ "${_subdir}" = ":" ]; then
+			_subdir="";
+		fi;
+		# N.B.	We only specify CC= here if the current package does not use GNU
+		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
+		#	instead of amending CFLAGS.
+		rtl_run_cmd_unsplit make							\
+			${PKG_MAKEFLAGS_BUILD:-}						\
+			${PKG_MAKEFLAGS_BUILD_EXTRA:-}						\
+			"AR=${PKG_AR}" "${_no_autoconf:+CC=${PKG_CC}}" "RANLIB=${PKG_RANLIB}"	\
+			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"			\
+			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"		\
+			"${PKG_CPPFLAGS_BUILD:+CPPFLAGS=${PKG_CPPFLAGS_BUILD}}"			\
+			"${PKG_CPPFLAGS_BUILD_EXTRA:+CPPFLAGS+=${PKG_CPPFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_CXXFLAGS_BUILD:+CXXFLAGS=${PKG_CXXFLAGS_BUILD}}"			\
+			"${PKG_CXXFLAGS_BUILD_EXTRA:+CXXFLAGS+=${PKG_CXXFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"			\
+			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"			\
+			"${PKG_PKG_CONFIG_LIBDIR:+PKG_CONFIG_LIBDIR=${PKG_PKG_CONFIG_LIBDIR}}"	\
+			${_libtool:+"LIBTOOL=${_libtool}"}					\
+			${_makeflags_verbosity}							\
+			${_subdir:+-C "${_subdir}"};
+		if [ "${?}" -ne 0 ]; then
+			return 1;
+		fi;
+	done;
 };
 
 # vim:filetype=sh

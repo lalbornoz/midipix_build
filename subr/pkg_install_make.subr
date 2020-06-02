@@ -3,20 +3,29 @@
 #
 
 pkg_install_make() {
-	local _libtool="";
+	local _libtool="" _subdir="";
 	case "${PKG_LIBTOOL:-}" in
 	"")	_libtool=""; ;;
 	none)	_libtool=""; ;;
 	*)	_libtool="${PKG_LIBTOOL}"; ;;
 	esac;
-	rtl_run_cmd_unsplit make					\
-		${PKG_MAKEFLAGS_INSTALL:-}				\
-		${PKG_MAKEFLAGS_INSTALL_EXTRA:-}			\
-		AR="${PKG_AR}" CC="${PKG_CC}" RANLIB="${PKG_RANLIB}"	\
-		"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"	\
-		${_libtool:+"LIBTOOL=${_libtool}"}			\
-		"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
-		${PKG_INSTALL_TARGET:-install};
+	for _subdir in ${PKG_MAKE_SUBDIRS:-:}; do
+		if [ "${_subdir}" = ":" ]; then
+			_subdir="";
+		fi;
+		rtl_run_cmd_unsplit make					\
+			${PKG_MAKEFLAGS_INSTALL:-}				\
+			${PKG_MAKEFLAGS_INSTALL_EXTRA:-}			\
+			AR="${PKG_AR}" CC="${PKG_CC}" RANLIB="${PKG_RANLIB}"	\
+			"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"	\
+			${_libtool:+"LIBTOOL=${_libtool}"}			\
+			"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
+			${PKG_INSTALL_TARGET:-install}				\
+			${_subdir:+-C "${_subdir}"};
+		if [ "${?}" -ne 0 ]; then
+			return 1;
+		fi;
+	done;
 };
 
 # vim:filetype=sh

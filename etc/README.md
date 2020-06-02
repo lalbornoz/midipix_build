@@ -501,6 +501,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | BUILD_STEPS_DISABLE         | List of build steps to disable during package build                                                                                         |
 | BUILD_TYPE                  | Cross-compiled toolchain (``cross``,) host (``host``,) or cross-compiled package (``native``) build type                                    |
 | CC                          | Command- or pathname of toolchain C compiler ``cc(1)``                                                                                      |
+| CFLAGS_BUILD                | C compiler flags during package ``make(1)``  build                                                                                          |
 | CFLAGS_BUILD_EXTRA          | Additional C compiler flags during package ``make(1)``  build                                                                               |
 | CFLAGS_CONFIGURE            | C compiler flags during package (GNU autotools or similar) configuration                                                                    |
 | CFLAGS_CONFIGURE_EXTRA      | Additional C compiler flags during package (GNU autotools or similar) configuration                                                         |
@@ -533,6 +534,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | LDFLAGS_CONFIGURE_EXTRA     | Additional linker flags during package (GNU autotools or similar) configuration                                                             |
 | LIBTOOL                     | Command- or pathname of ``libtool(1)`` (defaults to ``slibtool``)                                                                           |
 | MAKE                        | Command line of ``make(1)``                                                                                                                 |
+| MAKE_SUBDIRS                | List of ``make(1)`` subdirectories to exclusively build                                                                                     |
 | MAKEFLAGS_BUILD             | List of ``make(1)`` flags during package ``make(1)``  build                                                                                 |
 | MAKEFLAGS_BUILD_EXTRA       | Additional list of ``make(1)`` flags during package ``make(1)``  build                                                                      |
 | MAKEFLAGS_INSTALL           | List of ``make(1)`` flags during package ``make(1)``  installation                                                                          |
