@@ -159,6 +159,7 @@ libxslt libz libzip")";
 : ${PKG_LIBSOLV_VERSION:=0.6.34};
 : ${PKG_LIBSOLV_URL:=https://github.com/openSUSE/libsolv/archive/${PKG_LIBSOLV_VERSION}.tar.gz};
 : ${PKG_LIBSOLV_SUBDIR:=libsolv-${PKG_LIBSOLV_VERSION}};
+: ${PKG_LIBSSH_DEPENDS:="libz"};
 : ${PKG_LIBSSH_SHA256SUM:=150897a569852ac05aac831dc417a7ba8e610c86ca2e0154a99c6ade2486226b};
 : ${PKG_LIBSSH_VERSION:=0.9.4};
 : ${PKG_LIBSSH_URL:=https://www.libssh.org/files/${PKG_LIBSSH_VERSION%.*}/libssh-${PKG_LIBSSH_VERSION}.tar.xz};
