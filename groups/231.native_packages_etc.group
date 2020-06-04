@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
-emacs expat ffmpeg file gdbm geoip gettext_tiny ghostscript
+emacs expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng qemu
@@ -108,13 +108,13 @@ zstd")";
 : ${PKG_GETTEXT_TINY_VERSION:=0.3.1};
 : ${PKG_GETTEXT_TINY_URL:=http://ftp.barfooze.de/pub/sabotage/tarballs/gettext-tiny-${PKG_GETTEXT_TINY_VERSION}.tar.xz};
 : ${PKG_GETTEXT_TINY_BUILD_DIR:=gettext-tiny-${PKG_GETTEXT_TINY_VERSION}};
-: ${PKG_GHOSTSCRIPT_DEPENDS:="libpng"};
-: ${PKG_GHOSTSCRIPT_SHA256SUM:=831fc019bd477f7cc2d481dc5395ebfa4a593a95eb2fe1eb231a97e450d7540d};
-: ${PKG_GHOSTSCRIPT_VERSION:=9.26};
-: ${PKG_GHOSTSCRIPT_URL:=https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs926/ghostscript-${PKG_GHOSTSCRIPT_VERSION}.tar.gz};
-: ${PKG_GHOSTSCRIPT_CONFIGURE_ARGS_EXTRA:="--without-x --disable-compile-inits --enable-dynamic --with-system-libtiff --with-memory-alignment=8"};
-: ${PKG_GHOSTSCRIPT_ENV_VARS_EXTRA:="CCAUX=cc:CFLAGSAUX=${DEFAULT_CFLAGS} -L${PREFIX}/lib:LDFLAGSAUX=-L${PREFIX}/lib:SHARE_ZLIB=-lz"}
-: ${PKG_GHOSTSCRIPT_MAKEFLAGS_BUILD_EXTRA:="TARGET_ARCH_FILE=${BUILD_WORKDIR}/ghostscript-native-${DEFAULT_TARGET}/ghostscript-${PKG_GHOSTSCRIPT_VERSION}/arch/${DEFAULT_TARGET}.h"}
+: ${PKG_GHOSTPDL_DEPENDS:="libpng"};
+: ${PKG_GHOSTPDL_SHA256SUM:=b0d4916b669a63ed861f563c4607cc1230949c53431ab0798db8e680fdacc777};
+: ${PKG_GHOSTPDL_VERSION:=9.26};
+: ${PKG_GHOSTPDL_URL:=https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs926/ghostpdl-${PKG_GHOSTPDL_VERSION}.tar.gz};
+: ${PKG_GHOSTPDL_CONFIGURE_ARGS_EXTRA:="--without-x --disable-compile-inits --enable-dynamic --with-system-libtiff --with-memory-alignment=8"};
+: ${PKG_GHOSTPDL_ENV_VARS_EXTRA:="CCAUX=cc:CFLAGSAUX=${DEFAULT_CFLAGS} -L${PREFIX}/lib:LDFLAGSAUX=-L${PREFIX}/lib:SHARE_ZLIB=-lz"}
+: ${PKG_GHOSTPDL_MAKEFLAGS_BUILD_EXTRA:="TARGET_ARCH_FILE=${BUILD_WORKDIR}/ghostscript-native-${DEFAULT_TARGET}/ghostscript-${PKG_GHOSTPDL_VERSION}/arch/${DEFAULT_TARGET}.h"}
 : ${PKG_GIFLIB_SHA256SUM:=df27ec3ff24671f80b29e6ab1c4971059c14ac3db95406884fc26574631ba8d5};
 : ${PKG_GIFLIB_VERSION:=5.1.4};
 : ${PKG_GIFLIB_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/giflib/giflib-${PKG_GIFLIB_VERSION}.tar.bz2};
