@@ -7,3 +7,16 @@ diff -ru ubase.orig/config.mk ubase/config.mk
  LDLIBS   = -lcrypt
 -LDFLAGS  = -s
 +LDFLAGS  =
+diff -ru ubase.orig/dd.c ubase/dd.c
+--- ubase.orig/dd.c     2019-02-20 15:52:28.200075816 +0100
++++ ubase/dd.c  2020-06-04 16:17:53.711291738 +0200
+@@ -7,7 +7,9 @@
+  * version of the code has been modified by sin@2f30.org.
+  */
+ #include <sys/ioctl.h>
++#ifdef __midipix__
+ #include <sys/mount.h>
++#endif
+ #include <sys/stat.h>
+ #include <sys/time.h>
+ #include <sys/types.h>

@@ -1,0 +1,40 @@
+diff -ru ubase.orig/Makefile ubase/Makefile
+--- ubase.orig/Makefile	2020-06-04 16:28:46.959510474 +0200
++++ ubase/Makefile	2020-06-04 16:34:28.406481119 +0200
+@@ -37,17 +37,14 @@
+ LIB = $(LIBUTIL)
+ 
+ BIN = \
+-	blkdiscard        \
+ 	chvt              \
+ 	clear             \
+ 	ctrlaltdel        \
+-	dd                \
+ 	df                \
+ 	dmesg             \
+ 	eject             \
+ 	fallocate         \
+ 	free              \
+-	freeramdisk       \
+ 	fsfreeze          \
+ 	getty             \
+ 	halt              \
+@@ -63,7 +60,6 @@
+ 	mesg              \
+ 	mknod             \
+ 	mkswap            \
+-	mount             \
+ 	mountpoint        \
+ 	nologin           \
+ 	pagesize          \
+@@ -80,10 +76,8 @@
+ 	swaplabel         \
+ 	swapoff           \
+ 	swapon            \
+-	switch_root       \
+ 	sysctl            \
+ 	truncate          \
+-	umount            \
+ 	unshare           \
+ 	uptime            \
+ 	vtallow           \
