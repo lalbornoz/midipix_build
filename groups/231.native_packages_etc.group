@@ -114,7 +114,7 @@ zstd")";
 : ${PKG_GHOSTPDL_URL:=https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs926/ghostpdl-${PKG_GHOSTPDL_VERSION}.tar.gz};
 : ${PKG_GHOSTPDL_CONFIGURE_ARGS_EXTRA:="--without-x --disable-compile-inits --enable-dynamic --with-system-libtiff --with-memory-alignment=8"};
 : ${PKG_GHOSTPDL_ENV_VARS_EXTRA:="CCAUX=cc:CFLAGSAUX=${DEFAULT_CFLAGS} -L${PREFIX}/lib:LDFLAGSAUX=-L${PREFIX}/lib:SHARE_ZLIB=-lz"}
-: ${PKG_GHOSTPDL_MAKEFLAGS_BUILD_EXTRA:="TARGET_ARCH_FILE=${BUILD_WORKDIR}/ghostscript-native-${DEFAULT_TARGET}/ghostscript-${PKG_GHOSTPDL_VERSION}/arch/${DEFAULT_TARGET}.h"}
+: ${PKG_GHOSTPDL_MAKEFLAGS_BUILD_EXTRA:="TARGET_ARCH_FILE=${BUILD_WORKDIR}/ghostpdl-native-${DEFAULT_TARGET}/ghostpdl-${PKG_GHOSTPDL_VERSION}/arch/${DEFAULT_TARGET}.h"}
 : ${PKG_GIFLIB_SHA256SUM:=df27ec3ff24671f80b29e6ab1c4971059c14ac3db95406884fc26574631ba8d5};
 : ${PKG_GIFLIB_VERSION:=5.1.4};
 : ${PKG_GIFLIB_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/giflib/giflib-${PKG_GIFLIB_VERSION}.tar.bz2};
