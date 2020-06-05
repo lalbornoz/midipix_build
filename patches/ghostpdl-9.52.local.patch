@@ -1,15 +1,15 @@
-diff -ru ghostscript-9.26.orig/configure ghostscript-9.26/configure
---- ghostscript-9.26.orig/configure	2018-11-20 11:08:58.000000000 +0100
-+++ ghostscript-9.26/configure	2019-03-25 13:54:01.738597533 +0100
-@@ -3787,7 +3787,7 @@
-   echo $AUXFLAGS_MAK_LINE06 >> $AUXFLAGS_MAK.in
-   echo $AUXFLAGS_MAK_LINE07 >> $AUXFLAGS_MAK.in
- 
--  ../$0 CC="$CCAUX" CFLAGS="$CFLAGSAUX" LDFLAGS="$LDFLAGSAUX" CCAUX= CFLAGSAUX= CFLAGSAUX= MAKEFILE=$AUXFLAGS_MAK --host= --build= --without-libtiff --disable-contrib --disable-fontconfig --disable-dbus --disable-freetype --disable-fapi --disable-cups --disable-openjpeg --disable-gtk --with-libiconv=no --without-libidn --without-libpaper --without-pdftoraster --without-ijs --without-luratech --without-jbig2dec --without-x --with-drivers=""
-+  $0 CC="$CCAUX" CFLAGS="$CFLAGSAUX" CPPFLAGS= LDFLAGS="$LDFLAGSAUX" CCAUX= CFLAGSAUX= CFLAGSAUX= MAKEFILE=$AUXFLAGS_MAK --host= --build= --without-libtiff --disable-contrib --disable-fontconfig --disable-dbus --disable-freetype --disable-fapi --disable-cups --disable-openjpeg --disable-gtk --with-libiconv=no --without-libidn --without-libpaper --without-pdftoraster --without-ijs --without-luratech --without-jbig2dec --without-x --with-drivers=""
-   status=$?
-   cp config.log ../configaux.log
-   if test $status -eq 0 ; then
+diff -ru ghostpdl-9.52.orig/configure ghostpdl-9.52/configure
+--- ghostpdl-9.52.orig/configure        2020-06-05 13:19:23.032760767 +0200
++++ ghostpdl-9.52/configure     2020-06-05 13:18:58.367780811 +0200
+@@ -10957,7 +10957,7 @@
+   enableval=$enable_dynamic;
+   if test "x$enable_dynamic" != xno; then
+     case $host in
+-      *-linux*|*-gnu)
++      *-linux*|*-gnu|*-midipix*)
+         INSTALL_SHARED="install-shared"
+         if test "x$X_DEVS" != x; then
+                 DYNAMIC_DEVS="\$(GLOBJDIR)/X11.so"
 diff -ru ghostscript-9.26.orig/devices/devs.mak ghostscript-9.26/devices/devs.mak
 --- ghostscript-9.26.orig/devices/devs.mak	2018-11-20 11:08:19.000000000 +0100
 +++ ghostscript-9.26/devices/devs.mak	2019-03-25 16:52:13.774662402 +0100
@@ -24,7 +24,7 @@ diff -ru ghostscript-9.26.orig/devices/devs.mak ghostscript-9.26/devices/devs.ma
  	$(ADDMOD) $(DD)x11_ -link $(XLIBDIRS)
 --- /dev/null                                     2019-05-07 18:48:18.199999973 -0400
 +++ ghostscript-9.26/arch/x86_64-nt64-midipix.h   2019-05-09 22:02:33.196268736 -0400
-@@ -0,0 +1,29 @@
+@@ -0,0 +1,31 @@
 +#define ARCH_ALIGN_SHORT_MOD 2
 +#define ARCH_ALIGN_INT_MOD 4
 +#define ARCH_ALIGN_LONG_MOD 8
@@ -54,3 +54,5 @@ diff -ru ghostscript-9.26.orig/devices/devs.mak ghostscript-9.26/devices/devs.ma
 +#define ARCH_FLOATS_ARE_IEEE 1
 +#define ARCH_ARITH_RSHIFT 2
 +#define ARCH_DIV_NEG_POS_TRUNCATES 1
++#define ARCH_SIZEOF_SIZE_T 8
++#define ARCH_MAX_SIZE_T ((size_t)~0L + (size_t)0)
