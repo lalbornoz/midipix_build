@@ -7,7 +7,7 @@ alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
 emacs expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
-ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt procps_ng qemu
+ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xz yabasic
 zstd")";
@@ -227,6 +227,10 @@ zstd")";
 : ${PKG_POPT_SHA256SUM:=e728ed296fe9f069a0e005003c3d6b2dde3d9cad453422a10d6558616d304cc8};
 : ${PKG_POPT_VERSION:=1.16};
 : ${PKG_POPT_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/popt/popt-${PKG_POPT_VERSION}.tar.gz};
+: ${PKG_POTRACE_DEPENDS:="libz"};
+: ${PKG_POTRACE_SHA256SUM:=be8248a17dedd6ccbaab2fcc45835bb0502d062e40fbded3bc56028ce5eb7acc};
+: ${PKG_POTRACE_VERSION:=1.16};
+: ${PKG_POTRACE_URL:=http://potrace.sourceforge.net/download/${PKG_POTRACE_VERSION}/potrace-${PKG_POTRACE_VERSION}.tar.gz};
 : ${PKG_PROCPS_NG_DEPENDS:="ncurses ncursesw"};
 : ${PKG_PROCPS_NG_SHA256SUM:=440af4845fee9f55b721aa456f88259668465ddb37168ea1e2d2ef195f55bbc4};
 : ${PKG_PROCPS_NG_VERSION:=3.3.15};
