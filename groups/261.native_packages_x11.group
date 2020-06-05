@@ -23,7 +23,7 @@ xtrans xwd xwin")";
 : ${PKG_AT_SPI2_CORE_VERSION:=2.26.2};
 : ${PKG_AT_SPI2_CORE_SHA256SUM:=c80e0cdf5e3d713400315b63c7deffa561032a6c37289211d8afcfaa267c2615};
 : ${PKG_AT_SPI2_CORE_URL:=https://download.gnome.org/sources/at-spi2-core/${PKG_AT_SPI2_CORE_VERSION%.*}/at-spi2-core-${PKG_AT_SPI2_CORE_VERSION}.tar.xz};
-: ${PKG_CAIRO_DEPENDS:="fontconfig freetype ghostscript glib libXext libpng pixman"};
+: ${PKG_CAIRO_DEPENDS:="fontconfig freetype ghostpdl glib libXext libpng pixman"};
 : ${PKG_CAIRO_VERSION:=1.15.6};
 : ${PKG_CAIRO_URL:=http://cairographics.org/snapshots/cairo-${PKG_CAIRO_VERSION}.tar.xz};
 : ${PKG_CAIRO_SHA256SUM:=5228e0a1f8fd14317f30f08f3dd72971bca432f8cdd2281d421fdcc2279de58c};
