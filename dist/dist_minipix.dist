@@ -42,6 +42,12 @@ pkg_dist_minipix_all() {
 				return 1;
 			fi;
 		done;
+		for _pname in etc/ca-certificates.conf etc/ssl/certs/ca-certificates.crt share/ca-certificates; do
+			if [ -e "${PREFIX}/minipix_dist/${_pname}" ]\
+			&& ! tar -C "${PREFIX}/minipix_dist" -cpf - "${_pname}" | tar -C "${PREFIX_MINIPIX}" -xpf -; then
+				return 1;
+			fi;
+		done;
 		for _fname in nano vim; do
 			if [ -e "${PREFIX}/minipix_dist/share/${_fname}" ]\
 			&& rtl_is_newer "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share/${_fname}"\
