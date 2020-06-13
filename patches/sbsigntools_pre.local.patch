@@ -1,10 +1,3 @@
-Only in sbsigntools: aclocal.m4
-Only in sbsigntools: AUTHORS
-Only in sbsigntools: autom4te.cache
-Only in sbsigntools: ChangeLog
-Only in sbsigntools: compile
-Only in sbsigntools: config.h.in
-Only in sbsigntools: configure
 diff -ru sbsigntools-0.9.3.orig/configure.ac sbsigntools/configure.ac
 --- sbsigntools-0.9.3.orig/configure.ac	2020-01-09 18:33:38.000000000 +0100
 +++ sbsigntools/configure.ac	2020-05-02 22:04:59.758305183 +0200
@@ -42,35 +35,17 @@ diff -ru sbsigntools-0.9.3.orig/configure.ac sbsigntools/configure.ac
 -		[docs/Makefile tests/Makefile])
 +		[docs/Makefile])
  AC_OUTPUT
-Only in sbsigntools: depcomp
 diff -ru sbsigntools-0.9.3.orig/docs/Makefile.am sbsigntools/docs/Makefile.am
 --- sbsigntools-0.9.3.orig/docs/Makefile.am	2020-01-09 18:33:38.000000000 +0100
 +++ sbsigntools/docs/Makefile.am	2020-05-02 22:12:41.441538721 +0200
-@@ -1,5 +1,5 @@
+@@ -1,6 +1,5 @@
  
--man1_MANS = sbsign.1 sbverify.1 sbattach.1 sbvarsign.1 sbsiglist.1
+-man1_MANS = sbsign.1 sbverify.1 sbattach.1 sbvarsign.1 sbsiglist.1 \
+-		sbkeysync.1
 +man1_MANS = sbsign.1 sbverify.1 sbattach.1
  
  EXTRA_DIST = sbsign.1.in sbverify.1.in sbattach.1.in \
  		sbvarsign.1.in sbsiglist.1.in
-Only in sbsigntools/docs: Makefile.in
-Only in sbsigntools: .git
-Only in sbsigntools: INSTALL
-Only in sbsigntools: install-sh
-Only in sbsigntools/lib: ccan
-Only in sbsigntools/lib/ccan.git: ccan
-Only in sbsigntools/lib/ccan.git: config.h
-Only in sbsigntools/lib/ccan.git: doc
-Only in sbsigntools/lib/ccan.git: .git
-Only in sbsigntools/lib/ccan.git: .gitignore
-Only in sbsigntools/lib/ccan.git: junkcode
-Only in sbsigntools/lib/ccan.git: licenses
-Only in sbsigntools/lib/ccan.git: Makefile
-Only in sbsigntools/lib/ccan.git: Makefile-ccan
-Only in sbsigntools/lib/ccan.git: Makefile-web
-Only in sbsigntools/lib/ccan.git: README
-Only in sbsigntools/lib/ccan.git: tools
-Only in sbsigntools/lib/ccan.git: web
 diff -ru sbsigntools-0.9.3.orig/Makefile.am sbsigntools/Makefile.am
 --- sbsigntools-0.9.3.orig/Makefile.am	2020-01-09 18:33:38.000000000 +0100
 +++ sbsigntools/Makefile.am	2020-05-02 22:16:07.359375795 +0200
@@ -78,8 +53,6 @@ diff -ru sbsigntools-0.9.3.orig/Makefile.am sbsigntools/Makefile.am
  
 -SUBDIRS = lib/ccan src docs tests
 +SUBDIRS = lib/ccan src
-Only in sbsigntools: Makefile.in
-Only in sbsigntools: missing
 diff -ru sbsigntools-0.9.3.orig/src/Makefile.am sbsigntools/src/Makefile.am
 --- sbsigntools-0.9.3.orig/src/Makefile.am	2020-01-09 18:33:38.000000000 +0100
 +++ sbsigntools/src/Makefile.am	2020-05-02 22:09:31.013544683 +0200
@@ -90,7 +63,6 @@ diff -ru sbsigntools-0.9.3.orig/src/Makefile.am sbsigntools/src/Makefile.am
  
  coff_headers = coff/external.h coff/pe.h
  AM_CFLAGS = -Wall -Wextra --std=gnu99
-Only in sbsigntools/src: Makefile.in
 diff -ru sbsigntools-0.9.3.orig/src/sbverify.c sbsigntools/src/sbverify.c
 --- sbsigntools-0.9.3.orig/src/sbverify.c	2020-01-09 18:33:38.000000000 +0100
 +++ sbsigntools/src/sbverify.c	2020-05-02 22:11:22.921541180 +0200
@@ -103,5 +75,3 @@ diff -ru sbsigntools-0.9.3.orig/src/sbverify.c sbsigntools/src/sbverify.c
  #define X509_OBJECT_get0_X509(obj) ((obj)->data.x509)
  #define X509_OBJECT_get_type(obj) ((obj)->type)
  #define X509_STORE_CTX_get0_cert(ctx) ((ctx)->cert)
-Only in sbsigntools: test-driver
-Only in sbsigntools/tests: Makefile.in
