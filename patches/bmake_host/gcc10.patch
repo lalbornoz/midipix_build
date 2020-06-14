@@ -1,0 +1,24 @@
+diff -ru bmake.orig/job.c bmake/job.c
+--- bmake.orig/job.c	2020-04-09 14:03:57.232919836 +0200
++++ bmake/job.c	2020-06-14 22:19:09.776490793 +0200
+@@ -180,6 +180,8 @@
+ #define ABORT_WAIT	3   	    /* Waiting for jobs to finish */
+ #define JOB_TOKENS	"+EI+"	    /* Token to requeue for each abort state */
+ 
++FILE *debug_file;
++
+ /*
+  * this tracks the number of tokens currently "out" to build jobs.
+  */
+diff -ru bmake.orig/make.h bmake/make.h
+--- bmake.orig/make.h	2020-02-10 18:07:01.708744511 +0100
++++ bmake/make.h	2020-06-14 22:18:24.965773603 +0200
+@@ -464,7 +464,7 @@
+  *	There is one bit per module.  It is up to the module what debug
+  *	information to print.
+  */
+-FILE *debug_file;		/* Output written here - default stdout */
++extern FILE *debug_file;	/* Output written here - default stdout */
+ extern int debug;
+ #define	DEBUG_ARCH	0x00001
+ #define	DEBUG_COND	0x00002
