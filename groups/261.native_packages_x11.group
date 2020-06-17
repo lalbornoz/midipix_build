@@ -7,7 +7,7 @@ atk at_spi2_atk at_spi2_core cairo dbus_glib fontconfig freetype
 freetype_pre fribidi gdk glew gtk2 gtk3 harfbuzz imlib2 libass libcaca
 libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
 libXdamage libXdmcp libXext libxfce4ui libxfce4util libXfixes libXfont2
-libXft libXi libxkbfile libXmu libXpm libXt libXtst mesa pango pixman
+libXft libXi libxkbfile libXmu libXpm libXt libXtst libXcursor mesa pango pixman
 rdesktop rxvt_unicode sdl1 sdl2 st util_macros xcb xcb_proto xcb_util
 xcb_util_image xcb_util_wm xcowsay xeyes xfconf xorgproto Xrender xterm
 xtrans xwd xwin")";
@@ -192,6 +192,9 @@ xtrans xwd xwin")";
 : ${PKG_LIBXTST_SHA256SUM:=4655498a1b8e844e3d6f21f3b2c4e2b571effb5fd83199d428a6ba7ea4bf5204};
 : ${PKG_LIBXTST_VERSION:=1.2.3};
 : ${PKG_LIBXTST_URL:=http://www.x.org/releases/individual/lib/libXtst-${PKG_LIBXTST_VERSION}.tar.bz2};
+: ${PKG_LIBXCURSOR_SHA256SUM:=ad5b2574fccaa4c3fa67b9874fbed863d29ad230c784e9a08b20692418f6a1f8};
+: ${PKG_LIBXCURSOR_VERSION:=1.2.0};
+: ${PKG_LIBXCURSOR_URL:=https://www.x.org/releases/individual/lib/libXcursor-${PKG_LIBXCURSOR_VERSION}.tar.gz};
 : ${PKG_MESA_DEPENDS:="expat libpthread_stubs libX11 libXext libz xcb"};
 : ${PKG_MESA_SHA256SUM:=694e5c3d37717d23258c1f88bc134223c5d1aac70518d2f9134d6df3ee791eea};
 : ${PKG_MESA_VERSION:=18.0.0};
