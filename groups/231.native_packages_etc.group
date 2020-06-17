@@ -109,9 +109,9 @@ zstd")";
 : ${PKG_GETTEXT_TINY_URL:=http://ftp.barfooze.de/pub/sabotage/tarballs/gettext-tiny-${PKG_GETTEXT_TINY_VERSION}.tar.xz};
 : ${PKG_GETTEXT_TINY_BUILD_DIR:=gettext-tiny-${PKG_GETTEXT_TINY_VERSION}};
 : ${PKG_GHOSTPDL_DEPENDS:="libpng tiff fontconfig libz libXt libX11"};
-: ${PKG_GHOSTPDL_SHA256SUM:=33dd239a61bac154de123b6f8a28ebf3d8d9d462ac282065a1c389f96d92c0f3};
+: ${PKG_GHOSTPDL_SHA256SUM:=012432f8c64047b70a5474d53dcd224a511fc5f70da34f3b39d51a4832648984};
 : ${PKG_GHOSTPDL_VERSION:=9.52};
-: ${PKG_GHOSTPDL_URL:=https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostpdl-${PKG_GHOSTPDL_VERSION}.tar.xz};
+: ${PKG_GHOSTPDL_URL:=https://mirror.midipix.org/ghostpdl/ghostpdl-${PKG_GHOSTPDL_VERSION}.tar.xz};
 : ${PKG_GHOSTPDL_CONFIGURE_ARGS_EXTRA:="--with-system-libtiff --with-memory-alignment=8"};
 : ${PKG_GHOSTPDL_ENV_VARS_EXTRA:="CCAUX=cc:CFLAGSAUX=${DEFAULT_CFLAGS} -L${PREFIX}/lib:LDFLAGSAUX=-L${PREFIX}/lib:SHARE_ZLIB=-lz"}
 : ${PKG_GHOSTPDL_MAKEFLAGS_BUILD_EXTRA:="TARGET_ARCH_FILE=${BUILD_WORKDIR}/ghostpdl-native-${DEFAULT_TARGET}/ghostpdl-${PKG_GHOSTPDL_VERSION}/arch/${DEFAULT_TARGET}.h"}
