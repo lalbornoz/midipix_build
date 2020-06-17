@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-glib lame libarchive libasr libassuan libatomic_ops libdmtx libedit libeditline libelf
+glib lame libarchive libassuan libatomic_ops libdmtx libedit libeditline libelf
 libevent libfetch libffi libfirm libflac libgcrypt libgpg_error
 libjpeg_turbo libksba libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
@@ -24,11 +24,6 @@ libxslt libz libzip")";
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.gz};
 : ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_LIBARCHIVE_LIBTOOL:=rdlibtool};
-: ${PKG_LIBASR_SHA256SUM:=9cd88e0172e6d426438875e09229d1d473d56db546d02b630f9dd14db226d68d};
-: ${PKG_LIBASR_VERSION:=1.0.3};
-: ${PKG_LIBASR_URL:=https://www.opensmtpd.org/archives/libasr-${PKG_LIBASR_VERSION}.tar.gz};
-: ${PKG_LIBASR_FORCE_AUTORECONF:=1};
-: ${PKG_LIBASR_IN_TREE:=1};
 : ${PKG_LIBASSUAN_DEPENDS:="libgpg_error"};
 : ${PKG_LIBASSUAN_SHA256SUM:=91bcb0403866b4e7c4bc1cc52ed4c364a9b5414b3994f718c70303f7f765e702};
 : ${PKG_LIBASSUAN_VERSION:=2.5.3};
