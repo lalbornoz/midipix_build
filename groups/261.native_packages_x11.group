@@ -192,6 +192,7 @@ xtrans xwd xwin")";
 : ${PKG_LIBXTST_SHA256SUM:=4655498a1b8e844e3d6f21f3b2c4e2b571effb5fd83199d428a6ba7ea4bf5204};
 : ${PKG_LIBXTST_VERSION:=1.2.3};
 : ${PKG_LIBXTST_URL:=http://www.x.org/releases/individual/lib/libXtst-${PKG_LIBXTST_VERSION}.tar.bz2};
+: ${PKG_LIBXCURSOR_DEPENDS:="libX11 libXfixes xorgproto Xrender"};
 : ${PKG_LIBXCURSOR_SHA256SUM:=ad5b2574fccaa4c3fa67b9874fbed863d29ad230c784e9a08b20692418f6a1f8};
 : ${PKG_LIBXCURSOR_VERSION:=1.2.0};
 : ${PKG_LIBXCURSOR_URL:=https://www.x.org/releases/individual/lib/libXcursor-${PKG_LIBXCURSOR_VERSION}.tar.gz};
