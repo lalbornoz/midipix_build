@@ -215,5 +215,6 @@ libxslt libz libzip wolfssl")";
 : ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
 : ${PKG_WOLFSSL_CONFIGURE_ARGS_EXTRA:="--enable-distro"};
 : ${PKG_WOLFSSL_SUBDIR:=wolfssl-${PKG_WOLFSSL_VERSION}-stable};
+: ${PKG_WOLFSSL_INSTALL_FILES:="../obj/wolfssl/options.h=include/wolfssl/options.h ../obj/cyassl/options.h=include/cyassl/options.h"};
 
 # vim:filetype=sh textwidth=0
