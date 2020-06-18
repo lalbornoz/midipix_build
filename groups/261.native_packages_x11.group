@@ -9,7 +9,7 @@ libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
 libXdamage libXdmcp libXext libxfce4ui libxfce4util libXfixes libXfont2
 libXft libXi libxkbfile libXmu libXpm libXt libXtst libXcursor mesa pango pixman
 rdesktop rxvt_unicode sdl1 sdl2 st util_macros xcb xcb_proto xcb_util
-xcb_util_image xcb_util_wm xcowsay xeyes xfconf xorgproto Xrender xterm
+xcb_util_image xcb_util_wm xcowsay xcalc xeyes xfconf xorgproto Xrender xterm
 xtrans xwd xwin")";
 : ${PKG_ATK_DEPENDS:="glib"};
 : ${PKG_ATK_VERSION:=2.26.0};
@@ -274,6 +274,10 @@ xtrans xwd xwin")";
 : ${PKG_XCOWSAY_SHA256SUM:=c7e261ba0262c3821c106ccb6d6f984e3c2da999ad10151364e55d1c699f8e51};
 : ${PKG_XCOWSAY_VERSION:=1.4};
 : ${PKG_XCOWSAY_URL:=http://www.nickg.me.uk/files/xcowsay-${PKG_XCOWSAY_VERSION}.tar.gz};
+: ${PKG_XCALC_DEPENDS:="libX11 libXt libXaw"};
+: ${PKG_XCALC_SHA256SUM:=a86418d9af9d0e57e5253ba1c29e754480509c828d369aaaca48400b2045e630};
+: ${PKG_XCALC_VERSION:=1.1.0};
+: ${PKG_XCALC_URL:=https://www.x.org/releases/individual/app/xcalc-${PKG_XCALC_VERSION}.tar.gz};
 : ${PKG_XEYES_DEPENDS:="libX11 libXext libXmu libXt Xrender"};
 : ${PKG_XEYES_SHA256SUM:=57bcec0d2d167af9e5d44d0dbd74c6d7c0f0591cd0608952b23c749fdd910553};
 : ${PKG_XEYES_VERSION:=1.1.2};
