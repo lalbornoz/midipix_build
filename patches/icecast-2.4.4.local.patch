@@ -1,0 +1,84 @@
+diff -ru icecast-2.4.4.orig/src/connection.c icecast-2.4.4/src/connection.c
+--- icecast-2.4.4.orig/src/connection.c	2018-10-31 18:52:49.000000000 +0100
++++ icecast-2.4.4/src/connection.c	2020-06-18 11:41:12.024581686 +0200
+@@ -112,9 +112,7 @@
+ static volatile client_queue_t *_req_queue = NULL, **_req_queue_tail = &_req_queue;
+ static volatile client_queue_t *_con_queue = NULL, **_con_queue_tail = &_con_queue;
+ static int ssl_ok;
+-#ifdef HAVE_OPENSSL
+ static SSL_CTX *ssl_ctx;
+-#endif
+ 
+ /* filtering client connection based on IP */
+ static cache_file_contents banned_ip, allowed_ip;
+@@ -165,9 +163,7 @@
+ {
+     if (!_initialized) return;
+     
+-#ifdef HAVE_OPENSSL
+     SSL_CTX_free (ssl_ctx);
+-#endif
+     if (banned_ip.contents)  avl_tree_free (banned_ip.contents, free_filtered_ip);
+     if (allowed_ip.contents) avl_tree_free (allowed_ip.contents, free_filtered_ip);
+  
+@@ -190,8 +186,7 @@
+     return id;
+ }
+ 
+-
+-#ifdef HAVE_OPENSSL
++#if 1
+ static void get_ssl_certificate (ice_config_t *config)
+ {
+ #if OPENSSL_VERSION_NUMBER < 0x1000114fL
+@@ -439,13 +434,11 @@
+  */
+ void connection_uses_ssl (connection_t *con)
+ {
+-#ifdef HAVE_OPENSSL
+     con->read = connection_read_ssl;
+     con->send = connection_send_ssl;
+     con->ssl = SSL_new (ssl_ctx);
+     SSL_set_accept_state (con->ssl);
+     SSL_set_fd (con->ssl, con->sock);
+-#endif
+ }
+ 
+ static sock_t wait_for_serversock(int timeout)
+@@ -1496,8 +1489,6 @@
+     sock_close(con->sock);
+     if (con->ip) free(con->ip);
+     if (con->host) free(con->host);
+-#ifdef HAVE_OPENSSL
+     if (con->ssl) { SSL_shutdown (con->ssl); SSL_free (con->ssl); }
+-#endif
+     free(con);
+ }
+diff -ru icecast-2.4.4.orig/src/connection.h icecast-2.4.4/src/connection.h
+--- icecast-2.4.4.orig/src/connection.h	2018-10-31 18:52:49.000000000 +0100
++++ icecast-2.4.4/src/connection.h	2020-06-18 11:38:37.752586516 +0200
+@@ -15,10 +15,10 @@
+ 
+ #include <sys/types.h>
+ #include <time.h>
+-#ifdef HAVE_OPENSSL
+-#include <openssl/ssl.h>
+-#include <openssl/err.h>
+-#endif
++#include <wolfssl/options.h>
++#include <wolfssl/ssl.h>
++#include <wolfssl/openssl/ssl.h>
++#include <wolfssl/openssl/err.h>
+ 
+ #include "compat.h"
+ #include "httpp/httpp.h"
+@@ -41,9 +41,7 @@
+     sock_t serversock;
+     int error;
+ 
+-#ifdef HAVE_OPENSSL
+     SSL *ssl;   /* SSL handler */
+-#endif
+     int (*send)(struct connection_tag *handle, const void *buf, size_t len);
+     int (*read)(struct connection_tag *handle, void *buf, size_t len);
+ 
