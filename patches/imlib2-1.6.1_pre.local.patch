@@ -1,0 +1,20 @@
+diff -ru imlib2-1.6.1.orig/configure imlib2-1.6.1/configure
+--- imlib2-1.6.1.orig/configure	2019-12-13 19:10:11.000000000 +0100
++++ imlib2-1.6.1/configure	2020-06-19 20:33:49.167201190 +0200
+@@ -12366,6 +12366,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
