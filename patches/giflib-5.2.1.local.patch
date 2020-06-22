@@ -1,0 +1,12 @@
+diff -ru giflib-5.2.1.orig/Makefile giflib-5.2.1/Makefile
+--- giflib-5.2.1.orig/Makefile	2019-06-24 18:08:57.000000000 +0200
++++ giflib-5.2.1/Makefile	2020-06-22 16:38:04.273418161 +0200
+@@ -61,7 +61,7 @@
+ 
+ LDLIBS=libgif.a -lm
+ 
+-all: libgif.so libgif.a libutil.so libutil.a $(UTILS)
++all: libgif.so libgif.a libutil.a $(UTILS)
+ 	$(MAKE) -C doc
+ 
+ $(UTILS):: libgif.a libutil.a
