@@ -2,7 +2,7 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
-exp_rtl_fetch_url_git() {
+rtlp_fetch_url_git() {
 	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}"	\
 		_oldpwd="";
 	(set -o errexit -o noglob -o nounset;
@@ -46,34 +46,35 @@ rtl_fetch_urls_git() {
 		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
 			_git_branch=${_url_spec#*@};
 		fi;
-		exp_rtl_fetch_url_git "${_tgtdir}" "${_subdir}"	\
+		rtlp_fetch_url_git "${_tgtdir}" "${_subdir}"	\
 			"${_url}" "${_git_branch}";
 	done;
 };
 
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 rtl_fetch_url_wget() {
-	local _url="${1}" _sha256sum_src="${2}" _target_fname="${3}" _sha256sum_dst="";
+	local _url="${1}" _sha256sum_src="${2}" _target_fname="${3}" _target_fname_full="" RTL_CHECK_DIGEST_DIGEST="";
 	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
 		return 0;
-	elif [ -z "${_target_fname}" ]; then
-		_target_fname="$(rtl_basename "${_url}")";
-	fi;
-	_url_dst="${BUILD_DLCACHEDIR}/${_target_fname}";
-	(set -o errexit -o noglob -o nounset;
-	rtl_flock_acquire 4 || exit "${?}";
-	trap "_rc=\"\${?}\" ;rm -f \"${_url_dst}.fetching\"; exit \"\${_rc}\";" EXIT;
-	if [ ! -e "${_url_dst}.fetched" ]; then
-		wget ${DEFAULT_WGET_ARGS} -O "${_url_dst}" "${_url}";
-		if [ -n "${_sha256sum_src}" ]; then
-			set -- $(sha256sum "${_url_dst}");
-			if [ "${_sha256sum_dst:=${1}}" != "${_sha256sum_src}" ]; then
-				rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (downloaded file: %s, from build variables: %s.)"\
-						"${_url}" "${_sha256sum_dst}" "${_sha256sum_src}";
-			fi;
+	else	if [ -z "${_target_fname}" ]; then
+			_target_fname="$(rtl_basename "${_url}")";
 		fi;
-		rtl_fileop touch "${_url_dst}.fetched";
-	fi;) 4<>"${_url_dst}.fetching";
+		_target_fname_full="${BUILD_DLCACHEDIR}/${_target_fname}";
+		(set -o errexit -o noglob -o nounset;
+		rtl_flock_acquire 4 || exit "${?}";
+		trap "_rc=\"\${?}\"; rm -f \"${_target_fname_full}.fetching\"; exit \"\${_rc}\";" EXIT;
+		if [ -z "${_sha256sum_src}" ]\
+		|| ! rtl_check_digest_file "${_target_fname_full}" "${_sha256sum_src}" "${_target_fname_full}.fetched"; then
+			wget ${DEFAULT_WGET_ARGS} -O "${_target_fname_full}" "${_url}";
+			if [ -n "${_sha256sum_src}" ]\
+			&& ! rtl_check_digest "${_target_fname_full}" "${_sha256sum_src}"; then
+				rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (downloaded file: %s, from build variables: %s.)"\
+						"${_url}" "${RTL_CHECK_DIGEST_DIGEST}" "${_sha256sum_src}";
+			else
+				printf "%s" "${RTL_CHECK_DIGEST_DIGEST}" > "${_target_fname_full}.fetched";
+			fi;
+		fi;) 4<>"${_target_fname_full}.fetching";
+	fi;
 };
 
 # vim:filetype=sh

@@ -2,6 +2,32 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+rtl_check_digest() {
+	local _fname="${1}" _digest_check="${2}" _digest=""; RTL_CHECK_DIGEST_DIGEST="";
+	if ! [ -e "${_fname}" ]; then
+		return 1;
+	else	set -- $(sha256sum "${_fname}");
+		RTL_CHECK_DIGEST_DIGEST="${1}";
+		if [ "${RTL_CHECK_DIGEST_DIGEST}" = "${_digest_check}" ]; then
+			return 0;
+		else
+			return 1;
+		fi;
+	fi;
+};
+
+rtl_check_digest_file() {
+	local _fname="${1}" _digest_check="${2}" _digest_fname="${3}" _digest="" RTL_CHECK_DIGEST_DIGEST="";
+	if !  [ -e "${_digest_fname}" ]; then
+		return 1;
+	else	_digest="$(cat "${_digest_fname}")";
+		if [ "${_digest}" != "${_digest_check}" ]\
+		|| ! rtl_check_digest "${_fname}" "${_digest_check}"; then
+			return 1;
+		fi;
+	fi;
+};
+
 rtl_check_path_vars() {
 	local _vnames="${1}" _rc=0 _vname="" _vname_val=""; _status="";
 	for _vname in ${_vnames}; do
