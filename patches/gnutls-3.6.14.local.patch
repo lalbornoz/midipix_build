@@ -1,0 +1,12 @@
+diff -ru gnutls-3.6.14.orig/lib/system/sockets.c gnutls-3.6.14/lib/system/sockets.c
+--- gnutls-3.6.14.orig/lib/system/sockets.c	2020-06-01 11:48:13.000000000 +0200
++++ gnutls-3.6.14/lib/system/sockets.c	2020-06-28 22:12:02.485455741 +0200
+@@ -117,7 +117,7 @@
+ system_writev(gnutls_transport_ptr_t ptr, const giovec_t * iovec,
+ 	      int iovec_cnt)
+ {
+-	return _system_writev(ptr, iovec, iovec_cnt, 0);
++	return writev(GNUTLS_POINTER_TO_INT(ptr), (struct iovec *) iovec, iovec_cnt);
+ }
+ 
+ #endif
