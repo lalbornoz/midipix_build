@@ -106,7 +106,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_GLIB_HOST_DEPENDS:="python3_host"};
 : ${PKG_GLIB_HOST_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
 : ${PKG_GLIB_HOST_VERSION:=2.54.0};
-: ${PKG_GLIB_HOST_URL:=http://ftp.gnome.org/pub/GNOME/sources/glib/${PKG_GLIB_HOST_VERSION%.[0-9]}/glib-${PKG_GLIB_HOST_VERSION}.tar.xz};
+: ${PKG_GLIB_HOST_URL:="https://download.gnome.org/sources/glib/${PKG_GLIB_HOST_VERSION%.[0-9]}/glib-${PKG_GLIB_HOST_VERSION}.tar.xz"};
 : ${PKG_GLIB_HOST_BUILD_STEPS_DISABLE:=configure_patch};
 : ${PKG_GLIB_HOST_CONFIGURE_ARGS_EXTRA:="--with-pcre=internal --with-python=${PREFIX}/bin/python3 --disable-dtrace --disable-libelf --disable-libmount"};
 : ${PKG_GLIB_HOST_CFLAGS_BUILD_EXTRA:="-Wno-missing-include-dirs -Wno-format-nonliteral -Wno-format-overflow"};

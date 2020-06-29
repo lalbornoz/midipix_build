@@ -12,7 +12,7 @@ libxslt libz libzip wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
 : ${PKG_GLIB_VERSION:=2.54.0};
-: ${PKG_GLIB_URL:=http://ftp.gnome.org/pub/GNOME/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz};
+: ${PKG_GLIB_URL:="https://download.gnome.org/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz"};
 : ${PKG_GLIB_CONFIGURE_ARGS_EXTRA:="--disable-dtrace --disable-libelf --disable-libmount --with-python=${PREFIX}/bin/python3"};
 : ${PKG_LAME_SHA256SUM:=ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e};
 : ${PKG_LAME_VERSION:=3.100};
