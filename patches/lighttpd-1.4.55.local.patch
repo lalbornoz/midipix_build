@@ -16,19 +16,3 @@
  }
  
  static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
-@@ -445,6 +447,7 @@
- 		goto error_free_socket;
- 	}
- 
-+#ifndef __midipix__
- 	if (srv_socket->addr.plain.sa_family != AF_UNIX) {
- 		val = 1;
- 		if (setsockopt(srv_socket->fd, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val)) < 0) {
-@@ -452,6 +455,7 @@
- 			goto error_free_socket;
- 		}
- 	}
-+#endif
- 
- 	if (0 != bind(srv_socket->fd, (struct sockaddr *) &(srv_socket->addr), addr_len)) {
- 		switch(srv_socket->addr.plain.sa_family) {
