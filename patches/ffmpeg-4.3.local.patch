@@ -1,15 +1,16 @@
---- ffmpeg-4.1/libpostproc/postprocess_template.c.orig  2020-06-01 00:08:00.042230818 +0200
-+++ ffmpeg-4.1/libpostproc/postprocess_template.c       2020-06-01 00:12:40.651393371 +0200
+diff -ru ffmpeg-4.3.orig/libpostproc/postprocess_template.c ffmpeg-4.3/libpostproc/postprocess_template.c
+--- ffmpeg-4.3.orig/libpostproc/postprocess_template.c  2020-06-15 20:54:24.000000000 +0200
++++ ffmpeg-4.3/libpostproc/postprocess_template.c       2020-07-02 16:12:40.191351530 +0200
 @@ -440,7 +440,7 @@
          "paddusb %%mm0, %%mm0                   \n\t"
          "psubusb %%mm0, %%mm4                   \n\t"
          "pcmpeqb %%mm7, %%mm4                   \n\t" // d <= QP ? -1 : 0
 -        "psubusb "MANGLE(b01)", %%mm3           \n\t"
-+        "psubusb "LOCAL_MANGLE(b01)", %%mm3    \n\t"
++        "psubusb "LOCAL_MANGLE(b01)", %%mm3     \n\t"
          "pand %%mm4, %%mm3                      \n\t" // d <= QP ? d : 0
 
          PAVGB(%%mm7, %%mm3)                           // d/2
-@@ -620,13 +620,13 @@
+@@ -620,7 +620,7 @@
 
          PMINUB(%%mm2, %%mm1, %%mm4)                   // MIN(|lenergy|,|renergy|)/8
          "movq %2, %%mm4                         \n\t" // QP //FIXME QP+1 ?
@@ -18,13 +19,6 @@
          "pcmpgtb %%mm3, %%mm4                   \n\t" // |menergy|/8 < QP
          "psubusb %%mm1, %%mm3                   \n\t" // d=|menergy|/8-MIN(|lenergy|,|renergy|)/8
          "pand %%mm4, %%mm3                      \n\t"
-
-         "movq %%mm3, %%mm1                      \n\t"
--//        "psubusb "MANGLE(b01)", %%mm3           \n\t"
-+//        "psubusb "MANGLE(b01)", %%mm3         \n\t"
-         PAVGB(%%mm7, %%mm3)
-         PAVGB(%%mm7, %%mm3)
-         "paddusb %%mm1, %%mm3                   \n\t"
 @@ -643,7 +643,7 @@
          "pand %%mm0, %%mm3                      \n\t"
          PMINUB(%%mm5, %%mm3, %%mm0)
@@ -110,11 +104,11 @@
          "psrlw $6, %%mm4                        \n\t"
 @@ -1186,7 +1186,7 @@
          "psubb %%mm7, %%mm6                     \n\t" // max - min
-         "push %4                              \n\t"
-         "movd %%mm6, %k4                        \n\t"
--        "cmpb "MANGLE(deringThreshold)", %b4    \n\t"
-+        "cmpb "LOCAL_MANGLE(deringThreshold)", %b4    \n\t"
-         "pop %4                               \n\t"
+         "push %%"FF_REG_a"                      \n\t"
+         "movd %%mm6, %%eax                      \n\t"
+-        "cmpb "MANGLE(deringThreshold)", %%al   \n\t"
++        "cmpb "LOCAL_MANGLE(deringThreshold)", %%al   \n\t"
+         "pop %%"FF_REG_a"                       \n\t"
          " jb 1f                                 \n\t"
          PAVGB(%%mm0, %%mm7)                           // a=(max + min)/2
 @@ -1212,9 +1212,9 @@
@@ -417,58 +411,6 @@
  \
      "por    %%mm1, %%mm3        \n\t"\
      "por    %%mm3, %%mm6        \n\t"\
---- ffmpeg-4.1/libswscale/x86/yuv2rgb_template.c.orig	2016-03-29 02:25:33.000000000 +0000
-+++ ffmpeg-4.1/libswscale/x86/yuv2rgb_template.c	2019-01-16 00:24:06.884000000 +0000
-@@ -86,7 +86,7 @@
-     "movq      %%mm6, %%mm7\n\t"                 \
-     "punpcklbw %%mm4, %%mm0\n\t"                 \
-     "punpcklbw %%mm4, %%mm1\n\t"                 \
--    "pand     "MANGLE(mmx_00ffw)", %%mm6\n\t"    \
-+    "pand     "LOCAL_MANGLE(mmx_00ffw)", %%mm6\n\t"    \
-     "psrlw     $8,    %%mm7\n\t"                 \
-     "psllw     $3,    %%mm0\n\t"                 \
-     "psllw     $3,    %%mm1\n\t"                 \
-@@ -175,15 +175,15 @@
- #define IF1(x) x
- 
- #define RGB_PACK16(gmask, is15)                  \
--    "pand      "MANGLE(mmx_redmask)", %%mm0\n\t" \
--    "pand      "MANGLE(mmx_redmask)", %%mm1\n\t" \
-+    "pand      "LOCAL_MANGLE(mmx_redmask)", %%mm0\n\t" \
-+    "pand      "LOCAL_MANGLE(mmx_redmask)", %%mm1\n\t" \
-     "movq      %%mm2,     %%mm3\n\t"             \
-     "psllw   $"AV_STRINGIFY(3-is15)", %%mm2\n\t" \
-     "psrlw   $"AV_STRINGIFY(5+is15)", %%mm3\n\t" \
-     "psrlw     $3,        %%mm0\n\t"             \
-     IF##is15("psrlw  $1,  %%mm1\n\t")            \
--    "pand "MANGLE(pb_e0)", %%mm2\n\t"            \
--    "pand "MANGLE(gmask)", %%mm3\n\t"            \
-+    "pand "LOCAL_MANGLE(pb_e0)", %%mm2\n\t"            \
-+    "pand "LOCAL_MANGLE(gmask)", %%mm3\n\t"            \
-     "por       %%mm2,     %%mm0\n\t"             \
-     "por       %%mm3,     %%mm1\n\t"             \
-     "movq      %%mm0,     %%mm2\n\t"             \
-@@ -281,15 +281,15 @@
-     "pshufw    $0xc6,  %%mm2, %%mm1 \n"\
-     "pshufw    $0x84,  %%mm3, %%mm6 \n"\
-     "pshufw    $0x38,  %%mm5, %%mm7 \n"\
--    "pand "MANGLE(mask1101)", %%mm6 \n" /* R0 G0 B0 R1 -- -- R2 G2 */\
-+    "pand "LOCAL_MANGLE(mask1101)", %%mm6 \n" /* R0 G0 B0 R1 -- -- R2 G2 */\
-     "movq      %%mm1,         %%mm0 \n"\
--    "pand "MANGLE(mask0110)", %%mm7 \n" /* -- -- R6 G6 B6 R7 -- -- */\
-+    "pand "LOCAL_MANGLE(mask0110)", %%mm7 \n" /* -- -- R6 G6 B6 R7 -- -- */\
-     "movq      %%mm1,         %%mm2 \n"\
--    "pand "MANGLE(mask0100)", %%mm1 \n" /* -- -- G3 B3 -- -- -- -- */\
-+    "pand "LOCAL_MANGLE(mask0100)", %%mm1 \n" /* -- -- G3 B3 -- -- -- -- */\
-     "psrlq       $48,         %%mm3 \n" /* B2 R3 -- -- -- -- -- -- */\
--    "pand "MANGLE(mask0010)", %%mm0 \n" /* -- -- -- -- G1 B1 -- -- */\
-+    "pand "LOCAL_MANGLE(mask0010)", %%mm0 \n" /* -- -- -- -- G1 B1 -- -- */\
-     "psllq       $32,         %%mm5 \n" /* -- -- -- -- R4 G4 B4 R5 */\
--    "pand "MANGLE(mask1001)", %%mm2 \n" /* G5 B5 -- -- -- -- G7 B7 */\
-+    "pand "LOCAL_MANGLE(mask1001)", %%mm2 \n" /* G5 B5 -- -- -- -- G7 B7 */\
-     "por       %%mm3,         %%mm1 \n"\
-     "por       %%mm6,         %%mm0 \n"\
-     "por       %%mm5,         %%mm1 \n"\
 --- ffmpeg-4.1/libavcodec/x86/lpc.c.orig	2018-11-01 18:34:25.000000000 +0000
 +++ ffmpeg-4.1/libavcodec/x86/lpc.c	2019-01-16 00:26:53.376000000 +0000
 @@ -40,8 +40,8 @@
