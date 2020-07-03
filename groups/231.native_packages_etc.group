@@ -9,7 +9,7 @@ giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
-tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xz yabasic
+tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xpdf xz yabasic
 zstd")";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
@@ -338,6 +338,9 @@ zstd")";
 : ${PKG_XORRISO_VERSION:=1.5.2};
 : ${PKG_XORRISO_URL:=https://www.gnu.org/software/xorriso/xorriso-${PKG_XORRISO_VERSION}.tar.gz};
 : ${PKG_XORRISO_IN_TREE:=1};
+: ${PKG_XPDF_SHA256SUM:=52d51dc943b9614b8da66e8662b3031a3c82dc25bfc792eac6b438aa36d549a4};
+: ${PKG_XPDF_VERSION:=4.02};
+: ${PKG_XPDF_URL:=https://dl.xpdfreader.com/xpdf-${PKG_XPDF_VERSION}.tar.gz};
 : ${PKG_XZ_SHA256SUM:=3e1e518ffc912f86608a8cb35e4bd41ad1aec210df2a47aaa1f95e7f5576ef56};
 : ${PKG_XZ_VERSION:=5.2.5};
 : ${PKG_XZ_URL:=https://fossies.org/linux/misc/xz-${PKG_XZ_VERSION}.tar.xz};
