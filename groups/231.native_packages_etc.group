@@ -32,6 +32,7 @@ zstd")";
 : ${PKG_APR_UTIL_MAKEFLAGS_BUILD:="-j1"};
 : ${PKG_BDWGC_DEPENDS:="libatomic_ops"};
 : ${PKG_BDWGC_URLS_GIT:="bdwgc=https://github.com/ivmai/bdwgc@master"};
+: ${PKG_BDWGC_CONFIGURE_ARGS_EXTRA:="--enable-threads=posix --enable-parallel-mark --enable-handle-fork"};
 : ${PKG_BMAKE_URLS_GIT:="bmake=https://github.com/arichardson/bmake@master"};
 : ${PKG_BMAKE_CONFIGURE_ARGS="-C --host=${DEFAULT_TARGET} --prefix=/usr --target=${DEFAULT_TARGET}"};
 : ${PKG_BMAKE_ENV_VARS_EXTRA:="BMAKE=${PREFIX}/bin/bmake"};
