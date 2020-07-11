@@ -31,8 +31,8 @@ pkg_dist_minipix_all() {
 				libmetalink.so.3 libncurses.so.6 libncursesw.so.6 libnettle.so.6	\
 				libpcre.so.1 libperk.so.0 libpsxscl.so libpython2.7.so.1		\
 				libreadline.so.7 libssl.so.48 libtasn1.so.6 libtinfo.so.6		\
-				libtinfo.so libtinfow.so.6 libtinfow.so libu16ports.so.0		\
-				libunistring.so.2 libuuid.so.1 libz.so.1; do
+				libtinfo.so libtinfow.so.6 libu16ports.so.0 libunistring.so.2		\
+				libuuid.so.1 libz.so.1; do
 			if [ -e "${PREFIX_NATIVE}/lib/${_fname}" ]\
 			&& rtl_is_newer "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin"; then
