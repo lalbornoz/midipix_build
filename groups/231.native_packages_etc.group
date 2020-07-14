@@ -88,7 +88,7 @@ zstd")";
 : ${PKG_EXPAT_SHA256SUM:=17b43c2716d521369f82fc2dc70f359860e90fa440bea65b3b85f0b246ea81f2};
 : ${PKG_EXPAT_VERSION:=2.2.6};
 : ${PKG_EXPAT_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_VERSION}.tar.bz2};
-: ${PKG_FFMPEG_DEPENDS:="lame libressl libshine libssh libtheora libxml2"};
+: ${PKG_FFMPEG_DEPENDS:="lame libshine libssh libtheora libxml2 gnutls"};
 : ${PKG_FFMPEG_SHA256SUM:=f4a4ac63946b6eee3bbdde523e298fca6019d048d6e1db0d1439a62cea65f0d9};
 : ${PKG_FFMPEG_VERSION:=4.3.1};
 : ${PKG_FFMPEG_URL:=https://ffmpeg.org/releases/ffmpeg-${PKG_FFMPEG_VERSION}.tar.bz2};
