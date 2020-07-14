@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bash bc busybox calcurse coreutils dash datamash dos2unix ed figlet
+bash bc busybox cabextract calcurse coreutils dash datamash dos2unix ed figlet
 findutils gawk grep jush mc mksh moon_buggy mpg123 nano ninvaders
 openbsd_baseutils pv rc sbase screen sed sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
@@ -22,6 +22,11 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BUSYBOX_DESTDIR:=destdir/busybox};
 : ${PKG_BUSYBOX_IN_TREE=1};
 : ${PKG_BUSYBOX_PREFIX:=${PREFIX_NATIVE}/busybox};
+: ${PKG_CABEXTRACT_DEPENDS:="libmspack"};
+: ${PKG_CABEXTRACT_SHA256SUM:=afc253673c8ef316b4d5c29cc4aa8445844bee14afffbe092ee9469405851ca7};
+: ${PKG_CABEXTRACT_VERSION:=1.9.1};
+: ${PKG_CABEXTRACT_URL:=https://www.cabextract.org.uk/cabextract-${PKG_CABEXTRACT_VERSION}.tar.gz};
+: ${PKG_CABEXTRACT_CONFIGURE_ARGS_EXTRA:=--with-external-libmspack};
 : ${PKG_CALCURSE_DEPENDS:="ncursesw"};
 : ${PKG_CALCURSE_SHA256SUM:=fa090307a157e24e790819b20c93e037b89c6132f473abaaa7b21c3be76df043};
 : ${PKG_CALCURSE_VERSION:=4.6.0};
