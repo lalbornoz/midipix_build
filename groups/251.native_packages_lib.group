@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 glib lame libarchive libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error
-libjpeg_turbo libksba libnettle libogg libpcap libpipeline libpng
+libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
 libxslt libz libzip wolfssl")";
@@ -102,6 +102,9 @@ libxslt libz libzip wolfssl")";
 : ${PKG_LIBKSBA_VERSION:=1.4.0};
 : ${PKG_LIBKSBA_URL:=https://www.gnupg.org/ftp/gcrypt/libksba/libksba-${PKG_LIBKSBA_VERSION}.tar.bz2};
 : ${PKG_LIBKSBA_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE}};
+: ${PKG_LIBMSPACK_SHA256SUM:=bac862dee6e0fc10d92c70212441d9f8ad9b0222edc9a708c3ead4adb1b24a8e};
+: ${PKG_LIBMSPACK_VERSION:=0.10.1alpha};
+: ${PKG_LIBMSPACK_URL:=https://www.cabextract.org.uk/libmspack/libmspack-${PKG_LIBMSPACK_VERSION}.tar.gz};
 : ${PKG_LIBNETTLE_SHA256SUM:=f941cf1535cd5d1819be5ccae5babef01f6db611f9b5a777bae9c7604b8a92ad};
 : ${PKG_LIBNETTLE_VERSION:=3.4.1};
 : ${PKG_LIBNETTLE_URL:=https://ftp.gnu.org/gnu/nettle/nettle-${PKG_LIBNETTLE_VERSION}.tar.gz};
