@@ -70,7 +70,7 @@ patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_MANDOC_IN_TREE:=1};
 : ${PKG_NASM_SHA256SUM:=e24ade3e928f7253aa8c14aa44726d1edf3f98643f87c9d72ec1df44b26be8f5};
 : ${PKG_NASM_VERSION:=2.14.02};
-: ${PKG_NASM_URL:=https://fossies.org/linux/misc/nasm-${PKG_NASM_VERSION}.tar.xz};
+: ${PKG_NASM_URL:=http://www.nasm.us/pub/nasm/releasebuilds/${PKG_NASM_VERSION}/nasm-${PKG_NASM_VERSION}.tar.xz};
 : ${PKG_NASM_CFLAGS_CONFIGURE_EXTRA:=-DCOFF_MIDIPIX};
 : ${PKG_PATCH_SHA256SUM:=ac610bda97abe0d9f6b7c963255a11dcb196c25e337c61f94e4778d632f1d8fd};
 : ${PKG_PATCH_VERSION:=2.7.6};
