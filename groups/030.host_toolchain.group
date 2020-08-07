@@ -93,8 +93,8 @@ HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_MPFR_HOST_CONFIGURE_ARGS:="--disable-assembly --disable-nls --prefix= --with-gmp=${PREFIX}"};
 : ${PKG_MPFR_HOST_PREFIX:=${PREFIX}};
 : ${PKG_MUSL_FULL_HOST_DEPENDS:="gcc_stage1_host gcc_runtime_host"};
-: ${PKG_MUSL_FULL_HOST_SHA256SUM:=c6de7b191139142d3f9a7b5b702c9cae1b5ee6e7f57e582da9328629408fd4e8};
-: ${PKG_MUSL_FULL_HOST_VERSION:=1.2.0};
+: ${PKG_MUSL_FULL_HOST_SHA256SUM:=68af6e18539f646f9c41a3a2bb25be4a5cfa5a8f65f0bb647fd2bbfdf877e84b};
+: ${PKG_MUSL_FULL_HOST_VERSION:=1.2.1};
 : ${PKG_MUSL_FULL_HOST_URL:="http://www.musl-libc.org/releases/musl-${PKG_MUSL_FULL_HOST_VERSION}.tar.gz"}
 : ${PKG_MUSL_FULL_HOST_URLS_GIT:="mmglue=${DEFAULT_GITROOT}/mmglue@main"};
 : ${PKG_MUSL_FULL_HOST_BASE_DIR:=${BUILD_WORKDIR}/musl_full-host-${DEFAULT_TARGET}};

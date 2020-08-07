@@ -50,8 +50,8 @@ NATIVE_TOOLCHAIN_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_MPFR_URL:=ftp://ftp.gnu.org/gnu/mpfr/mpfr-${PKG_MPFR_VERSION}.tar.bz2};
 : ${PKG_MPFR_CONFIGURE_ARGS_EXTRA:="--disable-assembly --with-gmp=${PREFIX_NATIVE}"};
 : ${PKG_MUSL_FULL_DEPENDS:="binutils"};
-: ${PKG_MUSL_FULL_SHA256SUM:=c6de7b191139142d3f9a7b5b702c9cae1b5ee6e7f57e582da9328629408fd4e8};
-: ${PKG_MUSL_FULL_VERSION:=1.2.0};
+: ${PKG_MUSL_FULL_SHA256SUM:=68af6e18539f646f9c41a3a2bb25be4a5cfa5a8f65f0bb647fd2bbfdf877e84b};
+: ${PKG_MUSL_FULL_VERSION:=1.2.1};
 : ${PKG_MUSL_FULL_URL:="http://www.musl-libc.org/releases/musl-${PKG_MUSL_FULL_VERSION}.tar.gz"}
 : ${PKG_MUSL_FULL_URLS_GIT:="mmglue=${DEFAULT_GITROOT}/mmglue@main"};
 : ${PKG_MUSL_FULL_BASE_DIR:=${BUILD_WORKDIR}/musl_full-native-${DEFAULT_TARGET}};
