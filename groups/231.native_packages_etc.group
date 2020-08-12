@@ -140,7 +140,7 @@ zstd")";
 : ${PKG_HTOP_DEPENDS:="ncursesw"};
 : ${PKG_HTOP_SHA256SUM:=d9d6826f10ce3887950d709b53ee1d8c1849a70fa38e91d5896ad8cbc6ba3c57};
 : ${PKG_HTOP_VERSION:=2.2.0};
-: ${PKG_HTOP_URL:=http://hisham.hm/htop/releases/${PKG_HTOP_VERSION}/htop-${PKG_HTOP_VERSION}.tar.gz};
+: ${PKG_HTOP_URL:=https://fossies.org/linux/misc/htop-${PKG_HTOP_VERSION}.tar.gz};
 : ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-proc --enable-unicode --verbose"};
 : ${PKG_HTOP_CFLAGS_CONFIGURE_EXTRA:="--include=sys/sysmacros.h"};
 : ${PKG_HTOP_ENV_VARS_EXTRA:="HTOP_NCURSES_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses-config:HTOP_NCURSES6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses6-config:HTOP_NCURSESW_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw-config:HTOP_NCURSESW6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw6-config"}
