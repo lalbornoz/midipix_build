@@ -1,76 +1,6 @@
---- tcsh-6.20.00.orig/configure 2018-06-21 16:23:41.803468940 +0200
-+++ tcsh-6.20.00/configure      2018-06-21 16:24:12.059836489 +0200
-@@ -4289,7 +4289,7 @@
-   return 0;
- }
- _ACEOF
--for ac_lib in '' termlib termcap curses ncurses; do
-+for ac_lib in '' termlib termcap curses ncurses tinfo; do
-   if test -z "$ac_lib"; then
-     ac_res="none required"
-   else
---- tcsh-6.20.00/config_f.h.orig	2016-04-16 17:44:18.000000000 +0200
-+++ tcsh-6.20.00/config_f.h	2016-12-18 02:01:28.699635400 +0100
-@@ -139,11 +139,9 @@
-  *		This can be much slower and no memory statistics will be
-  *		provided.
-  */
--#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__) || defined (__CYGWIN__) || defined(__GLIBC__) || defined(__OpenBSD__) || defined(__APPLE__) || defined (__ANDROID__)
-+
-+/* always use the system malloc. seriously guys. */
- # define SYSMALLOC
--#else
--# undef SYSMALLOC
--#endif
- 
- /*
-  * USE_ACCESS	Use access(2) rather than stat(2) when POSIX is defined.
---- tcsh-6.20.00/configure.orig	2016-11-24 16:06:40.000000000 +0100
-+++ tcsh-6.20.00/configure	2016-12-18 01:59:04.537346800 +0100
-@@ -2975,6 +2975,11 @@
-     tcsh_config_file=qnx6
-   ;;
- 
-+  ## midipix
-+  *-midipix*)
-+    tcsh_config_file=midipix
-+  ;;
-+
-   * )
-     as_fn_error $? "Tcsh can't guess the configuration file name
- for \`${host}' systems.
---- tcsh-6.20.00/Makefile.in.orig	2015-08-24 22:09:04.000000000 +0200
-+++ tcsh-6.20.00/Makefile.in	2016-12-18 02:00:06.570196600 +0100
-@@ -24,6 +24,7 @@
- CF=-c
- 
- CPPFLAGS=-I. -I$(srcdir)
-+CPPFLAGS_FOR_GETHOST=-I. -I$(srcdir)
- 
- LFLAGS=
- # hpux lint
-@@ -449,7 +450,7 @@
- 
- gethost:  gethost.c sh.err.h tc.const.h sh.h
- 	rm -f gethost
--	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS} $(srcdir)/gethost.c
-+	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS_FOR_GETHOST} ${CFLAGS_FOR_GETHOST} $(srcdir)/gethost.c
- 
- tc.defs.c:	gethost host.defs
- 	@rm -f $@.tmp
---- tcsh-6.20.00/sh.h.orig	2016-09-12 18:33:54.000000000 +0200
-+++ tcsh-6.20.00/sh.h	2016-12-18 01:59:27.797673400 +0100
-@@ -338,7 +338,7 @@
- #endif /* POSIX && !WINNT_NATIVE */
- #include <limits.h>
- 
--#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__)
-+#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) || defined(__midipix__)
- # if !defined(pyr) && !defined(stellar)
- #  include <time.h>
- #  ifdef _MINIX
---- tcsh-6.20.00/config/midipix.orig	1970-01-01 01:00:00.000000000 +0100
-+++ tcsh-6.20.00/config/midipix	2016-12-18 02:01:44.103473500 +0100
+diff -Nru tcsh-6.22.00.orig/config/midipix tcsh-6.22.00/config/midipix
+--- tcsh-6.22.00.orig/config/midipix	1970-01-01 01:00:00.000000000 +0100
++++ tcsh-6.22.00/config/midipix	2020-08-21 19:12:56.066600827 +0200
 @@ -0,0 +1,138 @@
 +/*
 + * config.h -- configure various defines for tcsh
@@ -210,3 +140,87 @@
 +#define HAVE_SLASHSLASH 1
 +
 +#endif /* _h_config */
+diff -Nru tcsh-6.22.00.orig/config_f.h tcsh-6.22.00/config_f.h
+--- tcsh-6.22.00.orig/config_f.h	2019-11-28 17:00:05.000000000 +0100
++++ tcsh-6.22.00/config_f.h	2020-08-21 19:07:18.052977628 +0200
+@@ -138,11 +138,8 @@
+  *		This can be much slower and no memory statistics will be
+  *		provided.
+  */
+-#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__) || defined (__CYGWIN__) || defined(__GLIBC__) || defined(__OpenBSD__) || defined(__APPLE__) || defined (__ANDROID__)
++/* always use the system malloc. seriously guys. */
+ # define SYSMALLOC
+-#else
+-# undef SYSMALLOC
+-#endif
+ 
+ /*
+  * USE_ACCESS	Use access(2) rather than stat(2) when POSIX is defined.
+diff -Nru tcsh-6.22.00.orig/configure tcsh-6.22.00/configure
+--- tcsh-6.22.00.orig/configure	2019-11-28 17:00:05.000000000 +0100
++++ tcsh-6.22.00/configure	2020-08-21 19:08:03.600976202 +0200
+@@ -2975,6 +2975,11 @@
+     tcsh_config_file=qnx6
+   ;;
+ 
++  ## midipix
++  *-midipix*)
++    tcsh_config_file=midipix
++  ;;
++
+   * )
+     as_fn_error $? "Tcsh can't guess the configuration file name
+ for \`${host}' systems.
+@@ -4284,7 +4289,7 @@
+   return 0;
+ }
+ _ACEOF
+-for ac_lib in '' termlib tinfo termcap curses ncurses; do
++for ac_lib in '' termlib tinfo termcap curses ncurses tinfo; do
+   if test -z "$ac_lib"; then
+     ac_res="none required"
+   else
+diff -Nru tcsh-6.22.00.orig/ed.inputl.c tcsh-6.22.00/ed.inputl.c
+--- tcsh-6.22.00.orig/ed.inputl.c	2019-11-28 17:00:05.000000000 +0100
++++ tcsh-6.22.00/ed.inputl.c	2020-08-21 19:22:12.899460169 +0200
+@@ -34,6 +34,8 @@
+ #include "ed.defns.h"		/* for the function names */
+ #include "tw.h"			/* for twenex stuff */
+ 
++#include <wchar.h>
++
+ #define OKCMD INT_MAX
+ 
+ /* ed.inputl -- routines to get a single line from the input. */
+diff -Nru tcsh-6.22.00.orig/Makefile.in tcsh-6.22.00/Makefile.in
+--- tcsh-6.22.00.orig/Makefile.in	2019-11-28 17:00:05.000000000 +0100
++++ tcsh-6.22.00/Makefile.in	2020-08-21 19:28:01.686381892 +0200
+@@ -339,6 +339,7 @@
+ #CC=	cc	-h0,ansi,novector,float0
+ #CC=	lcc	-wa 
+ CC_FOR_GETHOST = @CC_FOR_GETHOST@
++CPPFLAGS_FOR_GETHOST=-I. -I$(srcdir)
+ ED=	ed
+ AS=	as
+ RM=	rm
+@@ -447,7 +448,7 @@
+ 
+ gethost:  gethost.c sh.err.h tc.const.h sh.h
+ 	rm -f gethost
+-	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} $(srcdir)/gethost.c
++	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS_FOR_GETHOST} ${CFLAGS_FOR_GETHOST} ${LDFLAGS_FOR_GETHOST} $(srcdir)/gethost.c
+ 
+ tc.defs.c:	gethost host.defs
+ 	@rm -f $@.tmp
+diff -Nru tcsh-6.22.00.orig/sh.h tcsh-6.22.00/sh.h
+--- tcsh-6.22.00.orig/sh.h	2019-11-28 17:00:05.000000000 +0100
++++ tcsh-6.22.00/sh.h	2020-08-21 19:10:44.030604961 +0200
+@@ -337,7 +337,7 @@
+ #endif /* POSIX && !WINNT_NATIVE */
+ #include <limits.h>
+ 
+-#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__)
++#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) || defined(__midipix__)
+ # if !defined(pyr) && !defined(stellar)
+ #  include <time.h>
+ #  ifdef _MINIX
