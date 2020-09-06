@@ -137,7 +137,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_RC_DEPENDS:="libreadline ncurses"};
 : ${PKG_RC_SHA256SUM:=5ed26334dd0c1a616248b15ad7c90ca678ae3066fa02c5ddd0e6936f9af9bfd8};
 : ${PKG_RC_VERSION:=1.7.4};
-: ${PKG_RC_URL:=http://static.tobold.org/rc/rc-${PKG_RC_VERSION}.tar.gz};
+: ${PKG_RC_URL:=https://mirror.midipix.org/rc/rc-${PKG_RC_VERSION}.tar.gz};
 : ${PKG_RC_CONFIGURE_ARGS_EXTRA:=--with-edit=readline};
 : ${PKG_RC_IN_TREE=1};
 : ${PKG_SBASE_URLS_GIT:="sbase=http://git.suckless.org/sbase@master"};
