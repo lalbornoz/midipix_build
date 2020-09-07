@@ -1,0 +1,401 @@
+diff -ru nettle-3.6.orig/x86_64/aes-decrypt-internal.asm nettle-3.6/x86_64/aes-decrypt-internal.asm
+--- nettle-3.6.orig/x86_64/aes-decrypt-internal.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/aes-decrypt-internal.asm	2020-09-07 13:38:12.793134936 +0200
+@@ -150,3 +150,11 @@
+ 	W64_EXIT(6, 0)
+ 	ret
+ EPILOGUE(_nettle_aes_decrypt)
++
++#ifdef __midipix__
++	.section .got$_nettle_aes_decrypt,"r"
++	.global __imp__nettle_aes_decrypt
++__imp__nettle_aes_decrypt:
++	.quad   _nettle_aes_decrypt
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/aes-encrypt-internal.asm nettle-3.6/x86_64/aes-encrypt-internal.asm
+--- nettle-3.6.orig/x86_64/aes-encrypt-internal.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/aes-encrypt-internal.asm	2020-09-07 13:39:17.917132897 +0200
+@@ -151,3 +151,11 @@
+ 	W64_EXIT(6, 0)
+ 	ret
+ EPILOGUE(_nettle_aes_encrypt)
++
++#ifdef __midipix__
++	.section .got$_nettle_aes_encrypt,"r"
++	.global __imp__nettle_aes_encrypt
++__imp__nettle_aes_encrypt:
++	.quad   _nettle_aes_encrypt
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/camellia-crypt-internal.asm nettle-3.6/x86_64/camellia-crypt-internal.asm
+--- nettle-3.6.orig/x86_64/camellia-crypt-internal.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/camellia-crypt-internal.asm	2020-09-07 13:40:27.389130722 +0200
+@@ -200,3 +200,11 @@
+ 	W64_EXIT(6, 0)
+ 	ret
+ EPILOGUE(_nettle_camellia_crypt)
++
++#ifdef __midipix__
++	.section .got$_nettle_camellia_crypt,"r"
++	.global __imp__nettle_camellia_crypt
++__imp__nettle_camellia_crypt:
++	.quad   _nettle_camellia_crypt
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/chacha-core-internal.asm nettle-3.6/x86_64/chacha-core-internal.asm
+--- nettle-3.6.orig/x86_64/chacha-core-internal.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/chacha-core-internal.asm	2020-09-07 13:41:25.405128905 +0200
+@@ -126,3 +126,11 @@
+ 	W64_EXIT(3, 6)
+ 	ret
+ EPILOGUE(_nettle_chacha_core)
++
++#ifdef __midipix__
++	.section .got$_nettle_chacha_core,"r"
++	.global __imp__nettle_chacha_core
++__imp__nettle_chacha_core:
++	.quad   _nettle_chacha_core
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/ecc-curve25519-modp.asm nettle-3.6/x86_64/ecc-curve25519-modp.asm
+--- nettle-3.6.orig/x86_64/ecc-curve25519-modp.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/ecc-curve25519-modp.asm	2020-09-07 14:01:46.533804910 +0200
+@@ -92,3 +92,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(_nettle_ecc_curve25519_modp)
++
++#ifdef __midipix__
++        .section .got$_nettle_ecc_curve25519_modp,"r"
++        .global __imp__nettle_ecc_curve25519_modp
++__imp__nettle_ecc_curve25519_modp:
++        .quad   _nettle_ecc_curve25519_modp
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/ecc-curve448-modp.asm nettle-3.6/x86_64/ecc-curve448-modp.asm
+--- nettle-3.6.orig/x86_64/ecc-curve448-modp.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/ecc-curve448-modp.asm	2020-09-07 14:02:55.749802742 +0200
+@@ -142,3 +142,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(_nettle_ecc_curve448_modp)
++
++#ifdef __midipix__
++	.section .got$_nettle_ecc_curve448_modp,"r"
++	.global __imp__nettle_ecc_curve448_modp
++__imp__nettle_ecc_curve448_modp:
++	.quad   _nettle_ecc_curve448_modp
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/ecc-secp192r1-modp.asm nettle-3.6/x86_64/ecc-secp192r1-modp.asm
+--- nettle-3.6.orig/x86_64/ecc-secp192r1-modp.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/ecc-secp192r1-modp.asm	2020-09-07 14:04:12.289800346 +0200
+@@ -86,3 +86,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(_nettle_ecc_secp192r1_modp)
++
++#ifdef __midipix__
++	.section .got$_nettle_ecc_secp192r1_modp,"r"
++	.global __imp__nettle_ecc_secp192r1_modp
++__imp__nettle_ecc_secp192r1_modp:
++	.quad   _nettle_ecc_secp192r1_modp
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/ecc-secp224r1-modp.asm nettle-3.6/x86_64/ecc-secp224r1-modp.asm
+--- nettle-3.6.orig/x86_64/ecc-secp224r1-modp.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/ecc-secp224r1-modp.asm	2020-09-07 14:05:23.821798106 +0200
+@@ -129,3 +129,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(_nettle_ecc_secp224r1_modp)
++
++#ifdef __midipix__
++	.section .got$_nettle_ecc_secp224r1_modp,"r"
++	.global __imp__nettle_ecc_secp224r1_modp
++__imp__nettle_ecc_secp224r1_modp:
++	.quad   _nettle_ecc_secp224r1_modp
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/ecc-secp256r1-redc.asm nettle-3.6/x86_64/ecc-secp256r1-redc.asm
+--- nettle-3.6.orig/x86_64/ecc-secp256r1-redc.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/ecc-secp256r1-redc.asm	2020-09-07 14:06:51.854540772 +0200
+@@ -127,3 +127,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(_nettle_ecc_secp256r1_redc)
++
++#ifdef __midipix__
++	.section .got$_nettle_ecc_secp256r1_redc,"r"
++	.global __imp__nettle_ecc_secp256r1_redc
++__imp__nettle_ecc_secp256r1_redc:
++	.quad   _nettle_ecc_secp256r1_redc
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/ecc-secp384r1-modp.asm nettle-3.6/x86_64/ecc-secp384r1-modp.asm
+--- nettle-3.6.orig/x86_64/ecc-secp384r1-modp.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/ecc-secp384r1-modp.asm	2020-09-07 14:08:10.706538303 +0200
+@@ -232,3 +232,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(_nettle_ecc_secp384r1_modp)
++
++#ifdef __midipix__
++	.section .got$_nettle_ecc_secp384r1_modp,"r"
++	.global __imp__nettle_ecc_secp384r1_modp
++__imp__nettle_ecc_secp384r1_modp:
++	.quad   _nettle_ecc_secp384r1_modp
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/ecc-secp521r1-modp.asm nettle-3.6/x86_64/ecc-secp521r1-modp.asm
+--- nettle-3.6.orig/x86_64/ecc-secp521r1-modp.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/ecc-secp521r1-modp.asm	2020-09-07 14:09:27.370535902 +0200
+@@ -156,3 +156,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(_nettle_ecc_secp521r1_modp)
++
++#ifdef __midipix__
++	.section .got$_nettle_ecc_secp521r1_modp,"r"
++	.global __imp__nettle_ecc_secp521r1_modp
++__imp__nettle_ecc_secp521r1_modp:
++	.quad   _nettle_ecc_secp521r1_modp
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/gcm-hash8.asm nettle-3.6/x86_64/gcm-hash8.asm
+--- nettle-3.6.orig/x86_64/gcm-hash8.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/gcm-hash8.asm	2020-09-07 13:42:31.107641232 +0200
+@@ -238,3 +238,11 @@
+ .value W(a7,d0),W(a6,12),W(a4,54),W(a5,96),W(a0,d8),W(a1,1a),W(a3,5c),W(a2,9e)
+ .value W(b5,e0),W(b4,22),W(b6,64),W(b7,a6),W(b2,e8),W(b3,2a),W(b1,6c),W(b0,ae)
+ .value W(bb,f0),W(ba,32),W(b8,74),W(b9,b6),W(bc,f8),W(bd,3a),W(bf,7c),W(be,be)
++
++#ifdef __midipix__
++	.section .got$_nettle_gcm_hash8,"r"
++	.global __imp__nettle_gcm_hash8
++__imp__nettle_gcm_hash8:
++	.quad   _nettle_gcm_hash8
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/md5-compress.asm nettle-3.6/x86_64/md5-compress.asm
+--- nettle-3.6.orig/x86_64/md5-compress.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/md5-compress.asm	2020-09-07 13:44:12.135638069 +0200
+@@ -174,3 +174,11 @@
+ 
+ 	ret
+ EPILOGUE(nettle_md5_compress)
++
++#ifdef __midipix__
++	.section .got$nettle_md5_compress,"r"
++	.global __imp_nettle_md5_compress
++__imp_nettle_md5_compress:
++	.quad   nettle_md5_compress
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/memxor3.asm nettle-3.6/x86_64/memxor3.asm
+--- nettle-3.6.orig/x86_64/memxor3.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/memxor3.asm	2020-09-07 13:45:42.443635242 +0200
+@@ -261,3 +261,11 @@
+ 	
+ 
+ EPILOGUE(nettle_memxor3)
++
++#ifdef __midipix__
++	.section .got$nettle_memxor3,"r"
++	.global __imp_nettle_memxor3
++__imp_nettle_memxor3:
++	.quad   nettle_memxor3
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/memxor.asm nettle-3.6/x86_64/memxor.asm
+--- nettle-3.6.orig/x86_64/memxor.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/memxor.asm	2020-09-07 13:46:40.999633408 +0200
+@@ -171,3 +171,11 @@
+ >)	
+ 
+ EPILOGUE(nettle_memxor)
++
++#ifdef __midipix__
++	.section .got$nettle_memxor,"r"
++	.global __imp_nettle_memxor
++__imp_nettle_memxor:
++	.quad   nettle_memxor
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/poly1305-internal.asm nettle-3.6/x86_64/poly1305-internal.asm
+--- nettle-3.6.orig/x86_64/poly1305-internal.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/poly1305-internal.asm	2020-09-07 13:51:14.239748557 +0200
+@@ -184,3 +184,22 @@
+ 	ret
+ EPILOGUE(_nettle_poly1305_digest)
+ 
++#ifdef __midipix__
++	.section .got$_nettle_poly1305_set_key,"r"
++	.global __imp__nettle_poly1305_set_key
++__imp__nettle_poly1305_set_key:
++	.quad   _nettle_poly1305_set_key
++	.linkonce discard
++
++	.section .got$_nettle_poly1305_block,"r"
++	.global __imp__nettle_poly1305_block
++__imp__nettle_poly1305_block:
++	.quad   _nettle_poly1305_block
++	.linkonce discard
++
++	.section .got$_nettle_poly1305_digest,"r"
++	.global __imp__nettle_poly1305_digest
++__imp__nettle_poly1305_digest:
++	.quad   _nettle_poly1305_digest
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/salsa20-core-internal.asm nettle-3.6/x86_64/salsa20-core-internal.asm
+--- nettle-3.6.orig/x86_64/salsa20-core-internal.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/salsa20-core-internal.asm	2020-09-07 13:53:21.847744562 +0200
+@@ -109,3 +109,11 @@
+ 	W64_EXIT(3, 9)
+ 	ret
+ EPILOGUE(_nettle_salsa20_core)
++
++#ifdef __midipix__
++	.section .got$_nettle_salsa20_core,"r"
++	.global __imp__nettle_salsa20_core
++__imp__nettle_salsa20_core:
++	.quad   _nettle_salsa20_core
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/salsa20-crypt.asm nettle-3.6/x86_64/salsa20-crypt.asm
+--- nettle-3.6.orig/x86_64/salsa20-crypt.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/salsa20-crypt.asm	2020-09-07 13:54:39.815792126 +0200
+@@ -245,3 +245,11 @@
+ 	ret
+ 
+ EPILOGUE(nettle_salsa20_crypt)
++
++#ifdef __midipix__
++	.section .got$nettle_salsa20_crypt,"r"
++	.global __imp_nettle_salsa20_crypt
++__imp_nettle_salsa20_crypt:
++	.quad   nettle_salsa20_crypt
++	.linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/serpent-decrypt.asm nettle-3.6/x86_64/serpent-decrypt.asm
+--- nettle-3.6.orig/x86_64/serpent-decrypt.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/serpent-decrypt.asm	2020-09-07 13:55:28.667790597 +0200
+@@ -714,3 +714,11 @@
+ 	W64_EXIT(4, 13)
+ 	ret
+ EPILOGUE(nettle_serpent_decrypt)
++
++#ifdef __midipix__
++        .section .got$nettle_serpent_decrypt,"r"
++        .global __imp_nettle_serpent_decrypt
++__imp_nettle_serpent_decrypt:
++        .quad   nettle_serpent_decrypt
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/serpent-encrypt.asm nettle-3.6/x86_64/serpent-encrypt.asm
+--- nettle-3.6.orig/x86_64/serpent-encrypt.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/serpent-encrypt.asm	2020-09-07 13:56:00.179789610 +0200
+@@ -749,3 +749,11 @@
+ 	W64_EXIT(4, 13)
+ 	ret
+ EPILOGUE(nettle_serpent_encrypt)
++
++#ifdef __midipix__
++        .section .got$nettle_serpent_encrypt,"r"
++        .global __imp_nettle_serpent_encrypt
++__imp_nettle_serpent_encrypt:
++        .quad   nettle_serpent_encrypt
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/sha1-compress.asm nettle-3.6/x86_64/sha1-compress.asm
+--- nettle-3.6.orig/x86_64/sha1-compress.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/sha1-compress.asm	2020-09-07 13:56:37.603788439 +0200
+@@ -305,3 +305,11 @@
+ 	W64_EXIT(2, 0)
+ 	ret
+ EPILOGUE(nettle_sha1_compress)
++
++#ifdef __midipix__
++        .section .got$nettle_sha1_compress,"r"
++        .global __imp_nettle_sha1_compress
++__imp_nettle_sha1_compress:
++        .quad   nettle_sha1_compress
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/sha256-compress.asm nettle-3.6/x86_64/sha256-compress.asm
+--- nettle-3.6.orig/x86_64/sha256-compress.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/sha256-compress.asm	2020-09-07 13:56:57.671787810 +0200
+@@ -208,3 +208,11 @@
+ 	W64_EXIT(3, 0)
+ 	ret
+ EPILOGUE(_nettle_sha256_compress)
++
++#ifdef __midipix__
++        .section .got$_nettle_sha256_compress,"r"
++        .global __imp__nettle_sha256_compress
++__imp__nettle_sha256_compress:
++        .quad   _nettle_sha256_compress
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/sha3-permute.asm nettle-3.6/x86_64/sha3-permute.asm
+--- nettle-3.6.orig/x86_64/sha3-permute.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/sha3-permute.asm	2020-09-07 13:57:35.427786628 +0200
+@@ -522,3 +522,11 @@
+ 	.quad	0x800000000000808A
+ 	.quad	0x0000000000008082
+ 	.quad	0x0000000000000001
++
++#ifdef __midipix__
++        .section .got$nettle_sha3_permute,"r"
++        .global __imp_nettle_sha3_permute
++__imp_nettle_sha3_permute:
++        .quad   nettle_sha3_permute
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/sha512-compress.asm nettle-3.6/x86_64/sha512-compress.asm
+--- nettle-3.6.orig/x86_64/sha512-compress.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/sha512-compress.asm	2020-09-07 13:58:36.391784719 +0200
+@@ -208,3 +208,11 @@
+ 	W64_EXIT(3, 0)
+ 	ret
+ EPILOGUE(_nettle_sha512_compress)
++
++#ifdef __midipix__
++        .section .got$_nettle_sha512_compress,"r"
++        .global __imp__nettle_sha512_compress
++__imp__nettle_sha512_compress:
++        .quad   _nettle_sha512_compress
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/umac-nh.asm nettle-3.6/x86_64/umac-nh.asm
+--- nettle-3.6.orig/x86_64/umac-nh.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/umac-nh.asm	2020-09-07 13:58:59.259784003 +0200
+@@ -79,3 +79,11 @@
+ 	W64_EXIT(3, 7)
+ 	ret
+ EPILOGUE(_nettle_umac_nh)
++
++#ifdef __midipix__
++        .section .got$_nettle_umac_nh,"r"
++        .global __imp__nettle_umac_nh
++__imp__nettle_umac_nh:
++        .quad   _nettle_umac_nh
++        .linkonce discard
++#endif
+diff -ru nettle-3.6.orig/x86_64/umac-nh-n.asm nettle-3.6/x86_64/umac-nh-n.asm
+--- nettle-3.6.orig/x86_64/umac-nh-n.asm	2020-04-29 20:11:44.000000000 +0200
++++ nettle-3.6/x86_64/umac-nh-n.asm	2020-09-07 13:59:24.655783208 +0200
+@@ -273,3 +273,11 @@
+ 	W64_EXIT(5, 14)
+ 	ret
+ EPILOGUE(_nettle_umac_nh_n)
++
++#ifdef __midipix__
++       .section .got$_nettle_umac_nh_n,"r"
++       .global __imp__nettle_umac_nh_n
++__imp__nettle_umac_nh_n:
++       .quad   _nettle_umac_nh_n
++       .linkonce discard
++#endif
