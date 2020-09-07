@@ -330,7 +330,7 @@ zstd")";
 : ${PKG_VIM_INSTALL_FILES:=@vim=bin/vi};
 : ${PKG_VIM_MAKEFLAGS_INSTALL_EXTRA:=STRIP=/bin/true};
 : ${PKG_VIM_SUBDIR:=vim-${PKG_VIM_VERSION}};
-: ${PKG_VORBIS_TOOLS_DEPENDS:=""};
+: ${PKG_VORBIS_TOOLS_DEPENDS:="curl libflac libogg libvorbis"};
 : ${PKG_VORBIS_TOOLS_SHA256SUM:=a389395baa43f8e5a796c99daf62397e435a7e73531c9f44d9084055a05d22bc};
 : ${PKG_VORBIS_TOOLS_VERSION:=1.4.0};
 : ${PKG_VORBIS_TOOLS_URL:=https://ftp.osuosl.org/pub/xiph/releases/vorbis/vorbis-tools-${PKG_VORBIS_TOOLS_VERSION}.tar.gz};
