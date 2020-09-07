@@ -9,7 +9,7 @@ giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
-tiff tmux tzdb utf8proc util_linux vim w32api w32lib xorriso xpdf xz yabasic
+tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
 zstd")";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
 : ${PKG_ALSA_LIB_VERSION:=1.1.8};
@@ -330,6 +330,11 @@ zstd")";
 : ${PKG_VIM_INSTALL_FILES:=@vim=bin/vi};
 : ${PKG_VIM_MAKEFLAGS_INSTALL_EXTRA:=STRIP=/bin/true};
 : ${PKG_VIM_SUBDIR:=vim-${PKG_VIM_VERSION}};
+: ${PKG_VORBIS_TOOLS_DEPENDS:=""};
+: ${PKG_VORBIS_TOOLS_SHA256SUM:=a389395baa43f8e5a796c99daf62397e435a7e73531c9f44d9084055a05d22bc};
+: ${PKG_VORBIS_TOOLS_VERSION:=1.4.0};
+: ${PKG_VORBIS_TOOLS_URL:=https://ftp.osuosl.org/pub/xiph/releases/vorbis/vorbis-tools-${PKG_VORBIS_TOOLS_VERSION}.tar.gz};
+: ${PKG_VORBIS_TOOLS_CONFIGURE_ARGS_EXTRA:="--disable-ogg123 --without-speex --without-kate"};
 : ${PKG_W32API_URLS_GIT:="w32api=git://github.com/midipix-ports/w32api.ports@main"};
 : ${PKG_W32API_IN_TREE:=1};
 : ${PKG_W32API_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
