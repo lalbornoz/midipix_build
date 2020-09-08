@@ -555,7 +555,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | SHA256SUM                   | SHA-256 message digest of package archive                                                                                                   |
 | SUBDIR                      | Name of extracted archive or git-{clone,pull}(1)'d directory                                                                                |
 | TARGET                      | Dash-separated {build,host,target} triplet                                                                                                  |
-| URL                         | URL to package archive                                                                                                                      |
+| URL                         | URL to package archive, optionally appended with whitespace-separated list of alternative URLs                                              |
 | URLS_GIT                    | List of package Git URL(s) (``*name*=*URL*@*branch*``)                                                                                      |
 | VERSION                     | Package version                                                                                                                             |
   
