@@ -53,27 +53,57 @@ rtl_fetch_urls_git() {
 
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 rtl_fetch_url_wget() {
-	local _url="${1}" _sha256sum_src="${2}" _target_fname="${3}" _target_fname_full="" RTL_CHECK_DIGEST_DIGEST="";
+	local _urls="${1}" _sha256sum_src="${2}" _target_fname="${3}" _rc=0 _target_fname_full=""\
+		_url="" _urls_count=0 RTL_CHECK_DIGEST_DIGEST="";
 	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
 		return 0;
-	else	if [ -z "${_target_fname}" ]; then
-			_target_fname="$(rtl_basename "${_url}")";
-		fi;
-		_target_fname_full="${BUILD_DLCACHEDIR}/${_target_fname}";
-		(set -o errexit -o noglob -o nounset;
-		rtl_flock_acquire 4 || exit "${?}";
-		trap "_rc=\"\${?}\"; rm -f \"${_target_fname_full}.fetching\"; exit \"\${_rc}\";" EXIT;
-		if [ -z "${_sha256sum_src}" ]\
-		|| ! rtl_check_digest_file "${_target_fname_full}" "${_sha256sum_src}" "${_target_fname_full}.fetched"; then
-			wget ${DEFAULT_WGET_ARGS} -O "${_target_fname_full}" "${_url}";
-			if [ -n "${_sha256sum_src}" ]\
-			&& ! rtl_check_digest "${_target_fname_full}" "${_sha256sum_src}"; then
-				rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (downloaded file: %s, from build variables: %s.)"\
-						"${_url}" "${RTL_CHECK_DIGEST_DIGEST}" "${_sha256sum_src}";
-			else
-				printf "%s" "${RTL_CHECK_DIGEST_DIGEST}" > "${_target_fname_full}.fetched";
+	else	_urls_count="$(rtl_llength "${_urls}")";
+		for _url in ${_urls}; do
+			if [ -z "${_target_fname}" ]; then
+				_target_fname="$(rtl_basename "${_url}")";
 			fi;
-		fi;) 4<>"${_target_fname_full}.fetching";
+			_target_fname_full="${BUILD_DLCACHEDIR}/${_target_fname}";
+			(set +o errexit -o noglob -o nounset;
+			rtl_flock_acquire 4 || exit 1;
+			trap "_rc=\"\${?}\"; rm -f \"${_target_fname_full}.fetching\"; exit \"\${_rc}\";" EXIT;
+			if [ -z "${_sha256sum_src}" ]\
+			|| ! rtl_check_digest_file "${_target_fname_full}" "${_sha256sum_src}" "${_target_fname_full}.fetched"; then
+				wget ${DEFAULT_WGET_ARGS} -O "${_target_fname_full}" "${_url}"; _rc="${?}";
+				if [ "${_rc}" -ne 0 ]; then
+					exit $((${_rc}+2));
+				elif [ -n "${_sha256sum_src}" ]\
+				&& ! rtl_check_digest "${_target_fname_full}" "${_sha256sum_src}"; then
+					exit 2;
+				else
+					printf "%s" "${RTL_CHECK_DIGEST_DIGEST}" > "${_target_fname_full}.fetched"; exit 0;
+				fi;
+			else
+				exit 0;
+			fi;) 4<>"${_target_fname_full}.fetching"; _rc="${?}"; : $((_urls_count-=1));
+			case "${_rc}" in
+			0)	break; ;;
+			1)	if [ "${_urls_count}" -ge 1 ]; then
+					rtl_log_msg warning "Warning: failed to acquire fetching lock for URL \`%s', retrying with alternative URL..." "${_url}";
+				else
+					rtl_log_msg fatalexit "Error: failed to acquire fetching lock for URL \`%s'." "${_url}";
+				fi; ;;
+			2)	if [ "${_urls_count}" -ge 1 ]; then
+					rtl_log_msg warning "Warning: hash mismatch for URL \`%s', retrying with alternative URL... (downloaded file: %s, from build variables: %s.)"\
+							"${_url}" "${RTL_CHECK_DIGEST_DIGEST}" "${_sha256sum_src}";
+				else
+					rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (downloaded file: %s, from build variables: %s.)"\
+							"${_url}" "${RTL_CHECK_DIGEST_DIGEST}" "${_sha256sum_src}";
+				fi; ;;
+			*)	if [ "${_urls_count}" -ge 1 ]; then
+					rtl_log_msg warning "Warning: failed to fetch URL \`%s', retrying with alternative URL... (wget(1) exit status: %s)"\
+							"${_url}" "$((${_rc}-2))";
+				else
+					rtl_log_msg fatalexit "Error: failed to fetch URL \`%s' (wget(1) exit status: %s)"\
+							"${_url}" "$((${_rc}-2))";
+				fi; ;;
+			esac;
+		done;
+		return "${_rc}";
 	fi;
 };
 
