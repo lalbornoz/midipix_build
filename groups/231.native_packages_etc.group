@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
-emacs expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
+doomgeneric emacs expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
@@ -78,6 +78,13 @@ zstd")";
 : ${PKG_DBUS_URL:=https://dbus.freedesktop.org/releases/dbus/dbus-${PKG_DBUS_VERSION}.tar.gz};
 : ${PKG_DBUS_SHA256SUM:=7fd9d0536f7ec2f2afc94b84d5b5487f88c464e8d47c661d8e0b54aa83974bfa};
 : ${PKG_DBUS_CONFIGURE_ARGS_EXTRA:="--disable-tests --with-x=no"};
+: ${PKG_DOOMGENERIC_URLS_GIT:=doomgeneric=https://github.com/Redfoxymoon/doomgeneric.git@midipix};
+: ${PKG_DOOMGENERIC_BUILD_DIR:=doomgeneric/doomgeneric};
+: ${PKG_DOOMGENERIC_MAKEFLAGS_BUILD_EXTRA:=-f Makefile.midipix};
+: ${PKG_DOOMGENERIC_CFLAGS_BUILD_EXTRA:="-DWINAPI_ANSI_DEFAULT -I${PREFIX_NATIVE}/include/w32api.ports"};
+: ${PKG_DOOMGENERIC_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
+: ${PKG_DOOMGENERIC_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_DOOMGENERIC_INSTALL_FILES:="../doomgeneric/doomgeneric/doomgeneric=bin/"};
 : ${PKG_EMACS_DEPENDS:="freetype gnutls libjpeg_turbo libz ncurses"};
 : ${PKG_EMACS_SHA256SUM:=1cf4fc240cd77c25309d15e18593789c8dbfba5c2b44d8f77c886542300fd32c};
 : ${PKG_EMACS_VERSION:=26.1};
