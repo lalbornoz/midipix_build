@@ -78,6 +78,7 @@ zstd")";
 : ${PKG_DBUS_URL:=https://dbus.freedesktop.org/releases/dbus/dbus-${PKG_DBUS_VERSION}.tar.gz};
 : ${PKG_DBUS_SHA256SUM:=7fd9d0536f7ec2f2afc94b84d5b5487f88c464e8d47c661d8e0b54aa83974bfa};
 : ${PKG_DBUS_CONFIGURE_ARGS_EXTRA:="--disable-tests --with-x=no"};
+: ${PKG_DOOMGENERIC_DEPENDS:="w32api w32lib"};
 : ${PKG_DOOMGENERIC_URLS_GIT:=doomgeneric=https://github.com/Redfoxymoon/doomgeneric.git@midipix};
 : ${PKG_DOOMGENERIC_BUILD_DIR:=doomgeneric/doomgeneric};
 : ${PKG_DOOMGENERIC_MAKEFLAGS_BUILD_EXTRA:=-f Makefile.midipix};
