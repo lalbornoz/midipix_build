@@ -6,7 +6,7 @@ diff -ru slang-2.3.2.orig/modules/Makefile.in slang-2.3.2/modules/Makefile.in
  CC		= @CC@
  CFLAGS		= @CFLAGS@ @SLANG_DLL_CFLAGS@
 -LDFLAGS		= @LDFLAGS@
-+LDFLAGS		= @LDFLAGS@ -L../../src/elfobjs -lslang
++LDFLAGS		= @LDFLAGS@ -L../../src/nt64elfobjs -lslang
  CC_SHARED_FLAGS = @CC_SHARED_FLAGS@
  CC_SHARED 	= $(CC) $(INCS) $(CC_SHARED_FLAGS) $(CFLAGS)
  CONFIG_DIR	= @CONFIG_DIR@
