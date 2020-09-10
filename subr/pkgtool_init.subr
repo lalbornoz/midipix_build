@@ -61,11 +61,7 @@ pkgtoolp_init_getopts() {
 			esac; shift $((${OPTIND}-1)); OPTIND=1;
 		else	case "${1}" in
 			*=*)	rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
-			*)	if [ -n "${PKGTOOL_PKG_NAME:-}" ]; then
-					_rc=1; _status="Error: more than one package name specified.";
-				else
-					PKGTOOL_PKG_NAME="${1}";
-				fi; ;;
+			*)	PKGTOOL_PKG_NAME="${1}"; ;;
 			esac; shift;
 		fi;
 	done;
