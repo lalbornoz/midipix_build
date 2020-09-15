@@ -1,27 +1,113 @@
+diff -ru slang-2.3.2.orig/configure slang-2.3.2/configure
+--- slang-2.3.2.orig/configure	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/configure	2020-09-15 12:16:06.735950835 +0200
+@@ -7082,8 +7082,8 @@
+   fi
+ fi
+ 
+-OBJDIR=$SRCDIR/"\$(ARCH)"objs
+-ELFDIR=$SRCDIR/"\$(ARCH)"elfobjs
++OBJDIR=$SRCDIR/objs
++ELFDIR=$SRCDIR/elfobjs
+ 
+ 
+ missingmodules=""
+diff -ru slang-2.3.2.orig/demo/Makefile.in slang-2.3.2/demo/Makefile.in
+--- slang-2.3.2.orig/demo/Makefile.in	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/demo/Makefile.in	2020-09-15 12:13:09.195956393 +0200
+@@ -10,7 +10,7 @@
+ # Directory where the various libraries are located.
+ #-----------------------------------------------------------------------------
+ SLANG_INCLUDE = ../src#             location of slang.h
+-SLANG_LIB = $(SLANG_INCLUDE)/$(ARCH)objs#     location of libslang.a
++SLANG_LIB = $(SLANG_INCLUDE)/objs#     location of libslang.a
+ 
+ #---------------------------------------------------------------------------
+ # Other libraries
 diff -ru slang-2.3.2.orig/modules/Makefile.in slang-2.3.2/modules/Makefile.in
 --- slang-2.3.2.orig/modules/Makefile.in	2018-03-05 00:16:36.000000000 +0100
-+++ slang-2.3.2/modules/Makefile.in	2018-06-01 22:01:48.926864387 +0200
-@@ -16,7 +16,7 @@
++++ slang-2.3.2/modules/Makefile.in	2020-09-15 12:19:04.808713632 +0200
+@@ -16,14 +16,14 @@
  # ---------------------------------------------------------------------------
  CC		= @CC@
  CFLAGS		= @CFLAGS@ @SLANG_DLL_CFLAGS@
 -LDFLAGS		= @LDFLAGS@
-+LDFLAGS		= @LDFLAGS@ -L../../src/$(ELFLIB) -lslang
++LDFLAGS		= @LDFLAGS@ -L../../src/elfobjs -lslang
  CC_SHARED_FLAGS = @CC_SHARED_FLAGS@
  CC_SHARED 	= $(CC) $(INCS) $(CC_SHARED_FLAGS) $(CFLAGS)
  CONFIG_DIR	= @CONFIG_DIR@
-diff --git a/slsh/Makefile.in b/slsh/Makefile.in
-index cba9d81..78e6054 100644
---- a/slsh/Makefile.in
-+++ b/slsh/Makefile.in
-@@ -15,7 +15,7 @@ exec_prefix 	= @exec_prefix@
+ SRCDIR		= $(CONFIG_DIR)/modules
+ CONFIG_H        = $(SRCDIR)/config.h
+ SLINT_H         = $(SRCDIR)/slint.h
+-OBJDIR		= $(ARCH)objs
++OBJDIR		= objs
+ OBJDIR_TSTAMP	= $(OBJDIR)/tstamp
+ # ---------------------------------------------------------------------------
+ # Installation location of the slang library
+diff -ru slang-2.3.2.orig/slsh/Makefile.in slang-2.3.2/slsh/Makefile.in
+--- slang-2.3.2.orig/slsh/Makefile.in	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/slsh/Makefile.in	2020-09-15 12:19:42.948712438 +0200
+@@ -4,7 +4,7 @@
+ LDFLAGS		= @LDFLAGS@
+ DLINK_FLAGS	= @DYNAMIC_LINK_FLAGS@
+ CONFIG_DIR	= @CONFIG_DIR@
+-OBJDIR		= $(ARCH)objs
++OBJDIR		= objs
+ SOBJDIR		= static_objs
+ SRCDIR		= $(CONFIG_DIR)/slsh
+ #---------------------------------------------------------------------------
+@@ -15,7 +15,6 @@
  datarootdir	= @datarootdir@
  INST_LIB_DIR	= @libdir@
  SLANG_INST_INC	= -I@includedir@
 -SLANG_INST_LIB	= -L$(INST_LIB_DIR)
-+#SLANG_INST_LIB	= -L$(INST_LIB_DIR)
  #---------------------------------------------------------------------------
  SLANG_SRCINC	= -I@SRCDIR@
  SLANG_ELFLIB	= -L@ELFDIR@#  for dynamically linked
--- 
-2.24.0
+diff -ru slang-2.3.2.orig/src/curses/Makefile slang-2.3.2/src/curses/Makefile
+--- slang-2.3.2.orig/src/curses/Makefile	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/src/curses/Makefile	2020-09-15 12:14:23.903954054 +0200
+@@ -1,5 +1,5 @@
+ COMPILE = $(CC) $(CFLAGS) -g -DSLANG -I..
+-LFLAGS = -L../$(ARCH)objs -lslang
++LFLAGS = -L../objs -lslang
+ M_LIB = -lm
+ 
+ CURSES_H = ../curses.h
+diff -ru slang-2.3.2.orig/src/Makefile.in slang-2.3.2/src/Makefile.in
+--- slang-2.3.2.orig/src/Makefile.in	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/src/Makefile.in	2020-09-15 12:13:33.371955636 +0200
+@@ -244,7 +244,7 @@
+ # The symlinks target is for my own private use.  It simply creates the object
+ # directory as a symbolic link to a local disk instead of an NFS mounted one.
+ symlinks:
+-	-/bin/rm -f $(ARCH)objs
++	-/bin/rm -f objs
+ 	mkdir -p $(HOME)/sys/$(ARCH)/objs/slang/src
+ 	ln -s $(HOME)/sys/$(ARCH)/objs/slang/src $(ARCH)objs
+ 	@echo "Also try: make elfsymlinks"
+diff -ru slang-2.3.2.orig/src/test/Makefile slang-2.3.2/src/test/Makefile
+--- slang-2.3.2.orig/src/test/Makefile	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/src/test/Makefile	2020-09-15 12:14:49.723953246 +0200
+@@ -13,7 +13,7 @@
+ MEMCHECK = valgrind --tool=memcheck --leak-check=yes --leak-resolution=med --num-callers=20
+ RUN_TEST_PGM = ./$(TEST_PGM)
+ SLANGINC = ..
+-SLANGLIB = ../$(ARCH)objs
++SLANGLIB = ../objs
+ OTHER_LIBS = -lm
+ OTHER_CFLAGS =
+ 
+diff -ru slang-2.3.2.orig/src/util/Makefile slang-2.3.2/src/util/Makefile
+--- slang-2.3.2.orig/src/util/Makefile	2018-03-05 00:16:36.000000000 +0100
++++ slang-2.3.2/src/util/Makefile	2020-09-15 12:15:07.135952701 +0200
+@@ -1,7 +1,7 @@
+ INCS = -I..
+-LIBS = -L../$(ARCH)objs -lslang -lm
++LIBS = -L../objs -lslang -lm
+ 
+-bcdump: bcdump.c ../$(ARCH)objs/libslang.a
++bcdump: bcdump.c ../objs/libslang.a
+ 	$(CC) $(CFLAGS) $(INCS) bcdump.c -o bcdump $(LIBS)
+ clean:
+ 	/bin/rm -f *.o bcdump
