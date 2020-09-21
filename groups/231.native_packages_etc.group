@@ -193,7 +193,7 @@ zstd")";
 : ${PKG_MINTTY_CONFIGURE:=bmintty/configure};
 : ${PKG_MINTTY_CONFIGURE_ARGS:="--debug --strict --target=${DEFAULT_TARGET} --source-dir=../mintty --prefix="};
 : ${PKG_MINTTY_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib/w32lib};
-: ${PKG_MLOGIN_URLS_GIT:="mlogin=https://github.com/Redfoxmoon3/mlogin.git@master"};
+: ${PKG_MLOGIN_URLS_GIT:="mlogin=https://dev.midipix.org/env/mlogin.git@main"};
 : ${PKG_MLOGIN_BUILD_DIR:=mlogin};
 : ${PKG_MLOGIN_FORCE_AUTORECONF:=1};
 : ${PKG_MUSL_COMPAT_URLS_GIT:=musl_compat=https://dev.midipix.org/compat/musl-compat.git@main};
