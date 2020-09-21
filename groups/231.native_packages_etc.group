@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
-doomgeneric emacs expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
+doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
@@ -93,6 +93,9 @@ zstd")";
 : ${PKG_EMACS_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -O1 -g2"};
 : ${PKG_EMACS_CONFIGURE_ARGS_EXTRA:="--with-modules --with-sound=no --with-x-toolkit=no --without-dbus --without-x --without-mailutils --without-pop"};
 : ${PKG_EMACS_ENV_VARS_EXTRA:="BUILDCC=gcc"};
+: ${PKG_ENSCRIPT_SHA256SUM:=6d56bada6934d055b34b6c90399aa85975e66457ac5bf513427ae7fc77f5c0bb};
+: ${PKG_ENSCRIPT_VERSION:=1.6.6};
+: ${PKG_ENSCRIPT_URL:=https://ftp.gnu.org/gnu/enscript/enscript-${PKG_ENSCRIPT_VERSION}.tar.gz};
 : ${PKG_EXPAT_SHA256SUM:=17b43c2716d521369f82fc2dc70f359860e90fa440bea65b3b85f0b246ea81f2};
 : ${PKG_EXPAT_VERSION:=2.2.6};
 : ${PKG_EXPAT_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_VERSION}.tar.bz2};
