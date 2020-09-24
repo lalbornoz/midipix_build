@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-alsa_lib apr apr_util bdwgc bmake bochs bzip2 clzip cmake cron dante dbus
+alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
 doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
@@ -53,6 +53,9 @@ zstd")";
 : ${PKG_BZIP2_IN_TREE:=1};
 : ${PKG_BZIP2_MAKEFLAGS_BUILD_EXTRA:=-f Makefile-libbz2_so};
 : ${PKG_BZIP2_MAKE_INSTALL_VNAME:=PREFIX};
+: ${PKG_CHEROKEE_URLS_GIT:=cherokee=https://github.com/cherokee/webserver.git@master};
+: ${PKG_CHEROKEE_CONFIGURE_ARGS_EXTRA:="--with-python=${PREFIX}/bin/python2 --without-epoll --without-php"};
+: ${PKG_CHEROKEE_IN_TREE:=1};
 : ${PKG_CLZIP_SHA256SUM:=d9d51212afa80371dc2546d278ef8ebbb3cd57c06fdd761b7b204497586d24c0};
 : ${PKG_CLZIP_VERSION:=1.11};
 : ${PKG_CLZIP_URL:=http://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_VERSION}.tar.gz};

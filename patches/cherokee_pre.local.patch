@@ -1,0 +1,482 @@
+diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
+--- webserver.orig/cherokee/Makefile.am	2020-09-24 20:16:03.353687922 +0200
++++ webserver/cherokee/Makefile.am	2020-09-24 23:10:46.335528123 +0200
+@@ -122,6 +122,7 @@
+ 
+ libplugin_directory_la_LDFLAGS = $(module_ldflags)
+ libplugin_directory_la_SOURCES = $(rule_directory)
++libplugin_directory_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_DIRECTORY
+ static_rule_directory_src = $(rule_directory)
+@@ -139,6 +140,7 @@
+ 
+ libplugin_extensions_la_LDFLAGS = $(module_ldflags)
+ libplugin_extensions_la_SOURCES = $(rule_extensions)
++libplugin_extensions_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_EXTENSIONS
+ static_rule_extensions_src = $(rule_extensions)
+@@ -156,6 +158,7 @@
+ 
+ libplugin_request_la_LDFLAGS = $(module_ldflags)
+ libplugin_request_la_SOURCES = $(rule_request)
++libplugin_request_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_REQUEST
+ static_rule_request_src = $(rule_request)
+@@ -173,6 +176,7 @@
+ 
+ libplugin_header_la_LDFLAGS = $(module_ldflags)
+ libplugin_header_la_SOURCES = $(rule_header)
++libplugin_header_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_HEADER
+ static_rule_header_src = $(rule_header)
+@@ -190,6 +194,7 @@
+ 
+ libplugin_exists_la_LDFLAGS = $(module_ldflags)
+ libplugin_exists_la_SOURCES = $(rule_exists)
++libplugin_exists_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_EXISTS
+ static_rule_exists_src = $(rule_exists)
+@@ -207,6 +212,7 @@
+ 
+ libplugin_url_arg_la_LDFLAGS = $(module_ldflags)
+ libplugin_url_arg_la_SOURCES = $(rule_url_arg)
++libplugin_url_arg_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_URL_ARG
+ static_rule_url_arg_src = $(rule_url_arg)
+@@ -224,6 +230,7 @@
+ 
+ libplugin_fullpath_la_LDFLAGS = $(module_ldflags)
+ libplugin_fullpath_la_SOURCES = $(rule_fullpath)
++libplugin_fullpath_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_FULL_PATH
+ static_rule_fullpath_src = $(rule_fullpath)
+@@ -241,6 +248,7 @@
+ 
+ libplugin_bind_la_LDFLAGS = $(module_ldflags)
+ libplugin_bind_la_SOURCES = $(rule_bind)
++libplugin_bind_la_LIBADD  = libcherokee-base.la libcherokee-server.la
+ 
+ if STATIC_RULE_BIND
+ static_rule_bind_src = $(rule_bind)
+@@ -258,6 +266,7 @@
+ 
+ libplugin_tls_la_LDFLAGS = $(module_ldflags)
+ libplugin_tls_la_SOURCES = $(rule_tls)
++libplugin_tls_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_RULE_TLS
+ static_rule_tls_src = $(rule_tls)
+@@ -275,6 +284,7 @@
+ 
+ libplugin_method_la_LDFLAGS = $(module_ldflags)
+ libplugin_method_la_SOURCES = $(rule_method)
++libplugin_method_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_RULE_METHOD
+ static_rule_method_src = $(rule_method)
+@@ -292,6 +302,7 @@
+ 
+ libplugin_from_la_LDFLAGS = $(module_ldflags)
+ libplugin_from_la_SOURCES = $(rule_from)
++libplugin_from_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_RULE_FROM
+ static_rule_from_src = $(rule_from)
+@@ -310,7 +321,7 @@
+ 
+ libplugin_geoip_la_LDFLAGS = $(module_ldflags)
+ libplugin_geoip_la_SOURCES = $(rule_geoip)
+-libplugin_geoip_la_LIBADD  = -lGeoIP
++libplugin_geoip_la_LIBADD  = libcherokee-server.la -lGeoIP
+ 
+ if STATIC_RULE_HEADER
+ static_rule_geoip_src = $(rule_geoip)
+@@ -330,6 +341,7 @@
+ 
+ libplugin_not_la_LDFLAGS = $(module_ldflags)
+ libplugin_not_la_SOURCES = $(rule_not)
++libplugin_not_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_RULE_NOT
+ static_rule_not_src = $(rule_not)
+@@ -347,6 +359,7 @@
+ 
+ libplugin_and_la_LDFLAGS = $(module_ldflags)
+ libplugin_and_la_SOURCES = $(rule_and)
++libplugin_and_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_RULE_AND
+ static_rule_and_src = $(rule_and)
+@@ -364,6 +377,7 @@
+ 
+ libplugin_or_la_LDFLAGS = $(module_ldflags)
+ libplugin_or_la_SOURCES = $(rule_or)
++libplugin_or_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_RULE_OR
+ static_rule_or_src = $(rule_or)
+@@ -381,6 +395,7 @@
+ 
+ libplugin_v_or_la_LDFLAGS = $(module_ldflags)
+ libplugin_v_or_la_SOURCES = $(vrule_or)
++libplugin_v_or_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_VRULE_OR
+ static_vrule_or_src = $(vrule_or)
+@@ -398,6 +413,7 @@
+ 
+ libplugin_wildcard_la_LDFLAGS = $(module_ldflags)
+ libplugin_wildcard_la_SOURCES = $(vrule_wildcard)
++libplugin_wildcard_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_VRULE_WILDCARD
+ static_vrule_wildcard_src = $(vrule_wildcard)
+@@ -415,6 +431,7 @@
+ 
+ libplugin_rehost_la_LDFLAGS = $(module_ldflags)
+ libplugin_rehost_la_SOURCES = $(vrule_rehost)
++libplugin_rehost_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_VRULE_REHOST
+ static_vrule_rehost_src = $(vrule_rehost)
+@@ -432,6 +449,7 @@
+ 
+ libplugin_target_ip_la_LDFLAGS = $(module_ldflags)
+ libplugin_target_ip_la_SOURCES = $(vrule_target_ip)
++libplugin_target_ip_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_VRULE_TARGET_IP
+ static_vrule_target_ip_src = $(vrule_target_ip)
+@@ -454,6 +472,7 @@
+ 
+ libplugin_rrd_la_LDFLAGS = $(module_ldflags)
+ libplugin_rrd_la_SOURCES = $(collector_rrd)
++libplugin_rrd_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_COLLECTOR_RRD
+ static_collector_rrd_src = $(collector_rrd)
+@@ -471,6 +490,7 @@
+ 
+ libplugin_evhost_la_LDFLAGS = $(module_ldflags)
+ libplugin_evhost_la_SOURCES = $(gen_evhost)
++libplugin_evhost_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_GEN_EVHOST
+ static_gen_evhost_src = $(gen_evhost)
+@@ -488,6 +508,7 @@
+ 
+ libplugin_post_track_la_LDFLAGS = $(module_ldflags)
+ libplugin_post_track_la_SOURCES = $(post_track)
++libplugin_post_track_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_POST_TRACK
+ static_post_track_src = $(post_track)
+@@ -505,6 +526,7 @@
+ 
+ libplugin_post_report_la_LDFLAGS = $(module_ldflags)
+ libplugin_post_report_la_SOURCES = $(handler_post_report)
++libplugin_post_report_la_LIBADD  = libcherokee-server.la libplugin_post_track.la
+ 
+ if STATIC_POST_REPORT
+ static_handler_post_report_src = $(handler_post_report)
+@@ -523,6 +545,7 @@
+ 
+ libplugin_server_info_la_LDFLAGS = $(module_ldflags)
+ libplugin_server_info_la_SOURCES = $(handler_server_info)
++libplugin_server_info_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_SERVER_INFO
+ static_handler_server_info_src = $(handler_server_info)
+@@ -540,6 +563,7 @@
+ 
+ libplugin_file_la_LDFLAGS = $(module_ldflags)
+ libplugin_file_la_SOURCES = $(handler_file)
++libplugin_file_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_FILE
+ static_handler_file_src = $(handler_file)
+@@ -557,6 +581,7 @@
+ 
+ libplugin_dirlist_la_LDFLAGS = $(module_ldflags)
+ libplugin_dirlist_la_SOURCES = $(handler_dirlist)
++libplugin_dirlist_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_DIRLIST
+ static_handler_dirlist_src = $(handler_dirlist)
+@@ -580,6 +605,7 @@
+ 
+ libplugin_render_rrd_la_LDFLAGS = $(module_ldflags)
+ libplugin_render_rrd_la_SOURCES = $(handler_render_rrd) $(handler_file)
++libplugin_render_rrd_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_RENDER_RRD
+ static_handler_render_rrd_src = $(handler_render_rrd)
+@@ -602,6 +628,7 @@
+ 
+ libplugin_cgi_la_LDFLAGS = $(module_ldflags)
+ libplugin_cgi_la_SOURCES = $(handler_cgi) $(handler_file)
++libplugin_cgi_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_CGI
+ static_handler_cgi_src = $(handler_cgi)
+@@ -624,6 +651,7 @@
+ 
+ libplugin_scgi_la_LDFLAGS = $(module_ldflags)
+ libplugin_scgi_la_SOURCES = $(handler_scgi) $(handler_file)
++libplugin_scgi_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_SCGI
+ static_handler_scgi_src = $(handler_scgi)
+@@ -647,6 +675,7 @@
+ 
+ libplugin_fcgi_la_LDFLAGS = $(module_ldflags)
+ libplugin_fcgi_la_SOURCES = $(handler_fcgi) $(handler_file)
++libplugin_fcgi_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_FCGI
+ static_handler_fcgi_src = $(handler_fcgi)
+@@ -669,6 +698,7 @@
+ 
+ libplugin_uwsgi_la_LDFLAGS = $(module_ldflags)
+ libplugin_uwsgi_la_SOURCES = $(handler_uwsgi) $(handler_file)
++libplugin_uwsgi_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_UWSGI
+ static_handler_uwsgi_src = $(handler_uwsgi)
+@@ -686,6 +716,7 @@
+ 
+ libplugin_redir_la_LDFLAGS = $(module_ldflags)
+ libplugin_redir_la_SOURCES = $(handler_redir)
++libplugin_redir_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_REDIR
+ static_handler_redir_src = $(handler_redir)
+@@ -702,7 +733,8 @@
+ handler_error_redir.h
+ 
+ libplugin_error_redir_la_LDFLAGS = $(module_ldflags)
+-libplugin_error_redir_la_SOURCES = $(handler_error_redir)
++libplugin_error_redir_la_SOURCES = $(handler_error_redir) $(handler_redir)
++libplugin_error_redir_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_ERROR_REDIR
+ static_handler_error_redir_src = $(handler_error_redir)
+@@ -722,6 +754,7 @@
+ 
+ libplugin_error_nn_la_LDFLAGS = $(module_ldflags)
+ libplugin_error_nn_la_SOURCES = $(handler_error_nn)
++libplugin_error_nn_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_ERROR_NN
+ static_handler_error_nn_src = $(handler_error_nn)
+@@ -738,7 +771,8 @@
+ handler_common.h
+ 
+ libplugin_common_la_LDFLAGS = $(module_ldflags)
+-libplugin_common_la_SOURCES = $(handler_common)
++libplugin_common_la_SOURCES = $(handler_common) $(handler_dirlist) $(handler_file)
++libplugin_common_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_COMMON
+ static_handler_common_src = $(handler_common)
+@@ -758,6 +792,7 @@
+ 
+ libplugin_proxy_la_LDFLAGS = $(module_ldflags)
+ libplugin_proxy_la_SOURCES = $(handler_proxy)
++libplugin_proxy_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_PROXY
+ static_handler_proxy_src = $(handler_proxy)
+@@ -777,6 +812,7 @@
+ 
+ libplugin_ssi_la_LDFLAGS = $(module_ldflags)
+ libplugin_ssi_la_SOURCES = $(handler_ssi)
++libplugin_ssi_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_SSI
+ static_handler_ssi_src = $(handler_ssi)
+@@ -793,7 +829,8 @@
+ handler_secdownload.h
+ 
+ libplugin_secdownload_la_LDFLAGS = $(module_ldflags)
+-libplugin_secdownload_la_SOURCES = $(handler_secdownload)
++libplugin_secdownload_la_SOURCES = $(handler_secdownload) $(handler_file)
++libplugin_secdownload_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_SECDOWNLOAD
+ static_handler_secdownload_src = $(handler_secdownload)
+@@ -811,6 +848,7 @@
+ 
+ libplugin_empty_gif_la_LDFLAGS = $(module_ldflags)
+ libplugin_empty_gif_la_SOURCES = $(handler_empty_gif)
++libplugin_empty_gif_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_EMPTY_GIF
+ static_handler_empty_gif_src = $(handler_empty_gif)
+@@ -828,6 +866,7 @@
+ 
+ libplugin_drop_la_LDFLAGS = $(module_ldflags)
+ libplugin_drop_la_SOURCES = $(handler_drop)
++libplugin_drop_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_HANDLER_DROP
+ static_handler_drop_src = $(handler_drop)
+@@ -845,8 +884,8 @@
+ handler_streaming.h
+ 
+ libplugin_streaming_la_LDFLAGS = $(module_ldflags)
+-libplugin_streaming_la_SOURCES = $(handler_streaming)
+-libplugin_streaming_la_LIBADD  = $(FFMPEG_LIBS)
++libplugin_streaming_la_SOURCES = $(handler_streaming) $(handler_file)
++libplugin_streaming_la_LIBADD  = $(FFMPEG_LIBS) libcherokee-server.la
+ libplugin_streaming_la_CFLAGS  = $(FFMPEG_CFLAGS)
+ 
+ if HAVE_FFMPEG
+@@ -870,6 +909,7 @@
+ libplugin_dbslayer_la_LDFLAGS = $(module_ldflags) $(MYSQL_LDFLAGS)
+ libplugin_dbslayer_la_SOURCES = $(handler_dbslayer)
+ libplugin_dbslayer_la_CFLAGS  = $(MYSQL_CFLAGS)
++libplugin_dbslayer_la_LIBADD  = libcherokee-server.la
+ 
+ if HAVE_MYSQL
+ if STATIC_HANDLER_DBSLAYER
+@@ -891,7 +931,7 @@
+ 
+ libplugin_custom_error_la_LDFLAGS = $(module_ldflags)
+ libplugin_custom_error_la_SOURCES = $(handler_custom_error)
+-libplugin_custom_error_la_LIBADD  = libcherokee-client.la
++libplugin_custom_error_la_LIBADD  = libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ 
+ if STATIC_HANDLER_CUSTOM_ERROR
+ static_handler_custom_error_src = $(handler_custom_error)
+@@ -911,7 +951,7 @@
+ 
+ libplugin_admin_la_LDFLAGS = $(module_ldflags)
+ libplugin_admin_la_SOURCES = $(handler_admin)
+-libplugin_admin_la_LIBADD  = libcherokee-client.la
++libplugin_admin_la_LIBADD  = libcherokee-client.la libcherokee-server.la
+ 
+ if STATIC_HANDLER_ADMIN
+ static_handler_admin_src = $(handler_admin)
+@@ -929,6 +969,7 @@
+ 
+ libplugin_gzip_la_LDFLAGS = $(module_ldflags)
+ libplugin_gzip_la_SOURCES = $(encoder_gzip)
++libplugin_gzip_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_ENCODER_GZIP
+ static_encoder_gzip_src = $(encoder_gzip)
+@@ -946,6 +987,7 @@
+ 
+ libplugin_deflate_la_LDFLAGS = $(module_ldflags)
+ libplugin_deflate_la_SOURCES = $(encoder_deflate)
++libplugin_deflate_la_LIBADD  = libcherokee-server.la -lz
+ 
+ if STATIC_ENCODER_DEFLATE
+ static_encoder_deflate_src = $(encoder_deflate)
+@@ -963,6 +1005,7 @@
+ 
+ libplugin_custom_la_LDFLAGS = $(module_ldflags)
+ libplugin_custom_la_SOURCES = $(logger_custom)
++libplugin_custom_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_LOGGER_CUSTOM
+ static_logger_custom_src = $(logger_custom)
+@@ -980,6 +1023,7 @@
+ 
+ libplugin_ncsa_la_LDFLAGS = $(module_ldflags)
+ libplugin_ncsa_la_SOURCES = $(logger_ncsa)
++libplugin_ncsa_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_LOGGER_NCSA
+ static_logger_ncsa_src = $(logger_ncsa)
+@@ -996,7 +1040,8 @@
+ logger_combined.c
+ 
+ libplugin_combined_la_LDFLAGS = $(module_ldflags)
+-libplugin_combined_la_SOURCES = $(logger_combined)
++libplugin_combined_la_SOURCES = $(logger_combined) $(logger_ncsa)
++libplugin_combined_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_LOGGER_COMBINED
+ static_logger_combined_src = $(logger_combined)
+@@ -1062,7 +1107,7 @@
+ 
+ libplugin_htpasswd_la_LDFLAGS = $(module_ldflags)
+ libplugin_htpasswd_la_SOURCES = $(validator_htpasswd)
+-libplugin_htpasswd_la_LIBADD  = $(CRYPT_LIBS)
++libplugin_htpasswd_la_LIBADD  = $(CRYPT_LIBS) libcherokee-server.la
+ libplugin_htpasswd_la_CFLAGS  = $(CRYPT_CFLAGS)
+ 
+ if STATIC_VALIDATOR_HTPASSWD
+@@ -1088,6 +1133,7 @@
+ 
+ libplugin_plain_la_LDFLAGS = $(module_ldflags)
+ libplugin_plain_la_SOURCES = $(validator_plain)
++libplugin_plain_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_VALIDATOR_PLAIN
+ static_validator_plain_src = $(validator_plain)
+@@ -1110,6 +1156,7 @@
+ 
+ libplugin_htdigest_la_LDFLAGS = $(module_ldflags)
+ libplugin_htdigest_la_SOURCES = $(validator_htdigest)
++libplugin_htdigest_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_VALIDATOR_HTDIGEST
+ static_validator_htdigest_src = $(validator_htdigest)
+@@ -1127,6 +1174,7 @@
+ 
+ libplugin_authlist_la_LDFLAGS = $(module_ldflags)
+ libplugin_authlist_la_SOURCES = $(validator_authlist)
++libplugin_authlist_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_VALIDATOR_AUTHLIST
+ static_validator_authlist_src = $(validator_authlist)
+@@ -1145,6 +1193,7 @@
+ libplugin_mysql_la_LDFLAGS = $(module_ldflags) $(MYSQL_LDFLAGS)
+ libplugin_mysql_la_SOURCES = $(validator_mysql)
+ libplugin_mysql_la_CFLAGS  = $(MYSQL_CFLAGS)
++libplugin_mysql_la_LIBADD  = libcherokee-server.la
+ 
+ if HAVE_MYSQL
+ if STATIC_VALIDATOR_MYSQL
+@@ -1173,6 +1222,7 @@
+ libplugin_libssl_la_LDFLAGS = $(module_ldflags) $(LIBSSL_LIBS)
+ libplugin_libssl_la_SOURCES = $(cryptor_libssl)
+ libplugin_libssl_la_CFLAGS  = $(LIBSSL_CFLAGS)
++libplugin_libssl_la_LIBADD  = libcherokee-server.la
+ 
+ if USE_OPENSSL
+ if STATIC_CRYPTOR_LIBSSL
+@@ -1194,6 +1244,7 @@
+ 
+ libplugin_round_robin_la_LDFLAGS = $(module_ldflags)
+ libplugin_round_robin_la_SOURCES = $(balancer_round_robin)
++libplugin_round_robin_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_BALANCER_ROUND_ROBIN
+ static_balancer_round_robin_src = $(balancer_round_robin)
+@@ -1211,6 +1262,7 @@
+ 
+ libplugin_ip_hash_la_LDFLAGS = $(module_ldflags)
+ libplugin_ip_hash_la_SOURCES = $(balancer_ip_hash)
++libplugin_ip_hash_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_BALANCER_IP_HASH
+ static_balancer_ip_hash_src = $(balancer_ip_hash)
+@@ -1228,6 +1280,7 @@
+ 
+ libplugin_failover_la_LDFLAGS = $(module_ldflags)
+ libplugin_failover_la_SOURCES = $(balancer_failover)
++libplugin_failover_la_LIBADD  = libcherokee-server.la
+ 
+ if STATIC_BALANCER_FAILOVER
+ static_balancer_failover_src = $(balancer_failover)
