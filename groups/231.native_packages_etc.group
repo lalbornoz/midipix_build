@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
-giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
+giflib gnuchess gzip hastyhex hexcurse htop icoutils imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
@@ -165,6 +165,10 @@ zstd")";
 : ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-proc --enable-unicode --verbose"};
 : ${PKG_HTOP_CFLAGS_CONFIGURE_EXTRA:="--include=sys/sysmacros.h"};
 : ${PKG_HTOP_ENV_VARS_EXTRA:="HTOP_NCURSES_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses-config:HTOP_NCURSES6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses6-config:HTOP_NCURSESW_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw-config:HTOP_NCURSESW6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw6-config"}
+: ${PKG_ICOUTILS_DEPENDS:="libpng"};
+: ${PKG_ICOUTILS_SHA256SUM:=17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0};
+: ${PKG_ICOUTILS_VERSION:=0.32.3};
+: ${PKG_ICOUTILS_URL:=http://savannah.nongnu.org/download/icoutils/icoutils-${PKG_ICOUTILS_VERSION}.tar.bz2};
 : ${PKG_IMAGEMAGICK_DEPENDS:="curl bzip2 libz xz zstd"};
 : ${PKG_IMAGEMAGICK_SHA256SUM:=67859f9cba97f2c06b5e416898216e49216be00c7cba3dd89896e49331aef96d};
 : ${PKG_IMAGEMAGICK_VERSION:=7.0.9-12};
