@@ -254,7 +254,7 @@ zstd")";
 : ${PKG_POTRACE_DEPENDS:="libz"};
 : ${PKG_POTRACE_SHA256SUM:=be8248a17dedd6ccbaab2fcc45835bb0502d062e40fbded3bc56028ce5eb7acc};
 : ${PKG_POTRACE_VERSION:=1.16};
-: ${PKG_POTRACE_URL:=http://potrace.sourceforge.net/download/${PKG_POTRACE_VERSION}/potrace-${PKG_POTRACE_VERSION}.tar.gz};
+: ${PKG_POTRACE_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/potrace/potrace-${PKG_POTRACE_VERSION}.tar.gz};
 : ${PKG_PROCPS_NG_DEPENDS:="ncurses ncursesw"};
 : ${PKG_PROCPS_NG_SHA256SUM:=440af4845fee9f55b721aa456f88259668465ddb37168ea1e2d2ef195f55bbc4};
 : ${PKG_PROCPS_NG_VERSION:=3.3.15};

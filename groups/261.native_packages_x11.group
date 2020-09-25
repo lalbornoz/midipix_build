@@ -61,7 +61,7 @@ xtrans xwd xwin")";
 : ${PKG_GLEW_DEPENDS:="libX11 mesa"};
 : ${PKG_GLEW_SHA256SUM:=04de91e7e6763039bc11940095cd9c7f880baba82196a7765f727ac05a993c95};
 : ${PKG_GLEW_VERSION:=2.1.0};
-: ${PKG_GLEW_URL:=http://sourceforge.mirrorservice.org/g/gl/glew/glew/${PKG_GLEW_VERSION}/glew-${PKG_GLEW_VERSION}.tgz};
+: ${PKG_GLEW_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/glew/glew-${PKG_GLEW_VERSION}.tgz};
 : ${PKG_GLEW_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_GLEW_CFLAGS_BUILD_EXTRA:=-Iinclude};
 : ${PKG_GLEW_INSTALL_FILES:="../glew-${PKG_GLEW_VERSION}/lib/libGLEW.lib.a=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.so=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.so.${PKG_GLEW_VERSION}=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.so.${PKG_GLEW_VERSION%.*}=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.a=lib/ ../glew-${PKG_GLEW_VERSION}/bin/glewinfo=bin/ ../glew-${PKG_GLEW_VERSION}/bin/visualinfo=bin/"};
