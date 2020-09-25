@@ -53,6 +53,7 @@ zstd")";
 : ${PKG_BZIP2_IN_TREE:=1};
 : ${PKG_BZIP2_MAKEFLAGS_BUILD_EXTRA:=-f Makefile-libbz2_so};
 : ${PKG_BZIP2_MAKE_INSTALL_VNAME:=PREFIX};
+: ${PKG_CHEROKEE_DEPENDS:="libz"};
 : ${PKG_CHEROKEE_URLS_GIT:=cherokee=https://github.com/cherokee/webserver.git@master};
 : ${PKG_CHEROKEE_CONFIGURE_ARGS_EXTRA:="--with-python=${PREFIX}/bin/python2 --without-epoll --without-php"};
 : ${PKG_CHEROKEE_IN_TREE:=1};
