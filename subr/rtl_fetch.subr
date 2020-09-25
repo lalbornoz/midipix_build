@@ -54,7 +54,7 @@ rtl_fetch_urls_git() {
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 rtl_fetch_url_wget() {
 	local _urls="${1}" _sha256sum_src="${2}" _target_fname="${3}" _rc=0 _target_fname_full=""\
-		_url="" _urls_count=0 RTL_CHECK_DIGEST_DIGEST="";
+		_url="" _urls_count=0;
 	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
 		return 0;
 	else	_urls_count="$(rtl_llength "${_urls}")";
@@ -88,11 +88,11 @@ rtl_fetch_url_wget() {
 					rtl_log_msg fatalexit "Error: failed to acquire fetching lock for URL \`%s'." "${_url}";
 				fi; ;;
 			2)	if [ "${_urls_count}" -ge 1 ]; then
-					rtl_log_msg warning "Warning: hash mismatch for URL \`%s', retrying with alternative URL... (downloaded file: %s, from build variables: %s.)"\
-							"${_url}" "${RTL_CHECK_DIGEST_DIGEST}" "${_sha256sum_src}";
+					rtl_log_msg warning "Warning: hash mismatch for URL \`%s', retrying with alternative URL... (from build variables: %s.)"\
+							"${_url}" "${_sha256sum_src}";
 				else
-					rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (downloaded file: %s, from build variables: %s.)"\
-							"${_url}" "${RTL_CHECK_DIGEST_DIGEST}" "${_sha256sum_src}";
+					rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (from build variables: %s.)"\
+							"${_url}" "${_sha256sum_src}";
 				fi; ;;
 			*)	if [ "${_urls_count}" -ge 1 ]; then
 					rtl_log_msg warning "Warning: failed to fetch URL \`%s', retrying with alternative URL... (wget(1) exit status: %s)"\
