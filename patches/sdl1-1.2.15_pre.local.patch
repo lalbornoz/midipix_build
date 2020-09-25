@@ -49,7 +49,7 @@ diff -ru SDL-1.2.15.orig/configure.in SDL-1.2.15/configure.in
          CheckPulseAudio
          CheckNAS
          CheckX11
-@@ -2494,6 +2460,35 @@
+@@ -2494,6 +2460,43 @@
              have_timers=yes
          fi
          ;;
@@ -78,6 +78,14 @@ diff -ru SDL-1.2.15.orig/configure.in SDL-1.2.15/configure.in
 +            SOURCES="$SOURCES $srcdir/src/audio/windib/*.c"
 +            have_audio=yes
 +        fi
++        # Set up files for the cdrom library
++        if test x$enable_cdrom = xyes; then
++            $as_echo "#define SDL_CDROM_WIN32 1" >>confdefs.h
++
++            SOURCES="$SOURCES $srcdir/src/cdrom/win32/*.c"
++            have_cdrom=yes
++        fi
++
 +        # Set up the system libraries we need
 +        EXTRA_LDFLAGS="$EXTRA_LDFLAGS -luser32 -lgdi32 -lwinmm -lkernel32"
 +
