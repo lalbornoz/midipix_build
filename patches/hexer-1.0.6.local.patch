@@ -1,0 +1,45 @@
+diff -ru hexer-1.0.6.orig/edit.c hexer-1.0.6/edit.c
+--- hexer-1.0.6.orig/edit.c	2020-04-24 15:06:48.000000000 +0200
++++ hexer-1.0.6/edit.c	2020-09-25 22:48:48.412100792 +0200
+@@ -51,7 +51,7 @@
+ #include <ctype.h>
+ #include <assert.h>
+ #include <unistd.h>
+-#include <curses.h>
++#include <ncurses.h>
+ #include <term.h>
+ 
+ #include "buffer.h"
+diff -ru hexer-1.0.6.orig/Makefile hexer-1.0.6/Makefile
+--- hexer-1.0.6.orig/Makefile	2020-04-24 15:06:48.000000000 +0200
++++ hexer-1.0.6/Makefile	2020-09-25 22:53:09.703828744 +0200
+@@ -19,7 +19,7 @@
+ #LTERMCAP ?= -ltermcap
+ #
+ #  ...or this one if you want to use curses.
+-LTERMCAP ?= -lcurses
++LTERMCAP ?= -lncurses -ltinfo
+ 
+ CPPFLAGS_STD ?= -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 \
+ 		-D_FILE_OFFSET_BITS=64
+@@ -72,7 +72,7 @@
+ 	$(CC) $(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -DMYCALC=1 -o $@ calc.c -lm
+ 
+ bin2c: bin2c.c
+-	$(CC_FOR_BUILD) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ bin2c.c
++	$(CC_FOR_BUILD) $(CPPFLAGS_FOR_BUILD) $(CFLAGS_FOR_BUILD) $(LDFLAGS_FOR_BUILD) -o $@ bin2c.c
+ 
+ helptext.c: help.txt bin2c
+ 	./bin2c -n helptext -o $@ help.txt
+diff -ru hexer-1.0.6.orig/tio.c hexer-1.0.6/tio.c
+--- hexer-1.0.6.orig/tio.c	2020-04-24 15:06:48.000000000 +0200
++++ hexer-1.0.6/tio.c	2020-09-25 22:48:26.032101493 +0200
+@@ -73,7 +73,7 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <signal.h>
+-#include <curses.h>
++#include <ncurses.h>
+ #include <term.h>
+ 
+ #ifndef bzero
