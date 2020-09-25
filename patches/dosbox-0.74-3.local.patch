@@ -1,0 +1,28 @@
+diff -ru dosbox-0.74-3.orig/include/cross.h dosbox-0.74-3/include/cross.h
+--- dosbox-0.74-3.orig/include/cross.h	2019-06-25 19:57:19.000000000 +0200
++++ dosbox-0.74-3/include/cross.h	2020-09-25 12:12:19.286982119 +0200
+@@ -61,12 +61,6 @@
+ #define ftruncate(blah,blah2) chsize(blah,blah2)
+ #endif
+ 
+-//Solaris maybe others
+-#if defined (DB_HAVE_NO_POWF)
+-#include <math.h>
+-static inline float powf (float x, float y) { return (float) pow (x,y); }
+-#endif
+-
+ class Cross {
+ public:
+ 	static void GetPlatformConfigDir(std::string& in);
+diff -ru dosbox-0.74-3.orig/src/gui/sdl_mapper.cpp dosbox-0.74-3/src/gui/sdl_mapper.cpp
+--- dosbox-0.74-3.orig/src/gui/sdl_mapper.cpp	2019-06-22 17:07:45.000000000 +0200
++++ dosbox-0.74-3/src/gui/sdl_mapper.cpp	2020-09-25 14:58:04.502405522 +0200
+@@ -415,7 +415,7 @@
+ 			/* try to retrieve key from symbolic key as scancode is zero */
+ 			if (keysym.sym<MAX_SDLKEYS) key=scancode_map[(Bitu)keysym.sym];
+ 		} 
+-#if !defined (WIN32) && !defined (MACOSX) && !defined(OS2)
++#if !defined (WIN32) && !defined (MACOSX) && !defined(OS2) && !defined(__midipix__)
+ 		/* Linux adds 8 to all scancodes */
+ 		else key-=8;
+ #endif

@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
-doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
+dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess gzip hastyhex hexcurse htop imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
@@ -82,6 +82,12 @@ zstd")";
 : ${PKG_DBUS_URL:=https://dbus.freedesktop.org/releases/dbus/dbus-${PKG_DBUS_VERSION}.tar.gz};
 : ${PKG_DBUS_SHA256SUM:=7fd9d0536f7ec2f2afc94b84d5b5487f88c464e8d47c661d8e0b54aa83974bfa};
 : ${PKG_DBUS_CONFIGURE_ARGS_EXTRA:="--disable-tests --with-x=no"};
+: ${PKG_DOSBOX_DEPENDS:="sdl1"};
+: ${PKG_DOSBOX_SHA256SUM:=c0d13dd7ed2ed363b68de615475781e891cd582e8162b5c3669137502222260a};
+: ${PKG_DOSBOX_VERSION:=0.74-3};
+: ${PKG_DOSBOX_URL:=https://sourceforge.net/projects/dosbox/files/dosbox/${PKG_DOSBOX_VERSION}/dosbox-${PKG_DOSBOX_VERSION}.tar.gz};
+: ${PKG_DOSBOX_CONFIGURE_ARGS_EXTRA:="--disable-opengl --disable-alsa-midi --with-sdl-prefix=${PREFIX_NATIVE}"};
+: ${PKG_DOSBOX_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_ANSI_DEFAULT"};
 : ${PKG_DOOMGENERIC_DEPENDS:="w32api w32lib"};
 : ${PKG_DOOMGENERIC_URLS_GIT:=doomgeneric=https://github.com/Redfoxymoon/doomgeneric.git@midipix};
 : ${PKG_DOOMGENERIC_BUILD_DIR:=doomgeneric/doomgeneric};
