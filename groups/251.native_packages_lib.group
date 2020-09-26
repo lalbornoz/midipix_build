@@ -53,6 +53,7 @@ libxslt libz libzip wolfssl")";
 : ${PKG_LIBESTR_SHA256SUM:=46632b2785ff4a231dcf241eeb0dcb5fc0c7d4da8ee49cf5687722cdbe8b2024};
 : ${PKG_LIBESTR_VERSION:=0.1.11};
 : ${PKG_LIBESTR_URL:=http://libestr.adiscon.com/files/download/libestr-${PKG_LIBESTR_VERSION}.tar.gz};
+: ${PKG_LIBEVENT_DEPENDS:="libressl"};
 : ${PKG_LIBEVENT_SHA256SUM:=92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb};
 : ${PKG_LIBEVENT_VERSION:=2.1.12-stable};
 : ${PKG_LIBEVENT_URL:=https://github.com/libevent/libevent/releases/download/release-${PKG_LIBEVENT_VERSION}/libevent-${PKG_LIBEVENT_VERSION}.tar.gz};
