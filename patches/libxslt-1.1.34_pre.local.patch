@@ -1,0 +1,25 @@
+diff -ru libxslt-1.1.34.orig/configure.ac libxslt-1.1.34/configure.ac
+--- libxslt-1.1.34.orig/configure.ac	2019-10-28 09:11:11.000000000 +0100
++++ libxslt-1.1.34/configure.ac	2020-09-26 17:08:16.822422567 +0200
+@@ -329,17 +329,16 @@
+     CRYPTO_TESTDIR=crypto
+     ;;
+   *)
+-    AC_PATH_TOOL(LIBGCRYPT_CONFIG, libgcrypt-config, no)
+-    if test "$LIBGCRYPT_CONFIG" != "no" ; then
+-      LIBGCRYPT_VERSION=`$LIBGCRYPT_CONFIG --version`
++    if test "$PKG_CONFIG" != "no" ; then
++      LIBGCRYPT_VERSION=`$PKG_CONFIG --modver libgcrypt`
+       if test VERSION_TO_NUMBER(echo $LIBGCRYPT_VERSION) -lt VERSION_TO_NUMBER(echo "1.1.42")
+       then
+         LIBGCRYPT_CFLAGS=""
+         LIBGCRYPT_LIBS=""
+         echo 'gcrypt library version < 1.1.42 - Crypto extensions will not be available.'
+       else
+-        LIBGCRYPT_CFLAGS=`$LIBGCRYPT_CONFIG $libgcrypt_config_args --cflags`
+-        LIBGCRYPT_LIBS=`$LIBGCRYPT_CONFIG $libgcrypt_config_args --libs`
++        LIBGCRYPT_CFLAGS=`$PKG_CONFIG --cflags libgcrypt`
++        LIBGCRYPT_LIBS=`$PKG_CONFIG --libs libgcrypt`
+         AC_DEFINE(HAVE_GCRYPT, 1, [Define if gcrypt library is available.])
+         echo 'Crypto extensions will be available.'
+         WITH_CRYPTO=1
