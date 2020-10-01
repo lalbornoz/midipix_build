@@ -22,16 +22,14 @@ diff -ru rpm-4.15.1.orig/macros.in rpm-4.15.1/macros.in
  
  #
  #	Macros used to configure Berkley db parameters.
-diff --git a/rpmio/digest_libgcrypt.c b/rpmio/digest_libgcrypt.c
-index b31fda569..291187f60 100644
---- a/rpmio/digest_libgcrypt.c
-+++ b/rpmio/digest_libgcrypt.c
-@@ -20,6 +20,8 @@ struct DIGEST_CTX_s {
- /****************************  init   ************************************/
- 
- int rpmInitCrypto(void) {
-+    gcry_check_version (NULL);
-+    gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
-     return 0;
- }
- 
+diff -ru rpm-4.16.0.orig/lib/rpmdb.c rpm-4.16.0/lib/rpmdb.c
+--- rpm-4.16.0.orig/lib/rpmdb.c 2020-05-28 12:04:25.037136686 +0200
++++ rpm-4.16.0/lib/rpmdb.c      2020-10-01 19:31:18.944641154 +0200
+@@ -8,6 +8,7 @@
+ #include <utime.h>
+ #include <errno.h>
+ #include <dirent.h>
++#include <fcntl.h>
+
+ #ifndef        DYING   /* XXX already in "system.h" */
+ #include <fnmatch.h>
