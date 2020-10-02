@@ -8,7 +8,7 @@ libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libi
 libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
-libxslt libz libzip sdl1 wolfssl")";
+libxslt libz libzip sdl1 sdl1_net wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
 : ${PKG_GLIB_VERSION:=2.54.0};
@@ -231,6 +231,11 @@ libxslt libz libzip sdl1 wolfssl")";
 : ${PKG_SDL1_IN_TREE:=1};
 : ${PKG_SDL1_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
 : ${PKG_SDL1_MAKEFLAGS_BUILD:=-j1};
+: ${PKG_SDL1_NET_DEPENDS:="sdl1"};
+: ${PKG_SDL1_NET_SHA256SUM:=5f4a7a8bb884f793c278ac3f3713be41980c5eedccecff0260411347714facb4};
+: ${PKG_SDL1_NET_VERSION:=1.2.8};
+: ${PKG_SDL1_NET_URL:=https://www.libsdl.org/projects/SDL_net/release/SDL_net-${PKG_SDL1_NET_VERSION}.tar.gz};
+: ${PKG_SDL1_NET_CONFIGURE_ARGS_EXTRA:="--disable-gui"};
 : ${PKG_WOLFSSL_SHA256SUM:=7de62300ce14daa0051bfefc7c4d6302f96cabc768b6ae49eda77523b118250c};
 : ${PKG_WOLFSSL_VERSION:=4.5.0};
 : ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
