@@ -8,7 +8,7 @@ libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libi
 libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
-libxslt libz libzip sdl1 sdl1_net wolfssl")";
+libxslt libz libzip sdl1 sdl1_net sdl1_image wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
 : ${PKG_GLIB_VERSION:=2.54.0};
@@ -236,6 +236,11 @@ libxslt libz libzip sdl1 sdl1_net wolfssl")";
 : ${PKG_SDL1_NET_VERSION:=1.2.8};
 : ${PKG_SDL1_NET_URL:=https://www.libsdl.org/projects/SDL_net/release/SDL_net-${PKG_SDL1_NET_VERSION}.tar.gz};
 : ${PKG_SDL1_NET_CONFIGURE_ARGS_EXTRA:="--disable-gui"};
+: ${PKG_SDL1_IMAGE_DEPENDS:="libz sdl1 libpng libjpeg_turbo libtiff"};
+: ${PKG_SDL1_IMAGE_SHA256SUM:=0b90722984561004de84847744d566809dbb9daf732a9e503b91a1b5a84e5699};
+: ${PKG_SDL1_IMAGE_VERSION:=1.2.12};
+: ${PKG_SDL1_IMAGE_URL:=https://www.libsdl.org/projects/SDL_image/release/SDL_image-${PKG_SDL1_IMAGE_VERSION}.tar.gz};
+: ${PKG_SDL1_IMAGE_CONFIGURE_ARGS_EXTRA:="--enable-jpg-shared --enable-png-shared --enable-tif-shared --disable-webp --disable-webp-shared"};
 : ${PKG_WOLFSSL_SHA256SUM:=7de62300ce14daa0051bfefc7c4d6302f96cabc768b6ae49eda77523b118250c};
 : ${PKG_WOLFSSL_VERSION:=4.5.0};
 : ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
