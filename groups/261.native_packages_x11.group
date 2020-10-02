@@ -8,7 +8,7 @@ freetype_pre fribidi gdk glew gtk2 gtk3 harfbuzz imlib2 libass libcaca
 libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
 libXdamage libXdmcp libXext libxfce4ui libxfce4util libXfixes libXfont2
 libXft libXi libxkbfile libXmu libXpm libXt libXtst libXcursor mesa pango pixman
-rdesktop rxvt_unicode sdl1 sdl2 st util_macros xcb xcb_proto xcb_util
+rdesktop rxvt_unicode sdl2 st util_macros xcb xcb_proto xcb_util
 xcb_util_image xcb_util_wm xcowsay xcalc xeyes xfconf xorgproto Xrender xterm
 xtrans xwd xwin")";
 : ${PKG_ATK_DEPENDS:="glib"};
@@ -224,14 +224,6 @@ xtrans xwd xwin")";
 : ${PKG_RXVT_UNICODE_VERSION:=9.22};
 : ${PKG_RXVT_UNICODE_URL:=http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PKG_RXVT_UNICODE_VERSION}.tar.bz2};
 : ${PKG_RXVT_UNICODE_CONFIGURE_ARGS_EXTRA:=--disable-perl --disable-lastlog --disable-utmp --disable-wtmp};
-: ${PKG_SDL1_DEPENDS:="w32api w32lib"};
-: ${PKG_SDL1_SHA256SUM:=d6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00};
-: ${PKG_SDL1_VERSION:=1.2.15};
-: ${PKG_SDL1_URL:=https://www.libsdl.org/release/SDL-${PKG_SDL1_VERSION}.tar.gz};
-: ${PKG_SDL1_CFLAGS_CONFIGURE_EXTRA:="-DWINAPI_ANSI_DEFAULT -I${PREFIX_NATIVE}/include/w32api.ports"};
-: ${PKG_SDL1_IN_TREE:=1};
-: ${PKG_SDL1_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
-: ${PKG_SDL1_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_SDL2_DEPENDS:="libICE libXext"};
 : ${PKG_SDL2_VERSION:=2.0.8};
 : ${PKG_SDL2_SHA256SUM:=edc77c57308661d576e843344d8638e025a7818bff73f8fbfab09c3c5fd092ec};
