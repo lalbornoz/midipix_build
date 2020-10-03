@@ -236,7 +236,7 @@ libxslt libz libzip sdl1 sdl1_net sdl1_image wolfssl")";
 : ${PKG_SDL1_NET_VERSION:=1.2.8};
 : ${PKG_SDL1_NET_URL:=https://www.libsdl.org/projects/SDL_net/release/SDL_net-${PKG_SDL1_NET_VERSION}.tar.gz};
 : ${PKG_SDL1_NET_CONFIGURE_ARGS_EXTRA:="--disable-gui"};
-: ${PKG_SDL1_IMAGE_DEPENDS:="libz sdl1 libpng libjpeg_turbo libtiff"};
+: ${PKG_SDL1_IMAGE_DEPENDS:="libz sdl1 libpng libjpeg_turbo tiff"};
 : ${PKG_SDL1_IMAGE_SHA256SUM:=0b90722984561004de84847744d566809dbb9daf732a9e503b91a1b5a84e5699};
 : ${PKG_SDL1_IMAGE_VERSION:=1.2.12};
 : ${PKG_SDL1_IMAGE_URL:=https://www.libsdl.org/projects/SDL_image/release/SDL_image-${PKG_SDL1_IMAGE_VERSION}.tar.gz};
