@@ -1,57 +1,301 @@
-diff -ru SDL2-2.0.8.orig/configure SDL2-2.0.8/configure
---- SDL2-2.0.8.orig/configure	2018-03-01 17:34:41.000000000 +0100
-+++ SDL2-2.0.8/configure	2018-03-26 21:34:16.065368148 +0200
-@@ -23829,7 +23829,7 @@
- CheckWarnAll
- 
- case "$host" in
--    *-*-linux*|*-*-uclinux*|*-*-gnu*|*-*-k*bsd*-gnu|*-*-bsdi*|*-*-freebsd*|*-*-dragonfly*|*-*-netbsd*|*-*-openbsd*|*-*-sysv5*|*-*-solaris*|*-*-hpux*|*-*-aix*|*-*-minix*|*-*-nto*)
-+    *-*-linux*|*-*-uclinux*|*-*-gnu*|*-*-k*bsd*-gnu|*-*-bsdi*|*-*-freebsd*|*-*-dragonfly*|*-*-netbsd*|*-*-openbsd*|*-*-sysv5*|*-*-solaris*|*-*-hpux*|*-*-aix*|*-*-minix*|*-*-nto*|*-*-midipix*)
-         case "$host" in
-             *-*-android*)
-                 # Android
-@@ -23854,6 +23854,7 @@
-             *-*-knetbsd*-gnu)   ARCH=knetbsd-gnu ;;
-             *-*-kopenbsd*-gnu)  ARCH=kopenbsd-gnu ;;
-             *-*-gnu*)           ARCH=gnu ;; # must be last of the gnu variants
-+            *-*-midipix*)       ARCH=gnu ;;
-             *-*-bsdi*)          ARCH=bsdi ;;
-             *-*-freebsd*)       ARCH=freebsd ;;
-             *-*-dragonfly*)     ARCH=freebsd ;;
-diff -ru SDL2-2.0.8.orig/Makefile.in SDL2-2.0.8/Makefile.in
---- SDL2-2.0.8.orig/Makefile.in	2018-03-01 17:34:41.000000000 +0100
-+++ SDL2-2.0.8/Makefile.in	2018-03-26 22:59:44.238745288 +0200
-@@ -124,7 +124,7 @@
- LT_REVISION = @LT_REVISION@
- LT_LDFLAGS  = -no-undefined -rpath $(libdir) -release $(LT_RELEASE) -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
- 
--all: $(srcdir)/configure Makefile $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET) $(objects)/$(SDLTEST_TARGET)
-+all: $(srcdir)/configure Makefile $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET)
- 
- $(srcdir)/configure: $(srcdir)/configure.in
- 	@echo "Warning, configure is out of date, please re-run autogen.sh"
-@@ -167,11 +167,10 @@
- 	    $(INSTALL) -m 644 $(srcdir)/include/SDL_revision.h $(DESTDIR)$(includedir)/SDL2/SDL_revision.h; \
- 	fi
- 
--install-lib: $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET) $(objects)/$(SDLTEST_TARGET)
-+install-lib: $(objects) $(objects)/$(TARGET) $(objects)/$(SDLMAIN_TARGET)
- 	$(SHELL) $(auxdir)/mkinstalldirs $(DESTDIR)$(libdir)
- 	$(LIBTOOL) --mode=install $(INSTALL) $(objects)/$(TARGET) $(DESTDIR)$(libdir)/$(TARGET)
- 	$(LIBTOOL) --mode=install $(INSTALL) $(objects)/$(SDLMAIN_TARGET) $(DESTDIR)$(libdir)/$(SDLMAIN_TARGET)
--	$(LIBTOOL) --mode=install $(INSTALL) $(objects)/$(SDLTEST_TARGET) $(DESTDIR)$(libdir)/$(SDLTEST_TARGET)
- install-data:
- 	$(SHELL) $(auxdir)/mkinstalldirs $(DESTDIR)$(datadir)/aclocal
- 	$(INSTALL) -m 644 $(srcdir)/sdl2.m4 $(DESTDIR)$(datadir)/aclocal/sdl2.m4
-diff -ru SDL2-2.0.8.orig/src/dynapi/SDL_dynapi.c SDL2-2.0.8/src/dynapi/SDL_dynapi.c
---- SDL2-2.0.8.orig/src/dynapi/SDL_dynapi.c	2018-03-01 17:34:42.000000000 +0100
-+++ SDL2-2.0.8/src/dynapi/SDL_dynapi.c	2018-03-26 22:05:52.162381490 +0200
-@@ -222,7 +222,7 @@
-     return retval;
- }
- 
--#elif defined(unix) || defined(__unix__) || defined(__APPLE__) || defined(__HAIKU__) || defined(__QNX__)
-+#elif defined(unix) || defined(__unix__) || defined(__APPLE__) || defined(__HAIKU__) || defined(__QNX__) || defined(__midipix__)
- #include <dlfcn.h>
- static SDL_INLINE void *get_sdlapi_entry(const char *fname, const char *sym)
+diff -ru SDL2-2.0.8.orig/src/video/windows/SDL_windowskeyboard.c SDL2-2.0.8/src/video/windows/SDL_windowskeyboard.c
+--- SDL2-2.0.8.orig/src/video/windows/SDL_windowskeyboard.c     2018-03-01 17:34:43.000000000 +0100
++++ SDL2-2.0.8/src/video/windows/SDL_windowskeyboard.c  2020-10-05 00:37:25.684238476 +0200
+@@ -30,6 +30,10 @@
+ #include <imm.h>
+ #include <oleauto.h>
+
++#ifndef CFS_FORCE_POSITION
++#define CFS_FORCE_POSITION 0x0020
++#endif
++
+ #ifndef SDL_DISABLE_WINDOWS_IME
+ static void IME_Init(SDL_VideoData *videodata, HWND hwnd);
+ static void IME_Enable(SDL_VideoData *videodata, HWND hwnd);
+diff -ru SDL2-2.0.8.orig/src/video/windows/SDL_msctf.h SDL2-2.0.8/src/video/windows/SDL_msctf.h
+--- SDL2-2.0.8.orig/src/video/windows/SDL_msctf.h       2018-03-01 17:34:43.000000000 +0100
++++ SDL2-2.0.8/src/video/windows/SDL_msctf.h    2020-10-04 12:38:34.746446128 +0200
+@@ -22,7 +22,18 @@
+ #ifndef SDL_msctf_h_
+ #define SDL_msctf_h_
+
+-#include <unknwn.h>
++#include <windows.h>
++#include <stdint.h>
++typedef uint16_t* BSTR;
++typedef DWORD HIMCC;
++#define NEAR
++#define FAR
++typedef struct tagCANDIDATEFORM {
++   DWORD dwIndex;
++   DWORD dwStyle;
++   POINT ptCurrentPos;
++   RECT rcArea;
++} CANDIDATEFORM,*PCANDIDATEFORM,*NPCANDIDATEFORM,*LPCANDIDATEFORM;
+
+ #define     TF_INVALID_COOKIE               (0xffffffff)
+ #define     TF_IPSINK_FLAG_ACTIVE           0x0001
+@@ -53,20 +53,20 @@
+
+ typedef struct ITfThreadMgrVtbl
  {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfThreadMgr *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfThreadMgr *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfThreadMgr *);
+-    HRESULT (STDMETHODCALLTYPE *Activate)(ITfThreadMgr *, TfClientId *);
+-    HRESULT (STDMETHODCALLTYPE *Deactivate)(ITfThreadMgr *);
+-    HRESULT (STDMETHODCALLTYPE *CreateDocumentMgr)(ITfThreadMgr *);
+-    HRESULT (STDMETHODCALLTYPE *EnumDocumentMgrs)(ITfThreadMgr *, IEnumTfDocumentMgrs **);
+-    HRESULT (STDMETHODCALLTYPE *GetFocus)(ITfThreadMgr *, ITfDocumentMgr **);
+-    HRESULT (STDMETHODCALLTYPE *SetFocus)(ITfThreadMgr *, ITfDocumentMgr *);
+-    HRESULT (STDMETHODCALLTYPE *AssociateFocus)(ITfThreadMgr *, HWND, ITfDocumentMgr *, ITfDocumentMgr **);
+-    HRESULT (STDMETHODCALLTYPE *IsThreadFocus)(ITfThreadMgr *, BOOL *);
+-    HRESULT (STDMETHODCALLTYPE *GetFunctionProvider)(ITfThreadMgr *, REFCLSID, ITfFunctionProvider **);
+-    HRESULT (STDMETHODCALLTYPE *EnumFunctionProviders)(ITfThreadMgr *, IEnumTfFunctionProviders **);
+-    HRESULT (STDMETHODCALLTYPE *GetGlobalCompartment)(ITfThreadMgr *, ITfCompartmentMgr **);
++    HRESULT (__stdcall *QueryInterface)(ITfThreadMgr *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfThreadMgr *);
++    ULONG (__stdcall *Release)(ITfThreadMgr *);
++    HRESULT (__stdcall *Activate)(ITfThreadMgr *, TfClientId *);
++    HRESULT (__stdcall *Deactivate)(ITfThreadMgr *);
++    HRESULT (__stdcall *CreateDocumentMgr)(ITfThreadMgr *);
++    HRESULT (__stdcall *EnumDocumentMgrs)(ITfThreadMgr *, IEnumTfDocumentMgrs **);
++    HRESULT (__stdcall *GetFocus)(ITfThreadMgr *, ITfDocumentMgr **);
++    HRESULT (__stdcall *SetFocus)(ITfThreadMgr *, ITfDocumentMgr *);
++    HRESULT (__stdcall *AssociateFocus)(ITfThreadMgr *, HWND, ITfDocumentMgr *, ITfDocumentMgr **);
++    HRESULT (__stdcall *IsThreadFocus)(ITfThreadMgr *, BOOL *);
++    HRESULT (__stdcall *GetFunctionProvider)(ITfThreadMgr *, REFCLSID, ITfFunctionProvider **);
++    HRESULT (__stdcall *EnumFunctionProviders)(ITfThreadMgr *, IEnumTfFunctionProviders **);
++    HRESULT (__stdcall *GetGlobalCompartment)(ITfThreadMgr *, ITfCompartmentMgr **);
+ } ITfThreadMgrVtbl;
+
+ struct ITfThreadMgr
+@@ -76,22 +76,22 @@
+
+ typedef struct ITfThreadMgrExVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfThreadMgrEx *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfThreadMgrEx *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfThreadMgrEx *);
+-    HRESULT (STDMETHODCALLTYPE *Activate)(ITfThreadMgrEx *, TfClientId *);
+-    HRESULT (STDMETHODCALLTYPE *Deactivate)(ITfThreadMgrEx *);
+-    HRESULT (STDMETHODCALLTYPE *CreateDocumentMgr)(ITfThreadMgrEx *, ITfDocumentMgr **);
+-    HRESULT (STDMETHODCALLTYPE *EnumDocumentMgrs)(ITfThreadMgrEx *, IEnumTfDocumentMgrs **);
+-    HRESULT (STDMETHODCALLTYPE *GetFocus)(ITfThreadMgrEx *, ITfDocumentMgr **);
+-    HRESULT (STDMETHODCALLTYPE *SetFocus)(ITfThreadMgrEx *, ITfDocumentMgr *);
+-    HRESULT (STDMETHODCALLTYPE *AssociateFocus)(ITfThreadMgrEx *, ITfDocumentMgr *, ITfDocumentMgr **);
+-    HRESULT (STDMETHODCALLTYPE *IsThreadFocus)(ITfThreadMgrEx *, BOOL *);
+-    HRESULT (STDMETHODCALLTYPE *GetFunctionProvider)(ITfThreadMgrEx *, REFCLSID, ITfFunctionProvider **);
+-    HRESULT (STDMETHODCALLTYPE *EnumFunctionProviders)(ITfThreadMgrEx *, IEnumTfFunctionProviders **);
+-    HRESULT (STDMETHODCALLTYPE *GetGlobalCompartment)(ITfThreadMgrEx *, ITfCompartmentMgr **);
+-    HRESULT (STDMETHODCALLTYPE *ActivateEx)(ITfThreadMgrEx *, TfClientId *, DWORD);
+-    HRESULT (STDMETHODCALLTYPE *GetActiveFlags)(ITfThreadMgrEx *, DWORD *);
++    HRESULT (__stdcall *QueryInterface)(ITfThreadMgrEx *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfThreadMgrEx *);
++    ULONG (__stdcall *Release)(ITfThreadMgrEx *);
++    HRESULT (__stdcall *Activate)(ITfThreadMgrEx *, TfClientId *);
++    HRESULT (__stdcall *Deactivate)(ITfThreadMgrEx *);
++    HRESULT (__stdcall *CreateDocumentMgr)(ITfThreadMgrEx *, ITfDocumentMgr **);
++    HRESULT (__stdcall *EnumDocumentMgrs)(ITfThreadMgrEx *, IEnumTfDocumentMgrs **);
++    HRESULT (__stdcall *GetFocus)(ITfThreadMgrEx *, ITfDocumentMgr **);
++    HRESULT (__stdcall *SetFocus)(ITfThreadMgrEx *, ITfDocumentMgr *);
++    HRESULT (__stdcall *AssociateFocus)(ITfThreadMgrEx *, ITfDocumentMgr *, ITfDocumentMgr **);
++    HRESULT (__stdcall *IsThreadFocus)(ITfThreadMgrEx *, BOOL *);
++    HRESULT (__stdcall *GetFunctionProvider)(ITfThreadMgrEx *, REFCLSID, ITfFunctionProvider **);
++    HRESULT (__stdcall *EnumFunctionProviders)(ITfThreadMgrEx *, IEnumTfFunctionProviders **);
++    HRESULT (__stdcall *GetGlobalCompartment)(ITfThreadMgrEx *, ITfCompartmentMgr **);
++    HRESULT (__stdcall *ActivateEx)(ITfThreadMgrEx *, TfClientId *, DWORD);
++    HRESULT (__stdcall *GetActiveFlags)(ITfThreadMgrEx *, DWORD *);
+ } ITfThreadMgrExVtbl;
+
+ struct ITfThreadMgrEx
+@@ -101,15 +101,15 @@
+
+ typedef struct ITfDocumentMgrVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfDocumentMgr *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfDocumentMgr *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfDocumentMgr *);
+-    HRESULT (STDMETHODCALLTYPE *CreateContext)(ITfDocumentMgr *, TfClientId, DWORD, IUnknown *, ITfContext **, TfEditCookie *);
+-    HRESULT (STDMETHODCALLTYPE *Push)(ITfDocumentMgr *, ITfContext *);
+-    HRESULT (STDMETHODCALLTYPE *Pop)(ITfDocumentMgr *);
+-    HRESULT (STDMETHODCALLTYPE *GetTop)(ITfDocumentMgr *, ITfContext **);
+-    HRESULT (STDMETHODCALLTYPE *GetBase)(ITfDocumentMgr *, ITfContext **);
+-    HRESULT (STDMETHODCALLTYPE *EnumContexts)(ITfDocumentMgr *, IEnumTfContexts **);
++    HRESULT (__stdcall *QueryInterface)(ITfDocumentMgr *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfDocumentMgr *);
++    ULONG (__stdcall *Release)(ITfDocumentMgr *);
++    HRESULT (__stdcall *CreateContext)(ITfDocumentMgr *, TfClientId, DWORD, IUnknown *, ITfContext **, TfEditCookie *);
++    HRESULT (__stdcall *Push)(ITfDocumentMgr *, ITfContext *);
++    HRESULT (__stdcall *Pop)(ITfDocumentMgr *);
++    HRESULT (__stdcall *GetTop)(ITfDocumentMgr *, ITfContext **);
++    HRESULT (__stdcall *GetBase)(ITfDocumentMgr *, ITfContext **);
++    HRESULT (__stdcall *EnumContexts)(ITfDocumentMgr *, IEnumTfContexts **);
+ } ITfDocumentMgrVtbl;
+
+ struct ITfDocumentMgr
+@@ -119,12 +119,12 @@
+
+ typedef struct ITfUIElementSinkVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfUIElementSink *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfUIElementSink *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfUIElementSink *);
+-    HRESULT (STDMETHODCALLTYPE *BeginUIElement)(ITfUIElementSink *, DWORD, BOOL *);
+-    HRESULT (STDMETHODCALLTYPE *UpdateUIElement)(ITfUIElementSink *, DWORD);
+-    HRESULT (STDMETHODCALLTYPE *EndUIElement)(ITfUIElementSink *, DWORD);
++    HRESULT (__stdcall *QueryInterface)(ITfUIElementSink *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfUIElementSink *);
++    ULONG (__stdcall *Release)(ITfUIElementSink *);
++    HRESULT (__stdcall *BeginUIElement)(ITfUIElementSink *, DWORD, BOOL *);
++    HRESULT (__stdcall *UpdateUIElement)(ITfUIElementSink *, DWORD);
++    HRESULT (__stdcall *EndUIElement)(ITfUIElementSink *, DWORD);
+ } ITfUIElementSinkVtbl;
+
+ struct ITfUIElementSink
+@@ -134,14 +134,14 @@
+
+ typedef struct ITfUIElementMgrVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfUIElementMgr *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfUIElementMgr *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfUIElementMgr *);
+-    HRESULT (STDMETHODCALLTYPE *BeginUIElement)(ITfUIElementMgr *, ITfUIElement *, BOOL *, DWORD *);
+-    HRESULT (STDMETHODCALLTYPE *UpdateUIElement)(ITfUIElementMgr *, DWORD);
+-    HRESULT (STDMETHODCALLTYPE *EndUIElement)(ITfUIElementMgr *, DWORD);
+-    HRESULT (STDMETHODCALLTYPE *GetUIElement)(ITfUIElementMgr *, DWORD, ITfUIElement **);
+-    HRESULT (STDMETHODCALLTYPE *EnumUIElements)(ITfUIElementMgr *, IEnumTfUIElements **);
++    HRESULT (__stdcall *QueryInterface)(ITfUIElementMgr *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfUIElementMgr *);
++    ULONG (__stdcall *Release)(ITfUIElementMgr *);
++    HRESULT (__stdcall *BeginUIElement)(ITfUIElementMgr *, ITfUIElement *, BOOL *, DWORD *);
++    HRESULT (__stdcall *UpdateUIElement)(ITfUIElementMgr *, DWORD);
++    HRESULT (__stdcall *EndUIElement)(ITfUIElementMgr *, DWORD);
++    HRESULT (__stdcall *GetUIElement)(ITfUIElementMgr *, DWORD, ITfUIElement **);
++    HRESULT (__stdcall *EnumUIElements)(ITfUIElementMgr *, IEnumTfUIElements **);
+ } ITfUIElementMgrVtbl;
+
+ struct ITfUIElementMgr
+@@ -151,21 +151,21 @@
+
+ typedef struct ITfCandidateListUIElementVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfCandidateListUIElement *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfCandidateListUIElement *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfCandidateListUIElement *);
+-    HRESULT (STDMETHODCALLTYPE *GetDescription)(ITfCandidateListUIElement *, BSTR *);
+-    HRESULT (STDMETHODCALLTYPE *GetGUID)(ITfCandidateListUIElement *, GUID *);
+-    HRESULT (STDMETHODCALLTYPE *Show)(ITfCandidateListUIElement *, BOOL);
+-    HRESULT (STDMETHODCALLTYPE *IsShown)(ITfCandidateListUIElement *, BOOL *);
+-    HRESULT (STDMETHODCALLTYPE *GetUpdatedFlags)(ITfCandidateListUIElement *, DWORD *);
+-    HRESULT (STDMETHODCALLTYPE *GetDocumentMgr)(ITfCandidateListUIElement *, ITfDocumentMgr **);
+-    HRESULT (STDMETHODCALLTYPE *GetCount)(ITfCandidateListUIElement *, UINT *);
+-    HRESULT (STDMETHODCALLTYPE *GetSelection)(ITfCandidateListUIElement *, UINT *);
+-    HRESULT (STDMETHODCALLTYPE *GetString)(ITfCandidateListUIElement *, UINT, BSTR *);
+-    HRESULT (STDMETHODCALLTYPE *GetPageIndex)(ITfCandidateListUIElement *, UINT *, UINT, UINT *);
+-    HRESULT (STDMETHODCALLTYPE *SetPageIndex)(ITfCandidateListUIElement *, UINT *, UINT);
+-    HRESULT (STDMETHODCALLTYPE *GetCurrentPage)(ITfCandidateListUIElement *, UINT *);
++    HRESULT (__stdcall *QueryInterface)(ITfCandidateListUIElement *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfCandidateListUIElement *);
++    ULONG (__stdcall *Release)(ITfCandidateListUIElement *);
++    HRESULT (__stdcall *GetDescription)(ITfCandidateListUIElement *, BSTR *);
++    HRESULT (__stdcall *GetGUID)(ITfCandidateListUIElement *, GUID *);
++    HRESULT (__stdcall *Show)(ITfCandidateListUIElement *, BOOL);
++    HRESULT (__stdcall *IsShown)(ITfCandidateListUIElement *, BOOL *);
++    HRESULT (__stdcall *GetUpdatedFlags)(ITfCandidateListUIElement *, DWORD *);
++    HRESULT (__stdcall *GetDocumentMgr)(ITfCandidateListUIElement *, ITfDocumentMgr **);
++    HRESULT (__stdcall *GetCount)(ITfCandidateListUIElement *, UINT *);
++    HRESULT (__stdcall *GetSelection)(ITfCandidateListUIElement *, UINT *);
++    HRESULT (__stdcall *GetString)(ITfCandidateListUIElement *, UINT, BSTR *);
++    HRESULT (__stdcall *GetPageIndex)(ITfCandidateListUIElement *, UINT *, UINT, UINT *);
++    HRESULT (__stdcall *SetPageIndex)(ITfCandidateListUIElement *, UINT *, UINT);
++    HRESULT (__stdcall *GetCurrentPage)(ITfCandidateListUIElement *, UINT *);
+ } ITfCandidateListUIElementVtbl;
+
+ struct ITfCandidateListUIElement
+@@ -175,19 +175,19 @@
+
+ typedef struct ITfReadingInformationUIElementVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfReadingInformationUIElement *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfReadingInformationUIElement *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfReadingInformationUIElement *);
+-    HRESULT (STDMETHODCALLTYPE *GetDescription)(ITfReadingInformationUIElement *, BSTR *);
+-    HRESULT (STDMETHODCALLTYPE *GetGUID)(ITfReadingInformationUIElement *, GUID *);
+-    HRESULT (STDMETHODCALLTYPE *Show)(ITfReadingInformationUIElement *, BOOL);
+-    HRESULT (STDMETHODCALLTYPE *IsShown)(ITfReadingInformationUIElement *, BOOL *);
+-    HRESULT (STDMETHODCALLTYPE *GetUpdatedFlags)(ITfReadingInformationUIElement *, DWORD *);
+-    HRESULT (STDMETHODCALLTYPE *GetContext)(ITfReadingInformationUIElement *, ITfContext **);
+-    HRESULT (STDMETHODCALLTYPE *GetString)(ITfReadingInformationUIElement *, BSTR *);
+-    HRESULT (STDMETHODCALLTYPE *GetMaxReadingStringLength)(ITfReadingInformationUIElement *, UINT *);
+-    HRESULT (STDMETHODCALLTYPE *GetErrorIndex)(ITfReadingInformationUIElement *, UINT *);
+-    HRESULT (STDMETHODCALLTYPE *IsVerticalOrderPreferred)(ITfReadingInformationUIElement *, BOOL *);
++    HRESULT (__stdcall *QueryInterface)(ITfReadingInformationUIElement *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfReadingInformationUIElement *);
++    ULONG (__stdcall *Release)(ITfReadingInformationUIElement *);
++    HRESULT (__stdcall *GetDescription)(ITfReadingInformationUIElement *, BSTR *);
++    HRESULT (__stdcall *GetGUID)(ITfReadingInformationUIElement *, GUID *);
++    HRESULT (__stdcall *Show)(ITfReadingInformationUIElement *, BOOL);
++    HRESULT (__stdcall *IsShown)(ITfReadingInformationUIElement *, BOOL *);
++    HRESULT (__stdcall *GetUpdatedFlags)(ITfReadingInformationUIElement *, DWORD *);
++    HRESULT (__stdcall *GetContext)(ITfReadingInformationUIElement *, ITfContext **);
++    HRESULT (__stdcall *GetString)(ITfReadingInformationUIElement *, BSTR *);
++    HRESULT (__stdcall *GetMaxReadingStringLength)(ITfReadingInformationUIElement *, UINT *);
++    HRESULT (__stdcall *GetErrorIndex)(ITfReadingInformationUIElement *, UINT *);
++    HRESULT (__stdcall *IsVerticalOrderPreferred)(ITfReadingInformationUIElement *, BOOL *);
+ } ITfReadingInformationUIElementVtbl;
+
+ struct ITfReadingInformationUIElement
+@@ -197,13 +197,13 @@
+
+ typedef struct ITfUIElementVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfUIElement *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfUIElement *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfUIElement *);
+-    HRESULT (STDMETHODCALLTYPE *GetDescription)(ITfUIElement *, BSTR *);
+-    HRESULT (STDMETHODCALLTYPE *GetGUID)(ITfUIElement *, GUID *);
+-    HRESULT (STDMETHODCALLTYPE *Show)(ITfUIElement *, BOOL);
+-    HRESULT (STDMETHODCALLTYPE *IsShown)(ITfUIElement *, BOOL *);
++    HRESULT (__stdcall *QueryInterface)(ITfUIElement *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfUIElement *);
++    ULONG (__stdcall *Release)(ITfUIElement *);
++    HRESULT (__stdcall *GetDescription)(ITfUIElement *, BSTR *);
++    HRESULT (__stdcall *GetGUID)(ITfUIElement *, GUID *);
++    HRESULT (__stdcall *Show)(ITfUIElement *, BOOL);
++    HRESULT (__stdcall *IsShown)(ITfUIElement *, BOOL *);
+ } ITfUIElementVtbl;
+
+ struct ITfUIElement
+@@ -213,10 +213,10 @@
+
+ typedef struct ITfInputProcessorProfileActivationSinkVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfInputProcessorProfileActivationSink *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfInputProcessorProfileActivationSink *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfInputProcessorProfileActivationSink *);
+-    HRESULT (STDMETHODCALLTYPE *OnActivated)(ITfInputProcessorProfileActivationSink *, DWORD, LANGID, REFCLSID, REFGUID, REFGUID, HKL, DWORD);
++    HRESULT (__stdcall *QueryInterface)(ITfInputProcessorProfileActivationSink *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfInputProcessorProfileActivationSink *);
++    ULONG (__stdcall *Release)(ITfInputProcessorProfileActivationSink *);
++    HRESULT (__stdcall *OnActivated)(ITfInputProcessorProfileActivationSink *, DWORD, LANGID, REFCLSID, REFGUID, REFGUID, HKL, DWORD);
+
+ } ITfInputProcessorProfileActivationSinkVtbl;
+
+@@ -227,11 +227,11 @@
+
+ typedef struct ITfSourceVtbl
+ {
+-    HRESULT (STDMETHODCALLTYPE *QueryInterface)(ITfSource *, REFIID, void **);
+-    ULONG (STDMETHODCALLTYPE *AddRef)(ITfSource *);
+-    ULONG (STDMETHODCALLTYPE *Release)(ITfSource *);
+-    HRESULT (STDMETHODCALLTYPE *AdviseSink)(ITfSource *, REFIID, IUnknown *, DWORD *);
+-    HRESULT (STDMETHODCALLTYPE *UnadviseSink)(ITfSource *, DWORD);
++    HRESULT (__stdcall *QueryInterface)(ITfSource *, REFIID, void **);
++    ULONG (__stdcall *AddRef)(ITfSource *);
++    ULONG (__stdcall *Release)(ITfSource *);
++    HRESULT (__stdcall *AdviseSink)(ITfSource *, REFIID, IUnknown *, DWORD *);
++    HRESULT (__stdcall *UnadviseSink)(ITfSource *, DWORD);
+ } ITfSourceVtbl;
+
+ struct ITfSource

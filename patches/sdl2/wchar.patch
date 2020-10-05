@@ -1,0 +1,102 @@
+diff -ru SDL2-2.0.8.orig/src/video/windows/SDL_windowsevents.c SDL2-2.0.8/src/video/windows/SDL_windowsevents.c
+--- SDL2-2.0.8.orig/src/video/windows/SDL_windowsevents.c	2018-03-01 17:34:42.000000000 +0100
++++ SDL2-2.0.8/src/video/windows/SDL_windowsevents.c	2020-10-05 13:11:43.595494306 +0200
+@@ -47,6 +47,10 @@
+ #include "wmmsg.h"
+ #endif
+ 
++#ifdef __midipix__
++#define sdl_window_data (uint16_t[]){'S','D','L','_','W','i','n','d','o','w','D','a','t','a',0}
++#endif
++
+ /* For processing mouse WM_*BUTTON* and WM_MOUSEMOVE message-data from GetMessageExtraInfo() */
+ #define MOUSEEVENTF_FROMTOUCH 0xFF515700
+ 
+@@ -384,7 +388,11 @@
+     }
+ 
+     /* Get the window data for the window */
++#ifdef __midipix__
++    data = (SDL_WindowData *) GetProp(hwnd, sdl_window_data);
++#else
+     data = (SDL_WindowData *) GetProp(hwnd, TEXT("SDL_WindowData"));
++#endif
+     if (!data) {
+         return CallWindowProc(DefWindowProc, hwnd, msg, wParam, lParam);
+     }
+diff -ru SDL2-2.0.8.orig/src/video/windows/SDL_windowswindow.c SDL2-2.0.8/src/video/windows/SDL_windowswindow.c
+--- SDL2-2.0.8.orig/src/video/windows/SDL_windowswindow.c	2018-03-01 17:34:42.000000000 +0100
++++ SDL2-2.0.8/src/video/windows/SDL_windowswindow.c	2020-10-05 13:23:58.342720394 +0200
+@@ -45,10 +45,22 @@
+ #define SWP_NOCOPYBITS 0
+ #endif
+ 
++#ifdef __midipix__
++#define sdl_helper_window_input_catcher (uint16_t[]){'S','D','L','H','e','l','p','e','r','W','i','n','d','o','w','I','n','p','u','t','C','a','t','c','h','e','r',0}
++#define sdl_helper_window_name (uint16_t[]){'S','D','L','H','e','l','p','e','r','W','i','n','d','o','w','I','n','p','u','t','M','s','g','W','i','n','d','o','w',0}
++#define sdl_window (uint16_t[]){'S','D','L','_','W','i','n','d','o','w','D','a','t','a',0}
++#define sdl_empty (uint16_t[]){0}
++#endif
++
+ /* Fake window to help with DirectInput events. */
+ HWND SDL_HelperWindow = NULL;
++#ifdef __midipix__
++static WCHAR *SDL_HelperWindowClassName = sdl_helper_window_input_catcher;
++static WCHAR *SDL_HelperWindowName = sdl_helper_window_name;
++#else
+ static WCHAR *SDL_HelperWindowClassName = TEXT("SDLHelperWindowInputCatcher");
+ static WCHAR *SDL_HelperWindowName = TEXT("SDLHelperWindowInputMsgWindow");
++#endif
+ static ATOM SDL_HelperWindowClass = 0;
+ 
+ /* For borderless Windows, still want the following flags:
+@@ -183,7 +195,11 @@
+     window->driverdata = data;
+ 
+     /* Associate the data with the window */
++#ifdef __midipix__
++    if (!SetProp(hwnd, sdl_window, data)) {
++#else
+     if (!SetProp(hwnd, TEXT("SDL_WindowData"), data)) {
++#endif
+         ReleaseDC(hwnd, data->hdc);
+         SDL_free(data);
+         return WIN_SetError("SetProp() failed");
+@@ -307,7 +323,11 @@
+     int w, h;
+ 
+     if (window->flags & SDL_WINDOW_SKIP_TASKBAR) {
++#ifdef __midipix__
++        parent = CreateWindow(SDL_Appname, sdl_empty, STYLE_BASIC, 0, 0, 32, 32, NULL, NULL, SDL_Instance, NULL);
++#else
+         parent = CreateWindow(SDL_Appname, TEXT(""), STYLE_BASIC, 0, 0, 32, 32, NULL, NULL, SDL_Instance, NULL);
++#endif
+     }
+ 
+     style |= GetWindowStyle(window);
+@@ -315,9 +335,13 @@
+     /* Figure out what the window area will be */
+     WIN_AdjustWindowRectWithStyle(window, style, FALSE, &x, &y, &w, &h, SDL_FALSE);
+ 
++#ifdef __midipix__
++    hwnd = CreateWindow(SDL_Appname, sdl_empty, style, x, y, w, h, parent, NULL, SDL_Instance, NULL);
++#else
+     hwnd =
+         CreateWindow(SDL_Appname, TEXT(""), style, x, y, w, h, parent, NULL,
+                      SDL_Instance, NULL);
++#endif
+     if (!hwnd) {
+         return WIN_SetError("Couldn't create window");
+     }
+@@ -741,7 +765,11 @@
+ 
+     if (data) {
+         ReleaseDC(data->hwnd, data->hdc);
++#ifdef __midipix__
++        RemoveProp(data->hwnd, sdl_window);
++#else
+         RemoveProp(data->hwnd, TEXT("SDL_WindowData"));
++#endif
+         if (data->created) {
+             DestroyWindow(data->hwnd);
+             if (data->parent) {

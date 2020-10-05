@@ -8,7 +8,7 @@ freetype_pre fribidi gdk glew gtk2 gtk3 harfbuzz imlib2 libass libcaca
 libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
 libXdamage libXdmcp libXext libxfce4ui libxfce4util libXfixes libXfont2
 libXft libXi libxkbfile libXmu libXpm libXt libXtst libXcursor mesa pango pixman
-rdesktop rxvt_unicode sdl2 st util_macros xcb xcb_proto xcb_util
+rdesktop rxvt_unicode st util_macros xcb xcb_proto xcb_util
 xcb_util_image xcb_util_wm xcowsay xcalc xeyes xfconf xorgproto Xrender xterm
 xtrans xwd xwin")";
 : ${PKG_ATK_DEPENDS:="glib"};
@@ -224,12 +224,6 @@ xtrans xwd xwin")";
 : ${PKG_RXVT_UNICODE_VERSION:=9.22};
 : ${PKG_RXVT_UNICODE_URL:=http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PKG_RXVT_UNICODE_VERSION}.tar.bz2};
 : ${PKG_RXVT_UNICODE_CONFIGURE_ARGS_EXTRA:=--disable-perl --disable-lastlog --disable-utmp --disable-wtmp};
-: ${PKG_SDL2_DEPENDS:="libICE libXext"};
-: ${PKG_SDL2_VERSION:=2.0.8};
-: ${PKG_SDL2_SHA256SUM:=edc77c57308661d576e843344d8638e025a7818bff73f8fbfab09c3c5fd092ec};
-: ${PKG_SDL2_URL:=https://www.libsdl.org/release/SDL2-${PKG_SDL2_VERSION}.tar.gz};
-: ${PKG_SDL2_CONFIGURE_ARGS_EXTRA:="--disable-video-vulkan --disable-video-opengles2 --disable-alsa --disable-static"};
-: ${PKG_SDL2_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_ST_DEPENDS:="freetype fontconfig libX11 libXft"};
 : ${PKG_ST_SHA256SUM:=f7870d906ccc988926eef2cc98950a99cc78725b685e934c422c03c1234e6000};
 : ${PKG_ST_VERSION:=0.7};

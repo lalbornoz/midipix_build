@@ -1,0 +1,203 @@
+--- SDL2-2.0.8.orig/src/video/windows/SDL_windowsvideo.c	2018-03-01 17:34:42.000000000 +0100
++++ SDL2-2.0.8/src/video/windows/SDL_windowsvideo.c	2020-10-05 01:07:51.101894646 +0200
+@@ -240,13 +240,17 @@
+     WIN_QuitMouse(_this);
+ }
+ 
+-
++#ifdef SDL_VIDEO_RENDER_D3D
+ #define D3D_DEBUG_INFO
+ #include <d3d9.h>
++#endif
+ 
+ SDL_bool 
+ D3D_LoadDLL(void **pD3DDLL, IDirect3D9 **pDirect3D9Interface)
+ {
++#ifndef SDL_VIDEO_RENDER_D3D
++    return SDL_FALSE;
++#else
+     *pD3DDLL = SDL_LoadObject("D3D9.DLL");
+     if (*pD3DDLL) {
+         typedef IDirect3D9 *(WINAPI *Direct3DCreate9_t) (UINT SDKVersion);
+@@ -284,12 +288,16 @@
+     }
+     *pDirect3D9Interface = NULL;
+     return SDL_FALSE;
++#endif
+ }
+ 
+ 
+ int
+ SDL_Direct3D9GetAdapterIndex(int displayIndex)
+ {
++#ifndef SDL_VIDEO_RENDER_D3D
++    return 0;
++#else
+     void *pD3DDLL;
+     IDirect3D9 *pD3D;
+     if (!D3D_LoadDLL(&pD3DDLL, &pD3D)) {
+@@ -324,6 +332,7 @@
+ 
+         return adapterIndex;
+     }
++#endif
+ }
+ 
+ #if HAVE_DXGI_H
+--- SDL2-2.0.8.orig/src/video/windows/SDL_windowsevents.c	2018-03-01 17:34:42.000000000 +0100
++++ SDL2-2.0.8/src/video/windows/SDL_windowsevents.c	2020-10-05 01:59:14.387146659 +0200
+@@ -1162,7 +1166,7 @@
+         }
+     } else {
+         /* Use the first icon as a default icon, like in the Explorer */
+-        GetModuleFileName(SDL_Instance, path, MAX_PATH);
++        GetModuleFileNameA(SDL_Instance, path, MAX_PATH);
+         ExtractIconEx(path, 0, &wcex.hIcon, &wcex.hIconSm, 1);
+     }
+ 
+--- SDL2-2.0.8.orig/include/SDL_system.h	2018-03-01 17:34:41.000000000 +0100
++++ SDL2-2.0.8/include/SDL_system.h	2020-10-05 00:17:56.683991095 +0200
+@@ -41,7 +41,7 @@
+ 
+ 
+ /* Platform specific functions for Windows */
+-#ifdef __WIN32__
++#if defined(__WIN32__) || defined(__midipix__)
+ 	
+ /**
+    \brief Set a function that is called for every windows message, before TranslateMessage()
+--- SDL2-2.0.8.orig/src/core/unix/SDL_windows.c	1970-01-01 01:00:00.000000000 +0100
++++ SDL2-2.0.8/src/core/unix/SDL_windows.c	2020-10-05 01:45:58.660207506 +0200
+@@ -0,0 +1,54 @@
++/*
++  Simple DirectMedia Layer
++  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
++
++  This software is provided 'as-is', without any express or implied
++  warranty.  In no event will the authors be held liable for any damages
++  arising from the use of this software.
++
++  Permission is granted to anyone to use this software for any purpose,
++  including commercial applications, and to alter it and redistribute it
++  freely, subject to the following restrictions:
++
++  1. The origin of this software must not be misrepresented; you must not
++     claim that you wrote the original software. If you use this software
++     in a product, an acknowledgment in the product documentation would be
++     appreciated but is not required.
++  2. Altered source versions must be plainly marked as such, and must not be
++     misrepresented as being the original software.
++  3. This notice may not be removed or altered from any source distribution.
++*/
++#include "../../SDL_internal.h"
++
++#if defined(__WIN32__) || defined(__WINRT__) || defined(__midipix__)
++
++#include "SDL_windows.h"
++#include "SDL_error.h"
++#include "SDL_assert.h"
++
++#ifndef _WIN32_WINNT_VISTA
++#define _WIN32_WINNT_VISTA  0x0600
++#endif
++
++
++/* Sets an error message based on an HRESULT */
++int
++WIN_SetErrorFromHRESULT(const char *prefix, HRESULT hr)
++{
++    TCHAR buffer[1024];
++    char *message;
++    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr, 0,
++                  buffer, SDL_arraysize(buffer), NULL);
++    message = WIN_StringToUTF8(buffer);
++    SDL_SetError("%s%s%s", prefix ? prefix : "", prefix ? ": " : "", message);
++    SDL_free(message);
++    return -1;
++}
++
++/* Sets an error message based on GetLastError() */
++int
++WIN_SetError(const char *prefix)
++{
++    return WIN_SetErrorFromHRESULT(prefix, GetLastError());
++}
++#endif
+--- SDL2-2.0.8.orig/src/core/unix/SDL_windows.h	1970-01-01 01:00:00.000000000 +0100
++++ SDL2-2.0.8/src/core/unix/SDL_windows.h	2020-10-05 01:36:40.827047116 +0200
+@@ -0,0 +1,75 @@
++/*
++  Simple DirectMedia Layer
++  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
++
++  This software is provided 'as-is', without any express or implied
++  warranty.  In no event will the authors be held liable for any damages
++  arising from the use of this software.
++
++  Permission is granted to anyone to use this software for any purpose,
++  including commercial applications, and to alter it and redistribute it
++  freely, subject to the following restrictions:
++
++  1. The origin of this software must not be misrepresented; you must not
++     claim that you wrote the original software. If you use this software
++     in a product, an acknowledgment in the product documentation would be
++     appreciated but is not required.
++  2. Altered source versions must be plainly marked as such, and must not be
++     misrepresented as being the original software.
++  3. This notice may not be removed or altered from any source distribution.
++*/
++
++/* This is an include file for windows.h with the SDL build settings */
++
++#ifndef _INCLUDED_WINDOWS_H
++#define _INCLUDED_WINDOWS_H
++
++#if defined(__WIN32__)
++#define WIN32_LEAN_AND_MEAN
++#define STRICT
++#ifndef UNICODE
++#define UNICODE 1
++#endif
++#undef _WIN32_WINNT
++#define _WIN32_WINNT  0x501   /* Need 0x410 for AlphaBlend() and 0x500 for EnumDisplayDevices(), 0x501 for raw input */
++#endif
++
++#include <windows.h>
++#include <basetyps.h>   /* for REFIID with broken mingw.org headers */
++
++/* Routines to convert from UTF8 to native Windows text */
++#if UNICODE
++#define WIN_StringToUTF8(S) SDL_iconv_string("UTF-8", "UTF-16LE", (char *)(S), (SDL_wcslen(S)+1)*sizeof(WCHAR))
++#define WIN_UTF8ToString(S) (WCHAR *)SDL_iconv_string("UTF-16LE", "UTF-8", (char *)(S), SDL_strlen(S)+1)
++#else
++/* !!! FIXME: UTF8ToString() can just be a SDL_strdup() here. */
++#define WIN_StringToUTF8(S) SDL_iconv_string("UTF-8", "ASCII", (char *)(S), (SDL_strlen(S)+1))
++#define WIN_UTF8ToString(S) SDL_iconv_string("ASCII", "UTF-8", (char *)(S), SDL_strlen(S)+1)
++#endif
++
++/* Sets an error message based on a given HRESULT */
++extern int WIN_SetErrorFromHRESULT(const char *prefix, HRESULT hr);
++
++/* Sets an error message based on GetLastError(). Always return -1. */
++extern int WIN_SetError(const char *prefix);
++
++/* Wrap up the oddities of CoInitialize() into a common function. */
++extern HRESULT WIN_CoInitialize(void);
++extern void WIN_CoUninitialize(void);
++
++/* Returns SDL_TRUE if we're running on Windows Vista and newer */
++extern BOOL WIN_IsWindowsVistaOrGreater(void);
++
++/* Returns SDL_TRUE if we're running on Windows 7 and newer */
++extern BOOL WIN_IsWindows7OrGreater(void);
++
++/* You need to SDL_free() the result of this call. */
++extern char *WIN_LookupAudioDeviceName(const WCHAR *name, const GUID *guid);
++
++/* Checks to see if two GUID are the same. */
++extern BOOL WIN_IsEqualGUID(const GUID * a, const GUID * b);
++extern BOOL WIN_IsEqualIID(REFIID a, REFIID b);
++
++#endif /* _INCLUDED_WINDOWS_H */
++
++/* vi: set ts=4 sw=4 expandtab: */
