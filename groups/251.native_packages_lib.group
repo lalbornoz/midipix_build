@@ -8,7 +8,7 @@ libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libi
 libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
-libxslt libz libzip sdl1 sdl1_net sdl1_image sdl2 sdl2_image wolfssl")";
+libxslt libz libzip sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
 : ${PKG_GLIB_VERSION:=2.54.0};
@@ -255,6 +255,12 @@ libxslt libz libzip sdl1 sdl1_net sdl1_image sdl2 sdl2_image wolfssl")";
 : ${PKG_SDL2_IMAGE_SHA256SUM:=bdd5f6e026682f7d7e1be0b6051b209da2f402a2dd8bd1c4bd9c25ad263108d0};
 : ${PKG_SDL2_IMAGE_VERSION:=2.0.5};
 : ${PKG_SDL2_IMAGE_URL:=https://www.libsdl.org/projects/SDL_image/release/SDL2_image-${PKG_SDL2_IMAGE_VERSION}.tar.gz};
+: ${PKG_SDL2_TTF_DEPENDS:="sdl2 freetype2"};
+: ${PKG_SDL2_TTF_SHA256SUM:=a9eceb1ad88c1f1545cd7bd28e7cbc0b2c14191d40238f531a15b01b1b22cd33};
+: ${PKG_SDL2_TTF_VERSION:=2.0.15};
+: ${PKG_SDL2_TTF_URL:=https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-${PKG_SDL2_TTF_VERSION}.tar.gz};
+: ${PKG_SDL2_TTF_CONFIGURE_ARGS_EXTRA:="--without-x"};
+: ${PKG_SDL2_TTF_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2"};
 : ${PKG_WOLFSSL_SHA256SUM:=7de62300ce14daa0051bfefc7c4d6302f96cabc768b6ae49eda77523b118250c};
 : ${PKG_WOLFSSL_VERSION:=4.5.0};
 : ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
