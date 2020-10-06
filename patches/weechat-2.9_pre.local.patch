@@ -1,0 +1,55 @@
+diff -ru weechat-2.9.orig/configure.ac weechat-2.9/configure.ac
+--- weechat-2.9.orig/configure.ac	2020-07-18 13:59:02.000000000 +0200
++++ weechat-2.9/configure.ac	2020-10-06 22:27:28.776471083 +0200
+@@ -192,18 +192,6 @@
+ fi
+ 
+ # ------------------------------------------------------------------------------
+-#                                  pkg-config
+-# ------------------------------------------------------------------------------
+-
+-PKGCONFIG=""
+-AC_CHECK_PROGS(PKGCONFIG, pkg-config)
+-if test "x$PKGCONFIG" = "x"; then
+-    AC_MSG_ERROR([
+-*** "pkg-config" couldn't be found on your system.
+-*** Try to install it with your software package manager.])
+-fi
+-
+-# ------------------------------------------------------------------------------
+ #                                dynamic loader
+ # ------------------------------------------------------------------------------
+ 
+@@ -1049,8 +1037,8 @@
+ *** or try to install it with your software package manager.])
+ else
+     AC_MSG_RESULT(yes)
+-    GCRYPT_CFLAGS=`libgcrypt-config --cflags`
+-    GCRYPT_LFLAGS=`libgcrypt-config --libs`
++    GCRYPT_CFLAGS=`$LIBGCRYPT_CONFIG --cflags`
++    GCRYPT_LFLAGS=`$LIBGCRYPT_CONFIG --libs`
+     AC_SUBST(GCRYPT_CFLAGS)
+     AC_SUBST(GCRYPT_LFLAGS)
+ fi
+@@ -1070,8 +1058,8 @@
+ *** or try to install it with your software package manager.])
+ else
+     AC_MSG_RESULT(yes)
+-    GNUTLS_CFLAGS=`pkg-config gnutls --cflags`
+-    GNUTLS_LFLAGS=`pkg-config gnutls --libs`
++    GNUTLS_CFLAGS=`$PKGCONFIG gnutls --cflags`
++    GNUTLS_LFLAGS=`$PKGCONFIG gnutls --libs`
+     AC_SUBST(GNUTLS_CFLAGS)
+     AC_SUBST(GNUTLS_LFLAGS)
+ fi
+@@ -1160,8 +1148,8 @@
+ *** or try to install it with your software package manager.])
+ else
+     AC_MSG_RESULT(yes)
+-    ZLIB_CFLAGS=`pkg-config zlib --cflags`
+-    ZLIB_LFLAGS=`pkg-config zlib --libs`
++    ZLIB_CFLAGS=`$PKGCONFIG zlib --cflags`
++    ZLIB_LFLAGS=`$PKGCONFIG zlib --libs`
+     AC_SUBST(ZLIB_CFLAGS)
+     AC_SUBST(ZLIB_LFLAGS)
+ fi
