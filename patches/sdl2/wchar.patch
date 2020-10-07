@@ -1,26 +1,24 @@
-diff -ru SDL2-2.0.8.orig/src/video/windows/SDL_windowsevents.c SDL2-2.0.8/src/video/windows/SDL_windowsevents.c
---- SDL2-2.0.8.orig/src/video/windows/SDL_windowsevents.c	2018-03-01 17:34:42.000000000 +0100
-+++ SDL2-2.0.8/src/video/windows/SDL_windowsevents.c	2020-10-05 13:11:43.595494306 +0200
-@@ -47,6 +47,10 @@
- #include "wmmsg.h"
- #endif
- 
-+#ifdef __midipix__
-+#define sdl_window_data (uint16_t[]){'S','D','L','_','W','i','n','d','o','w','D','a','t','a',0}
-+#endif
-+
- /* For processing mouse WM_*BUTTON* and WM_MOUSEMOVE message-data from GetMessageExtraInfo() */
- #define MOUSEEVENTF_FROMTOUCH 0xFF515700
- 
-@@ -384,7 +388,11 @@
+diff -ru SDL2-2.0.12.orig/src/video/windows/SDL_windowsmessagebox.c SDL2-2.0.12/src/video/windows/SDL_windowsmessagebox.c
+--- SDL2-2.0.12.orig/src/video/windows/SDL_windowsmessagebox.c  2020-03-11 02:36:18.000000000 +0100
++++ SDL2-2.0.12/src/video/windows/SDL_windowsmessagebox.c       2020-10-07 14:04:09.877146877 +0200
+@@ -803,7 +803,7 @@
      }
- 
+
+     /* If we cannot load comctl32.dll use the old messagebox! */
+-    hComctl32 = LoadLibrary(TEXT("Comctl32.dll"));
++    hComctl32 = LoadLibrary((uint16_t[]){'C','o','m','c','t','l','3','2','.','d','l','l',0});
+     if (hComctl32 == NULL) {
+         return WIN_ShowOldMessageBox(messageboxdata, buttonid);
+     }
+diff -ru SDL2-2.0.12.orig/src/video/windows/SDL_windowsevents.c SDL2-2.0.12/src/video/windows/SDL_windowsevents.c
+--- SDL2-2.0.12.orig/src/video/windows/SDL_windowsevents.c      2020-03-11 02:36:18.000000000 +0100
++++ SDL2-2.0.12/src/video/windows/SDL_windowsevents.c   2020-10-07 14:00:09.021392356 +0200
+@@ -416,7 +416,7 @@
+     }
+
      /* Get the window data for the window */
-+#ifdef __midipix__
-+    data = (SDL_WindowData *) GetProp(hwnd, sdl_window_data);
-+#else
-     data = (SDL_WindowData *) GetProp(hwnd, TEXT("SDL_WindowData"));
-+#endif
+-    data = (SDL_WindowData *) GetProp(hwnd, TEXT("SDL_WindowData"));
++    data = (SDL_WindowData *) GetProp(hwnd, (uint16_t[]){'S','D','L','_','W','i','n','d','o','w','D','a','t','a',0});
      if (!data) {
          return CallWindowProc(DefWindowProc, hwnd, msg, wParam, lParam);
      }

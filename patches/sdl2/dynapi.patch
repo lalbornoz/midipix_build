@@ -1,0 +1,85 @@
+diff -ru SDL2-2.0.12.orig/include/SDL_stdinc.h SDL2-2.0.12/include/SDL_stdinc.h
+--- SDL2-2.0.12.orig/include/SDL_stdinc.h	2020-03-11 02:36:18.000000000 +0100
++++ SDL2-2.0.12/include/SDL_stdinc.h	2020-10-07 12:59:08.970629028 +0200
+@@ -455,6 +455,16 @@
+ extern DECLSPEC void *SDLCALL SDL_memmove(SDL_OUT_BYTECAP(len) void *dst, SDL_IN_BYTECAP(len) const void *src, size_t len);
+ extern DECLSPEC int SDLCALL SDL_memcmp(const void *s1, const void *s2, size_t len);
+ 
++#ifdef __midipix__
++extern DECLSPEC size_t SDLCALL SDL_wcslen(const uint16_t *wstr);
++extern DECLSPEC size_t SDLCALL SDL_wcslcpy(SDL_OUT_Z_CAP(maxlen) uint16_t *dst, const uint16_t *src, size_t maxlen);
++extern DECLSPEC size_t SDLCALL SDL_wcslcat(SDL_INOUT_Z_CAP(maxlen) uint16_t *dst, const uint16_t *src, size_t maxlen);
++extern DECLSPEC uint16_t *SDLCALL SDL_wcsdup(const uint16_t *wstr);
++extern DECLSPEC uint16_t *SDLCALL SDL_wcsstr(const uint16_t *haystack, const uint16_t *needle);
++
++extern DECLSPEC int SDLCALL SDL_wcscmp(const uint16_t *str1, const uint16_t *str2);
++extern DECLSPEC int SDLCALL SDL_wcsncmp(const uint16_t *str1, const uint16_t *str2, size_t maxlen);
++#else
+ extern DECLSPEC size_t SDLCALL SDL_wcslen(const wchar_t *wstr);
+ extern DECLSPEC size_t SDLCALL SDL_wcslcpy(SDL_OUT_Z_CAP(maxlen) wchar_t *dst, const wchar_t *src, size_t maxlen);
+ extern DECLSPEC size_t SDLCALL SDL_wcslcat(SDL_INOUT_Z_CAP(maxlen) wchar_t *dst, const wchar_t *src, size_t maxlen);
+@@ -463,6 +473,7 @@
+ 
+ extern DECLSPEC int SDLCALL SDL_wcscmp(const wchar_t *str1, const wchar_t *str2);
+ extern DECLSPEC int SDLCALL SDL_wcsncmp(const wchar_t *str1, const wchar_t *str2, size_t maxlen);
++#endif
+ 
+ extern DECLSPEC size_t SDLCALL SDL_strlen(const char *str);
+ extern DECLSPEC size_t SDLCALL SDL_strlcpy(SDL_OUT_Z_CAP(maxlen) char *dst, const char *src, size_t maxlen);
+diff -ru SDL2-2.0.12.orig/src/dynapi/SDL_dynapi_procs.h SDL2-2.0.12/src/dynapi/SDL_dynapi_procs.h
+--- SDL2-2.0.12.orig/src/dynapi/SDL_dynapi_procs.h	2020-03-11 02:36:18.000000000 +0100
++++ SDL2-2.0.12/src/dynapi/SDL_dynapi_procs.h	2020-10-07 13:19:40.863706330 +0200
+@@ -418,9 +418,15 @@
+ SDL_DYNAPI_PROC(void*,SDL_memcpy,(SDL_OUT_BYTECAP(c) void *a, SDL_IN_BYTECAP(c) const void *b, size_t c),(a,b,c),return)
+ SDL_DYNAPI_PROC(void*,SDL_memmove,(SDL_OUT_BYTECAP(c) void *a, SDL_IN_BYTECAP(c) const void *b, size_t c),(a,b,c),return)
+ SDL_DYNAPI_PROC(int,SDL_memcmp,(const void *a, const void *b, size_t c),(a,b,c),return)
++#ifdef __midipix__
++SDL_DYNAPI_PROC(size_t,SDL_wcslen,(const uint16_t *a),(a),return)
++SDL_DYNAPI_PROC(size_t,SDL_wcslcpy,(SDL_OUT_Z_CAP(c) uint16_t *a, const uint16_t *b, size_t c),(a,b,c),return)
++SDL_DYNAPI_PROC(size_t,SDL_wcslcat,(SDL_INOUT_Z_CAP(c) uint16_t *a, const uint16_t *b, size_t c),(a,b,c),return)
++#else
+ SDL_DYNAPI_PROC(size_t,SDL_wcslen,(const wchar_t *a),(a),return)
+ SDL_DYNAPI_PROC(size_t,SDL_wcslcpy,(SDL_OUT_Z_CAP(c) wchar_t *a, const wchar_t *b, size_t c),(a,b,c),return)
+ SDL_DYNAPI_PROC(size_t,SDL_wcslcat,(SDL_INOUT_Z_CAP(c) wchar_t *a, const wchar_t *b, size_t c),(a,b,c),return)
++#endif
+ SDL_DYNAPI_PROC(size_t,SDL_strlen,(const char *a),(a),return)
+ SDL_DYNAPI_PROC(size_t,SDL_strlcpy,(SDL_OUT_Z_CAP(c) char *a, const char *b, size_t c),(a,b,c),return)
+ SDL_DYNAPI_PROC(size_t,SDL_utf8strlcpy,(SDL_OUT_Z_CAP(c) char *a, const char *b, size_t c),(a,b,c),return)
+@@ -660,7 +666,11 @@
+ SDL_DYNAPI_PROC(SDL_JoystickID,SDL_JoystickGetDeviceInstanceID,(int a),(a),return)
+ SDL_DYNAPI_PROC(size_t,SDL_utf8strlen,(const char *a),(a),return)
+ SDL_DYNAPI_PROC(void*,SDL_LoadFile_RW,(SDL_RWops *a, size_t *b, int c),(a,b,c),return)
++#ifdef __midipix__
++SDL_DYNAPI_PROC(int,SDL_wcscmp,(const uint16_t *a, const uint16_t *b),(a,b),return)
++#else
+ SDL_DYNAPI_PROC(int,SDL_wcscmp,(const wchar_t *a, const wchar_t *b),(a,b),return)
++#endif
+ SDL_DYNAPI_PROC(SDL_BlendMode,SDL_ComposeCustomBlendMode,(SDL_BlendFactor a, SDL_BlendFactor b, SDL_BlendOperation c, SDL_BlendFactor d, SDL_BlendFactor e, SDL_BlendOperation f),(a,b,c,d,e,f),return)
+ SDL_DYNAPI_PROC(SDL_Surface*,SDL_DuplicateSurface,(SDL_Surface *a),(a),return)
+ SDL_DYNAPI_PROC(int,SDL_Vulkan_LoadLibrary,(const char *a),(a),return)
+@@ -719,7 +729,11 @@
+ #endif
+ SDL_DYNAPI_PROC(double,SDL_exp,(double a),(a),return)
+ SDL_DYNAPI_PROC(float,SDL_expf,(float a),(a),return)
++#ifdef __midipix__
++SDL_DYNAPI_PROC(uint16_t*,SDL_wcsdup,(const uint16_t *a),(a),return)
++#else
+ SDL_DYNAPI_PROC(wchar_t*,SDL_wcsdup,(const wchar_t *a),(a),return)
++#endif
+ SDL_DYNAPI_PROC(int,SDL_GameControllerRumble,(SDL_GameController *a, Uint16 b, Uint16 c, Uint32 d),(a,b,c,d),return)
+ SDL_DYNAPI_PROC(int,SDL_JoystickRumble,(SDL_Joystick *a, Uint16 b, Uint16 c, Uint32 d),(a,b,c,d),return)
+ SDL_DYNAPI_PROC(int,SDL_NumSensors,(void),(),return)
+@@ -785,8 +799,13 @@
+ SDL_DYNAPI_PROC(int,SDL_LockTextureToSurface,(SDL_Texture *a, const SDL_Rect *b, SDL_Surface **c),(a,b,c),return)
+ SDL_DYNAPI_PROC(SDL_bool,SDL_HasARMSIMD,(void),(),return)
+ SDL_DYNAPI_PROC(char*,SDL_strtokr,(char *a, const char *b, char **c),(a,b,c),return)
++#ifdef __midipix__
++SDL_DYNAPI_PROC(uint16_t*,SDL_wcsstr,(const uint16_t *a, const uint16_t *b),(a,b),return)
++SDL_DYNAPI_PROC(int,SDL_wcsncmp,(const uint16_t *a, const uint16_t *b, size_t c),(a,b,c),return)
++#else
+ SDL_DYNAPI_PROC(wchar_t*,SDL_wcsstr,(const wchar_t *a, const wchar_t *b),(a,b),return)
+ SDL_DYNAPI_PROC(int,SDL_wcsncmp,(const wchar_t *a, const wchar_t *b, size_t c),(a,b,c),return)
++#endif
+ SDL_DYNAPI_PROC(SDL_GameControllerType,SDL_GameControllerTypeForIndex,(int a),(a),return)
+ SDL_DYNAPI_PROC(SDL_GameControllerType,SDL_GameControllerGetType,(SDL_GameController *a),(a),return)
+ SDL_DYNAPI_PROC(SDL_GameController*,SDL_GameControllerFromPlayerIndex,(int a),(a),return)

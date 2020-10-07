@@ -1,0 +1,18 @@
+diff -ru SDL2-2.0.12.orig/src/video/windows/SDL_windowstaskdialog.h SDL2-2.0.12/src/video/windows/SDL_windowstaskdialog.h
+--- SDL2-2.0.12.orig/src/video/windows/SDL_windowstaskdialog.h	2020-03-11 02:36:18.000000000 +0100
++++ SDL2-2.0.12/src/video/windows/SDL_windowstaskdialog.h	2020-10-07 13:45:15.231259024 +0200
+@@ -18,7 +18,7 @@
+      misrepresented as being the original software.
+   3. This notice may not be removed or altered from any source distribution.
+ */
+-#include <pshpack1.h>
++#pragma pack(push,1)
+ 
+ typedef HRESULT(CALLBACK *PFTASKDIALOGCALLBACK)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, LONG_PTR lpRefData);
+ 
+@@ -153,4 +153,4 @@
+     UINT        cxWidth;                                // width of the Task Dialog's client area in DLU's. If 0, Task Dialog will calculate the ideal width.
+ } TASKDIALOGCONFIG;
+ 
+-#include <poppack.h>
++#pragma pack(pop)

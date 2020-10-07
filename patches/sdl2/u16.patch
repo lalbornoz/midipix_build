@@ -1,59 +1,23 @@
-diff -ru SDL2-2.0.8.orig/include/SDL_stdinc.h SDL2-2.0.8/include/SDL_stdinc.h
---- SDL2-2.0.8.orig/include/SDL_stdinc.h	2018-03-01 17:34:41.000000000 +0100
-+++ SDL2-2.0.8/include/SDL_stdinc.h	2020-10-05 12:29:51.927442178 +0200
-@@ -451,10 +451,17 @@
- extern DECLSPEC void *SDLCALL SDL_memmove(SDL_OUT_BYTECAP(len) void *dst, SDL_IN_BYTECAP(len) const void *src, size_t len);
- extern DECLSPEC int SDLCALL SDL_memcmp(const void *s1, const void *s2, size_t len);
- 
+diff -ru SDL2-2.0.8.orig/src/video/windows/SDL_windowsmessagebox.c SDL2-2.0.8/src/video/windows/SDL_windowsmessagebox.c
+--- SDL2-2.0.8.orig/src/video/windows/SDL_windowsmessagebox.c   2018-03-01 17:34:42.000000000 +0100
++++ SDL2-2.0.8/src/video/windows/SDL_windowsmessagebox.c        2020-10-05 12:51:31.389436939 +0200
+@@ -350,7 +350,11 @@
+     HFONT DialogFont;
+     SIZE Size;
+     RECT TextSize;
 +#ifdef __midipix__
-+extern DECLSPEC size_t SDLCALL SDL_wcslen(const uint16_t *wstr);
-+extern DECLSPEC size_t SDLCALL SDL_wcslcpy(SDL_OUT_Z_CAP(maxlen) uint16_t *dst, const uint16_t *src, size_t maxlen);
-+extern DECLSPEC size_t SDLCALL SDL_wcslcat(SDL_INOUT_Z_CAP(maxlen) uint16_t *dst, const uint16_t *src, size_t maxlen);
-+extern DECLSPEC int SDLCALL SDL_wcscmp(const uint16_t *str, const uint16_t *str2);
++    uint16_t *wmessage;
 +#else
- extern DECLSPEC size_t SDLCALL SDL_wcslen(const wchar_t *wstr);
- extern DECLSPEC size_t SDLCALL SDL_wcslcpy(SDL_OUT_Z_CAP(maxlen) wchar_t *dst, const wchar_t *src, size_t maxlen);
- extern DECLSPEC size_t SDLCALL SDL_wcslcat(SDL_INOUT_Z_CAP(maxlen) wchar_t *dst, const wchar_t *src, size_t maxlen);
- extern DECLSPEC int SDLCALL SDL_wcscmp(const wchar_t *str1, const wchar_t *str2);
-+#endif /* !__midipix__ */
- 
- extern DECLSPEC size_t SDLCALL SDL_strlen(const char *str);
- extern DECLSPEC size_t SDLCALL SDL_strlcpy(SDL_OUT_Z_CAP(maxlen) char *dst, const char *src, size_t maxlen);
-diff -ru SDL2-2.0.8.orig/src/dynapi/SDL_dynapi_procs.h SDL2-2.0.8/src/dynapi/SDL_dynapi_procs.h
---- SDL2-2.0.8.orig/src/dynapi/SDL_dynapi_procs.h	2018-03-01 17:34:42.000000000 +0100
-+++ SDL2-2.0.8/src/dynapi/SDL_dynapi_procs.h	2020-10-05 12:41:07.154180772 +0200
-@@ -418,9 +418,15 @@
- SDL_DYNAPI_PROC(void*,SDL_memcpy,(SDL_OUT_BYTECAP(c) void *a, SDL_IN_BYTECAP(c) const void *b, size_t c),(a,b,c),return)
- SDL_DYNAPI_PROC(void*,SDL_memmove,(SDL_OUT_BYTECAP(c) void *a, SDL_IN_BYTECAP(c) const void *b, size_t c),(a,b,c),return)
- SDL_DYNAPI_PROC(int,SDL_memcmp,(const void *a, const void *b, size_t c),(a,b,c),return)
-+#ifdef __midipix__
-+SDL_DYNAPI_PROC(size_t,SDL_wcslen,(const uint16_t *a),(a),return)
-+SDL_DYNAPI_PROC(size_t,SDL_wcslcpy,(SDL_OUT_Z_CAP(c) uint16_t *a, const uint16_t *b, size_t c),(a,b,c),return)
-+SDL_DYNAPI_PROC(size_t,SDL_wcslcat,(SDL_INOUT_Z_CAP(c) uint16_t *a, const uint16_t *b, size_t c),(a,b,c),return)
-+#else
- SDL_DYNAPI_PROC(size_t,SDL_wcslen,(const wchar_t *a),(a),return)
- SDL_DYNAPI_PROC(size_t,SDL_wcslcpy,(SDL_OUT_Z_CAP(c) wchar_t *a, const wchar_t *b, size_t c),(a,b,c),return)
- SDL_DYNAPI_PROC(size_t,SDL_wcslcat,(SDL_INOUT_Z_CAP(c) wchar_t *a, const wchar_t *b, size_t c),(a,b,c),return)
+     wchar_t* wmessage;
 +#endif
- SDL_DYNAPI_PROC(size_t,SDL_strlen,(const char *a),(a),return)
- SDL_DYNAPI_PROC(size_t,SDL_strlcpy,(SDL_OUT_Z_CAP(c) char *a, const char *b, size_t c),(a,b,c),return)
- SDL_DYNAPI_PROC(size_t,SDL_utf8strlcpy,(SDL_OUT_Z_CAP(c) char *a, const char *b, size_t c),(a,b,c),return)
-@@ -660,7 +666,11 @@
- SDL_DYNAPI_PROC(SDL_JoystickID,SDL_JoystickGetDeviceInstanceID,(int a),(a),return)
- SDL_DYNAPI_PROC(size_t,SDL_utf8strlen,(const char *a),(a),return)
- SDL_DYNAPI_PROC(void*,SDL_LoadFile_RW,(SDL_RWops *a, size_t *b, int c),(a,b,c),return)
-+#ifdef __midipix__
-+SDL_DYNAPI_PROC(int,SDL_wcscmp,(const uint16_t *a, const uint16_t *b),(a,b),return)
-+#else
- SDL_DYNAPI_PROC(int,SDL_wcscmp,(const wchar_t *a, const wchar_t *b),(a,b),return)
-+#endif
- SDL_DYNAPI_PROC(SDL_BlendMode,SDL_ComposeCustomBlendMode,(SDL_BlendFactor a, SDL_BlendFactor b, SDL_BlendOperation c, SDL_BlendFactor d, SDL_BlendFactor e, SDL_BlendOperation f),(a,b,c,d,e,f),return)
- SDL_DYNAPI_PROC(SDL_Surface*,SDL_DuplicateSurface,(SDL_Surface *a),(a),return)
- SDL_DYNAPI_PROC(int,SDL_Vulkan_LoadLibrary,(const char *a),(a),return)
-diff -ru SDL2-2.0.8.orig/src/stdlib/SDL_string.c SDL2-2.0.8/src/stdlib/SDL_string.c
---- SDL2-2.0.8.orig/src/stdlib/SDL_string.c	2018-03-01 17:34:42.000000000 +0100
-+++ SDL2-2.0.8/src/stdlib/SDL_string.c	2020-10-05 12:29:39.691442561 +0200
-@@ -416,6 +416,44 @@
+     TEXTMETRIC TM;
+
+     HWND ParentWindow = NULL;
+
+diff -ru SDL2-2.0.12.orig/src/stdlib/SDL_string.c SDL2-2.0.12/src/stdlib/SDL_string.c
+--- SDL2-2.0.12.orig/src/stdlib/SDL_string.c	2020-03-11 02:36:18.000000000 +0100
++++ SDL2-2.0.12/src/stdlib/SDL_string.c	2020-10-07 13:40:28.237747292 +0200
+@@ -421,6 +421,63 @@
  #endif /* HAVE_STRLEN */
  }
  
@@ -89,35 +53,39 @@ diff -ru SDL2-2.0.8.orig/src/stdlib/SDL_string.c SDL2-2.0.8/src/stdlib/SDL_strin
 +    return dstlen + srclen;
 +}
 +
++uint16_t *
++SDL_wcsdup(const uint16_t *string)
++{
++    return u16_wcsdup(string);
++}
++
++uint16_t *
++SDL_wcsstr(const uint16_t *haystack, const uint16_t *needle)
++{
++    return SDL_const_cast(uint16_t*,u16_wcsstr(haystack, needle));
++}
++
 +int
 +SDL_wcscmp(const uint16_t *str1, const uint16_t *str2)
 +{
 +    return u16_wcscmp(str1, str2);
 +}
-+#else
++
++int
++SDL_wcsncmp(const uint16_t *str1, const uint16_t *str2, size_t maxlen)
++{
++    return u16_wcsncmp(str1, str2, maxlen);
++}
++
++#else /* !__MIDIPIX__ */
  size_t
  SDL_wcslen(const wchar_t * string)
  {
-@@ -476,6 +514,7 @@
+@@ -525,6 +582,7 @@
      return (int)(*str1 - *str2);
- #endif /* HAVE_WCSCMP */
+ #endif /* HAVE_WCSNCMP */
  }
-+#endif /* !__midipix__ */
++#endif /* !__MIDIPIX__ */
  
  size_t
  SDL_strlcpy(SDL_OUT_Z_CAP(maxlen) char *dst, const char *src, size_t maxlen)
-diff -ru SDL2-2.0.8.orig/src/video/windows/SDL_windowsmessagebox.c SDL2-2.0.8/src/video/windows/SDL_windowsmessagebox.c
---- SDL2-2.0.8.orig/src/video/windows/SDL_windowsmessagebox.c	2018-03-01 17:34:42.000000000 +0100
-+++ SDL2-2.0.8/src/video/windows/SDL_windowsmessagebox.c	2020-10-05 12:51:31.389436939 +0200
-@@ -350,7 +350,11 @@
-     HFONT DialogFont;
-     SIZE Size;
-     RECT TextSize;
-+#ifdef __midipix__
-+    uint16_t *wmessage;
-+#else
-     wchar_t* wmessage;
-+#endif
-     TEXTMETRIC TM;
- 
-     HWND ParentWindow = NULL;
