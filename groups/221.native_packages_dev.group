@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bison chicken cparser diffutils flex gdb lua lunix m4 make mandoc nasm
+bison chicken cparser diffutils flex gdb gengetopt lua lunix m4 make mandoc nasm
 patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_BISON_DEPENDS:="libreadline"};
 : ${PKG_BISON_SHA256SUM:=7948d193104d979c0fb0294a1854c73c89d72ae41acfc081826142578a78a91b};
@@ -44,6 +44,9 @@ patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_GDB_LIBTOOL:=rdlibtool};
 : ${PKG_GDB_MAKEFLAGS_BUILD_EXTRA:="SYSROOT_FLAGS=--sysroot=${PREFIX_NATIVE}"};
 : ${PKG_GDB_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gdb/gdb-${PKG_GDB_VERSION}.midipix.patch"};
+: ${PKG_GENGETOPT_SHA256SUM:=b941aec9011864978dd7fdeb052b1943535824169d2aa2b0e7eae9ab807584ac};
+: ${PKG_GENGETOPT_VERSION:=2.23};
+: ${PKG_GENGETOPT_URL:=https://ftp.gnu.org/gnu/gengetopt/gengetopt-${PKG_GENGETOPT_VERSION}.tar.xz};
 : ${PKG_LUA_SHA256SUM:=f681aa518233bc407e23acf0f5887c884f17436f000d453b2491a9f11a52400c};
 : ${PKG_LUA_VERSION:=5.3.4};
 : ${PKG_LUA_URL:=https://www.lua.org/ftp/lua-${PKG_LUA_VERSION}.tar.gz};
