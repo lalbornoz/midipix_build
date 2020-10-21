@@ -6,8 +6,8 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bison chicken cparser diffutils flex gdb gengetopt lua lunix m4 make mandoc nasm
 patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_BISON_DEPENDS:="libreadline"};
-: ${PKG_BISON_SHA256SUM:=7948d193104d979c0fb0294a1854c73c89d72ae41acfc081826142578a78a91b};
-: ${PKG_BISON_VERSION:=3.7.2};
+: ${PKG_BISON_SHA256SUM:=88d9e36856b004c0887a12ba00ea3c47db388519629483dd8c3fce9694d4da6f};
+: ${PKG_BISON_VERSION:=3.7.3};
 : ${PKG_BISON_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_VERSION}.tar.xz};
 : ${PKG_CHICKEN_SHA256SUM:=e3dc2b8f95b6a3cd59c85b5bb6bdb2bd9cefc45b5d536a20cad74e3c63f4ad89};
 : ${PKG_CHICKEN_VERSION:=4.11.0};
