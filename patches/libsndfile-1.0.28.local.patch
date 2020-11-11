@@ -1,0 +1,105 @@
+diff -ru libsndfile-1.0.28.orig/programs/sndfile-play.c libsndfile-1.0.28/programs/sndfile-play.c
+--- libsndfile-1.0.28.orig/programs/sndfile-play.c	2017-04-01 09:18:02.000000000 +0200
++++ libsndfile-1.0.28/programs/sndfile-play.c	2020-11-11 13:46:51.824586591 +0100
+@@ -71,10 +71,31 @@
+ 	#include <sys/ioctl.h>
+ 	#include <sys/audioio.h>
+ 
+-#elif (OS_IS_WIN32 == 1)
++#elif (OS_IS_WIN32 == 1) || defined(__midipix__)
++	#include <pthread.h>
+ 	#include <windows.h>
+ 	#include <mmsystem.h>
+ 
++#ifndef INFINITE
++#define INFINITE 0xffffffff
++#endif
++
++#ifndef CALLBACK_FUNCTION
++#define CALLBACK_FUNCTION (uint32_t)0x00030000
++#endif
++
++#ifndef WAVE_MAPPER
++#define WAVE_MAPPER ((UINT)-1)
++#endif
++
++#ifndef WAVE_FORMAT_PCM
++#define WAVE_FORMAT_PCM 1
++#endif
++
++#ifndef MM_WOM_DONE
++#define MM_WOM_DONE 0x3BD
++#endif
++
+ #endif
+ 
+ #define	SIGNED_SIZEOF(x)	((int) sizeof (x))
+@@ -482,15 +503,16 @@
+ **  point to data instead of short*. It plain sucks!
+ */
+ 
+-#if (OS_IS_WIN32 == 1)
++#if (OS_IS_WIN32 == 1) || defined(__midipix__)
+ 
+ #define	WIN32_BUFFER_LEN	(1 << 15)
+ 
++static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER ;
++
+ typedef struct
+ {	HWAVEOUT	hwave ;
+ 	WAVEHDR		whdr [2] ;
+ 
+-	CRITICAL_SECTION	mutex ;		/* to control access to BuffersInUSe */
+ 	HANDLE		Event ;			/* signal that a buffer is free */
+ 
+ 	short		buffer [WIN32_BUFFER_LEN / sizeof (short)] ;
+@@ -524,9 +546,9 @@
+ 		waveOutWrite (audio_data->hwave, (LPWAVEHDR) &(audio_data->whdr [audio_data->current]), sizeof (WAVEHDR)) ;
+ 
+ 		/* count another buffer in use */
+-		EnterCriticalSection (&audio_data->mutex) ;
++		pthread_mutex_lock (&mutex) ;
+ 		audio_data->BuffersInUse ++ ;
+-		LeaveCriticalSection (&audio_data->mutex) ;
++		pthread_mutex_unlock (&mutex) ;
+ 
+ 		/* use the other buffer next time */
+ 		audio_data->current = (audio_data->current + 1) % 2 ;
+@@ -556,9 +578,9 @@
+ 
+ 	/* let main loop know a buffer is free */
+ 	if (msg == MM_WOM_DONE)
+-	{	EnterCriticalSection (&audio_data->mutex) ;
++	{	pthread_mutex_lock (&mutex) ;
+ 		audio_data->BuffersInUse -- ;
+-		LeaveCriticalSection (&audio_data->mutex) ;
++		pthread_mutex_unlock (&mutex) ;
+ 		SetEvent (audio_data->Event) ;
+ 		} ;
+ 
+@@ -586,7 +608,6 @@
+ 		audio_data.remaining = audio_data.sfinfo.frames * audio_data.sfinfo.channels ;
+ 		audio_data.current = 0 ;
+ 
+-		InitializeCriticalSection (&audio_data.mutex) ;
+ 		audio_data.Event = CreateEvent (0, FALSE, FALSE, 0) ;
+ 
+ 		wf.nChannels = audio_data.sfinfo.channels ;
+@@ -655,8 +676,6 @@
+ 		waveOutClose (audio_data.hwave) ;
+ 		audio_data.hwave = 0 ;
+ 
+-		DeleteCriticalSection (&audio_data.mutex) ;
+-
+ 		sf_close (audio_data.sndfile) ;
+ 		} ;
+ 
+@@ -848,7 +867,7 @@
+ 	sndio_play (argc, argv) ;
+ #elif (defined (sun) && defined (unix))
+ 	solaris_play (argc, argv) ;
+-#elif (OS_IS_WIN32 == 1)
++#elif (OS_IS_WIN32 == 1) || defined(__midipix__)
+ 	win32_play (argc, argv) ;
+ #elif (defined (__MACH__) && defined (__APPLE__))
+ 	printf ("OS X 10.8 and later have a new Audio API.\n") ;
