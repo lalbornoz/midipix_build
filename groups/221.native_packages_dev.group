@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bison chicken cparser diffutils flex gdb gengetopt lua lunix m4 make mandoc nasm
+bison chicken cparser diffutils flex gdb gengetopt indent lua lunix m4 make mandoc nasm
 patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_BISON_DEPENDS:="libreadline"};
 : ${PKG_BISON_SHA256SUM:=88d9e36856b004c0887a12ba00ea3c47db388519629483dd8c3fce9694d4da6f};
@@ -54,6 +54,11 @@ patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_LUA_CONFIGURE_ARGS_EXTRA:="--with-readline --with-compat-module"};
 : ${PKG_LUA_FORCE_AUTORECONF:=1};
 : ${PKG_LUA_INSTALL_FILES:=@liblua.so=lib/liblua.so.0};
+: ${PKG_INDENT_SHA256SUM:=b745a5dfc68f86a483d7f96dc1cda7aafd1e78ecba3c7d8ad304709e91e1defb};
+: ${PKG_INDENT_VERSION:=2.2.12};
+: ${PKG_INDENT_URL:=https://ftp.gnu.org/gnu/indent/indent-${PKG_INDENT_VERSION}.tar.xz};
+: ${PKG_INDENT_CONFIGURE_ARGS_EXTRA:="--without-included-gettext --without-texinfo"};
+: ${PKG_INDENT_CFLAGS_CONFIGURE_EXTRA:="-Wno-error -DHAVE_LOCALE_H"};
 : ${PKG_LUNIX_DEPENDS:="lua"};
 : ${PKG_LUNIX_URLS_GIT:=lunix=https://github.com/Redfoxmoon3/lunix.git@master};
 : ${PKG_LUNIX_IN_TREE:=1};
