@@ -7,7 +7,7 @@ alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante db
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess gzip hastyhex hexcurse hexer htop icoutils imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode mintty mlogin musl_compat musl_fts ncdu
-ncurses ncursestw ncursesw npth openjpeg p7zip pcre popt potrace procps_ng qemu
+ncurses ncursestw ncursesw npth openjpeg p7zip pcre pcre2 popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
 zstd")";
@@ -260,6 +260,11 @@ zstd")";
 : ${PKG_PCRE_SHA256SUM:=19108658b23b3ec5058edc9f66ac545ea19f9537234be1ec62b714c84399366d};
 : ${PKG_PCRE_VERSION:=8.44};
 : ${PKG_PCRE_URL:=https://ftp.pcre.org/pub/pcre/pcre-${PKG_PCRE_VERSION}.tar.bz2};
+: ${PKG_PCRE2_DEPENDS:="bzip2 libz"};
+: ${PKG_PCRE2_SHA256SUM:=8fdcef8c8f4cd735169dd0225fd010487970c1bcadd49e9b90e26c7250a33dc9};
+: ${PKG_PCRE2_VERSION:=10.35};
+: ${PKG_PCRE2_URL:=https://ftp.pcre.org/pub/pcre/pcre2-${PKG_PCRE2_VERSION}.tar.gz};
+: ${PKG_PCRE2_CONFIGURE_ARGS_EXTRA:="--enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2-16 --enable-pcre2-32 --enable-jit"};
 : ${PKG_POPT_SHA256SUM:=5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1};
 : ${PKG_POPT_VERSION:=1.18};
 : ${PKG_POPT_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/popt/popt-${PKG_POPT_VERSION}.tar.gz};
