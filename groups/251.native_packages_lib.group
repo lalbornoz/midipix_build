@@ -100,8 +100,8 @@ libxslt libz libzip sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")"
 : ${PKG_LIBGPG_ERROR_IN_TREE:=1};
 : ${PKG_LIBITE_URLS_GIT:=libite=https://github.com/troglobit/libite.git@master};
 : ${PKG_LIBITE_SUBDIR:=libite};
-: ${PKG_LIBJPEG_TURBO_SHA256SUM:=16f8f6f2715b3a38ab562a84357c793dd56ae9899ce130563c72cd93d8357b5d};
-: ${PKG_LIBJPEG_TURBO_VERSION:=2.0.5};
+: ${PKG_LIBJPEG_TURBO_SHA256SUM:=d74b92ac33b0e3657123ddcf6728788c90dc84dcb6a52013d758af3c4af481bb};
+: ${PKG_LIBJPEG_TURBO_VERSION:=2.0.6};
 : ${PKG_LIBJPEG_TURBO_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libjpeg-turbo/libjpeg-turbo-${PKG_LIBJPEG_TURBO_VERSION}.tar.gz};
 : ${PKG_LIBKSBA_DEPENDS:="libgpg_error"};
 : ${PKG_LIBKSBA_SHA256SUM:=bfe6a8e91ff0f54d8a329514db406667000cb207238eded49b599761bfca41b6};
