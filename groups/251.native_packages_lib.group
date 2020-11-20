@@ -104,8 +104,8 @@ libxslt libz libzip sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")"
 : ${PKG_LIBJPEG_TURBO_VERSION:=2.0.6};
 : ${PKG_LIBJPEG_TURBO_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libjpeg-turbo/libjpeg-turbo-${PKG_LIBJPEG_TURBO_VERSION}.tar.gz};
 : ${PKG_LIBKSBA_DEPENDS:="libgpg_error"};
-: ${PKG_LIBKSBA_SHA256SUM:=bfe6a8e91ff0f54d8a329514db406667000cb207238eded49b599761bfca41b6};
-: ${PKG_LIBKSBA_VERSION:=1.4.0};
+: ${PKG_LIBKSBA_SHA256SUM:=ae4af129216b2d7fdea0b5bf2a788cd458a79c983bb09a43f4d525cc87aba0ba};
+: ${PKG_LIBKSBA_VERSION:=1.5.0};
 : ${PKG_LIBKSBA_URL:=https://www.gnupg.org/ftp/gcrypt/libksba/libksba-${PKG_LIBKSBA_VERSION}.tar.bz2};
 : ${PKG_LIBKSBA_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE}};
 : ${PKG_LIBMSPACK_SHA256SUM:=bac862dee6e0fc10d92c70212441d9f8ad9b0222edc9a708c3ead4adb1b24a8e};
