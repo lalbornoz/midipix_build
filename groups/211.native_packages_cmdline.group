@@ -84,7 +84,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_MC_LDFLAGS_BUILD_EXTRA:=-ltinfow};
 : ${PKG_MKSH_SHA256SUM:=8bce3837c386684aa7780f085f1a4dbd5e3e26fb5c528ee0d41ae29af7f39013};
 : ${PKG_MKSH_VERSION:=R54};
-: ${PKG_MKSH_URL:=http://pub.allbsd.org/MirOS/dist/mir/mksh/mksh-${PKG_MKSH_VERSION}.tgz};
+: ${PKG_MKSH_URL:="https://sources.voidlinux.org/mksh-${PKG_MKSH_VERSION}/mksh-${PKG_MKSH_VERSION}.tgz http://pub.allbsd.org/MirOS/dist/mir/mksh/mksh-${PKG_MKSH_VERSION}.tgz"};
 : ${PKG_MKSH_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_MKSH_ENV_VARS_EXTRA:="CC=${DEFAULT_TARGET}-gcc"};
 : ${PKG_MKSH_INSTALL_FILES:="../mksh/mksh=bin/ /=share/doc/mksh/examples ../mksh/dot.mkshrc=share/doc/mksh/examples/ ../mksh/mksh.1=share/man/man1/"};
