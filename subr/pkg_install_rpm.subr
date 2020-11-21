@@ -8,7 +8,7 @@ pkg_install_rpm() {
 	&& [ "${PKG_RPM_DISABLE:-0}" -eq 0 ]\
 	&& [ -x "$(which rpmbuild 2>/dev/null)" ]; then
 		if [ -n "${PKG_URL:-}" ]; then
-			_pkg_url="${PKG_URL}"; _pkg_version_full="${PKG_VERSION}"; _pkg_version_rpm="${PKG_VERSION%%-*}";
+			_pkg_url="${PKG_URL%% *}"; _pkg_version_full="${PKG_VERSION}"; _pkg_version_rpm="${PKG_VERSION%%-*}";
 		elif [ -n "${PKG_URLS_GIT:-}" ]; then
 			_pkg_version_rpm="$(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse HEAD)";
 			_pkg_version_full="${_pkg_version_rpm} ($(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse --abbrev-ref HEAD))";
