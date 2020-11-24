@@ -146,7 +146,7 @@ zstd")";
 : ${PKG_GNUCHESS_SHA256SUM:=e536675a61abe82e61b919f6b786755441d9fcd4c21e1c82fb9e5340dd229846};
 : ${PKG_GNUCHESS_VERSION:=6.2.7};
 : ${PKG_GNUCHESS_URL:=https://ftp.gnu.org/gnu/chess/gnuchess-${PKG_GNUCHESS_VERSION}.tar.gz};
-: ${PKG_GRAPHICSMAGICK_DEPENDS:="libz libpng freetype2 lcms2 libxml2 tiff libjpeg_turbo bzip2 zstd"};
+: ${PKG_GRAPHICSMAGICK_DEPENDS:="libz libpng freetype lcms2 libxml2 tiff libjpeg_turbo bzip2 zstd"};
 : ${PKG_GRAPHICSMAGICK_SHA256SUM:=188a8d6108fea87a0208723e8d206ec1d4d7299022be8ce5d0a9720509250250};
 : ${PKG_GRAPHICSMAGICK_VERSION:=1.3.35};
 : ${PKG_GRAPHICSMAGICK_URL:=ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/${PKG_GRAPHICSMAGICK_VERSION%.*}/GraphicsMagick-${PKG_GRAPHICSMAGICK_VERSION}.tar.xz};
