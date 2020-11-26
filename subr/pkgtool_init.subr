@@ -10,7 +10,7 @@ pkgtoolp_init_args() {
 	&&   [ -z "${ARG_RESTART_AT}" ]\
 	&&   [ "${ARG_UPDATE_DIFF:-0}" -eq 0 ]; then
 		cat etc/pkgtool.usage; _rc=1; _status="Error: one of -i, -r, -s, or -t must be specified.";
-	else	_rc=0;
+	else	_rc=0; export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
 	fi; return "${_rc}";
 };
 

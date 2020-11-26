@@ -107,7 +107,8 @@ buildp_init_files() {
 		_rc=1; _status="Error: failed to clean environment.";
 	elif ! rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
 		_rc=1; _status="${_status}";
-	else	touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
+	else	export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
+		touch "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
 		if [ -e "${DEFAULT_BUILD_LOG_FNAME}" ]; then
 			while [ -e "${DEFAULT_BUILD_LOG_FNAME}.${_log_last_num}" ]; do
 				: $((_log_last_num+=1));
