@@ -1,0 +1,20 @@
+diff -ru GraphicsMagick-1.3.35.orig/configure GraphicsMagick-1.3.35/configure
+--- GraphicsMagick-1.3.35.orig/configure	2020-02-23 16:53:04.000000000 +0100
++++ GraphicsMagick-1.3.35/configure	2020-11-24 13:12:28.674236547 +0100
+@@ -14614,6 +14614,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
