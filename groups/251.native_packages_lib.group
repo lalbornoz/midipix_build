@@ -8,7 +8,7 @@ libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libi
 libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
-libxslt libz libzip sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")";
+libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
 : ${PKG_GLIB_VERSION:=2.54.0};
@@ -229,6 +229,9 @@ libxslt libz libzip sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")"
 : ${PKG_LIBZIP_SHA256SUM:=a020dc1b17a79faa748e43a05f8605d65e403813e8e97ad3a300a90ddba097ac};
 : ${PKG_LIBZIP_VERSION:=1.7.1};
 : ${PKG_LIBZIP_URL:=https://libzip.org/download/libzip-${PKG_LIBZIP_VERSION}.tar.xz};
+: ${PKG_LZO_SHA256SUM:=c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072};
+: ${PKG_LZO_VERSION:=2.10};
+: ${PKG_LZO_URL:=https://www.oberhumer.com/opensource/lzo/download/lzo-${PKG_LZO_VERSION}.tar.gz};
 : ${PKG_SDL1_DEPENDS:="w32api w32lib"};
 : ${PKG_SDL1_SHA256SUM:=d6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00};
 : ${PKG_SDL1_VERSION:=1.2.15};
