@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bash bc busybox cabextract calcurse coreutils cpio dash datamash dos2unix ed figlet
-findutils gawk grep jush mc mksh moon_buggy mpg123 nano ninvaders
+findutils gawk grep jush lzop mc mksh moon_buggy mpg123 nano ninvaders
 openbsd_baseutils pixz pv rc sbase screen sed sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BASH_DEPENDS:="ncurses"};
@@ -75,6 +75,10 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_JUSH_DEPENDS:="libeditline"};
 : ${PKG_JUSH_URLS_GIT:="jush-master=https://github.com/troglobit/jush.git@master"};
 : ${PKG_JUSH_SUBDIR:="jush-master"};
+: ${PKG_LZOP_DEPENDS:="lzo"};
+: ${PKG_LZOP_SHA256SUM:=7e72b62a8a60aff5200a047eea0773a8fb205caf7acbe1774d95147f305a2f41};
+: ${PKG_LZOP_VERSION:=1.04};
+: ${PKG_LZOP_URL:=https://www.lzop.org/download/lzop-${PKG_LZOP_VERSION}.tar.gz};
 : ${PKG_MC_DEPENDS:="glib libX11 ncursesw"};
 : ${PKG_MC_SHA256SUM:=eb9e56bbb5b2893601d100d0e0293983049b302c5ab61bfb544ad0ee2cc1f2df};
 : ${PKG_MC_VERSION:=4.8.19};
