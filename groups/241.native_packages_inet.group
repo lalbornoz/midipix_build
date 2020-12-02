@@ -192,6 +192,7 @@ pacman proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_PROXYTUNNEL_BUILD_DIR:=${PKG_PROXYTUNNEL_SUBDIR}};
 : ${PKG_PROXYTUNNEL_CFLAGS_BUILD_EXTRA:="-Wall -g3 -O0 --sysroot=${PREFIX_NATIVE}"};
 : ${PKG_PROXYTUNNEL_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib -lssl -lcrypto"};
+: ${PKG_RSYNC_DEPENDS:="libressl"};
 : ${PKG_RSYNC_SHA256SUM:=becc3c504ceea499f4167a260040ccf4d9f2ef9499ad5683c179a697146ce50e};
 : ${PKG_RSYNC_VERSION:=3.2.3};
 : ${PKG_RSYNC_URL:=https://download.samba.org/pub/rsync/src/rsync-${PKG_RSYNC_VERSION}.tar.gz};
