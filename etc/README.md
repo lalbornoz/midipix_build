@@ -200,7 +200,7 @@ Rebuild entire build groups including or excluding group dependencies, respectiv
 usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[,..]]
                   [-F ipv4|ipv6|offline]    [-h]    [-p jobs]    [-P]   [-r ALL|LAST]
                   [-r [*[*[*]]]name[,..][:step,..]]  [-R] [-v[v[v[v]]]] [--as-needed]
-                  [--debug-minipix] [--dump-on-abort]
+                  [--debug-minipix] [--dump-on-abort] [--roar]
                   [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
