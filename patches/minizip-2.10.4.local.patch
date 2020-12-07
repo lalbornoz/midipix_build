@@ -1,0 +1,11 @@
+diff -ru minizip-2.10.4.orig/CMakeLists.txt minizip-2.10.4/CMakeLists.txt
+--- minizip-2.10.4.orig/CMakeLists.txt	2020-12-07 01:32:18.000000000 +0100
++++ minizip-2.10.4/CMakeLists.txt	2020-12-07 15:20:38.128398493 +0100
+@@ -639,7 +639,6 @@
+ endif()
+ 
+ target_link_libraries(${PROJECT_NAME} PUBLIC ${MINIZIP_LIB} ${MINIZIP_DEP})
+-target_link_directories(${PROJECT_NAME} PUBLIC ${MINIZIP_LBD})
+ target_compile_definitions(${PROJECT_NAME} PRIVATE ${STDLIB_DEF} ${MINIZIP_DEF})
+ target_include_directories(${PROJECT_NAME} PRIVATE ${MINIZIP_INC})
+ target_include_directories(${PROJECT_NAME} PUBLIC
