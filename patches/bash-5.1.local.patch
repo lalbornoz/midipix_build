@@ -1,0 +1,23 @@
+diff -ru bash-5.1.orig/configure bash-5.1/configure
+--- bash-5.1.orig/configure	2020-12-04 15:05:14.000000000 +0100
++++ bash-5.1/configure	2020-12-08 14:34:05.162114735 +0100
+@@ -2917,6 +2917,7 @@
+ *-nsk*)		opt_bash_malloc=no ;;	# HP NonStop
+ *-haiku*)	opt_bash_malloc=no ;;	# Haiku OS
+ *-genode*)	opt_bash_malloc=no ;;	# Genode has no sbrk
++*-midipix*)	opt_bash_malloc=no ;;	# Midipix
+ esac
+ 
+ # memory scrambling on free()
+diff -ru bash-5.1.orig/lib/sh/oslib.c bash-5.1/lib/sh/oslib.c
+--- bash-5.1.orig/lib/sh/oslib.c	2013-10-14 15:12:57.000000000 +0200
++++ bash-5.1/lib/sh/oslib.c	2020-12-08 14:35:05.062112859 +0100
+@@ -280,7 +280,7 @@
+ long
+ getmaxchild ()
+ {
+-  static long maxchild = -1L;
++  static long maxchild = _SC_CHILD_MAX;
+ 
+   if (maxchild > 0)
+     return maxchild;
