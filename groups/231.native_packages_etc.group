@@ -218,6 +218,7 @@ zstd")";
 : ${PKG_LIBMETALINK_URL:=https://launchpad.net/libmetalink/trunk/libmetalink-${PKG_LIBMETALINK_VERSION}/+download/libmetalink-${PKG_LIBMETALINK_VERSION}.tar.bz2};
 : ${PKG_LOLCODE_URLS_GIT:="lci=https://github.com/justinmeza/lci.git@master"};
 : ${PKG_LOLCODE_BUILD_DIR:=lci};
+: ${PKG_MINIZIP_DEPENDS:="bzip2 libressl libz xz"};
 : ${PKG_MINIZIP_SHA256SUM:=6ef3d2e0c15352fe87a4a658b2e8f665fb0c21ddfb57a2e0a515658389d2e850};
 : ${PKG_MINIZIP_VERSION:=2.10.4};
 : ${PKG_MINIZIP_URL:=https://github.com/nmoinvaz/minizip/archive/${PKG_MINIZIP_VERSION}.tar.gz};
