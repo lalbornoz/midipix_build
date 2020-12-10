@@ -1,3 +1,15 @@
+diff -ru libtheora-1.1.1.orig/Makefile.in libtheora-1.1.1/Makefile.in
+--- libtheora-1.1.1.orig/Makefile.in    2009-10-01 20:04:07.000000000 +0200
++++ libtheora-1.1.1/Makefile.in 2020-12-10 14:17:43.482548317 +0100
+@@ -164,7 +164,7 @@
+ @THEORA_ENABLE_EXAMPLES_TRUE@EXAMPLES_DIR = examples
+ @THEORA_ENABLE_EXAMPLES_FALSE@EXAMPLES_DIR =
+
+-SUBDIRS = lib include doc tests m4 $(EXAMPLES_DIR)
++SUBDIRS = lib include tests m4 $(EXAMPLES_DIR)
+
+ # we include the whole debian/ dir in EXTRA_DIST because there's a problem
+ # with autotools and HFS+ MacOSX file systems that caused debian/Makefile.am
 diff -ru libtheora-1.1.1.orig/lib/Makefile.in libtheora-1.1.1/lib/Makefile.in
 --- libtheora-1.1.1.orig/lib/Makefile.in	2009-10-01 20:04:07.000000000 +0200
 +++ libtheora-1.1.1/lib/Makefile.in	2018-08-04 17:38:41.912201898 +0200
