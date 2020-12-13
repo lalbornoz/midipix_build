@@ -193,8 +193,8 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBTHEORA_IN_TREE:=1};
 : ${PKG_LIBTHEORA_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_LIBTIRPC_DEPENDS:="musl_compat"};
-: ${PKG_LIBTIRPC_SHA256SUM:=4278e9a5181d5af9cd7885322fdecebc444f9a3da87c526e7d47f7a12a37d1cc};
-: ${PKG_LIBTIRPC_VERSION:=1.2.6};
+: ${PKG_LIBTIRPC_SHA256SUM:=245895caf066bec5e3d4375942c8cb4366adad184c29c618d97f724ea309ee17};
+: ${PKG_LIBTIRPC_VERSION:=1.3.1};
 : ${PKG_LIBTIRPC_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libtirpc/libtirpc-${PKG_LIBTIRPC_VERSION}.tar.bz2};
 : ${PKG_LIBTIRPC_CONFIGURE_ARGS_EXTRA:="--disable-gssapi"};
 : ${PKG_LIBUDNS_URLS_GIT:=libudns=https://github.com/shadowsocks/libudns.git@master};
