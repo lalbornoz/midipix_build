@@ -141,9 +141,9 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBRESSL_URL:=http://ftp.eu.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${PKG_LIBRESSL_VERSION}.tar.gz};
 : ${PKG_LIBRESSL_CONFIGURE_ARGS_EXTRA:=--disable-asm --enable-nc};
 : ${PKG_LIBREADLINE_DEPENDS:="ncurses ncursestw ncursesw"};
-: ${PKG_LIBREADLINE_SHA256SUM:=750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334};
-: ${PKG_LIBREADLINE_VERSION:=7.0};
-: ${PKG_LIBREADLINE_URL:=ftp://ftp.gnu.org/gnu/readline/readline-${PKG_LIBREADLINE_VERSION}.tar.gz};
+: ${PKG_LIBREADLINE_SHA256SUM:=f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02};
+: ${PKG_LIBREADLINE_VERSION:=8.1};
+: ${PKG_LIBREADLINE_URL:=https://ftp.gnu.org/gnu/readline/readline-${PKG_LIBREADLINE_VERSION}.tar.gz};
 : ${PKG_LIBREADLINE_CFLAGS_CONFIGURE:="${DEFAULT_CFLAGS:+${DEFAULT_CFLAGS} }-I${PREFIX_NATIVE}/include"};
 : ${PKG_LIBREADLINE_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
 : ${PKG_LIBREADLINE_CONFIGURE_ARGS:="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET} --with-curses"};
