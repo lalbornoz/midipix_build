@@ -136,8 +136,8 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBREDWG_VERSION:=0.11.1};
 : ${PKG_LIBREDWG_URL:=https://ftp.gnu.org/gnu/libredwg/libredwg-${PKG_LIBREDWG_VERSION}.tar.xz};
 : ${PKG_LIBREDWG_CONFIGURE_ARGS_EXTRA:="--disable-python"};
-: ${PKG_LIBRESSL_SHA256SUM:=728a5edc63ccb418e9166bed11d4b43e9629ff1c4d42a39b649347a20416fad6};
-: ${PKG_LIBRESSL_VERSION:=3.3.0};
+: ${PKG_LIBRESSL_SHA256SUM:=a6d331865e0164a13ac85a228e52517f7cf8f8488f2f95f34e7857302f97cfdb};
+: ${PKG_LIBRESSL_VERSION:=3.3.1};
 : ${PKG_LIBRESSL_URL:=http://ftp.eu.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${PKG_LIBRESSL_VERSION}.tar.gz};
 : ${PKG_LIBRESSL_CONFIGURE_ARGS_EXTRA:=--disable-asm --enable-nc};
 : ${PKG_LIBREADLINE_DEPENDS:="ncurses ncursestw ncursesw"};
