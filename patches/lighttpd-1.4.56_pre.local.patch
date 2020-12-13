@@ -1,0 +1,25 @@
+diff -ru lighttpd-1.4.56.orig/src/Makefile.in lighttpd-1.4.56/src/Makefile.in
+--- lighttpd-1.4.56.orig/src/Makefile.in	2020-11-29 23:32:23.000000000 +0100
++++ lighttpd-1.4.56/src/Makefile.in	2020-12-13 15:46:36.596115969 +0100
+@@ -1771,10 +1771,10 @@
+ @BUILD_WITH_WOLFSSL_TRUE@mod_wolfssl_la_CPPFLAGS = $(WOLFSSL_CFLAGS)
+ mod_rewrite_la_SOURCES = mod_rewrite.c
+ mod_rewrite_la_LDFLAGS = $(common_module_ldflags)
+-mod_rewrite_la_LIBADD = $(PCRE_LIB) $(common_libadd)
++mod_rewrite_la_LIBADD = $(common_libadd) $(PCRE_LIB)
+ mod_redirect_la_SOURCES = mod_redirect.c
+ mod_redirect_la_LDFLAGS = $(common_module_ldflags)
+-mod_redirect_la_LIBADD = $(PCRE_LIB) $(common_libadd)
++mod_redirect_la_LIBADD = $(common_libadd) $(PCRE_LIB)
+ mod_status_la_SOURCES = mod_status.c
+ mod_status_la_LDFLAGS = $(common_module_ldflags)
+ mod_status_la_LIBADD = $(common_libadd)
+@@ -1842,7 +1842,7 @@
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_42) $(am__append_45) \
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_50) $(am__append_53) \
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_56) $(am__append_58)
+-@LIGHTTPD_STATIC_FALSE@lighttpd_LDADD = $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(CRYPTO_LIB) $(XXHASH_LIBS) $(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS)
++@LIGHTTPD_STATIC_FALSE@lighttpd_LDADD = $(common_libadd) $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(CRYPTO_LIB) $(XXHASH_LIBS) $(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS)
+ @LIGHTTPD_STATIC_TRUE@lighttpd_LDADD = $(common_libadd) $(CRYPT_LIB) \
+ @LIGHTTPD_STATIC_TRUE@	$(CRYPTO_LIB) $(XXHASH_LIBS) $(XML_LIBS) \
+ @LIGHTTPD_STATIC_TRUE@	$(SQLITE_LIBS) $(UUID_LIBS) $(ELFTC_LIB) \
