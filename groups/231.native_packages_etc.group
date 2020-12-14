@@ -7,7 +7,7 @@ alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante db
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer htop icoutils imagemagick infounzip infozip
 john lcms2 less libmetalink lolcode minizip mintty mlogin musl_compat musl_fts ncdu
-ncurses ncursestw ncursesw npth openjpeg p7zip pcre pcre2 popt potrace procps_ng qemu
+ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
 zstd")";
@@ -261,6 +261,8 @@ zstd")";
 : ${PKG_NPTH_SHA256SUM:=1393abd9adcf0762d34798dc34fdcf4d0d22a8410721e76f1e3afcd1daa4e2d1};
 : ${PKG_NPTH_VERSION:=1.6};
 : ${PKG_NPTH_URL:=https://www.gnupg.org/ftp/gcrypt/npth/npth-${PKG_NPTH_VERSION}.tar.bz2};
+: ${PKG_OPENJAZZ_URLS_GIT:=openjazz=https://github.com/AlisterT/openjazz.git@master};
+: ${PKG_OPENJAZZ_FORCE_AUTORECONF:=1};
 : ${PKG_OPENJPEG_DEPENDS:="lcms2 libpng libz tiff"};
 : ${PKG_OPENJPEG_SHA256SUM:=63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9};
 : ${PKG_OPENJPEG_VERSION:=2.3.1};

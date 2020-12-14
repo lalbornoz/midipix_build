@@ -1,0 +1,27 @@
+From 4adf2fb178b1bb20a5c48158f08a9b19e30d463a Mon Sep 17 00:00:00 2001
+From: Fabian Greffrath <fabian@greffrath.com>
+Date: Thu, 28 Nov 2019 10:44:06 +0100
+Subject: [PATCH] look in ~/.openjazz for data files
+
+This patch is now applied in both Arch Linux and Debian, so it probably
+makes sense to have it upstream.
+
+Presumably no users will ever want to have their openjazz data stored
+directly in their $HOME directory.
+---
+ src/main.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/main.cpp b/src/main.cpp
+index 59b3219..1e71867 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -196,7 +196,7 @@ void startUp (int argc, char *argv[]) {
+ 	#ifdef _WIN32
+ 	firstPath = new Path(firstPath, createString(getenv("HOME"), "\\"));
+ 	#else
+-	firstPath = new Path(firstPath, createString(getenv("HOME"), "/."));
++	firstPath = new Path(firstPath, createString(getenv("HOME"), "/.openjazz/"));
+ 	#endif
+ #endif
+ 
