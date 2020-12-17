@@ -261,6 +261,7 @@ zstd")";
 : ${PKG_NPTH_SHA256SUM:=1393abd9adcf0762d34798dc34fdcf4d0d22a8410721e76f1e3afcd1daa4e2d1};
 : ${PKG_NPTH_VERSION:=1.6};
 : ${PKG_NPTH_URL:=https://www.gnupg.org/ftp/gcrypt/npth/npth-${PKG_NPTH_VERSION}.tar.bz2};
+: ${PKG_OPENJAZZ_DEPENDS:="sdl1"};
 : ${PKG_OPENJAZZ_URLS_GIT:=openjazz=https://github.com/AlisterT/openjazz.git@master};
 : ${PKG_OPENJAZZ_FORCE_AUTORECONF:=1};
 : ${PKG_OPENJPEG_DEPENDS:="lcms2 libpng libz tiff"};
