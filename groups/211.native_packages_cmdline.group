@@ -12,6 +12,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BASH_VERSION:=5.1};
 : ${PKG_BASH_URL:=https://ftp.gnu.org/gnu/bash/bash-${PKG_BASH_VERSION}.tar.gz};
 : ${PKG_BASH_CONFIGURE_ARGS_EXTRA:="--without-bash-malloc --with-curses"};
+: ${PKG_BASH_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_BC_SHA256SUM:=7ee4abbcfac03d8a6e1a8a3440558a3d239d6b858585063e745c760957725ecc};
 : ${PKG_BC_VERSION:=1.06.95};
 : ${PKG_BC_URL:=http://alpha.gnu.org/gnu/bc/bc-${PKG_BC_VERSION}.tar.bz2};
