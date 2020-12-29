@@ -65,7 +65,8 @@ A Midipix distribution consists of the following:
   libraries such as ncurses, libressl, as well as Perl and Python.
 
 Install the build-time dependencies listed in section [2.1](#21-build-time-dependencies),
-clone this repository, and run the following command line:
+clone this repository (e.g. ``git clone https://dev.midipix.org/build/midipix_build``)
+and run the following command line:
 
 ```shell
 ./build.sh -a nt64 -b release -D zipdist -P -v
