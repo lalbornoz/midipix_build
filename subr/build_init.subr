@@ -87,7 +87,7 @@ buildp_init_env() {
 		printf "Error: failed to set umask(2).\n" >&2; exit 1;
 	elif ! BUILD_USER="$(id -nu)"; then
 		printf "Error: failed to obtain username." >&2; exit 1;
-	else	for _fname in $(find subr -name *.subr); do
+	else	for _fname in $(find subr.rtl -name *.subr) $(find subr -name *.subr); do
 			if ! . "${_fname}"; then
 				printf "Error: failed to source \`%s'.\n" "${_fname}"; exit 1;
 			fi;
