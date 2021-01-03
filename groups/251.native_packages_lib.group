@@ -131,8 +131,8 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBPNG_SHA256SUM:=505e70834d35383537b6491e7ae8641f1a4bed1876dbfe361201fc80868d88ca};
 : ${PKG_LIBPNG_VERSION:=1.6.37};
 : ${PKG_LIBPNG_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libpng/libpng-${PKG_LIBPNG_VERSION}.tar.xz};
-: ${PKG_LIBREDWG_SHA256SUM:=b6dd03ff30c3fcfb5b82a00176bd184b58965d7198228f2cc5bf923a99f1a6f7};
-: ${PKG_LIBREDWG_VERSION:=0.11.1};
+: ${PKG_LIBREDWG_SHA256SUM:=a85573cd100d303e01b7e75bb80d7b87d927a4c7c017848c0998aa11ffa3aa7c};
+: ${PKG_LIBREDWG_VERSION:=0.12};
 : ${PKG_LIBREDWG_URL:=https://ftp.gnu.org/gnu/libredwg/libredwg-${PKG_LIBREDWG_VERSION}.tar.xz};
 : ${PKG_LIBREDWG_CONFIGURE_ARGS_EXTRA:="--disable-python"};
 : ${PKG_LIBRESSL_SHA256SUM:=a6d331865e0164a13ac85a228e52517f7cf8f8488f2f95f34e7857302f97cfdb};
