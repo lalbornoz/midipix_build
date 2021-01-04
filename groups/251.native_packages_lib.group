@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 glib jansson lame libarchive libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
-libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libite
+libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
 libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
@@ -98,6 +98,10 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBGPG_ERROR_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${PKG_LIBGPG_ERROR_VERSION}.tar.bz2};
 : ${PKG_LIBGPG_ERROR_FORCE_AUTORECONF:=1};
 : ${PKG_LIBGPG_ERROR_IN_TREE:=1};
+: ${PKG_LIBIDN2_DEPENDS:="libunistring"};
+: ${PKG_LIBIDN2_SHA256SUM:=e1cb1db3d2e249a6a3eb6f0946777c2e892d5c5dc7bd91c74394fc3a01cab8b5};
+: ${PKG_LIBIDN2_VERSION:=2.3.0};
+: ${PKG_LIBIDN2_URL:=https://ftp.gnu.org/gnu/libidn/libidn2-${PKG_LIBIDN2_VERSION}.tar.gz};
 : ${PKG_LIBITE_URLS_GIT:=libite=https://github.com/troglobit/libite.git@master};
 : ${PKG_LIBITE_SUBDIR:=libite};
 : ${PKG_LIBJPEG_TURBO_SHA256SUM:=d74b92ac33b0e3657123ddcf6728788c90dc84dcb6a52013d758af3c4af481bb};
