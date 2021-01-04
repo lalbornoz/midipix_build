@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 glib jansson lame libarchive libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
-libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng
+libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng libpsl
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
 libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")";
@@ -135,6 +135,10 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBPNG_SHA256SUM:=505e70834d35383537b6491e7ae8641f1a4bed1876dbfe361201fc80868d88ca};
 : ${PKG_LIBPNG_VERSION:=1.6.37};
 : ${PKG_LIBPNG_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libpng/libpng-${PKG_LIBPNG_VERSION}.tar.xz};
+: ${PKG_LIBPSL_DEPENDS:="libidn2 libunistring"}
+: ${PKG_LIBPSL_SHA256SUM:=ac6ce1e1fbd4d0254c4ddb9d37f1fa99dec83619c1253328155206b896210d4c};
+: ${PKG_LIBPSL_VERSION:=0.21.1};
+: ${PKG_LIBPSL_URL:=https://github.com/rockdaboot/libpsl/releases/download/${PKG_LIBPSL_VERSION}/libpsl-${PKG_LIBPSL_VERSION}.tar.gz};
 : ${PKG_LIBREDWG_SHA256SUM:=a85573cd100d303e01b7e75bb80d7b87d927a4c7c017848c0998aa11ffa3aa7c};
 : ${PKG_LIBREDWG_VERSION:=0.12};
 : ${PKG_LIBREDWG_URL:=https://ftp.gnu.org/gnu/libredwg/libredwg-${PKG_LIBREDWG_VERSION}.tar.xz};
