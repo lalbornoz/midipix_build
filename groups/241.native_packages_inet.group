@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
 microsocks mtr mutt nginx nullmailer openlitespeed opensmtpd openssh
-pacman proxytunnel rsync socat thttpd w3m weechat wget whois")";
+proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -179,11 +179,6 @@ pacman proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_OPENSSH_DEBUG_CONFIGURE_ARGS_EXTRA:=--disable-strip};
 : ${PKG_OPENSSH_INSTALL_TARGET:=install-nokeys};
 : ${PKG_OPENSSH_MAKEFLAGS_INSTALL_EXTRA:=STRIP_OPT=};
-: ${PKG_PACMAN_SHA256SUM:=84599e2ee2158134fd704f1cd681ea46e021165bed4df5f002aa1748caef9e7b};
-: ${PKG_PACMAN_VERSION:=5.0.1};
-: ${PKG_PACMAN_URL:=https://projects.archlinux.org/pacman.git/snapshot/pacman-${PKG_PACMAN_VERSION}.tar.gz};
-: ${PKG_PACMAN_CONFIGURE_ARGS_EXTRA:=--disable-doc};
-: ${PKG_PACMAN_DISABLED:=1};
 : ${PKG_PROXYTUNNEL_DEPENDS:="libressl"};
 : ${PKG_PROXYTUNNEL_SHA256SUM:=6495430e9c60d3df53824a7a0f3bea9953a89d083a3718c72db04dc4d40755ac};
 : ${PKG_PROXYTUNNEL_VERSION:=1.10.20200507}
