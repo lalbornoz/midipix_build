@@ -6,11 +6,12 @@ internal repositories required in order to build Midipix.
 # Table of Contents
 
 1. [What is midipix, and how is it different?](#1-what-is-midipix-and-how-is-it-different)  
-2. [Building a midipix distribution](#2-building-a-midipix-distribution)  
+2. [Building, installing, and using a midipix distribution](#2-building-installing-and-using-a-midipix-distribution)  
 	2.1. [Build-time dependencies](#21-build-time-dependencies)  
 		2.1.1. [Alpine-specific notate bene](#211-alpine-specific-notate-bene)  
 	2.2. [Deployment](#22-deployment)  
 	2.3. [System requirements](#23-system-requirements)  
+	2.4. [Troubleshooting](#24-troubleshooting)  
 3. [Common tasks](#3-common-tasks)  
 	3.1. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#31-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
 	3.2. [Adding a package](#32-adding-a-package)  
@@ -50,8 +51,8 @@ in other projects.
 
 [//]: "}}}"
 
-[//]: # "{{{ 2. Building a midipix distribution"
-## 2. Building a midipix distribution
+[//]: # "{{{ 2. Building, installing, and using a midipix distribution"
+## 2. Building, installing and using a midipix distribution
 
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
@@ -139,8 +140,8 @@ owing to the UAC-related filtering policy of tokens introduced by Windows Vista&
 [//]: # "{{{ 2.3. System requirements"
 ### 2.3. System requirements
 
-The following system requirements are assessed on build hosts equipped with the
-following hardware at minimum:
+The following build-time system requirements are assessed on build hosts
+equipped with the following hardware at minimum:
 * Intel(R) Xeon(R) CPU W3520 @ 2.67GHz (8 cores)
 * 7200 RPM SATA 3.1 HDD
 * 6 GB RAM
@@ -154,6 +155,31 @@ Package archive files and/or Git repositories additionally consume at least
 1.82 GB.
 
 *(last update: Thu, 05 Mar 2020 09:25:41 +0000)*
+
+Installing a Midipix distribution requires 4.9 GB with 3.2 GB taken up
+by the distribution itself, 913 MB by the installation process, and 830
+MB by the release archive file, the latter two of which may be deleted
+post-installation.
+
+*(last update: Wed, 06 Jan 2021 15:50:30 +0000)*
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 2.4. Troubleshooting"
+### 2.4. Troubleshooting
+
+Midipix presently provides, inter alia, strace-like functionality via
+ntctty's logging capabilities. This is enabled for a session by running
+``ntctty.exe`` with the ``--log-level 7`` option, e.g.:
+
+```shell
+$ ntctty.exe --log-level 7 /bin/ls -la /
+$ ntctty.exe --log-level 7 /bin/sh -c "ls -la /"
+```
+
+By default, log files are written into the /var/log/ntctty directory;
+this may be adjusted with the ``--log-dir`` and/or ``--log-file`` options.
   
 [Back to top](#table-of-contents)
 
