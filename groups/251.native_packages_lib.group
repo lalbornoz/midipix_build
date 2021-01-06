@@ -93,8 +93,8 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBGCRYPT_VERSION:=1.8.7};
 : ${PKG_LIBGCRYPT_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${PKG_LIBGCRYPT_VERSION}.tar.bz2};
 : ${PKG_LIBGCRYPT_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE} --disable-asm --disable-padlock-support --disable-aesni-support --disable-pclmul-support --disable-sse41-support --disable-drng-support --disable-avx-support --disable-avx2-support --disable-amd64-as-feature-detection};
-: ${PKG_LIBGPG_ERROR_SHA256SUM:=babd98437208c163175c29453f8681094bcaf92968a15cafb1a276076b33c97c};
-: ${PKG_LIBGPG_ERROR_VERSION:=1.36};
+: ${PKG_LIBGPG_ERROR_SHA256SUM:=64b078b45ac3c3003d7e352a5e05318880a5778c42331ce1ef33d1a0d9922742};
+: ${PKG_LIBGPG_ERROR_VERSION:=1.41};
 : ${PKG_LIBGPG_ERROR_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${PKG_LIBGPG_ERROR_VERSION}.tar.bz2};
 : ${PKG_LIBGPG_ERROR_FORCE_AUTORECONF:=1};
 : ${PKG_LIBGPG_ERROR_IN_TREE:=1};
