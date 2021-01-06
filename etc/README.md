@@ -170,16 +170,24 @@ post-installation.
 ### 2.4. Troubleshooting
 
 Midipix presently provides, inter alia, strace-like functionality via
-ntctty's logging capabilities. This is enabled for a session by running
-``ntctty.exe`` with the ``--log-level 7`` option, e.g.:
+ntctty's logging capabilities. This is available both through the regular
+``strace(1)`` command as distributed, which however **must** be provided
+with an absolute pathname without consideration for ``${PATH}``, as well
+as directly via ``ntctty.exe`` for a session by running ``ntctty.exe``
+with the ``--log-level 7`` option, e.g.:
 
 ```shell
-$ ntctty.exe --log-level 7 /bin/ls -la /
-$ ntctty.exe --log-level 7 /bin/sh -c "ls -la /"
+$ #strace ls -la /        # (incorrect, relative pathname)
+$ strace /bin/ls -la /    # (correct, absolute pathname)
+$ ntctty.exe --log-level 7 -e /bin/ls -la /
+$ ntctty.exe --log-level=7 -e /bin/ls -la /
+$ ntctty.exe --log-level 7 -e /bin/sh -c "ls -la /"
+$ ntctty.exe --log-level=7 -e /bin/sh -c "ls -la /"
 ```
 
-By default, log files are written into the /var/log/ntctty directory;
-this may be adjusted with the ``--log-dir`` and/or ``--log-file`` options.
+By default, ``ntctty.exe`` log files are written into the /var/log/ntctty
+directory; this may be adjusted with the ``--log-dir`` and/or
+``--log-file`` options. ``strace(1)`` logs to stderr by default.
   
 [Back to top](#table-of-contents)
 
@@ -407,7 +415,7 @@ midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh -a nt64 -b debug -s mc
 ==> 2020/03/11 15:46:28 Run $R to rebuild `mc'.
 ==> 2020/03/11 15:46:28 Run $RS <step> to restart the specified build step of `mc'
 ==> 2020/03/11 15:46:28 Run $D to automatically regenerate the patch for `mc'.
-midipix_build@sandbox:(src/midipix_build)> $
+midipix_build@sandbox:(mc-native-x86_64-nt64-midipix/obj)> $
 ```
   
 If a package build shell environment is desired for a package that has either not been
