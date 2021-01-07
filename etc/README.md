@@ -156,12 +156,16 @@ Package archive files and/or Git repositories additionally consume at least
 
 *(last update: Thu, 05 Mar 2020 09:25:41 +0000)*
 
-Installing a Midipix distribution requires 4.9 GB with 3.2 GB taken up
-by the distribution itself, 913 MB by the installation process, and 830
-MB by the release archive file, the latter two of which may be deleted
-post-installation.
+These are the Midipix distribution disk space system requirements:
 
-*(last update: Wed, 06 Jan 2021 15:50:30 +0000)*
+| Target architecture | Build kind | Distribution | Installation directory | Archive file |
+| ------------------- | ---------- | ------------ | ---------------------- | ------------ |
+| nt64                | debug      | 7.3 GB       |  2.3 GB                | 2.1 GB       |
+| nt64                | release    | 3.2 GB       |  913 MB                | 830 MB       |
+
+The installation directory and archive file may be safely deleted post-installation.
+
+*(last update: Thu, 07 Jan 2021 18:20:06 +0000)*
   
 [Back to top](#table-of-contents)
 
