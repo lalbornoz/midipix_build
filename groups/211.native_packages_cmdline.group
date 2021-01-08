@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bash bc busybox cabextract calcurse coreutils cpio dash datamash dos2unix ed figlet
 findutils gawk grep jush lzop mc mksh moon_buggy mpg123 nano ninvaders
-openbsd_baseutils pixz pv rc sbase screen sed sloccount tar tcsh
+openbsd_baseutils profanity pixz pv rc sbase screen sed sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BASH_DEPENDS:="ncurses"};
 : ${PKG_BASH_SHA256SUM:=cc012bc860406dcf42f64431bcd3d2fa7560c02915a601aba9cd597a39329baa};
@@ -132,6 +132,11 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_OPENBSD_BASEUTILS_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
 : ${PKG_OPENBSD_BASEUTILS_INSTALL_FILES:="../baseutils/pax/pax=bin/ ../baseutils/pax/cpio.1=share/man/man1/ ../baseutils/pax/pax.1=share/man/man1/ ../baseutils/pax/tar.1=share/man/man1/"};
 : ${PKG_OPENBSD_BASEUTILS_MAKE_SUBDIRS:="libopenbsd pax"};
+: ${PKG_PROFANITY_DEPENDS:="libffi libstrophe libgcrypt libz glib gpgme libncursesw curl libreadline sqlite3"};
+: ${PKG_PROFANITY_SHA256SUM:=23f7b2e5c6cf85913b9e7a228802bca9ecb1d1cf3bf8f8f285e9676176a24902 };
+: ${PKG_PROFANITY_VERSION:=0.9.5};
+: ${PKG_PROFANITY_URL:=https://profanity-im.github.io/profanity-${PKG_PROFANITY_VERSION}.tar.gz};
+: ${PKG_PROFANITY_CONFIGURE_ARGS_EXTRA:="--disable-python-plugins --disable-icons-and-clipboard --disable-notifications"};
 : ${PKG_PIXZ_DEPENDS:="libarchive xz"};
 : ${PKG_PIXZ_SHA256SUM:=e5e32c6eb0bf112b98e74a5da8fb63b9f2cae71800f599d97ce540e150c8ddc5};
 : ${PKG_PIXZ_VERSION:=1.0.7};
