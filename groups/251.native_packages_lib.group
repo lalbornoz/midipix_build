@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 glib jansson lame libarchive libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
 libjpeg_turbo libksba libmspack libnettle libogg libpcap libpipeline libpng libpsl
-libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libtasn1
+libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libstrophe libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
 libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
@@ -183,6 +183,10 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfss
 : ${PKG_LIBSSH_VERSION:=0.9.5};
 : ${PKG_LIBSSH_URL:=https://www.libssh.org/files/${PKG_LIBSSH_VERSION%.*}/libssh-${PKG_LIBSSH_VERSION}.tar.xz};
 : ${PKG_LIBSSH_SUBDIR:=libssh-${PKG_LIBSSH_VERSION}};
+: ${PKG_LIBSTROPHE_DEPENDS:="libressl expat"};
+: ${PKG_LIBSTROPHE_SHA256SUM:=cf1a363ae6df88ccd97292d4e859b7680d8bac79347b53a9dc8f095456b7a02d};
+: ${PKG_LIBSTROPHE_VERSION=0.10.1};
+: ${PKG_LIBSTROPHE_URL:=https://github.com/strophe/libstrophe/releases/download/${PKG_LIBSTROPHE_VERSION}/libstrophe-${PKG_LIBSTROPHE_VERSION}.tar.xz};
 : ${PKG_LIBTASN1_SHA256SUM:=0e0fb0903839117cb6e3b56e68222771bebf22ad7fc2295a0ed7d576e8d4329d};
 : ${PKG_LIBTASN1_VERSION:=4.16.0};
 : ${PKG_LIBTASN1_URL:=https://ftp.gnu.org/gnu/libtasn1/libtasn1-${PKG_LIBTASN1_VERSION}.tar.gz};
