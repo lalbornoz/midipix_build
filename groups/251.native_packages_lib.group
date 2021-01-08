@@ -10,8 +10,8 @@ libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libstr
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
 libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
-: ${PKG_GLIB_SHA256SUM:=fe22998ff0394ec31e6e5511c379b74011bee61a4421bca7fcab223dfbe0fc6a};
-: ${PKG_GLIB_VERSION:=2.54.0};
+: ${PKG_GLIB_SHA256SUM:=d64abd16813501c956c4e123ae79f47f1b58de573df9fdd3b0795f1e2c1aa789};
+: ${PKG_GLIB_VERSION:=2.56.2};
 : ${PKG_GLIB_URL:="https://download.gnome.org/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz"};
 : ${PKG_GLIB_CONFIGURE_ARGS_EXTRA:="--disable-dtrace --disable-libelf --disable-libmount --with-python=${PREFIX}/bin/python3"};
 : ${PKG_JANSSON_SHA256SUM:=f4f377da17b10201a60c1108613e78ee15df6b12016b116b6de42209f47a474f};
