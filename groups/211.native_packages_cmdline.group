@@ -132,7 +132,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_OPENBSD_BASEUTILS_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
 : ${PKG_OPENBSD_BASEUTILS_INSTALL_FILES:="../baseutils/pax/pax=bin/ ../baseutils/pax/cpio.1=share/man/man1/ ../baseutils/pax/pax.1=share/man/man1/ ../baseutils/pax/tar.1=share/man/man1/"};
 : ${PKG_OPENBSD_BASEUTILS_MAKE_SUBDIRS:="libopenbsd pax"};
-: ${PKG_PROFANITY_DEPENDS:="libffi libstrophe libgcrypt libz glib gpgme libncursesw curl libreadline sqlite3"};
+: ${PKG_PROFANITY_DEPENDS:="libffi libstrophe libgcrypt libz glib gpgme ncursesw curl libreadline sqlite3"};
 : ${PKG_PROFANITY_SHA256SUM:=23f7b2e5c6cf85913b9e7a228802bca9ecb1d1cf3bf8f8f285e9676176a24902 };
 : ${PKG_PROFANITY_VERSION:=0.9.5};
 : ${PKG_PROFANITY_URL:=https://profanity-im.github.io/profanity-${PKG_PROFANITY_VERSION}.tar.gz};
