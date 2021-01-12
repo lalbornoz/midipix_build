@@ -1,6 +1,6 @@
---- socat-1.7.2.4.orig/compat.h
-+++ socat-1.7.2.4/compat.h
-@@ -656,6 +656,10 @@
+--- socat-1.7.3.4/compat.h.orig	2019-04-04 09:59:55.000000000 +0100
++++ socat-1.7.3.4/compat.h	2021-01-12 12:41:10.675182890 +0000
+@@ -695,6 +695,10 @@
  #  define NETDB_INTERNAL h_NETDB_INTERNAL
  #endif
  
