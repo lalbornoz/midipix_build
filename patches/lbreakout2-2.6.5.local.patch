@@ -1,0 +1,12 @@
+diff -ru lbreakout2-2.6.5.orig/common/net.h lbreakout2-2.6.5/common/net.h
+--- lbreakout2-2.6.5.orig/common/net.h	2013-05-03 19:06:07.000000000 +0200
++++ lbreakout2-2.6.5/common/net.h	2021-01-12 22:52:28.459252110 +0100
+@@ -16,7 +16,7 @@
+   #include <netdb.h>
+   #include <errno.h>
+   #include <arpa/inet.h>
+-  #include <sys/poll.h>
++  #include <poll.h>
+   #include <signal.h>
+ #endif
+ #endif

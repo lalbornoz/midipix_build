@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer htop icoutils imagemagick infounzip infozip
-john lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
+john lbreakout2 lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
@@ -205,6 +205,14 @@ zstd")";
 : ${PKG_JOHN_IN_TREE:=1};
 : ${PKG_JOHN_INSTALL_FILES:="../john-${PKG_JOHN_VERSION}/run/john=bin/ ../john-${PKG_JOHN_VERSION}/run/mailer=bin/ ../john-${PKG_JOHN_VERSION}/run/makechr=bin/ ../john-${PKG_JOHN_VERSION}/run/relbench=bin/ ../john-${PKG_JOHN_VERSION}/run/unafs=bin/ ../john-${PKG_JOHN_VERSION}/run/unique=bin/ ../john-${PKG_JOHN_VERSION}/run/unshadow=bin/ /=share/john ../john-${PKG_JOHN_VERSION}/run/ascii.chr=share/john/ ../john-${PKG_JOHN_VERSION}/run/digits.chr=share/john/ ../john-${PKG_JOHN_VERSION}/run/john.conf=share/john/ ../john-${PKG_JOHN_VERSION}/run/lm_ascii.chr=share/john/ ../john-${PKG_JOHN_VERSION}/run/password.lst=share/john/"};
 : ${PKG_JOHN_MAKEFLAGS_BUILD_EXTRA:="-C src midipix-x86-64"};
+: ${PKG_LBREAKOUT2_DEPENDS:="sdl1 libz libpng"};
+: ${PKG_LBREAKOUT2_SHA256SUM:=9104d6175553da3442dc6a5fc407a669e2f5aff3eedc5d30409eb003b7a78d6f};
+: ${PKG_LBREAKOUT2_VERSION:=2.6.5};
+: ${PKG_LBREAKOUT2_URL:=https://sources.voidlinux.org/lbreakout2-${PKG_LBREAKOUT2_VERSION}/lbreakout2-${PKG_LBREAKOUT2_VERSION}.tar.gz};
+: ${PKG_LBREAKOUT2_CONFIGURE_ARGS_EXTRA:=--with-sdl-prefix=${PREFIX_NATIVE}};
+: ${PKG_LBREAKOUT2_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib/w32lib};
+: ${PKG_LBREAKOUT2_ENV_VARS_EXTRA:="SDL_CONFIG=${PREFIX_NATIVE}/bin/sdl-config --prefix=${PREFIX_NATIVE}"};
+: ${PKG_LBREAKOUT2_IN_TREE:=1};
 : ${PKG_LCMS2_SHA256SUM:=dc49b9c8e4d7cdff376040571a722902b682a795bf92985a85b48854c270772e};
 : ${PKG_LCMS2_VERSION:=2.11};
 : ${PKG_LCMS2_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/lcms2/lcms2-${PKG_LCMS2_VERSION}.tar.gz};
