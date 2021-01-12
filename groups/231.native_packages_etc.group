@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer htop icoutils imagemagick infounzip infozip
-john lcms2 less libmetalink lolcode minizip mintty mlogin musl_compat musl_fts ncdu
+john lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 popt potrace procps_ng qemu
 qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
@@ -218,6 +218,14 @@ zstd")";
 : ${PKG_LIBMETALINK_URL:=https://launchpad.net/libmetalink/trunk/libmetalink-${PKG_LIBMETALINK_VERSION}/+download/libmetalink-${PKG_LIBMETALINK_VERSION}.tar.bz2};
 : ${PKG_LOLCODE_URLS_GIT:="lci=https://github.com/justinmeza/lci.git@master"};
 : ${PKG_LOLCODE_BUILD_DIR:=lci};
+: ${PKG_LTRIS_SHA256SUM:=cf50aa5a4b7167c61fae85cdd9ea8ffbefc58b84dee756a1e279b13fb3c1b1a6};
+: ${PKG_LTRIS_VERSION:=1.2.2};
+: ${PKG_LTRIS_URL:=https://sources.voidlinux.org/ltris-${PKG_LTRIS_VERSION}/ltris-${PKG_LTRIS_VERSION}.tar.gz};
+: ${PKG_LTRIS_CONFIGURE_ARGS_EXTRA:="--with-sdl-prefix=${PREFIX_NATIVE} SDL_LIBS=-L${PREFIX_NATIVE}/lib SDL_CFLAGS=-I${PREFIX_NATIVE}/include"};
+: ${PKG_LTRIS_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/SDL"};
+: ${PKG_LTRIS_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib -L${PREFIX_NATIVE}/lib/w32lib"};
+: ${PKG_LTRIS_ENV_VARS_EXTRA:="LIBS=-lSDL"};
+: ${PKG_LTRIS_IN_TREE:=1};
 : ${PKG_MINIZIP_DEPENDS:="bzip2 libressl libz xz"};
 : ${PKG_MINIZIP_SHA256SUM:=6ef3d2e0c15352fe87a4a658b2e8f665fb0c21ddfb57a2e0a515658389d2e850};
 : ${PKG_MINIZIP_VERSION:=2.10.4};
