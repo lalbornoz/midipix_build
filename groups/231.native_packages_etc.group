@@ -218,6 +218,7 @@ zstd")";
 : ${PKG_LIBMETALINK_URL:=https://launchpad.net/libmetalink/trunk/libmetalink-${PKG_LIBMETALINK_VERSION}/+download/libmetalink-${PKG_LIBMETALINK_VERSION}.tar.bz2};
 : ${PKG_LOLCODE_URLS_GIT:="lci=https://github.com/justinmeza/lci.git@master"};
 : ${PKG_LOLCODE_BUILD_DIR:=lci};
+: ${PKG_LTRIS_DEPENDS:="sdl1"};
 : ${PKG_LTRIS_SHA256SUM:=cf50aa5a4b7167c61fae85cdd9ea8ffbefc58b84dee756a1e279b13fb3c1b1a6};
 : ${PKG_LTRIS_VERSION:=1.2.2};
 : ${PKG_LTRIS_URL:=https://sources.voidlinux.org/ltris-${PKG_LTRIS_VERSION}/ltris-${PKG_LTRIS_VERSION}.tar.gz};
