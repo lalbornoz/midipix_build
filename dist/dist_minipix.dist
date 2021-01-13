@@ -27,7 +27,7 @@ pkg_dist_minipix_all() {
 		done;
 		for _fname in	\
 				libc.so libcurl.so.4 libcrypto.so.46 libexpat.so.1 libgmp.so.10	\
-				libgnutls.so.30 libhogweed.so.4 libidn2.so.0 liblzma.so.5	\
+				libgnutls.so.30 libhogweed.so.6 libidn2.so.0 liblzma.so.5	\
 				libmagic.so.1 libmetalink.so.3 libncurses.so.6 libncursesw.so.6	\
 				libnettle.so.8 libpcre.so.1 libpcre2-8.so.0 libperk.so.0	\
 				libpsl.so.5 libpsxscl.so libpython2.7.so.1 libreadline.so.7	\
