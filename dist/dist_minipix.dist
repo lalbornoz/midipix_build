@@ -30,7 +30,7 @@ pkg_dist_minipix_all() {
 				libgnutls.so.30 libhogweed.so.6 libidn2.so.0 liblzma.so.5	\
 				libmagic.so.1 libmetalink.so.3 libncurses.so.6 libncursesw.so.6	\
 				libnettle.so.8 libpcre.so.1 libpcre2-8.so.0 libperk.so.0	\
-				libpsl.so.5 libpsxscl.so libpython2.7.so.1 libreadline.so.7	\
+				libpsl.so.5 libpsxscl.so libpython2.7.so.1 libreadline.so.8	\
 				libssl.so.48 libtasn1.so.6 libtinfo.so.6 libtinfo.so		\
 				libtinfow.so.6 libu16ports.so.0 libunistring.so.2 libuuid.so.1	\
 				libz.so.1; do
