@@ -8,21 +8,21 @@ pkg_dist_minipix_all() {
 		for _dname in "${PREFIX_MINIPIX}/bin" "${PREFIX_MINIPIX}/share"; do
 			if [ ! -e "${_dname}" ]\
 			&& ! rtl_fileop mkdir "${_dname}"; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to create directory \`%s'." "${_dname}";
 			fi;
 		done;
 		for _fname in clear reset tset; do
 			if [ -e "${PREFIX_NATIVE}/bin/${_fname}" ]\
 			&& rtl_is_newer "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin"; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to copy \`%s' to \`%s'." "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}";
 			fi;
 		done;
 		for _pname in $([ -e "${PREFIX}/minipix_dist/bin" ] && find "${PREFIX}/minipix_dist/bin"\
 				-maxdepth 1 -perm /a=x -type f -and \( -not -name "lib*" \)); do
 			if rtl_is_newer "${_pname}" "${PREFIX_MINIPIX}/bin/${_pname##*/}"\
 			&& ! rtl_fileop cp_follow "${_pname}" "${PREFIX_MINIPIX}/bin"; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to copy \`%s' into \`%s'." "${_pname}" "${PREFIX_MINIPIX}/bin";
 			fi;
 		done;
 		for _fname in	\
@@ -35,50 +35,49 @@ pkg_dist_minipix_all() {
 				libtinfow.so.6 libu16ports.so.0 libunistring.so.2 libuuid.so.1	\
 				libz.so.1; do
 			if [ ! -e "${PREFIX_NATIVE}/lib/${_fname}" ]; then
-				rtl_log_msg fatal "Error: shared object \`%s' non-existent on copy." "${PREFIX_NATIVE}/lib/${_fname}";
-				return 1;
+				rtl_log_msg fatalexit "Error: shared object \`%s' non-existent on copy." "${PREFIX_NATIVE}/lib/${_fname}";
 			elif rtl_is_newer "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin"; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to copy shared object \`%s' into \`%s'." "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin";
 			fi;
 		done;
 		for _dname in lib/python2.7 share/gdb; do
 			if [ -d "${PREFIX}/minipix_dist/${_dname}" ]\
 			&& ! tar -C "${PREFIX}/minipix_dist" -cpf - "${_dname}" | tar -C "${PREFIX_MINIPIX}" -xpf -; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to tar-copy \`%s' into \`%s'." "${PREFIX}/minipix_dist/${_dname}" "${PREFIX_MINIPIX}";
 			fi;
 		done;
 		for _pname in etc/ca-certificates.conf etc/ssl/certs/ca-certificates.crt share/ca-certificates; do
 			if [ -e "${PREFIX}/minipix_dist/${_pname}" ]\
 			&& ! tar -C "${PREFIX}/minipix_dist" -cpf - "${_pname}" | tar -C "${PREFIX_MINIPIX}" -xpf -; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to tar-copy \`%s' into \`%s'." "${PREFIX}/minipix_dist/${_dname}" "${PREFIX_MINIPIX}";
 			fi;
 		done;
 		for _fname in nano vim; do
 			if [ -e "${PREFIX}/minipix_dist/share/${_fname}" ]\
 			&& rtl_is_newer "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share"; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to copy \`%s' into \`%s'." "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share";
 			fi;
 		done;
 		if [ ! -L "${PREFIX_MINIPIX}/share/nanorc" ]\
 		&& ! rtl_fileop ln_symbolic "nano/nanorc.nanorc" "${PREFIX_MINIPIX}/share/nanorc"; then
-			return 1;
+			rtl_log_msg fatalexit "Error: failed to create symbolic link from \`%s' to \`%s'." "nano/nanorc.nanorc" "${PREFIX_MINIPIX}/share/nanorc";
 		fi;
 		if [ ! -L "${PREFIX_MINIPIX}/share/vimrc" ]\
 		&& ! rtl_fileop ln_symbolic "vim/vim74/vimrc_example.vim" "${PREFIX_MINIPIX}/share/vimrc"; then
-			return 1;
+			rtl_log_msg fatalexit "Error: failed to create symbolic link from \`%s' to \`%s'." "vim/vim74/vimrc_example.vim" "${PREFIX_MINIPIX}/share/vimrc";
 		fi;
 		for _fname in putty putty-256color screen screen-256color xterm xterm-256color; do
 			_dname="share/terminfo/${_fname%${_fname#[a-zA-Z]}}";
 			if [ ! -e "${PREFIX_MINIPIX}/${_dname}" ]\
 			&& ! rtl_fileop mkdir "${PREFIX_MINIPIX}/${_dname}"; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to create directory \`%s'." "${PREFIX_MINIPIX}/${_dname}";
 			fi;
 			if [ -e "${PREFIX_NATIVE}/${_dname}/${_fname}" ]\
 			&& rtl_is_newer "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}/${_fname}"\
 			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}"; then
-				return 1;
+				rtl_log_msg fatalexit "Error: failed to copy \`%s' into \`%s'." "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}";
 			fi;
 		done;
 	fi;
