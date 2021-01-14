@@ -1,0 +1,70 @@
+diff -ru php-8.0.1.orig/configure php-8.0.1/configure
+--- php-8.0.1.orig/configure	2021-01-05 14:54:54.000000000 +0100
++++ php-8.0.1/configure	2021-01-13 23:01:56.427279925 +0100
+@@ -52030,8 +52030,11 @@
+ $as_echo_n "checking for mmap() using shm_open() shared memory support... " >&6; }
+   if test "$cross_compiling" = yes; then :
+ 
+-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-$as_echo "no" >&6; }
++$as_echo "#define HAVE_SHM_MMAP_POSIX 1" >>confdefs.h
++
++    { $as_echo "$as_me:${as_lineno-$LINENO}: cross-compiling, assuming yes" >&5
++$as_echo "cross-compiling, assuming yes" >&6; }
++    have_shm_mmap_posix=yes
+ 
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+@@ -87098,6 +87101,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
+diff -ru php-8.0.1.orig/sapi/cgi/Makefile.frag php-8.0.1/sapi/cgi/Makefile.frag
+--- php-8.0.1.orig/sapi/cgi/Makefile.frag	2021-01-05 14:54:54.000000000 +0100
++++ php-8.0.1/sapi/cgi/Makefile.frag	2021-01-14 00:20:44.769574312 +0100
+@@ -6,7 +6,7 @@
+ install-cgi: $(SAPI_CGI_PATH)
+ 	@echo "Installing PHP CGI binary:        $(INSTALL_ROOT)$(bindir)/"
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+-	@$(INSTALL) -m 0755 $(SAPI_CGI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php-cgi$(program_suffix)$(EXEEXT)
++	@$(LIBTOOL) --mode=install cp $(SAPI_CGI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php-cgi$(program_suffix)$(EXEEXT)
+ 	@echo "Installing PHP CGI man page:      $(INSTALL_ROOT)$(mandir)/man1/"
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
+ 	@$(INSTALL_DATA) sapi/cgi/php-cgi.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)php-cgi$(program_suffix).1
+diff -ru php-8.0.1.orig/sapi/cli/Makefile.frag php-8.0.1/sapi/cli/Makefile.frag
+--- php-8.0.1.orig/sapi/cli/Makefile.frag	2021-01-05 14:54:54.000000000 +0100
++++ php-8.0.1/sapi/cli/Makefile.frag	2021-01-14 00:48:00.415700667 +0100
+@@ -6,7 +6,7 @@
+ install-cli: $(SAPI_CLI_PATH)
+ 	@echo "Installing PHP CLI binary:        $(INSTALL_ROOT)$(bindir)/"
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+-	@$(INSTALL) -m 0755 $(SAPI_CLI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
++	@$(LIBTOOL) --mode=install cp $(SAPI_CLI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
+ 	@echo "Installing PHP CLI man page:      $(INSTALL_ROOT)$(mandir)/man1/"
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
+ 	@$(INSTALL_DATA) sapi/cli/php.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)php$(program_suffix).1
+diff -ru php-8.0.1.orig/sapi/phpdbg/Makefile.frag php-8.0.1/sapi/phpdbg/Makefile.frag
+--- php-8.0.1.orig/sapi/phpdbg/Makefile.frag	2021-01-05 14:54:54.000000000 +0100
++++ php-8.0.1/sapi/phpdbg/Makefile.frag	2021-01-14 00:35:57.023625462 +0100
+@@ -25,7 +25,7 @@
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(localstatedir)/log
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(localstatedir)/run
+-	@$(INSTALL) -m 0755 $(BUILD_BINARY) $(INSTALL_ROOT)$(bindir)/$(program_prefix)phpdbg$(program_suffix)$(EXEEXT)
++	@$(LIBTOOL) --mode=install cp $(BUILD_BINARY) $(INSTALL_ROOT)$(bindir)/$(program_prefix)phpdbg$(program_suffix)$(EXEEXT)
+ 	@echo "Installing phpdbg man page:       $(INSTALL_ROOT)$(mandir)/man1/"
+ 	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
+ 	@$(INSTALL_DATA) sapi/phpdbg/phpdbg.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)phpdbg$(program_suffix).1
