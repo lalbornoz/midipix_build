@@ -239,7 +239,7 @@ zstd")";
 : ${PKG_MINIZIP_SHA256SUM:=f4c8e7afdd45a093f69d7d338652996766d5473e63ad97a2c5cf89c0787773a0};
 : ${PKG_MINIZIP_VERSION:=2.10.4};
 : ${PKG_MINIZIP_URL:=https://github.com/nmoinvaz/minizip/archive/${PKG_MINIZIP_VERSION}.tar.gz};
-: ${PKG_MINIZIP_SUBDIR:=minizip-${PKG_MINIZIP_VERSION}};
+: ${PKG_MINIZIP_SUBDIR:=minizip-ng-${PKG_MINIZIP_VERSION}};
 : ${PKG_MINTTY_DEPENDS:="w32api w32lib"};
 : ${PKG_MINTTY_URLS_GIT:="mintty=https://github.com/midipix-ports/mintty.git@midipix bmintty=https://github.com/midipix-ports/bmintty.git@main"};
 : ${PKG_MINTTY_CONFIGURE:=bmintty/configure};

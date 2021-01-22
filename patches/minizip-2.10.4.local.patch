@@ -1,6 +1,5 @@
-diff -ru minizip-2.10.4.orig/CMakeLists.txt minizip-2.10.4/CMakeLists.txt
---- minizip-2.10.4.orig/CMakeLists.txt	2020-12-07 01:32:18.000000000 +0100
-+++ minizip-2.10.4/CMakeLists.txt	2020-12-07 15:20:38.128398493 +0100
+--- minizip-ng-2.10.4/CMakeLists.txt.orig	2020-12-07 00:32:18.000000000 +0000
++++ minizip-ng-2.10.4/CMakeLists.txt	2021-01-22 14:22:55.215576991 +0000
 @@ -639,7 +639,6 @@
  endif()
  
