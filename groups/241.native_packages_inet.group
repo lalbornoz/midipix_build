@@ -227,10 +227,12 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_WGET_CONFIGURE_ARGS_EXTRA:=--with-ssl=gnutls};
 : ${PKG_WGET_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
 : ${PKG_WGET_PYTHON:=${PREFIX}/bin/python3};
+: ${PKG_WHOIS_DEPENDS:="libidn2"};
 : ${PKG_WHOIS_SHA256SUM:=ae389c1486cdeae99f5f02940f98f5d7ff1f08ac0f96810365159b27b0189b5e};
 : ${PKG_WHOIS_VERSION:=5.5.7};
 : ${PKG_WHOIS_URL:=https://github.com/rfc1036/whois/archive/v${PKG_WHOIS_VERSION}.tar.gz};
 : ${PKG_WHOIS_IN_TREE:=1};
+: ${PKG_WHOIS_CFLAGS_BUILD:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
 : ${PKG_WHOIS_MAKE_INSTALL_VNAME:=BASEDIR};
 : ${PKG_WHOIS_SUBDIR:=whois-${PKG_WHOIS_VERSION}};
 
