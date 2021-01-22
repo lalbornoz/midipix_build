@@ -159,7 +159,7 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_t
 : ${PKG_LIBSASL2_DEPENDS:="libressl"};
 : ${PKG_LIBSASL2_SHA256SUM:=8fbc5136512b59bb793657f36fadda6359cae3b08f01fd16b3d406f1345b7bc3};
 : ${PKG_LIBSASL2_VERSION:=2.1.26};
-: ${PKG_LIBSASL2_URL:=https://midipix.zv.io/cyrus-sasl/cyrus-sasl-${PKG_LIBSASL2_VERSION}.tar.gz};
+: ${PKG_LIBSASL2_URL:="https://ftp.osuosl.org/pub/blfs/conglomeration/cyrus-sasl/cyrus-sasl-${PKG_LIBSASL2_VERSION}.tar.gz"};
 : ${PKG_LIBSASL2_CONFIGURE_ARGS_EXTRA:="--cache-file=../obj/config.cache"};
 : ${PKG_LIBSASL2_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_LIBSHINE_SHA256SUM:=58e61e70128cf73f88635db495bfc17f0dde3ce9c9ac070d505a0cd75b93d384};
