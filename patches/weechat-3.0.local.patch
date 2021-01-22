@@ -1,0 +1,11 @@
+--- weechat-3.0/Makefile.am.orig	2020-11-11 07:46:53.000000000 +0000
++++ weechat-3.0/Makefile.am	2021-01-22 20:28:22.128960631 +0000
+@@ -29,7 +29,7 @@
+ tests_dir = tests
+ endif
+ 
+-SUBDIRS = icons po doc intl src $(tests_dir)
++SUBDIRS = icons po doc src $(tests_dir)
+ 
+ EXTRA_DIST = AUTHORS.adoc \
+              ChangeLog.adoc \
