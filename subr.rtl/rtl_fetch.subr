@@ -53,12 +53,16 @@ rtl_fetch_urls_git() {
 
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 rtl_fetch_url_wget() {
-	local _urls="${1}" _sha256sum_src="${2}" _target_fname="${3}" _rc=0 _target_fname_full=""\
-		_url="" _urls_count=0;
+	local _urls="${1}" _sha256sum_src="${2}" _target_fname="${3}" _target_name="${4}" _mirrors="${5:-}"	\
+		_rc=0 _target_fname_full="" _url="" _url_base="" _urls_count=0 _urls_full="";
 	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
 		return 0;
-	else	_urls_count="$(rtl_llength "${_urls}")";
-		for _url in ${_urls}; do
+	else	_urls_full="${_urls}";
+		for _url_base in ${_mirrors}; do
+			_urls_full="$(rtl_lconcat "${_urls_full}" "${_url_base%/}/${_target_name}/${_target_fname}")";
+		done;
+		_urls_count="$(rtl_llength "${_urls_full}")";
+		for _url in ${_urls_full}; do
 			if [ -z "${_target_fname}" ]; then
 				_target_fname="$(rtl_basename "${_url}")";
 			fi;
