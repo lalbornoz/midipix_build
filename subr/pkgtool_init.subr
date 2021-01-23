@@ -4,12 +4,12 @@
 
 pkgtoolp_init_args() {
 	local _rc=0; _status="";
-	if [ "$((${ARG_INFO:-0} + ${ARG_RDEPENDS:-0} + ${ARG_SHELL:-0} + ${ARG_TARBALL:-0}))" -gt 1 ]; then
+	if [ "$((${ARG_INFO:-0} + ${ARG_MIRROR:-0} + ${ARG_RDEPENDS:-0} + ${ARG_SHELL:-0} + ${ARG_TARBALL:-0}))" -gt 1 ]; then
 		cat etc/pkgtool.usage; _rc=1; _status="Error: only one of -i, -r, -s, or -t must be specified.";
-	elif [ "$((${ARG_INFO:-0} + ${ARG_RDEPENDS:-0} + ${ARG_SHELL:-0} + ${ARG_TARBALL:-0}))" -eq 0 ]\
+	elif [ "$((${ARG_INFO:-0} + ${ARG_MIRROR:-0} + ${ARG_RDEPENDS:-0} + ${ARG_SHELL:-0} + ${ARG_TARBALL:-0}))" -eq 0 ]\
 	&&   [ -z "${ARG_RESTART_AT}" ]\
 	&&   [ "${ARG_UPDATE_DIFF:-0}" -eq 0 ]; then
-		cat etc/pkgtool.usage; _rc=1; _status="Error: one of -i, -r, -s, or -t must be specified.";
+		cat etc/pkgtool.usage; _rc=1; _status="Error: one of -i, -m, -r, -s, or -t must be specified.";
 	else	_rc=0; export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
 	fi; return "${_rc}";
 };
@@ -30,7 +30,7 @@ pkgtoolp_init_env() {
 
 pkgtoolp_init_getopts() {
 	local _opt="" _shiftfl=0 _rc=0 OPTIND=0; _status=""; : ${ARCH:="nt64"}; : ${BUILD_KIND:="debug"};
-	ARG_INFO=0; ARG_RESTART_AT=""; ARG_RDEPENDS=0; ARG_UPDATE_DIFF=0; ARG_SHELL=0; ARG_TARBALL=0;
+	ARG_INFO=0; ARG_MIRROR=0; ARG_MIRROR_DNAME=""; ARG_RESTART_AT=""; ARG_RDEPENDS=0; ARG_UPDATE_DIFF=0; ARG_SHELL=0; ARG_TARBALL=0;
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		--update-diff)
@@ -48,12 +48,13 @@ pkgtoolp_init_getopts() {
 			break;
 		elif [ "${_shiftfl:-0}" -gt 0 ]; then
 			shift "${_shiftfl}"; continue;
-		elif getopts a:b:hirst _opt; then
+		elif getopts a:b:him:rst _opt; then
 			case "${_opt}" in
 			a)	ARCH="${OPTARG}"; ;;
 			b)	BUILD_KIND="${OPTARG}"; ;;
 			h)	cat etc/pkgtool.usage; exit 0; ;;
 			i)	ARG_INFO=1; ;;
+			m)	ARG_MIRROR=1; ARG_MIRROR_DNAME="${OPTARG}"; ;;
 			r)	ARG_RDEPENDS=1; ;;
 			s)	ARG_SHELL=1; ;;
 			t)	ARG_TARBALL=1; ;;
@@ -66,7 +67,8 @@ pkgtoolp_init_getopts() {
 		fi;
 	done;
 	if [ "${_rc}" -eq 0 ]; then
-		if [ -z "${PKGTOOL_PKG_NAME:-}" ]; then
+		if [ -z "${PKGTOOL_PKG_NAME:-}" ]\
+		&& [ "${ARG_MIRROR:-0}" -eq 0 ]; then
 			_rc=1; _status="Error: missing package name.";
 		else	export PKGTOOL_PKG_NAME;
 		fi;

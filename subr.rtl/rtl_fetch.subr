@@ -3,29 +3,38 @@
 #
 
 rtlp_fetch_url_git() {
-	local _tgtdir="${1}" _subdir="${2}" _url="${3}" _branch="${4}"	\
-		_oldpwd="";
+	local	_cache_dname="${1}" _git_branch="${2}" _mirrors="${3}" _subdir="${4}" _tgtdir="${5}" _url="${6}"\
+		_clonefl=0 _oldpwd="" _url_base="";
 	(set -o errexit -o noglob -o nounset;
 	rtl_flock_acquire 4 || exit "${?}";
-	trap "rm -f \"${BUILD_DLCACHEDIR}/${_subdir%%[/]}.fetching\"" EXIT;
-	if [ -e "${BUILD_DLCACHEDIR}/${_subdir}" ]; then
-		(rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
-			git pull ${DEFAULT_GIT_ARGS} origin "${_branch:-main}");
-		(rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
+	trap "rm -f \"${_cache_dname}/${_subdir%%[/]}.fetching\"" EXIT;
+	if [ -e "${_cache_dname}/${_subdir}" ]; then
+		(rtl_fileop cd "${_cache_dname}/${_subdir}" &&\
+			git pull ${DEFAULT_GIT_ARGS} origin "${_git_branch:-main}");
+		(rtl_fileop cd "${_cache_dname}/${_subdir}" &&\
 			git submodule update);
 	else
-		git clone ${DEFAULT_GIT_ARGS} "${_url}" "${BUILD_DLCACHEDIR}/${_subdir}";
-		if [ -n "${_branch}" ]; then
-			(rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
-				git checkout "${_branch}");
+		for _url_base in ${_url%/*} ${_mirrors}; do
+			if git clone ${DEFAULT_GIT_ARGS} "${_url_base}/${_url##*/}" "${_cache_dname}/${_subdir}"; then
+				_clonefl=1; break;
+			fi;
+		done;
+		if [ "${_clonefl}" -eq 0 ]; then
+			return 1;
+		else	if [ -n "${_git_branch}" ]; then
+				(rtl_fileop cd "${_cache_dname}/${_subdir}" &&\
+					git checkout "${_git_branch}");
+			fi;
+			(rtl_fileop cd "${_cache_dname}/${_subdir}" &&\
+				git submodule update --init);
 		fi;
-		(rtl_fileop cd "${BUILD_DLCACHEDIR}/${_subdir}" &&\
-			git submodule update --init);
 	fi;
-	_oldpwd="${PWD}"; rtl_fileop cd "${PKG_BASE_DIR}";
-	rtl_fileop rm "${_tgtdir}/${_subdir}";
-	rtl_fileop cp "${BUILD_DLCACHEDIR}/${_subdir}" "${_tgtdir}";
-	rtl_fileop cd "${_oldpwd}";) 4<>"${BUILD_DLCACHEDIR}/${_subdir%%[/]}.fetching";
+	if [ "${_cache_dname}" != "${_tgtdir}" ]; then
+		_oldpwd="${PWD}"; rtl_fileop cd "${_tgtdir}";
+		rtl_fileop rm "${_tgtdir}/${_subdir}";
+		rtl_fileop cp "${_cache_dname}/${_subdir}" "${_tgtdir}";
+		rtl_fileop cd "${_oldpwd}";
+	fi) 4<>"${_cache_dname}/${_subdir%%[/]}.fetching";
 	if [ "${?}" -eq 0 ]; then
 		cd "$(pwd)";
 	else
@@ -34,81 +43,71 @@ rtlp_fetch_url_git() {
 };
 
 rtl_fetch_urls_git() {
-	local _tgtdir="" _url_spec="" _subdir="" _url="" _git_branch="";
-	_tgtdir="${1}"; shift;
-	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
-		return 0;
-	fi;
+	local _cache_dname="${1}" _tgtdir="${2}" _mirrors="${3}" _git_branch="" _subdir="" _url="" _url_spec=""; shift 3;
 	for _url_spec in "${@}"; do
-		_subdir="${_url_spec%=*}";
-		_url="${_url_spec#*=}";
-		_url="${_url%@*}";
+		_subdir="${_url_spec%=*}"; _url="${_url_spec#*=}"; _url="${_url%@*}";
 		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
 			_git_branch=${_url_spec#*@};
 		fi;
-		rtlp_fetch_url_git "${_tgtdir}" "${_subdir}"	\
-			"${_url}" "${_git_branch}";
+		rtlp_fetch_url_git "${_cache_dname}" "${_git_branch}" "${_mirrors}" "${_subdir}" "${_tgtdir}" "${_url}";
 	done;
 };
 
 # N.B.	URLs ($1) may contain `?' or '&' characters.
 rtl_fetch_url_wget() {
-	local _urls="${1}" _sha256sum_src="${2}" _target_fname="${3}" _target_name="${4}" _mirrors="${5:-}"	\
+	local _urls="${1}" _sha256sum_src="${2}" _target_dname="${3}" _target_fname="${4}" _target_name="${5}" _mirrors="${6:-}"	\
 		_rc=0 _target_fname_full="" _url="" _url_base="" _urls_count=0 _urls_full="";
-	if [ "${ARG_FETCH_FORCE}" = "offline" ]; then
-		return 0;
-	else	_urls_full="${_urls}";
-		for _url_base in ${_mirrors}; do
-			_urls_full="$(rtl_lconcat "${_urls_full}" "${_url_base%/}/${_target_name}/${_target_fname}")";
-		done;
-		_urls_count="$(rtl_llength "${_urls_full}")";
-		for _url in ${_urls_full}; do
-			if [ -z "${_target_fname}" ]; then
-				_target_fname="$(rtl_basename "${_url}")";
-			fi;
-			_target_fname_full="${BUILD_DLCACHEDIR}/${_target_fname}";
-			(set +o errexit -o noglob -o nounset;
-			rtl_flock_acquire 4 || exit 1;
-			trap "_rc=\"\${?}\"; rm -f \"${_target_fname_full}.fetching\"; exit \"\${_rc}\";" EXIT;
-			if [ -z "${_sha256sum_src}" ]\
-			|| ! rtl_check_digest_file "${_target_fname_full}" "${_sha256sum_src}" "${_target_fname_full}.fetched"; then
-				wget ${DEFAULT_WGET_ARGS} -O "${_target_fname_full}" "${_url}"; _rc="${?}";
-				if [ "${_rc}" -ne 0 ]; then
-					exit $((${_rc}+2));
-				elif [ -n "${_sha256sum_src}" ]\
-				&& ! rtl_check_digest "${_target_fname_full}" "${_sha256sum_src}"; then
-					exit 2;
-				else
-					printf "%s" "${RTL_CHECK_DIGEST_DIGEST}" > "${_target_fname_full}.fetched"; exit 0;
-				fi;
+	_urls_full="${_urls}";
+	for _url_base in ${_mirrors}; do
+		_urls_full="$(rtl_lconcat "${_urls_full}" "${_url_base%/}/${_target_name}/${_target_fname}")";
+	done;
+	_urls_count="$(rtl_llength "${_urls_full}")";
+	for _url in ${_urls_full}; do
+		if [ -z "${_target_fname}" ]; then
+			_target_fname="$(rtl_basename "${_url}")";
+		fi;
+		_target_fname_full="${_target_dname}/${_target_fname}";
+		(set +o errexit -o noglob -o nounset;
+		rtl_flock_acquire 4 || exit 1;
+		trap "_rc=\"\${?}\"; rm -f \"${_target_fname_full}.fetching\"; exit \"\${_rc}\";" EXIT;
+		if [ -z "${_sha256sum_src}" ]\
+		|| ! rtl_check_digest_file "${_target_fname_full}" "${_sha256sum_src}" "${_target_fname_full}.fetched"; then
+			wget ${DEFAULT_WGET_ARGS} -O "${_target_fname_full}" "${_url}"; _rc="${?}";
+			if [ "${_rc}" -ne 0 ]; then
+				exit $((${_rc}+2));
+			elif [ -n "${_sha256sum_src}" ]\
+			&& ! rtl_check_digest "${_target_fname_full}" "${_sha256sum_src}"; then
+				exit 2;
 			else
-				exit 0;
-			fi;) 4<>"${_target_fname_full}.fetching"; _rc="${?}"; : $((_urls_count-=1));
-			case "${_rc}" in
-			0)	break; ;;
-			1)	if [ "${_urls_count}" -ge 1 ]; then
-					rtl_log_msg warning "Warning: failed to acquire fetching lock for URL \`%s', retrying with alternative URL..." "${_url}";
-				else
-					rtl_log_msg fatalexit "Error: failed to acquire fetching lock for URL \`%s'." "${_url}";
-				fi; ;;
-			2)	if [ "${_urls_count}" -ge 1 ]; then
-					rtl_log_msg warning "Warning: hash mismatch for URL \`%s', retrying with alternative URL... (from build variables: %s.)"\
-							"${_url}" "${_sha256sum_src}";
-				else
-					rtl_log_msg fatalexit "Error: hash mismatch for URL \`%s' (from build variables: %s.)"\
-							"${_url}" "${_sha256sum_src}";
-				fi; ;;
-			*)	if [ "${_urls_count}" -ge 1 ]; then
-					rtl_log_msg warning "Warning: failed to fetch URL \`%s', retrying with alternative URL... (wget(1) exit status: %s)"\
-							"${_url}" "$((${_rc}-2))";
-				else
-					rtl_log_msg fatalexit "Error: failed to fetch URL \`%s' (wget(1) exit status: %s)"\
-							"${_url}" "$((${_rc}-2))";
-				fi; ;;
-			esac;
-		done;
-		return "${_rc}";
-	fi;
+				printf "%s" "${RTL_CHECK_DIGEST_DIGEST}" > "${_target_fname_full}.fetched"; exit 0;
+			fi;
+		else
+			exit 0;
+		fi;) 4<>"${_target_fname_full}.fetching"; _rc="${?}"; : $((_urls_count-=1));
+		case "${_rc}" in
+		0)	break; ;;
+		1)	if [ "${_urls_count}" -ge 1 ]; then
+				rtl_log_msg warning "Warning: failed to acquire fetching lock for URL \`%s', retrying with alternative URL..." "${_url}";
+			else
+				rtl_log_msg fatal "Error: failed to acquire fetching lock for URL \`%s'." "${_url}"; break;
+			fi; ;;
+		2)	if [ "${_urls_count}" -ge 1 ]; then
+				rtl_log_msg warning "Warning: hash mismatch for URL \`%s', retrying with alternative URL... (from build variables: %s.)"\
+						"${_url}" "${_sha256sum_src}";
+			else
+				rtl_log_msg fatal "Error: hash mismatch for URL \`%s' (from build variables: %s.)"\
+						"${_url}" "${_sha256sum_src}"; break;
+			fi; ;;
+		*)	if [ "${_urls_count}" -ge 1 ]; then
+				rtl_log_msg warning "Warning: failed to fetch URL \`%s', retrying with alternative URL... (wget(1) exit status: %s)"\
+						"${_url}" "$((${_rc}-2))";
+			else
+				rtl_log_msg fatal "Error: failed to fetch URL \`%s' (wget(1) exit status: %s)"\
+						"${_url}" "$((${_rc}-2))"; break;
+			fi; ;;
+		esac;
+	done;
+	return "${_rc}";
 };
 
 # vim:filetype=sh

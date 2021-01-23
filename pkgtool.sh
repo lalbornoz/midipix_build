@@ -50,6 +50,48 @@ pkgtoolp_info() {
 	fi; return "${_rc}";
 };
 
+pkgtoolp_mirror() {
+	local _mirror_dname="${1}" _group_name="" _pkg_name="" _pkg_parent="" _rc=0;
+	umask 022;
+	if ! ex_pkg_load_groups; then
+		_rc=1; _status="Error: failed to load build groups.";
+	else	for _group_name in ${EX_PKG_BUILD_GROUPS}; do
+			for _pkg_name in $(ex_pkg_get_packages "${_group_name}"); do
+				_pkg_parent="$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_INHERIT_FROM")";
+				pkgtoolp_mirror_fetch "${_mirror_dname}" "${_pkg_name}" "${_pkg_parent:-${_pkg_name}}"; _rc="${?}";
+			done;
+		done;
+	fi; return "${_rc}";
+};
+
+pkgtoolp_mirror_fetch() {
+	local _mirror_dname="${1}" _pkg_name="${2}" _pkg_name_real="${3}" _pkg_sha256sum="" _pkg_url="";
+	if _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URL")"\
+	&& _pkg_sha256sum="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_SHA256SUM")"; then
+		if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
+			rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
+		else
+			rtl_log_msg info "Mirroring package \`%s', archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
+		fi;
+		if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
+		|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_url##*/}" "${_pkg_name_real}" ""; then
+			_rc="${?}"; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
+		fi;
+	elif _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
+		if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
+			rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
+		else
+			rtl_log_msg info "Mirroring package \`%s', Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
+		fi;
+		if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
+		|| ! rtl_fetch_urls_git "${_mirror_dname}/${_pkg_name}" "${_mirror_dname}/${_pkg_name}" "" ${_pkg_url}; then
+			_rc="${?}"; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
+		fi;
+	else
+		rtl_log_msg warning "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
+	fi;
+};
+
 pkgtoolp_restart_at() {
 	local _pkg_name="${1}" _rc=0; _status="";
 	if ! ex_pkg_load_dump "${_pkg_name}" "${BUILD_WORKDIR}"; then
@@ -194,6 +236,7 @@ pkgtool() {
 		_rc=1; _status="${_status}";
 	else	case "1" in
 		"${ARG_INFO:-0}")		pkgtoolp_info "${PKGTOOL_PKG_NAME}"; ;;
+		"${ARG_MIRROR:-0}")		pkgtoolp_mirror "${ARG_MIRROR_DNAME}"; ;;
 		"${ARG_RDEPENDS:-0}")		pkgtoolp_rdepends "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_RESTART_AT:+1}")		pkgtoolp_restart_at "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_SHELL:-0}")		pkgtoolp_shell "${PKGTOOL_PKG_NAME}"; ;;

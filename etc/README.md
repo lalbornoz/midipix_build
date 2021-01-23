@@ -379,12 +379,13 @@ for a list of package build steps and how they are overriden.
 ## 3.5. ``pkgtool.sh``
 
 ```
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-r|-s|-t]
-                    [<variable name>=<variable override>[ ..]] name
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname>|-r|-s|-t]
+                    [<variable name>=<variable override>[ ..]]            name
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build kind; defaults to debug.
         -i                List package variables and dependencies of single named package.
+        -m <dname>        Setup package archives mirror in <dname>
         -r                List reverse dependencies of single named package.
         -s                Enter interactive package build shell environment for single
                           named package; requires a package dump file. If the package
