@@ -3,7 +3,7 @@
 #
 
 rtlp_fetch_url_git() {
-	local	_cache_dname="${1}" _git_branch="${2}" _mirrors="${3}" _subdir="${4}" _tgtdir="${5}" _url="${6}"\
+	local	_cache_dname="${1}" _git_branch="${2}" _mirrors="${3}" _pkg_name="${4}" _subdir="${5}" _tgtdir="${6}" _url="${7}"\
 		_clonefl=0 _oldpwd="" _url_base="";
 	(set -o errexit -o noglob -o nounset;
 	rtl_flock_acquire 4 || exit "${?}";
@@ -15,7 +15,7 @@ rtlp_fetch_url_git() {
 			git submodule update);
 	else
 		for _url_base in ${_url%/*} ${_mirrors}; do
-			if git clone ${DEFAULT_GIT_ARGS} "${_url_base}/${_url##*/}" "${_cache_dname}/${_subdir}"; then
+			if git clone ${DEFAULT_GIT_ARGS} "${_url_base}/${_pkg_name}/${_url##*/}" "${_cache_dname}/${_subdir}"; then
 				_clonefl=1; break;
 			fi;
 		done;
@@ -43,13 +43,15 @@ rtlp_fetch_url_git() {
 };
 
 rtl_fetch_urls_git() {
-	local _cache_dname="${1}" _tgtdir="${2}" _mirrors="${3}" _git_branch="" _subdir="" _url="" _url_spec=""; shift 3;
+	local _cache_dname="${1}" _tgtdir="${2}" _pkg_name="${3}" _mirrors="${4}" _git_branch="" _subdir="" _url="" _url_spec=""; shift 4;
 	for _url_spec in "${@}"; do
 		_subdir="${_url_spec%=*}"; _url="${_url_spec#*=}"; _url="${_url%@*}";
 		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
 			_git_branch=${_url_spec#*@};
 		fi;
-		rtlp_fetch_url_git "${_cache_dname}" "${_git_branch}" "${_mirrors}" "${_subdir}" "${_tgtdir}" "${_url}";
+		if ! rtlp_fetch_url_git "${_cache_dname}" "${_git_branch}" "${_mirrors}" "${_pkg_name}" "${_subdir}" "${_tgtdir}" "${_url}"; then
+			return 1;
+		fi;
 	done;
 };
 

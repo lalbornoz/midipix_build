@@ -10,7 +10,7 @@ pkg_fetch_download() {
 			fi;
 		fi;
 		if [ -n "${PKG_URLS_GIT:-}" ]; then
-			if ! rtl_fetch_urls_git "${BUILD_DLCACHEDIR}" "${PKG_BASE_DIR}" "${PKG_MIRRORS:-}" ${PKG_URLS_GIT}; then
+			if ! rtl_fetch_urls_git "${BUILD_DLCACHEDIR}" "${PKG_BASE_DIR}" "${PKG_NAME}" "${PKG_MIRRORS:-}" ${PKG_URLS_GIT}; then
 				return 1;
 			fi;
 		fi;
