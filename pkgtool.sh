@@ -65,30 +65,35 @@ pkgtoolp_mirror() {
 };
 
 pkgtoolp_mirror_fetch() {
-	local _mirror_dname="${1}" _pkg_name="${2}" _pkg_name_real="${3}" _pkg_sha256sum="" _pkg_url="";
-	if _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URL")"\
-	&& _pkg_sha256sum="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_SHA256SUM")"; then
-		if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
-			rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
-		else
-			rtl_log_msg info "Mirroring package \`%s', archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
-		fi;
-		if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
-		|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_url##*/}" "${_pkg_name_real}" ""; then
-			_rc="${?}"; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
-		fi;
-	elif _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
-		if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
-			rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
-		else
-			rtl_log_msg info "Mirroring package \`%s', Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
-		fi;
-		if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
-		|| ! rtl_fetch_urls_git "${_mirror_dname}/${_pkg_name}" "${_mirror_dname}/${_pkg_name}" "" ${_pkg_url}; then
-			_rc="${?}"; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
-		fi;
+	local _mirror_dname="${1}" _pkg_name="${2}" _pkg_name_real="${3}" _pkg_disabled=0 _pkg_sha256sum="" _pkg_url="";
+	if _pkg_disabled="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_DISABLED")"\
+	&& [ "${_pkg_disabled:-0}" -eq 1 ]; then
+		rtl_log_msg info "Package \`%s' (parent package: \`%s') disabled, skipping." "${_pkg_name}" "${_pkg_name_real}";
 	else
-		rtl_log_msg warning "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
+		if _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URL")"\
+		&& _pkg_sha256sum="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_SHA256SUM")"; then
+			if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
+				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
+			else
+				rtl_log_msg info "Mirroring package \`%s', archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
+			fi;
+			if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
+			|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_url##*/}" "${_pkg_name_real}" ""; then
+				_rc="${?}"; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
+			fi;
+		elif _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
+			if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
+				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
+			else
+				rtl_log_msg info "Mirroring package \`%s', Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
+			fi;
+			if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
+			|| ! rtl_fetch_urls_git --mirror "${_mirror_dname}/${_pkg_name}" "${_mirror_dname}/${_pkg_name}" "${_pkg_name}" "" ${_pkg_url}; then
+				_rc="${?}"; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
+			fi;
+		else
+			rtl_log_msg warning "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
+		fi;
 	fi;
 };
 
