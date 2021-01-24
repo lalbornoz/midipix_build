@@ -23,6 +23,7 @@ patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_CPARSER_URLS_GIT:="cparser=http://pp.info.uni-karlsruhe.de/git/cparser.git@master bcparser=${DEFAULT_GITROOT}/compilers/bcparser@main"};
 : ${PKG_CPARSER_BASE_DIR:=${BUILD_WORKDIR}/cparser+libfirm-native-${DEFAULT_TARGET}};
 : ${PKG_CPARSER_BUILD_DIR:=build/cparser};
+: ${PKG_CPARSER_DISABLED:=1};
 : ${PKG_CPARSER_CONFIGURE:=bcparser/configure};
 : ${PKG_CPARSER_CONFIGURE_ARGS:="--source-dir=../../cparser --prefix="};
 : ${PKG_CPARSER_NO_CLEAN_BASE_DIR:=1};

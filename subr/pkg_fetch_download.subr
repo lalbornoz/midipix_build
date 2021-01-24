@@ -5,12 +5,16 @@
 pkg_fetch_download() {
 	if [ "${ARG_FETCH_FORCE:-}" != "offline" ]; then
 		if [ -n "${PKG_URL:-}" ]; then
-			if ! rtl_fetch_url_wget "${PKG_URL}" "${PKG_SHA256SUM}" "${BUILD_DLCACHEDIR}" "${PKG_FNAME}" "${PKG_NAME}" "${PKG_MIRRORS:-}"; then
+			if ! rtl_fetch_url_wget	\
+					"${PKG_URL}" "${PKG_SHA256SUM}" "${BUILD_DLCACHEDIR}"\
+					"${PKG_FNAME}" "${PKG_NAME}" "${PKG_MIRRORS:-}"; then
 				return 1;
 			fi;
 		fi;
 		if [ -n "${PKG_URLS_GIT:-}" ]; then
-			if ! rtl_fetch_urls_git "${BUILD_DLCACHEDIR}" "${PKG_BASE_DIR}" "${PKG_NAME}" "${PKG_MIRRORS:-}" ${PKG_URLS_GIT}; then
+			if ! rtl_fetch_urls_git	\
+					"${BUILD_DLCACHEDIR}" "${DEFAULT_GIT_ARGS}" "${PKG_BASE_DIR}"\
+					"${PKG_NAME}" "${PKG_MIRRORS_GIT:-}" ${PKG_URLS_GIT}; then
 				return 1;
 			fi;
 		fi;

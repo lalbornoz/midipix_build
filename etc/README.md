@@ -379,24 +379,24 @@ for a list of package build steps and how they are overriden.
 ## 3.5. ``pkgtool.sh``
 
 ```
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname>|-r|-s|-t]
-                    [<variable name>=<variable override>[ ..]]            name
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname1>,<dname2>|-r|-s|-t]
+                    [<variable name>=<variable override>[ ..]] name
 
-        -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release  Selects debug or release build kind; defaults to debug.
-        -i                List package variables and dependencies of single named package.
-        -m <dname>        Setup package archives mirror in <dname>
-        -r                List reverse dependencies of single named package.
-        -s                Enter interactive package build shell environment for single
-                          named package; requires a package dump file. If the package
-                          has not been built yet or built successfully, it will be rebuilt
-                          at build steps up until, by default, the `build' build step and
-                          forcibly aborted and dumped prior to enterting the shell.
-        -t                Produce tarball of package build root directory and build log
-                          file for the purpose of distribution given build failure.
+        -a nt32|nt64          Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release      Selects debug or release build kind; defaults to debug.
+        -i                    List package variables and dependencies of single named package.
+        -m <dname1>,<dname2>  Setup package archives mirror in <dname1> and Git repositories mirror in <dname2>
+        -r                    List reverse dependencies of single named package.
+        -s                    Enter interactive package build shell environment for single
+                              named package; requires a package dump file. If the package
+                              has not been built yet or built successfully, it will be rebuilt
+                              at build steps up until, by default, the `build' build step and
+                              forcibly aborted and dumped prior to enterting the shell.
+        -t                    Produce tarball of package build root directory and build log
+                              file for the purpose of distribution given build failure.
 
         <variable name>=<variable override>[ ..]
-                          Override build variable.
+                              Override build variable.
 ```
   
 > N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4](#4-build-variables))
@@ -581,7 +581,8 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | MAKEFLAGS_INSTALL_EXTRA     | Additional list of ``make(1)`` flags during package ``make(1)``  installation                                                               |
 | MAKEFLAGS_VERBOSITY         | Variable-value pair to pass to ``make(1)`` in order to force echo-back of command lines prior to execution                                  |
 | MAKE_INSTALL_VNAME          | Variable name of ``make(1)`` installation destination directory variable during package ``make(1)``  installation                           |
-| MIRRORS                     | List of package archive/repository mirror base URLs to attempt downloading from; cf. ``pkgtool.sh -m <dname>``                              |
+| MIRRORS                     | List of package archive mirror base URLs to attempt downloading from; cf. ``pkgtool.sh -m <dname>``                                         |
+| MIRRORS_GIT                 | List of package Git repository mirror base URLs to attempt cloning from; cf. ``pkgtool.sh -m <dname>``                                      |
 | NO_CLEAN                    | Inhibit cleaning of package build directory beneath ``${PKG_BASE_DIR}`` pre-finish                                                          |
 | NO_CLEAN_BASE_DIR           | Inhibit cleaning of package build root directory beneath ``${BUILD_WORKDIR}``                                                               |
 | NO_LOG_VARS                 | Inhibit logging of build & package variables pre-package build                                                                              |

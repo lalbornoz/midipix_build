@@ -81,6 +81,7 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_t
 : ${PKG_LIBFIRM_URLS_GIT:="libfirm=http://pp.info.uni-karlsruhe.de/git/libfirm.git@master bfirm=${DEFAULT_GITROOT}/compilers/bfirm@main"};
 : ${PKG_LIBFIRM_BASE_DIR:=${BUILD_WORKDIR}/cparser+libfirm-native-${DEFAULT_TARGET}};
 : ${PKG_LIBFIRM_BUILD_DIR:=build/libfirm};
+: ${PKG_LIBFIRM_DISABLED:=1};
 : ${PKG_LIBFIRM_CONFIGURE:=bfirm/configure};
 : ${PKG_LIBFIRM_CONFIGURE_ARGS:="--source-dir=../../libfirm --prefix="};
 : ${PKG_LIBFLAC_DEPENDS:="libogg"};
