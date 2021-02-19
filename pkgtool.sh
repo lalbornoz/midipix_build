@@ -111,7 +111,7 @@ pkgtoolp_mirror_fetch() {
 				fi;
 			fi;
 		else
-			_rc=1; rtl_log_msg warning "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
+			_rc=0; rtl_log_msg warning "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
 		fi;
 	fi; return "${_rc}";
 };
