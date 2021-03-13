@@ -136,7 +136,7 @@ rtl_filter_vars() {
 };
 
 rtl_flock_acquire() {
-	local _fd="${1}" _conflict_exit_code="${2:-622}" _wait="${3:-3600}"
+	local _fd="${1}" _conflict_exit_code="${2:-253}" _wait="${3:-3600}"
 	while true; do
 		if flock -E "${_conflict_exit_code}" -w "${_wait}" "${_fd}"; then
 			break;
