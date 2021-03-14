@@ -97,7 +97,9 @@ pkgtoolp_mirror_fetch() {
 				fi;
 			fi;
 		elif _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
-			if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
+			if [ "$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_MIRRORS_GIT")" = "skip" ]; then
+				_rc=0; rtl_log_msg warning "Package \`%s' specifies to skip Git URL(s) mirroring, skipping." "${_pkg_name}";
+			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
 				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
 				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname_git}/${_pkg_name}"; then
 					_rc=1; rtl_log_msg warning "Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'."\
