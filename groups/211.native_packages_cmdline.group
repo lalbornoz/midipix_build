@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bash bc busybox cabextract calcurse coreutils cpio dash datamash dos2unix ed figlet
-findutils gawk grep jush lzop mc mksh moon_buggy mpg123 nano ninvaders
+findutils gawk grep jush lzop mc mksh moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sbase screen sed sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BASH_DEPENDS:="ncurses"};
@@ -108,6 +108,11 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_MPG123_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_UTF16_DEFAULT"};
 : ${PKG_MPG123_CONFIGURE_ARGS_EXTRA:="--enable-modules  --with-cpu=generic_dither --with-audio=win32"};
 : ${PKG_MPG123_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lkernel32"};
+: ${PKG_MP3SPLT_DEPENDS:="libmp3splt"};
+: ${PKG_MP3SPLT_SHA256SUM:=3ec32b10ddd8bb11af987b8cd1c76382c48d265d0ffda53041d9aceb1f103baa};
+: ${PKG_MP3SPLT_VERSION:=2.6.2};
+: ${PKG_MP3SPLT_URL:=https://sources.voidlinux.org/mp3splt-${PKG_MP3SPLT_VERSION}/mp3splt-${PKG_MP3SPLT_VERSION}.tar.gz};
+: ${PKG_MP3SPLT_CONFIGURE_ARGS_EXTRA:="--enable-oggsplt_symlink --enable-flacsplt_symlink"};
 : ${PKG_NANO_DEPENDS:="file libz ncursesw"};
 : ${PKG_NANO_SHA256SUM:=75a78b71aeae39a0dbf759dd9c973005eb6528f1e3d1c4239ae1f011639fab8a};
 : ${PKG_NANO_VERSION:=5.5};
