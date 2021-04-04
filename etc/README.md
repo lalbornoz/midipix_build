@@ -236,9 +236,9 @@ Rebuild entire build groups including or excluding group dependencies, respectiv
 ## 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
 
 ```
-usage: ./build.sh [-a nt32|nt64] [-b debug|release] [-C dir[,..]] [-d] [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]    [-h]    [-p jobs]    [-P]   [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:step,..]]  [-R] [-v[v[v[v]]]] [--as-needed]
+usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]   [-h]   [-p jobs]     [-P]   [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:step,..]] [-R] [-v[v[v[v]]]] [--as-needed]
                   [--debug-minipix] [--dump-on-abort] [--roar]
                   [[=]<group>|<variable name>=<variable override>[ ..]]
 
