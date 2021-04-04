@@ -1,0 +1,107 @@
+diff -Nru chicken-5.2.0.orig/Makefile.midipix chicken-5.2.0/Makefile.midipix
+--- chicken-5.2.0.orig/Makefile.midipix	1970-01-01 01:00:00.000000000 +0100
++++ chicken-5.2.0/Makefile.midipix	2021-04-04 16:59:37.500039554 +0200
+@@ -0,0 +1,103 @@
++# Makefile.midipix - configuration for Midipix -*- Makefile -*-
++#
++# Copyright (c) 2008-2016, The CHICKEN Team
++# Copyright (c) 2007, Felix L. Winkelmann
++# All rights reserved.
++#
++# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
++# conditions are met:
++#
++#   Redistributions of source code must retain the above copyright notice, this list of conditions and the following
++#     disclaimer. 
++#   Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
++#     disclaimer in the documentation and/or other materials provided with the distribution. 
++#   Neither the name of the author nor the names of its contributors may be used to endorse or promote
++#     products derived from this software without specific prior written permission. 
++#
++# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
++# OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
++# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR
++# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
++# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
++# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++# POSSIBILITY OF SUCH DAMAGE.
++
++SRCDIR ?= ./
++
++# platform configuration
++
++ARCH ?= x86-64
++
++# options
++
++C_COMPILER_OPTIONS ?= -fno-strict-aliasing -fwrapv -DHAVE_CHICKEN_CONFIG_H
++ifdef DEBUGBUILD
++C_COMPILER_OPTIMIZATION_OPTIONS ?= -g -Wall -Wno-unused
++else
++ifdef OPTIMIZE_FOR_SPEED
++C_COMPILER_OPTIMIZATION_OPTIONS ?= -O3 -fomit-frame-pointer
++else
++C_COMPILER_OPTIMIZATION_OPTIONS ?= -Os -fomit-frame-pointer
++endif
++endif
++LINKER_LINK_SHARED_LIBRARY_OPTIONS = -shared
++LINKER_LINK_SHARED_DLOADABLE_OPTIONS = -L. -shared -Wl,-R"$(RUNTIME_LINKER_PATH)"
++LINKER_LINK_SHARED_PROGRAM_OPTIONS = -Wl,-R"$(RUNTIME_LINKER_PATH)"
++LIBCHICKEN_SO_LINKER_OPTIONS = -Wl,-soname,lib$(PROGRAM_PREFIX)chicken$(PROGRAM_SUFFIX).so.$(BINARYVERSION)
++LIBRARIES =
++NEEDS_RELINKING = no
++USES_SONAME = yes
++
++# special files
++
++CHICKEN_CONFIG_H = chicken-config.h
++
++# select default and internal settings
++
++include $(SRCDIR)/defaults.make
++
++chicken-config.h: chicken-defaults.h
++	echo "/* GENERATED */" >$@
++	echo "#define HAVE_DIRENT_H 1" >>$@
++	echo "#define HAVE_DLFCN_H 1" >>$@
++	echo "#define HAVE_INTTYPES_H 1" >>$@
++	echo "#define HAVE_LIMITS_H 1" >>$@
++	echo "#define HAVE_LONG_LONG 1" >>$@
++	echo "#define HAVE_MEMMOVE 1" >>$@
++	echo "#define HAVE_MEMORY_H 1" >>$@
++	echo "#define HAVE_SIGACTION 1" >>$@
++	echo "#define HAVE_SIGSETJMP 1" >>$@
++	echo "#define HAVE_SIGPROCMASK 1" >>$@
++	echo "#define HAVE_STDINT_H 1" >>$@
++	echo "#define HAVE_STDLIB_H 1" >>$@
++	echo "#define HAVE_STRERROR 1" >>$@
++	echo "#define HAVE_STRINGS_H 1" >>$@
++	echo "#define HAVE_STRING_H 1" >>$@
++	echo "#define HAVE_STRTOLL 1" >>$@
++	echo "#define HAVE_STRTOQ 1" >>$@
++	echo "#define HAVE_SYS_STAT_H 1" >>$@
++	echo "#define HAVE_SYS_TYPES_H 1" >>$@
++	echo "#define HAVE_SETENV 1" >>$@
++	echo "#define HAVE_UNISTD_H 1" >>$@
++	echo "#define HAVE_UNSIGNED_LONG_LONG 1" >>$@
++	echo "#define STDC_HEADERS 1" >>$@
++	echo "#define HAVE_ALLOCA 1" >>$@
++	echo "#define HAVE_ALLOCA_H 1" >>$@
++	echo "#define HAVE_GRP_H 1" >>$@
++	echo "#define HAVE_ERRNO_H 1" >>$@
++	echo "#define HAVE_SYSEXITS_H 1" >>$@
++	echo "#define HAVE_MEMMOVE 1" >>$@
++	echo "#define C_STACK_GROWS_DOWNWARD 1" >>$@
++#midipix: missing /proc/<pid>/exe see runtime.c
++	echo "#define SEARCH_EXE_PATH 1" >>$@
++ifdef GCHOOKS
++	echo "#define C_GC_HOOKS" >>$@
++endif
++ifdef SYMBOLGC
++	echo "#define C_COLLECT_ALL_SYMBOLS" >>$@
++endif
++	cat chicken-defaults.h >>$@
++
++include $(SRCDIR)/rules.make
