@@ -51,15 +51,16 @@ pkgtoolp_info() {
 };
 
 pkgtoolp_mirror() {
-	local	_mirror_dnames="${1}" _group_name="" _mirror_dname="" _mirror_dname_git=""\
-		_pkg_name="" _pkg_parent="" _rc=0;
+	local	_mirror_dname="${1}" _mirror_dname_git="${2}" _group_name="" _pkg_name="" _pkg_parent="" _rc=0;
 
-	rtl_lassign "_mirror_dname _mirror_dname_git" "," "${_mirror_dnames}"; umask 022;
+	umask 022;
 	if ! ex_pkg_load_groups; then
 		_rc=1; _status="Error: failed to load build groups.";
-	elif ! rtl_fileop mkdir "${_mirror_dname}"; then
+	elif [ -n "${_mirror_dname}" ]\
+	&& ! rtl_fileop mkdir "${_mirror_dname}"; then
 		_rc=1; _status="Error: failed to create \`${_mirror_dname}'.";
-	elif ! rtl_fileop mkdir "${_mirror_dname_git}"; then
+	elif [ -n "${_mirror_dname_git}" ]\
+	&& ! rtl_fileop mkdir "${_mirror_dname_git}"; then
 		_rc=1; _status="Error: failed to create \`${_mirror_dname_git}'.";
 	else	for _group_name in ${EX_PKG_BUILD_GROUPS}; do
 			for _pkg_name in $(ex_pkg_get_packages "${_group_name}"); do
@@ -83,7 +84,9 @@ pkgtoolp_mirror_fetch() {
 		rtl_log_msg info "Package \`%s' (parent package: \`%s') disabled, skipping." "${_pkg_name}" "${_pkg_name_real}";
 	else	if _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URL")"\
 		&& _pkg_sha256sum="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_SHA256SUM")"; then
-			if [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
+			if [ -z "${_mirror_dname}" ]; then
+				_rc=0; rtl_log_msg warning "Archive URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
+			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
 				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
 				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname}/${_pkg_name}"; then
 					_rc=1; rtl_log_msg warning "Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'."\
@@ -100,7 +103,9 @@ pkgtoolp_mirror_fetch() {
 				fi;
 			fi;
 		elif _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
-			if [ "$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_MIRRORS_GIT")" = "skip" ]; then
+			if [ -z "${_mirror_dname_git}" ]; then
+				_rc=0; rtl_log_msg warning "Git URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
+			elif [ "$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_MIRRORS_GIT")" = "skip" ]; then
 				_rc=0; rtl_log_msg warning "Package \`%s' specifies to skip Git URL(s) mirroring, skipping." "${_pkg_name}";
 			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
 				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
@@ -265,7 +270,7 @@ pkgtool() {
 		_rc=1; _status="${_status}";
 	else	case "1" in
 		"${ARG_INFO:-0}")		pkgtoolp_info "${PKGTOOL_PKG_NAME}"; ;;
-		"${ARG_MIRROR:-0}")		pkgtoolp_mirror "${ARG_MIRROR_DNAME}"; ;;
+		"${ARG_MIRROR:-0}")		pkgtoolp_mirror "${ARG_MIRROR_DNAME}" "${ARG_MIRROR_DNAME_GIT}"; ;;
 		"${ARG_RDEPENDS:-0}")		pkgtoolp_rdepends "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_RESTART_AT:+1}")		pkgtoolp_restart_at "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_SHELL:-0}")		pkgtoolp_shell "${PKGTOOL_PKG_NAME}"; ;;

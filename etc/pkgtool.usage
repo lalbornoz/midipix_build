@@ -1,10 +1,11 @@
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname1>,<dname2>|-r|-s|-t]
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-s|-t]
                     [<variable name>=<variable override>[ ..]] name
 
         -a nt32|nt64          Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release      Selects debug or release build kind; defaults to debug.
         -i                    List package variables and dependencies of single named package.
-        -m <dname1>,<dname2>  Setup package archives mirror in <dname1> and Git repositories mirror in <dname2>
+        -m <dname>            Setup package archives mirror in <dname> and/or
+        -M <dname>            Setup Git repositories mirror in <dname>
         -r                    List reverse dependencies of single named package.
         -s                    Enter interactive package build shell environment for single
                               named package; requires a package dump file. If the package
