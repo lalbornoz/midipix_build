@@ -54,6 +54,8 @@ pkgtoolp_mirror() {
 	local	_mirror_dname="${1}" _mirror_dname_git="${2}" _group_name="" _pkg_name="" _pkg_parent="" _rc=0;
 
 	umask 022;
+	_mirror_dname="$(rtl_subst "${_mirror_dname}" "~" "${HOME}")";
+	_mirror_dname_git="$(rtl_subst "${_mirror_dname_git}" "~" "${HOME}")";
 	if ! ex_pkg_load_groups; then
 		_rc=1; _status="Error: failed to load build groups.";
 	elif [ -n "${_mirror_dname}" ]\
