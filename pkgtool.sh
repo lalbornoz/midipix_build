@@ -76,7 +76,7 @@ pkgtoolp_mirror() {
 
 pkgtoolp_mirror_fetch() {
 	local	_mirror_dname="${1}" _mirror_dname_git="${2}" _pkg_name="${3}" _pkg_name_real="${4}"\
-		_pkg_disabled=0 _pkg_sha256sum="" _pkg_url="" _rc=0;
+		_pkg_disabled=0 _pkg_fname="" _pkg_sha256sum="" _pkg_url="" _rc=0;
 
 	if _pkg_disabled="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_DISABLED")"\
 	&& [ "${_pkg_disabled:-0}" -eq 1 ]; then
@@ -90,9 +90,12 @@ pkgtoolp_mirror_fetch() {
 							"${_mirror_dname}/${_pkg_name}" "${_pkg_name}" "${_pkg_name_real}";
 				fi;
 			else
+				if ! _pkg_fname="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_FNAME")"; then
+					_pkg_fname="${_pkg_url##*/}";
+				fi;
 				rtl_log_msg info "Mirroring package \`%s', archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
 				if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
-				|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_url##*/}" "${_pkg_name_real}" ""; then
+				|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_fname}" "${_pkg_name_real}" ""; then
 					_rc=1; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
 				fi;
 			fi;
