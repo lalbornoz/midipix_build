@@ -22,7 +22,7 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_BIND_SHA256SUM:=6c044e9ea81add9dbbd2f5dfc224964cc6b6e364e43a8d6d8b574d9282651802};
 : ${PKG_BIND_VERSION:=9.13.2};
 : ${PKG_BIND_URL:=https://ftp.isc.org/isc/bind/${PKG_BIND_VERSION}/bind-${PKG_BIND_VERSION}.tar.gz};
-: ${PKG_BIND_CONFIGURE_ARGS_EXTRA:="--with-libtool --disable-backtrace --with-eddsa=no --with-ecdsa=yes --with-gssapi=no --with-libxml2=no --with-libjson=no --with-openssl=${PREFIX_NATIVE} BUILD_CC=gcc"};
+: ${PKG_BIND_CONFIGURE_ARGS_EXTRA:="--with-libtool --disable-backtrace --with-eddsa=no --with-ecdsa=yes --with-gssapi=no --with-libxml2=no --with-libjson=no --with-openssl=${PREFIX_NATIVE} --without-lmdb BUILD_CC=gcc"};
 : ${PKG_BIND_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_CA_CERTIFICATES_DEPENDS:="libressl"};
 : ${PKG_CA_CERTIFICATES_URLS_GIT:="cacerts=https://dev.midipix.org/distro/cacerts.git@main"};
