@@ -128,8 +128,14 @@ rtl_fetch_url_wget() {
 				rtl_log_msg warning "Warning: hash mismatch for URL \`%s', retrying with alternative URL... (from build variables: %s.)"\
 						"${_url}" "${_sha256sum_src}";
 			else
-				rtl_log_msg fatal "Error: hash mismatch for URL \`%s' (from build variables: %s.)"\
-						"${_url}" "${_sha256sum_src}";
+				if _sha256sum_target="$(sha256sum "${_target_fname_full}" |\
+							awk '{print $1}' 2>/dev/null)"; then
+					rtl_log_msg fatal "Error: hash mismatch for URL \`%s' (should be: %s vs.: %s.)"\
+							"${_url}" "${_sha256sum_src}" "${_sha256sum_target}";
+				else
+					rtl_log_msg fatal "Error: hash mismatch for URL \`%s' (should be: %s.)"\
+							"${_url}" "${_sha256sum_src}";
+				fi;
 				rtl_fileop rm "${_target_fname_full}"; break;
 			fi; ;;
 		*)	if [ "${_urls_count}" -ge 1 ]; then
