@@ -379,7 +379,7 @@ for a list of package build steps and how they are overriden.
 ## 3.5. ``pkgtool.sh``
 
 ```
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-s|-t]
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-s|-t] [-v]
                     [<variable name>=<variable override>[ ..]] name
 
         -a nt32|nt64          Selects 32-bit or 64-bit architecture; defaults to nt64.
@@ -395,6 +395,7 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|
                               forcibly aborted and dumped prior to enterting the shell.
         -t                    Produce tarball of package build root directory and build log
                               file for the purpose of distribution given build failure.
+        -v                    Increase verbosity.
 
         <variable name>=<variable override>[ ..]
                               Override build variable.

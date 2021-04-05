@@ -30,8 +30,8 @@ pkgtoolp_init_env() {
 
 pkgtoolp_init_getopts() {
 	local _opt="" _shiftfl=0 _rc=0 OPTIND=0; _status=""; : ${ARCH:="nt64"}; : ${BUILD_KIND:="debug"};
-	ARG_INFO=0; ARG_MIRROR=0; ARG_MIRROR_DNAME=""; ARG_MIRROR_DNAME_GIT="";
-	ARG_RESTART_AT=""; ARG_RDEPENDS=0; ARG_UPDATE_DIFF=0; ARG_SHELL=0; ARG_TARBALL=0;
+	ARG_INFO=0; ARG_MIRROR=0; ARG_MIRROR_DNAME=""; ARG_MIRROR_DNAME_GIT=""; ARG_RESTART_AT="";
+	ARG_RDEPENDS=0; ARG_UPDATE_DIFF=0; ARG_SHELL=0; ARG_TARBALL=0; ARG_VERBOSE=0;
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		--update-diff)
@@ -49,7 +49,7 @@ pkgtoolp_init_getopts() {
 			break;
 		elif [ "${_shiftfl:-0}" -gt 0 ]; then
 			shift "${_shiftfl}"; continue;
-		elif getopts a:b:him:M:rst _opt; then
+		elif getopts a:b:him:M:rstv _opt; then
 			case "${_opt}" in
 			a)	ARCH="${OPTARG}"; ;;
 			b)	BUILD_KIND="${OPTARG}"; ;;
@@ -60,6 +60,7 @@ pkgtoolp_init_getopts() {
 			r)	ARG_RDEPENDS=1; ;;
 			s)	ARG_SHELL=1; ;;
 			t)	ARG_TARBALL=1; ;;
+			v)	ARG_VERBOSE=1; ;;
 			*)	cat etc/pkgtool.usage; exit 1; ;;
 			esac; shift $((${OPTIND}-1)); OPTIND=1;
 		else	case "${1}" in
@@ -73,6 +74,11 @@ pkgtoolp_init_getopts() {
 		&& [ "${ARG_MIRROR:-0}" -eq 0 ]; then
 			_rc=1; _status="Error: missing package name.";
 		else	export PKGTOOL_PKG_NAME;
+			case "${ARG_VERBOSE:-0}" in
+			0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
+			1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+			*)	_rc=1; _status="Error: invalid verbosity level (max. -v)"; ;;
+			esac;
 		fi;
 	fi; return "${_rc}";
 };

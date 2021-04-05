@@ -83,11 +83,11 @@ pkgtoolp_mirror_fetch() {
 
 	if _pkg_disabled="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_DISABLED")"\
 	&& [ "${_pkg_disabled:-0}" -eq 1 ]; then
-		rtl_log_msg info "Package \`%s' (parent package: \`%s') disabled, skipping." "${_pkg_name}" "${_pkg_name_real}";
+		rtl_log_msg notice "Package \`%s' (parent package: \`%s') disabled, skipping." "${_pkg_name}" "${_pkg_name_real}";
 	else	if _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URL")"\
 		&& _pkg_sha256sum="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_SHA256SUM")"; then
 			if [ -z "${_mirror_dname}" ]; then
-				_rc=0; rtl_log_msg warning "Archive URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
+				_rc=0; rtl_log_msg notice "Archive URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
 			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
 				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
 				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname}/${_pkg_name}"; then
@@ -107,17 +107,17 @@ pkgtoolp_mirror_fetch() {
 							"${_mirror_dname}/${_pkg_name}"		\
 							-type f					\
 							-not -name "${_pkg_fname}"		\
-							-not -name "${_pkg_fname}.fetch*"); do
-						rtl_log_msg info "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
+							-not -name "${_pkg_fname}.fetched"); do
+						rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
 						rtl_fileop rm "${_fname}";
 					done;
 				fi;
 			fi;
 		elif _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
 			if [ -z "${_mirror_dname_git}" ]; then
-				_rc=0; rtl_log_msg warning "Git URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
+				_rc=0; rtl_log_msg notice "Git URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
 			elif [ "$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_MIRRORS_GIT")" = "skip" ]; then
-				_rc=0; rtl_log_msg warning "Package \`%s' specifies to skip Git URL(s) mirroring, skipping." "${_pkg_name}";
+				_rc=0; rtl_log_msg notice "Package \`%s' specifies to skip Git URL(s) mirroring, skipping." "${_pkg_name}";
 			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
 				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
 				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname_git}/${_pkg_name}"; then
@@ -132,7 +132,7 @@ pkgtoolp_mirror_fetch() {
 				fi;
 			fi;
 		else
-			_rc=0; rtl_log_msg warning "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
+			_rc=0; rtl_log_msg notice "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
 		fi;
 	fi; return "${_rc}";
 };
