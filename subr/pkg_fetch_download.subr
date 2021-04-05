@@ -2,18 +2,47 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+pkg_fetch_download_dlcache_subdir() {
+	if [ -n "${PKG_INHERIT_FROM:-}" ]\
+	&& ! [ -e "${BUILD_DLCACHEDIR}/${PKG_NAME}" ]\
+	&& ! rtl_fileop ln_symbolic "${PKG_INHERIT_FROM}" "${BUILD_DLCACHEDIR}/${PKG_NAME}"; then
+		return 1;
+	elif [ -z "${PKG_INHERIT_FROM:-}" ]\
+	&& ! [ -e "${BUILD_DLCACHEDIR}/${PKG_NAME}" ]\
+	&& ! rtl_fileop mkdir "${BUILD_DLCACHEDIR}/${PKG_NAME}"; then
+		return 1;
+	else
+		return 0;
+	fi;
+};
+
 pkg_fetch_download() {
+	local _fname="";
+
 	if [ "${ARG_FETCH_FORCE:-}" != "offline" ]; then
 		if [ -n "${PKG_URL:-}" ]; then
-			if ! rtl_fetch_url_wget	\
-					"${PKG_URL}" "${PKG_SHA256SUM}" "${BUILD_DLCACHEDIR}"\
+			if ! pkg_fetch_download_dlcache_subdir; then
+				return 1;
+			elif ! rtl_fetch_url_wget	\
+					"${PKG_URL}" "${PKG_SHA256SUM}" "${BUILD_DLCACHEDIR}/${PKG_NAME}"\
 					"${PKG_FNAME}" "${PKG_NAME}" "${PKG_MIRRORS:-}"; then
 				return 1;
+			else
+				for _fname in $(find					\
+						"${BUILD_DLCACHEDIR}/${PKG_NAME}"	\
+						-type f					\
+						-not -name "${PKG_FNAME}"		\
+						-not -name "${PKG_FNAME}.fetched"); do
+					rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${PKG_NAME}";
+					rtl_fileop rm "${_fname}";
+				done;
 			fi;
 		fi;
 		if [ -n "${PKG_URLS_GIT:-}" ]; then
-			if ! rtl_fetch_urls_git	\
-					"${BUILD_DLCACHEDIR}" "${DEFAULT_GIT_ARGS}" "${PKG_BASE_DIR}"\
+			if ! pkg_fetch_download_dlcache_subdir; then
+				return 1;
+			elif ! rtl_fetch_urls_git	\
+					"${BUILD_DLCACHEDIR}/${PKG_NAME}" "${DEFAULT_GIT_ARGS}" "${PKG_BASE_DIR}"\
 					"${PKG_NAME}" "${PKG_MIRRORS_GIT:-}" ${PKG_URLS_GIT}; then
 				return 1;
 			fi;

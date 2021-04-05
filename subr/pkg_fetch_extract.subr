@@ -19,11 +19,11 @@ pkg_fetch_extract() {
 			rtl_fileop cd "${_oldpwd}"; return 1;
 		else
 			case "$(pkgp_fetch_extract_type "${PKG_NAME}")" in
-			bz2)	bunzip2 -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
-			gz)	gunzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
-			lz)	lzip -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
-			xz)	xz -d < "${BUILD_DLCACHEDIR}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
-			*)	tar -C "${PKG_BASE_DIR}" -xf "${BUILD_DLCACHEDIR}/${PKG_FNAME}"; ;;
+			bz2)	bunzip2 -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
+			gz)	gunzip -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
+			lz)	lzip -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
+			xz)	xz -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
+			*)	tar -C "${PKG_BASE_DIR}" -xf "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}"; ;;
 			esac;
 			if [ "${?}" -ne 0 ]; then
 				rtl_fileop cd "${_oldpwd}"; return 1;
