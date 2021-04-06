@@ -1,0 +1,95 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+rtlp_fetch_url_git() {
+	local	_cache_dname="${1}" _git_args="${2}" _git_branch="${3}" _mirrors="${4}" _pkg_name="${5}"\
+		_subdir="${6}" _tgtdir="${7}" _url="${8}" _cache_dname_full="" _clonefl=0 _oldpwd="" _url_base="";
+
+	_cache_dname_full="${_cache_dname}/${_subdir##*/}";
+	(set -o errexit -o noglob -o nounset;
+	rtl_flock_acquire 4 || exit "${?}";
+	trap "rm -f \"${_cache_dname_full%%[/]}.fetching\"" EXIT;
+	if [ -e "${_cache_dname_full}" ]; then
+		(rtl_fileop cd "${_cache_dname_full}" &&\
+			git pull ${_git_args} origin "${_git_branch:-main}") || return 1;
+		(rtl_fileop cd "${_cache_dname_full}" &&\
+			git submodule update) || return 1;
+	else	if git clone ${_git_args} -b "${_git_branch:-main}" "${_url}" "${_cache_dname_full}"; then
+			_clonefl=1;
+		elif [ "${_mirrors}" = "skip" ]; then
+			return 1;
+		else	for _url_base in ${_mirrors}; do
+				if git clone ${_git_args} -b "${_git_branch:-main}" "${_url_base}/${_pkg_name}/${_url##*/}" "${_cache_dname_full}"; then
+					_clonefl=1; break;
+				fi;
+			done;
+		fi;
+		if [ "${_clonefl}" -eq 0 ]; then
+			return 1;
+		else	if [ -n "${_git_branch}" ]; then
+				(rtl_fileop cd "${_cache_dname_full}" &&\
+					git checkout "${_git_branch}") || return 1;
+			fi;
+			(rtl_fileop cd "${_cache_dname_full}" &&\
+				git submodule update --init) || return 1;
+		fi;
+	fi;
+	if [ "${_cache_dname}" != "${_tgtdir}" ]; then
+		_oldpwd="${PWD}"; rtl_fileop cd "${_tgtdir}" || return 1;
+		rtl_fileop rm "${_tgtdir}/${_subdir}" || return 1;
+		if [ ! -e "$(rtl_dirname "${_tgtdir}/${_subdir}")" ]; then
+			rtl_fileop mkdir "$(rtl_dirname "${_tgtdir}/${_subdir}")";
+		fi;
+		rtl_fileop cp "${_cache_dname_full}" "${_tgtdir}/${_subdir}" || return 1;
+		rtl_fileop cd "${_oldpwd}" || return 1;
+	fi) 4<>"${_cache_dname_full%%[/]}.fetching";
+
+	if [ "${?}" -eq 0 ]; then
+		cd "$(pwd)";
+	else
+		return 1;
+	fi;
+};
+
+rtl_fetch_mirror_urls_git() {
+	local _git_args="${1}" _tgtdir="${2}" _rc=0 _repo_dname="" _subdir="" _url="" _url_spec=""; shift 2;
+
+	for _url_spec in "${@}"; do
+		_subdir="${_url_spec%=*}"; _subdir="${_subdir##*/}"; _url="${_url_spec#*=}"; _url="${_url%@*}";
+		_repo_dname="${_url##*/}"; [ "${_repo_dname%.git}" = "${_repo_dname}" ] && _repo_dname="${_repo_dname}.git";
+
+		if [ ! -e "$(rtl_dirname "${_tgtdir}")" ]; then
+			rtl_fileop mkdir "$(rtl_dirname "${_tgtdir}")";
+		fi;
+		(set -o errexit -o noglob -o nounset;
+		rtl_flock_acquire 4 || exit "${?}";
+		trap "rm -f \"${_tgtdir}/.fetching\"" EXIT;
+		if [ -e "${_tgtdir}/${_repo_dname}" ]; then
+			(rtl_fileop cd "${_tgtdir}/${_repo_dname}" && git fetch ${_git_args} --all) || return 1;
+		else	(rtl_fileop cd "${_tgtdir}" && git clone ${_git_args} --mirror "${_url}") || return 1;
+		fi) 4<>"${_tgtdir}/.fetching";
+		if [ "${?}" -ne 0 ]; then
+			_rc=1;
+		fi;
+	done; return "${_rc}";
+};
+
+rtl_fetch_urls_git() {
+	local	_cache_dname="${1}" _git_args="${2}" _tgtdir="${3}" _pkg_name="${4}" _mirrors="${5}"\
+		_git_branch="" _subdir="" _url="" _url_spec=""; shift 5;
+
+	for _url_spec in "${@}"; do
+		_subdir="${_url_spec%=*}"; _url="${_url_spec#*=}"; _url="${_url%@*}";
+		if [ "${_url_spec#*@}" != "${_url_spec}" ]; then
+			_git_branch=${_url_spec#*@};
+		fi;
+		if ! rtlp_fetch_url_git	\
+				"${_cache_dname}" "${_git_args}" "${_git_branch}" "${_mirrors}"\
+				"${_pkg_name}" "${_subdir}" "${_tgtdir}" "${_url}"; then
+			return 1;
+		fi;
+	done;
+};
+
+# vim:filetype=sh

@@ -1,0 +1,124 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+rtl_check_prereqs() {
+	local _cmd="" _cmds_missing="" _rc=0; _status="";
+	for _cmd in "${@}"; do
+		if ! which "${_cmd}" >/dev/null 2>&1; then
+			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
+		fi;
+	done;
+	if [ -n "${_cmds_missing}" ]; then
+		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
+	fi;
+	return "${_rc}";
+};
+
+rtl_clean_env() {
+	local _env_vars_except="${1}" _env_var="" _env_vars="";
+	_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
+	for _env_var in ${_env_vars}; do
+		if [ "${_env_var#DEFAULT_}" != "${_env_var}" ]\
+		|| [ "${_env_var#PKG_}" != "${_env_var}" ]; then
+			_env_vars_except="$(rtl_lconcat "${_env_vars_except}" "${_env_var}")";
+		fi;
+	done;
+	rtl_unset_vars $(rtl_lfilter "${_env_vars}" "${_env_vars_except}");
+};
+
+rtl_get_cpu_count() {
+	local _line="" _ncpus=0 _rc=0 _sname="$(uname -s 2>/dev/null)"; _status="";
+	case "${_sname}" in
+	Linux)	if [ ! -e "/proc/cpuinfo" ]; then
+			_rc=1; _status="Error: /proc/cpuinfo non-existent.";
+		else	while read -r _line; do
+				if rtl_match "${_line}" "processor*:"; then
+					: $((_ncpus+=1));
+				fi;
+			done < /proc/cpuinfo; printf "%s" "${_ncpus}";
+		fi; ;;
+	*)	_rc=1; _status="Error: unknown platform \`${_sname}'."; ;;
+	esac; return "${_rc}";
+};
+
+rtl_get_var_unsafe() {
+	local _vname="";
+	if [ "x${1}" = "x-u" ]; then
+		shift; _vname="$(rtl_toupper "${1}")";
+	else
+		_vname="${1}";
+	fi;
+	eval echo \${${_vname}} 2>/dev/null;
+};
+
+rtl_get_vars_fast() {
+	local _pattern="${1}";
+	set | awk -F= '/'"${_pattern}"'/{print $1}' | sort;
+};
+
+rtl_kill_tree() {
+	local _pid="${1}" _signal="${2:-TERM}" _pid_child="" _pids="";
+	if _pids="$(pgrep -P "${_pid}")"\
+	&& [ -n "${_pids}" ]; then
+		for _pid_child in ${_pids}; do
+			rtl_kill_tree "${_pid_child}" "${_signal}";
+		done;
+	fi;
+	if [ "${_pid:-0}" -ne "${$}" ]\
+	&& kill "-${_signal}" "${_pid}" 2>/dev/null; then
+		RTL_KILL_TREE_PIDS="$(rtl_lconcat "${RTL_KILL_TREE_PIDS}" "${_pid}")";
+	fi;
+};
+
+rtl_prompt() {
+	local _fmt="${1}" _choice=""; shift;
+	printf "${_fmt}? (y|N) " "${@}";
+	read -r _choice;
+	case "${_choice}" in
+	[yY])	_choice=1; ;;
+	*)	_choice=0; ;;
+	esac;
+	return "${_choice}";
+};
+
+rtl_rc() {
+	local _nflag="${1}" _cmd="${2}"; shift 2;
+	case "${_nflag}" in
+	1)	     if [ "${#}" -gt 0 ]; then
+			rtl_log_msg notice "Command line: %s %s" "${_cmd}" "${*}";
+		else
+			rtl_log_msg notice "Command line: %s" "${_cmd}";
+		fi; ;;
+	*)	"${_cmd}" "${@}";
+	esac;
+};
+
+rtl_run_cmd_unsplit() {
+	local _cmd="${1}" _cmdline="" _rc="" IFS; shift;
+	while [ ${#} -gt 0 ]; do
+		[ -n "${1}" ] &&\
+			_cmdline="${_cmdline:+${_cmdline}:}${1}";
+		shift;
+	done;
+	IFS=:; ${_cmd} ${_cmdline}; _rc=$?;
+	return ${_rc};
+};
+
+rtl_set_vars() {
+	local	_vars_set_vname="${1}" _vname_dst="${2}" _vname_src_tmpls="${3}"	\
+		_vars_set_old="" _vars_set_tmp="" _vname_src="";
+	for _vname_src in $(rtl_toupper "${_vname_src_tmpls}"); do
+		_vname_src="${_vname_src}_${_vname_dst}";
+		_vval_src="$(rtl_get_var_unsafe "${_vname_src}")";
+		if [ -n "${_vval_src}" ]; then
+			rtl_set_var_unsafe "PKG_${_vname_dst}" "${_vval_src}";
+			_vars_set_tmp="$(rtl_lconcat "${_vars_set_tmp}" "PKG_${_vname_dst}")";
+		fi;
+	done;
+	_vars_set_old="$(rtl_get_var_unsafe "${_vars_set_vname}")";
+	rtl_set_var_unsafe "${_vars_set_vname}"					\
+		"$(rtl_lconcat "${_vars_set_old}" "${_vars_set_tmp}")";
+};
+
+# vim:filetype=sh
