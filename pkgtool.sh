@@ -79,7 +79,8 @@ pkgtoolp_mirror() {
 
 pkgtoolp_mirror_fetch() {
 	local	_mirror_dname="${1}" _mirror_dname_git="${2}" _pkg_name="${3}" _pkg_name_real="${4}"\
-		_fname="" _pkg_disabled=0 _pkg_fname="" _pkg_sha256sum="" _pkg_url="" _rc=0;
+		_fname="" _pkg_disabled=0 _pkg_fname="" _pkg_sha256sum="" _pkg_url="" _pkg_urls_git=""\
+		_rc=0;
 
 	if _pkg_disabled="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_DISABLED")"\
 	&& [ "${_pkg_disabled:-0}" -eq 1 ]; then
@@ -103,35 +104,34 @@ pkgtoolp_mirror_fetch() {
 				|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_fname}" "${_pkg_name_real}" ""; then
 					_rc=1; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
 				else
-					for _fname in $(find					\
-							"${_mirror_dname}/${_pkg_name}"		\
-							-type f					\
-							-not -name "${_pkg_fname}"		\
-							-not -name "${_pkg_fname}.fetched"); do
-						rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
-						rtl_fileop rm "${_fname}";
-					done;
+					pkg_fetch_download_clean_dlcache "${_mirror_dname}" "${_pkg_name}" "${_pkg_fname}" "${_pkg_urls_git}";
 				fi;
 			fi;
-		elif _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
+		fi;
+		if _pkg_urls_git="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
 			if [ -z "${_mirror_dname_git}" ]; then
 				_rc=0; rtl_log_msg notice "Git URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
 			elif [ "$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_MIRRORS_GIT")" = "skip" ]; then
 				_rc=0; rtl_log_msg notice "Package \`%s' specifies to skip Git URL(s) mirroring, skipping." "${_pkg_name}";
 			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
-				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
+				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_urls_git}";
 				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname_git}/${_pkg_name}"; then
 					_rc=1; rtl_log_msg warning "Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'."\
 							"${_mirror_dname_git}/${_pkg_name}" "${_pkg_name}" "${_pkg_name_real}";
 				fi;
 			else
-				rtl_log_msg info "Mirroring package \`%s', Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
+				rtl_log_msg info "Mirroring package \`%s', Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_urls_git}";
 				if ! rtl_fileop mkdir "${_mirror_dname_git}/${_pkg_name}"\
-				|| ! rtl_fetch_mirror_urls_git "${DEFAULT_GIT_ARGS}" "${_mirror_dname_git}/${_pkg_name}" ${_pkg_url}; then
+				|| ! rtl_fetch_mirror_urls_git "${DEFAULT_GIT_ARGS}" "${_mirror_dname_git}/${_pkg_name}" ${_pkg_urls_git}; then
 					_rc=1; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
+				else
+					pkg_fetch_download_clean_dlcache "${_mirror_dname_git}" "${_pkg_name}" "${_pkg_fname}" "${_pkg_urls_git}";
 				fi;
 			fi;
-		else
+		fi;
+		if [ -z "${_pkg_url}" ]\
+		&& [ -z "${_pkg_sha256sum}" ]\
+		&& [ -z "${_pkg_urls_git}" ]; then
 			_rc=0; rtl_log_msg notice "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
 		fi;
 	fi; return "${_rc}";

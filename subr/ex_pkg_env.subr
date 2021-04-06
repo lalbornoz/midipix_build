@@ -24,7 +24,10 @@ exp_pkg_env_defaults() {
 		: ${PKG_FNAME:="${PKG_URL##*/}"};
 	fi;
 	if [ -z "${PKG_SUBDIR:-}" ]; then
-		if [ -n "${PKG_URLS_GIT:-}" ]; then
+		if [ -n "${PKG_URLS_GIT:-}" ]\
+		&& [ -n "${PKG_FNAME:-}" ]; then
+			rtl_log_msg fatalexit "Error: \${PKG_SUBDIR} must be specified given both \${PKG_FNAME} and \${PKG_URLS_GIT}.";
+		elif [ -n "${PKG_URLS_GIT:-}" ]; then
 			PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
 		else case "${PKG_FNAME:-}" in
 		*.t*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;

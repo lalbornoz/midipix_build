@@ -3,8 +3,15 @@
 #
 
 pkg_configure_patch() {
-	local	_patch_dir="${MIDIPIX_BUILD_PWD}/patches" _patch_fname=""		\
+	local	_patch_cwd="" _patch_dir="${MIDIPIX_BUILD_PWD}/patches" _patch_fname=""\
 		_patches_done="" _pkg_name_full="${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}";
+
+	if [ -n "${PKG_FNAME}" ]\
+	&& [ -n "${PKG_URLS_GIT}" ]; then
+		_patch_cwd="${PKG_BASE_DIR}";
+	else
+		_patch_cwd="${PKG_BASE_DIR}/${PKG_SUBDIR}";
+	fi;
 	set +o noglob;
 	for _patch_fname in \
 			"${_patch_dir}/${_pkg_name}/"*.patch				\
@@ -13,7 +20,7 @@ pkg_configure_patch() {
 			${PKG_PATCHES_EXTRA:-}; do
 		if [ -r "${_patch_fname}" ]\
 		&& ! rtl_lmatch "${_patches_done}" "${_patch_fname}"; then
-			if ! patch -b -d "${PKG_BASE_DIR}/${PKG_SUBDIR}" -p1 < "${_patch_fname}"; then
+			if ! patch -b -d "${_patch_cwd}" -p1 < "${_patch_fname}"; then
 				set -o noglob; return 1;
 			else
 				_patches_done="$(rtl_lconcat "${_patches_done}" "${_patch_fname}")";

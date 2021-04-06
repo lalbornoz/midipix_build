@@ -2,6 +2,29 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+pkg_fetch_download_clean_dlcache() {
+	local	_dlcachedir="${1}" _pkg_name="${2}" _pkg_fname="${3}" _pkg_urls_git="${4}"\
+		_fname="" _pkg_urls_git_dname="";
+
+	if [ -n "${_pkg_urls_git}" ]; then
+		_pkg_urls_git_dname="${_pkg_urls_git%%=*}";
+		_pkg_urls_git_dname="${_pkg_urls_git_dname##*/}";
+	fi;
+	for _fname in $(cd "${_dlcachedir}/${_pkg_name}" && find	\
+			-mindepth 1					\
+			-not -name "${_pkg_fname}"			\
+			-not -name "${_pkg_fname}.fetched"		\
+			${_pkg_urls_git_dname:+				\
+			-not -path "./${_pkg_urls_git_dname}"		\
+			-not -path "./${_pkg_urls_git_dname}/*"		\
+			-not -path "./${_pkg_urls_git_dname}.git"	\
+			-not -path "./${_pkg_urls_git_dname}.git/*"}); do
+		_fname="${_dlcachedir}/${_pkg_name}/${_fname#./}"
+		rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
+		rtl_fileop rm "${_fname}";
+	done;
+};
+
 pkg_fetch_download_dlcache_subdir() {
 	if [ -n "${PKG_INHERIT_FROM:-}" ]\
 	&& ! [ -e "${BUILD_DLCACHEDIR}/${PKG_NAME}" ]\
@@ -17,8 +40,6 @@ pkg_fetch_download_dlcache_subdir() {
 };
 
 pkg_fetch_download() {
-	local _fname="";
-
 	if [ "${ARG_FETCH_FORCE:-}" != "offline" ]; then
 		if [ -n "${PKG_URL:-}" ]; then
 			if ! pkg_fetch_download_dlcache_subdir; then
@@ -27,15 +48,6 @@ pkg_fetch_download() {
 					"${PKG_URL}" "${PKG_SHA256SUM}" "${BUILD_DLCACHEDIR}/${PKG_NAME}"\
 					"${PKG_FNAME}" "${PKG_NAME}" "${PKG_MIRRORS:-}"; then
 				return 1;
-			else
-				for _fname in $(find					\
-						"${BUILD_DLCACHEDIR}/${PKG_NAME}"	\
-						-type f					\
-						-not -name "${PKG_FNAME}"		\
-						-not -name "${PKG_FNAME}.fetched"); do
-					rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${PKG_NAME}";
-					rtl_fileop rm "${_fname}";
-				done;
 			fi;
 		fi;
 		if [ -n "${PKG_URLS_GIT:-}" ]; then
@@ -47,6 +59,7 @@ pkg_fetch_download() {
 				return 1;
 			fi;
 		fi;
+		pkg_fetch_download_clean_dlcache "${BUILD_DLCACHEDIR}" "${PKG_NAME}" "${PKG_FNAME}" "${PKG_URLS_GIT}";
 	fi;
 };
 
