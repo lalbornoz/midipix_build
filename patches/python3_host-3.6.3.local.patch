@@ -1,5 +1,5 @@
---- ./build/sbpython3/project/config/cfgdefs.sh.orig	2021-04-05 11:17:27.238909690 +0100
-+++ ./build/sbpython3/project/config/cfgdefs.sh	2021-04-06 10:51:52.866273106 +0100
+--- build/sbpython3/project/config/cfgdefs.sh.orig	2021-04-05 11:17:27.238909690 +0100
++++ build/sbpython3/project/config/cfgdefs.sh	2021-04-06 10:51:52.866273106 +0100
 @@ -106,6 +106,7 @@
  	if [ -n "$pycfg_pymalloc" ]; then
  		cfgtest_cflags_append '-DWITH_PYMALLOC'
@@ -19,8 +19,8 @@
  
  	if cfgtest_library_presence $mb_ncurses_tinfo; then
  		mb_ncurses_libs="$mb_ncurses_libs $mb_ncurses_tinfo"
---- ./build/sbpython3/project/variants/3.6.3/pyexts.mk.orig	2021-04-05 11:17:27.246909408 +0100
-+++ ./build/sbpython3/project/variants/3.6.3/pyexts.mk	2021-04-06 10:51:52.898271950 +0100
+--- build/sbpython3/project/variants/3.6.3/pyexts.mk.orig	2021-04-05 11:17:27.246909408 +0100
++++ build/sbpython3/project/variants/3.6.3/pyexts.mk	2021-04-06 10:51:52.898271950 +0100
 @@ -1012,7 +1012,7 @@
  PYEXT_OSSAUDIODEV_LOBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.lo)
  PYEXT_OSSAUDIODEV_OBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.o)
@@ -30,8 +30,8 @@
  PYEXT_OSSAUDIODEV_STATIC	= pyext/ossaudiodev$(OS_ARCHIVE_EXT)
  
  $(PYEXT_OSSAUDIODEV_SHARED):	$(PYEXT_OSSAUDIODEV_LOBJS)
---- ./build/sbpython3/project/variants/3.7.1/pyexts.mk.orig	2021-04-05 11:17:27.246909408 +0100
-+++ ./build/sbpython3/project/variants/3.7.1/pyexts.mk	2021-04-06 10:51:52.930270793 +0100
+--- build/sbpython3/project/variants/3.7.1/pyexts.mk.orig	2021-04-05 11:17:27.246909408 +0100
++++ build/sbpython3/project/variants/3.7.1/pyexts.mk	2021-04-06 10:51:52.930270793 +0100
 @@ -1068,7 +1068,7 @@
  PYEXT_OSSAUDIODEV_LOBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.lo)
  PYEXT_OSSAUDIODEV_OBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.o)
@@ -41,8 +41,8 @@
  PYEXT_OSSAUDIODEV_STATIC	= pyext/ossaudiodev$(OS_ARCHIVE_EXT)
  
  $(PYEXT_OSSAUDIODEV_SHARED):	$(PYEXT_OSSAUDIODEV_LOBJS)
---- ./build/sbpython3/project/variants/3.7.2/pyexts.mk.orig	2021-04-05 11:17:27.250909267 +0100
-+++ ./build/sbpython3/project/variants/3.7.2/pyexts.mk	2021-04-06 10:51:52.958269781 +0100
+--- build/sbpython3/project/variants/3.7.2/pyexts.mk.orig	2021-04-05 11:17:27.250909267 +0100
++++ build/sbpython3/project/variants/3.7.2/pyexts.mk	2021-04-06 10:51:52.958269781 +0100
 @@ -1068,7 +1068,7 @@
  PYEXT_OSSAUDIODEV_LOBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.lo)
  PYEXT_OSSAUDIODEV_OBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.o)

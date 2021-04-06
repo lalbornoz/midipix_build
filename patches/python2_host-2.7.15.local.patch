@@ -1,5 +1,5 @@
---- ./build/sbpython2/project/config/cfgdefs.sh.orig	2021-04-06 10:42:07.823432394 +0100
-+++ ./build/sbpython2/project/config/cfgdefs.sh	2021-04-06 10:46:44.345427809 +0100
+--- build/sbpython2/project/config/cfgdefs.sh.orig	2021-04-06 10:42:07.823432394 +0100
++++ build/sbpython2/project/config/cfgdefs.sh	2021-04-06 10:46:44.345427809 +0100
 @@ -106,6 +106,7 @@
  	if [ -n "$pycfg_pymalloc" ]; then
  		cfgtest_cflags_append '-DWITH_PYMALLOC'
@@ -19,8 +19,8 @@
  
  	if cfgtest_library_presence $mb_ncurses_tinfo; then
  		mb_ncurses_libs="$mb_ncurses_libs $mb_ncurses_tinfo"
---- ./build/sbpython2/project/pyexts.mk.orig	2021-04-06 10:42:07.827432250 +0100
-+++ ./build/sbpython2/project/pyexts.mk	2021-04-06 10:49:55.946499708 +0100
+--- build/sbpython2/project/pyexts.mk.orig	2021-04-06 10:42:07.827432250 +0100
++++ build/sbpython2/project/pyexts.mk	2021-04-06 10:49:55.946499708 +0100
 @@ -1017,7 +1017,7 @@
  PYEXT_OSSAUDIODEV_LOBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.lo)
  PYEXT_OSSAUDIODEV_OBJS		= $(PYEXT_OSSAUDIODEV_SRCS:.c=.o)
