@@ -6,8 +6,8 @@ pkg_configure_patch() {
 	local	_patch_cwd="" _patch_dir="${MIDIPIX_BUILD_PWD}/patches" _patch_fname=""\
 		_patches_done="" _pkg_name_full="${PKG_NAME}${PKG_VERSION:+-${PKG_VERSION}}";
 
-	if [ -n "${PKG_FNAME}" ]\
-	&& [ -n "${PKG_URLS_GIT}" ]; then
+	if [ -n "${PKG_FNAME:-}" ]\
+	&& [ -n "${PKG_URLS_GIT:-}" ]; then
 		_patch_cwd="${PKG_BASE_DIR}";
 	else
 		_patch_cwd="${PKG_BASE_DIR}/${PKG_SUBDIR}";

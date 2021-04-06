@@ -10,14 +10,14 @@ pkg_fetch_download_clean_dlcache() {
 		_pkg_urls_git_dname="${_pkg_urls_git%%=*}";
 		_pkg_urls_git_dname="${_pkg_urls_git_dname##*/}";
 	fi;
-	for _fname in $(cd "${_dlcachedir}/${_pkg_name}" && find	\
-			-mindepth 1					\
-			-not -name "${_pkg_fname}"			\
-			-not -name "${_pkg_fname}.fetched"		\
-			${_pkg_urls_git_dname:+				\
-			-not -path "./${_pkg_urls_git_dname}"		\
-			-not -path "./${_pkg_urls_git_dname}/*"		\
-			-not -path "./${_pkg_urls_git_dname}.git"	\
+	for _fname in $(cd "${_dlcachedir}/${_pkg_name}" && find		\
+			-mindepth 1						\
+			${_pkg_fname:+-not -name "${_pkg_fname}"}		\
+			${_pkg_fname:+-not -name "${_pkg_fname}.fetched"}	\
+			${_pkg_urls_git_dname:+					\
+			-not -path "./${_pkg_urls_git_dname}"			\
+			-not -path "./${_pkg_urls_git_dname}/*"			\
+			-not -path "./${_pkg_urls_git_dname}.git"		\
 			-not -path "./${_pkg_urls_git_dname}.git/*"}); do
 		_fname="${_dlcachedir}/${_pkg_name}/${_fname#./}"
 		rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
@@ -59,7 +59,7 @@ pkg_fetch_download() {
 				return 1;
 			fi;
 		fi;
-		pkg_fetch_download_clean_dlcache "${BUILD_DLCACHEDIR}" "${PKG_NAME}" "${PKG_FNAME}" "${PKG_URLS_GIT}";
+		pkg_fetch_download_clean_dlcache "${BUILD_DLCACHEDIR}" "${PKG_NAME}" "${PKG_FNAME:-}" "${PKG_URLS_GIT:-}";
 	fi;
 };
 
