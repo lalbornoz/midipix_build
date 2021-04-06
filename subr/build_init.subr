@@ -16,9 +16,9 @@ buildp_init_args() {
 		_rc=0; _status="Git repository has not changed since last build and --as-needed was specified.";
 	else	case "${ARG_FETCH_FORCE}" in
 		ipv4)	DEFAULT_GIT_ARGS="$(rtl_lconcat "-4" "${DEFAULT_GIT_ARGS}")";
-			DEFAULT_WGET_ARGS="$(rtl_lconcat "-4" "${DEFAULT_GIT_ARGS}")"; ;;
+			DEFAULT_WGET_ARGS="$(rtl_lconcat "-4" "${DEFAULT_WGET_ARGS}")"; ;;
 		ipv6)	DEFAULT_GIT_ARGS="$(rtl_lconcat "-6" "${DEFAULT_GIT_ARGS}")";
-			DEFAULT_WGET_ARGS="$(rtl_lconcat "-6" "${DEFAULT_GIT_ARGS}")"; ;;
+			DEFAULT_WGET_ARGS="$(rtl_lconcat "-6" "${DEFAULT_WGET_ARGS}")"; ;;
 		esac;
 		case "${ARG_RESTART}" in
 		\*\*\*[a-zA-Z]*)
