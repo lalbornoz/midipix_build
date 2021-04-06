@@ -3,7 +3,9 @@
 #
 
 buildp_init_args() {
-	local _group="" _last_pkg="" _pkg_names_unknown="" _rc=0; _status="";
+	local	_foundfl=0 _group="" _last_pkg="" _pkg_names_unknown="" _rc=0\
+		EX_PKG_BUILD_GROUPS EX_PKG_BUILD_GROUPS_NOAUTO; _status="";
+
 	if [ -z "${BUILD_HNAME:-}" ]\
 	&& ! BUILD_HNAME="$(hostname)"; then
 		_rc=1; _status="Error: failed to obtain hostname.";
@@ -51,11 +53,18 @@ buildp_init_args() {
 				fi;
 				if [ -z "${BUILD_GROUPS}" ]; then
 					BUILD_GROUPS="${EX_PKG_BUILD_GROUPS}";
-				else	for _group in ${BUILD_GROUPS}; do
-						if ! rtl_lmatch "${EX_PKG_BUILD_GROUPS}" "${_group}"; then
-							_rc=1; _status="Error: unknown build group \`${_group}'."; break;
+				else	_foundfl=0; for _group in ${BUILD_GROUPS}; do
+						if rtl_lmatch "${EX_PKG_BUILD_GROUPS}" "${_group}"; then
+							_foundfl=1; break;
 						fi;
 					done;
+					if [ "${_foundfl}" -eq 0 ]; then
+						_foundfl=0; for _group in ${BUILD_GROUPS}; do
+							if rtl_lmatch "${EX_PKG_BUILD_GROUPS}" "${_group}"; then
+								_rc=1; _status="Error: unknown build group \`${_group}'."; break;
+							fi;
+						done;
+					fi;
 				fi;
 				if [ "${_rc:-0}" -eq 0 ]; then
 					if [ -n "${ARG_DIST}" ]; then

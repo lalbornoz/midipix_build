@@ -133,10 +133,10 @@ ex_pkg_load_vars() {
 #
 # ex_pkg_load_groups() - load all available build groups
 #
-# Return:	zero (0) on success, non-zero (>0) on failure, build groups loaded and ${EX_PKG_BUILD_GROUPS} set post-return.
+# Return:	zero (0) on success, non-zero (>0) on failure, build groups loaded and ${EX_PKG_BUILD_GROUPS} and ${EX_PKG_BUILD_GROUPS_NOAUTO} set post-return.
 #
 ex_pkg_load_groups() {
-	local  _build_groups="" _fname="" _group="" _groups="";
+	local  _build_groups="" _build_groups_noauto="" _fname="" _group="" _groups="";
 	for _fname in $(find ./groups -name *.group | sort); do
 		rtl_fileop source_opt "${_fname}";
 		if [ -n "${GROUP_TARGET:-}" ]; then
@@ -149,6 +149,8 @@ ex_pkg_load_groups() {
 			if [ -n "${GROUP_AUTO:-}" ]; then
 				if [ "${GROUP_AUTO:-0}" -ne 0 ]; then
 					_build_groups="$(rtl_lconcat "${_build_groups}" "${_group}")";
+				else
+					_build_groups_noauto="$(rtl_lconcat "${_build_groups_noauto}" "${_group}")";
 				fi;
 				unset GROUP_AUTO;
 			else
@@ -157,6 +159,7 @@ ex_pkg_load_groups() {
 		fi;
 	done;
 	EX_PKG_BUILD_GROUPS="$(rtl_uniq "${_build_groups}")";
+	EX_PKG_BUILD_GROUPS_NOAUTO="$(rtl_uniq "${_build_groups_noauto}")";
 };
 
 #
