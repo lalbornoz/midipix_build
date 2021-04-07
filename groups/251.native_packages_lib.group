@@ -150,8 +150,8 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_t
 : ${PKG_LIBPSL_SHA256SUM:=ac6ce1e1fbd4d0254c4ddb9d37f1fa99dec83619c1253328155206b896210d4c};
 : ${PKG_LIBPSL_VERSION:=0.21.1};
 : ${PKG_LIBPSL_URL:=https://github.com/rockdaboot/libpsl/releases/download/${PKG_LIBPSL_VERSION}/libpsl-${PKG_LIBPSL_VERSION}.tar.gz};
-: ${PKG_LIBREDWG_SHA256SUM:=b31a33466ba23312119138d0ac022399841ee0f40d9bbd970410a2fc471e15ee};
-: ${PKG_LIBREDWG_VERSION:=0.12.3};
+: ${PKG_LIBREDWG_SHA256SUM:=918857f119c34d9bef17321b646c4ba0fbfaa93dcaced403bae1933e1d9a6517};
+: ${PKG_LIBREDWG_VERSION:=0.12.4};
 : ${PKG_LIBREDWG_URL:=https://ftp.gnu.org/gnu/libredwg/libredwg-${PKG_LIBREDWG_VERSION}.tar.xz};
 : ${PKG_LIBREDWG_CONFIGURE_ARGS_EXTRA:="--disable-python"};
 : ${PKG_LIBRESSL_SHA256SUM:=a6d331865e0164a13ac85a228e52517f7cf8f8488f2f95f34e7857302f97cfdb};
