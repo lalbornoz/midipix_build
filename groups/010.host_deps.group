@@ -33,6 +33,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_BISON_HOST_ENV_VARS_EXTRA:="M4=${PREFIX}/bin/m4"};
 : ${PKG_BMAKE_HOST_URLS_GIT:="bmake=https://github.com/arichardson/bmake@master"};
 : ${PKG_BMAKE_HOST_MAKEFLAGS_BUILD:=-j1};
+: ${PKG_BMAKE_HOST_CONFIGURE_ARGS:=--with-default-sys-path=${PREFIX}/share/mk};
 : ${PKG_BMAKE_HOST_CFLAGS_BUILD_EXTRA:="-fcommon"};
 : ${PKG_BMAKE_HOST_LDFLAGS_BUILD_EXTRA:="-fcommon"};
 : ${PKG_BZIP2_HOST_SHA256SUM:=ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269};
