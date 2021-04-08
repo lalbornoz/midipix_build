@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bison chicken cparser diffutils flex gdb gengetopt indent lua lunix m4 make mandoc nasm
+bison chicken cparser cssc diffutils flex gdb gengetopt indent lua lunix m4 make mandoc nasm
 patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_BISON_DEPENDS:="libreadline"};
 : ${PKG_BISON_SHA256SUM:=67d68ce1e22192050525643fc0a7a22297576682bef6a5c51446903f5aeef3cf};
@@ -27,6 +27,11 @@ patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_CPARSER_CONFIGURE:=bcparser/configure};
 : ${PKG_CPARSER_CONFIGURE_ARGS:="--source-dir=../../cparser --prefix="};
 : ${PKG_CPARSER_NO_CLEAN_BASE_DIR:=1};
+: ${PKG_CSSC_SHA256SUM:=d1bed0c80246ee4cd49d0aa45307c075d0876fe531057bb1c8b28f5330d651ef};
+: ${PKG_CSSC_VERSION:=1.4.1};
+: ${PKG_CSSC_URL:=https://ftp.gnu.org/gnu/cssc/CSSC-${PKG_CSSC_VERSION}.tar.gz};
+: ${PKG_CSSC_CONFIGURE_ARGS_EXTRA:="--enable-binary"};
+: ${PKG_CSSC_CXXFLAGS_CONFIGURE_EXTRA:="-std=gnu++0x"};
 : ${PKG_DIFFUTILS_SHA256SUM:=b3a7a6221c3dc916085f0d205abf6b8e1ba443d4dd965118da364a1dc1cb3a26};
 : ${PKG_DIFFUTILS_VERSION:=3.7};
 : ${PKG_DIFFUTILS_URL:=https://ftp.gnu.org/gnu/diffutils/diffutils-${PKG_DIFFUTILS_VERSION}.tar.xz};
