@@ -239,7 +239,7 @@ libxslt libz libzip lzo nettle sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image
 : ${PKG_LIBZ_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
 : ${PKG_LIBZ_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET} --enable-shared"};
 : ${PKG_LIBZ_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
-: ${PKG_LIBZIP_DEPENDS:="bzip2 gnutls libnettle libz musl_fts"};
+: ${PKG_LIBZIP_DEPENDS:="bzip2 gnutls libz musl_fts nettle"};
 : ${PKG_LIBZIP_SHA256SUM:=a020dc1b17a79faa748e43a05f8605d65e403813e8e97ad3a300a90ddba097ac};
 : ${PKG_LIBZIP_VERSION:=1.7.1};
 : ${PKG_LIBZIP_URL:=https://libzip.org/download/libzip-${PKG_LIBZIP_VERSION}.tar.xz};

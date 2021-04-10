@@ -65,7 +65,7 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_GPGME_URL:=https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-${PKG_GPGME_VERSION}.tar.bz2};
 : ${PKG_GPGME_CONFIGURE_ARGS_EXTRA:="--disable-g13-test --disable-gpgconf-test --disable-gpgsm-test --disable-gpg-test --with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE}"};
 : ${PKG_GPGME_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
-: ${PKG_GNUTLS_DEPENDS:="libnettle libunistring libtasn1"};
+: ${PKG_GNUTLS_DEPENDS:="libunistring libtasn1 nettle"};
 : ${PKG_GNUTLS_SHA256SUM:=3777d7963eca5e06eb315686163b7b3f5045e2baac5e54e038ace9835e5cac6f};
 : ${PKG_GNUTLS_VERSION:=3.7.1};
 : ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
