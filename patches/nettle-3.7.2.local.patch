@@ -1,3 +1,18 @@
+diff -ru nettle-3.7.2.orig/x86_64/salsa20-2core.asm nettle-3.7.2/x86_64/salsa20-2core.asm
+--- nettle-3.7.2.orig/x86_64/salsa20-2core.asm  2021-03-21 09:32:25.000000000 +0100
++++ nettle-3.7.2/x86_64/salsa20-2core.asm       2021-04-10 14:56:55.970009499 +0200
+@@ -316,3 +316,11 @@
+        W64_EXIT(3, 13)
+        ret
+ EPILOGUE(_nettle_salsa20_2core)
++
++#ifdef __midipix__
++        .section .got$_nettle_salsa20_2core,"r"
++        .global __imp__nettle_salsa20_2core
++__imp__nettle_salsa20_2core:
++        .quad   _nettle_salsa20_2core
++        .linkonce discard
++#endif
 diff -ru nettle-3.6.orig/x86_64/aes-decrypt-internal.asm nettle-3.6/x86_64/aes-decrypt-internal.asm
 --- nettle-3.6.orig/x86_64/aes-decrypt-internal.asm	2020-04-29 20:11:44.000000000 +0200
 +++ nettle-3.6/x86_64/aes-decrypt-internal.asm	2020-09-07 13:38:12.793134936 +0200
@@ -262,21 +277,6 @@ diff -ru nettle-3.6.orig/x86_64/salsa20-core-internal.asm nettle-3.6/x86_64/sals
 +	.global __imp__nettle_salsa20_core
 +__imp__nettle_salsa20_core:
 +	.quad   _nettle_salsa20_core
-+	.linkonce discard
-+#endif
-diff -ru nettle-3.6.orig/x86_64/salsa20-crypt.asm nettle-3.6/x86_64/salsa20-crypt.asm
---- nettle-3.6.orig/x86_64/salsa20-crypt.asm	2020-04-29 20:11:44.000000000 +0200
-+++ nettle-3.6/x86_64/salsa20-crypt.asm	2020-09-07 13:54:39.815792126 +0200
-@@ -245,3 +245,11 @@
- 	ret
- 
- EPILOGUE(nettle_salsa20_crypt)
-+
-+#ifdef __midipix__
-+	.section .got$nettle_salsa20_crypt,"r"
-+	.global __imp_nettle_salsa20_crypt
-+__imp_nettle_salsa20_crypt:
-+	.quad   nettle_salsa20_crypt
 +	.linkonce discard
 +#endif
 diff -ru nettle-3.6.orig/x86_64/serpent-decrypt.asm nettle-3.6/x86_64/serpent-decrypt.asm

@@ -5,10 +5,10 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 glib jansson lame libarchive libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
-libjpeg_turbo libksba libmad libmspack libmp3splt libnettle libogg libpcap libpipeline libpng libpsl
+libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 libreadline libredwg libressl libsasl2 libshine libsndfile libsolv libssh libstrophe libtasn1
 libtelnet libtheora libtirpc libudns libunistring libuv libvorbis libxml2
-libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
+libxslt libz libzip lzo nettle sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=d64abd16813501c956c4e123ae79f47f1b58de573df9fdd3b0795f1e2c1aa789};
 : ${PKG_GLIB_VERSION:=2.56.2};
@@ -125,12 +125,6 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_t
 : ${PKG_LIBMP3SPLT_URL:=https://sources.voidlinux.org/libmp3splt-${PKG_LIBMP3SPLT_VERSION}/libmp3splt-${PKG_LIBMP3SPLT_VERSION}.tar.gz};
 : ${PKG_LIBMP3SPLT_CONFIGURE_ARGS_EXTRA:="--disable-cutter --disable-id3tag --disable-optimise --with-ogg=${PREFIX_NATIVE} --with-vorbis=${PREFIX_NATIVE} --with-mad=${PREFIX_NATIVE}"};
 : ${PKG_LIBMP3SPLT_FORCE_AUTORECONF:=1};
-: ${PKG_LIBNETTLE_SHA256SUM:=d24c0d0f2abffbc8f4f34dcf114b0f131ec3774895f3555922fe2f40f3d5e3f1};
-: ${PKG_LIBNETTLE_VERSION:=3.6};
-: ${PKG_LIBNETTLE_URL:=https://ftp.gnu.org/gnu/nettle/nettle-${PKG_LIBNETTLE_VERSION}.tar.gz};
-: ${PKG_LIBNETTLE_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
-: ${PKG_LIBNETTLE_CONFIGURE_ARGS_EXTRA:="nettle_cv_asm_underscore=no --disable-static"};
-: ${PKG_LIBNETTLE_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_LIBOGG_SHA256SUM:=c163bc12bc300c401b6aa35907ac682671ea376f13ae0969a220f7ddf71893fe};
 : ${PKG_LIBOGG_VERSION:=1.3.4};
 : ${PKG_LIBOGG_URL:=https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-${PKG_LIBOGG_VERSION}.tar.xz};
@@ -252,6 +246,12 @@ libxslt libz libzip lzo sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_t
 : ${PKG_LZO_SHA256SUM:=c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072};
 : ${PKG_LZO_VERSION:=2.10};
 : ${PKG_LZO_URL:=https://www.oberhumer.com/opensource/lzo/download/lzo-${PKG_LZO_VERSION}.tar.gz};
+: ${PKG_NETTLE_SHA256SUM:=8d2a604ef1cde4cd5fb77e422531ea25ad064679ff0adf956e78b3352e0ef162};
+: ${PKG_NETTLE_VERSION:=3.7.2};
+: ${PKG_NETTLE_URL:=https://ftp.gnu.org/gnu/nettle/nettle-${PKG_NETTLE_VERSION}.tar.gz};
+: ${PKG_NETTLE_CONFIGURE_ARGS_EXTRA:=--disable-fat};
+: ${PKG_NETTLE_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
+: ${PKG_NETTLE_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_SDL1_DEPENDS:="w32api w32lib"};
 : ${PKG_SDL1_SHA256SUM:=d6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00};
 : ${PKG_SDL1_VERSION:=1.2.15};
