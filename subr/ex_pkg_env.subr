@@ -87,6 +87,48 @@ exp_pkg_env_set() {
 	fi;
 };
 
+ex_pkg_env_sofort() {
+	local	_pkg_base_dir="${1}" _pkg_sofort_force="${2}" _pkg_subdir="${3}"	\
+		_vname="" _vname_new="" _vval="" _vval_old="";
+
+	if [ -d "${_pkg_base_dir}/${_pkg_subdir}/sofort" ]\				\
+	|| [ "${_pkg_sofort_force:-0}" -eq 1 ]; then
+		for _vname in	\
+				PKG_SOFORT_NATIVE_CC					\
+				PKG_SOFORT_NATIVE_CFLAGS				\
+				PKG_SOFORT_NATIVE_CXX					\
+				PKG_SOFORT_NATIVE_CXXFLAGS				\
+				PKG_SOFORT_NATIVE_LD					\
+				PKG_SOFORT_NATIVE_LDFLAGS; do
+			_vname_new="PKG_${_vname#PKG_SOFORT_}";
+			rtl_set_var_unsafe "${_vname_new}" "";
+		done;
+		for _vname in	\
+				PKG_SOFORT_NATIVE_CC					\
+				PKG_SOFORT_NATIVE_CFLAGS				\
+				PKG_SOFORT_NATIVE_CFLAGS_EXTRA				\
+				PKG_SOFORT_NATIVE_CXX					\
+				PKG_SOFORT_NATIVE_CXXFLAGS				\
+				PKG_SOFORT_NATIVE_CXXFLAGS_EXTRA			\
+				PKG_SOFORT_NATIVE_LD					\
+				PKG_SOFORT_NATIVE_LDFLAGS				\
+				PKG_SOFORT_NATIVE_LDFLAGS_EXTRA; do
+			if _vval="$(rtl_get_var_unsafe "${_vname}")"			\
+			&& [ -n "${_vval}" ]; then
+				_vname_new="${_vname#PKG_SOFORT_}";
+				case "${_vname}" in
+				*_EXTRA)
+					_vval_old="$(rtl_get_var_unsafe "${_vname_new%_EXTRA}")";
+					rtl_set_var_unsafe "${_vname_new%_EXTRA}" "${_vval_old:+${_vval_old} }${_vval}"; ;;
+				*)
+					rtl_set_var_unsafe "${_vname_new}" "${_vval}"; ;;
+				esac;
+				export "${_vname_new}";
+			fi;
+		done;
+	fi; return 0;
+};
+
 #
 # ex_pkg_env() - set package variables for single named package
 # @_build_steps_default:	list of default build steps
@@ -104,7 +146,8 @@ ex_pkg_env() {
 		_nounset="${4}" _pkg_name="${5}" _restart_at="${6}" _workdir="${7}" _vname="";
 	rtl_fileop source_opt "vars/${_pkg_name}.vars" "${_group_name}/${_pkg_name}.${_group_name}";
 	if ! exp_pkg_env_set "${_build_vars_default}" "${_group_name}" "${_nounset}" "${_pkg_name}"\
-	|| ! exp_pkg_env_defaults "${_build_steps_default}" "${_pkg_name}" "${_workdir}"; then
+	|| ! exp_pkg_env_defaults "${_build_steps_default}" "${_pkg_name}" "${_workdir}"\
+	|| ! ex_pkg_env_sofort "${PKG_BASE_DIR:-}" "${PKG_SOFORT_FORCE:-0}" "${PKG_SUBDIR:-}"; then
 		return 1;
 	fi;
 };
