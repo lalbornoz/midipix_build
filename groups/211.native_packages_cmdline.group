@@ -141,7 +141,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_PROFANITY_SHA256SUM:=23f7b2e5c6cf85913b9e7a228802bca9ecb1d1cf3bf8f8f285e9676176a24902 };
 : ${PKG_PROFANITY_VERSION:=0.9.5};
 : ${PKG_PROFANITY_URL:=https://profanity-im.github.io/profanity-${PKG_PROFANITY_VERSION}.tar.gz};
-: ${PKG_PROFANITY_CONFIGURE_ARGS_EXTRA:="--disable-python-plugins --disable-icons-and-clipboard --disable-notifications"};
+: ${PKG_PROFANITY_CONFIGURE_ARGS_EXTRA:="--disable-python-plugins --disable-icons-and-clipboard --disable-notifications --disable-pgp"};
 : ${PKG_PIXZ_DEPENDS:="libarchive xz"};
 : ${PKG_PIXZ_SHA256SUM:=e5e32c6eb0bf112b98e74a5da8fb63b9f2cae71800f599d97ce540e150c8ddc5};
 : ${PKG_PIXZ_VERSION:=1.0.7};
