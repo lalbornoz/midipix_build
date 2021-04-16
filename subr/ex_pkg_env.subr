@@ -91,7 +91,7 @@ ex_pkg_env_sofort() {
 	local	_pkg_base_dir="${1}" _pkg_sofort_force="${2}" _pkg_subdir="${3}"	\
 		_vname="" _vname_new="" _vval="" _vval_old="";
 
-	if [ -d "${_pkg_base_dir}/${_pkg_subdir}/sofort" ]\				\
+	if [ -d "${_pkg_base_dir}/${_pkg_subdir}/sofort" ]				\
 	|| [ "${_pkg_sofort_force:-0}" -eq 1 ]; then
 		for _vname in	\
 				PKG_SOFORT_NATIVE_CC					\
