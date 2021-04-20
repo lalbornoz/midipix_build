@@ -34,6 +34,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_CALCURSE_URL:=https://www.calcurse.org/files/calcurse-${PKG_CALCURSE_VERSION}.tar.gz};
 : ${PKG_CALCURSE_CONFIGURE_ARGS_EXTRA:="--without-asciidoc"};
 : ${PKG_CALCURSE_ENV_VARS_EXTRA:="LIBS=-ltinfow"};
+: ${PKG_CLIPBOARD_UTILS_DEPENDS:="w32lib"};
 : ${PKG_CLIPBOARD_UTILS_URLS_GIT:=clipboard-utils=https://github.com/redfoxymoon/clipboard-utils.git@master};
 : ${PKG_CLIPBOARD_UTILS_BUILD_DIR:=clipboard-utils};
 : ${PKG_CLIPBOARD_UTILS_CFLAGS_BUILD_EXTRA:="-g2 -O0"};
