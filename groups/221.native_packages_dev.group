@@ -102,6 +102,7 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_PERL_ENV_VARS_EXTRA:="TARGET=${DEFAULT_TARGET}"};
 : ${PKG_PERL_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_PERL_SUBDIR:=perl-${PKG_PERL_VERSION}};
+: ${PKG_POSIX_CC_DEPENDS:="musl_compat"};
 : ${PKG_POSIX_CC_SHA256SUM:=bd90442d98714f874b6e7e62fa8376ddca282c2174dc582917ecab773f96c095};
 : ${PKG_POSIX_CC_VERSION:=1.4};
 : ${PKG_POSIX_CC_URL:=https://mirror.midipix.org/posix_cc/posix_cc-${PKG_POSIX_CC_VERSION}.tar.bz2};
