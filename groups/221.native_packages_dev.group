@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bison chicken cparser cssc diffutils flex gdb gengetopt indent lua lunix m4 make mandoc nasm
-patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
+patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_BISON_DEPENDS:="libreadline"};
 : ${PKG_BISON_SHA256SUM:=67d68ce1e22192050525643fc0a7a22297576682bef6a5c51446903f5aeef3cf};
 : ${PKG_BISON_VERSION:=3.7.6};
@@ -102,6 +102,9 @@ patch patchutils perl python2 python3 ruby sbsigntools smallbasic tk")";
 : ${PKG_PERL_ENV_VARS_EXTRA:="TARGET=${DEFAULT_TARGET}"};
 : ${PKG_PERL_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_PERL_SUBDIR:=perl-${PKG_PERL_VERSION}};
+: ${PKG_POSIX_CC_SHA256SUM:=bd90442d98714f874b6e7e62fa8376ddca282c2174dc582917ecab773f96c095};
+: ${PKG_POSIX_CC_VERSION:=1.4};
+: ${PKG_POSIX_CC_URL:=https://mirror.midipix.org/posix_cc/posix_cc-${PKG_POSIX_CC_VERSION}.tar.bz2};
 : ${PKG_PYTHON2_DEPENDS:="bzip2 curl expat gdbm libffi libreadline libressl libz ncursesw sqlite3"};
 : ${PKG_PYTHON2_SHA256SUM:=18617d1f15a380a919d517630a9cd85ce17ea602f9bbdc58ddc672df4b0239db};
 : ${PKG_PYTHON2_VERSION:=2.7.15};
