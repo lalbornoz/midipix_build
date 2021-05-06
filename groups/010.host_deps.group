@@ -93,6 +93,7 @@ HOST_DEPS_SOFORT_NATIVE_LDFLAGS="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 : ${PKG_FLEX_HOST_VERSION:=2.6.4};
 : ${PKG_FLEX_HOST_URL:=https://github.com/westes/flex/releases/download/v${PKG_FLEX_HOST_VERSION}/flex-${PKG_FLEX_HOST_VERSION}.tar.gz};
 : ${PKG_FLEX_HOST_CFLAGS_CONFIGURE_EXTRA:="-D_GNU_SOURCE"};
+: ${PKG_GDB_HOST_DISABLED:=1};
 : ${PKG_GDB_HOST_DEPENDS:="chainport_host expat_host ncurses_host python2_host"};
 : ${PKG_GDB_HOST_SHA256SUM:=149abac4add030a5713f15964bd7465bef7a23712bcc91377ca40949f33e93fb};
 : ${PKG_GDB_HOST_VERSION:=7.12};
