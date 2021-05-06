@@ -5,8 +5,9 @@ HOST_TOOLS_BUILD_TYPE="host";
 HOST_TOOLS_CONFIGURE_ARGS="--disable-nls --prefix=${PREFIX}";
 HOST_TOOLS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_TOOLS_PACKAGES="
-autoconf_host automake_host gettext_tiny_host install_strip_host
-libtool_host m4_host pkgconf_host slibtool_host tpax_host";
+autoconf_host autoconf_2_64_host automake_host automake_1_11_6_host
+gettext_tiny_host install_strip_host libtool_host m4_host pkgconf_host
+slibtool_host tpax_host";
 HOST_TOOLS_PREFIX="${PREFIX}";
 HOST_TOOLS_SOFORT_NATIVE_CFLAGS="-I${PREFIX}/include";
 HOST_TOOLS_SOFORT_NATIVE_CXXFLAGS="-I${PREFIX}/include";
@@ -15,10 +16,18 @@ HOST_TOOLS_SOFORT_NATIVE_LDFLAGS="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 : ${PKG_AUTOCONF_HOST_SHA256SUM:=64ebcec9f8ac5b2487125a86a7760d2591ac9e1d3dbd59489633f9de62a57684};
 : ${PKG_AUTOCONF_HOST_VERSION:=2.69};
 : ${PKG_AUTOCONF_HOST_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_HOST_VERSION}.tar.xz};
+: ${PKG_AUTOCONF_2_64_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOCONF_2_64_HOST_SHA256SUM:=32d977213320b8ae76c71175305301197f2b0e04e72d70694bc3d3e2ae6c7248};
+: ${PKG_AUTOCONF_2_64_HOST_VERSION:=2.64};
+: ${PKG_AUTOCONF_2_64_HOST_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_2_64_HOST_VERSION}.tar.xz};
 : ${PKG_AUTOMAKE_HOST_DEPENDS:="autoconf_host pkgconf_host slibtool_host"};
 : ${PKG_AUTOMAKE_HOST_SHA256SUM:=ff2bf7656c4d1c6fdda3b8bebb21f09153a736bcba169aaf65eab25fa113bf3a};
 : ${PKG_AUTOMAKE_HOST_VERSION:=1.16.3};
 : ${PKG_AUTOMAKE_HOST_URL:=https://ftp.gnu.org/gnu/automake/automake-${PKG_AUTOMAKE_HOST_VERSION}.tar.xz};
+: ${PKG_AUTOMAKE_1_11_6_HOST_DEPENDS:="autoconf_2_64_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOMAKE_1_11_6_HOST_SHA256SUM:=1ffbc6cc41f0ea6c864fbe9485b981679dc5e350f6c4bc6c3512f5a4226936b5};
+: ${PKG_AUTOMAKE_1_11_6_HOST_VERSION:=1.11.6};
+: ${PKG_AUTOMAKE_1_11_6_HOST_URL:=https://ftp.gnu.org/gnu/automake/automake-${PKG_AUTOMAKE_1_11_6_HOST_VERSION}.tar.xz};
 : ${PKG_GETTEXT_TINY_HOST_DEPENDS:="pkgconf_host slibtool_host"};
 : ${PKG_GETTEXT_TINY_HOST_SHA256SUM:=29cc165e27e83d2bb3760118c2368eadab550830d962d758e51bd36eb860f383};
 : ${PKG_GETTEXT_TINY_HOST_VERSION:=0.3.2};
