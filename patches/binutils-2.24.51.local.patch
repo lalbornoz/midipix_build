@@ -1,0 +1,62 @@
+--- binutils-2.24.51/bfd/Makefile.in.orig	2014-07-03 06:37:19.000000000 +0100
++++ binutils-2.24.51/bfd/Makefile.in	2021-05-06 17:54:27.186429575 +0100
+@@ -1198,26 +1198,11 @@
+ 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+ install-bfdlibLTLIBRARIES: $(bfdlib_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+-	test -z "$(bfdlibdir)" || $(MKDIR_P) "$(DESTDIR)$(bfdlibdir)"
+-	@list='$(bfdlib_LTLIBRARIES)'; test -n "$(bfdlibdir)" || list=; \
+-	list2=; for p in $$list; do \
+-	  if test -f $$p; then \
+-	    list2="$$list2 $$p"; \
+-	  else :; fi; \
+-	done; \
+-	test -z "$$list2" || { \
+-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(bfdlibdir)'"; \
+-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(bfdlibdir)"; \
+-	}
++	/bin/true
+ 
+ uninstall-bfdlibLTLIBRARIES:
+ 	@$(NORMAL_UNINSTALL)
+-	@list='$(bfdlib_LTLIBRARIES)'; test -n "$(bfdlibdir)" || list=; \
+-	for p in $$list; do \
+-	  $(am__strip_dir) \
+-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(bfdlibdir)/$$f'"; \
+-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(bfdlibdir)/$$f"; \
+-	done
++	/bin/true
+ 
+ clean-bfdlibLTLIBRARIES:
+ 	-test -z "$(bfdlib_LTLIBRARIES)" || rm -f $(bfdlib_LTLIBRARIES)
+--- binutils-2.24.51/opcodes/Makefile.in.orig	2014-07-03 06:37:49.000000000 +0100
++++ binutils-2.24.51/opcodes/Makefile.in	2021-05-06 17:58:52.336906819 +0100
+@@ -716,26 +716,11 @@
+ 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+ install-bfdlibLTLIBRARIES: $(bfdlib_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+-	test -z "$(bfdlibdir)" || $(MKDIR_P) "$(DESTDIR)$(bfdlibdir)"
+-	@list='$(bfdlib_LTLIBRARIES)'; test -n "$(bfdlibdir)" || list=; \
+-	list2=; for p in $$list; do \
+-	  if test -f $$p; then \
+-	    list2="$$list2 $$p"; \
+-	  else :; fi; \
+-	done; \
+-	test -z "$$list2" || { \
+-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(bfdlibdir)'"; \
+-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(bfdlibdir)"; \
+-	}
++	/bin/true
+ 
+ uninstall-bfdlibLTLIBRARIES:
+ 	@$(NORMAL_UNINSTALL)
+-	@list='$(bfdlib_LTLIBRARIES)'; test -n "$(bfdlibdir)" || list=; \
+-	for p in $$list; do \
+-	  $(am__strip_dir) \
+-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(bfdlibdir)/$$f'"; \
+-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(bfdlibdir)/$$f"; \
+-	done
++	/bin/true
+ 
+ clean-bfdlibLTLIBRARIES:
+ 	-test -z "$(bfdlib_LTLIBRARIES)" || rm -f $(bfdlib_LTLIBRARIES)
