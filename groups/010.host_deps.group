@@ -84,6 +84,7 @@ HOST_DEPS_SOFORT_NATIVE_LDFLAGS="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 : ${PKG_EXPAT_HOST_SHA256SUM:=caa34f99b6e3bcea8502507eb6549a0a84510b244a748dfb287271b2d47467a9};
 : ${PKG_EXPAT_HOST_VERSION:=2.3.0};
 : ${PKG_EXPAT_HOST_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_HOST_VERSION}.tar.xz};
+: ${PKG_EXPAT_HOST_CONFIGURE_ARGS_EXTRA:="--without-docbook"};
 : ${PKG_FILE_HOST_SHA256SUM:=f05d286a76d9556243d0cb05814929c2ecf3a5ba07963f8f70bfaaa70517fad1};
 : ${PKG_FILE_HOST_VERSION:=5.39};
 : ${PKG_FILE_HOST_URL:=http://ftp.astron.com/pub/file/file-${PKG_FILE_HOST_VERSION}.tar.gz};
