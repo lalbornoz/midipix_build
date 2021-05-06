@@ -1,0 +1,30 @@
+--- gdb-7.12/gdb/Makefile.in.orig	2016-10-07 18:09:21.000000000 +0100
++++ gdb-7.12/gdb/Makefile.in	2021-05-06 13:28:59.930619686 +0100
+@@ -143,7 +143,7 @@
+ 
+ # Where is the BFD library?  Typically in ../bfd.
+ BFD_DIR = ../bfd
+-BFD = $(BFD_DIR)/libbfd.a
++BFD = $(BFD_DIR)/libbfd.la
+ BFD_SRC = $(srcdir)/$(BFD_DIR)
+ BFD_CFLAGS = -I$(BFD_DIR) -I$(BFD_SRC)
+ 
+@@ -468,7 +468,7 @@
+ # disassemblers?
+ OPCODES_DIR = ../opcodes
+ OPCODES_SRC = $(srcdir)/$(OPCODES_DIR)
+-OPCODES = $(OPCODES_DIR)/libopcodes.a
++OPCODES = $(OPCODES_DIR)/libopcodes.la
+ # Where are the other opcode tables which only have header file
+ # versions?
+ OP_INCLUDE = $(INCLUDE_DIR)/opcode
+@@ -1407,7 +1407,8 @@
+ # Removing the old gdb first works better if it is running, at least on SunOS.
+ gdb$(EXEEXT): gdb.o $(LIBGDB_OBS) $(ADD_DEPS) $(CDEPS) $(TDEPLIBS)
+ 	rm -f gdb$(EXEEXT)
+-	$(CC_LD) $(INTERNAL_LDFLAGS) $(WIN32LDAPP) \
++	$(LIBTOOL) --heuristics=../opcodes/libtool --tag=CC --mode=link \
++		$(CC_LD) $(INTERNAL_LDFLAGS) $(WIN32LDAPP) \
+ 		-o gdb$(EXEEXT) gdb.o $(LIBGDB_OBS) \
+ 		$(TDEPLIBS) $(TUI_LIBRARY) $(CLIBS) $(LOADLIBES)
+ 
