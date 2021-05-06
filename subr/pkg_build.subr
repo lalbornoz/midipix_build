@@ -3,7 +3,7 @@
 #
 
 pkg_build() {
-	local _libtool="" _makeflags_verbosity="${PKG_MAKEFLAGS_VERBOSITY:-none}" _no_autoconf="" _subdir="";
+	local _libtool="" _makeflags_verbosity="${PKG_MAKEFLAGS_VERBOSITY:-none}" _no_autoconf="" _rc=0 _subdir="";
 	case "${PKG_LIBTOOL:-}" in
 	"")	_libtool=""; ;;
 	none)	_libtool=""; ;;
@@ -19,10 +19,13 @@ pkg_build() {
 		if [ "${_subdir}" = ":" ]; then
 			_subdir="";
 		fi;
+		if [ "${#_libtool}" -gt 0 ]; then
+			export MAKE="make LIBTOOL=${_libtool}";
+		fi;
 		# N.B.	We only specify CC= here if the current package does not use GNU
 		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
 		#	instead of amending CFLAGS.
-		rtl_run_cmd_unsplit make							\
+		rtl_run_cmd_unsplit "${PKG_MAKE}"						\
 			${PKG_MAKEFLAGS_BUILD:-}						\
 			${PKG_MAKEFLAGS_BUILD_EXTRA:-}						\
 			"AR=${PKG_AR}" "${_no_autoconf:+CC=${PKG_CC}}" "RANLIB=${PKG_RANLIB}"	\
@@ -38,8 +41,11 @@ pkg_build() {
 			"${PKG_PKG_CONFIG_LIBDIR:+PKG_CONFIG_LIBDIR=${PKG_PKG_CONFIG_LIBDIR}}"	\
 			${_libtool:+"LIBTOOL=${_libtool}"}					\
 			${_makeflags_verbosity}							\
-			${_subdir:+-C "${_subdir}"};
-		if [ "${?}" -ne 0 ]; then
+			${_subdir:+-C "${_subdir}"}; _rc="${?}";
+		if [ "${#_libtool}" -gt 0 ]; then
+			unset MAKE;
+		fi;
+		if [ "${_rc}" -ne 0 ]; then
 			return 1;
 		fi;
 	done;

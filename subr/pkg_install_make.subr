@@ -3,7 +3,7 @@
 #
 
 pkg_install_make() {
-	local _libtool="" _subdir="";
+	local _libtool="" _rc=0 _subdir="";
 	case "${PKG_LIBTOOL:-}" in
 	"")	_libtool=""; ;;
 	none)	_libtool=""; ;;
@@ -13,7 +13,10 @@ pkg_install_make() {
 		if [ "${_subdir}" = ":" ]; then
 			_subdir="";
 		fi;
-		rtl_run_cmd_unsplit make					\
+		if [ "${#_libtool}" -gt 0 ]; then
+			export MAKE="make LIBTOOL=${_libtool}";
+		fi;
+		rtl_run_cmd_unsplit "${PKG_MAKE}"				\
 			${PKG_MAKEFLAGS_INSTALL:-}				\
 			${PKG_MAKEFLAGS_INSTALL_EXTRA:-}			\
 			AR="${PKG_AR}" CC="${PKG_CC}" RANLIB="${PKG_RANLIB}"	\
@@ -21,8 +24,11 @@ pkg_install_make() {
 			${_libtool:+"LIBTOOL=${_libtool}"}			\
 			"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
 			${PKG_INSTALL_TARGET:-install}				\
-			${_subdir:+-C "${_subdir}"};
-		if [ "${?}" -ne 0 ]; then
+			${_subdir:+-C "${_subdir}"}; _rc="${?}";
+		if [ "${#_libtool}" -gt 0 ]; then
+			unset MAKE;
+		fi;
+		if [ "${_rc}" -ne 0 ]; then
 			return 1;
 		fi;
 	done;

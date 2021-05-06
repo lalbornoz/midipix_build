@@ -3,12 +3,18 @@
 #
 
 pkg_configure() {
-	local _rc=0;
+	local _libtool="" _rc=0;
 	if [ -x "${PKG_CONFIGURE:-}" ]; then
+		case "${PKG_LIBTOOL:-}" in
+		"")	_libtool=""; ;;
+		none)	_libtool=""; ;;
+		*)	_libtool="${PKG_LIBTOOL}"; ;;
+		esac;
 		rtl_export_vars	\
 			PKG_CONFIG "${PKG_PKG_CONFIG:-}"								\
 			PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}"							\
-			PYTHON "${PKG_PYTHON:-}";
+			PYTHON "${PKG_PYTHON:-}"									\
+			${_libtool:+MAKE} ${_libtool:+"make LIBTOOL=${_libtool}"};
 		AR="${PKG_AR}"												\
 		CC="${PKG_CC}"												\
 		RANLIB="${PKG_RANLIB}"											\
@@ -21,7 +27,8 @@ pkg_configure() {
 		rtl_export_vars	-u \
 			PKG_CONFIG "${PKG_PKG_CONFIG:-}"								\
 			PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}"							\
-			PYTHON "${PKG_PYTHON:-}";
+			PYTHON "${PKG_PYTHON:-}"									\
+			${_libtool:+MAKE} ${_libtool:+"make LIBTOOL=${_libtool}"};
 		return "${_rc}";
 	fi;
 };

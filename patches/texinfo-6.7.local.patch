@@ -1,0 +1,22 @@
+--- texinfo-6.7/configure.orig	2019-09-23 19:32:14.000000000 +0100
++++ texinfo-6.7/configure	2021-05-06 10:54:06.366315956 +0100
+@@ -21923,7 +21923,7 @@
+   # env -i gives this build host configure a clean environment;
+   # consequently, we have to re-initialize $PATH.
+   env -i CC="$BUILD_CC" AR="$BUILD_AR" RANLIB="$BUILD_RANLIB" \
+-      PATH="$PATH" \
++      PATH="$PATH" ${MAKE:+MAKE="$MAKE"} \
+       tools_only=1 \
+     ${confdir}/configure --build=${build} --host=${build} \
+                          --disable-rpath --disable-nls
+@@ -23859,8 +23859,8 @@
+ $as_echo "" >&6; }
+   enable_xs=no
+   (cd tp/Texinfo/XS \
+-   && make clean \
+-   && make TestXS.la \
++   && ${MAKE:-make} clean \
++   && ${MAKE:-make} TestXS.la \
+    && TEXINFO_XS=debug ; export TEXINFO_XS \
+    && ${PERL} -I . \
+               -I ${xs_srcdir} \
