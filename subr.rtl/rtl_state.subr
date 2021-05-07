@@ -11,23 +11,22 @@ rtl_state_clear() {
 };
 
 rtl_state_set() {
-	local _workdir="${1}" _pkg_fname="${2}" _done_fname_pfx="";
-	_done_fname_pfx="${_workdir}/.${_pkg_fname}";
-	shift 2; while [ ${#} -ge 1 ]; do
-		if [ -z "${1}" ]; then
-			shift; continue;
-		elif [ "${1#-}" != "${1}" ]; then
-			rtl_fileop rm "${_done_fname_pfx}.${1#-}";
-		else
-			rtl_fileop touch "${_done_fname_pfx}.${1}";
-		fi;
-	shift; done;
+	local	_workdir="${1}" _pkg_fname="${2}" _build_step="${3}"	\
+		_done_fname_pfx="${1}/.${2}"; shift 3;
+
+	rtl_fileop touch "${_done_fname_pfx}.${_build_step}";
+	while [ ${#} -ge 1 ]; do
+		if [ "${#1}" -gt 0 ]; then
+			rtl_fileop rm "${_done_fname_pfx}.${1}";
+		fi; shift;
+	done;
 };
 
 rtl_state_test() {
 	local _workdir="${1}" _pkg_name="${2}" _build_step="${3}" _restart_at="${4:-}" _done_fname="";
 	_done_fname="${_workdir}/.${_pkg_name}.${_build_step}";
-	if [ -z "${_restart_at}" ]; then
+	if [ -z "${_restart_at}" ]\
+	|| [ "${_restart_at}" = "LAST" ]; then
 		rtl_fileop test "${_done_fname}";
 	elif [ "${_restart_at}" = "ALL" ]; then
 		return 1;

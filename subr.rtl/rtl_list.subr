@@ -1,5 +1,7 @@
 #
 # set +o errexit -o noglob -o nounset is assumed.
+# N.B.	Lists separated by SP, when passed to rtl_l*() w/ explicit IFS,
+#	must specify "<SP><VT>" as IFS.
 #
 
 rtl_lassign() {

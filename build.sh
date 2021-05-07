@@ -20,7 +20,8 @@ buildp_ast() {
 	if [ -n "${_pids}" ]; then
 		rtl_log_msg notice "Killed PID(s): %s" "$(rtl_uniq ${_pids})";
 	fi;
-	if [ -n "${EX_PKG_DISPATCH_WAIT}" ]; then
+	if [ -n "${EX_PKG_DISPATCH_WAIT}" ]\
+	&& [ "${ARG_RESET_PKG}" -eq 1 ]; then
 		for _pkg_name in ${EX_PKG_DISPATCH_WAIT}; do
 			rtl_state_clear "${BUILD_WORKDIR}" "${_pkg_name}";
 		done;

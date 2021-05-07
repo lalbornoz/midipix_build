@@ -136,7 +136,7 @@ ex_pkg_env_sofort() {
 # @_group_name:			build group name
 # @_nounset:			don't clear package variable namespace
 # @_pkg_name:			single package name
-# @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL
+# @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL or LAST
 # @_workdir:			pathname to build-specific temporary directory
 #
 # Return:			zero (0) on success, non-zero (>0) on failure
@@ -154,9 +154,9 @@ ex_pkg_env() {
 
 #
 # ex_pkg_state_set() - update build step status for single named package
-# @_workdir:		pathname to temporary build directory
 # @_pkg_name:		single package name
-# @${@}:		list of build steps
+# @_build_step:		build step set status of
+# [@${@}]:		optional list of build steps to invalidate status of
 #
 # Return:		zero (0) on success, non-zero (>0) on failure
 #
@@ -166,10 +166,9 @@ ex_pkg_state_set() {
 
 #
 # ex_pkg_state_test() - test build step status of single named package
-# @_workdir:		pathname to temporary build directory
 # @_pkg_name:		single package name
 # @_build_step:		build step to test status of
-# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
 #
 # Return:		zero (0) on success, non-zero (>0) on failure
 #

@@ -21,7 +21,7 @@ exp_pkg_exec_filter_vars_fn() {
 # exp_pkg_exec_pre() - XXX
 # @_group_name:		build group name
 # @_pkg_name:		single package name
-# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
 #
 # Return:		zero (0) on success, non-zero (>0) on failure
 #
@@ -51,7 +51,7 @@ exp_pkg_exec_pre() {
 # exp_pkg_exec_step() - XXX
 # @_group_name:		build group name
 # @_pkg_name:		single package name
-# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
 # @_step:		build step to execute
 #
 # Return:		zero (0) on success, non-zero (>0) on failure
@@ -81,47 +81,49 @@ exp_pkg_exec_step() {
 # @_dispatch_fn:	top-level dispatch function name
 # @_group_name:		build group name
 # @_pkg_name:		single package name
-# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
 #
 # Return:		zero (0) on success, non-zero (>0) on failure
 #
 ex_pkg_exec() {
 	local	_dispatch_fn="${1}" _group_name="${2}" _pkg_name="${3}" _restart_at="${4}"	\
-		_rc=0 _step="" _step_next="";
-	if exp_pkg_exec_pre "${_group_name}" "${_pkg_name}" "${_restart_at}"\
-	&& "${_dispatch_fn}" start_pkg_child "${_group_name}" "${_pkg_name}"; then
-		if rtl_test_cmd "pkg_${_pkg_name}_all"; then
-			"pkg_${_pkg_name}_all" "${_restart_at}"; _rc="${?}";
-		else	set -- ${PKG_BUILD_STEPS};
-			while [ ${#} -gt 0 ]; do
-				_step="${1}"; _step_next="${2:-}"; shift;
-				if [ "${ARG_DUMP_IN}" = "${_step}" ]; then
-					printf "" > "${BUILD_WORKDIR}/${_pkg_name}.dump";
-					rtl_filter_vars exp_pkg_exec_filter_vars_fn >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
-					export >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
-					exit 1;
-				elif [ "${PKG_FORCE:-0}" -eq 0 ]\
-				&& ex_pkg_state_test "${_pkg_name}" "${_step}" "${_restart_at}"	; then
-					continue;
-				elif ! exp_pkg_exec_step "${_group_name}" "${_pkg_name}" "${_restart_at}" "${_step}"; then
-					_rc=1; break;
-				else
-					printf "step %s %s %s\n" "${_group_name}" "${_pkg_name}" "${_step}" >&3;
-					ex_pkg_state_set "${_pkg_name}" "${_step}" "${_step_next:+-${_step_next}}";
-				fi;
-			done;
-		fi;
-		if [ "${_rc:-0}" -eq 0 ]; then
-			if [ -z "${_restart_at}" ]\
-			|| [ "${_restart_at}" = "ALL" ]; then
-				ex_pkg_state_set "${_pkg_name}" finish;
+		_build_step_last="" _rc=0 _step="";
+
+	if ! exp_pkg_exec_pre "${_group_name}" "${_pkg_name}" "${_restart_at}"\
+	|| ! "${_dispatch_fn}" start_pkg_child "${_group_name}" "${_pkg_name}"; then
+		_rc=1;
+	elif rtl_test_cmd "pkg_${_pkg_name}_all"; then
+		"pkg_${_pkg_name}_all" "${_restart_at}"; _rc="${?}";
+	else	set -- $(rtl_lfilter "${PKG_BUILD_STEPS}" "start");
+		while [ ${#} -gt 0 ]; do
+			_step="${1}"; shift;
+			if [ "${#_restart_at}" -gt 0 ]\
+			&& [ "${_restart_at}" != "ALL" ]\
+			&& [ "${_restart_at}" != "LAST" ]\
+			&& ! rtl_lmatch "${_restart_at}" "${_step}" ","; then
+				continue;
 			fi;
-		elif [ "${_rc:-0}" -ne 0 ]\
-		&&   [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
-			printf "" > "${BUILD_WORKDIR}/${_pkg_name}.dump";
-			rtl_filter_vars exp_pkg_exec_filter_vars_fn >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
-			export >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
-		fi;
+			if [ "${_step}" = "${ARG_DUMP_IN}" ]; then
+				printf "" > "${BUILD_WORKDIR}/${_pkg_name}.dump";
+				rtl_filter_vars exp_pkg_exec_filter_vars_fn >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
+				export >> "${BUILD_WORKDIR}/${_pkg_name}.dump"; exit 1;
+			elif [ "${_step}" = "finish" ]; then
+				ex_pkg_state_set "${_pkg_name}" finish; break;
+			elif [ "${PKG_FORCE:-0}" -eq 0 ]\
+			&&   ex_pkg_state_test "${_pkg_name}" "${_step}" "${_restart_at}"; then
+				continue;
+			elif ! exp_pkg_exec_step "${_group_name}" "${_pkg_name}" "${_restart_at}" "${_step}"; then
+				_rc=1; break;
+			else	printf "step %s %s %s\n" "${_group_name}" "${_pkg_name}" "${_step}" >&3;
+				ex_pkg_state_set "${_pkg_name}" "${_step}" "${@}";
+			fi;
+		done;
+	fi;
+	if [ "${_rc:-0}" -ne 0 ]\
+	&&   [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
+		printf "" > "${BUILD_WORKDIR}/${_pkg_name}.dump";
+		rtl_filter_vars exp_pkg_exec_filter_vars_fn >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
+		export >> "${BUILD_WORKDIR}/${_pkg_name}.dump";
 	fi;
 	return "${_rc}";
 };

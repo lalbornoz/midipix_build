@@ -1,8 +1,8 @@
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]   [-h]   [-p jobs]     [-P]   [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:step,..]] [-R] [-v[v[v[v]]]] [--as-needed]
-                  [--debug-minipix] [--dump-on-abort] [--roar]
-                  [[=]<group>|<variable name>=<variable override>[ ..]]
+                  [-F ipv4|ipv6|offline] [-h|--help|  [-p jobs]  [-P]  [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]  [-R] [-v[v[v[v]]]]
+                  [--as-needed] [--debug-minipix] [--dump-on-abort]  [--reset-state]
+                  [--roar]     [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build kind; defaults to debug.
@@ -16,7 +16,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,
                           Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package
                           archives and/or Git repositories or don't download either at all
                           (offline.)
-        -h                Show this screen.
+        -h|--help         Show short/full help screen, respectively.
         -p jobs           Enables parallelisation at group-level, whenever applicable.
         -P                The maximum count of jobs defaults to the number of logical
                           processors on the host system divided by two (2.)
@@ -26,19 +26,31 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,
 
         -r ALL|LAST       Restart all packages or the last failed package and resume
                           build, resp.
-        -r [*[*[*]]]name[,..][:step,..]
-                          Restart the specified comma-separated package(s) completely or
-                          at optionally specified comma-separated list of build steps.
+        -r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]
+                          Restart the specified comma-separated package(s) w/ inhibition
+                          of package build step state resetting completely (`ALL',) starting
+                          at the resp. last successfully executed build steps (`LAST',) or the
+                          specified comma-separated list of build steps, optionally subject
+                          concerning package name(s) and/or build step(s) to the below modifiers:
 
-                          Prepend w/ `*' to automatically include dependencies, `**' to
-                          forcibly rebuild all dependencies, and `***` to forcibly rebuild
-                          all packages that depend on the specified package(s).
+                          Prepend name w/ `*' to automatically include dependencies, `**'
+                          to forcibly rebuild all dependencies, and `***` to forcibly
+                          rebuild all packages that depend on the specified package(s).
+
+                          Prepend step w/ `^' to filter build steps with, `<' or `<='
+                          to constrain build steps to below or below or equal with, resp.,
+                          `>' or `>=' to constrain build steps to above or above or equal
+                          with, resp.
 
                           Currently defined build steps are:
-                          fetch_wget, fetch_git, fetch_extract, configure_patch_pre,
+                          fetch_download, fetch_extract, configure_patch_pre,
                           configure_autotools, configure_patch, configure, build,
                           install_subdirs, install_make, install_files, install_libs,
-                          install, and install_rpm.
+                          install, install_rpm, and clean.
+
+                          Additionally, the following shorthand aliases and pseudo-steps are provided:
+                          @fetch, @configure, @build, @install, and @clean, and
+                          start and finish.
 
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)
@@ -49,6 +61,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
         --dump-on-abort   Produce package environment dump files on build failure to be
                           used in conjuction with pkg_shell.sh script (excludes -R.)
+        --reset-state     Reset package build step state on exit.
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
                           host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.
