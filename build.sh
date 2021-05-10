@@ -39,7 +39,7 @@ buildp_dispatch_fail_pkg() {
 		rtl_log_msg fatal "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 		cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
-			printf "%s" "${_pkg_name}" > "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
+			printf "%s\n" "${_pkg_name}" > "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
 		fi;
 		rtl_log_msg fatal "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 	else	rtl_log_msg warning "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";

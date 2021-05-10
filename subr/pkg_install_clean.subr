@@ -1,0 +1,12 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+pkg_install_clean() {
+	if [ -n "${PKG_DESTDIR:-}" ]; then
+		rtl_fileop rm "${PKG_DESTDIR}" || return 1;
+		rtl_fileop mkdir "${PKG_DESTDIR}" || return 1;
+	fi; return 0;
+};
+
+# vim:filetype=sh

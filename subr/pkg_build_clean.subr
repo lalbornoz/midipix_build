@@ -1,0 +1,33 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+pkg_build_clean() {
+	local	_libtool="" _makeflags_verbosity="${PKG_MAKEFLAGS_VERBOSITY:-}"			\
+		_no_autoconf="" _rc=0 _subdir="";
+
+	if ex_pkg_state_test "${_pkg_name}" "build" "${_restart_at}"; then
+		case "${PKG_LIBTOOL:-}" in
+		"")	_libtool=""; ;;
+		none)	_libtool=""; ;;
+		*)	_libtool="${PKG_LIBTOOL}"; ;;
+		esac;
+		[ ! -x "${PKG_CONFIGURE:-}" ] && _no_autoconf=1;
+
+		for _subdir in ${PKG_MAKE_SUBDIRS:-:}; do
+			[ "${_subdir}" = ":" ] && _subdir="";
+			[ "${#_libtool}" -gt 0 ] && export MAKE="make LIBTOOL=${_libtool}";
+			rtl_run_cmd_unsplit "${PKG_MAKE}"					\
+				${PKG_MAKEFLAGS_BUILD:-}					\
+				${PKG_MAKEFLAGS_BUILD_EXTRA:-}					\
+				${_libtool:+"LIBTOOL=${_libtool}"}				\
+				${_makeflags_verbosity}						\
+				${_subdir:+-C "${_subdir}"}					\
+				clean; _rc="${?}";
+			[ "${#_libtool}" -gt 0 ] && unset MAKE;
+			[ "${_rc}" -ne 0 ] && return 1;
+		done; return 0;
+	fi;
+};
+
+# vim:filetype=sh

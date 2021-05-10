@@ -1,0 +1,286 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+#
+# exp_pkg_check_restart_at() - XXX
+# @_rspec_at:		in reference to restart build step list
+#
+# Calling convention:	in ref. @_rspec_at
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_check_restart_at() {
+	local _epcra_rspec_at="${1#\$}" _epcra_len="" _epcra_rc=0 _epcra_spec_at=""; _status=""
+
+	if ! rtl_llift2 "${_epcra_rspec_at}" \$_epcra_spec_at "," " "\
+	|| ! rtl_lfilter3 \$_epcra_spec_at "${DEFAULT_BUILD_STEPS} ALL LAST"\
+	|| ! rtl_llength2 \$_epcra_spec_at \$_epcra_len; then
+		_epcra_rc=1;
+	elif [ "${_epcra_len}" -gt 0 ]; then
+		_status="unknown build step(s) \`${_epcra_spec_at}'"; _epcra_rc=1;
+	fi; return "${_epcra_rc}";
+};
+
+#
+# exp_pkg_expand_restart_at_spec() - XXX
+# @_rset:		in reference to restart virtual build step set
+# @_rspec_at:		inout reference to restart build step list
+#
+# Calling convention:	in ref. @_rset, inout ref. @_rspec_at
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_expand_restart_at_spec() {
+	local	_eperas_rset="${1#\$}" _eperas_rspec_at="${2#\$}" _eperas_at=""			\
+		_eperas_rc=0 _eperas_spec_at="" _eperas_spec_at_=""; _status="";
+	eval _eperas_spec_at='${'"${_eperas_rspec_at}"'}';
+
+	case "${_eperas_spec_at}" in
+	ALL|LAST|"")
+		;;
+
+	^*)
+		_eperas_spec_at="${_eperas_spec_at#^}";
+		if exp_pkg_expand_restart_at_virtual						\
+				"${_eperas_spec_at}" \$_eperas_spec_at				\
+				"${_eperas_rset}"						\
+		&& exp_pkg_check_restart_at \$_eperas_spec_at; then
+			rtl_llift2 \$DEFAULT_BUILD_STEPS "${_eperas_rspec_at}" " 	" ",";
+			rtl_llift2 \$_eperas_spec_at \$_eperas_spec_at_ "," " ";
+			for _eperas_at in ${_eperas_spec_at_}; do
+				rtl_lfilter3 "${_eperas_rspec_at}" "${_eperas_at}" ",";
+			done; rtl_lfilter3 "${_eperas_rspec_at}" "finish" ",";
+		else
+			_eperas_rc=1;
+		fi; ;;
+
+	\<=*|\<*|\>=*|\>*)
+		exp_pkg_expand_restart_at_spec_cmp						\
+			"${_eperas_rset}" "${_eperas_rspec_at}"; _eperas_rc="${?}"; ;;
+
+	*)
+		if ! exp_pkg_expand_restart_at_virtual						\
+				"${_eperas_spec_at}" "${_eperas_rspec_at}"			\
+				"${_eperas_rset}"; then
+			_eperas_rc=1;
+		fi; ;;
+	esac;
+
+	if [ "${_eperas_rc}" -eq 0 ]; then
+		if ! exp_pkg_check_restart_at "${_eperas_rspec_at}"; then
+			_epprs_rc=1;
+		elif eval [ '"${'"${_eperas_rspec_at}"':+1}"' != 1 ]; then
+			_status="zero-length build step list"; _epprs_rc=1;
+		fi;
+	fi;
+	return "${_eperas_rc}";
+};
+
+#
+# exp_pkg_expand_restart_at_spec_cmp() - XXX
+# @_rset:		in reference to restart virtual build step set
+# @_rspec_at:		inout reference to restart build step list
+#
+# Calling convention:	in ref. @_rset, inout ref. @_rspec_at
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_expand_restart_at_spec_cmp() {
+	local	_eperasc_rset="${1#\$}" _eperasc_rspec_at="${2#\$}" _eperasc_at=""		\
+		_eperasc_eqfl="" _eperasc_foundfl="" _eperasc_ltfl="" _eperasc_rc=0		\
+		_eperasc_spec_at="" _eperasc_spec_at0="";
+	eval _eperasc_spec_at0='${'"${_eperasc_rspec_at}"'}';
+
+	[ "${_eperasc_spec_at0#<}" = "${_eperasc_spec_at0}" ]; _eperasc_ltfl="${?}";
+	if [ "${_eperasc_spec_at0#[<>]=}" != "${_eperasc_spec_at0}" ]; then
+		_eperasc_spec_at0="${_eperasc_spec_at0#[<>]=}"; _eperasc_eqfl=1;
+	else
+		_eperasc_spec_at0="${_eperasc_spec_at0#[<>]}"; _eperasc_eqfl=0;
+	fi; _eperasc_spec_at="";
+
+	if exp_pkg_expand_restart_at_virtual							\
+			"${_eperasc_spec_at0%%,*}" \$_eperasc_spec_at0				\
+			"${_eperasc_rset}"							\
+	&& exp_pkg_check_restart_at \$_eperasc_spec_at0; then
+		if [ \( "${_eperasc_eqfl}" -eq 1 \) -a \( "${_eperasc_ltfl}" -eq 1 \) ]\
+		|| [ \( "${_eperasc_eqfl}" -eq 0 \) -a \( "${_eperasc_ltfl}" -eq 0 \) ]; then
+			_eperasc_spec_at0="${_eperasc_spec_at0##*,}";
+		elif [ \( "${_eperasc_eqfl}" -eq 1 \) -a \( "${_eperasc_ltfl}" -eq 0 \) ]\
+		||   [ \( "${_eperasc_eqfl}" -eq 0 \) -a \( "${_eperasc_ltfl}" -eq 1 \) ]; then
+			_eperasc_spec_at0="${_eperasc_spec_at0%%,*}";
+		fi;
+
+		_eperasc_foundfl=0; for _eperasc_at in ${DEFAULT_BUILD_STEPS}; do
+			if [ "${_eperasc_ltfl}" -eq 1 ]; then
+				if [ "${_eperasc_at}" = "${_eperasc_spec_at0%%,*}" ]; then
+					if [ "${_eperasc_eqfl}" -eq 1 ]; then
+						_eperasc_spec_at="${_eperasc_spec_at:+${_eperasc_spec_at},}${_eperasc_at}";
+					fi; break;
+				fi;
+			else
+				if [ "${_eperasc_at}" = "${_eperasc_spec_at0%%,*}" ]; then
+					_eperasc_foundfl=1; [ "${_eperasc_eqfl}" -eq 0 ] && continue;
+				fi; [ "${_eperasc_foundfl}" -eq 0 ] && continue;
+			fi;
+			_eperasc_spec_at="${_eperasc_spec_at:+${_eperasc_spec_at},}${_eperasc_at}";
+		done;
+	else
+		_eperasc_rc=1;
+	fi;
+
+	eval ${_eperasc_rspec_at}='${_eperasc_spec_at}';
+	return "${_eperasc_rc}";
+};
+
+#
+# exp_pkg_expand_restart_at_virtual() - XXX
+# @_spec_at:		restart build step list
+# @_rspec_at_new:	out reference to new restart build step list
+# @_rset:		inout reference to restart virtual build step set
+#
+# Calling convention:	inout ref. @_rspec_recursive
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_expand_restart_at_virtual() {
+	local	_epera_spec_at="${1}" _epera_rspec_at_new="${2#\$}" _epera_rset="${3#\$}"	\
+		_epera_at="" _epera_IFS0="${IFS:- 	}" _epera_rc=0 _epera_spec_at_new=""	\
+		IFS; _status="";
+
+	eval ${_epera_rspec_at_new}=;
+	IFS=","; set -- ${_epera_spec_at}; IFS="${_epera_IFS0}";
+	while [ "${#}" -gt 0 ]; do
+		_epera_at="${1}"; shift;
+		if [ "${_epera_at#@}" != "${_epera_at}" ]; then
+			_epera_at="${_epera_at#@}";
+			if [ "${_epera_at%[^0-9a-zA-Z_]*}" != "${_epera_at}" ]; then
+				_status="invalid virtual build step \`${_epera_at}'"; _epera_rc=1;
+			elif eval [ '"${'"${_epera_rset}${_epera_at}"':+1}"' = 1 ]; then
+				eval _epera_at='${'"${_epera_rset}${_epera_at}"'}';
+			else
+				_status="unknown virtual build step \`${_epera_at}'"; _epera_rc=1;
+			fi;
+		fi;
+		eval ${_epera_rspec_at_new}='${'"${_epera_rspec_at_new}"':+${'"${_epera_rspec_at_new}"'},}${_epera_at}';
+	done;
+	return "${_epera_rc}";
+};
+
+#
+# exp_pkg_expand_restart_recursive() - XXX
+# @_rspec:		inout reference to restart {specification,package name list}
+# @_rrecursive:		out reference to recursion flag
+#
+# Calling convention:	inout ref. @_rspec, out ref. @_rrecursive
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_expand_restart_recursive() {
+	local _eperr_rspec="${1#\$}" _eperr_rrecursive="${2#\$}" _eperr_spec=""; _status=""
+	eval _eperr_spec='${'"${_eperr_rspec}"'}';
+
+	case "${_eperr_spec}" in
+	\*\*\*[a-zA-Z]*)
+			eval ${_eperr_rspec}='${_eperr_spec#\*\*\*}' ${_eperr_rrecursive}=3; ;;
+	\*\*[a-zA-Z]*)	eval ${_eperr_rspec}='${_eperr_spec#\*\*}' ${_eperr_rrecursive}=2; ;;
+	\*[a-zA-Z]*)	eval ${_eperr_rspec}='${_eperr_spec#\*}' ${_eperr_rrecursive}=1; ;;
+	ALL)		eval ${_eperr_rrecursive}=2; ;;
+	LAST)		eval ${_eperr_rrecursive}=0; ;;
+	esac;
+	return 0;
+};
+
+#
+# exp_pkg_expand_restart_spec() - XXX
+# @_rspec:		inout reference to restart {specification,package name list}
+# @_rspec_at:		out reference to restart build step list
+#
+# Calling convention:	inout ref. @_rspec, out ref. @_rspec_at, out ref. @_rrecursive
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_expand_restart_spec() {
+	local	_epers_rspec="${1#\$}" _epers_rspec_at="${2#\$}" _epers_last_pkg=""	\
+		_epers_rc=0 _epers_spec="" _epers_spec_at="" _epers_spec_at0="";
+	eval _epers_spec='${'"${_epers_rspec}"'}';
+
+	case "${_epers_spec}" in
+	"")	eval ${_eppras_rspec_at}=; ;;
+	ALL)	eval ${_epers_rspec_at}=ALL; ;;
+	LAST|LAST:*)
+		case "${_epers_spec}" in
+		LAST)	eval ${_epers_rspec_at}=LAST; ;;
+		LAST:*)	eval ${_epers_rspec_at}='${_epers_spec#LAST:}'; ;;
+		esac;
+		if [ "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME:+1}" = 1 ]\
+		&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
+			if read -r _epers_last_pkg <"${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}"\
+			&& rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}"; then
+				eval ${_epers_rspec}='${_epers_last_pkg}';
+			else
+				_status="failed to read or clear status of last failed package \`${_epers_last_pkg}'"; _epers_rc=1;
+			fi;
+		else
+			_status="cannot rebuild last failed package"; _epers_rc=1;
+		fi; ;;
+
+	*:*)	eval ${_epers_rspec}='${_epers_spec%:*}' ${_epers_rspec_at}='${_epers_spec#*:}'; ;;
+	*)	eval ${_epers_rspec_at}= ${_epers_rspec_at}=ALL; ;;
+	esac;
+	return "${_epers_rc}";
+};
+
+#
+# exp_pkg_init_restart_at_virtual() - XXX
+# @_rset:		out reference to restart virtual build step set
+#
+# Calling convention:	out ref. @_rset
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_init_restart_at_virtual() {
+	local _eperav_rset="${1#\$}" _eperav_step="" _eperav_step_virtual="" _epera_steps="";
+
+	rtl_lfilter2 \$DEFAULT_BUILD_STEPS \$_epera_steps "finish";
+	for _eperav_step in ${_epera_steps}; do
+		_eperav_step_virtual="${_eperav_step%%_*}";
+		if eval [ '"${'"${_eperav_rset}${_eperav_step_virtual}"':+1}"' != 1 ]; then
+			eval ${_eperav_rset}='"${'"${_eperav_rset}"':+${'"${_eperav_rset}"'},}${_eperav_step_virtual}"';
+		fi;
+		eval ${_eperav_rset}${_eperav_step_virtual}='"${'"${_eperav_rset}${_eperav_step_virtual}"':+${'"${_eperav_rset}${_eperav_step_virtual}"'},}${_eperav_step}"';
+	done; return 0;
+};
+
+#
+# ex_pkg_process_restart_spec() - XXX
+# @_rspec:		inout reference to restart {specification,package name list}
+# @_rspec_at:		out reference to restart build step list
+# @_rrecursive:		out reference to restart recursion flag
+#
+# Calling convention:	inout ref. @_rspec, out ref. @_rspec_at
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_process_restart_spec() {
+	local	_epprs_rspec="${1#\$}" _epprs_rspec_at="${2#\$}" _epprs_rrecursive="${3#\$}"	\
+		_epprs_at="" _epprs_rc=0 _epprs_spec_at_new="" _epprs_step="" _epprs_step1=""	\
+		_epprs_virtual_set=""; _status="";
+
+	if exp_pkg_init_restart_at_virtual \$_epprs_virtual_set					\
+	&& exp_pkg_expand_restart_spec "${_epprs_rspec}" \$_epprs_spec_at_new			\
+	&& exp_pkg_expand_restart_recursive "${_epprs_rspec}" "${_epprs_rrecursive}"		\
+	&& exp_pkg_expand_restart_at_spec \$_epprs_virtual_set \$_epprs_spec_at_new; then
+		eval ${_epprs_rspec_at}=;
+		for _epprs_at in ${DEFAULT_BUILD_STEPS}; do
+			if rtl_lmatch "${_epprs_at}" "${_epprs_spec_at_new}" ","; then
+				eval ${_epprs_rspec_at}='${'"${_epprs_rspec_at}"':+${'"${_epprs_rspec_at}"'},}${_epprs_at}';
+			fi;
+		done;
+		if eval [ '"${'"${_epprs_rspec_at}"'##*,}"' != "finish" ]; then
+			rtl_lfilter2 "${_epprs_rspec_at}" \$_epprs_step "clean,finish" ","; _epprs_step="${_epprs_step##*,}";
+			rtl_lfilter2 \$DEFAULT_BUILD_STEPS \$_epprs_step1 "clean finish"; _epprs_step1="${_epprs_step1##* }";
+			if [ "${_epprs_step}" = "${_epprs_step1}" ]; then
+				eval ${_epprs_rspec_at}='${'"${_epprs_rspec_at}"':+${'"${_epprs_rspec_at}"'},}finish';
+			fi;
+		fi;
+	else
+		_epprs_rc=1;
+	fi;
+	rtl_sunset \$_epprs_virtual_set;
+	return "${_epprs_rc}";
+};
+
+# vim:filetype=sh

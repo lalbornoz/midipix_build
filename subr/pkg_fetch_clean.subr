@@ -1,0 +1,21 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+pkg_fetch_clean() {
+	local _dname="";
+
+	if [ -n "${PKG_URLS_GIT:-}" ]; then
+		if [ -n "${PKG_SUBDIR:-}" ]\
+		&& [ "${PKG_SUBDIR}" != "${PKG_URLS_GIT%%=*}" ]; then
+			rtl_fileopm rm "${PKG_SUBDIR}";
+		fi;
+		for _dname in ${PKG_URLS_GIT}; do
+			_dname="${_dname%%=*}"; rtl_fileop rm "${_dname}";
+		done;
+	elif [ -n "${PKG_SUBDIR}" ]; then
+		rtl_fileop rm "${PKG_SUBDIR}";
+	fi; return 0;
+};
+
+# vim:filetype=sh

@@ -46,6 +46,31 @@ rtl_lfilter() {
 	printf "%s" "${_lnew}";
 };
 
+rtl_lfilter2() {
+	local	_rlist="${1#\$}" _rlist_new="${2#\$}" _filter="${3}" _sep="${4:- }" IFS="${4:-${IFS:- }}"\
+		_filterfl="" _litem="" _litem_filter="" _lnew="";
+
+	if [ "${_filter:+1}" != 1 ]; then
+		eval ${_rlist_new}=; return 0;
+	else	eval set -- '${'"${_rlist}"'}'\; ${_rlist_new}=;
+		while [ "${#}" -gt 0 ]; do
+			_litem="${1}"; shift; _filterfl=0;
+			for _litem_filter in ${_filter}; do
+				if [ "${_litem_filter}" = "${_litem}" ]; then
+					_filterfl=1; break;
+				fi;
+			done;
+			if [ "${_filterfl:-0}" -eq 0 ]; then
+				eval ${_rlist_new}='${'"${_rlist_new}"':+${'"${_rlist_new}"'}${_sep}}${_litem}';
+			fi;
+		done;
+	fi;
+};
+
+rtl_lfilter3() {
+	rtl_lfilter2 "${1}" "${1}" "${2}" "${3:-}";
+};
+
 rtl_lfirst() {
 	local _list="${1}" _sep="${2}" IFS; IFS="${_sep}";
 	set -- ${_list}; RTL_LFIRST_HEAD="${1}";
@@ -64,10 +89,27 @@ rtl_llength() {
 	printf "%s" "${_llength}";
 };
 
+rtl_llength2() {
+	local _rlist="${1#\$}" _rlen="${2#\$}" _sep="${3:- }" IFS="${3:-${IFS:- }}";
+	eval set -- '${'"${_rlist}"'}'\; ${_rlen}='${#}';
+};
+
 rtl_llift() {
 	local _list="${1}" _sep="${2}" _sep_new="${3}" IFS; IFS="${_sep}";
 	set -- ${_list}; IFS="${_sep_new}";
 	printf "%s" "${*}";
+};
+
+rtl_llift2() {
+	local	_rlist="${1#\$}" _rlist_new="${2#\$}" _sep="${3}"	\
+		_sep_new="${4}" IFS; IFS="${_sep}";
+
+	eval set -- '${'"${_rlist}"'}'; IFS="${_sep_new}";
+	eval ${_rlist_new}='"${*}"';
+};
+
+rtl_llift3() {
+	rtl_llift2 "${1}" "${1}" "${2}" "${3}";
 };
 
 rtl_lmatch() {

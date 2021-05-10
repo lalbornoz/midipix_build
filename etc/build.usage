@@ -43,14 +43,14 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,
                           with, resp.
 
                           Currently defined build steps are:
-                          fetch_download, fetch_extract, configure_patch_pre,
-                          configure_autotools, configure_patch, configure, build,
-                          install_subdirs, install_make, install_files, install_libs,
-                          install, install_rpm, and clean.
+                          fetch_clean, fetch_download, fetch_extract, configure_clean,
+                          configure_patch_pre, configure_autotools, configure_patch,
+                          configure, build_clean, build, install_clean, install_subdirs,
+                          install_make, install_files, install_libs, install, install_rpm,
+                          and clean.
 
-                          Additionally, the following shorthand aliases and pseudo-steps are provided:
-                          @fetch, @configure, @build, @install, and @clean, and
-                          start and finish.
+                          Additionally, the following virtual steps are provided:
+                          @fetch, @configure, @build, @install, @clean, and finish.
 
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)

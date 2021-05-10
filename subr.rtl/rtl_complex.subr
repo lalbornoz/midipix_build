@@ -72,4 +72,12 @@ rtl_percentage() {
 	printf "%d\n" "${_perc}";
 };
 
+rtl_sunset() {
+	local _rs_rset="${1#\$}" _rs_kname="" IFS=" 	";
+	eval set -- '${'"${_rs_rset}"'}';
+	while [ "${#}" -gt 0 ]; do
+		unset "${_rs_rset}${_rs_kname}"; shift;
+	done; unset "${_rs_rset}";
+};
+
 # vim:filetype=sh

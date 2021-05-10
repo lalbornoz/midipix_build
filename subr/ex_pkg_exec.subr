@@ -94,7 +94,7 @@ ex_pkg_exec() {
 		_rc=1;
 	elif rtl_test_cmd "pkg_${_pkg_name}_all"; then
 		"pkg_${_pkg_name}_all" "${_restart_at}"; _rc="${?}";
-	else	set -- $(rtl_lfilter "${PKG_BUILD_STEPS}" "start");
+	else	set -- ${PKG_BUILD_STEPS};
 		while [ ${#} -gt 0 ]; do
 			_step="${1}"; shift;
 			if [ "${#_restart_at}" -gt 0 ]\

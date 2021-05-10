@@ -248,7 +248,7 @@ Rebuild entire build groups including or excluding group dependencies, respectiv
 
 ```
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]   [-h]   [-p jobs]     [-P]   [-r ALL|LAST]
+                  [-F ipv4|ipv6|offline] [-h|--help|  [-p jobs]  [-P]  [-r ALL|LAST]
                   [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]  [-R] [-v[v[v[v]]]]
                   [--as-needed] [--debug-minipix] [--dump-on-abort]  [--reset-state]
                   [--roar]     [[=]<group>|<variable name>=<variable override>[ ..]]
@@ -265,7 +265,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,
                           Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package
                           archives and/or Git repositories or don't download either at all
                           (offline.)
-        -h                Show this screen.
+        -h|--help         Show short/full help screen, respectively.
         -p jobs           Enables parallelisation at group-level, whenever applicable.
         -P                The maximum count of jobs defaults to the number of logical
                           processors on the host system divided by two (2.)
@@ -292,14 +292,14 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,
                           with, resp.
 
                           Currently defined build steps are:
-                          fetch_download, fetch_extract, configure_patch_pre,
-                          configure_autotools, configure_patch, configure, build,
-                          install_subdirs, install_make, install_files, install_libs,
-                          install, install_rpm, and clean.
+                          fetch_clean, fetch_download, fetch_extract, configure_clean,
+                          configure_patch_pre, configure_autotools, configure_patch,
+                          configure, build_clean, build, install_clean, install_subdirs,
+                          install_make, install_files, install_libs, install, install_rpm,
+                          and clean.
 
-                          Additionally, the following shorthand aliases and pseudo-steps are provided:
-                          @fetch, @configure, @build, @install, and @clean, and
-                          start and finish.
+                          Additionally, the following virtual steps are provided:
+                          @fetch, @configure, @build, @install, @clean, and finish.
 
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)

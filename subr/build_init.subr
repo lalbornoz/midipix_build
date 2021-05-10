@@ -2,145 +2,8 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
-buildp_expand_restart_at() {
-	local _restart_at_spec="${1}" _restart_at="" _restart_at_spec_new="";
-
-	for _restart_at in $(rtl_llift "${_restart_at_spec}" "," " "); do
-		case "${_restart_at}" in
-		@fetch)	_restart_at="fetch_download,fetch_extract"; ;;
-		@configure)
-			_restart_at="configure_patch_pre,configure_autotools,configure_patch,configure"; ;;
-		@build)	_restart_at="build"; ;;
-		@install)
-			_restart_at="install_subdirs,install_make,install_files,install_libs,install,install_rpm"; ;;
-		@clean)
-			_restart_at="clean"; ;;
-		*)	;;
-		esac;
-		_restart_at_spec_new="$(rtl_lconcat "${_restart_at_spec_new}" "${_restart_at}" ",")"
-	done;
-	printf "%s" "${_restart_at_spec_new}";
-};
-
-buildp_expand_restart_recursive() {
-	local _restart_spec="${1}" _last_pkg="" _restart_spec_at="" _restart_spec_recursive=0;
-
-	case "${_restart_spec}" in
-	\*\*\*[a-zA-Z]*)
-			_restart_spec="${_restart_spec#\*\*\*}"; _restart_spec_recursive=3; ;;
-	\*\*[a-zA-Z]*)	_restart_spec="${_restart_spec#\*\*}"; _restart_spec_recursive=2; ;;
-	\*[a-zA-Z]*)	_restart_spec="${_restart_spec#\*}"; _restart_spec_recursive=1; ;;
-	ALL)		_restart_spec_at=ALL; _restart_spec_recursive=2; ;;
-	LAST)		_restart_spec_at=ALL; _restart_spec_recursive=0;
-			if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]\
-			&& [ -e "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
-				_last_pkg="$(cat "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}")";
-				rtl_fileop rm "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
-				rtl_state_clear "${BUILD_WORKDIR}" "${_last_pkg}";
-				_restart_spec="${_last_pkg}";
-			else
-				_status="cannot rebuild last failed package"; return 1;
-			fi; ;;
-	esac;
-	ARG_RESTART="${_restart_spec}";
-	ARG_RESTART_AT="${_restart_spec_at}";
-	ARG_RESTART_RECURSIVE="${_restart_spec_recursive}";
-	return 0;
-};
-
-buildp_process_restart_spec() {
-	local _restart_spec="${1}" _eqfl=0 _ltfl=0 _restart_spec_at0="" _restart_spec_at="" _step="" _step1=""; _status="";
-
-	buildp_expand_restart_recursive "${_restart_spec}" || return "${?}";
-	_restart_spec="${ARG_RESTART}"; _restart_spec_at="${ARG_RESTART_AT}";
-
-	case "${_restart_spec}" in
-	"")	return 0; ;;
-	*:*)
-		_restart_spec_at="${_restart_spec#*:}"; _restart_spec="${_restart_spec%%:*}";
-		_restart_spec_at0="${_restart_spec_at}"; _restart_spec_at="";
-		case "${_restart_spec_at0}" in
-		ALL|LAST)
-			_restart_spec_at="${_restart_spec_at0}"; ;;
-
-		^*)	_restart_spec_at0="${_restart_spec_at0#^}";
-			_restart_spec_at0="$(buildp_expand_restart_at "${_restart_spec_at0}")";
-			_restart_spec_at="$(rtl_llift "${DEFAULT_BUILD_STEPS}" " 	" ",")";
-			for _restart_at in $(rtl_llift "${_restart_spec_at0}" "," " "); do
-				_restart_spec_at="$(rtl_lfilter "${_restart_spec_at}" "${_restart_at}" ",")";
-			done; _restart_spec_at="$(rtl_lfilter "${_restart_spec_at}" "finish" ",")"; ;;
-
-		\<=*|\<*|\>=*|\>*)
-			[ "${_restart_spec_at0#<}" != "${_restart_spec_at0}" ] && _ltfl=1;
-			if [ "${_restart_spec_at0#[<>]=}" != "${_restart_spec_at0}" ]; then
-				_restart_spec_at0="${_restart_spec_at0#[<>]=}"; _eqfl=1;
-			else
-				_restart_spec_at0="${_restart_spec_at0#[<>]}"; _eqfl=0;
-			fi; _restart_spec_at="";
-			_restart_spec_at0="$(buildp_expand_restart_at "${_restart_spec_at0%%,*}")";
-			if [ \( "${_eqfl}" -eq 1 \) -a \( "${_ltfl}" -eq 1 \) ]\
-			|| [ \( "${_eqfl}" -eq 0 \) -a \( "${_ltfl}" -eq 0 \) ]; then
-				_restart_spec_at0="${_restart_spec_at0##*,}";
-			elif [ \( "${_eqfl}" -eq 1 \) -a \( "${_ltfl}" -eq 0 \) ]\
-			||   [ \( "${_eqfl}" -eq 0 \) -a \( "${_ltfl}" -eq 1 \) ]; then
-				_restart_spec_at0="${_restart_spec_at0%%,*}";
-			fi;
-			for _restart_at in ${DEFAULT_BUILD_STEPS}; do
-				if [ "${_ltfl}" -eq 1 ]; then
-					if [ "${_restart_at}" = "${_restart_spec_at0%%,*}" ]; then
-						if [ "${_eqfl}" -eq 1 ]; then
-							_restart_spec_at="$(rtl_lconcat "${_restart_spec_at}" "${_restart_at}" ",")";
-						fi; break;
-					fi;
-				else
-					if [ "${_restart_at}" = "${_restart_spec_at0%%,*}" ]; then
-						_foundfl=1; [ "${_eqfl}" -eq 0 ] && continue;
-					fi; [ "${_foundfl}" -eq 0 ] && continue;
-				fi;
-				_restart_spec_at="$(rtl_lconcat "${_restart_spec_at}" "${_restart_at}" ",")";
-			done; ;;
-
-		*)	_restart_spec_at="$(buildp_expand_restart_at "${_restart_spec_at0}")"; ;;
-		esac; ;;
-
-	*)	_restart_spec_at=ALL; ;;
-	esac;
-
-	ARG_RESTART="$(rtl_llift "${_restart_spec}" "," " ")";
-	ARG_RESTART_AT="${_restart_spec_at}";
-	if [ "${#ARG_RESTART_AT}" -eq 0 ]; then
-		_status="zero-length build step list"; return 1;
-	elif [ "${ARG_RESTART_AT}" != "ALL" ]\
-	&&   [ "${ARG_RESTART_AT}" != "LAST" ]; then
-		for _restart_at in $(rtl_lfilter "$(rtl_llift "${ARG_RESTART_AT}" "," " ")" "${DEFAULT_BUILD_STEPS}"); do
-			case "${_restart_at}" in
-			start)	;;
-			*)	_status="unknown build step \`${_restart_at}'"; return 1; ;;
-			esac;
-		done;
-	fi;
-	if [ "${#ARG_RESTART_AT}" -gt 0 ]\
-	&& [ "${ARG_RESTART_AT}" != "ALL" ]\
-	&& [ "${ARG_RESTART_AT}" != "LAST" ]; then
-		_restart_spec_at="${ARG_RESTART_AT}"; ARG_RESTART_AT="";
-		for _restart_at in ${DEFAULT_BUILD_STEPS}; do
-			if rtl_lmatch "${_restart_spec_at}" "${_restart_at}" ","; then
-				ARG_RESTART_AT="$(rtl_lconcat "${ARG_RESTART_AT}" "${_restart_at}" ",")";
-			fi;
-		done;
-		if [ "${ARG_RESTART_AT##*,}" != "finish" ]; then
-			_step="$(rtl_lfilter "${ARG_RESTART_AT}" "clean,finish" ",")"; _step="${_step##*,}";
-			_step1="$(rtl_lfilter "${DEFAULT_BUILD_STEPS}" "clean finish")"; _step1="${_step1##* }";
-			if [ "${_step}" = "${_step1}" ]; then
-				ARG_RESTART_AT="$(rtl_lconcat "${ARG_RESTART_AT}" "finish" ",")";
-			fi;
-		fi;
-	fi;
-	return 0;
-};
-
 buildp_init_args() {
-	local	_eqfl=0 _foundfl=0 _group="" _pkg_names_unknown="" _rc=0	\
+	local	_foundfl=0 _group="" _pkg_names_unknown="" _rc=0	\
 		EX_PKG_BUILD_GROUPS EX_PKG_BUILD_GROUPS_NOAUTO; _status="";
 
 	case "${ARG_FETCH_FORCE}" in
@@ -149,26 +12,26 @@ buildp_init_args() {
 	ipv6)	DEFAULT_GIT_ARGS="$(rtl_lconcat "-6" "${DEFAULT_GIT_ARGS}")";
 		DEFAULT_WGET_ARGS="$(rtl_lconcat "-6" "${DEFAULT_WGET_ARGS}")"; ;;
 	esac;
-	if [ -z "${BUILD_HNAME:-}" ]\
+	if [ "${BUILD_HNAME:+1}" != 1 ]\
 	&& ! BUILD_HNAME="$(hostname)"; then
 		_rc=1; _status="Error: failed to obtain hostname.";
 	elif [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]\
-	&& [ "${ARG_RELAXED:-0}" -eq 1 ]; then
+	&&   [ "${ARG_RELAXED:-0}" -eq 1 ]; then
 		_rc=1; _status="Error: --dump-on-abort excludes -R.";
 	elif [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
-	&& [ -e "${PREFIX}/build.gitref" ]\
-	&& [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
+	&&   [ -e "${PREFIX}/build.gitref" ]\
+	&&   [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
 		_rc=0; _status="Git repository has not changed since last build and --as-needed was specified.";
-	elif ! buildp_process_restart_spec "${ARG_RESTART:-}"; then
+	elif ! ex_pkg_process_restart_spec \$ARG_RESTART \$ARG_RESTART_AT \$ARG_RESTART_RECURSIVE; then
 		_rc=1; _status="Error: failed to process -r specification: ${_status}.";
 	elif ! ex_pkg_load_groups; then
 		_rc=1; _status="Error: failed to load build groups.";
 	else	if ! rtl_lmatch "${ARG_DIST:-}" "rpm" ","\
-		&& [ -z "${ARG_DUMP_IN:-}" ]\
+		&& [ "${ARG_DUMP_IN:+1}" != 1 ]\
 		&& [ "${ARG_DUMP_ON_ABORT:-0}" -eq 0 ]; then
 			EX_PKG_BUILD_GROUPS="$(rtl_lfilter "${EX_PKG_BUILD_GROUPS}" "host_deps_rpm")";
 		fi;
-		if [ -z "${BUILD_GROUPS}" ]; then
+		if [ "${BUILD_GROUPS:+1}" != 1 ]; then
 			BUILD_GROUPS="${EX_PKG_BUILD_GROUPS}";
 		else	_foundfl=0; for _group in ${BUILD_GROUPS}; do
 				if rtl_lmatch "${EX_PKG_BUILD_GROUPS}" "${_group}"; then
@@ -184,10 +47,11 @@ buildp_init_args() {
 			fi;
 		fi;
 		if [ "${_rc:-0}" -eq 0 ]; then
-			if [ -n "${ARG_DIST}" ]; then
+			if [ "${ARG_DIST:+1}" = 1 ]; then
 				BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "dist")" "dist")";
 			fi;
-			if [ -n "${ARG_RESTART}" ] && ! rtl_lmatch "${ARG_RESTART}" "ALL LAST"; then
+			if [ "${ARG_RESTART:+1}" = 1 ]\
+			&& ! rtl_lmatch "${ARG_RESTART}" "ALL LAST"; then
 				for _pkg_name in ${ARG_RESTART}; do
 					if ! ex_pkg_find_package "${BUILD_GROUPS}" "${_pkg_name}" >/dev/null; then
 						_pkg_names_unknown="$(rtl_lconcat "${_pkg_names_unknown}" "${_pkg_name}")";
@@ -205,6 +69,7 @@ buildp_init_args() {
 
 buildp_init_env() {
 	local _fname="" _rc=0; _status="";
+
 	if ! cd "${0%/*}"; then
 		printf "Error: failed to change working directory to \`${0%/*}'." >&2; exit 1;
 	elif ! umask 022; then
@@ -221,6 +86,7 @@ buildp_init_env() {
 
 buildp_init_files() {
 	local _log_last_fname="" _log_last_num=1 _rc=0; _status=""
+
 	if ! rtl_fileop mkdir "${BUILD_DLCACHEDIR}" "${BUILD_WORKDIR}"\
 	|| rtl_lmatch "${ARG_DIST}" "rpm" ","\
 	&& ! rtl_fileop mkdir "${PREFIX_RPM}"; then
@@ -359,16 +225,11 @@ buildp_init_getopts() {
 };
 
 buildp_init_prereqs() {
-	if ! rtl_check_prereqs \
-			awk bunzip2 bzip2 cat chmod cmake cp date find flock	\
-			g++ gcc git grep gunzip gzip hostname id install kill	\
-			ln lzip make mkdir mkfifo mktemp mv paste patch perl	\
-			pgrep pkill printf readlink rm sed sha256sum sort	\
-			stat tail tar test touch tr uniq wget xz zip; then
+	if ! rtl_check_prereqs ${DEFAULT_PREREQS}; then
 		printf "%s\n" "${_status}" >&2; exit 1;
 	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
 		printf "Error: awk(1) in \$PATH must be GNU Awk." >&2; exit 1;
-	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;		\
+	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;	\
 			sed -i'' -e '' "${FNAME}" >/dev/null 2>&1; }); then
 		printf "Error: sed(1) in \${PATH} does not support the \`-i' option.\n" >&2; exit 1;
 	fi;
@@ -378,8 +239,8 @@ build_init() {
 	local _rc=0; _status="";
 	if ! buildp_init_env			\
 	|| ! buildp_init_getopts "${@}"		\
-	|| ! buildp_init_prereqs		\
 	|| ! ex_pkg_load_vars			\
+	|| ! buildp_init_prereqs		\
 	|| ! buildp_init_args			\
 	|| ! buildp_init_files; then
 		_rc=1; _status="${_status}";
