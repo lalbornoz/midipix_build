@@ -41,7 +41,7 @@ zstd")";
 : ${PKG_BOCHS_SHA256SUM:=ee5b677fd9b1b9f484b5aeb4614f43df21993088c0c0571187f93acb0866e98c};
 : ${PKG_BOCHS_VERSION:=2.6.9};
 : ${PKG_BOCHS_URL:=https://sources.voidlinux.org/bochs-${PKG_BOCHS_VERSION}/bochs-${PKG_BOCHS_VERSION}.tar.gz};
-: ${PKG_BOCHS_CONFIGURE_ARGS_EXTRA:="--without-x11 --with-term"};
+: ${PKG_BOCHS_CONFIGURE_ARGS_EXTRA:="--disable-docbook --without-x11 --with-term"};
 : ${PKG_BOCHS_CXXFLAGS_CONFIGURE_EXTRA:="-D_LARGEFILE64_SOURCE -I${PREFIX_NATIVE}/include/ncurses"};
 : ${PKG_BOCHS_INSTALL_FILES:="../obj/.libs/bochs=bin/ ../obj/.libs/bximage=bin/"};
 : ${PKG_BOCHS_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib"};
