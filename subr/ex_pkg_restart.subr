@@ -200,7 +200,7 @@ exp_pkg_expand_restart_spec() {
 	eval _epers_spec='${'"${_epers_rspec}"'}';
 
 	case "${_epers_spec}" in
-	"")	eval ${_eppras_rspec_at}=; ;;
+	"")	eval ${_epers_rspec_at}=; ;;
 	ALL)	eval ${_epers_rspec_at}=ALL; ;;
 	LAST|LAST:*)
 		case "${_epers_spec}" in
@@ -259,32 +259,34 @@ ex_pkg_process_restart_spec() {
 		_epprs_at="" _epprs_rc=0 _epprs_spec_at_new="" _epprs_step="" _epprs_step1=""	\
 		_epprs_virtual_set=""; _status="";
 
-	if exp_pkg_init_restart_at_virtual \$_epprs_virtual_set					\
-	&& exp_pkg_expand_restart_spec "${_epprs_rspec}" \$_epprs_spec_at_new			\
-	&& exp_pkg_expand_restart_recursive "${_epprs_rspec}" "${_epprs_rrecursive}"		\
-	&& exp_pkg_expand_restart_at_spec \$_epprs_virtual_set \$_epprs_spec_at_new; then
-		eval ${_epprs_rspec_at}=;
-		case "${_epprs_spec_at_new}" in
-		ALL|LAST)
-			eval ${_epprs_rspec_at}='${_epprs_spec_at_new}'; ;;
-		*)
-			for _epprs_at in ${DEFAULT_BUILD_STEPS}; do
-				if rtl_lmatch "${_epprs_at}" "${_epprs_spec_at_new}" ","; then
-					eval ${_epprs_rspec_at}='${'"${_epprs_rspec_at}"':+${'"${_epprs_rspec_at}"'},}${_epprs_at}';
-				fi;
-			done;
-			if eval [ '"${'"${_epprs_rspec_at}"'##*,}"' != "finish" ]; then
-				rtl_lfilter2 "${_epprs_rspec_at}" \$_epprs_step "clean,finish" ","; _epprs_step="${_epprs_step##*,}";
-				rtl_lfilter2 \$DEFAULT_BUILD_STEPS \$_epprs_step1 "clean finish"; _epprs_step1="${_epprs_step1##* }";
-				if [ "${_epprs_step}" = "${_epprs_step1}" ]; then
-					eval ${_epprs_rspec_at}='${'"${_epprs_rspec_at}"':+${'"${_epprs_rspec_at}"'},}finish';
-				fi;
-			fi; ;;
-		esac;
-	else
-		_epprs_rc=1;
+	if eval [ '"${'"${_epprs_rspec}"':+1}"' = 1 ]; then
+		if exp_pkg_init_restart_at_virtual \$_epprs_virtual_set					\
+		&& exp_pkg_expand_restart_spec "${_epprs_rspec}" \$_epprs_spec_at_new			\
+		&& exp_pkg_expand_restart_recursive "${_epprs_rspec}" "${_epprs_rrecursive}"		\
+		&& exp_pkg_expand_restart_at_spec \$_epprs_virtual_set \$_epprs_spec_at_new; then
+			eval ${_epprs_rspec_at}=;
+			case "${_epprs_spec_at_new}" in
+			ALL|LAST)
+				eval ${_epprs_rspec_at}='${_epprs_spec_at_new}'; ;;
+			*)
+				for _epprs_at in ${DEFAULT_BUILD_STEPS}; do
+					if rtl_lmatch "${_epprs_at}" "${_epprs_spec_at_new}" ","; then
+						eval ${_epprs_rspec_at}='${'"${_epprs_rspec_at}"':+${'"${_epprs_rspec_at}"'},}${_epprs_at}';
+					fi;
+				done;
+				if eval [ '"${'"${_epprs_rspec_at}"'##*,}"' != "finish" ]; then
+					rtl_lfilter2 "${_epprs_rspec_at}" \$_epprs_step "clean,finish" ","; _epprs_step="${_epprs_step##*,}";
+					rtl_lfilter2 \$DEFAULT_BUILD_STEPS \$_epprs_step1 "clean finish"; _epprs_step1="${_epprs_step1##* }";
+					if [ "${_epprs_step}" = "${_epprs_step1}" ]; then
+						eval ${_epprs_rspec_at}='${'"${_epprs_rspec_at}"':+${'"${_epprs_rspec_at}"'},}finish';
+					fi;
+				fi; ;;
+			esac;
+		else
+			_epprs_rc=1;
+		fi;
+		rtl_sunset \$_epprs_virtual_set;
 	fi;
-	rtl_sunset \$_epprs_virtual_set;
 	return "${_epprs_rc}";
 };
 
