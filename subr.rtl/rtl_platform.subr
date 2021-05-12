@@ -108,17 +108,17 @@ rtl_run_cmd_unsplit() {
 rtl_set_vars() {
 	local	_vars_set_vname="${1}" _vname_dst="${2}" _vname_src_tmpls="${3}"	\
 		_vars_set_old="" _vars_set_tmp="" _vname_src="";
+
 	for _vname_src in $(rtl_toupper "${_vname_src_tmpls}"); do
 		_vname_src="${_vname_src}_${_vname_dst}";
-		_vval_src="$(rtl_get_var_unsafe "${_vname_src}")";
-		if [ -n "${_vval_src}" ]; then
-			rtl_set_var_unsafe "PKG_${_vname_dst}" "${_vval_src}";
-			_vars_set_tmp="$(rtl_lconcat "${_vars_set_tmp}" "PKG_${_vname_dst}")";
+		eval _vval_src='${'"${_vname_src}"':-}';
+		if [ "${_vval_src:+1}" = 1 ]; then
+			eval PKG_${_vname_dst}='${_vval_src}';
+			_vars_set_tmp="${_vars_set_tmp:+${_vars_set_tmp} }PKG_${_vname_dst}";
 		fi;
 	done;
-	_vars_set_old="$(rtl_get_var_unsafe "${_vars_set_vname}")";
-	rtl_set_var_unsafe "${_vars_set_vname}"					\
-		"$(rtl_lconcat "${_vars_set_old}" "${_vars_set_tmp}")";
+	eval _vars_set_old='${'"${_vars_set_vname}"'}';
+	rtl_set_var_unsafe "${_vars_set_vname}" "${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
 };
 
 # vim:filetype=sh

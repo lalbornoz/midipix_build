@@ -67,7 +67,31 @@ zstd")";
 : ${PKG_CMAKE_VERSION:=3.7.2};
 : ${PKG_CMAKE_URL:=https://cmake.org/files/v${PKG_CMAKE_VERSION%.*}/cmake-${PKG_CMAKE_VERSION}.tar.gz};
 : ${PKG_CMAKE_CFLAGS_CONFIGURE_EXTRA:="-g0 -O2"};
-: ${PKG_CMAKE_CONFIGURE_ARGS:="--parallel=${DEFAULT_BUILD_CPUS} --prefix="};
+: ${PKG_CMAKE_CMAKE_ARGS_EXTRA:="
+	-DBZIP2_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DBZIP2_LIBRARIES=${PREFIX_NATIVE}/lib/libbz2.a
+	-DCMAKE_USE_SYSTEM_BZIP2=ON
+	-DCMAKE_USE_SYSTEM_CURL=ON
+	-DCMAKE_USE_SYSTEM_EXPAT=OFF
+	-DCMAKE_USE_SYSTEM_LIBARCHIVE=ON
+	-DCMAKE_USE_SYSTEM_LIBUV=ON
+	-DCMAKE_USE_SYSTEM_ZLIB=ON
+	-DCURL_INCLUDE_DIR=${PREFIX_NATIVE}/include/curl
+	-DCURL_LIBRARY=${PREFIX_NATIVE}/lib/libcurl.lib.a
+	-DCURSES_NCURSES_LIBRARY=${PREFIX_NATIVE}/lib/libncurses.lib.a
+	-DKWSYS_LFS_WORKS=YES
+	-DLibArchive_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DLibArchive_LIBRARY=${PREFIX_NATIVE}/lib/libarchive.lib.a
+	-DLIBLZMA_HAS_AUTO_DECODER=YES
+	-DLIBLZMA_HAS_EASY_ENCODER=YES
+	-DLIBLZMA_HAS_LZMA_PRESET=YES
+	-DLIBLZMA_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DLIBLZMA_LIBRARY=${PREFIX_NATIVE}/lib/liblzma.lib.a
+	-DLibUV_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DLibUV_LIBRARY=${PREFIX_NATIVE}/lib/libuv.1.0.0.lib.a
+	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.a"};
+: ${PKG_CMAKE_CONFIGURE_TYPE:="cmake"};
 : ${PKG_CRON_URLS_GIT:="pkg-cron=https://github.com/Lucía Andrea Illanes Albornoz/pkg-cron@master"};
 : ${PKG_CRON_ENV_VARS_EXTRA:="CC=${DEFAULT_TARGET}-gcc:CFLAGS=${NATIVE_PACKAGES_CFLAGS_CONFIGURE} -D__GNU__"};
 : ${PKG_CRON_IN_TREE:=1};
@@ -241,6 +265,17 @@ zstd")";
 : ${PKG_MINIZIP_SHA256SUM:=f4c8e7afdd45a093f69d7d338652996766d5473e63ad97a2c5cf89c0787773a0};
 : ${PKG_MINIZIP_VERSION:=2.10.4};
 : ${PKG_MINIZIP_URL:=https://github.com/nmoinvaz/minizip/archive/${PKG_MINIZIP_VERSION}.tar.gz};
+: ${PKG_MINIZIP_CMAKE_ARGS_EXTRA:="
+	-DBUILD_SHARED_LIBS=ON
+	-DBZIP2_LIBRARIES=${PREFIX_NATIVE}/lib/libbz2.lib.a
+	-DPKG_CONFIG_EXECUTABLE=${PREFIX}/bin/${DEFAULT_TARGET}-pkg-config
+	-DMZ_BUILD_TEST=ON
+	-DMZ_LIBBSD=OFF
+	-DMZ_LZMA=ON
+	-DMZ_OPENSSL=ON
+	-DMZ_ZSTD=OFF
+	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DZLIB_LIBRARY_DEBUG=${PREFIX_NATIVE}/lib/libz.lib.a"};
 : ${PKG_MINIZIP_SUBDIR:=minizip-ng-${PKG_MINIZIP_VERSION}};
 : ${PKG_MINTTY_DEPENDS:="w32api w32lib"};
 : ${PKG_MINTTY_URLS_GIT:="mintty=https://github.com/midipix-ports/mintty.git@midipix bmintty=https://github.com/midipix-ports/bmintty.git@main"};
@@ -287,6 +322,18 @@ zstd")";
 : ${PKG_OPENJPEG_SHA256SUM:=8702ba68b442657f11aaeb2b338443ca8d5fb95b0d845757968a7be31ef7f16d};
 : ${PKG_OPENJPEG_VERSION:=2.4.0};
 : ${PKG_OPENJPEG_URL:=https://github.com/uclouvain/openjpeg/archive/v${PKG_OPENJPEG_VERSION}.tar.gz};
+: ${PKG_OPENJPEG_CMAKE_ARGS_EXTRA:="
+	-DLCMS2_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DLCMS2_LIBRARY=${PREFIX_NATIVE}/lib/liblcms2.lib.a
+	-DPNG_LIBRARY_DEBUG=${PREFIX_NATIVE}/lib/libpng.lib.a
+	-DPNG_LIBRARY_RELEASE=${PREFIX_NATIVE}/lib/libpng.lib.a
+	-DPNG_PNG_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DTIFF_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DTIFF_LIBRARY_DEBUG=${PREFIX_NATIVE}/lib/libtiff.lib.a
+	-DTIFF_LIBRARY_RELEASE=${PREFIX_NATIVE}/lib/libtiff.lib.a
+	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DZLIB_LIBRARY_DEBUG=${PREFIX_NATIVE}/lib/libz.a
+	-DZLIB_LIBRARY_RELEASE=${PREFIX_NATIVE}/lib/libz.a"};
 : ${PKG_OPENJPEG_SUBDIR:=openjpeg-${PKG_OPENJPEG_VERSION}};
 : ${PKG_P7ZIP_URLS_GIT:="p7zip-midipix.git=https://github.com/Lucía Andrea Illanes Albornoz/p7zip-midipix.git@master"};
 : ${PKG_P7ZIP_BUILD_STEPS_DISABLE:=install_make};
@@ -374,6 +421,7 @@ zstd")";
 : ${PKG_TDNF_SHA256SUM:=1ca20b176939f32c212f8dec7bfacd99995f1cb16c7f176b90394378ea854b0b};
 : ${PKG_TDNF_VERSION:=2.1.1};
 : ${PKG_TDNF_URL:=https://github.com/vmware/tdnf/archive/v${PKG_TDNF_VERSION}/tdnf-${PKG_TDNF_VERSION}.tar.gz};
+: ${PKG_TDNF_CMAKE_ARGS_EXTRA:="-DOPENSSL_LIBRARY=${PREFIX_NATIVE}/lib/libcrypto.so"};
 : ${PKG_TDNF_IN_TREE:=1};
 : ${PKG_TDNF_SUBDIR:=tdnf-${PKG_TDNF_VERSION}};
 : ${PKG_TEXINFO_SHA256SUM:=988403c1542d15ad044600b909997ba3079b10e03224c61188117f3676b02caa};
@@ -394,7 +442,6 @@ zstd")";
 : ${PKG_TZDB_BUILD_DIR:="tzdb-${PKG_TZDB_VERSION}"};
 : ${PKG_TZDB_MAKEFLAGS_INSTALL_EXTRA:="ZIC=${PREFIX}/sbin/zic"};
 : ${PKG_UTF8PROC_URLS_GIT:="utf8proc=https://github.com/JuliaStrings/utf8proc@master"};
-: ${PKG_UTF8PROC_IN_TREE:=1};
 : ${PKG_UTIL_LINUX_DEPENDS:="ncursesw"};
 : ${PKG_UTIL_LINUX_SHA256SUM:=37de03dbb98cdeffdf9e754122b0aca2a9bbdc19769f6570dfcb6f123643bf53};
 : ${PKG_UTIL_LINUX_VERSION:=2.36.1};
@@ -427,6 +474,10 @@ zstd")";
 : ${PKG_XPDF_SHA256SUM:=52d51dc943b9614b8da66e8662b3031a3c82dc25bfc792eac6b438aa36d549a4};
 : ${PKG_XPDF_VERSION:=4.02};
 : ${PKG_XPDF_URL:=https://dl.xpdfreader.com/xpdf-${PKG_XPDF_VERSION}.tar.gz};
+: ${PKG_XPDF_CMAKE_ARGS_EXTRA:="
+	-DFREETYPE_LIBRARY=${PREFIX_NATIVE}/lib/libfreetype.lib.a
+	-DFREETYPE_INCLUDE_DIR_ft2build=${PREFIX_NATIVE}/include/ft2build
+	-DFONTCONFIG_LIBRARY=${PREFIX_NATIVE}/lib/libfontconfig.lib.a"};
 : ${PKG_XZ_SHA256SUM:=3e1e518ffc912f86608a8cb35e4bd41ad1aec210df2a47aaa1f95e7f5576ef56};
 : ${PKG_XZ_VERSION:=5.2.5};
 : ${PKG_XZ_URL:=https://fossies.org/linux/misc/xz-${PKG_XZ_VERSION}.tar.xz};

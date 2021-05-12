@@ -4,7 +4,12 @@
 
 pkg_configure_autotools() {
 	local _config_cache="" _fname="" _subdir_tgt="";
-	ex_pkg_env_sofort "${PKG_BASE_DIR}" "${PKG_SOFORT_FORCE:-0}" "${PKG_SUBDIR:-}";
+
+	if [ "${PKG_CONFIGURE_TYPE:+1}" = 1 ]\
+	&& [ "${PKG_CONFIGURE_TYPE}" != "autotools" ]; then
+		return 0;
+	fi;
+
 	if rtl_exists_any "${PKG_BASE_DIR}/${PKG_SUBDIR}"							\
 			"config.guess" "configure.ac" "configure.in" "configure";
 	then	rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}";

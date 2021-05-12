@@ -8,7 +8,7 @@ pkg_fetch_clean() {
 	if [ -n "${PKG_URLS_GIT:-}" ]; then
 		if [ -n "${PKG_SUBDIR:-}" ]\
 		&& [ "${PKG_SUBDIR}" != "${PKG_URLS_GIT%%=*}" ]; then
-			rtl_fileopm rm "${PKG_SUBDIR}";
+			rtl_fileop rm "${PKG_SUBDIR}";
 		fi;
 		for _dname in ${PKG_URLS_GIT}; do
 			_dname="${_dname%%=*}"; rtl_fileop rm "${_dname}";

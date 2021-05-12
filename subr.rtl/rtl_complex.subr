@@ -4,15 +4,15 @@
 
 rtl_export_vars() {
 	local _unsetfl=0; [ "x${1}" = "x-u" ] && { _unsetfl=1; shift; };
+
 	while [ "${#}" -ge 2 ]; do
-		if [ -n "${2}" ]; then
-			if [ "${_unsetfl:-0}" -eq 0 ]; then
-				rtl_set_var_unsafe "${1}" "${2}"; export "${1}";
-			else
-				unset "${1}";
-			fi;
-		fi;
-		shift 2;
+		if [ "${2:+1}" = 1 ]\
+		|| [ "${_unsetfl}" -eq 1 ]; then
+			case "${_unsetfl}" in
+			0)	rtl_set_var_unsafe "${1}" "${2}"; export "${1}"; ;;
+			1)	unset "${1}"; ;;
+			esac;
+		fi; shift 2;
 	done;
 };
 

@@ -280,8 +280,7 @@ ex_pkg_process_restart_spec() {
 					if [ "${_epprs_step}" = "${_epprs_step1}" ]; then
 						eval ${_epprs_rspec_at}='${'"${_epprs_rspec_at}"':+${'"${_epprs_rspec_at}"'},}finish';
 					fi;
-				fi;
-				eval echo '${'"${_epprs_rspec}"'}'; ;;
+				fi; ;;
 			esac; rtl_llift3 "${_epprs_rspec}" "," " " || _epprs_rc=1;
 		else
 			_epprs_rc=1;
