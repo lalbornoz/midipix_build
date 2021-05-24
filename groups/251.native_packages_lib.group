@@ -99,8 +99,8 @@ libxslt libz libzip lzo nettle sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image
 : ${PKG_LIBGPG_ERROR_FORCE_AUTORECONF:=1};
 : ${PKG_LIBGPG_ERROR_IN_TREE:=1};
 : ${PKG_LIBIDN2_DEPENDS:="libunistring"};
-: ${PKG_LIBIDN2_SHA256SUM:=e1cb1db3d2e249a6a3eb6f0946777c2e892d5c5dc7bd91c74394fc3a01cab8b5};
-: ${PKG_LIBIDN2_VERSION:=2.3.0};
+: ${PKG_LIBIDN2_SHA256SUM:=8af684943836b8b53965d5f5b6714ef13c26c91eaa36ce7d242e3d21f5d40f2d};
+: ${PKG_LIBIDN2_VERSION:=2.3.1};
 : ${PKG_LIBIDN2_URL:=https://ftp.gnu.org/gnu/libidn/libidn2-${PKG_LIBIDN2_VERSION}.tar.gz};
 : ${PKG_LIBITE_URLS_GIT:=libite=https://github.com/troglobit/libite.git@master};
 : ${PKG_LIBITE_SUBDIR:=libite};
