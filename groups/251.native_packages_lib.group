@@ -89,8 +89,8 @@ libxslt libz libzip lzo nettle sdl1 sdl1_net sdl1_image sdl1_ttf sdl2 sdl2_image
 : ${PKG_LIBFLAC_URL:=https://ftp.osuosl.org/pub/xiph/releases/flac/flac-${PKG_LIBFLAC_VERSION}.tar.xz};
 : ${PKG_LIBFLAC_CONFIGURE_ARGS_EXTRA:="--with-ogg=yes"};
 : ${PKG_LIBGCRYPT_DEPENDS:="libgpg_error"};
-: ${PKG_LIBGCRYPT_SHA256SUM:=b2c10d091513b271e47177274607b1ffba3d95b188bbfa8797f948aec9053c5a};
-: ${PKG_LIBGCRYPT_VERSION:=1.9.2};
+: ${PKG_LIBGCRYPT_SHA256SUM:=97ebe4f94e2f7e35b752194ce15a0f3c66324e0ff6af26659bbfb5ff2ec328fd};
+: ${PKG_LIBGCRYPT_VERSION:=1.9.3};
 : ${PKG_LIBGCRYPT_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${PKG_LIBGCRYPT_VERSION}.tar.bz2};
 : ${PKG_LIBGCRYPT_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE} --disable-asm --disable-padlock-support --disable-aesni-support --disable-pclmul-support --disable-sse41-support --disable-drng-support --disable-avx-support --disable-avx2-support --disable-amd64-as-feature-detection};
 : ${PKG_LIBGPG_ERROR_SHA256SUM:=64b078b45ac3c3003d7e352a5e05318880a5778c42331ce1ef33d1a0d9922742};
