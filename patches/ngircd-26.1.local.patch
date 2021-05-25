@@ -1,0 +1,28 @@
+diff -ru ngircd-26.1.orig/src/ngircd/ngircd.c ngircd-26.1/src/ngircd/ngircd.c
+--- ngircd-26.1.orig/src/ngircd/ngircd.c	2021-01-01 14:59:34.000000000 +0000
++++ ngircd-26.1/src/ngircd/ngircd.c	2021-05-22 11:09:21.450145200 +0000
+@@ -574,7 +574,7 @@
+ {
+ 	struct passwd *pwd;
+ 
+-#ifdef __CYGWIN__
++#if defined(__CYGWIN__) || defined(__midipix__)
+ 	/* Cygwin kludge.
+ 	 * It can return EINVAL instead of EPERM
+ 	 * so, if we are already unprivileged,
+@@ -739,6 +739,7 @@
+ 	}
+ #endif
+ 
++#ifndef __midipix__
+ 	/* Change user ID */
+ 	if (getuid() != Conf_UID) {
+ 		if (setuid(Conf_UID) != 0) {
+@@ -751,6 +752,7 @@
+ 				goto out;
+ 		}
+ 	}
++#endif
+ 
+ 	initialized = true;
+ 

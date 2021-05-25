@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
-microsocks mtr mutt nginx nullmailer openlitespeed opensmtpd openssh
+microsocks mtr mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
 proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
@@ -149,6 +149,11 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_NGINX_CONFIGURE_ARGS:="--prefix="};
 : ${PKG_NGINX_ENV_VARS_EXTRA:=CC=${DEFAULT_TARGET}-gcc};
 : ${PKG_NGINX_IN_TREE:=1};
+: ${PKG_NGIRCD_DEPENDS:="gnutls"};
+: ${PKG_NGIRCD_SHA256SUM:=55c16fd26009f6fc6a007df4efac87a02e122f680612cda1ce26e17a18d86254};
+: ${PKG_NGIRCD_VERSION:=26.1};
+: ${PKG_NGIRCD_URL:=https://arthur.barton.de/pub/ngircd/ngircd-${PKG_NGIRCD_VERSION}.tar.xz};
+: ${PKG_NGIRCD_CONFIGURE_ARGS_EXTRA:="--with-gnutls"};
 : ${PKG_NULLMAILER_DEPENDS:="gnutls"};
 : ${PKG_NULLMAILER_SHA256SUM:=6d277f69f1999c86df0ca9a97a4f14f9bb431c50fd4e016918290b84ff679241}
 : ${PKG_NULLMAILER_VERSION:=2.2}
