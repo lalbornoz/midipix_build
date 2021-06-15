@@ -1,5 +1,5 @@
 > N.B. If you're interested in building Midipix using this script, please join
-the project's IRC channel #midipix on Freenode and ask for the address of the
+the project's IRC channel #midipix on Libera and ask for the address of the
 internal repositories required in order to build Midipix.
 
 [//]: # "{{{ Table of contents"
