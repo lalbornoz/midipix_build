@@ -108,9 +108,9 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_POSIX_CC_VERSION:=1.4};
 : ${PKG_POSIX_CC_URL:=https://mirror.midipix.org/posix_cc/posix_cc-${PKG_POSIX_CC_VERSION}.tar.bz2};
 : ${PKG_PYTHON2_DEPENDS:="bzip2 curl expat gdbm libffi libreadline libressl libz ncursesw sqlite3"};
-: ${PKG_PYTHON2_SHA256SUM:=18617d1f15a380a919d517630a9cd85ce17ea602f9bbdc58ddc672df4b0239db};
-: ${PKG_PYTHON2_VERSION:=2.7.15};
-: ${PKG_PYTHON2_URL:="https://www.python.org/ftp/python/${PKG_PYTHON2_VERSION}/Python-${PKG_PYTHON2_VERSION}.tgz"};
+: ${PKG_PYTHON2_SHA256SUM:=b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43};
+: ${PKG_PYTHON2_VERSION:=2.7.18};
+: ${PKG_PYTHON2_URL:="https://www.python.org/ftp/python/${PKG_PYTHON2_VERSION}/Python-${PKG_PYTHON2_VERSION}.tar.xz"};
 : ${PKG_PYTHON2_URLS_GIT:="build/sbpython2=${DEFAULT_GITROOT}/python/sbpython2@main"};
 : ${PKG_PYTHON2_BASE_DIR:=${BUILD_WORKDIR}/python2-native-${DEFAULT_TARGET}};
 : ${PKG_PYTHON2_BUILD_DIR:=build/python2};

@@ -5,7 +5,7 @@ set -eu
 for arg ; do
 	case "$arg" in
 		--version)
-			printf 'Python 2.7.15'
+			printf 'Python 2.7.18'
 			;;
 
 		--includes)
