@@ -367,7 +367,7 @@ in, most usually, ``${PKG_BUILD_DIR}/config.log``.
 If ``--dump-on-abort`` was specified, a subset of the variables set and environment
 variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``, which may
 subsequently be used in order to obtain a package build shell environment with the
-``pkgtool.sh`` script (see sections [3.5](#35-pkgtoolsh)[3.5.1](#351-s-package-build-shell-environment).)
+``pkgtool.sh`` script (see sections [3.5](#35-pkgtoolsh), [3.5.1](#351-s-package-build-shell-environment).)
   
 [Back to top](#table-of-contents)
 
@@ -375,7 +375,7 @@ subsequently be used in order to obtain a package build shell environment with t
 [//]: # "{{{ 3.4. Patches and ``vars`` files"
 ## 3.4. Patches and ``vars`` files
 
-Package patches are applied prior and/or subsequent to (GNU autotools or simular) package
+Package patches are applied prior and/or subsequent to (GNU autotools or similar) package
 configuration during the ``configure_patch_pre`` and/or ``configure_patch`` build steps,
 respectively (see section [4.1](#41-build-steps).) Patch files are searched for beneath
 ``patches/`` with the following globs and in-order:
@@ -403,78 +403,26 @@ for a list of package build steps and how they are overriden.
 ## 3.5. ``pkgtool.sh``
 
 ```
-usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline] [-h|--help|  [-p jobs]  [-P]  [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]  [-R] [-v[v[v[v]]]]
-                  [--as-needed] [--debug-minipix] [--dump-on-abort]  [--reset-state]
-                  [--roar]     [[=]<group>|<variable name>=<variable override>[ ..]]
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-s|-t] [-v]
+                    [<variable name>=<variable override>[ ..]] name
 
-        -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release  Selects debug or release build kind; defaults to debug.
-        -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
-                          scripts (prefix,) source directory (src,) and/or destination
-                          directory (dest) after successful package builds.
-        -D kind[,..]      Produce minimal midipix distribution directory (minipix,) RPM
-                          binary packages (rpm,) and/or deployable distribution ZIP
-                          archive (zipdist.) zipdist implies minipix.
-        -F ipv4|ipv6|offline
-                          Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package
-                          archives and/or Git repositories or don't download either at all
-                          (offline.)
-        -h|--help         Show short/full help screen, respectively.
-        -p jobs           Enables parallelisation at group-level, whenever applicable.
-        -P                The maximum count of jobs defaults to the number of logical
-                          processors on the host system divided by two (2.)
-
-                          If -R is not specified and at least one (1) package fails to
-                          build, all remaining package builds will be forcibly aborted.
-
-        -r ALL|LAST       Restart all packages or the last failed package and resume
-                          build, resp.
-        -r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]
-                          Restart the specified comma-separated package(s) w/ inhibition
-                          of package build step state resetting completely (`ALL',) starting
-                          at the resp. last successfully executed build steps (`LAST',) or the
-                          specified comma-separated list of build steps, optionally subject
-                          concerning package name(s) and/or build step(s) to the below modifiers:
-
-                          Prepend name w/ `*' to automatically include dependencies, `**'
-                          to forcibly rebuild all dependencies, and `***` to forcibly
-                          rebuild all packages that depend on the specified package(s).
-
-                          Prepend step w/ `^' to filter build steps with, `<' or `<='
-                          to constrain build steps to below or below or equal with, resp.,
-                          `>' or `>=' to constrain build steps to above or above or equal
-                          with, resp.
-
-                          Currently defined build steps are:
-                          fetch_download, fetch_extract, configure_patch_pre,
-                          configure_autotools, configure_patch, configure, build,
-                          install_subdirs, install_make, install_files, install_libs,
-                          install, install_rpm, and clean.
-
-                          Additionally, the following shorthand aliases and pseudo-steps are provided:
-                          @fetch, @configure, @build, @install, and @clean, and
-                          start and finish.
-
-        -R                Ignore build failures, skip printing package logs, and continue
-                          building (relaxed mode.)
-        -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace
-                          during package builds; -vvvv: logs fileops.
-        --as-needed       Don't build unless the midipix_build repository has received
-                          new commits.
-        --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
-        --dump-on-abort   Produce package environment dump files on build failure to be
-                          used in conjuction with pkg_shell.sh script (excludes -R.)
-        --reset-state     Reset package build step state on exit.
-        <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
-                          host_toolchain, host_tools, minipix, native_packages,
-                          native_runtime, native_toolchain, native_tools.
-
-                          Prepend w/ `=' to inhibit group-group dependency expansion.
+        -a nt32|nt64          Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release      Selects debug or release build kind; defaults to debug.
+        -i                    List package variables and dependencies of single named package.
+        -m <dname>            Setup package archives mirror in <dname> and/or
+        -M <dname>            Setup Git repositories mirror in <dname>
+        -r                    List reverse dependencies of single named package.
+        -s                    Enter interactive package build shell environment for single
+                              named package; requires a package dump file. If the package
+                              has not been built yet or built successfully, it will be rebuilt
+                              at build steps up until, by default, the `build' build step and
+                              forcibly aborted and dumped prior to enterting the shell.
+        -t                    Produce tarball of package build root directory and build log
+                              file for the purpose of distribution given build failure.
+        -v                    Increase verbosity.
 
         <variable name>=<variable override>[ ..]
-                          Override build or package variable.
+                              Override build variable.
 ```
   
 > N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4](#4-build-variables))
