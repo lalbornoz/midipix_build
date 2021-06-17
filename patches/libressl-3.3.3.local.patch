@@ -1,0 +1,33 @@
+diff -ru libressl-3.3.3.orig/man/Makefile.in libressl-3.3.3/man/Makefile.in
+--- libressl-3.3.3.orig/man/Makefile.in	2021-05-02 03:16:44.000000000 +0200
++++ libressl-3.3.3/man/Makefile.in	2021-05-25 00:42:17.424322609 +0200
+@@ -3438,14 +3438,6 @@
+ @ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	ln -sf "lh_new.3" "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
+@@ -6068,14 +6060,6 @@
+ @ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_ARG_FN_TYPE.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_DOALL_FN_TYPE.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/LHASH_HASH_FN_TYPE.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_delete.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_doall_arg.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_error.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_free.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_insert.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_new.3"
+-@ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_<type>_retrieve.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_delete.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall.3"
+ @ENABLE_LIBTLS_ONLY_FALSE@	-rm -f "$(DESTDIR)$(mandir)/man3/lh_doall_arg.3"
