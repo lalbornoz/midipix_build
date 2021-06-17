@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bison chicken cparser cssc diffutils flex gdb gengetopt indent lua lunix m4 make mandoc nasm
 patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")";
-: ${PKG_BISON_DEPENDS:="libreadline"};
+: ${PKG_BISON_DEPENDS:="readline"};
 : ${PKG_BISON_SHA256SUM:=67d68ce1e22192050525643fc0a7a22297576682bef6a5c51446903f5aeef3cf};
 : ${PKG_BISON_VERSION:=3.7.6};
 : ${PKG_BISON_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_VERSION}.tar.xz};
@@ -107,7 +107,7 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_POSIX_CC_SHA256SUM:=bd90442d98714f874b6e7e62fa8376ddca282c2174dc582917ecab773f96c095};
 : ${PKG_POSIX_CC_VERSION:=1.4};
 : ${PKG_POSIX_CC_URL:=https://mirror.midipix.org/posix_cc/posix_cc-${PKG_POSIX_CC_VERSION}.tar.bz2};
-: ${PKG_PYTHON2_DEPENDS:="bzip2 curl expat gdbm libffi libreadline libressl libz ncursesw sqlite3"};
+: ${PKG_PYTHON2_DEPENDS:="bzip2 curl expat gdbm libffi libressl libz ncursesw readline sqlite3"};
 : ${PKG_PYTHON2_SHA256SUM:=b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43};
 : ${PKG_PYTHON2_VERSION:=2.7.18};
 : ${PKG_PYTHON2_URL:="https://www.python.org/ftp/python/${PKG_PYTHON2_VERSION}/Python-${PKG_PYTHON2_VERSION}.tar.xz"};
@@ -119,7 +119,7 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_PYTHON2_CONFIGURE_TYPE:="sofort"};
 : ${PKG_PYTHON2_SOFORT_NATIVE_CFLAGS_EXTRA:="-std=c99 -D_XOPEN_SOURCE=700"};
 : ${PKG_PYTHON2_SUBDIR:=Python-${PKG_PYTHON2_VERSION}};
-: ${PKG_PYTHON3_DEPENDS:="bzip2 curl expat gdbm libffi libreadline libressl libz ncursesw sqlite3 xz"};
+: ${PKG_PYTHON3_DEPENDS:="bzip2 curl expat gdbm libffi libressl libz ncursesw readline sqlite3 xz"};
 : ${PKG_PYTHON3_SHA256SUM:=ab6193af1921b30f587b302fe385268510e80187ca83ca82d2bfe7ab544c6f91};
 : ${PKG_PYTHON3_VERSION:=3.6.3};
 : ${PKG_PYTHON3_URL:="https://www.python.org/ftp/python/${PKG_PYTHON3_VERSION}/Python-${PKG_PYTHON3_VERSION}.tgz"};

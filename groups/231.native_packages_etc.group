@@ -408,7 +408,7 @@ zstd")";
 : ${PKG_SLANG_URL:=https://www.jedsoft.org/releases/slang/slang-${PKG_SLANG_VERSION}.tar.bz2};
 : ${PKG_SLANG_IN_TREE:=1};
 : ${PKG_SLANG_MAKEFLAGS_BUILD_EXTRA:=-j1};
-: ${PKG_SQLITE3_DEPENDS:="libreadline ncurses"};
+: ${PKG_SQLITE3_DEPENDS:="ncurses readline"};
 : ${PKG_SQLITE3_SHA256SUM:=f52b72a5c319c3e516ed7a92e123139a6e87af08a2dc43d7757724f6132e6db0};
 : ${PKG_SQLITE3_VERSION:=3350500};
 : ${PKG_SQLITE3_URL:=https://sqlite.org/2021/sqlite-autoconf-${PKG_SQLITE3_VERSION}.tar.gz};

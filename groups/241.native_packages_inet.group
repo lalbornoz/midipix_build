@@ -116,7 +116,7 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_LINKS_VERSION:=2.21};
 : ${PKG_LINKS_URL:=http://links.twibright.com/download/links-${PKG_LINKS_VERSION}.tar.bz2};
 : ${PKG_LINKS_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --disable-graphics --without-freetype"};
-: ${PKG_LYNX_DEPENDS:="libreadline gnutls ncursesw"};
+: ${PKG_LYNX_DEPENDS:="gnutls ncursesw readline"};
 : ${PKG_LYNX_SHA256SUM:=6980e75cf0d677fd52c116e2e0dfd3884e360970c88c8356a114338500d5bee7};
 : ${PKG_LYNX_VERSION:=2.8.8rel.2};
 : ${PKG_LYNX_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/lynx/lynx${PKG_LYNX_VERSION}.tar.bz2};
