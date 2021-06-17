@@ -12,10 +12,10 @@ HOST_DEPS_PACKAGES="
 binutils_build bison_host bmake_host bzip2_host ca_certificates_host
 chainport_host clang_host clzip_host cmake_host dbus_glib_host dbus_host
 expat_host file_host flex_host gdb_host gdbm_host glib_host gperf_host
-infounzip_host infozip_host intltool_host libffi_host libreadline_host
+infounzip_host infozip_host intltool_host libffi_host
 libressl_host libz_host libzip_host llvm_host mdso_host mpackage_host
 musl_fts_host ncurses_host ncursestw_host ncursesw_host pcre_host
-perk_host python2_host python3_host ruby_host sbsigntools_host
+perk_host python2_host python3_host readline_host ruby_host sbsigntools_host
 sqlite3_host texinfo_host tzdb_host util_linux_host xz_host";
 HOST_DEPS_PKG_CONFIG="${PREFIX}/bin/pkgconf";
 HOST_DEPS_PREFIX="${PREFIX}";
@@ -26,7 +26,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_BINUTILS_BUILD_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --enable-install-libbfd --prefix=${PREFIX}/opt"};
 : ${PKG_BINUTILS_BUILD_LIBTOOL:=slibtool-static};
 : ${PKG_BINUTILS_BUILD_PREFIX:="${PREFIX}/opt"};
-: ${PKG_BISON_HOST_DEPENDS:="libreadline_host"};
+: ${PKG_BISON_HOST_DEPENDS:="readline_host"};
 : ${PKG_BISON_HOST_SHA256SUM:=67d68ce1e22192050525643fc0a7a22297576682bef6a5c51446903f5aeef3cf};
 : ${PKG_BISON_HOST_VERSION:=3.7.6};
 : ${PKG_BISON_HOST_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_HOST_VERSION}.tar.xz};
@@ -115,7 +115,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_GDB_HOST_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX}/lib"};
 : ${PKG_GDB_HOST_LIBTOOL:=rdlibtool};
 : ${PKG_GDB_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gdb/gdb-${PKG_GDB_HOST_VERSION}.midipix.patch"};
-: ${PKG_GDBM_HOST_DEPENDS:="libreadline_host ncurses_host"};
+: ${PKG_GDBM_HOST_DEPENDS:="readline_host ncurses_host"};
 : ${PKG_GDBM_HOST_SHA256SUM:=86e613527e5dba544e73208f42b78b7c022d4fa5a6d5498bf18c8d6f745b91dc};
 : ${PKG_GDBM_HOST_VERSION:=1.18.1};
 : ${PKG_GDBM_HOST_URL:=ftp://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_GDBM_HOST_VERSION}.tar.gz};
@@ -145,12 +145,6 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_LIBFFI_HOST_URL:=ftp://sourceware.org/pub/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.tar.gz};
 : ${PKG_LIBFFI_HOST_INSTALL_FILES:="@../lib/libffi-3.2.1/include/ffi.h=include/ffi.h @../lib/libffi-3.2.1/include/ffitarget.h=include/ffitarget.h"};
 : ${PKG_LIBFFI_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.midipix.patch"};
-: ${PKG_LIBREADLINE_HOST_DEPENDS:="ncurses_host ncursestw_host ncursesw_host"};
-: ${PKG_LIBREADLINE_HOST_SHA256SUM:=750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334};
-: ${PKG_LIBREADLINE_HOST_VERSION:=7.0};
-: ${PKG_LIBREADLINE_HOST_URL:=ftp://ftp.gnu.org/gnu/readline/readline-${PKG_LIBREADLINE_HOST_VERSION}.tar.gz};
-: ${PKG_LIBREADLINE_HOST_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
-: ${PKG_LIBREADLINE_HOST_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
 : ${PKG_LIBRESSL_HOST_SHA256SUM:=d28db224cfb6d18009b2a7e8cb213cd5c943bbec87550062fef6a38479250315};
 : ${PKG_LIBRESSL_HOST_VERSION:=3.2.1};
 : ${PKG_LIBRESSL_HOST_URL:=http://ftp.eu.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${PKG_LIBRESSL_HOST_VERSION}.tar.gz};
@@ -218,7 +212,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_PERK_HOST_CONFIGURE_ARGS:="--prefix="};
 : ${PKG_PERK_HOST_INSTALL_FILES:="@perk=bin/${DEFAULT_TARGET}-perk"};
 : ${PKG_PERK_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
-: ${PKG_PYTHON2_HOST_DEPENDS:="bzip2_host expat_host gdbm_host libffi_host libreadline_host libz_host ncurses_host ncursesw_host sqlite3_host"};
+: ${PKG_PYTHON2_HOST_DEPENDS:="bzip2_host expat_host gdbm_host libffi_host readline_host libz_host ncurses_host ncursesw_host sqlite3_host"};
 : ${PKG_PYTHON2_HOST_SHA256SUM:=b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43};
 : ${PKG_PYTHON2_HOST_VERSION:=2.7.18};
 : ${PKG_PYTHON2_HOST_URL:="https://www.python.org/ftp/python/${PKG_PYTHON2_HOST_VERSION}/Python-${PKG_PYTHON2_HOST_VERSION}.tar.xz"};
@@ -230,7 +224,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_PYTHON2_HOST_CONFIGURE_TYPE:="sofort"};
 : ${PKG_PYTHON2_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= EXEC_PREFIX= BINDIR=/bin SBINDIR=/sbin LIBDIR=/lib INCLUDEDIR=/include OLDINCLUDEDIR=/include MANDIR=/share/man DOCDIR=/share/doc LIBEXECDIR=/libexec"};
 : ${PKG_PYTHON2_HOST_SUBDIR:=Python-${PKG_PYTHON2_HOST_VERSION}};
-: ${PKG_PYTHON3_HOST_DEPENDS:="bzip2_host expat_host gdbm_host libffi_host libreadline_host libressl_host libz_host ncurses_host ncursesw_host sqlite3_host xz_host"};
+: ${PKG_PYTHON3_HOST_DEPENDS:="bzip2_host expat_host gdbm_host libffi_host readline_host libressl_host libz_host ncurses_host ncursesw_host sqlite3_host xz_host"};
 : ${PKG_PYTHON3_HOST_SHA256SUM:=ab6193af1921b30f587b302fe385268510e80187ca83ca82d2bfe7ab544c6f91};
 : ${PKG_PYTHON3_HOST_VERSION:=3.6.3};
 : ${PKG_PYTHON3_HOST_URL:="https://www.python.org/ftp/python/${PKG_PYTHON3_HOST_VERSION}/Python-${PKG_PYTHON3_HOST_VERSION}.tgz"};
@@ -243,6 +237,12 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_PYTHON3_HOST_INSTALL_FILES:="@python3=bin/python"};
 : ${PKG_PYTHON3_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= EXEC_PREFIX= BINDIR=/bin SBINDIR=/sbin LIBDIR=/lib INCLUDEDIR=/include OLDINCLUDEDIR=/include MANDIR=/share/man DOCDIR=/share/doc LIBEXECDIR=/libexec"};
 : ${PKG_PYTHON3_HOST_SUBDIR:=Python-${PKG_PYTHON3_HOST_VERSION}};
+: ${PKG_READLINE_HOST_DEPENDS:="ncurses_host ncursestw_host ncursesw_host"};
+: ${PKG_READLINE_HOST_SHA256SUM:=f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02};
+: ${PKG_READLINE_HOST_VERSION:=8.1};
+: ${PKG_READLINE_HOST_URL:=https://ftp.gnu.org/gnu/readline/readline-${PKG_READLINE_HOST_VERSION}.tar.gz};
+: ${PKG_READLINE_HOST_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
+: ${PKG_READLINE_HOST_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
 : ${PKG_RUBY_HOST_SHA256SUM:=ba5ba60e5f1aa21b4ef8e9bf35b9ddb57286cb546aac4b5a28c71f459467e507};
 : ${PKG_RUBY_HOST_VERSION:=2.3.0};
 : ${PKG_RUBY_HOST_URL:=https://cache.ruby-lang.org/pub/ruby/${PKG_RUBY_HOST_VERSION%.*}/ruby-${PKG_RUBY_HOST_VERSION}.tar.gz};
@@ -256,7 +256,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_SBSIGNTOOLS_HOST_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX}/opt/include"};
 : ${PKG_SBSIGNTOOLS_HOST_IN_TREE:=1};
 : ${PKG_SBSIGNTOOLS_HOST_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX}/opt/lib"};
-: ${PKG_SQLITE3_HOST_DEPENDS:="libreadline_host ncurses_host"};
+: ${PKG_SQLITE3_HOST_DEPENDS:="readline_host ncurses_host"};
 : ${PKG_SQLITE3_HOST_SHA256SUM:=65cc0c3e9366f50c0679c5ccd31432cea894bc4a3e8947dabab88c8693263615};
 : ${PKG_SQLITE3_HOST_VERSION:=3160200};
 : ${PKG_SQLITE3_HOST_URL:=https://sqlite.org/2017/sqlite-autoconf-${PKG_SQLITE3_HOST_VERSION}.tar.gz};
