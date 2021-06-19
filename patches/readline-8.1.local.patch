@@ -1,6 +1,15 @@
 diff -ru a/shlib/Makefile.in b/shlib/Makefile.in
 --- a/shlib/Makefile.in	2020-10-29 19:47:57.000000000 +0000
 +++ b/shlib/Makefile.in	2021-06-17 12:56:54.468810553 +0000
+@@ -36,7 +36,7 @@
+ 
+ INSTALL = @INSTALL@
+ INSTALL_PROGRAM = @INSTALL_PROGRAM@
+-INSTALL_DATA = @INSTALL_DATA@
++INSTALL_DATA = @INSTALL_DATA@ -m 0755
+ 
+ CC = @CC@
+ RANLIB = @RANLIB@
 @@ -86,7 +86,7 @@
  SHOBJ_LIBS = @SHOBJ_LIBS@
  
