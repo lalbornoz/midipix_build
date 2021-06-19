@@ -120,8 +120,8 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_PYTHON2_SOFORT_NATIVE_CFLAGS_EXTRA:="-std=c99 -D_XOPEN_SOURCE=700"};
 : ${PKG_PYTHON2_SUBDIR:=Python-${PKG_PYTHON2_VERSION}};
 : ${PKG_PYTHON3_DEPENDS:="bzip2 curl expat gdbm libffi libressl libz ncursesw readline sqlite3 xz"};
-: ${PKG_PYTHON3_SHA256SUM:=a47a43a53abb42286a2c11965343ff56711b9e64e8d11bf2c6701a4fb8ce1a0f};
-: ${PKG_PYTHON3_VERSION:=3.6.13};
+: ${PKG_PYTHON3_SHA256SUM:=f8d82e7572c86ec9d55c8627aae5040124fd2203af400c383c821b980306ee6b};
+: ${PKG_PYTHON3_VERSION:=3.7.10};
 : ${PKG_PYTHON3_URL:="https://www.python.org/ftp/python/${PKG_PYTHON3_VERSION}/Python-${PKG_PYTHON3_VERSION}.tar.xz"};
 : ${PKG_PYTHON3_URLS_GIT:="build/sbpython3=${DEFAULT_GITROOT}/python/sbpython3@main"};
 : ${PKG_PYTHON3_BASE_DIR:=${BUILD_WORKDIR}/python3-native-${DEFAULT_TARGET}};
