@@ -115,8 +115,8 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 	-DWITH_JPEG8=ON
 "};
 : ${PKG_LIBKSBA_DEPENDS:="libgpg_error"};
-: ${PKG_LIBKSBA_SHA256SUM:=b0f4c65e4e447d9a2349f6b8c0e77a28be9531e4548ba02c545d1f46dc7bf921};
-: ${PKG_LIBKSBA_VERSION:=1.5.1};
+: ${PKG_LIBKSBA_SHA256SUM:=dad683e6f2d915d880aa4bed5cea9a115690b8935b78a1bbe01669189307a48b};
+: ${PKG_LIBKSBA_VERSION:=1.6.0};
 : ${PKG_LIBKSBA_URL:=https://www.gnupg.org/ftp/gcrypt/libksba/libksba-${PKG_LIBKSBA_VERSION}.tar.bz2};
 : ${PKG_LIBKSBA_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE}};
 : ${PKG_LIBMAD_SHA256SUM:=bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690};
