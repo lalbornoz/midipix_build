@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-atk at_spi2_atk at_spi2_core cairo dbus_glib fontconfig freetype
+atk at_spi2_atk at_spi2_core cairo fontconfig freetype
 freetype_pre fribidi gdk glew gtk2 gtk3 harfbuzz imlib2 libass libcaca
 libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
 libXdamage libXdmcp libXext libXfixes libXfont2
@@ -28,11 +28,6 @@ xtrans xwd xwin")";
 : ${PKG_CAIRO_URL:=http://cairographics.org/snapshots/cairo-${PKG_CAIRO_VERSION}.tar.xz};
 : ${PKG_CAIRO_SHA256SUM:=5228e0a1f8fd14317f30f08f3dd72971bca432f8cdd2281d421fdcc2279de58c};
 : ${PKG_CAIRO_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
-: ${PKG_DBUS_GLIB_DEPENDS:="dbus expat glib"};
-: ${PKG_DBUS_GLIB_SHA256SUM:=7ce4760cf66c69148f6bd6c92feaabb8812dee30846b24cd0f7395c436d7e825};
-: ${PKG_DBUS_GLIB_VERSION:=0.110};
-: ${PKG_DBUS_GLIB_URL:=https://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-${PKG_DBUS_GLIB_VERSION}.tar.gz};
-: ${PKG_DBUS_GLIB_CONFIGURE_ARGS_EXTRA:="--with-dbus-binding-tool=${PREFIX}/bin/dbus-binding-tool --enable-bash-completion=no"};
 : ${PKG_FONTCONFIG_DEPENDS:="expat freetype util_linux"};
 : ${PKG_FONTCONFIG_SHA256SUM:=0d297ce6bbad897c91c248aeeeeb401dbc62e0960cfa958e87ec32fd5c2270c1};
 : ${PKG_FONTCONFIG_VERSION:=2.12.93};
