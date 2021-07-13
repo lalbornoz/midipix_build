@@ -3,26 +3,16 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-atk at_spi2_atk at_spi2_core cairo fontconfig freetype
-freetype_pre fribidi gdk glew gtk2 harfbuzz imlib2 libass libcaca
-libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau libXaw
-libXdamage libXdmcp libXext libXfixes libXfont2
-libXft libXi libxkbfile libXmu libXpm libXt libXtst libXcursor mesa pango pixman
-rdesktop rxvt_unicode st util_macros xcb xcb_proto xcb_util
-xcb_util_image xcb_util_wm xcowsay xcalc xeyes xorgproto Xrender xterm
-xtrans xwd xwin")";
+atk cairo fontconfig freetype freetype_pre fribidi gdk glew gtk2 harfbuzz imlib2
+libass libcaca libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau
+libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile
+libXmu libXpm libXt libXtst libXcursor mesa pango pixman rdesktop rxvt_unicode
+st util_macros xcb xcb_proto xcb_util xcb_util_image xcb_util_wm xcowsay xcalc
+xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_ATK_DEPENDS:="glib"};
 : ${PKG_ATK_VERSION:=2.26.0};
 : ${PKG_ATK_SHA256SUM:=eafe49d5c4546cb723ec98053290d7e0b8d85b3fdb123938213acb7bb4178827};
 : ${PKG_ATK_URL:=http://ftp.gnome.org/pub/gnome/sources/atk/${PKG_ATK_VERSION%.*}/atk-${PKG_ATK_VERSION}.tar.xz};
-: ${PKG_AT_SPI2_ATK_DEPENDS:="atk at_spi2_core dbus glib libXtst"};
-: ${PKG_AT_SPI2_ATK_VERSION:=2.26.1};
-: ${PKG_AT_SPI2_ATK_SHA256SUM:=b4f0c27b61dbffba7a5b5ba2ff88c8cee10ff8dac774fa5b79ce906853623b75};
-: ${PKG_AT_SPI2_ATK_URL:=https://download.gnome.org/sources/at-spi2-atk/${PKG_AT_SPI2_ATK_VERSION%.*}/at-spi2-atk-${PKG_AT_SPI2_ATK_VERSION}.tar.xz};
-: ${PKG_AT_SPI2_CORE_DEPENDS:="dbus glib libX11 libXtst"};
-: ${PKG_AT_SPI2_CORE_VERSION:=2.26.2};
-: ${PKG_AT_SPI2_CORE_SHA256SUM:=c80e0cdf5e3d713400315b63c7deffa561032a6c37289211d8afcfaa267c2615};
-: ${PKG_AT_SPI2_CORE_URL:=https://download.gnome.org/sources/at-spi2-core/${PKG_AT_SPI2_CORE_VERSION%.*}/at-spi2-core-${PKG_AT_SPI2_CORE_VERSION}.tar.xz};
 : ${PKG_CAIRO_DEPENDS:="fontconfig freetype ghostpdl glib libXext libpng pixman"};
 : ${PKG_CAIRO_VERSION:=1.15.6};
 : ${PKG_CAIRO_URL:=http://cairographics.org/snapshots/cairo-${PKG_CAIRO_VERSION}.tar.xz};
