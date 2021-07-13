@@ -232,6 +232,7 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_XCOWSAY_SHA256SUM:=c7e261ba0262c3821c106ccb6d6f984e3c2da999ad10151364e55d1c699f8e51};
 : ${PKG_XCOWSAY_VERSION:=1.4};
 : ${PKG_XCOWSAY_URL:=http://www.nickg.me.uk/files/xcowsay-${PKG_XCOWSAY_VERSION}.tar.gz};
+: ${PKG_XCOWSAY_DISABLED:=1};
 : ${PKG_XCALC_DEPENDS:="libX11 libXt libXaw"};
 : ${PKG_XCALC_SHA256SUM:=a86418d9af9d0e57e5253ba1c29e754480509c828d369aaaca48400b2045e630};
 : ${PKG_XCALC_VERSION:=1.1.0};
