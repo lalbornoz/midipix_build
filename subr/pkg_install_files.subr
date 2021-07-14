@@ -43,6 +43,11 @@ pkgp_install_files_pkgconfig() {
 				"${_pc_path}"; then
 			return 1;
 		fi;
+		if [ -n "$(sed -ne '/^includedir=[^$]*$/p' "${_pc_path}")" ]				\
+		&& ! sed -i""	-e '/^includedir=[^$]*$/s/^includedir=\(.*\)$/includedir=${prefix}\1/'	\
+				"${_pc_path}"; then
+			return 1;
+		fi;
 	done;
 };
 
