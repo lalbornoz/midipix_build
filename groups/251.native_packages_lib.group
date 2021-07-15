@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-glib jansson lame libarchive libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
+glib jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
@@ -28,6 +28,11 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.xz};
 : ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_LIBARCHIVE_LIBTOOL:=rlibtool};
+: ${PKG_LIBASS_DEPENDS:="freetype harfbuzz fribidi"};
+: ${PKG_LIBASS_SHA256SUM:=1cdd39c9d007b06e737e7738004d7f38cf9b1e92843f37307b24e7ff63ab8e53};
+: ${PKG_LIBASS_VERSION:=0.15.1};
+: ${PKG_LIBASS_URL:=https://github.com/libass/libass/releases/download/${PKG_LIBASS_VERSION}/libass-${PKG_LIBASS_VERSION}.tar.xz};
+: ${PKG_LIBASS_CONFIGURE_ARGS_EXTRA:="--disable-asm"};
 : ${PKG_LIBASSUAN_DEPENDS:="libgpg_error"};
 : ${PKG_LIBASSUAN_SHA256SUM:=8e8c2fcc982f9ca67dcbb1d95e2dc746b1739a4668bc20b3a3c5be632edb34e4};
 : ${PKG_LIBASSUAN_VERSION:=2.5.5};
