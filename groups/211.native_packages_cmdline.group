@@ -8,8 +8,8 @@ findutils gawk grep jush lzop mc mksh moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sbase screen sed sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BASH_DEPENDS:="ncurses"};
-: ${PKG_BASH_SHA256SUM:=cc012bc860406dcf42f64431bcd3d2fa7560c02915a601aba9cd597a39329baa};
-: ${PKG_BASH_VERSION:=5.1};
+: ${PKG_BASH_SHA256SUM:=0cfb5c9bb1a29f800a97bd242d19511c997a1013815b805e0fdd32214113d6be};
+: ${PKG_BASH_VERSION:=5.1.8};
 : ${PKG_BASH_URL:=https://ftp.gnu.org/gnu/bash/bash-${PKG_BASH_VERSION}.tar.gz};
 : ${PKG_BASH_CONFIGURE_ARGS_EXTRA:="--without-bash-malloc --with-curses"};
 : ${PKG_BASH_MAKEFLAGS_BUILD:=-j1};
