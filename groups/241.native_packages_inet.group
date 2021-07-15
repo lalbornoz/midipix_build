@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
-microsocks mtr mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
+microsocks mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
 proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
@@ -132,10 +132,6 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_MAILUTILS_IN_TREE=1};
 : ${PKG_MICROSOCKS_URLS_GIT:=microsocks=https://github.com/rofl0r/microsocks.git@master};
 : ${PKG_MICROSOCKS_BUILD_DIR:=microsocks};
-: ${PKG_MTR_SHA256SUM:=f2979db9e2f41aa8e6574e7771767c9afe111d9213814eb47f5e1e71876e4382};
-: ${PKG_MTR_VERSION:=0.92};
-: ${PKG_MTR_URL:=ftp://ftp.bitwizard.nl/mtr/mtr-${PKG_MTR_VERSION}.tar.gz};
-: ${PKG_MTR_DISABLED:=1};
 : ${PKG_MUTT_DEPENDS:="gnutls libz ncursesw"};
 : ${PKG_MUTT_SHA256SUM:=471218babe97968a45704f1e1e17523c4620ad1f92bae4143a4c9749ab1411c8};
 : ${PKG_MUTT_VERSION:=2.0.2};
