@@ -1,0 +1,55 @@
+diff -ru isync-1.4.2.orig/configure isync-1.4.2/configure
+--- isync-1.4.2.orig/configure	2021-07-16 12:36:23.344522571 +0200
++++ isync-1.4.2/configure	2021-07-16 12:39:20.448517026 +0200
+@@ -3978,51 +3978,6 @@
+ fi
+ 
+ 
+-if test "$GCC" = yes; then
+-    warnings="
+-        -Wall -Wextra
+-        -Wshadow
+-        -Wcast-qual
+-        -Wformat=2 -Wformat-signedness -Wformat-nonliteral
+-        -Wstrict-prototypes
+-
+-        -Wno-overlength-strings
+-    "
+-    CFLAGS="$CFLAGS -pipe -std=c11 -pedantic $(echo $warnings)"
+-fi
+-
+-
+-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-void fkt(void)
+-{
+-    int a = 42;  // c99 comment
+-
+-    for (int i = 0; i < a; i++) {}  // declaration inside for()
+-    int b;  // declaration after code
+-}
+-
+-// c11 anonymous structs/unions
+-struct base {
+-    int a;
+-};
+-union deriv {
+-    struct base gen;
+-    struct {
+-        int a;
+-        int b;
+-    };
+-};
+-
+-_ACEOF
+-if ac_fn_c_try_compile "$LINENO"; then :
+-
+-else
+-  as_fn_error $? "compiler does not support required C11 features" "$LINENO" 5
+-fi
+-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+-
+ CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+ 
+ # Extract the first word of "perl", so it can be a program name with args.
