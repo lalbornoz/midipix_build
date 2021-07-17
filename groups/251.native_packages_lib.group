@@ -338,6 +338,7 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_SDL1_TTF_URL:=https://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-${PKG_SDL1_TTF_VERSION}.tar.gz};
 : ${PKG_SDL1_TTF_CONFIGURE_ARGS_EXTRA:="--with-freetype-prefix=${PREFIX_NATIVE} --without-x"};
 : ${PKG_SDL1_TTF_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2"};
+: ${PKG_SDL1_TTF_IN_TREE:=1};
 : ${PKG_SDL2_DEPENDS:="w32api w32lib"};
 : ${PKG_SDL2_SHA256SUM:=349268f695c02efbc9b9148a70b85e58cefbbf704abd3e91be654db7f1e2c863};
 : ${PKG_SDL2_VERSION:=2.0.12};
