@@ -1,3 +1,33 @@
+diff -ru ghostpdl-9.52.orig/base/fapi_ft.c ghostpdl-9.52/base/fapi_ft.c
+--- ghostpdl-9.52.orig/base/fapi_ft.c   2020-03-19 09:14:27.000000000 +0100
++++ ghostpdl-9.52/base/fapi_ft.c        2021-07-17 14:35:25.268233596 +0200
+@@ -125,7 +125,7 @@
+ delete_inc_int_info(gs_fapi_server * a_server,
+                     FT_IncrementalRec * a_inc_int_info);
+
+-FT_CALLBACK_DEF(void *)
++static void *
+ FF_alloc(FT_Memory memory, long size)
+ {
+     gs_memory_t *mem = (gs_memory_t *) memory->user;
+@@ -133,7 +133,7 @@
+     return (gs_malloc(mem, size, 1, "FF_alloc"));
+ }
+
+-FT_CALLBACK_DEF(void *)
++static void *
+     FF_realloc(FT_Memory memory, long cur_size, long new_size, void *block)
+ {
+     gs_memory_t *mem = (gs_memory_t *) memory->user;
+@@ -153,7 +153,7 @@
+     return (tmp);
+ }
+
+-FT_CALLBACK_DEF(void)
++static void
+     FF_free(FT_Memory memory, void *block)
+ {
+     gs_memory_t *mem = (gs_memory_t *) memory->user;
 diff -ru ghostpdl-9.52.orig/configure ghostpdl-9.52/configure
 --- ghostpdl-9.52.orig/configure        2020-06-05 13:19:23.032760767 +0200
 +++ ghostpdl-9.52/configure     2020-06-05 13:18:58.367780811 +0200
