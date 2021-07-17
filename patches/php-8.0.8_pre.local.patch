@@ -1,3 +1,15 @@
+diff -ru php-8.0.8.orig/TSRM/TSRM.h php-8.0.8/TSRM/TSRM.h
+--- php-8.0.8.orig/TSRM/TSRM.h  2021-06-29 09:41:19.000000000 +0200
++++ php-8.0.8/TSRM/TSRM.h       2021-07-17 21:51:11.409950944 +0200
+@@ -147,7 +147,7 @@
+ # define __has_attribute(x) 0
+ #endif
+
+-#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__)
++#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__) || defined(__midipix__)
+ # define TSRM_TLS_MODEL_ATTR
+ #elif __PIC__
+ # define TSRM_TLS_MODEL_ATTR __attribute__((tls_model("initial-exec")))
 diff -ru php-8.0.1.orig/configure php-8.0.1/configure
 --- php-8.0.1.orig/configure	2021-01-05 14:54:54.000000000 +0100
 +++ php-8.0.1/configure	2021-01-13 23:01:56.427279925 +0100
