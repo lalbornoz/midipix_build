@@ -28,7 +28,7 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.xz};
 : ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_LIBARCHIVE_LIBTOOL:=rlibtool};
-: ${PKG_LIBASS_DEPENDS:="freetype harfbuzz fribidi"};
+: ${PKG_LIBASS_DEPENDS:="freetype fontconfig harfbuzz fribidi"};
 : ${PKG_LIBASS_SHA256SUM:=1cdd39c9d007b06e737e7738004d7f38cf9b1e92843f37307b24e7ff63ab8e53};
 : ${PKG_LIBASS_VERSION:=0.15.1};
 : ${PKG_LIBASS_URL:=https://github.com/libass/libass/releases/download/${PKG_LIBASS_VERSION}/libass-${PKG_LIBASS_VERSION}.tar.xz};
