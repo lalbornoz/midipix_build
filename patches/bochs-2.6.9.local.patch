@@ -1,3 +1,41 @@
+diff -ru bochs-2.6.9.orig/main.cc bochs-2.6.9/main.cc
+--- bochs-2.6.9.orig/main.cc    2017-02-18 17:28:04.318635000 +0100
++++ bochs-2.6.9/main.cc 2021-07-18 01:15:37.859411673 +0200
+@@ -1525,5 +1525,9 @@
+   }
+ #endif
+
++  /* FIXME: this works, but definitely isn't right! */
++  if(signum == 0)
++    return;
++
+   BX_PANIC(("SIGNAL %u caught", signum));
+ }
+diff -ru bochs-2.6.9.orig/configure bochs-2.6.9/configure
+--- bochs-2.6.9.orig/configure  2017-04-09 08:46:13.780213000 +0200
++++ bochs-2.6.9/configure       2021-07-17 23:41:23.537634378 +0200
+@@ -23665,7 +23665,7 @@
+
+   fi
+   case "$target" in
+-    *-pc-windows* | *-pc-winnt* | *-cygwin* | *-mingw32*)
++    *-pc-windows* | *-pc-winnt* | *-cygwin* | *-mingw32* | *-midipix*)
+     NETLOW_OBJS="$NETLOW_OBJS eth_win32.o"
+     ethernet_modules="$ethernet_modules win32"
+     $as_echo "#define BX_NETMOD_WIN32 1" >>confdefs.h
+@@ -24629,10 +24629,10 @@
+   SPECIFIC_GUI_OBJS="$SPECIFIC_GUI_OBJS \$(GUI_OBJS_SDL)"
+   # GUI_*FLAGS are added to the compilation of every bochs file, not just
+   # the files in gui/*.cc.
+-  SDL_CFLAGS=`sdl-config --cflags`
++  SDL_CFLAGS=`$PKG_CONFIG --cflags sdl`
+   GUI_CFLAGS="$GUI_CFLAGS $SDL_CFLAGS"
+   GUI_CXXFLAGS="$GUI_CXXFLAGS $SDL_CFLAGS"
+-  GUI_LINK_OPTS_SDL="`sdl-config --libs`"
++  GUI_LINK_OPTS_SDL=`$PKG_CONFIG --libs sdl`
+   GUI_LINK_OPTS="$GUI_LINK_OPTS \$(GUI_LINK_OPTS_SDL)"
+   # The enhanced X debugger depends on GTK2
+   if test "$gui_debugger" = 1 -a "$DEFAULT_GUI" != win32; then
 diff -ru bochs-2.6.9.orig/gui/term.cc bochs-2.6.9/gui/term.cc
 --- bochs-2.6.9.orig/gui/term.cc	2017-01-15 12:44:43.207284000 +0100
 +++ bochs-2.6.9/gui/term.cc	2019-11-04 21:23:25.102021241 +0100
