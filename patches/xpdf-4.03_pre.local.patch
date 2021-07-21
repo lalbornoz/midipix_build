@@ -1,0 +1,14 @@
+diff -ru xpdf-4.02.orig/CMakeLists.txt xpdf-4.02/CMakeLists.txt
+--- xpdf-4.02.orig/CMakeLists.txt	2019-09-25 21:54:33.000000000 +0200
++++ xpdf-4.02/CMakeLists.txt	2020-07-03 18:16:19.639269162 +0200
+@@ -28,10 +28,6 @@
+   message(WARNING "Couldn't find libpng -- will not build pdftopng or pdftohtml.")
+ endif ()
+ 
+-if (NOT QT4_FOUND AND NOT Qt5Widgets_FOUND)
+-  message(WARNING "Couldn't find Qt4 or Qt5 -- will not build xpdf.")
+-endif ()
+-
+ if (NOT MULTITHREADED)
+   message(WARNING "Multithreading is disabled -- will not build xpdf.")
+ endif ()
