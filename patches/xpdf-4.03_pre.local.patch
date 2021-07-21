@@ -1,3 +1,70 @@
+diff -ru xpdf-4.03.orig/cmake-config.txt xpdf-4.03/cmake-config.txt
+--- xpdf-4.03.orig/cmake-config.txt     2021-01-27 23:23:51.000000000 +0100
++++ xpdf-4.03/cmake-config.txt  2021-07-21 21:24:10.085991109 +0200
+@@ -208,63 +208,6 @@
+ find_package(PNG)
+
+
+-
+-
+-#--- look for Qt
+-find_package(Qt5Widgets QUIET)
+-if (Qt5Widgets_FOUND)
+-  find_package(Qt5Network)
+-  find_package(Qt5PrintSupport)
+-else ()
+-  find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork)
+-endif ()
+-if(Qt5Widgets_FOUND)
+-  message(STATUS "Qt5 found")
+-  if (XPDFWIDGET_PRINTING)
+-    set(QT_INCLUDES "${Qt5Widgets_INCLUDE_DIRS} ${Qt5Network_INCLUDE_DIRS} ${Qt5PrintSupport_INCLUDE_DIRS}")
+-    set(QT_DEFINITIONS "${Qt5Widgets_DEFINITIONS} ${Qt5Network_DEFINITIONS} ${Qt5PrintSupport_DEFINITIONS}")
+-    set(QT_LIBRARIES Qt5::Widgets Qt5::Network Qt5::PrintSupport)
+-  else ()
+-    set(QT_INCLUDES "${Qt5Widgets_INCLUDE_DIRS} ${Qt5Network_INCLUDE_DIRS}")
+-    set(QT_DEFINITIONS "${Qt5Widgets_DEFINITIONS} ${Qt5Network_DEFINITIONS}")
+-    set(QT_LIBRARIES Qt5::Widgets Qt5::Network)
+-  endif ()
+-  if (XPDFWIDGET_PRINTING)
+-    if (APPLE)
+-      set(EXTRA_QT_LIBRARIES "-framework ApplicationServices")
+-    elseif (UNIX)
+-      find_package(Cups)
+-      if (CUPS_FOUND)
+-        set(EXTRA_QT_LIBRARIES ${CUPS_LIBRARIES})
+-      else ()
+-        set (XPDFWIDGET_PRINTING OFF)
+-      endif ()
+-    else ()
+-      set(EXTRA_QT_LIBRARIES "")
+-    endif ()
+-  endif ()
+-  # remove "-fPIE" here because we added "-fPIC" above
+-  string(REPLACE "-fPIE" "" QT_CFLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+-elseif(QT4_FOUND)
+-  message(STATUS "Qt4 found")
+-  if (XPDFWIDGET_PRINTING)
+-    if (APPLE)
+-      set(EXTRA_QT_LIBRARIES "-framework ApplicationServices")
+-    elseif (UNIX)
+-      find_package(Cups)
+-      if (CUPS_FOUND)
+-        set(EXTRA_QT_LIBRARIES ${CUPS_LIBRARIES})
+-      else ()
+-        set (XPDFWIDGET_PRINTING OFF)
+-      endif ()
+-    else ()
+-      set(EXTRA_QT_LIBRARIES "")
+-    endif ()
+-  endif ()
+-else()
+-  message(STATUS "No Qt library found")
+-endif()
+-
+ #--- look for libpaper
+ find_library(PAPER_LIBRARY
+              NAMES paper libpaper
 diff -ru xpdf-4.02.orig/CMakeLists.txt xpdf-4.02/CMakeLists.txt
 --- xpdf-4.02.orig/CMakeLists.txt	2019-09-25 21:54:33.000000000 +0200
 +++ xpdf-4.02/CMakeLists.txt	2020-07-03 18:16:19.639269162 +0200
