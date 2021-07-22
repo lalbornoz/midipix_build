@@ -186,7 +186,7 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_RXVT_UNICODE_DEPENDS:="libX11"};
 : ${PKG_RXVT_UNICODE_SHA256SUM:=e94628e9bcfa0adb1115d83649f898d6edb4baced44f5d5b769c2eeb8b95addd};
 : ${PKG_RXVT_UNICODE_VERSION:=9.22};
-: ${PKG_RXVT_UNICODE_URL:=http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PKG_RXVT_UNICODE_VERSION}.tar.bz2};
+: ${PKG_RXVT_UNICODE_URL:=http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PKG_RXVT_UNICODE_VERSION}.tar.bz2};
 : ${PKG_RXVT_UNICODE_CONFIGURE_ARGS_EXTRA:=--disable-perl --disable-lastlog --disable-utmp --disable-wtmp};
 : ${PKG_ST_DEPENDS:="freetype fontconfig libX11 libXft"};
 : ${PKG_ST_SHA256SUM:=f7870d906ccc988926eef2cc98950a99cc78725b685e934c422c03c1234e6000};
