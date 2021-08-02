@@ -31,8 +31,8 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_CSSC_URL:=https://ftp.gnu.org/gnu/cssc/CSSC-${PKG_CSSC_VERSION}.tar.gz};
 : ${PKG_CSSC_CONFIGURE_ARGS_EXTRA:="--enable-binary"};
 : ${PKG_CSSC_CXXFLAGS_CONFIGURE_EXTRA:="-std=gnu++0x"};
-: ${PKG_DIFFUTILS_SHA256SUM:=b3a7a6221c3dc916085f0d205abf6b8e1ba443d4dd965118da364a1dc1cb3a26};
-: ${PKG_DIFFUTILS_VERSION:=3.7};
+: ${PKG_DIFFUTILS_SHA256SUM:=a6bdd7d1b31266d11c4f4de6c1b748d4607ab0231af5188fc2533d0ae2438fec};
+: ${PKG_DIFFUTILS_VERSION:=3.8};
 : ${PKG_DIFFUTILS_URL:=https://ftp.gnu.org/gnu/diffutils/diffutils-${PKG_DIFFUTILS_VERSION}.tar.xz};
 : ${PKG_FLEX_SHA256SUM:=e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995};
 : ${PKG_FLEX_VERSION:=2.6.4};
