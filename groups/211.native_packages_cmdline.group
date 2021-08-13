@@ -3,10 +3,16 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed figlet
+bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed figlet
 findutils gawk grep jush lzop mc mksh moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sbase screen sed sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
+: ${PKG_BAS_DEPENDS:="ncurses"};
+: ${PKG_BAS_SHA256SUM:=ec45efa90aaa7f15647fe7898fa0789ba26dc8e10b7ecf8e049b1310f626b884};
+: ${PKG_BAS_VERSION:=2.6};
+: ${PKG_BAS_URL:=www.moria.de/~michael/bas/bas-${PKG_BAS_VERSION}.tar.gz};
+: ${PKG_BAS_IN_TREE:=1};
+: ${PKG_BAS_FORCE_AUTORECONF:=1};
 : ${PKG_BASH_DEPENDS:="ncurses"};
 : ${PKG_BASH_SHA256SUM:=0cfb5c9bb1a29f800a97bd242d19511c997a1013815b805e0fdd32214113d6be};
 : ${PKG_BASH_VERSION:=5.1.8};

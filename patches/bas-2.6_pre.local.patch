@@ -1,0 +1,126 @@
+diff -ru bas-2.6.orig/configure.in bas-2.6/configure.in
+--- bas-2.6.orig/configure.in	2020-07-26 20:41:00.000000000 +0000
++++ bas-2.6/configure.in	2021-08-13 23:00:26.683776300 +0000
+@@ -23,7 +23,7 @@
+     EXTRA_LDFLAGS='-Wl,-z '
+   ;;
+   *-cygwin)
+-    AC_DEFINE(USE_SELECT)
++    AC_DEFINE([USE_SELECT], [], [Description])
+   ;;
+   *)
+     prefix=$ac_default_prefix
+@@ -78,15 +78,13 @@
+   AC_CHECK_HEADERS(curses.h,have_curses_h=yes)
+ fi
+ 
+-AC_MSG_CHECKING(for tputs return type)
+-AC_TRY_COMPILE([#ifdef HAVE_TERMCAP_H
+-#include <termcap.h>
+-#else
+-#include <curses.h>
+-#endif
+-static int outc(int c){ return c; }
+-],[return tputs((char*)0,0,outc);
+-],AC_MSG_RESULT(int),AC_DEFINE(TPUTS_RETURNS_VOID) AC_MSG_RESULT(void))
++if test "$have_curses_h" != yes; then
++  AC_CHECK_HEADERS(ncurses.h,have_ncurses_h=yes)
++fi
++
++if test "$have_ncurses_term_h" != yes; then
++  AC_CHECK_HEADERS(ncurses/term.h,have_ncurses_term_h=yes)
++fi
+ 
+ AC_CHECK_HEADERS(tgmath.h,have_tgmath_h=yes)
+ 
+@@ -112,6 +110,9 @@
+ if test "$have_tgetent" != yes; then
+        AC_CHECK_LIB(ncurses, tgetent, AC_DEFINE(HAVE_TGETENT) [have_tgetent=yes; LIBS="-lncurses $LIBS"])
+ fi
++if test "$have_tgetent" != yes; then
++       AC_CHECK_LIB(tinfo, tgetent, AC_DEFINE(HAVE_TGETENT) [have_tgetent=yes; LIBS="-ltinfo $LIBS"])
++fi
+ 
+ AC_CHECK_TYPES([ssize_t])
+ 
+@@ -120,7 +121,7 @@
+   [CPPFLAGS="$CPPFLAGS -I$with_dmalloc/include"
+   LDFLAGS="$LDFLAGS -L$with_dmalloc/lib"
+   LIBS="$LIBS -ldmalloc"
+-  AC_DEFINE(USE_DMALLOC)]
++  AC_DEFINE([USE_DMALLOC], [], [Description])]
+ )
+ 
+ AC_ARG_WITH(efence,
+@@ -143,7 +144,7 @@
+   AC_CHECK_HEADERS(libintl.h,[LIBINTL=yes])
+   if test "$LIBINTL" = yes
+   then
+-    AC_SEARCH_LIBS(gettext,intl,[AC_DEFINE(HAVE_GETTEXT) USE_NLS=yes])
++    AC_SEARCH_LIBS(gettext,intl,[AC_DEFINE([HAVE_GETTEXT], [], [Description]) USE_NLS=yes])
+   fi
+ fi
+ 
+@@ -151,8 +152,6 @@
+ 
+ AC_PROG_INSTALL
+ 
+-AC_DEFINE_UNQUOTED(VERSION,"$VERSION")
+-AC_SUBST(VERSION)
+ AC_SUBST(UPDATED)
+ AC_SUBST(USE_NLS)
+ AC_OUTPUT(Makefile bas.1 test/runbas)
+--- bas-2.6.orig/Makefile.in	2019-11-30 10:56:25.000000000 +0000
++++ bas-2.6/Makefile.in	2021-08-13 23:17:24.406426500 +0000
+@@ -18,8 +18,8 @@
+ all-po-no:
+ all-po-yes:	$(CATALOGS)
+ 
+-bas:		main.o libbas.a getopt.o getopt1.o
+-		$(CC) -o $@ $(LDFLAGS) main.o libbas.a getopt.o getopt1.o $(LIBS)
++bas:		main.o libbas.a
++		$(CC) -o $@ $(LDFLAGS) main.o libbas.a $(LIBS)
+ 
+ test60:		test60.o libbas.a
+ 		$(CC) -o $@ $(LDFLAGS) test60.o libbas.a $(LIBS)
+@@ -30,7 +30,7 @@
+ libbas.a:	auto.o bas.o fs.o global.o token.o program.o \
+ 		str.o value.o var.o
+ 		rm -f $@
+-		ar cq $@ auto.o bas.o fs.o global.o token.o program.o \
++		$(AR) cq $@ auto.o bas.o fs.o global.o token.o program.o \
+ 		str.o value.o var.o
+ 		@RANLIB@ libbas.a
+ 
+@@ -41,7 +41,7 @@
+ install-po-no:
+ install-po-yes:	$(CATALOGS)
+ 		for cat in $(CATALOGS); do \
+-		  dir=$(localedir)/`basename $$cat .mo`/LC_MESSAGES; \
++		  dir=$(DESTDIR)/$(localedir)/`basename $$cat .mo`/LC_MESSAGES; \
+ 		  [ -d $$dir ] || @INSTALL@ -m 755 -d $$dir; \
+ 		  @INSTALL@ -m 644 $$cat $$dir/bas.mo; \
+ 		done
+@@ -50,14 +50,14 @@
+ 		for i in test/test*; do ./$$i || break; done
+ 
+ install:	all
+-		@INSTALL@ -m 755 -d @bindir@
+-		@INSTALL@ bas @bindir@/bas
+-		@INSTALL@ -m 755 -d @libdir@
+-		@INSTALL@ -m 644 libbas.a @libdir@/libbas.a
+-		@RANLIB@ @libdir@/libbas.a
+-		@INSTALL@ -m 755 -d @mandir@/man1
+-		@INSTALL@ -m 644 bas.1 @mandir@/man1/bas.1
+-		make install-po
++		@INSTALL@ -m 755 -d $(DESTDIR)/@bindir@
++		@INSTALL@ bas $(DESTDIR)/@bindir@/bas
++		@INSTALL@ -m 755 -d $(DESTDIR)/@libdir@
++		@INSTALL@ -m 644 libbas.a $(DESTDIR)/@libdir@/libbas.a
++		@RANLIB@ $(DESTDIR)/@libdir@/libbas.a
++		@INSTALL@ -m 755 -d $(DESTDIR)/@mandir@/man1
++		@INSTALL@ -m 644 bas.1 $(DESTDIR)/@mandir@/man1/bas.1
++		$(MAKE) install-po
+ 
+ .c.o:
+ 		$(CC) -c $(CPPFLAGS) $(CFLAGS) $<

@@ -1,0 +1,23 @@
+diff -ru bas-2.6.orig/bas.c bas-2.6/bas.c
+--- bas-2.6.orig/bas.c  2020-05-21 18:21:32.000000000 +0000
++++ bas-2.6/bas.c   2021-08-13 23:45:46.220612700 +0000
+@@ -1236,7 +1236,7 @@
+ {
+   if (FS_istty(STDCHANNEL))
+   {
+-    FS_putChars(STDCHANNEL,"bas " VERSION "\n");
++    FS_putChars(STDCHANNEL,"bas 2.6\n");
+     FS_putChars(STDCHANNEL,"Copyright 1999-2019 Michael Haardt.\n");
+     FS_putChars(STDCHANNEL,_("This is free software with ABSOLUTELY NO WARRANTY.\n"));
+   }
+--- bas-2.6.orig/main.c	2020-05-21 18:21:32.000000000 +0000
++++ bas-2.6/main.c	2021-08-13 23:43:43.850493800 +0000
+@@ -66,7 +66,7 @@
+     case 'l': lp=optarg; break;
+     case 'u': uppercase=1; break;
+     case 'r': restricted=1; break;
+-    case 'V': printf("bas " VERSION "\n"); exit(0); break;
++    case 'V': printf("bas 2.6\n"); exit(0); break;
+     case 'h': usage=2; break;
+     default: usage=1; break;
+   }
