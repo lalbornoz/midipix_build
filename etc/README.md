@@ -87,20 +87,14 @@ amount of logical processors on the build host divided by two (2).
 [//]: # "{{{ 2.1. Build-time dependencies"
 ### 2.1. Build-time dependencies
 
-* **Alpine Linux**: binutils bzip2 cmake coreutils curl findutils g++ gawk gcc
-		    git grep gzip libc-dev linux-headers lzip make musl-dev
-		    net-tools patch perl perl-xml-parser procps sed tar
-		    util-linux wget xz zip
-* **Debian/-derived Linux**: binutils bzip2 clzip cmake coreutils curl findutils g++ gawk
-			     gcc git grep gzip hostname libc6-dev libxml-parser-perl lzma
-			     make patch perl procps sed tar util-linux wget xz-utils zip
-* **Gentoo Linux**: binutils bzip2 cmake coreutils curl findutils gawk =gcc-7.5.0-r1 dev-vcs/git
-                    grep gzip lzip make patch perl dev-perl/XML-Parser procps sed tar util-linux
-                    wget xz-utils zip
-* **OpenSUSE Linux**: binutils bzip2 cmake coreutils curl findutils gawk gcc
-		      gcc-c++ git grep gzip hostname linux-glibc-devel lzip make
-		      patch perl perl-XML-Parser procps sed tar util-linux wget
-		      xz zip
+* **Alpine Linux**:
+  binutils bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip libc-dev linux-headers lzip make musl-dev net-tools patch perl perl-xml-parser procps sed tar util-linux wget xz zip
+* **Debian/-derived Linux**:
+  binutils bzip2 clzip cmake coreutils curl findutils g++ gawk gcc git grep gzip hostname libc6-dev libxml-parser-perl lzma make patch perl procps sed tar util-linux wget xz-utils zip
+* **Gentoo Linux**:
+  binutils bzip2 cmake coreutils curl findutils gawk =gcc-7.5.0-r1 dev-vcs/git grep gzip lzip make patch perl dev-perl/XML-Parser procps sed tar util-linux wget xz-utils zip
+* **OpenSUSE Linux**:
+  binutils bzip2 cmake coreutils curl findutils gawk gcc gcc-c++ git grep gzip hostname linux-glibc-devel lzip make patch perl perl-XML-Parser procps sed tar util-linux wget xz zip
   
 > N.B. Busybox is not supported. Awk implementations other than GNU Awk are not supported.  
   
