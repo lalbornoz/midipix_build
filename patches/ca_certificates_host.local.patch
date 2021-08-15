@@ -1,0 +1,10 @@
+--- ca-certificates/Makefile.orig	2021-08-14 20:46:04.231739572 +0200
++++ ca-certificates/Makefile	2021-08-15 10:13:48.899745275 +0200
+@@ -21,7 +21,6 @@
+ 		${DESTDIR}/usr/bin \
+ 		${DESTDIR}/usr/sbin \
+ 		${DESTDIR}/usr/share/ca-certificates \
+-		${DESTDIR}/usr/local/share/ca-certificates \
+ 		${DESTDIR}/etc/ssl/certs
+ 
+ 	for cert in *.crt; do \
