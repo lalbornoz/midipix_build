@@ -1,0 +1,55 @@
+--- SDL_mixer-1.2.12/configure.orig	2012-01-15 23:01:05.000000000 +0100
++++ SDL_mixer-1.2.12/configure	2021-08-15 19:26:57.984417138 +0200
+@@ -14753,15 +14753,15 @@
+ DEPENDS=`echo $SOURCES`
+ OBJECTS=`echo "$OBJECTS" | sed 's,[^ ]*/\([^ ]*\)\.c,$(objects)/\1.lo,g'`
+ DEPENDS=`echo "$DEPENDS" | sed 's,\([^ ]*\)/\([^ ]*\)\.c,\\
+-$(objects)/\2.lo: \1/\2.c\\
+-	\$(LIBTOOL) --mode=compile \$(CC) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \$< -o \$@,g'`
++$(objects)/\2.lo: $(objects) \1/\2.c\\
++	\$(LIBTOOL) --mode=compile \$(CC) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \1/\2.c -o \$@,g'`
+ 
+ OBJECTS_CXX=`echo $SOURCES_CXX`
+ DEPENDS_CXX=`echo $SOURCES_CXX`
+ OBJECTS_CXX=`echo "$OBJECTS_CXX" | sed 's,[^ ]*/\([^ ]*\)\.cpp,$(objects)/\1.lo,g'`
+ DEPENDS_CXX=`echo "$DEPENDS_CXX" | sed 's,\([^ ]*\)/\([^ ]*\)\.cpp,\\
+-$(objects)/\2.lo: \1/\2.cpp\\
+-	\$(LIBTOOL) --mode=compile \$(CXX) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \$< -o \$@,g'`
++$(objects)/\2.lo: $(objects) \1/\2.cpp\\
++	\$(LIBTOOL) --mode=compile \$(CXX) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \1/\2.cpp -o \$@,g'`
+ OBJECTS="$OBJECTS $OBJECTS_CXX"
+ DEPENDS="$DEPENDS $DEPENDS_CXX"
+ DEPENDS=`echo "$DEPENDS" | sed 's,\\$,\\\\$,g'`
+@@ -14770,8 +14770,8 @@
+ VERSION_DEPENDS=`echo $VERSION_SOURCES`
+ VERSION_OBJECTS=`echo "$VERSION_OBJECTS" | sed 's,[^ ]*/\([^ ]*\)\.rc,$(objects)/\1.o,g'`
+ VERSION_DEPENDS=`echo "$VERSION_DEPENDS" | sed 's,\([^ ]*\)/\([^ ]*\)\.rc,\\
+-$(objects)/\2.o: \1/\2.rc\\
+-	\$(WINDRES) \$< \$@,g'`
++$(objects)/\2.o: $(objects) \1/\2.rc\\
++	\$(WINDRES) \1/\2.rc \$@,g'`
+ VERSION_DEPENDS=`echo "$VERSION_DEPENDS" | sed 's,\\$,\\\\$,g'`
+ 
+ PLAYWAVE_SOURCES="$srcdir/playwave.c"
+@@ -14779,8 +14779,8 @@
+ PLAYWAVE_DEPENDS=`echo $PLAYWAVE_SOURCES`
+ PLAYWAVE_OBJECTS=`echo "$PLAYWAVE_OBJECTS" | sed 's,[^ ]*/\([^ ]*\)\.c,$(objects)/\1.lo,g'`
+ PLAYWAVE_DEPENDS=`echo "$PLAYWAVE_DEPENDS" | sed 's,\([^ ]*\)/\([^ ]*\)\.c,\\
+-$(objects)/\2.lo: \1/\2.c\\
+-	\$(LIBTOOL) --mode=compile \$(CC) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \$< -o \$@,g'`
++$(objects)/\2.lo: $(objects) \1/\2.c\\
++	\$(LIBTOOL) --mode=compile \$(CC) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \1/\2.c -o \$@,g'`
+ PLAYWAVE_DEPENDS=`echo "$PLAYWAVE_DEPENDS" | sed 's,\\$,\\\\$,g'`
+ 
+ PLAYMUS_SOURCES="$srcdir/playmus.c"
+@@ -14788,8 +14788,8 @@
+ PLAYMUS_DEPENDS=`echo $PLAYMUS_SOURCES`
+ PLAYMUS_OBJECTS=`echo "$PLAYMUS_OBJECTS" | sed 's,[^ ]*/\([^ ]*\)\.c,$(objects)/\1.lo,g'`
+ PLAYMUS_DEPENDS=`echo "$PLAYMUS_DEPENDS" | sed 's,\([^ ]*\)/\([^ ]*\)\.c,\\
+-$(objects)/\2.lo: \1/\2.c\\
+-	\$(LIBTOOL) --mode=compile \$(CC) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \$< -o \$@,g'`
++$(objects)/\2.lo: $(objects) \1/\2.c\\
++	\$(LIBTOOL) --mode=compile \$(CC) \$(CFLAGS) \$(EXTRA_CFLAGS) '"$DEPENDENCY_TRACKING_OPTIONS"' -c \1/\2.c -o \$@,g'`
+ PLAYMUS_DEPENDS=`echo "$PLAYMUS_DEPENDS" | sed 's,\\$,\\\\$,g'`
+ 
+ 
