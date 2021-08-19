@@ -54,6 +54,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_DASH_SHA256SUM:=a576c3a7766177956ec6605aa2ea76f28fdc5ae4f64e6502313f819af977ff68};
 : ${PKG_DASH_VERSION:=0.5.11.4};
 : ${PKG_DASH_URL:=https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-${PKG_DASH_VERSION}.tar.gz};
+: ${PKG_DASH_CONFIGURE_ARGS_EXTRA:="--disable-glob --enable-fnmatch"};
 : ${PKG_DASH_INSTALL_FILES:=@dash=bin/sh};
 : ${PKG_DATAMASH_SHA256SUM:=574a592bb90c5ae702ffaed1b59498d5e3e7466a8abf8530c5f2f3f11fa4adb3};
 : ${PKG_DATAMASH_VERSION:=1.7};
