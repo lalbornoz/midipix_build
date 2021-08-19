@@ -61,6 +61,7 @@ zstd")";
 : ${PKG_CLZIP_VERSION:=1.12};
 : ${PKG_CLZIP_URL:=https://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_VERSION}.tar.gz};
 : ${PKG_CLZIP_CONFIGURE_ARGS:="CC=${DEFAULT_TARGET}-gcc --prefix="};
+: ${PKG_CLZIP_INSTALL_FILES:="@clzip=bin/lzip"};
 : ${PKG_CLZIP_IN_TREE:=1};
 : ${PKG_CMAKE_DEPENDS:="curl libarchive libuv libz ncurses"};
 : ${PKG_CMAKE_SHA256SUM:=dc1246c4e6d168ea4d6e042cfba577c1acd65feea27e56f5ff37df920c30cae0};
