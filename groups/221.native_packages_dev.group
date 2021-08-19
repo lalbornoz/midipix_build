@@ -39,7 +39,6 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_FLEX_URL:=https://github.com/westes/flex/releases/download/v${PKG_FLEX_VERSION}/flex-${PKG_FLEX_VERSION}.tar.gz};
 : ${PKG_FLEX_CFLAGS_CONFIGURE_EXTRA:="-D_GNU_SOURCE"};
 : ${PKG_FLEX_CONFIGURE_ARGS_EXTRA:=--disable-libfl};
-: ${PKG_GDB_DISABLED:=1};
 : ${PKG_GDB_DEPENDS:="ncurses python2"};
 : ${PKG_GDB_SHA256SUM:=149abac4add030a5713f15964bd7465bef7a23712bcc91377ca40949f33e93fb};
 : ${PKG_GDB_VERSION:=7.12};
@@ -48,6 +47,7 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")"
 : ${PKG_GDB_CONFIGURE_ARGS_EXTRA:="--with-system-libiberty --with-system-readline --with-system-zlib --with-python=${PWD}/etc/python2.7-config"};
 : ${PKG_GDB_CXXFLAGS_CONFIGURE_EXTRA:="--sysroot=${PREFIX_NATIVE} -g3 -O0 --include=stdc-predef.h -I${PREFIX_NATIVE}/include/python2.7 -L${PREFIX_NATIVE}/lib"};
 : ${PKG_GDB_ENV_VARS_EXTRA:="CFLAGS_FOR_TARGET=-g3 -O0 --include=stdc-predef.h -I${PREFIX_NATIVE}/include/python2.7 --sysroot=${PREFIX_NATIVE}:LDFLAGS_FOR_TARGET=--sysroot=${PREFIX_NATIVE}"};
+: ${PKG_GDB_INSTALL_FILES:="../obj/gdb/.libs/gdb=bin/gdb"};
 : ${PKG_GDB_LIBTOOL:=rdlibtool};
 : ${PKG_GDB_MAKEFLAGS_BUILD_EXTRA:="SYSROOT_FLAGS=--sysroot=${PREFIX_NATIVE}"};
 : ${PKG_GDB_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gdb/gdb-${PKG_GDB_VERSION}.midipix.patch"};
