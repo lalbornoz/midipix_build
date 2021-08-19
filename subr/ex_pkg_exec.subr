@@ -43,6 +43,9 @@ exp_pkg_exec_pre() {
 		|| ! ex_pkg_state_set "${_pkg_name}" "start"; then
 			return 1;
 		fi;
+	elif ! rtl_exists_any "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"\
+	&&   ! rtl_fileop mkdir "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"; then
+		return 1
 	fi;
 	rtl_fileop cd "${PKG_BUILD_DIR}";
 };
