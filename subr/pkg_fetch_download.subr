@@ -4,24 +4,25 @@
 
 pkg_fetch_download_clean_dlcache() {
 	local	_dlcachedir="${1}" _pkg_name="${2}" _pkg_fname="${3}" _pkg_urls_git="${4}"\
-		_fname="" _pkg_urls_git_dname="";
+		_fname="" _skipfl=0 _url_spec="" _url_subdir="";
 
-	if [ -n "${_pkg_urls_git}" ]; then
-		_pkg_urls_git_dname="${_pkg_urls_git%%=*}";
-		_pkg_urls_git_dname="${_pkg_urls_git_dname##*/}";
-	fi;
 	for _fname in $(cd "${_dlcachedir}/${_pkg_name}" && find		\
+			-maxdepth 1						\
 			-mindepth 1						\
 			${_pkg_fname:+-not -name "${_pkg_fname}"}		\
-			${_pkg_fname:+-not -name "${_pkg_fname}.fetched"}	\
-			${_pkg_urls_git_dname:+					\
-			-not -path "./${_pkg_urls_git_dname}"			\
-			-not -path "./${_pkg_urls_git_dname}/*"			\
-			-not -path "./${_pkg_urls_git_dname}.git"		\
-			-not -path "./${_pkg_urls_git_dname}.git/*"}); do
-		_fname="${_dlcachedir}/${_pkg_name}/${_fname#./}"
-		rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
-		rtl_fileop rm "${_fname}";
+			${_pkg_fname:+-not -name "${_pkg_fname}.fetched"}); do
+		_fname="${_fname#./}"; _skipfl=0;
+		for _url_spec in ${_pkg_urls_git}; do
+			_url_subdir="${_url_spec%%=*}"; _url_subdir="${_url_subdir##*/}";
+			if [ "${_fname%.git}" = "${_url_subdir}" ]; then
+				_skipfl=1; break;
+			fi;
+		done;
+		if [ "${_skipfl}" -eq 0 ]; then
+			_fname="${_dlcachedir}/${_pkg_name}/${_fname}";
+			rtl_log_msg notice "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
+			rtl_fileop rm "${_fname}";
+		fi;
 	done;
 };
 
