@@ -234,6 +234,11 @@ Rebuild entire build groups including or excluding group dependencies, respectiv
 ./build.sh [ ... ] -r ALL =native_runtime
 ```
   
+Forcibly (re)download all archive files and/or Git repositories associated with all packages:
+```shell
+./build.sh [ ... ] -r ALL:@fetch
+```
+  
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
