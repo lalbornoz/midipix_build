@@ -125,7 +125,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_MP3SPLT_DEPENDS:="libmp3splt"};
 : ${PKG_MP3SPLT_SHA256SUM:=3ec32b10ddd8bb11af987b8cd1c76382c48d265d0ffda53041d9aceb1f103baa};
 : ${PKG_MP3SPLT_VERSION:=2.6.2};
-: ${PKG_MP3SPLT_URL:=https://sources.voidlinux.org/mp3splt-${PKG_MP3SPLT_VERSION}/mp3splt-${PKG_MP3SPLT_VERSION}.tar.gz};
+: ${PKG_MP3SPLT_URL:=https://ftp.fau.de/macports/distfiles/mp3splt/mp3splt-${PKG_MP3SPLT_VERSION}.tar.gz};
 : ${PKG_MP3SPLT_CONFIGURE_ARGS_EXTRA:="--enable-oggsplt_symlink --enable-flacsplt_symlink"};
 : ${PKG_NANO_DEPENDS:="file libz ncursesw"};
 : ${PKG_NANO_SHA256SUM:=f47c7407d4d7b780c4a8fa20706ebf5740c0df41dc0e521a536916660bc18ec4};
