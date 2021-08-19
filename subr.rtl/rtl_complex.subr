@@ -36,11 +36,11 @@ rtl_filter_vars() {
 			fi;
 			continue; ;;
 		*)	case "${_var_spec}" in
-			[^=]*=\"*\")	_qchar=""; _vname="${_var_spec%%=\"*}"; ;;
-			[^=]*=\"*)	_qchar="\""; _vname="${_var_spec%%=\"*}"; ;;
-			[^=]*=\'*\')	_qchar=""; _vname="${_var_spec%%=\'*}"; ;;
-			[^=]*=\'*)	_qchar="\'"; _vname="${_var_spec%%=\'*}"; ;;
-			[^=]*=*)	_qchar=""; _vname="${_var_spec%%=*}"; ;;
+			[!=]*=\"*\")	_qchar=""; _vname="${_var_spec%%=\"*}"; ;;
+			[!=]*=\"*)	_qchar="\""; _vname="${_var_spec%%=\"*}"; ;;
+			[!=]*=\'*\')	_qchar=""; _vname="${_var_spec%%=\'*}"; ;;
+			[!=]*=\'*)	_qchar="\'"; _vname="${_var_spec%%=\'*}"; ;;
+			[!=]*=*)	_qchar=""; _vname="${_var_spec%%=*}"; ;;
 			esac; ;;
 		esac;
 		if "${_fn}" "${_vname}"; then

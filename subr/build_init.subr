@@ -191,8 +191,8 @@ buildp_init_getopts() {
 			fi;
 			case "${_arg}" in
 			*=*)		rtl_set_var_unsafe "${_arg%%=*}" "${_arg#*=}"; ;;
-			[^a-zA-Z]*)	_rc=1; _status="Error: build group names must start with [a-zA-Z] (in argument \`${_arg}'.)"; ;;
-			*[^_a-zA-Z]*)	_rc=1; _status="Error: build group names must not contain [^_a-zA-Z] (in argument \`${_arg}'.)"; ;;
+			[!a-zA-Z]*)	_rc=1; _status="Error: build group names must start with [a-zA-Z] (in argument \`${_arg}'.)"; ;;
+			*[!_a-zA-Z]*)	_rc=1; _status="Error: build group names must not contain [!_a-zA-Z] (in argument \`${_arg}'.)"; ;;
 			*)		BUILD_GROUPS="$(rtl_lconcat "${BUILD_GROUPS}" "${_arg}")"; ;;
 			esac; shift;
 		fi;
