@@ -931,4 +931,4 @@ overriden on the command line or via the environment, ensure that they are inclu
 
 [//]: # "}}}"
   
-[modeline]: # ( vim: set tw=0: )
+[modeline]: # ( vim: set ff=dos tw=0: )

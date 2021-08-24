@@ -6,7 +6,6 @@ RTLP_INSTALL_NL="
 ";
 
 # XXX optimise
-# XXX FIXME call w/ $[...}
 # implement %<...{...,...}...>
 # support multiple %<...*...> in same spec
 # split_ = unfold_
@@ -452,7 +451,6 @@ rtl_install_v2() {
 	_ri_IFS0="${IFS}"; IFS="${_ri_IFS}"; set -- ${_ri_spec_list}; IFS="${_ri_IFS0}";
 
 	while [ ${#} -gt 0 ]; do
-		echo $1; continue;
 		_ri_spec_src="${1}";
 		case "${_ri_spec_src}" in
 		\?*)	_ri_spec_flag="?"; ;;
