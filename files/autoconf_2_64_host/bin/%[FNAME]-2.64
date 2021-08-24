@@ -1,0 +1,17 @@
+#!/bin/sh
+
+AUTOTOOL_COMMAND="${0##*/}"; AUTOTOOL_COMMAND="${AUTOTOOL_COMMAND%-2.64}";
+PREFIX=""; [ ${PREFIX:="${0%/*}"} = "${0}" ] && PREFIX="."; PREFIX="${PREFIX:+${PREFIX}/}..";
+export ACLOCAL="${ACLOCAL:-${PREFIX}/binaclocal-1.11}";
+export AC_MACRODIR="${AC_MACRODIR:-${PREFIX}/share/autoconf-2.64}";
+export AUTOCONF="${AUTOCONF:-${PREFIX}/libexec/autoconf-2.64/autoconf}";
+export AUTOHEADER="${AUTOHEADER:-${PREFIX}/libexec/autoconf-2.64/autoheader}";
+export AUTOM4TE="${AUTOM4TE:-${PREFIX}/libexec/autoconf-2.64/autom4te}";
+export AUTOM4TE_CFG="${AUTOM4TE_CFG:-${PREFIX}/share/autoconf-2.64/autom4te.cfg}";
+export autom4te_perllibdir="${autom4te_perllibdir:-${PREFIX}/share/autoconf-2.64}";
+export AUTOMAKE="${AUTOMAKE:-${PREFIX}/bin/automake-1.11}";
+export AUTOPOINT="${AUTOPOINT:-${PREFIX}/libexec/autoconf-2.64/autopoint}";
+export LIBTOOLIZE="${LIBTOOLIZE:-${PREFIX}/libexec/autoconf-2.64/libtoolize}";
+
+AUTOTOOL_COMMAND="${PREFIX}/libexec/autoconf-2.64/${AUTOTOOL_COMMAND}"; unset PREFIX;
+exec "${AUTOTOOL_COMMAND}" "${@}";

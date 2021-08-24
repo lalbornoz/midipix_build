@@ -1,0 +1,8 @@
+#!/bin/sh
+PREFIX=""; [ ${PREFIX:="${0%/*}"} = "${0}" ] && PREFIX="."; PREFIX="${PREFIX:+${PREFIX}/}..";
+if [ "${#}" -eq 1 ]\
+&& [ "x${1}" = "x--version" ]; then
+	"${PREFIX}/bin/pkgconf" --version;
+else
+	"${PREFIX}/bin/pkgconf" --define-variable=prefix="${PREFIX%/}/" --keep-system-cflags "${@}";
+fi;

@@ -49,7 +49,11 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_GLEW_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/glew/glew-${PKG_GLEW_VERSION}.tgz};
 : ${PKG_GLEW_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_GLEW_CFLAGS_BUILD_EXTRA:=-Iinclude};
-: ${PKG_GLEW_INSTALL_FILES:="../glew-${PKG_GLEW_VERSION}/lib/libGLEW.lib.a=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.so=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.so.${PKG_GLEW_VERSION}=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.so.${PKG_GLEW_VERSION%.*}=lib/ ../glew-${PKG_GLEW_VERSION}/lib/libGLEW.a=lib/ ../glew-${PKG_GLEW_VERSION}/bin/glewinfo=bin/ ../glew-${PKG_GLEW_VERSION}/bin/visualinfo=bin/"};
+: ${PKG_GLEW_INSTALL_FILES_V2:="
+	+../glew-${PKG_GLEW_VERSION}/bin/glewinfo=bin/%[FNAME]
+	+../glew-${PKG_GLEW_VERSION}/bin/visualinfo=bin/%[FNAME]
+	+../glew-${PKG_GLEW_VERSION}/lib/libGLEW.%<*>=lib/%[FNAME]
+"};
 : ${PKG_GLEW_IN_TREE:=1};
 : ${PKG_GLEW_MAKEFLAGS_BUILD_EXTRA:="SYSTEM=midipix STRIP= LD=${DEFAULT_TARGET}-gcc CC=${DEFAULT_TARGET}-gcc CFLAGS=-isystem${PREFIX_NATIVE}/include LDFLAGS.EXTRA=-L${PREFIX_NATIVE}/lib"};
 : ${PKG_GTK2_DEPENDS:="atk cairo freetype gdk glib libX11 pango Xrender"};
@@ -196,7 +200,10 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_ST_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_ST_CFLAGS_BUILD_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -I${PREFIX_NATIVE}/include"};
 : ${PKG_ST_IN_TREE:=1};
-: ${PKG_ST_INSTALL_FILES:=../st-${PKG_ST_VERSION}/st=bin/ ../st-${PKG_ST_VERSION}/st.1=share/man/man1/ ../st-${PKG_ST_VERSION}/st.info=bin/};
+: ${PKG_ST_INSTALL_FILES_V2:="
+	+../st-${PKG_ST_VERSION}/st=bin/%[FNAME]
+	+../st-${PKG_ST_VERSION}/st.info=share/info/%[FNAME]
+	+../st-${PKG_ST_VERSION}/st.1=share/man/man1/%[FNAME]"};
 : ${PKG_ST_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib -lX11 -lXft -lfreetype -lfontconfig};
 : ${PKG_UTIL_MACROS_SHA256SUM:=d7e43376ad220411499a79735020f9d145fdc159284867e99467e0d771f3e712};
 : ${PKG_UTIL_MACROS_VERSION:=1.19.2};

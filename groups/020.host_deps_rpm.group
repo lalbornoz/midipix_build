@@ -27,6 +27,10 @@ HOST_DEPS_RPM_PREFIX="${PREFIX}";
 : ${PKG_RPM_HOST_URL:=http://ftp.rpm.org/releases/rpm-${PKG_RPM_HOST_VERSION%.*}.x/rpm-${PKG_RPM_HOST_VERSION}.tar.bz2};
 : ${PKG_RPM_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -I${PREFIX}/include/dbus-1.0 -I${PREFIX}/lib/dbus-1.0/include"};
 : ${PKG_RPM_HOST_CONFIGURE_ARGS_EXTRA:="--enable-bdb=no --enable-ndb --with-crypto=openssl --with-vendor=midipix --without-lua"};
+: ${PKG_RPM_HOST_INSTALL_FILES_V2:="
+	+%[_files]/lib/rpm/elfdeps=lib/rpm/elfdeps
+	m0755=lib/rpm/elfdeps
+	-=var/%<*>"};
 : ${PKG_RPM_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib"};
 
 # vim:filetype=sh textwidth=0

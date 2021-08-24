@@ -17,7 +17,9 @@ NATIVE_RUNTIME_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_LDSO_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
 : ${PKG_LDSO_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO"};
 : ${PKG_LDSO_CONFIGURE_ARGS_EXTRA:=--disable-shared};
-: ${PKG_LDSO_INSTALL_FILES:="/=${DEFAULT_TARGET}/lib @../../lib/libldso.a=${DEFAULT_TARGET}/lib/libldso.a"};
+: ${PKG_LDSO_INSTALL_FILES_V2:="
+	/=${DEFAULT_TARGET}/lib
+	@../../lib/libldso.a=${DEFAULT_TARGET}/lib/libldso.a"};
 : ${PKG_LDSO_MAKEFLAGS_BUILD_EXTRA:=STATIC_LIB_NAME=libldso.a};
 : ${PKG_LDSO_MAKEFLAGS_INSTALL_EXTRA:=STATIC_LIB_NAME=libldso.a};
 : ${PKG_NTAPI_DEPENDS:="dalist ldso pemagine psxtypes"};
@@ -33,7 +35,7 @@ NATIVE_RUNTIME_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_NTUX_DEPENDS:="dalist ldso ntapi pemagine psxscl"};
 : ${PKG_NTUX_URLS_GIT:=ntux=${DEFAULT_GITROOT}/ntux};
 : ${PKG_NTUX_CFLAGS_CONFIGURE_EXTRA:=-O0};
-: ${PKG_NTUX_HOST_INSTALL_FILES:="ntux/bin/ntux=bin/ntux"};
+: ${PKG_NTUX_HOST_INSTALL_FILES_V2:="+ntux/bin/ntux=bin/%[FNAME]"};
 : ${PKG_PEMAGINE_DEPENDS:="ldso psxtypes"};
 : ${PKG_PEMAGINE_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
 : ${PKG_PEMAGINE_CFLAGS_CONFIGURE_EXTRA:=-O0};
@@ -47,7 +49,9 @@ NATIVE_RUNTIME_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_PSXSCL_STRACE_URLS_GIT:=psxscl=${DEFAULT_GITROOT_HEAD}/psxscl};
 : ${PKG_PSXSCL_STRACE_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_PSXSCL_STRACE_CFLAGS_CONFIGURE_EXTRA:="-DPSX_EXTENDED_STRACE -O0"};
-: ${PKG_PSXSCL_STRACE_INSTALL_FILES:="/=lib/debug ../obj/lib/libpsxscl.so=lib/debug/"};
+: ${PKG_PSXSCL_STRACE_INSTALL_FILES_V2:="
+	/=lib/debug
+	+../obj/lib/libpsxscl.so=lib/debug/%[FNAME]"};
 : ${PKG_PSXSCL_STRACE_MIRRORS_GIT:="skip"};
 : ${PKG_PSXTYPES_URLS_GIT:=psxtypes=${DEFAULT_GITROOT}/psxtypes};
 : ${PKG_PSXTYPES_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};

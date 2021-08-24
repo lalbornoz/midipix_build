@@ -51,9 +51,11 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_CA_CERTIFICATES_HOST_ENV_VARS_EXTRA:="HOST_CC=gcc"};
 : ${PKG_CA_CERTIFICATES_HOST_VARS_FILE:="vars/ca_certificates.vars"};
 : ${PKG_CHAINPORT_HOST_URLS_GIT:="chainport=${DEFAULT_GITROOT}/ports/chainport"};
-: ${PKG_CHAINPORT_HOST_BUILD_STEPS_DISABLE:="build"};
+: ${PKG_CHAINPORT_HOST_BUILD_STEPS_DISABLE:="build install_make install_rpm"};
 : ${PKG_CHAINPORT_HOST_NO_LOG_VARS:=1};
-: ${PKG_CHAINPORT_HOST_PREFIX:=${PREFIX}};
+: ${PKG_CHAINPORT_HOST_INSTALL_FILES_V2:="
+	-=%[_workdir]/chainport
+	+../chainport=%[_workdir]/chainport"};
 : ${PKG_CLANG_HOST_DEPENDS:="llvm_host"};
 : ${PKG_CLANG_HOST_SHA256SUM:=4cd3836dfb4b88b597e075341cae86d61c63ce3963e45c7fe6a8bf59bb382cdf};
 : ${PKG_CLANG_HOST_VERSION:=3.8.1};
@@ -71,7 +73,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_CLZIP_HOST_VERSION:=1.11};
 : ${PKG_CLZIP_HOST_URL:=http://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_HOST_VERSION}.tar.gz};
 : ${PKG_CLZIP_HOST_IN_TREE:=1};
-: ${PKG_CLZIP_HOST_INSTALL_FILES:="@clzip=bin/lzip"};
+: ${PKG_CLZIP_HOST_INSTALL_FILES_V2:="@clzip=bin/lzip"};
 : ${PKG_CMAKE_HOST_DEPENDS:="bzip2_host musl_fts_host ncurses_host"};
 : ${PKG_CMAKE_HOST_SHA256SUM:=dc1246c4e6d168ea4d6e042cfba577c1acd65feea27e56f5ff37df920c30cae0};
 : ${PKG_CMAKE_HOST_VERSION:=3.7.2};
@@ -81,12 +83,15 @@ HOST_DEPS_PREFIX="${PREFIX}";
 	-DCURSES_NCURSES_LIBRARY=${PREFIX}/lib/libncurses.so
 	-DLIBMD_LIBRARY=
 "};
-: ${PKG_CMAKE_HOST_INSTALL_FILES:="../cmake-${PKG_CMAKE_HOST_VERSION}/Modules/Platform/BSDOS.cmake=share/cmake-${PKG_CMAKE_HOST_VERSION%.*}/Modules/Platform/Midipix.cmake"};
+: ${PKG_CMAKE_HOST_INSTALL_FILES_V2:="+../cmake-${PKG_CMAKE_HOST_VERSION}/Modules/Platform/BSDOS.cmake=share/cmake-${PKG_CMAKE_HOST_VERSION%.*}/Modules/Platform/Midipix.cmake"};
 : ${PKG_DBUS_HOST_DEPENDS:="expat_host"};
 : ${PKG_DBUS_HOST_VERSION:=1.11.20};
 : ${PKG_DBUS_HOST_URL:=https://dbus.freedesktop.org/releases/dbus/dbus-${PKG_DBUS_HOST_VERSION}.tar.gz};
 : ${PKG_DBUS_HOST_SHA256SUM:=7fd9d0536f7ec2f2afc94b84d5b5487f88c464e8d47c661d8e0b54aa83974bfa};
 : ${PKG_DBUS_HOST_CONFIGURE_ARGS_EXTRA:="--disable-tests --with-dbus-daemondir=/bin"};
+: ${PKG_DBUS_HOST_INSTALL_FILES_V2:="
+	-=etc/%<*>
+	-=var/%<*>"};
 : ${PKG_EXPAT_HOST_SHA256SUM:=caa34f99b6e3bcea8502507eb6549a0a84510b244a748dfb287271b2d47467a9};
 : ${PKG_EXPAT_HOST_VERSION:=2.3.0};
 : ${PKG_EXPAT_HOST_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_HOST_VERSION}.tar.xz};
@@ -141,7 +146,9 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_LIBFFI_HOST_SHA256SUM:=d06ebb8e1d9a22d19e38d63fdb83954253f39bedc5d46232a05645685722ca37};
 : ${PKG_LIBFFI_HOST_VERSION:=3.2.1};
 : ${PKG_LIBFFI_HOST_URL:=ftp://sourceware.org/pub/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.tar.gz};
-: ${PKG_LIBFFI_HOST_INSTALL_FILES:="@../lib/libffi-3.2.1/include/ffi.h=include/ffi.h @../lib/libffi-3.2.1/include/ffitarget.h=include/ffitarget.h"};
+: ${PKG_LIBFFI_HOST_INSTALL_FILES_V2:="
+	@../lib/libffi-3.2.1/include/ffi.h=include/ffi.h
+	@../lib/libffi-3.2.1/include/ffitarget.h=include/ffitarget.h"};
 : ${PKG_LIBFFI_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.midipix.patch"};
 : ${PKG_LIBRESSL_HOST_SHA256SUM:=a471565b36ccd1a70d0bd7d37c6e95c43a26a62829b487d9d2cdebfe58be3066};
 : ${PKG_LIBRESSL_HOST_VERSION:=3.3.3};
@@ -157,8 +164,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_LIBZIP_HOST_URL:=https://libzip.org/download/libzip-${PKG_LIBZIP_HOST_VERSION}.tar.xz};
 : ${PKG_LIBZIP_HOST_CMAKE_ARGS_EXTRA:="
 	-DENABLE_GNUTLS=:BOOL=OFF
-	-DENABLE_MBEDTLS=:BOOL=OFF
-"};
+	-DENABLE_MBEDTLS=:BOOL=OFF"};
 : ${PKG_LLVM_HOST_SHA256SUM:=6e82ce4adb54ff3afc18053d6981b6aed1406751b8742582ed50f04b5ab475f9};
 : ${PKG_LLVM_HOST_VERSION:=3.8.1};
 : ${PKG_LLVM_HOST_URL:=http://releases.llvm.org/${PKG_LLVM_HOST_VERSION}/llvm-${PKG_LLVM_HOST_VERSION}.src.tar.xz};
@@ -175,7 +181,10 @@ HOST_DEPS_PREFIX="${PREFIX}";
 	-Wno-dev"};
 : ${PKG_MDSO_HOST_URLS_GIT:="mdso=${DEFAULT_GITROOT}/mdso"};
 : ${PKG_MDSO_HOST_CONFIGURE_ARGS:="--prefix="};
-: ${PKG_MDSO_HOST_INSTALL_FILES:="@mdso=bin/${DEFAULT_TARGET}-mdso /=${DEFAULT_TARGET}/bin bin/mdso=${DEFAULT_TARGET}/bin/mdso"};
+: ${PKG_MDSO_HOST_INSTALL_FILES_V2:="
+	@mdso=bin/${DEFAULT_TARGET}-mdso
+	/=${DEFAULT_TARGET}/bin
+	+bin/mdso=${DEFAULT_TARGET}/bin/mdso"};
 : ${PKG_MPACKAGE_HOST_URLS_GIT:=mpackage=${DEFAULT_GITROOT}/mpackage};
 : ${PKG_MPACKAGE_HOST_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
 : ${PKG_MPACKAGE_HOST_IN_TREE:=1};
@@ -200,7 +209,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_NCURSESW_HOST_VERSION:=6.1};
 : ${PKG_NCURSESW_HOST_URL:=https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_NCURSESW_HOST_VERSION}.tar.gz};
 : ${PKG_NCURSESW_HOST_CONFIGURE_ARGS_EXTRA:="--enable-pc-files --with-pkg-config-libdir=${PREFIX}/lib/pkgconfig --with-manpages --with-progs --with-shared --with-termlib --without-ada --without-tests --enable-widec --without-pthread"};
-: ${PKG_NCURSESW_HOST_INSTALL_FILES:=@ncursesw/ncurses.h=include/ncurses.h};
+: ${PKG_NCURSESW_HOST_INSTALL_FILES_V2:="@ncursesw/ncurses.h=include/ncurses.h"};
 : ${PKG_PCRE_HOST_DEPENDS:="bzip2_host"};
 : ${PKG_PCRE_HOST_SHA256SUM:=91e762520003013834ac1adb4a938d53b22a216341c061b0cf05603b290faf6b};
 : ${PKG_PCRE_HOST_VERSION:=8.43};
@@ -208,7 +217,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_PERK_HOST_DEPENDS:="mdso_host"};
 : ${PKG_PERK_HOST_URLS_GIT:="perk=${DEFAULT_GITROOT}/perk"};
 : ${PKG_PERK_HOST_CONFIGURE_ARGS:="--prefix="};
-: ${PKG_PERK_HOST_INSTALL_FILES:="@perk=bin/${DEFAULT_TARGET}-perk"};
+: ${PKG_PERK_HOST_INSTALL_FILES_V2:="@perk=bin/${DEFAULT_TARGET}-perk"};
 : ${PKG_PERK_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
 : ${PKG_PYTHON2_HOST_DEPENDS:="bzip2_host expat_host gdbm_host libffi_host readline_host libz_host ncurses_host ncursesw_host sqlite3_host"};
 : ${PKG_PYTHON2_HOST_SHA256SUM:=b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43};
@@ -220,6 +229,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_PYTHON2_HOST_CONFIGURE:=build/sbpython2/configure};
 : ${PKG_PYTHON2_HOST_CONFIGURE_ARGS:="--source-dir=../../Python-${PKG_PYTHON2_HOST_VERSION} --prefix=${PREFIX}"};
 : ${PKG_PYTHON2_HOST_CONFIGURE_TYPE:="sofort"};
+: ${PKG_PYTHON2_HOST_INSTALL_FILES_V2:="+%[_files]/bin/python2.7-config=bin/%[FNAME]"};
 : ${PKG_PYTHON2_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= EXEC_PREFIX= BINDIR=/bin SBINDIR=/sbin LIBDIR=/lib INCLUDEDIR=/include OLDINCLUDEDIR=/include MANDIR=/share/man DOCDIR=/share/doc LIBEXECDIR=/libexec"};
 : ${PKG_PYTHON2_HOST_SUBDIR:=Python-${PKG_PYTHON2_HOST_VERSION}};
 : ${PKG_PYTHON3_HOST_DEPENDS:="bzip2_host expat_host gdbm_host libffi_host readline_host libressl_host libz_host ncurses_host ncursesw_host sqlite3_host xz_host"};
@@ -232,7 +242,7 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_PYTHON3_HOST_CONFIGURE:=build/sbpython3/configure};
 : ${PKG_PYTHON3_HOST_CONFIGURE_ARGS:="--source-dir=../../Python-${PKG_PYTHON3_HOST_VERSION} --prefix=${PREFIX}"};
 : ${PKG_PYTHON3_HOST_CONFIGURE_TYPE:="sofort"};
-: ${PKG_PYTHON3_HOST_INSTALL_FILES:="@python3=bin/python"};
+: ${PKG_PYTHON3_HOST_INSTALL_FILES_V2:="@python3=bin/python"};
 : ${PKG_PYTHON3_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= EXEC_PREFIX= BINDIR=/bin SBINDIR=/sbin LIBDIR=/lib INCLUDEDIR=/include OLDINCLUDEDIR=/include MANDIR=/share/man DOCDIR=/share/doc LIBEXECDIR=/libexec"};
 : ${PKG_PYTHON3_HOST_SUBDIR:=Python-${PKG_PYTHON3_HOST_VERSION}};
 : ${PKG_READLINE_HOST_DEPENDS:="ncurses_host ncursestw_host ncursesw_host"};
@@ -263,12 +273,17 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_TEXINFO_HOST_SHA256SUM:=988403c1542d15ad044600b909997ba3079b10e03224c61188117f3676b02caa};
 : ${PKG_TEXINFO_HOST_VERSION:=6.7};
 : ${PKG_TEXINFO_HOST_URL:=https://ftp.gnu.org/gnu/texinfo/texinfo-${PKG_TEXINFO_HOST_VERSION}.tar.xz};
+: ${PKG_TEXINFO_HOST_INSTALL_FILES_V2:="
+	!bin/makeinfo=bin/makeinfo.dist
+	+%[_files]/bin/makeinfo=bin/makeinfo
+	m0755=bin/makeinfo"};
 : ${PKG_TEXINFO_HOST_LIBTOOL:=rdlibtool};
 : ${PKG_TZDB_HOST_DEPENDS:="clzip_host"};
 : ${PKG_TZDB_HOST_SHA256SUM:=b1c23c7825f5f842e6e1ddb702efe85b1c22bdf0e41815b927cfc04a28372962};
 : ${PKG_TZDB_HOST_VERSION:=2018e};
 : ${PKG_TZDB_HOST_URL:=https://data.iana.org/time-zones/releases/tzdb-${PKG_TZDB_HOST_VERSION}.tar.lz};
 : ${PKG_TZDB_HOST_BUILD_DIR:="tzdb-${PKG_TZDB_HOST_VERSION}"};
+: ${PKG_TZDB_HOST_INSTALL_FILES_V2:="-=etc/%<*>"};
 : ${PKG_UTIL_LINUX_HOST_DEPENDS:="ncursesw_host"};
 : ${PKG_UTIL_LINUX_HOST_SHA256SUM:=37de03dbb98cdeffdf9e754122b0aca2a9bbdc19769f6570dfcb6f123643bf53};
 : ${PKG_UTIL_LINUX_HOST_VERSION:=2.36.1};

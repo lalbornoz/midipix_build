@@ -10,17 +10,24 @@ NATIVE_TOOLS_PKG_CONFIG_LIBDIR="${PREFIX_NATIVE}/lib/pkgconfig";
 NATIVE_TOOLS_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_MDSO_URLS_GIT:="mdso=${DEFAULT_GITROOT}/mdso"};
 : ${PKG_MDSO_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET}"};
-: ${PKG_MDSO_INSTALL_FILES:="@mdso=bin/${DEFAULT_TARGET}-mdso /=${DEFAULT_TARGET}/bin @../../bin/mdso=${DEFAULT_TARGET}/bin/mdso"};
+: ${PKG_MDSO_INSTALL_FILES_V2:="
+	@mdso=bin/${DEFAULT_TARGET}-mdso
+	/=${DEFAULT_TARGET}/bin
+	@../../bin/mdso=${DEFAULT_TARGET}/bin/mdso"};
 : ${PKG_PERK_DEPENDS:="mdso"};
 : ${PKG_PERK_URLS_GIT:="perk=${DEFAULT_GITROOT}/perk"};
 : ${PKG_PERK_CFLAGS_CONFIGURE:="-I${PREFIX_NATIVE}/include"};
 : ${PKG_PERK_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET}"};
-: ${PKG_PERK_INSTALL_FILES:="@perk=bin/${DEFAULT_TARGET}-perk"};
+: ${PKG_PERK_INSTALL_FILES_V2:="@perk=bin/${DEFAULT_TARGET}-perk"};
 : ${PKG_PKGCONF_SHA256SUM:=ef9c7e61822b7cb8356e6e9e1dca58d9556f3200d78acab35e4347e9d4c2bbaf};
 : ${PKG_PKGCONF_VERSION:=1.9.0};
 : ${PKG_PKGCONF_URL:=https://distfiles.dereferenced.org/pkgconf/pkgconf-${PKG_PKGCONF_HOST_VERSION}.tar.xz};
 : ${PKG_PKGCONF_CONFIGURE_ARGS:="--prefix= --host=${DEFAULT_TARGET} --with-sysroot=${PREFIX_NATIVE}"};
-: ${PKG_PKGCONF_INSTALL_FILES:=/=lib/pkgconfig};
+: ${PKG_PKGCONF_INSTALL_FILES_V2:="
+	@pkgconf=bin/pkg-config
+	+%[_files]/bin/\%[_target]-pkg-config=bin/%[_target]-pkg-config
+	m0755=bin/%[_target]-pkg-config
+	/=lib/pkgconfig"};
 : ${PKG_SLIBTOOL_URLS_GIT:="slibtool=git://midipix.org/slibtool"};
 : ${PKG_SLIBTOOL_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
 : ${PKG_TPAX_URLS_GIT:="tpax=https://git.midipix.org/tpax@main"};

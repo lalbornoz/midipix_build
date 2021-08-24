@@ -83,7 +83,9 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBFFI_URL:=ftp://sourceware.org/pub/libffi/libffi-${PKG_LIBFFI_VERSION}.tar.gz};
 : ${PKG_LIBFFI_CFLAGS_CONFIGURE_EXTRA:=-D_WIN64};
 : ${PKG_LIBFFI_ENV_VARS_EXTRA:="MAKE=make LIBTOOL=slibtool"};
-: ${PKG_LIBFFI_INSTALL_FILES:="lib/libffi-${PKG_LIBFFI_VERSION}/include/ffi.h=include/ffi.h lib/libffi-${PKG_LIBFFI_VERSION}/include/ffitarget.h=include/ffitarget.h"};
+: ${PKG_LIBFFI_INSTALL_FILES_V2:="
+	+lib/libffi-${PKG_LIBFFI_VERSION}/include/ffi.h=include/%[FNAME]
+	+lib/libffi-${PKG_LIBFFI_VERSION}/include/ffitarget.h=include/%[FNAME]"};
 : ${PKG_LIBFFI_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/libffi/libffi-${PKG_LIBFFI_VERSION}.midipix.patch"};
 : ${PKG_LIBFIRM_URLS_GIT:="libfirm=http://pp.info.uni-karlsruhe.de/git/libfirm.git@master bfirm=${DEFAULT_GITROOT}/compilers/bfirm@main"};
 : ${PKG_LIBFIRM_BASE_DIR:=${BUILD_WORKDIR}/cparser+libfirm-native-${DEFAULT_TARGET}};
@@ -121,8 +123,7 @@ gcry_cv_visibility_attribute=yes"};
 	-DCMAKE_ASM_NASM_COMPILER=${PREFIX}/bin/${DEFAULT_TARGET}-nasm
 	-DCMAKE_ASM_NASM_OBJECT_FORMAT=win64
 	-DWITH_SIMD=OFF
-	-DWITH_JPEG8=ON
-"};
+	-DWITH_JPEG8=ON"};
 : ${PKG_LIBKSBA_DEPENDS:="libgpg_error"};
 : ${PKG_LIBKSBA_SHA256SUM:=dad683e6f2d915d880aa4bed5cea9a115690b8935b78a1bbe01669189307a48b};
 : ${PKG_LIBKSBA_VERSION:=1.6.0};
@@ -212,8 +213,7 @@ ksba_cv_visibility_attribute=yes"};
 	-DRPMIO_LIBRARY=${PREFIX_NATIVE}/lib/librpmio.so
 	-DWITH_LIBXML2:BOOL=ON
 	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
-	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.a
-"};
+	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.a"};
 : ${PKG_LIBSSH_DEPENDS:="libz"};
 : ${PKG_LIBSSH_SHA256SUM:=acffef2da98e761fc1fd9c4fddde0f3af60ab44c4f5af05cd1b2d60a3fa08718};
 : ${PKG_LIBSSH_VERSION:=0.9.5};
@@ -224,9 +224,7 @@ ksba_cv_visibility_attribute=yes"};
 	-DWITH_GCRYPT=ON
 	-DWITH_SYMBOL_VERSIONING=OFF
 	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
-	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.lib.a
-
-"};
+	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.lib.a"};
 : ${PKG_LIBSTROPHE_DEPENDS:="libressl expat"};
 : ${PKG_LIBSTROPHE_SHA256SUM:=cf1a363ae6df88ccd97292d4e859b7680d8bac79347b53a9dc8f095456b7a02d};
 : ${PKG_LIBSTROPHE_VERSION=0.10.1};
@@ -268,6 +266,9 @@ ksba_cv_visibility_attribute=yes"};
 : ${PKG_LIBXML2_VERSION:=2.9.10};
 : ${PKG_LIBXML2_URL:=ftp://xmlsoft.org/libxml2/libxml2-${PKG_LIBXML2_VERSION}.tar.gz};
 : ${PKG_LIBXML2_CONFIGURE_ARGS_EXTRA:="--with-python=no"};
+: ${PKG_LIBXML2_INSTALL_FILES_V2:="
+	+%[_files]/bin/\%[_target]-xml2-config=bin/%[_target]-xml2-config
+	m0755=bin/%[_target]-xml2-config"};
 : ${PKG_LIBXSLT_DEPENDS:="libxml2 libgcrypt"};
 : ${PKG_LIBXSLT_SHA256SUM:=98b1bd46d6792925ad2dfe9a87452ea2adebf69dcb9919ffd55bf926a7f93f7f};
 : ${PKG_LIBXSLT_VERSION:=1.1.34};
@@ -297,8 +298,7 @@ ksba_cv_visibility_attribute=yes"};
 	-DOPENSSL_CRYPTO_LIBRARY=${PREFIX_NATIVE}/lib/libcrypto.lib.a
 	-DOPENSSL_SSL_LIBRARY=${PREFIX_NATIVE}/lib/libssl.lib.a
 	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
-	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.a
-"};
+	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.a"};
 : ${PKG_LZO_SHA256SUM:=c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072};
 : ${PKG_LZO_VERSION:=2.10};
 : ${PKG_LZO_URL:=https://www.oberhumer.com/opensource/lzo/download/lzo-${PKG_LZO_VERSION}.tar.gz};
@@ -307,6 +307,8 @@ ksba_cv_visibility_attribute=yes"};
 : ${PKG_NETTLE_URL:=https://ftp.gnu.org/gnu/nettle/nettle-${PKG_NETTLE_VERSION}.tar.gz};
 : ${PKG_NETTLE_CONFIGURE_ARGS_EXTRA:=--disable-fat};
 : ${PKG_NETTLE_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
+: ${PKG_NETTLE_CONFIG_CACHE_EXTRA:="nettle_cv_asm_underscore=no"};
+: ${PKG_NETTLE_INSTALL_FILES_V2:="m0755=lib/%<lib*.so>"};
 : ${PKG_NETTLE_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_READLINE_DEPENDS:="ncurses ncursestw ncursesw"};
 : ${PKG_READLINE_SHA256SUM:=f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02};
@@ -374,6 +376,8 @@ ksba_cv_visibility_attribute=yes"};
 : ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
 : ${PKG_WOLFSSL_CONFIGURE_ARGS_EXTRA:="--enable-distro --with-libz=${PREFIX_NATIVE}"};
 : ${PKG_WOLFSSL_SUBDIR:=wolfssl-${PKG_WOLFSSL_VERSION}-stable};
-: ${PKG_WOLFSSL_INSTALL_FILES:="../obj/wolfssl/options.h=include/wolfssl/options.h ../obj/cyassl/options.h=include/cyassl/options.h"};
+: ${PKG_WOLFSSL_INSTALL_FILES_V2:="
+	+../obj/cyassl/options.h=include/cyassl/%[FNAME]
+	+../obj/wolfssl/options.h=include/wolfssl/%[FNAME]"};
 
 # vim:filetype=sh textwidth=0

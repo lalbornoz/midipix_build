@@ -17,7 +17,9 @@ HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_BINUTILS_HOST_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_HOST_VERSION}.tar.bz2};
 : ${PKG_BINUTILS_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -g2 -O0"};
 : ${PKG_BINUTILS_HOST_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --prefix=${PREFIX} --target=${DEFAULT_TARGET} --with-sysroot=${PREFIX_CROSS}"};
-: ${PKG_BINUTILS_HOST_INSTALL_FILES:="@${DEFAULT_TARGET}-windmc=bin/windmc @${DEFAULT_TARGET}-windres=bin/windres"};
+: ${PKG_BINUTILS_HOST_INSTALL_FILES_V2:="
+	@%[_target]-windmc=bin/windmc
+	@%[_target]-windres=bin/windres"};
 : ${PKG_BINUTILS_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib"};
 : ${PKG_BINUTILS_HOST_LIBTOOL:=slibtool-static};
 : ${PKG_BINUTILS_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= prefix="};
@@ -84,7 +86,7 @@ HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_LDSO_HOST_BUILD_TYPE:=cross};
 : ${PKG_LDSO_HOST_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO -I${PREFIX_CROSS}/include"};
 : ${PKG_LDSO_HOST_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET} --disable-shared"};
-: ${PKG_LDSO_HOST_INSTALL_FILES:="@../${DEFAULT_TARGET}/lib/libldso.a=${PREFIX}/lib/libldso.a"};
+: ${PKG_LDSO_HOST_INSTALL_FILES_V2:="@../%[_target]/lib/libldso.a=%[_prefix]/lib/libldso.a"};
 : ${PKG_LDSO_HOST_MAKEFLAGS_BUILD_EXTRA:=STATIC_LIB_NAME=libldso.a};
 : ${PKG_LDSO_HOST_MAKEFLAGS_INSTALL_EXTRA:=STATIC_LIB_NAME=libldso.a};
 : ${PKG_MPC_HOST_DEPENDS:="gmp_host mpfr_host"};
@@ -127,6 +129,7 @@ HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 : ${PKG_NASM_HOST_VERSION:=2.14.02};
 : ${PKG_NASM_HOST_URL:=http://www.nasm.us/pub/nasm/releasebuilds/${PKG_NASM_HOST_VERSION}/nasm-${PKG_NASM_HOST_VERSION}.tar.xz};
 : ${PKG_NASM_HOST_CFLAGS_CONFIGURE_EXTRA:=-DCOFF_MIDIPIX};
+: ${PKG_NASM_HOST_INSTALL_FILES_V2:="!bin/%<*>=bin/%[_target]-%[FNAME]"};
 : ${PKG_NASM_HOST_PREFIX:=${PREFIX}};
 : ${PKG_PSXSTUB_HOST_DEPENDS:="gcc_stage1_host"};
 : ${PKG_PSXSTUB_HOST_URLS_GIT:="psxstub=${DEFAULT_GITROOT}/psxstub"};

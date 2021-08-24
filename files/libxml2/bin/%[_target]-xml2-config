@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PREFIX=""; [ ${PREFIX:="${0%/*}"} = "${0}" ] && PREFIX="."; PREFIX="${PREFIX:+${PREFIX}/}..";
+case "${1}" in
+--cflags)	printf "-I${PREFIX}/include/libxml2\n"; ;;
+--libs)		printf "-L${PREFIX}/lib -lxml2 -lz -llzma -lpthread -lm\n"; ;;
+esac;

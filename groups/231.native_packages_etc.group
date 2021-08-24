@@ -28,7 +28,7 @@ zstd")";
 : ${PKG_APR_UTIL_URL:=https://archive.apache.org/dist/apr/apr-util-${PKG_APR_UTIL_VERSION}.tar.bz2};
 : ${PKG_APR_UTIL_ENV_VARS_EXTRA:="LDADD_dbd_sqlite3=-lsqlite3 -lapr-1 -L.libs -laprutil-1:LDADD_crypto_openssl=-lcrypto -lssl -lapr-1 -L.libs -laprutil-1"};
 : ${PKG_APR_UTIL_CONFIGURE_ARGS_EXTRA:="--with-crypto --with-apr=${BUILD_WORKDIR}/apr-native-${DEFAULT_TARGET}/obj"};
-: ${PKG_APR_UTIL_INSTALL_FILES:=bin/apu-1-config=${PREFIX}/bin/${DEFAULT_TARGET}-apu-1-config};
+: ${PKG_APR_UTIL_INSTALL_FILES_V2:="+bin/apu-1-config=%[_prefix_host]/bin/%[_target]-%[FNAME]"};
 : ${PKG_APR_UTIL_MAKEFLAGS_BUILD:="-j1"};
 : ${PKG_BDWGC_DEPENDS:="libatomic_ops"};
 : ${PKG_BDWGC_URLS_GIT:="bdwgc=https://github.com/ivmai/bdwgc@master"};
@@ -43,13 +43,21 @@ zstd")";
 : ${PKG_BOCHS_URL:=https://fossies.org/linux/misc/bochs-${PKG_BOCHS_VERSION}.tar.gz};
 : ${PKG_BOCHS_CONFIGURE_ARGS_EXTRA:="--disable-docbook --without-x11 --without-wx --without-sdl2 --with-term --with-sdl --enable-idle-hack"};
 : ${PKG_BOCHS_CXXFLAGS_CONFIGURE_EXTRA:="-D_LARGEFILE64_SOURCE -I${PREFIX_NATIVE}/include/ncurses"};
-: ${PKG_BOCHS_INSTALL_FILES:="../obj/.libs/bochs=bin/ ../obj/.libs/bximage=bin/"};
+: ${PKG_BOCHS_INSTALL_FILES_V2:="
+	+../obj/.libs/bochs=bin/%[FNAME]
+	+../obj/.libs/bximage=bin/%[FNAME]"};
 : ${PKG_BOCHS_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib"};
 : ${PKG_BOCHS_MAKEFLAGS_BUILD:="LIBS=-Wl,-ltinfo"};
 : ${PKG_BZIP2_SHA256SUM:=ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269};
 : ${PKG_BZIP2_VERSION:=1.0.8};
 : ${PKG_BZIP2_URL:=https://sourceware.org/pub/bzip2/bzip2-${PKG_BZIP2_VERSION}.tar.gz};
-: ${PKG_BZIP2_INSTALL_FILES:="@bzdiff=bin/bzcmp @bzgrep=bin/bzegrep @bzgrep=bin/bzfgrep @bzmore=bin/bzless ../bzip2-${PKG_BZIP2_VERSION}/libbz2.so.1=lib/ ../bzip2-${PKG_BZIP2_VERSION}/libbz2.so.1.0.8=lib/"};
+: ${PKG_BZIP2_INSTALL_FILES_V2:="
+	@bzdiff=bin/bzcmp
+	@bzgrep=bin/bzegrep
+	@bzgrep=bin/bzfgrep
+	@bzmore=bin/bzless
+	+../bzip2-${PKG_BZIP2_VERSION}/libbz2.so.1=lib/%[FNAME]
+	+../bzip2-${PKG_BZIP2_VERSION}/libbz2.so.1.0.8=lib/%[FNAME]"};
 : ${PKG_BZIP2_IN_TREE:=1};
 : ${PKG_BZIP2_MAKEFLAGS_BUILD_EXTRA:=-f Makefile-libbz2_so};
 : ${PKG_BZIP2_MAKE_INSTALL_VNAME:=PREFIX};
@@ -61,7 +69,7 @@ zstd")";
 : ${PKG_CLZIP_VERSION:=1.12};
 : ${PKG_CLZIP_URL:=https://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_VERSION}.tar.gz};
 : ${PKG_CLZIP_CONFIGURE_ARGS:="CC=${DEFAULT_TARGET}-gcc --prefix="};
-: ${PKG_CLZIP_INSTALL_FILES:="@clzip=bin/lzip"};
+: ${PKG_CLZIP_INSTALL_FILES_V2:="@clzip=bin/lzip"};
 : ${PKG_CLZIP_IN_TREE:=1};
 : ${PKG_CMAKE_DEPENDS:="curl libarchive libuv libz ncurses"};
 : ${PKG_CMAKE_SHA256SUM:=dc1246c4e6d168ea4d6e042cfba577c1acd65feea27e56f5ff37df920c30cae0};
@@ -120,7 +128,7 @@ zstd")";
 : ${PKG_DOOMGENERIC_CFLAGS_BUILD_EXTRA:="-DWINAPI_ANSI_DEFAULT -I${PREFIX_NATIVE}/include/w32api.ports"};
 : ${PKG_DOOMGENERIC_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
 : ${PKG_DOOMGENERIC_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_DOOMGENERIC_INSTALL_FILES:="../doomgeneric/doomgeneric/doomgeneric=bin/"};
+: ${PKG_DOOMGENERIC_INSTALL_FILES_V2:="+../doomgeneric/doomgeneric/doomgeneric=bin/%[FNAME]"};
 : ${PKG_EMACS_DEPENDS:="freetype gnutls libjpeg_turbo libz ncurses"};
 : ${PKG_EMACS_SHA256SUM:=1cf4fc240cd77c25309d15e18593789c8dbfba5c2b44d8f77c886542300fd32c};
 : ${PKG_EMACS_VERSION:=26.1};
@@ -186,7 +194,7 @@ zstd")";
 : ${PKG_HASTYHEX_IN_TREE:=1};
 : ${PKG_HASTYHEX_CFLAGS_BUILD_EXTRA:="-g3 -O0 -ansi -pedantic -funroll-loops"};
 : ${PKG_HASTYHEX_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_HASTYHEX_INSTALL_FILES:="../hastyhex/hastyhex=bin/"};
+: ${PKG_HASTYHEX_INSTALL_FILES_V2:="+../hastyhex/hastyhex=bin/%[FNAME]"};
 : ${PKG_HEXCURSE_DEPENDS:="ncurses"};
 : ${PKG_HEXCURSE_URLS_GIT:="hexcurse=https://github.com/LonnyGomes/hexcurse@master"};
 : ${PKG_HEXCURSE_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/ncurses};
@@ -235,7 +243,20 @@ gl_cv_func_getopt_gnu=yes"};
 : ${PKG_JOHN_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_JOHN_DISABLED_NT32:=1};
 : ${PKG_JOHN_IN_TREE:=1};
-: ${PKG_JOHN_INSTALL_FILES:="../john-${PKG_JOHN_VERSION}/run/john=bin/ ../john-${PKG_JOHN_VERSION}/run/mailer=bin/ ../john-${PKG_JOHN_VERSION}/run/makechr=bin/ ../john-${PKG_JOHN_VERSION}/run/relbench=bin/ ../john-${PKG_JOHN_VERSION}/run/unafs=bin/ ../john-${PKG_JOHN_VERSION}/run/unique=bin/ ../john-${PKG_JOHN_VERSION}/run/unshadow=bin/ /=share/john ../john-${PKG_JOHN_VERSION}/run/ascii.chr=share/john/ ../john-${PKG_JOHN_VERSION}/run/digits.chr=share/john/ ../john-${PKG_JOHN_VERSION}/run/john.conf=share/john/ ../john-${PKG_JOHN_VERSION}/run/lm_ascii.chr=share/john/ ../john-${PKG_JOHN_VERSION}/run/password.lst=share/john/"};
+: ${PKG_JOHN_INSTALL_FILES_V2:="
+	/=share/john
+	+../john-${PKG_JOHN_VERSION}/run/john=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/mailer=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/makechr=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/relbench=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/unafs=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/unique=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/unshadow=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/ascii.chr=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/digits.chr=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/john.conf=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/lm_ascii.chr=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/password.lst=share/john/%[FNAME]"};
 : ${PKG_JOHN_MAKEFLAGS_BUILD_EXTRA:="-C src midipix-x86-64"};
 : ${PKG_LBREAKOUT2_DEPENDS:="sdl1 libz libpng"};
 : ${PKG_LBREAKOUT2_SHA256SUM:=9104d6175553da3442dc6a5fc407a669e2f5aff3eedc5d30409eb003b7a78d6f};
@@ -317,7 +338,7 @@ gl_cv_func_getopt_gnu=yes"};
 : ${PKG_NCURSESW_VERSION:=6.1};
 : ${PKG_NCURSESW_URL:=https://ftp.gnu.org/gnu/ncurses/ncurses-${PKG_NCURSESW_VERSION}.tar.gz};
 : ${PKG_NCURSESW_CONFIGURE_ARGS_EXTRA:="--enable-pc-files --with-pkg-config-libdir=${PREFIX_NATIVE}/lib/pkgconfig --with-manpages --with-progs --with-shared --with-termlib --without-ada --without-tests --enable-widec --without-pthread"};
-: ${PKG_NCURSESW_INSTALL_FILES:=@ncursesw/ncurses.h=include/ncurses.h};
+: ${PKG_NCURSESW_INSTALL_FILES_V2:="@ncursesw/ncurses.h=include/ncurses.h"};
 : ${PKG_NPTH_SHA256SUM:=1393abd9adcf0762d34798dc34fdcf4d0d22a8410721e76f1e3afcd1daa4e2d1};
 : ${PKG_NPTH_VERSION:=1.6};
 : ${PKG_NPTH_URL:=https://www.gnupg.org/ftp/gcrypt/npth/npth-${PKG_NPTH_VERSION}.tar.bz2};
@@ -345,7 +366,7 @@ gl_cv_func_getopt_gnu=yes"};
 : ${PKG_P7ZIP_URLS_GIT:="p7zip-midipix.git=https://github.com/Lucía Andrea Illanes Albornoz/p7zip-midipix.git@master"};
 : ${PKG_P7ZIP_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_P7ZIP_IN_TREE:=1};
-: ${PKG_P7ZIP_INSTALL_FILES:="../p7zip-midipix.git/bin/7za=bin/"};
+: ${PKG_P7ZIP_INSTALL_FILES_V2:="+../p7zip-midipix.git/bin/7za=bin/%[FNAME]"};
 : ${PKG_PCRE_DEPENDS:="bzip2 libz"};
 : ${PKG_PCRE_SHA256SUM:=4dae6fdcd2bb0bb6c37b5f97c33c2be954da743985369cddac3546e3218bffb8};
 : ${PKG_PCRE_VERSION:=8.45};
@@ -474,7 +495,7 @@ ac_cv_prog_NCURSESW6_CONFIG=%PREFIX%/bin/ncursesw6-config"};
 : ${PKG_VIM_URL:=https://github.com/vim/vim/archive/v${PKG_VIM_VERSION}.tar.gz};
 : ${PKG_VIM_CONFIGURE_ARGS_EXTRA:="--enable-gui=no --with-tlib=tinfow --without-x"};
 : ${PKG_VIM_IN_TREE:=1};
-: ${PKG_VIM_INSTALL_FILES:=@vim=bin/vi};
+: ${PKG_VIM_INSTALL_FILES_V2:="@vim=bin/vi"};
 : ${PKG_VIM_MAKEFLAGS_INSTALL_EXTRA:=STRIP=/bin/true};
 : ${PKG_VIM_SUBDIR:=vim-${PKG_VIM_VERSION}};
 : ${PKG_VORBIS_TOOLS_DEPENDS:="curl libflac libogg libvorbis"};

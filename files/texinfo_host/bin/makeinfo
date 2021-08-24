@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PREFIX=""; [ ${PREFIX:="${0%/*}"} = "${0}" ] && PREFIX="."; PREFIX="${PREFIX:+${PREFIX}/}..";
+export PERL5LIB="${PREFIX}/share/texinfo:${PREFIX}/share/texinfo/lib/libintl-perl/lib:${PREFIX}/share/texinfo/lib/Text-Unidecode/lib:${PREFIX}/share/texinfo/lib/Unicode-EastAsianWidth/lib";
+"${PREFIX}/bin/makeinfo.dist" "${@}";

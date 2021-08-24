@@ -28,6 +28,9 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BUSYBOX_URL:=https://busybox.net/downloads/busybox-${PKG_BUSYBOX_VERSION}.tar.bz2};
 : ${PKG_BUSYBOX_DESTDIR:=destdir/busybox};
 : ${PKG_BUSYBOX_IN_TREE=1};
+: ${PKG_BUSYBOX_INSTALL_FILES_V2:="
+	+%[_builddir]/_install/bin/%<*>=bin/%[FNAME]
+	+%[_builddir]/_install/lib/libbusybox.so.${PKG_BUSYBOX_VERSION}=lib/%[FNAME]"};
 : ${PKG_BUSYBOX_PREFIX:=${PREFIX_NATIVE}/busybox};
 : ${PKG_CABEXTRACT_DEPENDS:="libmspack"};
 : ${PKG_CABEXTRACT_SHA256SUM:=afc253673c8ef316b4d5c29cc4aa8445844bee14afffbe092ee9469405851ca7};
@@ -55,7 +58,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_DASH_VERSION:=0.5.11.4};
 : ${PKG_DASH_URL:=https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-${PKG_DASH_VERSION}.tar.gz};
 : ${PKG_DASH_CONFIGURE_ARGS_EXTRA:="--disable-glob --enable-fnmatch"};
-: ${PKG_DASH_INSTALL_FILES:=@dash=bin/sh};
+: ${PKG_DASH_INSTALL_FILES_V2:="@dash=bin/sh"};
 : ${PKG_DATAMASH_SHA256SUM:=574a592bb90c5ae702ffaed1b59498d5e3e7466a8abf8530c5f2f3f11fa4adb3};
 : ${PKG_DATAMASH_VERSION:=1.7};
 : ${PKG_DATAMASH_URL:=https://ftp.gnu.org/gnu/datamash/datamash-${PKG_DATAMASH_VERSION}.tar.gz};
@@ -64,7 +67,11 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_DOS2UNIX_URL:=http://waterlan.home.xs4all.nl/dos2unix/dos2unix-${PKG_DOS2UNIX_VERSION}.tar.gz};
 : ${PKG_DOS2UNIX_CFLAGS_BUILD_EXTRA:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
 : ${PKG_DOS2UNIX_IN_TREE:=1};
-: ${PKG_DOS2UNIX_INSTALL_FILES:="../dos2unix-${PKG_DOS2UNIX_VERSION}/dos2unix=bin/ ../dos2unix-${PKG_DOS2UNIX_VERSION}/unix2dos=bin/ @dos2unix=bin/mac2unix @unix2dos=bin/unix2mac"};
+: ${PKG_DOS2UNIX_INSTALL_FILES_V2:="
+	+../dos2unix-${PKG_DOS2UNIX_VERSION}/dos2unix=bin/%[FNAME]
+	+../dos2unix-${PKG_DOS2UNIX_VERSION}/unix2dos=bin/%[FNAME]
+	@dos2unix=bin/mac2unix
+	@unix2dos=bin/unix2mac"};
 : ${PKG_ED_SHA256SUM:=71de39883c25b6fab44add80635382a10c9bf154515b94729f4a6529ddcc5e54};
 : ${PKG_ED_VERSION:=1.17};
 : ${PKG_ED_URL:=https://ftp.gnu.org/gnu/ed/ed-${PKG_ED_VERSION}.tar.lz};
@@ -106,7 +113,11 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_MKSH_URL:="https://sources.voidlinux.org/mksh-${PKG_MKSH_VERSION}/mksh-${PKG_MKSH_VERSION}.tgz http://pub.allbsd.org/MirOS/dist/mir/mksh/mksh-${PKG_MKSH_VERSION}.tgz"};
 : ${PKG_MKSH_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_MKSH_ENV_VARS_EXTRA:="CC=${DEFAULT_TARGET}-gcc"};
-: ${PKG_MKSH_INSTALL_FILES:="../mksh/mksh=bin/ /=share/doc/mksh/examples ../mksh/dot.mkshrc=share/doc/mksh/examples/ ../mksh/mksh.1=share/man/man1/"};
+: ${PKG_MKSH_INSTALL_FILES_V2:="
+	+../mksh/mksh=bin/%[FNAME]
+	/=share/doc/mksh/examples
+	+../mksh/dot.mkshrc=share/doc/mksh/examples/%[FNAME]
+	+../mksh/mksh.1=share/man/man1/%[FNAME]"};
 : ${PKG_MKSH_IN_TREE:=1};
 : ${PKG_MKSH_SUBDIR:=mksh};
 : ${PKG_MOON_BUGGY_DEPENDS:="ncurses"};
@@ -141,7 +152,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_NINVADERS_BUILD_DIR:=ninvaders-${PKG_NINVADERS_VERSION}};
 : ${PKG_NINVADERS_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_NINVADERS_CFLAGS_BUILD_EXTRA:="-g3 -O0 -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncurses"};
-: ${PKG_NINVADERS_INSTALL_FILES:="../ninvaders-0.1.1/nInvaders=bin/"};
+: ${PKG_NINVADERS_INSTALL_FILES_V2:="+../ninvaders-${PKG_NINVADERS_VERSION}/nInvaders=bin/%[FNAME]"};
 : ${PKG_NINVADERS_IN_TREE:=1};
 : ${PKG_NINVADERS_MAKEFLAGS_BUILD:="LIBS=-Wl,-L${PREFIX_NATIVE}/lib,-lncurses,-ltinfo"};
 : ${PKG_NINVADERS_SUBDIR:=ninvaders-${PKG_NINVADERS_VERSION}};
@@ -150,7 +161,9 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_OPENBSD_BASEUTILS_BUILD_DIR:=baseutils};
 : ${PKG_OPENBSD_BASEUTILS_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_OPENBSD_BASEUTILS_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
-: ${PKG_OPENBSD_BASEUTILS_INSTALL_FILES:="../baseutils/pax/pax=bin/ ../baseutils/pax/cpio.1=share/man/man1/ ../baseutils/pax/pax.1=share/man/man1/ ../baseutils/pax/tar.1=share/man/man1/"};
+: ${PKG_OPENBSD_BASEUTILS_INSTALL_FILES_V2:="
+	+../baseutils/pax/pax=bin/%[FNAME]
+	+../baseutils/pax/%<*.1>=share/man/man1/%[FNAME]"};
 : ${PKG_OPENBSD_BASEUTILS_MAKE_SUBDIRS:="libopenbsd pax"};
 : ${PKG_PROFANITY_DEPENDS:="libffi libstrophe libgcrypt libz glib gpgme ncursesw curl readline sqlite3"};
 : ${PKG_PROFANITY_SHA256SUM:=23f7b2e5c6cf85913b9e7a228802bca9ecb1d1cf3bf8f8f285e9676176a24902};
@@ -162,7 +175,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_PIXZ_VERSION:=1.0.7};
 : ${PKG_PIXZ_URL:=https://github.com/vasi/pixz/releases/download/v${PKG_PIXZ_VERSION}/pixz-${PKG_PIXZ_VERSION}.tar.xz};
 : ${PKG_PIXZ_CONFIG_CACHE_EXTRA:="ac_cv_file_src_pixz_1=yes"};
-: ${PKG_PIXZ_INSTALL_FILES:="../pixz-${PKG_PIXZ_VERSION}/src/pixz.1=share/man/man1/"};
+: ${PKG_PIXZ_INSTALL_FILES_V2:="+../pixz-${PKG_PIXZ_VERSION}/src/pixz.1=share/man/man1/%[FNAME]"};
 : ${PKG_PV_SHA256SUM:=608ef935f7a377e1439c181c4fc188d247da10d51a19ef79bcdee5043b0973f1};
 : ${PKG_PV_VERSION:=1.6.6};
 : ${PKG_PV_URL:=http://www.ivarch.com/programs/sources/pv-${PKG_PV_VERSION}.tar.bz2};
@@ -217,13 +230,17 @@ rc_cv_sysv_sigcld=no"};
 : ${PKG_TREE_VERSION:=1.8.0};
 : ${PKG_TREE_URL:=http://mama.indstate.edu/users/ice/tree/src/tree-${PKG_TREE_VERSION}.tgz};
 : ${PKG_TREE_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_TREE_INSTALL_FILES:="../tree-${PKG_TREE_VERSION}/tree=bin/ ../tree-${PKG_TREE_VERSION}/doc/tree.1=share/man/man1"};
+: ${PKG_TREE_INSTALL_FILES_V2:="
+	../tree-${PKG_TREE_VERSION}/tree=bin/%[FNAME]
+	../tree-${PKG_TREE_VERSION}/doc/tree.1=share/man/man1/%[FNAME]"};
 : ${PKG_TREE_IN_TREE:=1};
 : ${PKG_TERMINALLY_TETRIS_DEPENDS:="ncurses"};
 : ${PKG_TERMINALLY_TETRIS_URLS_GIT:=terminally_tetris=https://github.com/thecardkid/terminally-tetris.git@master};
 : ${PKG_TERMINALLY_TETRIS_BUILD_STEPS_DISABLE:=install_make};
 : ${PKG_TERMINALLY_TETRIS_CFLAGS_BUILD_EXTRA:="-std=gnu99 -g3 -O0 -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncurses"};
-: ${PKG_TERMINALLY_TETRIS_INSTALL_FILES:="../terminally_tetris/build/ttetris=bin/ ../terminally_tetris/man/ttetris.1=share/man/man1/"};
+: ${PKG_TERMINALLY_TETRIS_INSTALL_FILES_V2:="
+	../terminally_tetris/build/ttetris=bin/%[FNAME]
+	../terminally_tetris/man/ttetris.1=share/man/man1/%[FNAME]"};
 : ${PKG_TERMINALLY_TETRIS_IN_TREE:=1};
 : ${PKG_TERMINALLY_TETRIS_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib -lncurses -Wl,--as-needed -ltinfo -Wl,--no-as-needed"};
 : ${PKG_TERMINALLY_TETRIS_MAKEFLAGS_BUILD_EXTRA:=C=${DEFAULT_TARGET}-gcc};
