@@ -124,7 +124,12 @@ rtlp_install_fmap_patterns() {
 		if rtlp_install_splitl_ref \$_rifp2_expr \$_rifp2_lhs \$_rifp2_rhs '%<' '>'; then
 			case "${_rifp2_expr}" in
 			*\**)
-				set +o noglob; for _rifp2_pname in ${_rifp2_lhs:+"${_rifp2_lhs%/}/"}${_rifp2_expr}; do
+				if [ "${_rifp2_lhs#/}" = "${_rifp2_lhs}" ]; then
+					_rifp2_lhs_full="${_rifp2_prefix:+${_rifp2_prefix%}/}${_rifp2_lhs:+${_rifp2_lhs%/}/}";
+				else
+					_rifp2_lhs_full="${_rifp2_lhs:+${_rifp2_lhs%/}/}";
+				fi;
+				set +o noglob; for _rifp2_pname in ${_rifp2_lhs_full}${_rifp2_expr}; do
 					set -o noglob; _rifp2_pname="${_rifp2_pname%/}${_rifp2_rhs:+/${_rifp2_rhs}}";
 					if [ -e "${_rifp2_pname}" ]; then
 						eval ${_rifp2_rspec_list}='${'"${_rifp2_rspec_list}"':+${'"${_rifp2_rspec_list}"'}${RTLP_INSTALL_NL}}${_rifp2_pname}';
