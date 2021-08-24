@@ -54,6 +54,7 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_GDB_LIBTOOL:=rdlibtool};
 : ${PKG_GDB_MAKEFLAGS_BUILD_EXTRA:="SYSROOT_FLAGS=--sysroot=${PREFIX_NATIVE}"};
 : ${PKG_GDB_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gdb/gdb-${PKG_GDB_VERSION}.midipix.patch"};
+: ${PKG_GDB_VARS_FILES:="vars/gdb.vars"};
 : ${PKG_GENGETOPT_SHA256SUM:=b941aec9011864978dd7fdeb052b1943535824169d2aa2b0e7eae9ab807584ac};
 : ${PKG_GENGETOPT_VERSION:=2.23};
 : ${PKG_GENGETOPT_URL:=https://ftp.gnu.org/gnu/gengetopt/gengetopt-${PKG_GENGETOPT_VERSION}.tar.xz};

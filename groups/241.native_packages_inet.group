@@ -31,6 +31,7 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_CA_CERTIFICATES_CFLAGS_BUILD_EXTRA:=-I${PREFIX_NATIVE}/include};
 : ${PKG_CA_CERTIFICATES_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_CA_CERTIFICATES_ENV_VARS_EXTRA:="HOST_CC=gcc"};
+: ${PKG_CA_CERTIFICATES_VARS_FILE:="vars/ca_certificates.vars"};
 : ${PKG_CURL_DEPENDS:="gnutls"};
 : ${PKG_CURL_SHA256SUM:=ef6e55192d04713673b4409ccbcb4cb6cd723137d6e10ca45b0c593a454e1720};
 : ${PKG_CURL_VERSION:=7.61.0};
