@@ -6,7 +6,7 @@ pkg_fetch_download_clean_dlcache() {
 	local	_dlcachedir="${1}" _pkg_name="${2}" _pkg_fname="${3}" _pkg_urls_git="${4}"\
 		_fname="" _skipfl=0 _url_spec="" _url_subdir="";
 
-	for _fname in $(cd "${_dlcachedir}/${_pkg_name}" && find		\
+	for _fname in $(cd "${_dlcachedir}/${_pkg_name}" 2>/dev/null && find	\
 			-maxdepth 1						\
 			-mindepth 1						\
 			${_pkg_fname:+-not -name "${_pkg_fname}"}		\
