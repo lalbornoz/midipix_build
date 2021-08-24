@@ -9,7 +9,7 @@ pkg_install() {
 	else	for _destdir in "${PKG_DESTDIR}:${PKG_PREFIX}" "${PKG_DESTDIR_HOST}:${PREFIX}"; do
 			rtl_lassign "_destdir _destdir_prefix" ":" "${_destdir}";
 			if [ -e "${_destdir}" ]; then
-				(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}"; date;
+				(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}";
 				trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;
 				if ! tar -C "${_destdir}" -cpf - . | tar -C "${_destdir_prefix}" --overwrite -xpf -; then
 					exit 1;
