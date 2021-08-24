@@ -83,8 +83,8 @@ rtl_is_newer() {
 	local _new_fname="${1}" _old_fname="${2}" _new_ts="" _old_ts="";
 	if ! [ -e "${_old_fname}" ]; then
 		return 0;
-	else	_new_ts="$(stat -c %Y "${_new_fname}" 2>&1)";
-		_old_ts="$(stat -c %Y "${_old_fname}" 2>&1)";
+	else	_new_ts="$(stat -c %Y "${_new_fname}" 2>/dev/null)";
+		_old_ts="$(stat -c %Y "${_old_fname}" 2>/dev/null)";
 		if [ "${_new_ts:-0}" -gt "${_old_ts:-0}" ]; then
 			return 0;
 		else
