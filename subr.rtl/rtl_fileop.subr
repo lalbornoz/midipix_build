@@ -24,7 +24,7 @@ rtlp_fileop_log() {
 
 
 rtl_fileop() {
-	local _op="${1}" _dst="" _mode="" _install_args="" _owner="" _rc=0 _src=""; shift;
+	local _op="${1}" _dst="" _group="" _install_args="" _mode="" _owner="" _rc=0 _src=""; shift;
 	case "${_op}" in
 	cd)	if [ \( -z "${1}" \) -o ! \( -L "${1}" -o -e "${1}" \) ]; then
 			rtl_log_msg fatalexit "Invalid or non-existent directory \`%s'." "${1}";
@@ -38,6 +38,13 @@ rtl_fileop() {
 		&&   rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			rtlp_fileop_log "Changing file mode bits of \`${*}' to \`${_mode}'.";
 			chmod -- "${_mode}" "${@}"; _rc="${?}";
+		fi; ;;
+	chgrp)	if [ "${#}" -lt 2 ]; then
+			rtl_log_msg fatalexit "Missing parameters (in: chgrp %s.)" "${*}";
+		elif _group="${1}" && shift\
+		&&   rtlp_fileop_check "${PREFIX:-}" "${*}"; then
+			rtlp_fileop_log "Changing file group of \`${*}' to \`${_group}'.";
+			chgrp -- "${_group}" "${@}"; _rc="${?}";
 		fi; ;;
 	chown)	if [ "${#}" -lt 2 ]; then
 			rtl_log_msg fatalexit "Missing parameters (in: chown %s.)" "${*}";
@@ -92,7 +99,13 @@ rtl_fileop() {
 			rtlp_fileop_log "Moving \`${1}' to \`${2}' w/ -fs";
 			mv -f -- "${1}" "${2}"; _rc="${?}";
 		fi; ;;
-	mkdir|mkfifo|rm|source|source_opt|test|touch)
+	touch)	if [ -z "${1}" ]; then
+			rtl_log_msg fatalexit "Missing parameters (in: touch %s.)" "${*}";
+		elif rtlp_fileop_check "${PREFIX:-}" "${1}"; then
+			rtlp_fileop_log "Touching file \`${1}'${2:+ w/ timestamp \`${2}\'}.";
+			touch ${2:+-t "${2}"} -- "${1}"; _rc="${?}";
+		fi; ;;
+	mkdir|mkfifo|rm|source|source_opt|test)
 		while [ \( "${?}" -eq 0 \) -a \( ""${#}"" -gt 0 \) ]; do
 			if [ -z "${1}" ]; then
 				rtl_log_msg fatalexit "Missing parameters (in: %s %s.)" "${_op}" "${*}";
@@ -130,10 +143,6 @@ rtl_fileop() {
 			&& rtlp_fileop_check "${PREFIX:-}" "${1}"\
 			&& ! [ \( -L "${1}" \) -o \( -e "${1}" \) ]; then
 				return 1;
-			elif [ "${_op}" = touch ]\
-			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
-				rtlp_fileop_log "Touching file \`${1}'.";
-				touch -- "${1}"; _rc="${?}";
 			fi; shift;
 		done; ;;
 	*)	rtl_log_msg fatalexit "Error: rtl_fileop() called w/ invalid parameter(s): %s" "${*}"; ;;
