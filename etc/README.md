@@ -6,22 +6,30 @@ internal repositories required in order to build Midipix.
 # Table of Contents
 
 1. [What is midipix, and how is it different?](#1-what-is-midipix-and-how-is-it-different)  
-2. [Building, installing, and using a midipix distribution](#2-building-installing-and-using-a-midipix-distribution)  
-	2.1. [Build-time dependencies](#21-build-time-dependencies)  
-		2.1.1. [Alpine-specific notate bene](#211-alpine-specific-notate-bene)  
+2. [Building and deployment](#2-building-and-deployment)  
+	2.1. [Building, installing, and using a midipix distribution](#21-building-installing-and-using-a-midipix-distribution)  
+		2.1.1. [Build-time dependencies](#211-build-time-dependencies)  
+			2.1.1.1. [Alpine-specific notate bene](#2111-alpine-specific-notate-bene)  
 	2.2. [Deployment](#22-deployment)  
 	2.3. [System requirements](#23-system-requirements)  
 	2.4. [Troubleshooting](#24-troubleshooting)  
-3. [Common tasks](#3-common-tasks)  
-	3.1. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#31-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
+3. [Common concepts and tasks](#3-common-concepts-and-tasks)  
+	3.1. [Common tasks](#31-common-tasks)  
 	3.2. [Adding a package](#32-adding-a-package)  
 	3.3. [Addressing build failure](#33-addressing-build-failure)  
-	3.4. [Patches and ``vars`` files](#34-patches-and-vars-files)  
-	3.5. [``pkgtool.sh``](#35-pkgtoolsh)  
-		3.5.1. [``-s``: package build shell environment](#351-s-package-build-shell-environment)  
-4. [Build variables](#4-build-variables)  
+	3.4. [Package archive files and Git repositories](#34-package-archive-files-and-git-repositories)  
+	3.5. [``-s``: package build shell environment](#35--s-package-build-shell-environment)  
+	3.6. [Package-package and {package,group}-group relationships](#36-package-package-and-packagegroup-group-relationships)  
+	3.7. [Patches and ``vars`` files](#37-patches-and-vars-files)  
+4. [Units reference](#4-units-reference)  
 	4.1. [Build steps](#41-build-steps)  
-	4.2. [Package variables](#42-package-variables)  
+	4.2. [Build variables](#42-build-variables)  
+	4.3. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#43-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
+	4.4. [File installation DSL](#44-file-installation-dsl)  
+	4.5. [Package variables](#45-package-variables)  
+		4.5.1. [Package variable types](#451-package-variable-types)  
+		4.5.2. [Package variables](#452-package-variables)  
+	4.6. [``pkgtool.sh``](#46-pkgtoolsh)  
 5. [References](#5-references)  
 
 [//]: "}}}"
@@ -51,8 +59,11 @@ in other projects.
 
 [//]: "}}}"
 
-[//]: # "{{{ 2. Building, installing, and using a midipix distribution"
-## 2. Building, installing and using a midipix distribution
+[//]: # "{{{ 2. Building and deployment"
+## 2. Building and deployment
+[//]: # "}}}"
+[//]: # "{{{ 2.1. Building, installing, and using a midipix distribution"
+### 2.1. Building, installing and using a midipix distribution
 
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
@@ -65,7 +76,7 @@ A Midipix distribution consists of the following:
   any modern POSIX-compliant \*nix environment, including GNU coreutils, shells,
   libraries such as ncurses, libressl, as well as Perl and Python.
 
-Install the build-time dependencies listed in section [2.1](#21-build-time-dependencies),
+Install the build-time dependencies listed in section [2.1.1](#211-build-time-dependencies),
 clone this repository (e.g. ``git clone https://dev.midipix.org/build/midipix_build``)
 and run the following command line:
 
@@ -75,8 +86,9 @@ and run the following command line:
 
 By default, the build will take place within ``${HOME}/midipix/nt64/release``
 and package archive files and/or Git repositores will be downloaded into
-``${HOME}/midipix/dlcache``. Consult sections [3.1](#31-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen), [4](#4-build-variables), and [4.1](#42-package-variables)
-for the list of available build variables and how to override them.  
+``${HOME}/midipix/dlcache``. Consult sections [4.2](#42-build-variables) and
+[4.5](#45-package-variables) for the list of available build/package variables
+and how to override them.  
 Parallelisation is enabled by the above command line for both packages that can
 be built independently of each other and ``make(1)`` via ``-j``, limited to the
 amount of logical processors on the build host divided by two (2).
@@ -84,8 +96,8 @@ amount of logical processors on the build host divided by two (2).
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 2.1. Build-time dependencies"
-### 2.1. Build-time dependencies
+[//]: # "{{{ 2.1.1. Build-time dependencies"
+### 2.1.1. Build-time dependencies
 
 * **Alpine Linux**:
   binutils bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip libc-dev linux-headers lzip make musl-dev net-tools patch perl perl-xml-parser procps sed tar util-linux wget xz zip
@@ -98,13 +110,13 @@ amount of logical processors on the build host divided by two (2).
   
 > N.B. Busybox is not supported. Awk implementations other than GNU Awk are not supported.  
   
-> N.B. gcc versions >7.5.0 are not supported.  
+> N.B. gcc versions >7.5.0 are not supported. clang is not supported.  
   
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 2.1.1. Alpine-specific notate bene"
-#### 2.1.1. Alpine-specific notate bene
+[//]: # "{{{ 2.1.1.1. Alpine-specific notate bene"
+#### 2.1.1.1. Alpine-specific notate bene
 
 Some packages (*coreutils*, *grep*, and *tar*, among others) override Alpine's
 BusyBox utilities of the same name, as the latter are either non-conformant or
@@ -117,7 +129,7 @@ defective.
 ### 2.2. Deployment
 
 On successful completion of the build, a ZIP archive containing the Midipix
-distribution will be created inside ``${PREFIX}`` (see section [4](#4-build-variables).)
+distribution will be created inside ``${PREFIX}`` (see section [4.2](#42-build-variables).)
 Create a directory on the target machine and extract the contents of the distribution
 ZIP archive into it, run ``bash.bat``, and then ``/install.sh`` inside the resulting
 self-contained Midipix installation shell window.  
@@ -196,8 +208,11 @@ directory; this may be adjusted with the ``--log-dir`` and/or
 
 [//]: # "}}}"
 
-[//]: # "{{{ 3. Common tasks"
-## 3. Common tasks
+[//]: # "{{{ 3. Common concepts and tasks"
+## 3. Common concepts and tasks
+[//]: # "}}}"
+[//]: # "{{{ 3.1. Common tasks"
+### 3.1. Common tasks
 
 Rebuild set of packages in isolation:
 ```shell
@@ -242,8 +257,240 @@ Forcibly (re)download all archive files and/or Git repositories associated with 
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen"
-## 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
+[//]: # "{{{ 3.2. Adding a package"
+## 3.2. Adding a package
+
+Packages are grouped into *build groups* according to sets of common package
+variable defaults, such as ``${PKG_CFLAGS_CONFIGURE}, ${PKG_LDFLAGS_CONFIGURE}``
+and ``${PKG_CONFIGURE_ARGS}``, and semantic interrelatedness, such as the
+``native_runtime`` build group comprising the Midipix runtime components.
+Packages may belong to more than one build group such as when subsumed by a shorthand
+build group e.g. the ``dev_packages`` build group, as long as the default set of build
+groups or as overriden on the command line does not entail group membership conflicts.  
+  
+Build groups files beneath ``groups/`` named ``[0-9][0-9][0-9].<group name>.group``
+contain package variable defaults, the alphabetically sorted list of contained
+packages in ``<upper case group name>_PACKAGES``, and their package variables
+sorted alphabetically with the exception of ``${PKG_DEPENDS}`` (if present,)
+``${PKG_SHA256SUM}``, ``${PKG_URL}``, and ``${PKG_VERSION}``, and/or ``${PKG_URLS_GIT}``,
+which are specified in this order.  
+  
+Pick a build group according to the criteria mentioned, add the package to the
+build group's list of contained packages in its corresponding file, and add the
+set of package variables required (see above and section [4.5](#45-package-variables).)  
+Consult section [3.7](#37-patches-and-vars-files) if the package to be added
+requires patches or additional code amending or replacing package build steps
+or the entire package build. Consult section [4.1](#41-build-steps) for a list
+of package build steps and how they are overriden.
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 3.3. Addressing build failure"
+## 3.3. Addressing build failure
+
+During package build, standard error and output are redirected into a log file beneath
+``${BUILD_WORKDIR}`` named ``${PKG_NAME}_stderrout.log``, following a package variable
+dump. If ``-vv`` was specified, package logs will additionally be printed to standard
+output. If ``-vvv`` was specified, ``xtrace`` will be set during package builds for
+rudimentary debugging purposes. Additionally, packages using GNU autotools will, if
+package configuration failed or appears relevant, log the configuration process in detail
+in, most usually, ``${PKG_BUILD_DIR}/config.log``.  
+
+If ``--dump-on-abort`` was specified, a subset of the variables set and environment
+variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``, which may
+subsequently be used in order to obtain a package build shell environment with the
+``pkgtool.sh`` script (see sections [4.6](#46-pkgtoolsh), [3.5](#35--s-package-build-shell-environment).)
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 3.4. Package archive files and Git repositories"
+### 3.4. Package archive files and Git repositories
+
+Packages may have either or both of a SHA-256 message digest checked and to be extracted tarball
+(set in ``${PKG_URL}``, ``${PKG_FNAME}``, and ``${PKG_SHA256SUM}``) and/or Git repository or set
+thereof (set in ``${PKG_URLS_GIT}``.) Complementing these, an implicitly inferred or, in the
+presence of both, explicit primary source directory is specified for each package in ``${PKG_SUBDIR}``.
+Furthermore, these may be subject to download caching and/or setting up as well as maintaining
+mirrors, including automatic cleanup as well as deduplication in both cases.  
+  
+A list of pertinent package variables and their formats follows:  
+
+| Name           | Format                                          |
+| -------------- | ----------------------------------------------- |
+| PKG_FNAME      | ``<single file name>``                          |
+| PKG_SHA256SUM  | ``<SHA-256 message digest>``                    |
+| PKG_SUBDIR     | ``<relative or single directory name>``         |
+| PKG_URL        | ``scheme:[//authority]path[?query][#fragment]`` |
+| PKG_URLS_GIT   | ``[subdir=]URL[@branch]``                       |
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 3.5. -s: package build shell environment"
+### 3.5. -s: package build shell environment
+
+When ``build.sh`` is executed with the ``--dump-on-abort`` option, a subset of the
+variables set and environment variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``
+on build failure, which may subsequently be used in order to obtain a package build shell
+environment with the ``pkgtool.sh`` script, e.g.:  
+  
+```
+midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh -a nt64 -b debug -s mc
+==> 2020/03/11 15:46:28 Launching shell `/usr/bin/zsh' within package environment and `/home/midipix_build/midipix/nt64/debug/tmp'.
+==> 2020/03/11 15:46:28 Run $R to rebuild `mc'.
+==> 2020/03/11 15:46:28 Run $RS <step> to restart the specified build step of `mc'
+==> 2020/03/11 15:46:28 Run $D to automatically regenerate the patch for `mc'.
+midipix_build@sandbox:(mc-native-x86_64-nt64-midipix/obj)> $
+```
+  
+If a package build shell environment is desired for a package that has either not been
+built at all or built successfully, ``pkgshell.sh`` will attempt to rebuild the package
+at build steps up until, by default, ``build``, and then forcibly abort the build and
+write ``${BUILD_WORKDIR}/${PKG_NAME}.dump`` as above prior to entering the shell.  
+  
+Consult sections [3.2](#32-adding-a-package), [3.7](#37-patches-and-vars-files), [4.2](#42-build-variables),
+[4.1](#41-build-steps), and [4.5](#45-package-variables) for further information
+concerning the package build process.  
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 3.6. Package-package and {package,group}-group relationships"
+### 3.6. Package-package and {package,group}-group relationships
+
+Packages, as well as groups, are interrelated through implicit as well as explicit parametrised,
+typed relationships and form namespaces correspondingly.  
+  
+These primarily, by expressing modalities of constraining, derivation, and/or subdividision, govern
+the build and mirroring, etc. processes with regard to ordering constraints (e.g. ``depends``)
+and derivation or sharing of sets of variables and/or patches and/or ``vars/`` files (e.g.
+``group``, ``flavour``, ``inherit``) or build and/or source directories (e.g. ``module``,) etc.  
+They may, however, also be subject to enquiry for descriptive, diagnostic, or visualising purposes,
+particularly as concerns the namespaces they form.  
+  
+A list of relationship types follows:  
+
+| Type     | Mode     | Description                                                                                                                            |
+| -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| depends  | implicit | Direct and recursively evaluated package dependency                                                                                    |
+| suggests | explicit | Suggested or recommended optional package                                                                                              |
+| group    | implicit | Simple and overridable group variable inheritance (e.g. ``host_toolchain``, ``native_packages``)                                       |
+| inherit  | both     | Simple and overridable package variable inheritance                                                                                    |
+| flavour  | explicit | Exclusive package flavours set membership (e.g. ``vim_gtk``, ``vim_x11``) (conflicts w/ ``module``)                                    |
+| module   | explicit | Package modularisation with implicit source and build directory sharing (e.g. ``gcc_stage1``, ``gcc_full``) (conflicts w/ ``flavour``) |
+| target   | both     | Simple super- or subset derivation (e.g. ``host``, ``minipix``)                                                                        |
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 3.7. Patches and ``vars`` files"
+## 3.7. Patches and ``vars`` files
+
+Package patches are applied prior and/or subsequent to (GNU autotools or similar) package
+configuration during the ``configure_patch_pre`` and/or ``configure_patch`` build steps,
+respectively (see section [4.1](#41-build-steps).) Patch files are searched for beneath
+``patches/`` with the following globs and in-order:
+* ``${PKG_NAME}-${PKG_VERSION}_pre.local.patch``
+  or ``${PKG_NAME}_pre.local.patch`` (for packages lacking ``${PKG_VERSION}``)
+* ``${PKG_NAME}-${PKG_VERSION}_pre.local@${BUILD_HNAME}.patch``
+  or ``${PKG_NAME}_pre.local@${BUILD_HNAME}.patch`` (for packages lacking ``${PKG_VERSION}``)
+* ``${PKG_NAME}/*.patch``
+* ``${PKG_NAME}-${PKG_VERSION}.local.patch``
+  or ``${PKG_NAME}.local.patch`` (for packages lacking ``${PKG_VERSION}``)
+* ``${PKG_NAME}-${PKG_VERSION}.local@${BUILD_HNAME}.patch``
+  or ``${PKG_NAME}.local@${BUILD_HNAME}.patch`` (for packages lacking ``${PKG_VERSION}``)
+* ``${PKG_PATCHES_EXTRA}`` (if set)
+  
+If the default set of package build steps does not suffice, such as if additional commands
+must be executed after package configuration or prior to building, or if an entire or all
+build step must be replaced, overrides may be specified in the form of functions in the
+package's ``vars/${PKG_NAME}.vars`` ``vars`` file. Consult section [4.1](#41-build-steps)
+for a list of package build steps and how they are overriden.
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+
+[//]: # "{{{ 4. Units reference"
+## 4. Units reference
+[//]: # "}}}"
+[//]: # "{{{ 4.1. Build steps"
+## 4.1. Build steps
+
+Package builds are divided up into consecutively executed build steps until
+completion or aborted on failure unless relaxed mode is enabled by passing
+``-R``.  
+  
+Each build step corresponds to a function in the corresponding ``subr/pkg_*.subr``
+script and may be overriden entirely by a function named ``pkg_<package name>_<build step>()``
+or composed in terms of prior and/or subsequent execution by a function named
+``pkg_<package name>_<build step>_pre()`` and/or ``pkg_<package name>_<build step>_post()``,
+respectively, in the package's ``vars`` file. If a function named ``pkg_<package name>_all()``
+exists, it will override all build steps.  
+  
+Build step status is tracked on a per-package basis by state files beneath
+``${BUILD_WORKDIR}`` following the format ``.<package name>.<build step>``;
+package build completion corresponds to the pseudo-build step ``finish``.
+
+| Name                | Description                                                                                                                                                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fetch_clean         | Delete and create ``${PKG_SUBDIR}''                                                                                                                                                                                   |
+| fetch_download      | Download package archive & verify w/ SHA-256 message digest and/or clone Git repository/ies                                                                                                                           |
+| fetch_extract       | Extract package archive, if any                                                                                                                                                                                       |
+| configure_clean     | Delete and create ``${PKG_BUILD_DIR}''                                                                                                                                                                                |
+| configure_patch_pre | Apply ``chainport`` patches and/or patches beneath ``patches/`` prior to (GNU autotools or similar) configuration                                                                                                     |
+| configure_autotools | Bootstrap (GNU autools or similar) environment, and install ``config.sub`` and ``config.cache``                                                                                                                       |
+| configure_patch     | Apply patches beneath ``patches/`` and/or set in ``${PKG_PATCHES_EXTRA}`` after (GNU autotools or similar) configuration                                                                                              |
+| configure           | Perform package (GNU autools or similar or CMake) configuration w/ configuration-time set of environment variables                                                                                                    |
+| build_clean         | Clean ``${PKG_BUILD_DIR}'' w/ ``make clean'' invocation                                                                                                                                                               |
+| build               | Call ``make(1)`` w/ build-time set of make variables                                                                                                                                                                  |
+| install_clean       | Delete and create ``${PKG_DESTDIR}''                                                                                                                                                                                  |
+| install_subdirs     | Create default directory hierarchy in ``${PKG_DESTDIR}``, optionally amended w/ ``${PKG_INSTALL_FILES_DESTDIR_EXTRA}``                                                                                                |
+| install_make        | Call ``make(1)`` w/ ``${PKG_INSTALL_TARGET}`` (defaults to ``install``) and installation-time set of make variables                                                                                                   |
+| install_files       | Install ``${PKG_INSTALL_FILES}``, fix directory and file mode bits within ``${PKG_DESTDIR}`` and optionally ``${PKG_DESTDIR_HOST}``, ``pkgconf(1)`` package files, and/or stripped binaries within ``${PKG_DESTDIR}`` |
+| install_libs        | Purge libtool ``.la`` files and install shared objects within ``${PKG_DESTDIR}`` w/ ``perk`` and corresponding symbolic links                                                                                         |
+| install             | Install into ``${PKG_PREFIX}``, and optionally ``${PKG_DESTDIR_HOST}`` into ``${PREFIX}``, under mutex, and add package to ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}`` (unless inhibited)                                 |
+| install_rpm         | Build package RPM w/ auto-generated specifiation file based on ``etc/package.spec`` beneath ``${PREFIX_RPM}``                                                                                                         |
+| clean               | Clean ``${PKG_BUILD_DIR}`` and/or ``${PKG_DESTDIR}`` and/or ``${PKG_DESTDIR_HOST}`` and/or ``${PKG_BASE_DIR}/${PKG_SUBDIR}`` as per ``-C build,dest,src``, resp., if any                                              |
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 4.2. Build variables"
+## 4.2. Build variables
+
+The following variables are primarily defined in ``midipix.env`` and may be
+overriden on a per-build basis on the command-line, the environment, and/or
+``${HOME}/midipix_build.vars``, ``${HOME}/.midipix_build.vars``, and/or
+``../midipix_build.vars``, e.g.:
+
+```shell
+./build.sh -a nt64 -b release -D minipix,zipdist -P -v PREFIX_ROOT="${HOME}/midipix_tmp"
+env ARCH=nt64 BUILD_KIND=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D minipix,zipdist -P -v
+```
+
+| Variable name    | Default value                        | Description                                                                   |
+| ---------------- | ------------------------------------ | ----------------------------------------------------------------------------- |
+| ARCH             | nt64                                 | Target 32-bit (nt32) or 64-bit (nt64) architecture                            |
+| BUILD_DLCACHEDIR | ${PREFIX_ROOT}/dlcache               | Absolute pathname to package downloads cache root directory                   |
+| BUILD_HNAME      | $(hostname)                          | Build system hostname                                                         |
+| BUILD_KIND       | debug                                | Build w/ debugging (debug) or release compiler flags                          |
+| BUILD_WORKDIR    | ${PREFIX}/tmp                        | Absolute pathname to temporary package build root directory                   |
+| PREFIX           | ${PREFIX_ROOT}/${ARCH}/${BUILD_KIND} | Absolute pathname to architecture- & build type-specific build root directory |
+| PREFIX_CROSS     | ${PREFIX}/${DEFAULT_TARGET}          | Absolute pathname to toolchain root directory                                 |
+| PREFIX_MINGW32   | ${PREFIX}/x86_64-w64-mingw32         | Absolute pathname to MinGW toolchain root directory                           |
+| PREFIX_MINIPIX   | ${PREFIX}/minipix                    | Absolute pathname to minipix distribution root directory                      |
+| PREFIX_NATIVE    | ${PREFIX}/native                     | Absolute pathname to cross-compiled packages root directory                   |
+| PREFIX_ROOT      | ${HOME}/midipix                      | Absolute pathname to top-level directory                                      |
+| PREFIX_RPM       | ${PREFIX}/rpm                        | Absolute pathname to package RPM archive root directory                       |
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 4.3. Fault-tolerant & highly optimised 3D laser show-equipped usage screen"
+## 4.3. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
 
 ```
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
@@ -325,83 +572,321 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 3.2. Adding a package"
-## 3.2. Adding a package
+[//]: # "{{{ 4.4. File installation DSL"
+## 4.4. File installation DSL
 
-Packages are grouped into *build groups* according to sets of common package
-variable defaults, such as ``${PKG_CFLAGS_CONFIGURE}, ${PKG_LDFLAGS_CONFIGURE}``
-and ``${PKG_CONFIGURE_ARGS}``, and semantic interrelatedness, such as the
-``native_runtime`` build group comprising the Midipix runtime components.
-Packages may belong to more than one build group such as when subsumed by a shorthand
-build group e.g. the ``dev_packages`` build group, as long as the default set of build
-groups or as overriden on the command line does not entail group membership conflicts.  
+File and directory installation, comprising e.g. copying, moving, creating
+symbolic links, setting owner and/or permission metadata, are expressed in
+a descriptive domain-specific language and integrated with package building
+via the package variables ``${PKG_INSTALL_FILES}``, applying during ``install_files``
+after the ``install_make`` build step,``${PKG_INSTALL_FILES_DESTDIR}`` and
+``${PKG_INSTALL_FILES_DESTDIR_EXTRA}`` during ``install_subdirs`` with the
+following syntax specified in EBNF:  
+
+```
+(*
+SH_GLOB_PATTERN      = any valid portable shell pattern (see sh(1)); superset of PATHNAME
+SH_SUBSTRING_PATTERN = any valid portable substring processing shell pattern (see sh(1));
+                       superset of PATHNAME
+PARAMETER            = any valid portable shell variable name except that [0-9] may occur
+                       the beginning
+PATHNAME             = any valid filename, directory name, relative or absolute pathname
+                       excluding the characters NUL and NL
+ *)
+
+spec                 = { op_flag, } op_unary, "=", op_spec, "\n", { spec } ;
+                     | { op_flag, } op_binary, op_spec, "=" op_spec, "\n", { spec } ;
+                     | "#" COMMENT ;
+op_unary             = "-" | "/" | "t" ;
+op_binary            = ":" | "!" | "@" | "+" | "g" | "m" | "o" | "T" ;
+op_flag              = "?" ;
+op_spec              = pattern_spec | PATHNAME | expr_spec | op_spec ;
+
+pattern_spec         = "%<", SH_GLOB_PATTERN, ">" ;
+
+expr_spec            = "%[", expr, { sexpr_spec }, "%]" ;
+expr                 = [ "@" ], "0" .. "9" | "DNAME" | "FNAME" | "ITEM" | PARAMETER ;
+
+sexpr_spec           = sexpr_op_unary, SH_SUBSTRING_PATTERN, { sexpr } ;
+sexpr_op_unary       = "##" | "#" | "%%" | "%" ;
+```
   
-Build groups files beneath ``groups/`` named ``[0-9][0-9][0-9].<group name>.group``
-contain package variable defaults, the alphabetically sorted list of contained
-packages in ``<upper case group name>_PACKAGES``, and their package variables
-sorted alphabetically with the exception of ``${PKG_DEPENDS}`` (if present,)
-``${PKG_SHA256SUM}``, ``${PKG_URL}``, and ``${PKG_VERSION}``, and/or ``${PKG_URLS_GIT}``,
-which are specified in this order.  
+Single ``"="`` characters in ``spec``, the ``"%<"`` and ``"%["`` character
+sequences in ``pattern_spec`` and ``expr_spec``, resp., and the ``sexpr_op_unary``
+as well as ``sexpr_op_binary`` characters or character sequences may be
+escaped with a single backslash (``"\"``.) ``SH_SUBSTRING_PATTERN`` differs
+from ``SH_GLOB_PATTERN`` solely in that any of ``sexpr_op_unary`` and
+``sexpr_op_binary`` occuring at the beginning of or in the former must
+be escaped with a single backslash (``"\"``,) e.g. ``"#\#pattern"`` and
+``"%\%pattern"``, etc. and ``"#pat\%ern"`` and ``%patt\#ern", etc., resp.  
   
-Pick a build group according to the criteria mentioned, add the package to the
-build group's list of contained packages in its corresponding file, and add the
-set of package variables required (see above and section [4.2](#42-package-variables).)  
-Consult section [3.4](#34-patches-and-vars-files) if the package to be added
-requires patches or additional code amending or replacing package build steps
-or the entire package build. Consult section [4.1](#41-build-steps) for a list
-of package build steps and how they are overriden.
+Named parameters (``PARAMETER``) are supplied via the ``-p name=value``
+argument to ``rtl_install()``, whereas numbered parameters are for
+internal usage only; the ``"DNAME"``, ``"FNAME"``, and ``"ITEM"`` parameters
+lazily evaluate to the directory name, file (aka base) name, and full
+pathname of the current item being processed relative to a specification
+with a pattern in it.
+  
+The following parameters are defined by default during ``install_files``:
+| Name           | Value                                  |
+| -------------  | -------------------------------------- |
+| _builddir      | ${PKG_BUILD_DIR}                       |
+| _destdir       | ${PKG_BASE_DIR}/${PKG_DESTDIR}         |
+| _destdir_host  | ${PKG_BASE_DIR}/${PKG_DESTDIR_HOST}    |
+| _files         | ${MIDIPIX_BUILD_PWD}/files/${PKG_NAME} |
+| _name          | ${PKG_NAME}                            |
+| _prefix        | ${PKG_PREFIX}                          |
+| _prefix_host   | ${PREFIX}                              |
+| _prefix_native | ${PREFIX_NATIVE}                       |
+| _subdir        | ${PKG_BASE_DIR}/${PKG_SUBDIR}          |
+| _target        | ${PKG_TARGET}                          |
+| _version       | ${PKG_VERSION:-}                       |
+| _workdir       | ${BUILD_WORKDIR}                       |
+  
+The following operation flags are defined:
+| Flag      | Description              |
+| --------- | ------------------------ |
+| ``?``     | Continue on soft failure |
+  
+The following operations are defined:
+| Operation      | Arity  | Description                                                      |
+| -------------- | ------ | ---------------------------------------------------------------- |
+| ``-``          | Unary  | Remove directories and/or files                                  |
+| ``/``          | Unary  | Create directories or trees thereof                              |
+| ``t``          | Unary  | touch(1) files and/or directories                                |
+| ``:''          | Binary | Copy directories and/or files                                    |
+| ``!``          | Binary | Move/rename directories and/or files                             |
+| ``@``          | Binary | Create/update symbolic links                                     |
+| ``+``          | Binary | Copy directories and/or files if newer and follow symbolic links |
+| ``g``          | Binary | Set group owner of files and/or directories                      |
+| ``m``          | Binary | Set mode bits of files and/or directories                        |
+| ``o``          | Binary | Set user and/or group owner of files and/or directories          |
+| ``T``          | Binary | touch(1) files and/or directories with timestamp                 |
+  
+The following expression modifiers are defined:
+| Modifier       | Description                               |
+| -------------- | ----------------------------------------- |
+| ``@``          | Recursively reevaluate after substituting |
+  
+The following subexpression operators are defined:
+| Operation      | Arity  | Description                                                      |
+| -------------- | ------ | ---------------------------------------------------------------- |
+| ``##``         | Unary  | Remove largest prefix from left-hand side                        |
+| ``#``          | Unary  | Remove prefix from left-hand side                                |
+| ``%%``         | Unary  | Remove largest postfix from right-hand side                      |
+| ``%``          | Unary  | Remove postfix from right-hand side                              |
+  
+```shell
+#
+# Examples:
+# 
+
+#
+# Create directory %[_minipix]/bin and copy all files
+# in %[_minipix_dist]/bin/ to %[_minipix]/bin/ with
+# identical file names.
+/=%[_minipix]/bin
+?%[_minipix_dist]/bin/%<*>=%[_minipix]/bin/%[FNAME]
+
+#
+# Rename all files in share/info/ matching *.info to
+# their filenames with the `.info' postfix removed and
+# `-2.64.info' appended and all files in share/man/man1/
+# matching *.1 with the `.1' postfix removed and -2.64.1
+# appended.
+!share/info/%<*.info>=share/info/%[FNAME%.info]-2.64.info
+!share/man/man1/%<*.1>=share/man/man1/%[FNAME%.1]-2.64.1
+
+#
+# Create/update symbolic links named include/ffi.h and
+# include/ffitarget.h with ../lib/libffi-3.2.1/include/ffi.h
+# and ../lib/libffi-3.2.1/include/ffitarget.h as targets, resp.
+@../lib/libffi-3.2.1/include/ffi.h=include/ffi.h
+@../lib/libffi-3.2.1/include/ffitarget.h=include/ffitarget.h
+
+#
+# Manual invocation:
+PKG_INSTALL_FILES="
+        [ ... ]
+";
+rtl_install                                                     \
+                -p "_builddir=${PKG_BASE_DIR}/${PKG_BUILD_DIR}" \
+                -p "_minipix=${PREFIX_MINIPIX##*/}"             \
+                -p "_minipix_dist=${PREFIX}/minipix_dist"       \
+                -p "_native=${PREFIX_NATIVE##*/}"               \
+                -p "_subdir=${PKG_BASE_DIR}/${PKG_SUBDIR}"      \
+                -p "_target=${PKG_TARGET}"                      \
+                -n -- "${PREFIX}"                               \
+                "${PKG_INSTALL_FILES}"; then
+        return 1;
+fi;
+
+#
+# Usage screen:
+usage: rtl_install [-i] [-I ifs] [-n] [-p name=val] [-v] prefix spec_list
+       -i...........: continue on soft errors
+       -I ifs.......: process spec_list with ifs instead of NL
+       -n...........: perform dry run
+       -p name=val..: set named parameter
+       -v...........: increase verbosity
+       prefix.......: pathname prefix
+       spec_list....: ifs-separated list of specs
+```
   
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 3.3. Addressing build failure"
-## 3.3. Addressing build failure
+[//]: # "{{{ 4.5. Package variables"
+### 4.5. Package variables
 
-During package build, standard error and output are redirected into a log file beneath
-``${BUILD_WORKDIR}`` named ``${PKG_NAME}_stderrout.log``, following a package variable
-dump. If ``-vv`` was specified, package logs will additionally be printed to standard
-output. If ``-vvv`` was specified, ``xtrace`` will be set during package builds for
-rudimentary debugging purposes. Additionally, packages using GNU autotools will, if
-package configuration failed or appears relevant, log the configuration process in detail
-in, most usually, ``${PKG_BUILD_DIR}/config.log``.  
+The following variables are package-specific and receive their value from either
+top-level defaults defined in ``midipix.env``, build group-specific defaults from the
+build group the package pertains to and defined in its corresponding file beneath
+``groups/``, or package-specific overrides defined either in the latter and/or in its
+corresponding file beneath ``vars/``, with one of the following prefixes:
 
-If ``--dump-on-abort`` was specified, a subset of the variables set and environment
-variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``, which may
-subsequently be used in order to obtain a package build shell environment with the
-``pkgtool.sh`` script (see sections [3.5](#35-pkgtoolsh), [3.5.1](#351-s-package-build-shell-environment).)
+| Variable name prefix					|
+| ----------------------------------------------------- |
+| DEFAULT						|
+| DEFAULT_``${BUILD_TYPE}``				|
+| DEFAULT_``${GROUP_NAME}``				|
+| ``${GROUP_NAME}``					|
+| [PKG_``${RELATED_PACKAGE(S)}``]			|
+| [PKG_``${RELATED_PACKAGE(S)}``_``${BUILD_KIND}``]	|
+| PKG_``${NAME}``					|
+| PKG_``${NAME}``_``${BUILD_KIND}``			|
+
+Additionally, overrides may be specified on a per-build basis on the command-
+line, with each variable prefixed w/ ``PKG_``, e.g.:
+``./build.sh [ ... ] PKG_ZSH_CC="/usr/bin/clang"``.  
+  
+The minimum set of package variables that must be provided is ``SHA256SUM, URL,
+VERSION`` and/or ``URLS_GIT``, respectively.
+
+[//]: # "{{{ 4.5.1 Package variable types"
+## 4.5.1 Package variable types
+
+| Type definition               | Description                                                                                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| DirName(Abs)			| Absolute pathname to directory                                                                                                               |
+| DirName(Rel)			| Relative pathname to director                                                                                                                |
+| DirName(Unit)			| Single non-{absolute,relative} directory nam                                                                                                 |
+| DirName			| Absolute or relative pathname to director                                                                                                    |
+| CmdName			| Absolute or relative pathname to comman                                                                                                      |
+| FileName(Abs)			| Absolute pathname to file                                                                                                                    |
+| FileName(Rel)			| Relative pathname to file                                                                                                                    |
+| FileName(Unit)		| Single non-{absolute,relative} file name                                                                                                     |
+| FileName			| Absolute or relative pathname to file                                                                                                        |
+| Flag(<type>,<default>)	| Boolean flag of type <type>, e.g. Flag(Boolean) (``true``, ``false``,) Flag(UInt) (0, 1,) Flag(ExitStatus) (>=1, 0) with default or ``auto`` |
+| FlagLine			| String of {SP,VT}-separated flags, arguments, options, etc. pp. to a command                                                                 |
+| List(<sep>[,<sep|type>..])	| <sep>-separated list, optionally recursively and/or sub-typing, e.g.: ``List(:,=,String)`` and ``"name=value:name2=va lue "``                |
+| PkgName			| Single name of package                                                                                                                       |
+| PkgRelation			| Single, possibly parametrised, package-package relation; see section [3.6](#36-package-package-and-packagegroup-group-relationships)        |
+| PkgVersion			| Single version of package                                                                                                                    |
+| Set(<type>)			| Set of alternatives of <type>, e.g. one of ``cross``, ``host``, ``native``                                                                   |
+| String			| Semantically generic string                                                                                                                  |
+| URL				| URL in standard format; see section [3.4](#34-package-archive-files-and-git-repositories)                                                    |
+| URL(Git)			| Git URL in the format ``[subdir=]URL[@branch]``; see section [3.4](#34-package-archive-files-and-git-repositories)                           |
+
+<sup id="fn42101">
+4.2.1:1 
+</sup>
+
+[//]: # "}}}"
+[//]: # "{{{ 4.5.2 Package variables"
+## 4.5.2 Package variables
+
+| Package variable name        | Type             | Description                                                                                                                                |
+| ---------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| AR                           | CmdName          | Toolchain library archive editor ``ar(1)``                                                                                                 |
+| BASE_DIR                     | DirName(Abs)     | Package build root directory beneath ``${BUILD_WORKDIR}``                                                                                  |
+| BUILD_DIR                    | DirName(Unit)    | Package build directory beneath ``${PKG_BASE_DIR}``                                                                                        |
+| BUILD_STAGES_DISABLE         | List( )          | Build stages to disable during package build                                                                                               |
+| BUILD_TYPE                   | Set(String)      | ``cross``: Cross-compiled toolchain, ``host``: host, ``native``: cross-compiled package                                                    |
+| CC                           | FileName         | Toolchain C compiler ``cc(1)``                                                                                                             |
+| CFLAGS_BUILD_EXTRA           | FlagLine         | Additional C compiler flags during package ``make(1)``  build                                                                              |
+| CFLAGS_BUILD                 | FlagLine         | C compiler flags during package ``make(1)``  build                                                                                         |
+| CFLAGS_CONFIGURE_EXTRA       | FlagLine         | Additional C compiler flags during package (GNU autotools in implementation and/or interface) configuration                                |
+| CFLAGS_CONFIGURE             | FlagLine         | C compiler flags during package (GNU autotools in implementation and/or interface) configuration                                           |
+| CMAKE_ARGS_EXTRA             | FlagLine         | Additional arguments to ``cmake(1)``                                                                                                       |
+| CMAKE_ARGS                   | FlagLine         | Arguments to ``cmake(1)``                                                                                                                  |
+| CMAKE                        | CmdName          | ``cmake(1)`` executable                                                                                                                    |
+| CMAKE_LISTFILE               | FileName         | ``cmake(1)`` listfile                                                                                                                      |
+| CONFIG_CACHE_EXTRA           | List(\n)         | Additional GNU autotools configuration cache variables                                                                                     |
+| CONFIG_CACHE                 | List(\n)         | GNU autotools configuration cache variables                                                                                                |
+| CONFIG_CACHE_LOCAL           | List(\n)         | Additional GNU autotools configuration cache variables                                                                                     |
+| CONFIGURE_ARGS_EXTRA         | FlagLine         | Additional arguments to package (GNU autotools in implementation and/or interface) configuration script                                    |
+| CONFIGURE_ARGS               | FlagLine         | Arguments to package (GNU autotools in implementation and/or interface) configuration script                                               |
+| CONFIGURE                    | CmdName          | Package's (GNU autotools in implementation and/or interface) configuration script                                                          |
+| CONFIGURE_TYPE               | String           | Either of ``autotools`` (GNU autotools or similar) or ``sofort`` or ``cmake`` (CMake)                                                      |
+| CXX                          | CmdName          | Toolchain C++ compiler ``c++(1)``                                                                                                          |
+| CXXFLAGS_CONFIGURE_EXTRA     | FlagLine         | Additional C++ compiler flags during package (GNU autotools in implementation and/or interface) configuration                              |
+| CXXFLAGS_CONFIGURE           | FlagLine         | C++ compiler flags during package (GNU autotools in implementation and/or interface) configuration                                         |
+| DEPENDS                      | List( )          | Mandatory package-package dependencies                                                                                                     |
+| DESTDIR                      | DirName(Unit)    | Package installation destination directory beneath ``${PKG_BASE_DIR}``                                                                     |
+| DESTDIR_HOST                 | DirName(Unit)    | Optional host package installation destination directory beneath ``${PKG_BASE_DIR}``                                                       |
+| DISABLED                     | Flag(UInt,0)     | Disable package                                                                                                                            |
+| ENV_VARS_EXTRA               | List(:,=)        | Name-value pairs of environment variables to set during package build                                                                      |
+| FNAME                        | FileName(Unit)   | Filename of package archive file                                                                                                           |
+| FORCE_AUTORECONF             | Flag(UInt,0)     | Forcibly run ``autoreconf -fiv`` prior to package (GNU autotools in implementation and/or interface) configuration                         |
+| GITROOT                      | URL              | midipix packages Git URL prefix                                                                                                            |
+| INHERIT_FROM                 | String           | Inherit variables from named package                                                                                                       |
+| INSTALL_FILES_DESTDIR_EXTRA  | List( )          | Additional files to initialise the package installation destination directory beneath ``${PKG_BASE_DIR}`` with                             |
+| INSTALL_FILES_DESTDIR        | List( )          | Files to initialise the package installation destination directory beneath ``${PKG_BASE_DIR}`` with                                        |
+| INSTALL_FILES                | List( )          | Files to manually install into the package installation destination directory beneath ``${PKG_BASE_DIR}``                                  |
+| INSTALL_TARGET_EXTRA         | String           | Additional name of package build ``make(1)`` installation target                                                                           |
+| INSTALL_TARGET               | String           | Name of package build ``make(1)`` installation target                                                                                      |
+| IN_TREE                      | Flag(UInt,auto)  | Build package in-tree within ``${PKG_SUBDIR}``                                                                                             |
+| LDFLAGS_BUILD_EXTRA          | FlagLine         | Additional linker flags during package ``make(1)``  build                                                                                  |
+| LDFLAGS_CONFIGURE_EXTRA      | FlagLine         | Additional linker flags during package (GNU autotools in implementation and/or interface) configuration                                    |
+| LDFLAGS_CONFIGURE            | FlagLine         | Linker flags during package (GNU autotools in implementation and/or interface) configuration                                               |
+| LIBTOOL                      | CmdName          | ``libtool(1)`` implementation (defaults to ``slibtool``)                                                                                   |
+| MAKE                         | CmdLine          | Command line of ``make(1)``                                                                                                                |
+| MAKEFLAGS_BUILD_EXTRA        | FlagLine         | Additional ``make(1)`` flags during package ``make(1)``  build                                                                             |
+| MAKEFLAGS_BUILD              | FlagLine         | ``make(1)`` flags during package ``make(1)``  build                                                                                        |
+| MAKEFLAGS_INSTALL_EXTRA      | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation                                                                                 |
+| MAKEFLAGS_INSTALL            | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation                                                                                 |
+| MAKEFLAGS_VERBOSITY          | String           | Variable-value pair to pass to ``make(1)`` in order to force echo-back of command lines prior to execution                                 |
+| MAKE_INSTALL_VNAME           | String           | Variable name of ``make(1)`` installation destination directory variable during package ``make(1)``  installation                          |
+| MAKE_SUBDIRS                 | List( )          | ``make(1)`` subdirectories to exclusively build                                                                                            |
+| MIRRORS_GIT                  | List( )          | Package Git repository mirror base URLs to attempt cloning from; cf. ``pkgtool.sh -m <dname>``                                             |
+| MIRRORS                      | List( )          | Package archive mirror base URLs to attempt downloading from; cf. ``pkgtool.sh -m <dname>``                                                |
+| NO_CLEAN_BASE_DIR            | Flag(UInt,0)     | Inhibit cleaning of package build root directory beneath ``${BUILD_WORKDIR}``                                                              |
+| NO_CLEAN                     | Flag(UInt,0)     | Inhibit cleaning of package build directory beneath ``${PKG_BASE_DIR}`` pre-finish                                                         |
+| NO_LOG_VARS                  | Flag(UInt,0)     | Inhibit logging of build & package variables pre-package build                                                                             |
+| PATCHES_EXTRA                | List( )          | Additional patches to apply                                                                                                                |
+| PKG_CONFIG                   | CmdName          | ``pkg-config(1)`` implementation                                                                                                           |
+| PKG_CONFIG_LIBDIR            | DirName          | ``pkg-config(1)`` search directory                                                                                                         |
+| PKGLIST_DISABLE              | Flag(UInt,0)     | Inhibit inclusion into ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}``                                                                             |
+| PREFIX                       | DirName(Abs)     | Top-level installation directory and package search path                                                                                   |
+| PYTHON                       | CmdName          | Python >=3.x interpreter                                                                                                                   |
+| RANLIB                       | CmdName          | Toolchain library archive index generator ``ranlib(1)``                                                                                    |
+| RELATES                      | Set(PkgRelation) | Package-package relationships                                                                                                              |
+| RPM_DISABLE                  | Flag(UInt,0)     | Inhibit creation of RPM archive                                                                                                            |
+| SHA256SUM                    | String           | SHA-256 message digest of package archive                                                                                                  |
+| SOFORT_NATIVE_CC             | FileName         | ``sofort`` variable during ``native`` build: Toolchain C compiler ``cc(1)``                                                                |
+| SOFORT_NATIVE_CFLAGS_EXTRA   | FlagLine         | ``sofort`` variable during ``native`` build: Additional C compiler flags during package (GNU autotools or similar) configuration           |
+| SOFORT_NATIVE_CFLAGS         | FlagLine         | ``sofort`` variable during ``native`` build: C compiler flags during package (GNU autotools or similar) configuration                      |
+| SOFORT_NATIVE_CXXFLAGS_EXTRA | FlagLine         | ``sofort`` variable during ``native`` build: Additional list of C++ compiler flags during package (GNU autotools or similar) configuration |
+| SOFORT_NATIVE_CXXFLAGS       | FlagLine         | ``sofort`` variable during ``native`` build: List of C++ compiler flags during package (GNU autotools or similar) configuration            |
+| SOFORT_NATIVE_CXX            | FlagLine         | ``sofort`` variable during ``native`` build: Command- or pathname of toolchain C++ compiler ``c++(1)``                                     |
+| SOFORT_NATIVE_LDFLAGS_EXTRA  | FlagLine         | ``sofort`` variable during ``native`` build: Additional linker flags during package (GNU autotools or similar) configuration               |
+| SOFORT_NATIVE_LDFLAGS        | FlagLine         | ``sofort`` variable during ``native`` build: Linker flags during package (GNU autotools or similar) configuration                          |
+| SOFORT_NATIVE_LD             | FileName         | ``sofort`` variable during ``native`` build: Command- or pathname of toolchain C compiler ``cc(1)``                                        |
+| SUBDIR                       | DirName(Rel)     | Extracted archive or git-{clone,pull}(1)'d directory                                                                                       |
+| TARGET                       | String           | Dash-separated {build,host,target} triplet                                                                                                 |
+| URL                          | List( ,URL)      | URL to package archives w/ optional alternatives; see section [3.4](#34-package-archive-files-and-git-repositories)                        |
+| URLS_GIT                     | List( ,URL(Git)) | Package Git URL(s) (format: ``[subdir=]URL[@branch]``, see section [3.4](#34-package-archive-files-and-git-repositories))                  |
+| VARS_FILE                    | FileName         | Optional package variables file (defaults to ``vars/${PKG_NAME}.vars``)                                                                    |
+| VERSION                      | PkgVersion       | Package version                                                                                                                            |
+
+[//]: # "}}}"
   
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 3.4. Patches and ``vars`` files"
-## 3.4. Patches and ``vars`` files
-
-Package patches are applied prior and/or subsequent to (GNU autotools or similar) package
-configuration during the ``configure_patch_pre`` and/or ``configure_patch`` build steps,
-respectively (see section [4.1](#41-build-steps).) Patch files are searched for beneath
-``patches/`` with the following globs and in-order:
-* ``${PKG_NAME}-${PKG_VERSION}_pre.local.patch``
-  or ``${PKG_NAME}_pre.local.patch`` (for packages lacking ``${PKG_VERSION}``)
-* ``${PKG_NAME}-${PKG_VERSION}_pre.local@${BUILD_HNAME}.patch``
-  or ``${PKG_NAME}_pre.local@${BUILD_HNAME}.patch`` (for packages lacking ``${PKG_VERSION}``)
-* ``${PKG_NAME}/*.patch``
-* ``${PKG_NAME}-${PKG_VERSION}.local.patch``
-  or ``${PKG_NAME}.local.patch`` (for packages lacking ``${PKG_VERSION}``)
-* ``${PKG_NAME}-${PKG_VERSION}.local@${BUILD_HNAME}.patch``
-  or ``${PKG_NAME}.local@${BUILD_HNAME}.patch`` (for packages lacking ``${PKG_VERSION}``)
-* ``${PKG_PATCHES_EXTRA}`` (if set)
-  
-If the default set of package build steps does not suffice, such as if additional commands
-must be executed after package configuration or prior to building, or if an entire or all
-build step must be replaced, overrides may be specified in the form of functions in the
-package's ``vars/${PKG_NAME}.vars`` ``vars`` file. Consult section [4.1](#41-build-steps)
-for a list of package build steps and how they are overriden.
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-[//]: # "{{{ 3.5. ``pkgtool.sh``"
-## 3.5. ``pkgtool.sh``
+[//]: # "{{{ 4.6. ``pkgtool.sh``"
+## 4.6. ``pkgtool.sh``
 
 ```
 usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-s|-t] [-v]
@@ -426,226 +911,9 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|
                               Override build variable.
 ```
   
-> N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4](#4-build-variables))
+> N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4.2](#42-build-variables))
 overriden on the command line or via the environment, ensure that they are included in the
 ``pkgtool.sh`` command line, preceding the package name, or exported, respectively.
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-[//]: # "{{{ 3.5.1. -s: package build shell environment"
-### 3.5.1. -s: package build shell environment
-
-When ``build.sh`` is executed with the ``--dump-on-abort`` option, a subset of the
-variables set and environment variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``
-on build failure, which may subsequently be used in order to obtain a package build shell
-environment with the ``pkgtool.sh`` script, e.g.:  
-  
-```
-midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh -a nt64 -b debug -s mc
-==> 2020/03/11 15:46:28 Launching shell `/usr/bin/zsh' within package environment and `/home/midipix_build/midipix/nt64/debug/tmp'.
-==> 2020/03/11 15:46:28 Run $R to rebuild `mc'.
-==> 2020/03/11 15:46:28 Run $RS <step> to restart the specified build step of `mc'
-==> 2020/03/11 15:46:28 Run $D to automatically regenerate the patch for `mc'.
-midipix_build@sandbox:(mc-native-x86_64-nt64-midipix/obj)> $
-```
-  
-If a package build shell environment is desired for a package that has either not been
-built at all or built successfully, ``pkgshell.sh`` will attempt to rebuild the package
-at build steps up until, by default, ``build``, and then forcibly abort the build and
-write ``${BUILD_WORKDIR}/${PKG_NAME}.dump`` as above prior to entering the shell.  
-  
-Consult sections [3.2](#32-adding-a-package), [3.4](#34-patches-and-vars-files), [4](#4-build-variables),
-[4.1](#41-build-steps), and [4.2](#42-package-variables) for further information
-concerning the package build process.  
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-
-[//]: # "{{{ 4. Build variables"
-## 4. Build variables
-
-The following variables are primarily defined in ``midipix.env`` and may be
-overriden on a per-build basis on the command-line, the environment, and/or
-``${HOME}/midipix_build.vars``, ``${HOME}/.midipix_build.vars``, and/or
-``../midipix_build.vars``, e.g.:
-
-```shell
-./build.sh -a nt64 -b release -D minipix,zipdist -P -v PREFIX_ROOT="${HOME}/midipix_tmp"
-env ARCH=nt64 BUILD_KIND=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D minipix,zipdist -P -v
-```
-
-| Variable name    | Default value                        | Description                                                                   |
-| ---------------- | ------------------------------------ | ----------------------------------------------------------------------------- |
-| ARCH             | nt64                                 | Target 32-bit (nt32) or 64-bit (nt64) architecture                            |
-| BUILD_DLCACHEDIR | ${PREFIX_ROOT}/dlcache               | Absolute pathname to package downloads cache root directory                   |
-| BUILD_HNAME      | $(hostname)                          | Build system hostname                                                         |
-| BUILD_KIND       | debug                                | Build w/ debugging (debug) or release compiler flags                          |
-| BUILD_WORKDIR    | ${PREFIX}/tmp                        | Absolute pathname to temporary package build root directory                   |
-| PREFIX           | ${PREFIX_ROOT}/${ARCH}/${BUILD_KIND} | Absolute pathname to architecture- & build type-specific build root directory |
-| PREFIX_CROSS     | ${PREFIX}/${DEFAULT_TARGET}          | Absolute pathname to toolchain root directory                                 |
-| PREFIX_MINGW32   | ${PREFIX}/x86_64-w64-mingw32         | Absolute pathname to MinGW toolchain root directory                           |
-| PREFIX_MINIPIX   | ${PREFIX}/minipix                    | Absolute pathname to minipix distribution root directory                      |
-| PREFIX_NATIVE    | ${PREFIX}/native                     | Absolute pathname to cross-compiled packages root directory                   |
-| PREFIX_ROOT      | ${HOME}/midipix                      | Absolute pathname to top-level directory                                      |
-| PREFIX_RPM       | ${PREFIX}/rpm                        | Absolute pathname to package RPM archive root directory                       |
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-[//]: # "{{{ 4.1. Build steps"
-## 4.1. Build steps
-
-Package builds are divided up into consecutively executed build steps until
-completion or aborted on failure unless relaxed mode is enabled by passing
-``-R``.  
-  
-Each build step corresponds to a function in the corresponding ``subr/pkg_*.subr``
-script and may be overriden entirely by a function named ``pkg_<package name>_<build step>()``
-or composed in terms of prior and/or subsequent execution by a function named
-``pkg_<package name>_<build step>_pre()`` and/or ``pkg_<package name>_<build step>_post()``,
-respectively, in the package's ``vars`` file. If a function named ``pkg_<package name>_all()``
-exists, it will override all build steps.  
-  
-Build step status is tracked on a per-package basis by state files beneath
-``${BUILD_WORKDIR}`` following the format ``.<package name>.<build step>``;
-package build completion corresponds to the pseudo-build step ``finish``.
-
-| Name                | Description                                                                                                                                                                                                           |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fetch_clean         | Delete and create ``${PKG_SUBDIR}''                                                                                                                                                                                   |
-| fetch_download      | Download package archive & verify w/ SHA-256 message digest and/or clone Git repository/ies                                                                                                                           |
-| fetch_extract       | Extract package archive, if any                                                                                                                                                                                       |
-| configure_clean     | Delete and create ``${PKG_BUILD_DIR}''                                                                                                                                                                                |
-| configure_patch_pre | Apply ``chainport`` patches and/or patches beneath ``patches/`` prior to (GNU autotools or similar) configuration                                                                                                     |
-| configure_autotools | Bootstrap (GNU autools or similar) environment, and install ``config.sub`` and ``config.cache``                                                                                                                       |
-| configure_patch     | Apply patches beneath ``patches/`` and/or set in ``${PKG_PATCHES_EXTRA}`` after (GNU autotools or similar) configuration                                                                                              |
-| configure           | Perform package (GNU autools or similar or CMake) configuration w/ configuration-time set of environment variables                                                                                                    |
-| build_clean         | Clean ``${PKG_BUILD_DIR}'' w/ ``make clean'' invocation                                                                                                                                                               |
-| build               | Call ``make(1)`` w/ build-time set of make variables                                                                                                                                                                  |
-| install_clean       | Delete and create ``${PKG_DESTDIR}''                                                                                                                                                                                  |
-| install_subdirs     | Create default directory hierarchy in ``${PKG_DESTDIR}``, optionally amended w/ ``${PKG_INSTALL_FILES_DESTDIR_EXTRA}``                                                                                                |
-| install_make        | Call ``make(1)`` w/ ``${PKG_INSTALL_TARGET}`` (defaults to ``install``) and installation-time set of make variables                                                                                                   |
-| install_files       | Install ``${PKG_INSTALL_FILES}``, fix directory and file mode bits within ``${PKG_DESTDIR}`` and optionally ``${PKG_DESTDIR_HOST}``, ``pkgconf(1)`` package files, and/or stripped binaries within ``${PKG_DESTDIR}`` |
-| install_libs        | Purge libtool ``.la`` files and install shared objects within ``${PKG_DESTDIR}`` w/ ``perk`` and corresponding symbolic links                                                                                         |
-| install             | Install into ``${PKG_PREFIX}``, and optionally ``${PKG_DESTDIR_HOST}`` into ``${PREFIX}``, under mutex, and add package to ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}`` (unless inhibited)                                 |
-| install_rpm         | Build package RPM w/ auto-generated specifiation file based on ``etc/package.spec`` beneath ``${PREFIX_RPM}``                                                                                                         |
-| clean               | Clean ``${PKG_BUILD_DIR}`` and/or ``${PKG_DESTDIR}`` and/or ``${PKG_DESTDIR_HOST}`` and/or ``${PKG_BASE_DIR}/${PKG_SUBDIR}`` as per ``-C build,dest,src``, resp., if any                                              |
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-[//]: # "{{{ 4.2. Package variables"
-## 4.2. Package variables
-
-The following variables are package-specific and receive their value from either
-top-level defaults defined in ``midipix.env``, build group-specific defaults
-from the build group the package pertains to and defined in its corresponding
-file beneath ``groups/``, or package-specific overrides defined either in the
-latter and/or in its corresponding file beneath ``vars/``, with one of the following
-prefixes:
-
-| Variable name prefix				|
-| ---------------------------------------------	|
-| DEFAULT					|
-| DEFAULT_``${BUILD_TYPE}``			|
-| DEFAULT_``${GROUP_NAME}``			|
-| ``${GROUP_NAME}``				|
-| PKG_``${INHERIT_FROM}``			|
-| PKG_``${INHERIT_FROM}``_``${BUILD_KIND}``	|
-| PKG_``${NAME}``				|
-| PKG_``${NAME}``_``${BUILD_KIND}``		|
-
-Additionally, overrides may be specified on a per-build basis on the command-
-line, with each variable prefixed w/ ``PKG_``, e.g.:
-``./build.sh [ ... ] PKG_ZSH_CC="/usr/bin/clang"``.  
-  
-The minimum set of package variables that must be provided is ``SHA256SUM, URL,
-VERSION`` and/or ``URLS_GIT``, respectively.
-
-| Package variable name        | Description                                                                                                                                 |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| AR                           | Command- or pathname of toolchain library archive editor ``ar(1)``                                                                          |
-| BASE_DIR                     | Absolute pathname to package build root directory beneath ``${BUILD_WORKDIR}``                                                              |
-| BUILD_DIR                    | Directory name of package build directory beneath ``${PKG_BASE_DIR}``                                                                       |
-| BUILD_STEPS_DISABLE          | List of build steps to disable during package build                                                                                         |
-| BUILD_TYPE                   | Cross-compiled toolchain (``cross``,) host (``host``,) or cross-compiled package (``native``) build type                                    |
-| CC                           | Command- or pathname of toolchain C compiler ``cc(1)``                                                                                      |
-| CFLAGS_BUILD                 | C compiler flags during package ``make(1)``  build                                                                                          |
-| CFLAGS_BUILD_EXTRA           | Additional C compiler flags during package ``make(1)``  build                                                                               |
-| CFLAGS_CONFIGURE             | C compiler flags during package (GNU autotools or similar) configuration                                                                    |
-| CFLAGS_CONFIGURE_EXTRA       | Additional C compiler flags during package (GNU autotools or similar) configuration                                                         |
-| CMAKE                        | Command- or pathname to ``cmake(1)``                                                                                                        |
-| CMAKE_ARGS                   | List of arguments to ``cmake(1)``                                                                                                           |
-| CMAKE_ARGS_EXTRA             | Additional list of arguments to ``cmake(1)``                                                                                                |
-| CMAKE_LISTFILE               | File- or pathname to ``cmake(1)`` listfile                                                                                                  |
-| CONFIG_CACHE                 | List of GNU autotools configuration cache variables                                                                                         |
-| CONFIG_CACHE_EXTRA           | Additional list of GNU autotools configuration cache variables                                                                              |
-| CONFIG_CACHE_LOCAL           | Additional list of GNU autotools configuration cache variables                                                                              |
-| CONFIGURE                    | Command- or pathname to package (GNU autotools or similar) configuration script                                                             |
-| CONFIGURE_ARGS               | List of arguments to package (GNU autotools or similar) configuration script                                                                |
-| CONFIGURE_ARGS_EXTRA         | Additional list of arguments to package (GNU autotools or similar) configuration script                                                     |
-| CONFIGURE_TYPE               | Force package configuration via either of ``autotools`` (GNU autotools or similar) or ``sofort`` or ``cmake`` (CMake)                       |
-| CXX                          | Command- or pathname of toolchain C++ compiler ``c++(1)``                                                                                   |
-| CXXFLAGS_CONFIGURE           | List of C++ compiler flags during package (GNU autotools or similar) configuration                                                          |
-| CXXFLAGS_CONFIGURE_EXTRA     | Additional list of C++ compiler flags during package (GNU autotools or similar) configuration                                               |
-| DEPENDS                      | List of package-package dependencies                                                                                                        |
-| DESTDIR                      | Directory name of package installation destination directory beneath ``${PKG_BASE_DIR}``                                                    |
-| DESTDIR_HOST                 | Directory name of optional host package installation destination directory beneath ``${PKG_BASE_DIR}``                                      |
-| DISABLED                     | Disable package                                                                                                                             |
-| ENV_VARS_EXTRA               | List of double colon-separated environment variable equality sign-separated name-value pairs to set during package build                    |
-| FNAME                        | Filename of package archive file                                                                                                            |
-| FORCE_AUTORECONF             | Forcibly run ``autoreconf -fiv`` prior to package (GNU autotools or similar) configuration                                                  |
-| GITROOT                      | midipix packages Git URL prefix                                                                                                             |
-| INHERIT_FROM                 | Inherit variables from named package                                                                                                        |
-| INSTALL_FILES                | Whitespace-separated list of files to manually install into the package installation destination directory beneath ``${PKG_BASE_DIR}``      |
-| INSTALL_FILES_DESTDIR        | Whitespace-separated list of files to initialise the package installation destination directory beneath ``${PKG_BASE_DIR}`` with            |
-| INSTALL_FILES_DESTDIR_EXTRA  | Additional whitespace-separated list of files to initialise the package installation destination directory beneath ``${PKG_BASE_DIR}`` with |
-| INSTALL_TARGET               | Name of package build ``make(1)`` installation target                                                                                       |
-| INSTALL_TARGET_EXTRA         | Additional name of package build ``make(1)`` installation target                                                                            |
-| IN_TREE                      | Build package in-tree within ``${PKG_SUBDIR}``                                                                                              |
-| LDFLAGS_BUILD_EXTRA          | Additional linker flags during package ``make(1)``  build                                                                                   |
-| LDFLAGS_CONFIGURE            | Linker flags during package (GNU autotools or similar) configuration                                                                        |
-| LDFLAGS_CONFIGURE_EXTRA      | Additional linker flags during package (GNU autotools or similar) configuration                                                             |
-| LIBTOOL                      | Command- or pathname of ``libtool(1)`` (defaults to ``slibtool``)                                                                           |
-| MAKE                         | Command line of ``make(1)``                                                                                                                 |
-| MAKEFLAGS_BUILD_EXTRA        | Additional list of ``make(1)`` flags during package ``make(1)``  build                                                                      |
-| MAKEFLAGS_BUILD              | List of ``make(1)`` flags during package ``make(1)``  build                                                                                 |
-| MAKEFLAGS_INSTALL_EXTRA      | Additional list of ``make(1)`` flags during package ``make(1)``  installation                                                               |
-| MAKEFLAGS_INSTALL            | List of ``make(1)`` flags during package ``make(1)``  installation                                                                          |
-| MAKEFLAGS_VERBOSITY          | Variable-value pair to pass to ``make(1)`` in order to force echo-back of command lines prior to execution                                  |
-| MAKE_INSTALL_VNAME           | Variable name of ``make(1)`` installation destination directory variable during package ``make(1)``  installation                           |
-| MAKE_SUBDIRS                 | List of ``make(1)`` subdirectories to exclusively build                                                                                     |
-| MIRRORS_GIT                  | List of package Git repository mirror base URLs to attempt cloning from; cf. ``pkgtool.sh -m <dname>``                                      |
-| MIRRORS                      | List of package archive mirror base URLs to attempt downloading from; cf. ``pkgtool.sh -m <dname>``                                         |
-| NO_CLEAN                     | Inhibit cleaning of package build directory beneath ``${PKG_BASE_DIR}`` pre-finish                                                          |
-| NO_CLEAN_BASE_DIR            | Inhibit cleaning of package build root directory beneath ``${BUILD_WORKDIR}``                                                               |
-| NO_LOG_VARS                  | Inhibit logging of build & package variables pre-package build                                                                              |
-| PATCHES_EXTRA                | Additional list of patches to apply                                                                                                         |
-| PKG_CONFIG                   | Command- or pathname of ``pkg-config(1)``                                                                                                   |
-| PKG_CONFIG_LIBDIR            | ``pkg-config(1)`` search directory                                                                                                          |
-| PKGLIST_DISABLE              | Inhibit inclusion into ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}``                                                                              |
-| PREFIX                       | Absolute pathname of top-level installation directory and package search path                                                               |
-| PYTHON                       | Command- or pathname of Python                                                                                                              |
-| RANLIB                       | Command- or pathname of toolchain library archive index generator ``ranlib(1)``                                                             |
-| RPM_DISABLE                  | Inhibit creation of RPM archive                                                                                                             |
-| SHA256SUM                    | SHA-256 message digest of package archive                                                                                                   |
-| SOFORT_NATIVE_CC             | ``sofort`` variable during ``native`` build: Command- or pathname of toolchain C compiler ``cc(1)``                                         |
-| SOFORT_NATIVE_CFLAGS         | ``sofort`` variable during ``native`` build: C compiler flags during package (GNU autotools or similar) configuration                       |
-| SOFORT_NATIVE_CFLAGS_EXTRA   | ``sofort`` variable during ``native`` build: Additional C compiler flags during package (GNU autotools or similar) configuration            |
-| SOFORT_NATIVE_CXX            | ``sofort`` variable during ``native`` build: Command- or pathname of toolchain C++ compiler ``c++(1)``                                      |
-| SOFORT_NATIVE_CXXFLAGS       | ``sofort`` variable during ``native`` build: List of C++ compiler flags during package (GNU autotools or similar) configuration             |
-| SOFORT_NATIVE_CXXFLAGS_EXTRA | ``sofort`` variable during ``native`` build: Additional list of C++ compiler flags during package (GNU autotools or similar) configuration  |
-| SOFORT_NATIVE_LD             | ``sofort`` variable during ``native`` build: Command- or pathname of toolchain C compiler ``cc(1)``                                         |
-| SOFORT_NATIVE_LDFLAGS        | ``sofort`` variable during ``native`` build: Linker flags during package (GNU autotools or similar) configuration                           |
-| SOFORT_NATIVE_LDFLAGS_EXTRA  | ``sofort`` variable during ``native`` build: Additional linker flags during package (GNU autotools or similar) configuration                |
-| SUBDIR                       | Name of extracted archive or git-{clone,pull}(1)'d directory                                                                                |
-| TARGET                       | Dash-separated {build,host,target} triplet                                                                                                  |
-| URL                          | URL to package archive, optionally appended with whitespace-separated list of alternative URLs                                              |
-| URLS_GIT                     | List of package Git URL(s) (``*name*=*URL*@*branch*``)                                                                                      |
-| VARS_FILE                    | Filename of optional package variables file (defaults to ``vars/${PKG_NAME}.vars``)                                                         |
-| VERSION                      | Package version                                                                                                                             |
   
 [Back to top](#table-of-contents)
 
