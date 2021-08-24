@@ -246,11 +246,11 @@ Forcibly (re)download all archive files and/or Git repositories associated with 
 ## 3.1. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
 
 ```
-usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline] [-h|--help|  [-p jobs]  [-P]  [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]  [-R] [-v[v[v[v]]]]
-                  [--as-needed] [--debug-minipix] [--dump-on-abort]  [--reset-state]
-                  [--roar]     [[=]<group>|<variable name>=<variable override>[ ..]]
+usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]   [-h|--help] [-p jobs] [-P]   [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]] [-R] [-v[v[v]]] [-x]
+                  [--as-needed]  [--debug-minipix] [--dump-on-abort]  [--reset-state]
+                  [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build kind; defaults to debug.
@@ -302,14 +302,16 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,
 
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)
-        -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace
-                          during package builds; -vvvv: logs fileops.
+        -v[v[v]]          Be verbose; -vv: always print package logs; -vvv: logs fileops.
+        -x                Set xtrace during package builds.
+
         --as-needed       Don't build unless the midipix_build repository has received
                           new commits.
         --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
         --dump-on-abort   Produce package environment dump files on build failure to be
                           used in conjuction with pkg_shell.sh script (excludes -R.)
         --reset-state     Reset package build step state on exit.
+
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
                           host_toolchain, host_tools, minipix, native_packages,
                           native_runtime, native_toolchain, native_tools.

@@ -1,11 +1,12 @@
-usage: ./build.sh [-a nt32|nt64]  [-b debug|release]   [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline] [-h|--help|  [-p jobs]  [-P]  [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]  [-R] [-v[v[v[v]]]]
-                  [--as-needed] [--debug-minipix] [--dump-on-abort]  [--reset-state]
-                  [--roar]     [[=]<group>|<variable name>=<variable override>[ ..]]
+usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]   [-h|--help] [-p jobs] [-P]   [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]] [-R] [-v[v[v]]] [-x]
+                  [--as-needed]  [--debug-minipix] [--dump-on-abort]  [--reset-state]
+                  [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -h|--help         Show short/full help screen, respectively.
-        -v[v[v[v]]]       Be verbose; -vv: always print package logs; -vvv: set xtrace
+        -v[v[v]]          Be verbose; -vv: always print package logs; -vvv: logs fileops.
+        -x                Set xtrace during package builds.
 
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
                           host_toolchain, host_tools, minipix, native_packages,

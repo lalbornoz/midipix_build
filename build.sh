@@ -81,7 +81,7 @@ buildp_dispatch_pkg_state() {
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 			rtl_log_env_vars "build" $(rtl_get_vars_fast "^PKG_");
 		fi;
-		if [ "${ARG_VERBOSE:-0}" -ge 3 ]; then
+		if [ "${ARG_XTRACE:-0}" -ge 1 ]; then
 			set -o xtrace;
 		fi; ;;
 	esac;
