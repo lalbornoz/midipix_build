@@ -79,7 +79,7 @@ rtlp_install_fmap_params() {
 			ITEM*)	_rifp_subexpr="${_rifp_expr#ITEM}"; _rifp_expr="${_rifp_item}"; ;;
 			"")	_rifp_rc=1; _status="zero-length parameter name in expression"; ;;
 			*)
-				_rifp_expr_="${_rifp_expr%%[^_0-9a-zA-Z]*}";
+				_rifp_expr_="${_rifp_expr%%[!_0-9a-zA-Z]*}";
 				_rifp_subexpr="${_rifp_expr#${_rifp_expr_}}";
 				_rifp_expr="${_rifp_expr_}";
 				if eval [ '"${'"${_rifp_rparams}${_rifp_expr}"':+1}"' = 1 ]; then
