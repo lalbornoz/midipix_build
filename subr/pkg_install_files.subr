@@ -10,6 +10,31 @@ pkgp_install_files() {
 	fi;
 };
 
+pkgp_install_files_v2() {
+	local _vflag=""; _status="";
+
+	if [ -n "${PKG_INSTALL_FILES_V2:-}" ]; then
+		[ "${ARG_VERBOSE:-0}" -ge 3 ] && _vflag="-v";
+		if ! rtl_install_v2							\
+				-p "_builddir=${PKG_BUILD_DIR}"				\
+				-p "_destdir=${PKG_BASE_DIR}/${PKG_DESTDIR}"		\
+				-p "_destdir_host=${PKG_BASE_DIR}/${PKG_DESTDIR_HOST}"	\
+				-p "_files=${MIDIPIX_BUILD_PWD}/files/${PKG_NAME}"	\
+				-p "_name=${PKG_NAME}"					\
+				-p "_prefix=${PKG_PREFIX}"				\
+				-p "_prefix_host=${PREFIX}"				\
+				-p "_prefix_native=${PREFIX_NATIVE}"			\
+				-p "_subdir=${PKG_BASE_DIR}/${PKG_SUBDIR}"		\
+				-p "_target=${PKG_TARGET}"				\
+				-p "_version=${PKG_VERSION:-}"				\
+				-p "_workdir=${BUILD_WORKDIR}"				\
+				${_vflag} -- "${PKG_DESTDIR}"				\
+				"${PKG_INSTALL_FILES_V2}"; then
+			return 1;
+		fi;
+	fi;
+};
+
 pkgp_install_files_perms() {
 	local _destdir="" _fname="" IFS;
 	for _destdir in "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"; do
@@ -77,6 +102,7 @@ pkgp_install_files_strip() {
 
 pkg_install_files() {
 	if ! pkgp_install_files\
+	|| ! pkgp_install_files_v2\
 	|| ! pkgp_install_files_perms\
 	|| ! pkgp_install_files_pkgconfig\
 	|| ! pkgp_install_files_strip; then

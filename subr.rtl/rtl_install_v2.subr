@@ -28,7 +28,7 @@ rtlp_install_fmap() {
 	done;
 
 	if rtlp_install_fmap_params "${_rif_rparams}" \$_rif_spec ""\
-	&& rtlp_install_fmap_patterns "$_rif_rparams}" "${_rif_prefix}" "${_rif_spec}" \$_rif_spec_list; then
+	&& rtlp_install_fmap_patterns "${_rif_rparams}" "${_rif_prefix}" "${_rif_spec}" \$_rif_spec_list; then
 		IFS="${RTLP_INSTALL_NL}"; for _rif_spec_cur in ${_rif_spec_list}; do
 			IFS="${_rif_IFS0}"; set --;
 			_rif_nspec=1; while [ "${_rif_nspec}" -le "${_rif_specsc}" ]; do
@@ -124,7 +124,7 @@ rtlp_install_fmap_patterns() {
 		if rtlp_install_splitl_ref \$_rifp2_expr \$_rifp2_lhs \$_rifp2_rhs '%<' '>'; then
 			case "${_rifp2_expr}" in
 			*\**)
-				set +o noglob; for _rifp2_pname in ${_rifp2_prefix:+"${_rifp2_prefix%}/"}${_rifp2_lhs:+"${_rifp2_lhs%/}/"}${_rifp2_expr}; do
+				set +o noglob; for _rifp2_pname in ${_rifp2_lhs:+"${_rifp2_lhs%/}/"}${_rifp2_expr}; do
 					set -o noglob; _rifp2_pname="${_rifp2_pname%/}${_rifp2_rhs:+/${_rifp2_rhs}}";
 					if [ -e "${_rifp2_pname}" ]; then
 						eval ${_rifp2_rspec_list}='${'"${_rifp2_rspec_list}"':+${'"${_rifp2_rspec_list}"'}${RTLP_INSTALL_NL}}${_rifp2_pname}';

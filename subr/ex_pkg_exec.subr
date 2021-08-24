@@ -30,6 +30,8 @@ exp_pkg_exec_pre() {
 	if [ -z "${PKG_URL:-}" ]\
 	&& [ -z "${PKG_URLS_GIT:-}" ]\
 	&& [ -z "${PKG_VERSION:-}" ]\
+	&& [ -z "${PKG_INSTALL_FILES:-}" ]\
+	&& [ -z "${PKG_INSTALL_FILES_V2:-}" ]\
 	&& ! rtl_test_cmd "pkg_${_pkg_name}_all"; then
 		"${_dispatch_fn}" missing_pkg "${_group_name}" "${_pkg_name}";
 		return 1;
