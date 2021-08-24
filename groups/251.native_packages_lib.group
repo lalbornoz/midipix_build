@@ -66,6 +66,7 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBEVENT_SHA256SUM:=92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb};
 : ${PKG_LIBEVENT_VERSION:=2.1.12-stable};
 : ${PKG_LIBEVENT_URL:=https://github.com/libevent/libevent/releases/download/release-${PKG_LIBEVENT_VERSION}/libevent-${PKG_LIBEVENT_VERSION}.tar.gz};
+: ${PKG_LIBEVENT_CONFIG_CACHE_EXTRA:="ac_pe_target=true"};
 : ${PKG_LIBFASTJSON_SHA256SUM:=3544c757668b4a257825b3cbc26f800f59ef3c1ff2a260f40f96b48ab1d59e07};
 : ${PKG_LIBFASTJSON_VERSION:=0.99.8};
 : ${PKG_LIBFASTJSON_URL:=http://download.rsyslog.com/libfastjson/libfastjson-${PKG_LIBFASTJSON_VERSION}.tar.gz};
@@ -98,6 +99,9 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBGCRYPT_SHA256SUM:=97ebe4f94e2f7e35b752194ce15a0f3c66324e0ff6af26659bbfb5ff2ec328fd};
 : ${PKG_LIBGCRYPT_VERSION:=1.9.3};
 : ${PKG_LIBGCRYPT_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${PKG_LIBGCRYPT_VERSION}.tar.bz2};
+: ${PKG_LIBGCRYPT_CONFIG_CACHE_EXTRA:="
+gcry_cv_broken_visibility_attribute=no
+gcry_cv_visibility_attribute=yes"};
 : ${PKG_LIBGCRYPT_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE} --disable-asm --disable-padlock-support --disable-aesni-support --disable-pclmul-support --disable-sse41-support --disable-drng-support --disable-avx-support --disable-avx2-support --disable-amd64-as-feature-detection};
 : ${PKG_LIBGPG_ERROR_SHA256SUM:=64b078b45ac3c3003d7e352a5e05318880a5778c42331ce1ef33d1a0d9922742};
 : ${PKG_LIBGPG_ERROR_VERSION:=1.41};
@@ -123,6 +127,9 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBKSBA_SHA256SUM:=dad683e6f2d915d880aa4bed5cea9a115690b8935b78a1bbe01669189307a48b};
 : ${PKG_LIBKSBA_VERSION:=1.6.0};
 : ${PKG_LIBKSBA_URL:=https://www.gnupg.org/ftp/gcrypt/libksba/libksba-${PKG_LIBKSBA_VERSION}.tar.bz2};
+: ${PKG_LIBKSBA_CONFIG_CACHE_EXTRA:="
+ksba_cv_broken_visibility_attribute=no
+ksba_cv_visibility_attribute=yes"};
 : ${PKG_LIBKSBA_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE}};
 : ${PKG_LIBMAD_SHA256SUM:=bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690};
 : ${PKG_LIBMAD_VERSION:=0.15.1b};
@@ -143,6 +150,7 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBPCAP_SHA256SUM:=8ac670de8dd6eff39441580c67f0520f326773422bbf89fdffcd269bd0cfddde};
 : ${PKG_LIBPCAP_VERSION:=1.9.1};
 : ${PKG_LIBPCAP_URL:=https://github.com/the-tcpdump-group/libpcap/archive/libpcap-${PKG_LIBPCAP_VERSION}.tar.gz};
+: ${PKG_LIBPCAP_CONFIG_CACHE_EXTRA:="ac_cv_lbl_unaligned_fail=no"};
 : ${PKG_LIBPCAP_SUBDIR:="libpcap-libpcap-${PKG_LIBPCAP_VERSION}"};
 : ${PKG_LIBPIPELINE_SHA256SUM:=5dbf08faf50fad853754293e57fd4e6c69bb8e486f176596d682c67e02a0adb0};
 : ${PKG_LIBPIPELINE_VERSION:=1.5.3};
@@ -344,6 +352,7 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_SDL2_SHA256SUM:=349268f695c02efbc9b9148a70b85e58cefbbf704abd3e91be654db7f1e2c863};
 : ${PKG_SDL2_VERSION:=2.0.12};
 : ${PKG_SDL2_URL:=https://www.libsdl.org/release/SDL2-${PKG_SDL2_VERSION}.tar.gz};
+: ${PKG_SDL2_CONFIG_CACHE_EXTRA:="ac_cv_func_strtod=yes"};
 : ${PKG_SDL2_CONFIGURE_ARGS_EXTRA:="--disable-video-vulkan --disable-video-opengles2 --disable-alsa --disable-static --disable-power"};
 : ${PKG_SDL2_CFLAGS_CONFIGURE_EXTRA:="-DWINAPI_UTF16_DEFAULT -DUNICODE -DWINVER=0x0601 -I${PREFIX_NATIVE}/include/w32api.ports -DSDL_DISABLE_WINDOWS_IME"};
 : ${PKG_SDL2_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lkernel32 -luser32 -lgdi32 -limm32 -lshell32 -lu16ports"};

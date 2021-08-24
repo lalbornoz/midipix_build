@@ -205,11 +205,17 @@ zstd")";
 : ${PKG_HTOP_URL:=https://src.fedoraproject.org/lookaside/extras/htop/htop-2.2.0.tar.gz/sha512/ec1335bf0e3e0387e5e50acbc508d0effad19c4bc1ac312419dc97b82901f4819600d6f87a91668f39d429536d17304d4b14634426a06bec2ecd09df24adc62e/htop-${PKG_HTOP_VERSION}.tar.gz};
 : ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-proc --enable-unicode --verbose"};
 : ${PKG_HTOP_CFLAGS_CONFIGURE_EXTRA:="--include=sys/sysmacros.h"};
+: ${PKG_HTOP_CONFIG_CACHE_EXTRA:="
+ac_cv_lib_ncursesw_addnwstr=yes
+ac_cv_lib_ncursesw6_addnwstr=yes"};
 : ${PKG_HTOP_ENV_VARS_EXTRA:="HTOP_NCURSES_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses-config:HTOP_NCURSES6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses6-config:HTOP_NCURSESW_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw-config:HTOP_NCURSESW6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw6-config"}
 : ${PKG_ICOUTILS_DEPENDS:="libpng"};
 : ${PKG_ICOUTILS_SHA256SUM:=17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0};
 : ${PKG_ICOUTILS_VERSION:=0.32.3};
 : ${PKG_ICOUTILS_URL:=http://savannah.nongnu.org/download/icoutils/icoutils-${PKG_ICOUTILS_VERSION}.tar.bz2};
+: ${PKG_ICOUTILS_CONFIG_CACHE_EXTRA:="
+am_cv_func_working_getline=yes
+gl_cv_func_getopt_gnu=yes"};
 : ${PKG_IMAGEMAGICK_DEPENDS:="curl bzip2 libz xz zstd"};
 : ${PKG_IMAGEMAGICK_SHA256SUM:=67859f9cba97f2c06b5e416898216e49216be00c7cba3dd89896e49331aef96d};
 : ${PKG_IMAGEMAGICK_VERSION:=7.0.9-12};
@@ -317,6 +323,7 @@ zstd")";
 : ${PKG_NPTH_URL:=https://www.gnupg.org/ftp/gcrypt/npth/npth-${PKG_NPTH_VERSION}.tar.bz2};
 : ${PKG_OPENJAZZ_DEPENDS:="sdl1"};
 : ${PKG_OPENJAZZ_URLS_GIT:=openjazz=https://github.com/AlisterT/openjazz.git@master};
+: ${PKG_OPENJAZZ_CONFIG_CACHE_EXTRA:="ac_cv_prog_POD2MAN="};
 : ${PKG_OPENJAZZ_FORCE_AUTORECONF:=1};
 : ${PKG_OPENJPEG_DEPENDS:="lcms2 libpng libz tiff"};
 : ${PKG_OPENJPEG_SHA256SUM:=8702ba68b442657f11aaeb2b338443ca8d5fb95b0d845757968a7be31ef7f16d};
@@ -352,6 +359,9 @@ zstd")";
 : ${PKG_PHP_SHA256SUM:=71a01b2b56544e20e28696ad5b366e431a0984eaa39aa5e35426a4843e172010};
 : ${PKG_PHP_VERSION:=8.0.9};
 : ${PKG_PHP_URL:=https://www.php.net/distributions/php-${PKG_PHP_VERSION}.tar.xz};
+: ${PKG_PHP_CONFIG_CACHE_EXTRA:="
+ac_cv_c_bigendian_php=no
+ac_cv_write_stdout=yes"};
 : ${PKG_PHP_CONFIGURE_ARGS_EXTRA:="--with-layout=GNU --with-zlib --with-external-pcre --with-bz2=${PREFIX_NATIVE} --with-gmp --disable-opcache --disable-phar"};
 : ${PKG_PHP_LIBTOOL:=rdlibtool};
 : ${PKG_POPT_SHA256SUM:=5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1};
@@ -366,6 +376,7 @@ zstd")";
 : ${PKG_PROCPS_NG_VERSION:=3.3.15};
 : ${PKG_PROCPS_NG_URL:=http://mirror.internode.on.net/pub/slackware/slackware64/patches/source/procps-ng/procps-ng-${PKG_PROCPS_NG_VERSION}.tar.xz};
 : ${PKG_PROCPS_NG_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/ncursesw};
+: ${PKG_PROCPS_NG_CONFIG_CACHE_EXTRA:="ac_cv_func_realloc_0_nonnull=yes"};
 : ${PKG_PROCPS_NG_IN_TREE:=1};
 : ${PKG_PROCPS_NG_MAKEFLAGS_BUILD:="LIBS=-Wl,-lncurses,-ltinfo"};
 : ${PKG_PROCPS_NG_FNAME:=procps_ng-${PKG_PROCPS_NG_VERSION}.tar.xz};
@@ -417,6 +428,9 @@ zstd")";
 : ${PKG_TCL_SHA256SUM:=2bbd4e0bbdebeaf5dc6cc823d0805afb45c764292f6667d9ce2b9fcf5399e0dc};
 : ${PKG_TCL_VERSION:=8.7a1};
 : ${PKG_TCL_URL:=http://kuiper.mirrorservice.org/sites/ftp.tcl.tk/pub/tcl/tcl8_7/tcl${PKG_TCL_VERSION}-src.tar.gz};
+: ${PKG_TCL_CONFIG_CACHE_EXTRA:="
+tcl_cv_strtod_buggy=false
+tcl_cv_strtod_unbroken=true"};
 : ${PKG_TCL_SUBDIR:=tcl${PKG_TCL_VERSION}/unix};
 : ${PKG_TDNF_DEPENDS:="libmetalink libressl curl gpgme libsolv"};
 : ${PKG_TDNF_SHA256SUM:=1ca20b176939f32c212f8dec7bfacd99995f1cb16c7f176b90394378ea854b0b};
@@ -449,6 +463,11 @@ zstd")";
 : ${PKG_UTIL_LINUX_URL:=https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${PKG_UTIL_LINUX_VERSION%.*}/util-linux-${PKG_UTIL_LINUX_VERSION}.tar.xz};
 : ${PKG_UTIL_LINUX_CONFIGURE_ARGS_EXTRA:=--disable-agetty --disable-lslogins --disable-wall --disable-write --disable-nologin --disable-sulogin --disable-hwclock --disable-schedutils};
 : ${PKG_UTIL_LINUX_CFLAGS_CONFIGURE_EXTRA:=-std=c99};
+: ${PKG_UTIL_LINUX_CONFIG_CACHE_EXTRA:="
+ac_cv_func_timer_create=no
+ac_cv_lib_rt_timer_create=no
+ac_cv_search_timer_create=no
+ac_cv_prog_NCURSESW6_CONFIG=%PREFIX%/bin/ncursesw6-config"};
 : ${PKG_VIM_DEPENDS:="ncursesw"};
 : ${PKG_VIM_SHA256SUM:=8de19b12cabde17b87f915a05e1855f6ff8404962947c5cf2204cf51f1ce5d67};
 : ${PKG_VIM_VERSION:=7.4.1952};
@@ -486,6 +505,7 @@ zstd")";
 : ${PKG_YABASIC_SHA256SUM:=24eaca1a520817ec266d132d89b4a657d5adf3e6bad54f13b103991afdca6d40};
 : ${PKG_YABASIC_VERSION:=2.83.0};
 : ${PKG_YABASIC_URL:=http://www.yabasic.de/download/yabasic-${PKG_YABASIC_VERSION}.tar.gz};
+: ${PKG_YABASIC_CONFIG_CACHE_EXTRA:="ac_cv_func_strtod=yes"};
 : ${PKG_YABASIC_DISABLED:=1};
 : ${PKG_ZSTD_SHA256SUM:=92e41b6e8dd26bbd46248e8aa1d86f1551bc221a796277ae9362954f26d605a9};
 : ${PKG_ZSTD_VERSION:=1.3.4};

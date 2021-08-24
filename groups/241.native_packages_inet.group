@@ -50,6 +50,9 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_GIT_SHA256SUM:=8db4edd1a0a74ebf4b78aed3f9e25c8f2a7db3c00b1aaee94d1e9834fae24e61};
 : ${PKG_GIT_VERSION:=2.30.0};
 : ${PKG_GIT_URL:=https://github.com/git/git/archive/v${PKG_GIT_VERSION}.tar.gz};
+: ${PKG_GIT_CONFIG_CACHE_EXTRA:="
+ac_cv_fread_reads_directories=1
+ac_cv_snprintf_returns_bogus=0"};
 : ${PKG_GIT_CONFIG_CACHE_LOCAL:="ac_cv_iconv_omits_bom=false"};
 : ${PKG_GIT_IN_TREE:=1};
 : ${PKG_GIT_MAKEFLAGS_BUILD:="CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config CURLDIR=${PREFIX_NATIVE} HAVE_DEV_TTY=yes NO_GETTEXT=yes NO_REGEX=yes NO_PERL=yes NO_PYTHON=yes NO_TCLTK=yes"};
@@ -70,11 +73,15 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_GNUTLS_SHA256SUM:=646e6c5a9a185faa4cea796d378a1ba8e1148dbb197ca6605f95986a25af2752};
 : ${PKG_GNUTLS_VERSION:=3.7.2};
 : ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
+: ${PKG_GNUTLS_CONFIG_CACHE_EXTRA:="
+gl_cv_func_working_getdelim=yes
+gl_cv_ld_output_def=no"};
 : ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="--disable-static --disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --without-p11-kit --disable-hardware-acceleration --enable-guile=no --with-default-trust-store-dir=/etc/ssl/certs"};
 : ${PKG_GNUTLS_LIBTOOL:=rdlibtool};
 : ${PKG_HTTPD_SHA256SUM:=f87ec2df1c9fee3e6bfde3c8b855a3ddb7ca1ab20ca877bd0e2b6bf3f05c80b2};
 : ${PKG_HTTPD_VERSION:=2.4.25};
 : ${PKG_HTTPD_URL:=https://archive.apache.org/dist/httpd/httpd-${PKG_HTTPD_VERSION}.tar.bz2};
+: ${PKG_HTTPD_CONFIG_CACHE_EXTRA:="ap_cv_void_ptr_lt_long=no"};
 : ${PKG_HTTPD_CONFIGURE_ARGS_EXTRA:="--with-pcre=${PREFIX_NATIVE}/bin/pcre-config --with-apr=${PREFIX_NATIVE}/bin/${DEFAULT_TARGET}-apr-1-config --with-apr-util=${PREFIX_NATIVE}/bin/apu-1-config"};
 : ${PKG_HTTPD_ENV_VARS_EXTRA:="PCRE_LIBS=-L${PREFIX_NATIVE}/lib -lpcre"};
 : ${PKG_HTTPD_DISABLED:=1};
@@ -110,6 +117,9 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_LIGHTTPD_SHA256SUM:=fb953db273daef08edb6e202556cae8a3d07eed6081c96bd9903db957d1084d5};
 : ${PKG_LIGHTTPD_VERSION:=1.4.59};
 : ${PKG_LIGHTTPD_URL:=https://download.lighttpd.net/lighttpd/releases-${PKG_LIGHTTPD_VERSION%.*}.x/lighttpd-${PKG_LIGHTTPD_VERSION}.tar.xz};
+: ${PKG_LIGHTTPD_CONFIG_CACHE_EXTRA:="
+ac_cv_path_PCRECONFIG=%PREFIX%/bin/pcre-config
+ac_cv_prog_have_pcre=%PREFIX%/bin/pcre-config"};
 : ${PKG_LIGHTTPD_CONFIGURE_ARGS_EXTRA:="--with-pcre=${PREFIX_NATIVE}"};
 : ${PKG_LINKS_DEPENDS:="bzip2 libz libpng libX11 libressl tiff libjpeg_turbo xz zstd"};
 : ${PKG_LINKS_SHA256SUM:=285eed8591c7781ec26213df82786665aaa1b9286782e8a7a1a7e2a6e1630d63};
@@ -136,6 +146,10 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_MUTT_SHA256SUM:=4ae6d60f7f19854c375cc1c27b5768b71e9f450c2adc10c22e45de8a27de524a};
 : ${PKG_MUTT_VERSION:=2.1.1};
 : ${PKG_MUTT_URL:=http://ftp.mutt.org/pub/mutt/mutt-${PKG_MUTT_VERSION}.tar.gz};
+: ${PKG_MUTT_CONFIG_CACHE_EXTRA:="
+mutt_cv_c99_snprintf=yes
+mutt_cv_c99_vsnprintf=yes
+mutt_cv_regex_broken=no"};
 : ${PKG_MUTT_CONFIGURE_ARGS_EXTRA:="--enable-imap --enable-pop --enable-smtp --enable-sidebar --with-curses --with-mailpath=/var/spool/mail --without-included-gettext --with-gnutls --disable-doc"};
 : ${PKG_NGINX_DEPENDS:="libz pcre"};
 : ${PKG_NGINX_SHA256SUM:=4a667f40f9f3917069db1dea1f2d5baa612f1fa19378aadf71502e846a424610};
@@ -154,6 +168,7 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_NULLMAILER_SHA256SUM:=6d277f69f1999c86df0ca9a97a4f14f9bb431c50fd4e016918290b84ff679241}
 : ${PKG_NULLMAILER_VERSION:=2.2}
 : ${PKG_NULLMAILER_URL:=https://github.com/bruceg/nullmailer/archive/${PKG_NULLMAILER_VERSION}.tar.gz};
+: ${PKG_NULLMAILER_CONFIG_CACHE_EXTRA:="local_cv_flag_NAMEDPIPEBUG=no"};
 : ${PKG_NULLMAILER_CONFIGURE_ARGS_EXTRA:="--enable-tls"}
 : ${PKG_NULLMAILER_FORCE_AUTORECONF:=1};
 : ${PKG_NULLMAILER_IN_TREE:=1}
@@ -210,6 +225,7 @@ proxytunnel rsync socat thttpd w3m weechat wget whois")";
 : ${PKG_W3M_SHA256SUM:=0467bb5429b75749205a3f57b9f5e8abba49929272aeab6fce94ff17953f0784};
 : ${PKG_W3M_VERSION:=0.5.3+git20190105};
 : ${PKG_W3M_URL:=https://github.com/tats/w3m/archive/v${PKG_W3M_VERSION}.tar.gz};
+: ${PKG_W3M_CONFIG_CACHE_EXTRA:="ac_cv_func_setpgrp_void=yes"};
 : ${PKG_W3M_CONFIGURE_ARGS_EXTRA:="--with-ssl --with-imagelib=imlib2 --with-termlib=ncurses --disable-w3mmailer"};
 : ${PKG_W3M_ENV_VARS_EXTRA:="LIBS=-ltinfo"};
 : ${PKG_W3M_IN_TREE:=1};
