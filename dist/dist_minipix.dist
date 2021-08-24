@@ -2,84 +2,88 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+: ${PKG_DIST_MINIPIX_INSTALL_FILES_V2:="									\
+	/=%[_minipix]/bin											\
+	/=%[_minipix]/etc											\
+	/=%[_minipix]/etc/ssl/certs										\
+	/=%[_minipix]/lib											\
+	/=%[_minipix]/share											\
+	/=%[_minipix]/share/terminfo										\
+														\
+	+%[_native]/bin/clear=%[_minipix]/bin/clear								\
+	+%[_native]/bin/reset=%[_minipix]/bin/reset								\
+	+%[_native]/bin/tset=%[_minipix]/bin/tset								\
+	+%[_minipix_dist]/bin/%<*>=%[_minipix]/bin/%[FNAME]							\
+														\
+	+%[_native]/lib/libcrypto.so.46=%[_minipix]/bin/libcrypto.so.46						\
+	+%[_native]/lib/libc.so=%[_minipix]/bin/libc.so		                				\
+	+%[_native]/lib/libcurl.so.4=%[_minipix]/bin/libcurl.so.4						\
+	+%[_native]/lib/libexpat.so.1=%[_minipix]/bin/libexpat.so.1						\
+	+%[_native]/lib/libgmp.so.10=%[_minipix]/bin/libgmp.so.10						\
+	+%[_native]/lib/libgnutls.so.30=%[_minipix]/bin/libgnutls.so.30						\
+	+%[_native]/lib/libhogweed.so.6=%[_minipix]/bin/libhogweed.so.6						\
+	+%[_native]/lib/libidn2.so.0=%[_minipix]/bin/libidn2.so.0						\
+	+%[_native]/lib/liblzma.so.5=%[_minipix]/bin/liblzma.so.5						\
+	+%[_native]/lib/libmagic.so.1=%[_minipix]/bin/libmagic.so.1						\
+	+%[_native]/lib/libmetalink.so.3=%[_minipix]/bin/libmetalink.so.3					\
+	+%[_native]/lib/libncurses.so.6=%[_minipix]/bin/libncurses.so.6						\
+	+%[_native]/lib/libncursesw.so.6=%[_minipix]/bin/libncursesw.so.6					\
+	+%[_native]/lib/libnettle.so.8=%[_minipix]/bin/libnettle.so.8						\
+	+%[_native]/lib/libpcre2-8.so.0=%[_minipix]/bin/libpcre2-8.so.0						\
+	+%[_native]/lib/libpcre.so.1=%[_minipix]/bin/libpcre.so.1						\
+	+%[_native]/lib/libperk.so.0=%[_minipix]/bin/libperk.so.0						\
+	+%[_native]/lib/libpsl.so.5=%[_minipix]/bin/libpsl.so.5	        					\
+	+%[_native]/lib/libpsxscl.so=%[_minipix]/bin/libpsxscl.so						\
+	+%[_native]/lib/libpython2.7.so.1=%[_minipix]/bin/libpython2.7.so.1					\
+	+%[_native]/lib/libreadline.so.8=%[_minipix]/bin/libreadline.so.8					\
+	+%[_native]/lib/libssl.so.48=%[_minipix]/bin/libssl.so.48						\
+	+%[_native]/lib/libtasn1.so.6=%[_minipix]/bin/libtasn1.so.6						\
+	+%[_native]/lib/libtinfo.so=%[_minipix]/bin/libtinfo.so		        				\
+	+%[_native]/lib/libtinfo.so.6=%[_minipix]/bin/libtinfo.so.6						\
+	+%[_native]/lib/libtinfow.so.6=%[_minipix]/bin/libtinfow.so.6						\
+	+%[_native]/lib/libu16ports.so.0=%[_minipix]/bin/libu16ports.so.0					\
+	+%[_native]/lib/libunistring.so.2=%[_minipix]/bin/libunistring.so.2					\
+	+%[_native]/lib/libuuid.so.1=%[_minipix]/bin/libuuid.so.1						\
+	+%[_native]/lib/libz.so.1=%[_minipix]/bin/libz.so.1		        				\
+														\
+	+%[_minipix_dist]/lib/python2.7/=%[_minipix]/lib/python2.7/						\
+														\
+	+%[_minipix_dist]/etc/ca-certificates.conf=%[_minipix]/etc/ca-certificates.conf				\
+	+%[_minipix_dist]/etc/ssl/certs/ca-certificates.crt=%[_minipix]/etc/ssl/certs/ca-certificates.crt	\
+	+%[_minipix_dist]/share/ca-certificates/=%[_minipix]/share/ca-certificates/				\
+														\
+	+%[_minipix_dist]/share/nano/=%[_minipix]/share/nano/							\
+	@nano/nanorc.nanorc=%[_minipix]/share/nanorc								\
+	+%[_minipix_dist]/share/vim/=%[_minipix]/share/vim/							\
+	@vim/vim74/vimrc_example.vim=%[_minipix]/share/vimrc							\
+														\
+	/=%[_minipix]/share/terminfo										\
+	/=%[_minipix]/share/terminfo/p										\
+	+%[_native]/share/terminfo/p/putty=%[_minipix]/share/terminfo/p/putty					\
+	+%[_native]/share/terminfo/p/putty-256color=%[_minipix]/share/terminfo/p/putty-256color			\
+	/=%[_minipix]/share/terminfo/s										\
+	+%[_native]/share/terminfo/s/screen=%[_minipix]/share/terminfo/s/screen					\
+	+%[_native]/share/terminfo/s/screen-256color=%[_minipix]/share/terminfo/s/screen-256color		\
+	/=%[_minipix]/share/terminfo/x										\
+	+%[_native]/share/terminfo/x/xterm=%[_minipix]/share/terminfo/x/xterm					\
+	+%[_native]/share/terminfo/x/xterm-256color=%[_minipix]/share/terminfo/x/xterm-256color			\
+"};
+
 pkg_dist_minipix_all() {
-	local _dname="" _fname="" _pname="";
-	if rtl_lmatch "${ARG_DIST}" "minipix" ","; then
-		for _dname in "${PREFIX_MINIPIX}/bin" "${PREFIX_MINIPIX}/share"; do
-			if [ ! -e "${_dname}" ]\
-			&& ! rtl_fileop mkdir "${_dname}"; then
-				rtl_log_msg fatalexit "Error: failed to create directory \`%s'." "${_dname}";
-			fi;
-		done;
-		for _fname in clear reset tset; do
-			if [ -e "${PREFIX_NATIVE}/bin/${_fname}" ]\
-			&& rtl_is_newer "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
-			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin"; then
-				rtl_log_msg fatalexit "Error: failed to copy \`%s' to \`%s'." "${PREFIX_NATIVE}/bin/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}";
-			fi;
-		done;
-		for _pname in $([ -e "${PREFIX}/minipix_dist/bin" ] && find "${PREFIX}/minipix_dist/bin"\
-				-maxdepth 1 -perm /a=x -type f -and \( -not -name "lib*" \)); do
-			if rtl_is_newer "${_pname}" "${PREFIX_MINIPIX}/bin/${_pname##*/}"\
-			&& ! rtl_fileop cp_follow "${_pname}" "${PREFIX_MINIPIX}/bin"; then
-				rtl_log_msg fatalexit "Error: failed to copy \`%s' into \`%s'." "${_pname}" "${PREFIX_MINIPIX}/bin";
-			fi;
-		done;
-		for _fname in	\
-				libc.so libcurl.so.4 libcrypto.so.46 libexpat.so.1 libgmp.so.10	\
-				libgnutls.so.30 libhogweed.so.6 libidn2.so.0 liblzma.so.5	\
-				libmagic.so.1 libmetalink.so.3 libncurses.so.6 libncursesw.so.6	\
-				libnettle.so.8 libpcre.so.1 libpcre2-8.so.0 libperk.so.0	\
-				libpsl.so.5 libpsxscl.so libpython2.7.so.1 libreadline.so.8	\
-				libssl.so.48 libtasn1.so.6 libtinfo.so.6 libtinfo.so		\
-				libtinfow.so.6 libu16ports.so.0 libunistring.so.2 libuuid.so.1	\
-				libz.so.1; do
-			if [ ! -e "${PREFIX_NATIVE}/lib/${_fname}" ]; then
-				rtl_log_msg fatalexit "Error: shared object \`%s' non-existent on copy." "${PREFIX_NATIVE}/lib/${_fname}";
-			elif rtl_is_newer "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin/${_fname}"\
-			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin"; then
-				rtl_log_msg fatalexit "Error: failed to copy shared object \`%s' into \`%s'." "${PREFIX_NATIVE}/lib/${_fname}" "${PREFIX_MINIPIX}/bin";
-			fi;
-		done;
-		for _dname in lib/python2.7 share/gdb; do
-			if [ -d "${PREFIX}/minipix_dist/${_dname}" ]\
-			&& ! tar -C "${PREFIX}/minipix_dist" -cpf - "${_dname}" | tar -C "${PREFIX_MINIPIX}" -xpf -; then
-				rtl_log_msg fatalexit "Error: failed to tar-copy \`%s' into \`%s'." "${PREFIX}/minipix_dist/${_dname}" "${PREFIX_MINIPIX}";
-			fi;
-		done;
-		for _pname in etc/ca-certificates.conf etc/ssl/certs/ca-certificates.crt share/ca-certificates; do
-			if [ -e "${PREFIX}/minipix_dist/${_pname}" ]\
-			&& ! tar -C "${PREFIX}/minipix_dist" -cpf - "${_pname}" | tar -C "${PREFIX_MINIPIX}" -xpf -; then
-				rtl_log_msg fatalexit "Error: failed to tar-copy \`%s' into \`%s'." "${PREFIX}/minipix_dist/${_dname}" "${PREFIX_MINIPIX}";
-			fi;
-		done;
-		for _fname in nano vim; do
-			if [ -e "${PREFIX}/minipix_dist/share/${_fname}" ]\
-			&& rtl_is_newer "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share/${_fname}"\
-			&& ! rtl_fileop cp_follow "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share"; then
-				rtl_log_msg fatalexit "Error: failed to copy \`%s' into \`%s'." "${PREFIX}/minipix_dist/share/${_fname}" "${PREFIX_MINIPIX}/share";
-			fi;
-		done;
-		if [ ! -L "${PREFIX_MINIPIX}/share/nanorc" ]\
-		&& ! rtl_fileop ln_symbolic "nano/nanorc.nanorc" "${PREFIX_MINIPIX}/share/nanorc"; then
-			rtl_log_msg fatalexit "Error: failed to create symbolic link from \`%s' to \`%s'." "nano/nanorc.nanorc" "${PREFIX_MINIPIX}/share/nanorc";
-		fi;
-		if [ ! -L "${PREFIX_MINIPIX}/share/vimrc" ]\
-		&& ! rtl_fileop ln_symbolic "vim/vim74/vimrc_example.vim" "${PREFIX_MINIPIX}/share/vimrc"; then
-			rtl_log_msg fatalexit "Error: failed to create symbolic link from \`%s' to \`%s'." "vim/vim74/vimrc_example.vim" "${PREFIX_MINIPIX}/share/vimrc";
-		fi;
-		for _fname in putty putty-256color screen screen-256color xterm xterm-256color; do
-			_dname="share/terminfo/${_fname%${_fname#[a-zA-Z]}}";
-			if [ ! -e "${PREFIX_MINIPIX}/${_dname}" ]\
-			&& ! rtl_fileop mkdir "${PREFIX_MINIPIX}/${_dname}"; then
-				rtl_log_msg fatalexit "Error: failed to create directory \`%s'." "${PREFIX_MINIPIX}/${_dname}";
-			fi;
-			if [ -e "${PREFIX_NATIVE}/${_dname}/${_fname}" ]\
-			&& rtl_is_newer "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}/${_fname}"\
-			&& ! rtl_fileop cp_follow "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}"; then
-				rtl_log_msg fatalexit "Error: failed to copy \`%s' into \`%s'." "${PREFIX_NATIVE}/${_dname}/${_fname}" "${PREFIX_MINIPIX}/${_dname}";
-			fi;
-		done;
+	local _vflag="";
+
+	[ "${ARG_VERBOSE:-0}" -ge 3 ] && _vflag="-v";
+	if rtl_lmatch "${ARG_DIST}" "minipix" ","								\
+	&& ! rtl_install_v2											\
+			-p "_builddir=${PKG_BASE_DIR}/${PKG_BUILD_DIR}"						\
+			-p "_minipix=${PREFIX_MINIPIX##*/}"							\
+			-p "_minipix_dist=${PREFIX}/minipix_dist"						\
+			-p "_native=${PREFIX_NATIVE##*/}"							\
+			-p "_subdir=${PKG_BASE_DIR}/${PKG_SUBDIR}"						\
+			-p "_target=${PKG_TARGET}"								\
+			${_vflag} -- "${PREFIX}"								\
+			"${PKG_INSTALL_FILES_V2}"; then
+		return 1;
 	fi;
 };
 
