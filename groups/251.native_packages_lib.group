@@ -290,8 +290,8 @@ ksba_cv_visibility_attribute=yes"};
 	-DENABLE_MBEDTLS=:BOOL=OFF
 	-DGNUTLS_INCLUDE_DIR=${PREFIX_NATIVE}/include
 	-DGNUTLS_LIBRARY=${PREFIX_NATIVE}/lib/libgnutls.lib.a
-	-DLIBLZMA_INCLUDE_DIR=${PREFIX_NATIVE}/include                  
-	-DLIBLZMA_LIBRARY=${PREFIX_NATIVE}/lib/liblzma.lib.a            
+	-DLIBLZMA_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DLIBLZMA_LIBRARY=${PREFIX_NATIVE}/lib/liblzma.lib.a
 	-DNETTLE_INCLUDE_DIR=${PREFIX_NATIVE}/include
 	-DNETTLE_LIBRARY=${PREFIX_NATIVE}/lib/libnettle.lib.a
 	-DOPENSSL_CRYPTO_LIBRARY=${PREFIX_NATIVE}/lib/libcrypto.lib.a
