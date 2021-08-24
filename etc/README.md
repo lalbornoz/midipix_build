@@ -642,6 +642,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | TARGET                       | Dash-separated {build,host,target} triplet                                                                                                  |
 | URL                          | URL to package archive, optionally appended with whitespace-separated list of alternative URLs                                              |
 | URLS_GIT                     | List of package Git URL(s) (``*name*=*URL*@*branch*``)                                                                                      |
+| VARS_FILE                    | Filename of optional package variables file (defaults to ``vars/${PKG_NAME}.vars``)                                                         |
 | VERSION                      | Package version                                                                                                                             |
   
 [Back to top](#table-of-contents)
