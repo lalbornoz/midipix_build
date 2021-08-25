@@ -1,6 +1,8 @@
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]   [-h|--help] [-p jobs] [-P]   [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]] [-R] [-v[v[v]]] [-x]
+                  [-F ipv4|ipv6|offline]    [-h|--help] [-p jobs|-P]    [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]
+                  [-R] [-v[v]] [-V level[,..]] [-x]
+
                   [--as-needed]  [--debug-minipix] [--dump-on-abort]  [--reset-state]
                   [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
 
@@ -17,8 +19,8 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
                           archives and/or Git repositories or don't download either at all
                           (offline.)
         -h|--help         Show short/full help screen, respectively.
-        -p jobs           Enables parallelisation at group-level, whenever applicable.
-        -P                The maximum count of jobs defaults to the number of logical
+        -p jobs|-P        Enables parallelisation at group-level, whenever applicable.
+                          The maximum count of jobs defaults to the number of logical
                           processors on the host system divided by two (2.)
 
                           If -R is not specified and at least one (1) package fails to
@@ -54,7 +56,15 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)
-        -v[v[v]]          Be verbose; -vv: always print package logs; -vvv: logs fileops.
+
+        -v[v]             -v: log at notice, -vv: log at verbose level.
+        -V level[,..]     Be verbose concerning any of:
+                          notice...: log at notice level (-v,)
+                          verbose..: log at verbose level (-vv,)
+                          build....: always print package build logs,
+                          fileops..: log RTL file operations,
+                          install..: log RTL installation DSL operations,
+                          xtrace...: set xtrace during package builds (-x.)
         -x                Set xtrace during package builds.
 
         --as-needed       Don't build unless the midipix_build repository has received

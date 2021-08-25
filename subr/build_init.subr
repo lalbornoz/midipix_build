@@ -124,11 +124,13 @@ buildp_init_files() {
 };
 
 buildp_init_getopts() {
-	local _arg="" _opt="" _rc=0 _shiftfl=0 OPTIND=0; _status="";
+	local _arg="" _level="" _opt="" _rc=0 _shiftfl=0 _verbose=0 OPTIND=0; _status="";
+
 	: ${ARCH:="nt64"}; : ${BUILD_KIND:="debug"};
 	ARG_AS_NEEDED=0; ARG_CLEAN_BUILDS=""; ARG_DEBUG_MINIPIX=0; ARG_DIST=""; ARG_DUMP_IN="";
 	ARG_DUMP_ON_ABORT=0; ARG_FETCH_FORCE=""; ARG_PARALLEL=1; ARG_RELAXED=0; ARG_RESET_PKG=0;
-	ARG_RESTART=""; ARG_RESTART_AT=""; ARG_RESTART_RECURSIVE=""; ARG_VERBOSE=0; ARG_XTRACE=0;
+	ARG_RESTART=""; ARG_RESTART_AT=""; ARG_RESTART_RECURSIVE=""; ARG_VERBOSE_LEVELS="";
+
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		--as-needed)	ARG_AS_NEEDED=1; _shiftfl=1; ;;
@@ -143,7 +145,7 @@ buildp_init_getopts() {
 		--help)		cat etc/build.usage; exit 0; ;;
 		--reset-state)	ARG_RESET_PKG=1; _shiftfl=1; ;;
 		-v*)		_opt="${1#-}"; while [ -n "${_opt}" ]; do
-					: $((ARG_VERBOSE+=1)); _opt="${_opt#?}";
+					: $((_verbose+=1)); _opt="${_opt#?}";
 				done; _shiftfl=1; ;;
 		# {{{ --roar
 		--roar)		printf "%s\n" '
@@ -166,7 +168,7 @@ buildp_init_getopts() {
 			break;
 		elif [ "${_shiftfl}" -gt 0 ]; then
 			shift "${_shiftfl}"; continue;
-		elif getopts a:b:C:D:F:hp:Pr:Rx _opt; then
+		elif getopts a:b:C:D:F:hp:Pr:RxV: _opt; then
 			case "${_opt}" in
 			a)	ARCH="${OPTARG}"; ;;
 			b)	BUILD_KIND="${OPTARG}"; ;;
@@ -182,7 +184,8 @@ buildp_init_getopts() {
 				fi; ;;
 			r)	ARG_RESTART="${OPTARG}"; ;;
 			R)	ARG_RELAXED=1; ;;
-			x)	ARG_XTRACE=1; ;;
+			x)	ARG_VERBOSE_LEVELS="${ARG_VERBOSE_LEVELS:+${ARG_VERBOSE_LEVELS},}xtrace"; ;;
+			V)	ARG_VERBOSE_LEVELS="${OPTARG}"; ;;
 			*)	cat etc/build.usage.short; exit 1; ;;
 			esac; shift $((${OPTIND}-1)); OPTIND=1;
 		else	if rtl_match "${1}" "=*"; then
@@ -212,13 +215,23 @@ buildp_init_getopts() {
 		esac;
 		if [ "${_rc:-0}" -eq 0 ]; then
 			DEFAULT_BUILD_CPUS="${ARG_PARALLEL}";
-			case "${ARG_VERBOSE:-0}" in
-			0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
-			1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-			2)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
-			3)	rtl_fileop_set_log 1; rtl_log_set_lvl 3; ;;
-			*)	_rc=1; _status="Error: invalid verbosity level (max. -vvv)"; ;;
+			case "${_verbose:-0}" in
+			0)	;;
+			1)	ARG_VERBOSE_LEVELS="${ARG_VERBOSE_LEVELS:+${ARG_VERBOSE_LEVELS},}notice"; ;;
+			2)	ARG_VERBOSE_LEVELS="${ARG_VERBOSE_LEVELS:+${ARG_VERBOSE_LEVELS},}verbose"; ;;
+			*)	_rc=1; _status="Error: invalid verbosity level (max. -vv)"; ;;
 			esac;
+			rtl_log_set_lvl 0;
+			for _level in $(rtl_llift "${ARG_VERBOSE_LEVELS}" "," " "); do
+				case "${_level}" in
+				notice)		rtl_log_set_lvl 1; ;;
+				verbose)	rtl_log_set_lvl 2; ;;
+				build|install|xtrace)
+						;;
+				fileops)	rtl_fileop_set_log 1; ;;
+				*)		_rc=1; _status="Error: invalid verbosity level \`${_level}'"; ;;
+				esac;
+			done;
 		fi;
 	fi;
 	return "${_rc}";

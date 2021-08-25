@@ -14,7 +14,9 @@ pkgp_install_files_v2() {
 	local _vflag=""; _status="";
 
 	if [ -n "${PKG_INSTALL_FILES_V2:-}" ]; then
-		[ "${ARG_VERBOSE:-0}" -ge 3 ] && _vflag="-v";
+		if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "install" ","; then
+			_vflag="-v";
+		fi;
 		if ! rtl_install_v2							\
 				-p "_builddir=${PKG_BUILD_DIR}"				\
 				-p "_destdir=${PKG_BASE_DIR}/${PKG_DESTDIR}"		\

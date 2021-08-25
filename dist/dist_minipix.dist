@@ -72,7 +72,9 @@
 pkg_dist_minipix_all() {
 	local _vflag="";
 
-	[ "${ARG_VERBOSE:-0}" -ge 3 ] && _vflag="-v";
+	if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "install" ","; then
+		_vflag="-v";
+	fi;
 	if rtl_lmatch "${ARG_DIST}" "minipix" ","								\
 	&& ! rtl_install_v2											\
 			-p "_minipix=${PREFIX_MINIPIX##*/}"							\

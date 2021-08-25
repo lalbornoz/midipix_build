@@ -1,11 +1,18 @@
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]   [-h|--help] [-p jobs] [-P]   [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]] [-R] [-v[v[v]]] [-x]
+                  [-F ipv4|ipv6|offline]    [-h|--help] [-p jobs|-P]    [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]
+                  [-R] [-v[v]] [-V level[,..]] [-x]
+
                   [--as-needed]  [--debug-minipix] [--dump-on-abort]  [--reset-state]
                   [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
 
+        -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release  Selects debug or release build kind; defaults to debug.
         -h|--help         Show short/full help screen, respectively.
-        -v[v[v]]          Be verbose; -vv: always print package logs; -vvv: logs fileops.
+        -p jobs|-P        Enables parallelisation at group-level, whenever applicable.
+        -r ALL|LAST       Restart all/the last failed/the specified comma-separated package(s).
+        -r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]
+        -v[v]             -v: log at notice, -vv: log at verbose level.
         -x                Set xtrace during package builds.
 
         <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,

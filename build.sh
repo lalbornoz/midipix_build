@@ -73,7 +73,7 @@ buildp_dispatch_pkg_state() {
 	step_pkg)	rtl_log_msg verbose "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}"; ;;
 	finish_pkg)
 		: $((BUILD_NFINI+=1));
-		if [ "${ARG_VERBOSE:-0}" -ge 2 ]; then
+		if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "build" ","; then
 			cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		fi;
 		rtl_log_msg info_end "[%3d%%/%3d%%] [%03d/%03d] Finished \`%s' build." "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
@@ -81,7 +81,7 @@ buildp_dispatch_pkg_state() {
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 			rtl_log_env_vars "build" $(rtl_get_vars_fast "^PKG_");
 		fi;
-		if [ "${ARG_XTRACE:-0}" -ge 1 ]; then
+		if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "xtrace" ","; then
 			set -o xtrace;
 		fi; ;;
 	esac;
