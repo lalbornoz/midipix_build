@@ -111,12 +111,18 @@ exp_pkg_env_set() {
 ex_pkg_env() {
 	local	_build_steps_default="${1}" _build_vars_default="${2}" _group_name="${3}"	\
 		_nounset="${4}" _pkg_name="${5}" _restart_at="${6}" _workdir="${7}"		\
-		_vars_file="" _vname="";
+		_inherit_from="" _vars_file="" _vname="";
 
-	if ! _vars_file="$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_VARS_FILE")"\
-	|| [ "${#_vars_file}" -eq 0 ]; then
+	if _inherit_from="$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_INHERIT_FROM")"\
+	&& [ "${#_inherit_from}" -gt 0 ]; then
+		_vars_file="$(rtl_get_var_unsafe -u "PKG_${_inherit_from}_VARS_FILE")";
+	else
+		_vars_file="$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_VARS_FILE")";
+	fi;
+	if [ "${#_vars_file}" -eq 0 ]; then
 		_vars_file="vars/${_pkg_name}.vars";
 	fi;
+
 	rtl_fileop source_opt "${_vars_file}" "${_group_name}/${_pkg_name}.${_group_name}";
 	if ! exp_pkg_env_set "${_build_vars_default}" "${_group_name}" "${_nounset}" "${_pkg_name}"\
 	|| ! exp_pkg_env_defaults "${_build_steps_default}" "${_pkg_name}" "${_workdir}"; then
