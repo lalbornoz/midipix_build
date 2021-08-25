@@ -4,5 +4,5 @@ if [ "${#}" -eq 1 ]\
 && [ "x${1}" = "x--version" ]; then
 	"${PREFIX}/bin/pkgconf" --version;
 else
-	"${PREFIX}/bin/pkgconf" --define-variable=prefix="${PREFIX%/}/native" --keep-system-cflags "${@}";
+	"${PREFIX}/bin/pkgconf" --define-variable=prefix="${PREFIX%/}/native/" --keep-system-cflags "${@}";
 fi;
