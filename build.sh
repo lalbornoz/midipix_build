@@ -149,6 +149,7 @@ build() {
 	fi;
 };
 
-set +o errexit -o noglob -o nounset; build "${@}";
+set +o errexit -o noglob -o nounset;
+export LANG=C LC_ALL=C; build "${@}";
 
 # vim:filetype=sh textwidth=0

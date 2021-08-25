@@ -296,6 +296,7 @@ pkgtool() {
 	fi;
 };
 
-set +o errexit -o noglob -o nounset; pkgtool "${@}";
+set +o errexit -o noglob -o nounset;
+export LANG=C LC_ALL=C; pkgtool "${@}";
 
 # vim:filetype=sh textwidth=0
