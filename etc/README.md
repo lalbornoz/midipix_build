@@ -654,7 +654,7 @@ The following operations are defined:
 | ``-``          | Unary  | Remove directories and/or files                                  |
 | ``/``          | Unary  | Create directories or trees thereof                              |
 | ``t``          | Unary  | touch(1) files and/or directories                                |
-| ``:''          | Binary | Copy directories and/or files                                    |
+| ``:``          | Binary | Copy directories and/or files                                    |
 | ``!``          | Binary | Move/rename directories and/or files                             |
 | ``@``          | Binary | Create/update symbolic links                                     |
 | ``+``          | Binary | Copy directories and/or files if newer and follow symbolic links |
@@ -787,10 +787,6 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | String			| Semantically generic string                                                                                                                  |
 | URL				| URL in standard format; see section [3.4](#34-package-archive-files-and-git-repositories)                                                    |
 | URL(Git)			| Git URL in the format ``[subdir=]URL[@branch]``; see section [3.4](#34-package-archive-files-and-git-repositories)                           |
-
-<sup id="fn42101">
-4.2.1:1 
-</sup>
 
 [//]: # "}}}"
 [//]: # "{{{ 4.5.2 Package variables"
