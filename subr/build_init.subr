@@ -142,7 +142,12 @@ buildp_init_getopts() {
 		--dump-on-abort)
 				ARG_DUMP_ON_ABORT=1; _shiftfl=1; ;;
 		--debug-minipx)	ARG_DEBUG_MINIPIX=1; _shiftfl=1; ;;
-		--help)		cat etc/build.usage; exit 0; ;;
+		--help)
+			if [ -t 1 ]; then
+				cat etc/build.usage;
+			else
+				sed 's/\[[0-9]\+m//g' etc/build.usage;
+			fi; exit 0; ;;
 		--reset-state)	ARG_RESET_PKG=1; _shiftfl=1; ;;
 		-v*)		_opt="${1#-}"; while [ -n "${_opt}" ]; do
 					: $((_verbose+=1)); _opt="${_opt#?}";
@@ -175,7 +180,12 @@ buildp_init_getopts() {
 			C)	ARG_CLEAN_BUILDS="${OPTARG}"; ;;
 			D)	ARG_DIST="${OPTARG}"; ;;
 			F)	ARG_FETCH_FORCE="${OPTARG}"; ;;
-			h)	cat etc/build.usage.short; exit 0; ;;
+			h)
+				if [ -t 1 ]; then
+					cat etc/build.usage.short;
+				else
+					sed 's/\[[0-9]\+m//g' etc/build.usage.short;
+				fi; exit 0; ;;
 			p)	ARG_PARALLEL="${OPTARG}"; ;;
 			P)	ARG_PARALLEL="auto";
 				if [ -n "${2:-}" ]\
