@@ -25,8 +25,6 @@ NATIVE_TOOLS_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_PKGCONF_CONFIGURE_ARGS:="--prefix= --host=${DEFAULT_TARGET} --with-sysroot=${PREFIX_NATIVE}"};
 : ${PKG_PKGCONF_INSTALL_FILES_V2:="
 	@pkgconf=bin/pkg-config
-	+%[_files]/bin/\%[_target]-pkg-config=bin/%[_target]-pkg-config
-	m0755=bin/%[_target]-pkg-config
 	/=lib/pkgconfig"};
 : ${PKG_SLIBTOOL_URLS_GIT:="slibtool=git://midipix.org/slibtool"};
 : ${PKG_SLIBTOOL_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
