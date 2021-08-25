@@ -47,7 +47,7 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_GDB_VERSION:=7.12};
 : ${PKG_GDB_URL:=ftp://sourceware.org/pub/gdb/releases/gdb-${PKG_GDB_VERSION}.tar.gz};
 : ${PKG_GDB_CFLAGS_CONFIGURE_EXTRA:="--sysroot=${PREFIX_NATIVE} -g3 -O0 --include=stdc-predef.h -I${PREFIX_NATIVE}/include/python2.7 -L${PREFIX_NATIVE}/lib"};
-: ${PKG_GDB_CONFIGURE_ARGS_EXTRA:="--with-system-libiberty --with-system-readline --with-system-zlib --with-python=${PWD}/etc/python2.7-config"};
+: ${PKG_GDB_CONFIGURE_ARGS_EXTRA:="--with-system-libiberty --with-system-readline --with-system-zlib --with-python=${PWD}/files/python2_host/bin/python2.7-config"};
 : ${PKG_GDB_CXXFLAGS_CONFIGURE_EXTRA:="--sysroot=${PREFIX_NATIVE} -g3 -O0 --include=stdc-predef.h -I${PREFIX_NATIVE}/include/python2.7 -L${PREFIX_NATIVE}/lib"};
 : ${PKG_GDB_ENV_VARS_EXTRA:="CFLAGS_FOR_TARGET=-g3 -O0 --include=stdc-predef.h -I${PREFIX_NATIVE}/include/python2.7 --sysroot=${PREFIX_NATIVE}:LDFLAGS_FOR_TARGET=--sysroot=${PREFIX_NATIVE}"};
 : ${PKG_GDB_INSTALL_FILES_V2:="../obj/gdb/.libs/gdb=bin/gdb"};
@@ -162,7 +162,7 @@ ac_cv_prog_have_pcre=%PREFIX%/bin/pcre-config"};
 : ${PKG_TK_URL:=http://kuiper.mirrorservice.org/sites/ftp.tcl.tk/pub/tcl/tcl8_7/tk${PKG_TK_VERSION}-src.tar.gz};
 : ${PKG_TK_CONFIGURE:="tk${PKG_TK_VERSION}/unix/configure"};
 : ${PKG_TK_CONFIGURE_ARGS_EXTRA:="tcl_cv_strtod_buggy=no --with-tcl=${PREFIX_NATIVE}/lib"};
-: ${PKG_TK_PATCHES_EXTRA:="${PWD}patches/tk-8.7a1.local.patch"};
+: ${PKG_TK_PATCHES_EXTRA:="${PWD}/patches/tk-8.7a1.local.patch"};
 : ${PKG_TK_SUBDIR:=tk${PKG_TK_VERSION}};
 
 # vim:filetype=sh textwidth=0
