@@ -1,20 +1,20 @@
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-s|-t] [-v]
-                    [<variable name>=<variable override>[ ..]] name
+[97musage[90m: [33m./[93mpkgtool.sh [90m[[33m-[93ma nt32[90m|[93mnt64[90m] [[33m-[93mb [93mdebug[90m|[93mrelease[90m] [[33m-[93mi[90m|[33m-[93mm [90m<[93mdname[90m> [33m-[93mM [90m<[93mdname[90m>|[33m-[93mr[90m|[33m-[93ms[90m|[33m-[93mt[90m] [[33m-[93mv[90m][0m
+                    [90m[<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]] [93mname[90m
 
-        -a nt32|nt64          Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release      Selects debug or release build kind; defaults to debug.
-        -i                    List package variables and dependencies of single named package.
-        -m <dname>            Setup package archives mirror in <dname> and/or
-        -M <dname>            Setup Git repositories mirror in <dname>
-        -r                    List reverse dependencies of single named package.
-        -s                    Enter interactive package build shell environment for single
-                              named package; requires a package dump file. If the package
-                              has not been built yet or built successfully, it will be rebuilt
-                              at build steps up until, by default, the `build' build step and
-                              forcibly aborted and dumped prior to enterting the shell.
-        -t                    Produce tarball of package build root directory and build log
-                              file for the purpose of distribution given build failure.
-        -v                    Increase verbosity.
+        [33m-[93ma nt32[90m|[93mnt64[0m      [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
+        [33m-[93mb debug[90m|[93mrelease[0m  [96mSelects debug or release build kind; defaults to [93mdebug[96m.[0m
+        [33m-[93mi                [96mList package variables and dependencies of single named package.[0m
+        [33m-[93mm [90m<[93mdname[90m>        [96mSetup package archives mirror in [90m<[93mdname[90m>[96m and/or[0m
+        [33m-[93mM [90m<[93mdname[90m>        [96mSetup Git repositories mirror in [90m<[93mdname[90m>[0m
+        [33m-[93mr                [96mList reverse dependencies of single named package.[0m
+        [33m-[93ms                [96mEnter interactive package build shell environment for single[0m
+                          [96mnamed package; requires a package dump file. If the package[0m
+                          [96mhas not been built yet or built successfully, it will be rebuilt[0m
+                          [96mat build steps up until, by default, the [90m`[93mbuild[90m'[96m build step and[0m
+                          [96mforcibly aborted and dumped prior to enterting the shell.[0m
+        [33m-[93mt                [96mProduce tarball of package build root directory and build log[0m
+                          [96mfile for the purpose of distribution given build failure.[0m
+        [33m-[93mv                [96mIncrease verbosity.[0m
 
-        <variable name>=<variable override>[ ..]
-                              Override build variable.
+        [90m<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..][0m
+                          [96mOverride build or package variable.[0m
