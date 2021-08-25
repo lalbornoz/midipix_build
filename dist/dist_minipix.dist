@@ -75,12 +75,9 @@ pkg_dist_minipix_all() {
 	[ "${ARG_VERBOSE:-0}" -ge 3 ] && _vflag="-v";
 	if rtl_lmatch "${ARG_DIST}" "minipix" ","								\
 	&& ! rtl_install_v2											\
-			-p "_builddir=${PKG_BASE_DIR}/${PKG_BUILD_DIR}"						\
 			-p "_minipix=${PREFIX_MINIPIX##*/}"							\
 			-p "_minipix_dist=${PREFIX}/minipix_dist"						\
 			-p "_native=${PREFIX_NATIVE##*/}"							\
-			-p "_subdir=${PKG_BASE_DIR}/${PKG_SUBDIR}"						\
-			-p "_target=${PKG_TARGET}"								\
 			${_vflag} -- "${PREFIX}"								\
 			"${PKG_INSTALL_FILES_V2}"; then
 		return 1;
