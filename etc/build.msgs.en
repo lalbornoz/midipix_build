@@ -1,0 +1,39 @@
+#
+# en_* locale messages file for build.sh
+#
+
+MSG_build_aborted="Build aborted.";
+MSG_build_begin="Build started by %s@%s at %s.";
+MSG_build_clean_prefix="-C prefix specified, cleaning prefix...";
+MSG_build_failed_in="Build failed in \`%s', check \`%s' for details.";
+MSG_build_finish="%s finished, %s skipped, and %s failed package(s).";
+MSG_build_finish_time="Build time: %s hour(s), %s minute(s), and %s second(s).";
+MSG_build_killed_pids="Killed PID(s): %s";
+MSG_build_reset_pkg_state="Reset package state for: %s";
+MSG_build_resolved_deps="Resolved \`%s' dependencies.";
+MSG_build_resolving_deps="Resolving \`%s' dependencies...";
+MSG_build_unknown_dep="Error: dependency \`%s' of \`%s' unknown.";
+
+MSG_group_begin="[%3d%%     ] [%03d/%03d] Starting \`%s' build group...";
+MSG_group_finish="[%3d%%     ] [%03d/%03d] Finished \`%s' build group.";
+
+MSG_pkg_begin="[%3d%%/%3d%%] [%03d/%03d] Starting \`%s' build...";
+MSG_pkg_faildump1="Logged environment dump for failed package \`%s' to \`%s'.";
+MSG_pkg_faildump2="Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a %s -b %s \"%s\" PREFIX=\"%s\"";
+MSG_pkg_fail_missing_vars="Error: \${PKG_SUBDIR} must be specified given both \${PKG_FNAME} and \${PKG_URLS_GIT}.";
+MSG_pkg_finish="[%3d%%/%3d%%] [%03d/%03d] Finished \`%s' build.";
+MSG_pkg_msg="%s/%s: %s";
+MSG_pkg_skip_disabled="Skipping disabled package \`%s'.";
+MSG_pkg_skip_finished="Skipping finished package \`%s'.";
+MSG_pkg_skip_unknown="Error: unknown package \`%s'.";
+MSG_pkg_stderrout_log="%s/%s_stderrout.log:";
+MSG_pkg_step="Finished build step %s of package \`%s'.";
+MSG_pkg_strip="Stripping %s...";
+
+MSG_zipdist_begin="Building deployable distribution ZIP archive...";
+MSG_zipdist_finished="Finished building deployable distribution ZIP archive.";
+MSG_zipdist_missing_pkg_build_dir="Error: missing package build directory for package \`%s'.";
+MSG_zipdist_signed="Signed deployable distribution ZIP archive.";
+MSG_zipdist_signing="Signing deployable distribution ZIP archive...";
+
+# vim:foldmethod=marker ft=sh

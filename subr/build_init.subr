@@ -68,7 +68,7 @@ buildp_init_args() {
 };
 
 buildp_init_env() {
-	local _fname="" _rc=0; _status="";
+	local _fname="" _lang="${LANG:-C}" _rc=0; _status=""; _lang="${_lang%%_*}";
 
 	if ! cd "${0%/*}"; then
 		printf "Error: failed to change working directory to \`${0%/*}'." >&2; exit 1;
@@ -80,18 +80,25 @@ buildp_init_env() {
 				$(find subr.rtl -name *.subr)	\
 				$(find subr -name *.subr)	\
 				etc/build.theme			\
+				"etc/build.msgs.${_lang}"	\
+				"etc/rtl.msgs.${_lang}"		\
 				;
 		do
 			if ! . "${_fname}"; then
 				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
 		done;
-		if [ -e "etc/build.theme.local" ]; then
-			if ! . "etc/build.theme.local"; then
-				printf "Error: failed to source \`%s'.\n" "etc/build.theme.local" >&2; exit 1;
+		for _fname in	\
+				"etc/build.theme.local"		\
+				"etc/build.msgs.${_lang}.local"	\
+				"etc/rtl.msgs.${_lang}.local"	\
+				;
+		do
+			if [ -e "${_fname}" ]; then
+				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
-		fi;
-	fi; return "${_rc}";
+		done;
+	fi; export LANG=C LC_ALL=C; return "${_rc}";
 };
 
 buildp_init_files() {
@@ -119,8 +126,8 @@ buildp_init_files() {
 		fi;
 		rtl_fileop touch "${DEFAULT_BUILD_LOG_FNAME}"; rtl_log_set_fname "${DEFAULT_BUILD_LOG_FNAME}";
 		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "prefix" ","; then
-			trap "rm -f \"${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}\" 2>/dev/null; rtl_log_msg \"fatalexit\" \"Build aborted.\"" HUP INT TERM USR1 USR2;
-			rtl_log_msg "info" "-C prefix specified, cleaning prefix...";
+			trap "rm -f \"${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}\" 2>/dev/null; rtl_log_msg \"fatalexit\" \"${MSG_build_aborted}\"" HUP INT TERM USR1 USR2;
+			rtl_log_msg "info" "${MSG_build_clean_prefix}";
 			for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do
 				if ! rtl_fileop rm "${PREFIX}/${_pname}"; then
 					_rc=1; _status="failed to remove \`${PREFIX}/${_pname}'."; break;

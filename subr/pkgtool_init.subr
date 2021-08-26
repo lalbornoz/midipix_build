@@ -18,27 +18,35 @@ pkgtoolp_init_args() {
 };
 
 pkgtoolp_init_env() {
-	local _fname="" _rc=0; _status="";
+	local _fname="" _lang="${LANG:-C}" _rc=0; _status=""; _lang="${_lang%%_*}";
+
 	if ! cd "${0%/*}"; then
 		printf "Error: failed to change working directory to \`${0%/*}'." >&2; exit 1;
 	elif ! umask 022; then
 		printf "Error: failed to set umask(2).\n" >&2; exit 1;
 	else	for _fname in	\
-				$(find subr.rtl -name *.subr)	\
-				$(find subr -name *.subr)	\
-				etc/pkgtool.theme		\
+				$(find subr.rtl -name *.subr)		\
+				$(find subr -name *.subr)		\
+				etc/pkgtool.theme			\
+				"etc/pkgtool.msgs.${_lang}"		\
+				"etc/rtl.msgs.${_lang}"			\
 				;
 		do
 			if ! . "${_fname}"; then
 				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
 		done;
-		if [ -e "etc/pkgtool.theme.local" ]; then
-			if ! . "etc/pkgtool.theme.local"; then
-				printf "Error: failed to source \`%s'.\n" "etc/pkgtool.theme.local" >&2; exit 1;
+		for _fname in	\
+				"etc/pkgtool.theme.local"		\
+				"etc/pkgtool.msgs.${_lang}.local"	\
+				"etc/rtl.msgs.${_lang}.local"		\
+				;
+		do
+			if [ -e "${_fname}" ]; then
+				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
-		fi;
-	fi; return "${_rc}";
+		done;
+	fi; export LANG=C LC_ALL=C; return "${_rc}";
 };
 
 pkgtoolp_init_getopts() {

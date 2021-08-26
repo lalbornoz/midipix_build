@@ -230,10 +230,10 @@ ex_pkg_dispatch() {
 		_perc_group="$(rtl_percentage "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}")";
 		if "${_dispatch_fn}" start_group "${_group_name}" "" "${EXP_PKG_DISPATCH_GROUP_CUR}" "${EXP_PKG_DISPATCH_GROUP_MAX}" "${_perc_group}"; then
 			if rtl_fileop mkdir "${_workdir}"\
-			&& rtl_log_msg "verbose" "Resolving \`%s' dependencies..." "${_group_name}"\
+			&& rtl_log_msg "verbose" "${MSG_build_resolving_deps}" "${_group_name}"\
 			&& exp_pkg_dispatch_expand_packages "${_checkfl}" "${_forcefl}" "${_group_name}" "${_restart}" "${_reversefl}"\
 			&& exp_pkg_dispatch_complete "${_dispatch_fn}" "${_group_name}" "${EX_PKG_DISABLED}" "${EX_PKG_FINISHED}"\
-			&& rtl_log_msg "verbose" "Resolved \`%s' dependencies." "${_group_name}"\
+			&& rtl_log_msg "verbose" "${MSG_build_resolved_deps}" "${_group_name}"\
 			&& EXP_PKG_DISPATCH_COUNT_MAX="$(rtl_llength "${EX_PKG_NAMES}")"\
 			&& [ "${EXP_PKG_DISPATCH_COUNT_MAX}" -gt 0 ]; then
 				_pkg_names="$(rtl_lconcat "${_pkg_names}" "${EX_PKG_NAMES}")";

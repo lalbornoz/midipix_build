@@ -1,0 +1,35 @@
+#
+# en_* locale messages file for pkgtool.sh
+#
+
+MSG_pkgtool_build_group="Build group: %s";
+MSG_pkgtool_no_env_dump="Warning: failed to locate environment dump for package \`%s' in \`%s'.";
+MSG_pkgtool_pkg_archive_mirroring="Mirroring package \`%s', archive URL(s): \`%s'...";
+MSG_pkgtool_pkg_archive_mirroring_parent="Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'...";
+MSG_pkgtool_pkg_deps_fail="Warning: failed to unfold dependency-expanded package name list for \`%s'.";
+MSG_pkgtool_pkg_deps_full_disabled="Full dependencies of \`%s' (disabled packages:) %s";
+MSG_pkgtool_pkg_deps_full="Full dependencies of \`%s': %s";
+MSG_pkgtool_pkg_deps_rev_none="Package \`%s' has no reverse dependencies.";
+MSG_pkgtool_pkg_direct_deps="Direct dependencies of \`%s': %s";
+MSG_pkgtool_pkg_disabled="Package \`%s' (parent package: \`%s') disabled, skipping.";
+MSG_pkgtool_pkg_git_mirroring="Mirroring package \`%s', Git URL(s): \`%s'...";
+MSG_pkgtool_pkg_git_mirroring_parent="Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'...";
+MSG_pkgtool_pkg_link_fail="Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'.";
+MSG_pkgtool_pkg_mirror_fail="Failed to mirror package \`%s', skipping.";
+MSG_pkgtool_pkg_no_deps="Package \`%s' has no dependencies.";
+MSG_pkgtool_pkgs_deps_rev_disabled="Reverse dependencies of \`%s' (disabled packages:) %s";
+MSG_pkgtool_pkgs_deps_rev="Reverse dependencies of \`%s': %s";
+MSG_pkgtool_pkg_skip_archive_mirror="Archive URL(s) mirroring disabled, skipping \`%s'.";
+MSG_pkgtool_pkg_skip_git_mirror_disabled="Package \`%s' specifies to skip Git URL(s) mirroring, skipping.";
+MSG_pkgtool_pkg_skip_git_mirror="Git URL(s) mirroring disabled, skipping \`%s'.";
+MSG_pkgtool_pkg_skip_no_urls="Package \`%s' has neither archive nor Git URL(s), skipping.";
+MSG_pkgtool_rebuilding_pkg="Rebuilding package \`%s' w/ --dump-in build...";
+MSG_pkgtool_shell_env1="Launching shell \`%s' within package environment and \`%s'.";
+MSG_pkgtool_shell_env2="Run \$R to rebuild \`%s'.";
+MSG_pkgtool_shell_env3="Run \$RS <step> to restart the specified build step of \`%s'";
+MSG_pkgtool_shell_env4="Run \$D to automatically regenerate the patch for \`%s'.";
+MSG_pkgtool_tarball_created="Created compressed tarball of \`%s' and \`%s_stderrout.log'.";
+MSG_pkgtool_tarball_creating="Creating compressed tarball of \`%s' and \`%s_stderrout.log'...";
+MSG_pkgtool_updated_patches="Updated \`%s/patches/%s'.";
+
+# vim:foldmethod=marker ft=sh

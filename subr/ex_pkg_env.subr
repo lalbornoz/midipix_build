@@ -26,7 +26,7 @@ exp_pkg_env_defaults() {
 	if [ -z "${PKG_SUBDIR:-}" ]; then
 		if [ -n "${PKG_URLS_GIT:-}" ]\
 		&& [ -n "${PKG_FNAME:-}" ]; then
-			rtl_log_msg "fatalexit" "Error: \${PKG_SUBDIR} must be specified given both \${PKG_FNAME} and \${PKG_URLS_GIT}.";
+			rtl_log_msg "fatalexit" "${MSG_pkg_fail_missing_vars}";
 		elif [ -n "${PKG_URLS_GIT:-}" ]; then
 			PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
 		else case "${PKG_FNAME:-}" in

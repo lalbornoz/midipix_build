@@ -21,7 +21,7 @@ ex_pkg_check_depends() {
 			if ! rtl_lmatch "${_pkg_disabled}" "${_pkg_name_depend}"\
 			&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name_depend}"; then
 				if ! rtl_lmatch "${_pkg_names}" "${_pkg_name_depend}"; then
-					rtl_log_msg "fatalexit" "Error: dependency \`%s' of \`%s' unknown." "${_pkg_name_depend}" "${_pkg_name}";
+					rtl_log_msg "fatalexit" "${MSG_build_unknown_dep}" "${_pkg_name_depend}" "${_pkg_name}";
 				else
 					_dependfl=1; break;
 				fi;
@@ -78,8 +78,8 @@ ex_pkg_get_packages() {
 ex_pkg_load_dump() {
 	local _pkg_name="${1}" _workdir="${2}" _rc=0; _status="";
 	if [ ! -e "${_workdir}/${_pkg_name}.dump" ]; then
-		rtl_log_msg "warning" "Warning: failed to locate environment dump for package \`%s' in \`%s'." "${_pkg_name}" "${_workdir}";
-		rtl_log_msg "info" "Rebuilding package \`%s' w/ --dump-in build..." "${_pkg_name}";
+		rtl_log_msg "warning" "${MSG_pkgtool_no_env_dump}" "${_pkg_name}" "${_workdir}";
+		rtl_log_msg "info" "${MSG_pkgtool_rebuilding_pkg}" "${_pkg_name}";
 		(export	ARCH BUILD_KIND BUILD_DLCACHEDIR BUILD_WORKDIR		\
 			PREFIX PREFIX_CROSS PREFIX_MINGW32 PREFIX_MINIPIX	\
 			PREFIX_NATIVE PREFIX_ROOT PREFIX_RPM;

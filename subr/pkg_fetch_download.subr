@@ -20,7 +20,7 @@ pkg_fetch_download_clean_dlcache() {
 		done;
 		if [ "${_skipfl}" -eq 0 ]; then
 			_fname="${_dlcachedir}/${_pkg_name}/${_fname}";
-			rtl_log_msg "verbose" "Deleting redundant file \`%s' for package \`%s'." "${_fname}" "${_pkg_name}";
+			rtl_log_msg "verbose" "${MSG_rtl_fetch_rm_redundant}" "${_fname}" "${_pkg_name}";
 			rtl_fileop rm "${_fname}";
 		fi;
 	done;
