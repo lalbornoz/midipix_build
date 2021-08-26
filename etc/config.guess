@@ -1,0 +1,124 @@
+#!/bin/sh
+
+# config.guess: an alternate implementation for modern (cross-)systems.
+# modern-hosts: machine detection either via slibtool's --dumpmachine
+#               output, or by way of a native compiler that implements
+#               the -dumpmachine switch.
+
+# this file is covered by COPYING.BAUTOMAKE.
+
+# the order of attempted things:
+#
+# $NATIVE_CC
+# $CC_FOR_BUILD
+# c99
+# cc
+# ucc
+# gcc
+# clang
+# cparser
+
+
+set -eu
+
+mb_script="$0"
+mb_status=1
+mb_dstamp='2021-06-11'
+
+mb_target=
+mb_extarg="${1:-}"
+
+export LC_ALL=C
+
+
+config_usage()
+{
+	printf 'usage:\n'   >&2
+
+	printf 'Options:\n' >&2
+	printf '\t%s\n'            \
+		'-h, --help'       \
+		'-t, --time-stamp' \
+		'-v, --version'    \
+		>&2
+
+	printf '\nThis is an alternate config.guess implementation for modern (cross-)systems.' >&2
+	printf '\nA native system is identified either via `slibtool --dumpmachine`, or by way' >&2
+	printf '\n  of the -dumpmachine output of its priority native compiler.\n\n'            >&2
+
+	printf 'Native compilers are tried in the following order:\n'                         >&2
+	printf '\t%s\n' '$NATIVE_CC' '$CC_FOR_BUILD' 'c99' 'cc' 'ucc' 'gcc' 'clang' 'cparser' >&2
+
+	printf '\npkgsite: https://git.foss21.org/bautomake' >&2
+	printf '\npkgbugs: bugs.automake@foss21.org\n\n'     >&2
+
+	exit ${mb_status}
+}
+
+
+config_output()
+{
+	printf '%s\n' "$mb_target"
+	exit 0
+}
+
+
+for arg ; do
+	case "$arg" in
+		-h | --help)
+			mb_status=0
+			config_usage
+			;;
+
+		-t | --time-stamp)
+			printf '%s\n' "$mb_dstamp"
+			exit 0
+			;;
+
+		-v | --version)
+			printf 'foss21.org config.guess (%s)\n' "$mb_dstamp"
+			exit 0
+			;;
+
+		-*)
+			printf '%s: the argument `%s is not supported.\n\n' "$mb_script" "$arg'" >&2
+			exit 2
+	esac
+done
+
+
+# no unused arguments
+if [ -n "$mb_extarg" ]; then
+	mb_status=2
+	config_usage
+fi
+
+
+# try slibtool
+if command -v slibtool > /dev/null 2>&1; then
+	mb_target=$(slibtool --dumpmachine 2>/dev/null || true)
+
+	if [ -n "$mb_target" ]; then
+		config_output
+	fi
+fi
+
+
+# explicit
+mb_native_cc="${NATIVE_CC:-false}"
+mb_cc_for_build="${CC_FOR_BUILD:-false}"
+
+
+# try
+for mb_cc_guess in "$mb_native_cc" "$mb_cc_for_build" c99 cc ucc gcc clang cparser; do
+	mb_target=$($mb_cc_guess -dumpmachine 2>/dev/null || true)
+
+	if [ -n "$mb_target" ]; then
+		config_output
+	fi
+done
+
+
+# fail
+printf '%s: native compiler not found, or does not support -dumpmachine.\n\n' "$mb_script" >&2
+exit 2

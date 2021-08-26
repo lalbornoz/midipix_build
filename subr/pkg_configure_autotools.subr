@@ -29,6 +29,10 @@ pkg_configure_autotools() {
 									"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
 									"${_subdir_tgt}/config.sub"; then
 								return 1;
+							elif ! rtl_fileop install -m 0700			\
+									"${MIDIPIX_BUILD_PWD}/etc/config.guess"	\
+									"${_subdir_tgt}/config.guess"; then
+								return 1;
 							else
 								break;
 							fi;
@@ -49,6 +53,12 @@ pkg_configure_autotools() {
 		for _fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.sub); do
 			if ! rtl_fileop mv "${_fname}" "${_fname}.orig"\
 			|| ! rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" "${_fname}"; then
+				return 1;
+			fi;
+		done
+		for _fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.guess); do
+			if ! rtl_fileop mv "${_fname}" "${_fname}.orig"\
+			|| ! rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.guess" "${_fname}"; then
 				return 1;
 			fi;
 		done
