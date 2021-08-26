@@ -42,43 +42,43 @@ LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}verbose,build_vars,grou
 #
 # Subsystem tags
 #
-LOG_TAG_build="";		# (UNUSED)
-LOG_TAG_fileop=36;		# Cyan
-LOG_TAG_install=36;		# Cyan
-LOG_TAG_zipdist=93;		# Bright yellow
-LOG_TAG_xtrace="";		# (UNUSED)
+LOG_TAG_build="";			# (UNUSED)
+LOG_TAG_fileop=36;			# Cyan
+LOG_TAG_install=36;			# Cyan
+LOG_TAG_zipdist=93;			# Bright yellow
+LOG_TAG_xtrace="";			# (UNUSED)
 
 #
 # General level tags
 #
-LOG_TAG_fatal=91;		# Bright red
-LOG_TAG_info=93;		# Bright yellow
-LOG_TAG_verbose=96;		# Bright cyan
-LOG_TAG_warning=31;		# Dark red
+LOG_TAG_fatal=91;			# Bright red
+LOG_TAG_info=93;			# Bright yellow
+LOG_TAG_verbose=96;			# Bright cyan
+LOG_TAG_warning=31;			# Dark red
 
 #
 # General build tags
 #
-LOG_TAG_build_begin=93;		# Bright yellow
-LOG_TAG_build_finish=93;	# Bright yellow
-LOG_TAG_build_finish_time=93;	# Bright yellow
-LOG_TAG_build_vars=33;		# Dark yellow
+LOG_TAG_build_begin="4;93";		# Underline; Bright yellow
+LOG_TAG_build_finish="4;93";		# Underline; Bright yellow
+LOG_TAG_build_finish_time="4;93";	# Underline; Bright yellow
+LOG_TAG_build_vars="33";		# Dark yellow
 
 #
 # Build group tags
 #
-LOG_TAG_group_begin="4;93";	# Underline; Bright yellow
-LOG_TAG_group_finish="4;92";	# Underline; Bright green
+LOG_TAG_group_begin="4;93";		# Underline; Bright yellow
+LOG_TAG_group_finish="4;92";		# Underline; Bright green
 
 #
 # Package build tags
 #
-LOG_TAG_pkg_begin=93;		# Bright yellow
-LOG_TAG_pkg_faildump=93;	# Bright yellow
-LOG_TAG_pkg_finish=92;		# Bright green
-LOG_TAG_pkg_msg=90;		# Dark grey
-LOG_TAG_pkg_skip=90;		# Dark grey
-LOG_TAG_pkg_step=90;		# Dark grey
-LOG_TAG_pkg_strip=93;		# Bright yellow
+LOG_TAG_pkg_begin=93;			# Bright yellow
+LOG_TAG_pkg_faildump=93;		# Bright yellow
+LOG_TAG_pkg_finish=92;			# Bright green
+LOG_TAG_pkg_msg=90;			# Dark grey
+LOG_TAG_pkg_skip=36;			# Cyan
+LOG_TAG_pkg_step=90;			# Dark grey
+LOG_TAG_pkg_strip=93;			# Bright yellow
 
 # vim:foldmethod=marker ft=sh
