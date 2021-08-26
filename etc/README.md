@@ -554,8 +554,8 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 
         -v[v]             -v: log at info, notice, -vv: log at info, notice, verbose level.
         -V level[,..]     Be verbose concerning any of:
-                          notice...: log at notice level (-v,)
-                          verbose..: log at verbose level (implies notice) (-vv,)
+                          notice...: log at info, notice level (-v,)
+                          verbose..: log at info, notice, verbose level (implies notice) (-vv,)
                           build....: always print package build logs (implies notice,)
                           fileops..: log RTL file operations (implies notice,)
                           install..: log RTL installation DSL operations (implies notice,)

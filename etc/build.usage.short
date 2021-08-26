@@ -14,8 +14,8 @@
         [33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..][0m
         [33m-[93mv[90m[[93mv[90m][96m             [33m-[93mv[96m: log at [93minfo[90m, [93mnotice[96m, [33m-[93mvv[96m: log at [93minfo[90m,[93m notice[90m,[93m verbose[96m level.[0m
         [33m-[93mV level[90m[[93m,[90m..][0m     [96mBe verbose concerning any of:[0m
-                          [93mnotice[90m...: [96mlog at notice level ([33m-[93mv[96m,)[0m
-                          [93mverbose[90m..: [96mlog at verbose level (implies [93mnotice[96m) ([33m-[93mvv[96m,)[0m
+                          [93mnotice[90m...: [96mlog at [93minfo[90m, [93mnotice[96m level ([33m-[93mv[96m,)[0m
+                          [93mverbose[90m..: [96mlog at [93minfo[90m,[93m notice[90m,[93m verbose[96m level (implies [93mnotice[96m) ([33m-[93mvv[96m,)[0m
                           [93mbuild[90m....: [96malways print package build logs (implies [93mnotice[96m,)[0m
                           [93mfileops[90m..: [96mlog RTL file operations (implies [93mnotice[96m,)[0m
                           [93minstall[90m..: [96mlog RTL installation DSL operations (implies [93mnotice[96m,)[0m
