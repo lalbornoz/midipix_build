@@ -496,87 +496,100 @@ env ARCH=nt64 BUILD_KIND=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
                   [-F ipv4|ipv6|offline]    [-h|--help] [-p jobs|-P]    [-r ALL|LAST]
                   [-r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]]        [-R]
-		  [-v[v]]   [-V {notice,verbose,build,fileops,install,xtrace}]   [-x]
+		  [-v] [-V [+]tag|pat[,..]]
 
                   [--as-needed]  [--debug-minipix] [--dump-on-abort]  [--reset-state]
                   [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
 
-        -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release  Selects debug or release build kind; defaults to debug.
-        -C dir[,..]       Clean build directory (build,) ${PREFIX} before processing build
-                          scripts (prefix,) source directory (src,) and/or destination
-                          directory (dest) after successful package builds.
-        -D kind[,..]      Produce minimal midipix distribution directory (minipix,) RPM
-                          binary packages (rpm,) and/or deployable distribution ZIP
-                          archive (zipdist.) zipdist implies minipix.
+        -a nt32|nt64        Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release    Selects debug or release build kind; defaults to debug.
+        -C dir[,..]         Clean build directory (build,) ${PREFIX} before processing build
+                            scripts (prefix,) source directory (src,) and/or destination
+                            directory (dest) after successful package builds.
+        -D kind[,..]        Produce minimal midipix distribution directory (minipix,) RPM
+                            binary packages (rpm,) and/or deployable distribution ZIP
+                            archive (zipdist.) zipdist implies minipix.
         -F ipv4|ipv6|offline
-                          Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package
-                          archives and/or Git repositories or don't download either at all
-                          (offline.)
-        -h|--help         Show short/full help screen, respectively.
-        -p jobs|-P        Enables parallelisation at group-level, whenever applicable.
-                          The maximum count of jobs defaults to the number of logical
-                          processors on the host system divided by two (2.)
+                            Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package
+                            archives and/or Git repositories or don't download either at all
+                            (offline.)
+        -h|--help           Show short/full help screen, respectively.
+        -p jobs|-P          Enables parallelisation at group-level, whenever applicable.
+                            The maximum count of jobs defaults to the number of logical
+                            processors on the host system divided by two (2.)
 
-                          If -R is not specified and at least one (1) package fails to
-                          build, all remaining package builds will be forcibly aborted.
+                            If -R is not specified and at least one (1) package fails to
+                            build, all remaining package builds will be forcibly aborted.
 
-        -r ALL|LAST       Restart all packages or the last failed package and resume
-                          build, resp.
+        -r ALL|LAST         Restart all packages or the last failed package and resume
+                            build, resp.
         -r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]
-                          Restart the specified comma-separated package(s) w/ inhibition
-                          of package build step state resetting completely (`ALL',) starting
-                          at the resp. last successfully executed build steps (`LAST',) or the
-                          specified comma-separated list of build steps, optionally subject
-                          concerning package name(s) and/or build step(s) to the below modifiers:
+                            Restart the specified comma-separated package(s) w/ inhibition
+                            of package build step state resetting completely (`ALL',) starting
+                            at the resp. last successfully executed build steps (`LAST',) or the
+                            specified comma-separated list of build steps, optionally subject
+                            concerning package name(s) and/or build step(s) to the below modifiers:
 
-                          Prepend name w/ `*' to automatically include dependencies, `**'
-                          to forcibly rebuild all dependencies, and `***' to forcibly
-                          rebuild all packages that depend on the specified package(s).
+                            Prepend name w/ `*' to automatically include dependencies, `**'
+                            to forcibly rebuild all dependencies, and `***' to forcibly
+                            rebuild all packages that depend on the specified package(s).
 
-                          Prepend step w/ `^' to filter build steps with, `<' or `<='
-                          to constrain build steps to below or below or equal with, resp.,
-                          `>' or `>=' to constrain build steps to above or above or equal
-                          with, resp.
+                            Prepend step w/ `^' to filter build steps with, `<' or `<='
+                            to constrain build steps to below or below or equal with, resp.,
+                            `>' or `>=' to constrain build steps to above or above or equal
+                            with, resp.
 
-                          Currently defined build steps are:
-                          fetch_clean, fetch_download, fetch_extract, configure_clean,
-                          configure_patch_pre, configure_autotools, configure_patch,
-                          configure, build_clean, build, install_clean, install_subdirs,
-                          install_make, install_files, install_libs, install, install_rpm,
-                          and clean.
+                            Currently defined build steps are:
+                            fetch_clean, fetch_download, fetch_extract, configure_clean,
+                            configure_patch_pre, configure_autotools, configure_patch,
+                            configure, build_clean, build, install_clean, install_subdirs,
+                            install_make, install_files, install_libs, install, install_rpm,
+                            and clean.
 
-                          Additionally, the following virtual steps are provided:
-                          @fetch, @configure, @build, @install, @clean, and finish.
+                            Additionally, the following virtual steps are provided:
+                            @fetch, @configure, @build, @install, @clean, and finish.
 
-        -R                Ignore build failures, skip printing package logs, and continue
-                          building (relaxed mode.)
+        -R                  Ignore build failures, skip printing package logs, and continue
+                            building (relaxed mode.)
 
-        -v[v]             -v: log at info, notice, -vv: log at info, notice, verbose level.
-        -V level[,..]     Be verbose concerning any of:
-                          notice...: log at info, notice level (-v,)
-                          verbose..: log at info, notice, verbose level (implies notice) (-vv,)
-                          build....: always print package build logs (implies notice,)
-                          fileops..: log RTL file operations (implies notice,)
-                          install..: log RTL installation DSL operations (implies notice,)
-                          xtrace...: set xtrace during package builds (implies notice) (-x.)
-        -x                Set xtrace during package builds.
+        -v                  Increase logging verbosity.
+        -V [+]tag|pat[,..]  Enable logging for messages with tag or pattern matching tags of:
+                            + (prefix)..: initialise tags with normal verbosity (implies normal) (see etc/build.theme,)
+                            all.........: log everything (see etc/build.theme,)
+                            clear|none..: log nothing,
+                            normal......: log at normal verbosity (see etc/build.theme,)
+                            verbose.....: log at increased verbosity (implies normal) (see etc/build.theme) (-v,)
 
-        --as-needed       Don't build unless the midipix_build repository has received
-                          new commits.
-        --debug-minipix   Don't strip(1) minipix binaries to facilitate debugging minipix.
-        --dump-on-abort   Produce package environment dump files on build failure to be
-                          used in conjuction with pkg_shell.sh script (excludes -R.)
-        --reset-state     Reset package build step state on exit.
+                            build.......: log package build logs,
+                            fileops.....: log RTL file operations,
+                            install.....: log RTL installation DSL operations,
+                            zipdist.....: log deployable distribution ZIP archive operations,
+                            xtrace......: set xtrace during package builds,
 
-        <group>[ ..]      One of: dev_packages, dist, host_deps, host_deps_rpm,
-                          host_toolchain, host_tools, minipix, native_packages,
-                          native_runtime, native_toolchain, native_tools.
+                            fatal.......: fatal, unrecoverable errors,
+                            info........: informational messages,
+                            verbose.....: verbose informational messages,
+                            warning.....: warning messages possibly relating to imminent fatal, unrecoverable errors,
 
-                          Prepend w/ `=' to inhibit group-group dependency expansion.
+                            build_*.....: general build messages (viz.: begin, finish, finish_time, vars,)
+                            group_*.....: build group messages (viz.: begin, finish,)
+                            pkg_*.......: package build messages (viz.: begin, faildump, finish, msg, skip, step, strip.)
+
+        --as-needed         Don't build unless the midipix_build repository has received
+                            new commits.
+        --debug-minipix     Don't strip(1) minipix binaries to facilitate debugging minipix.
+        --dump-on-abort     Produce package environment dump files on build failure to be
+                            used in conjuction with pkg_shell.sh script (excludes -R.)
+        --reset-state       Reset package build step state on exit.
+
+        <group>[ ..]        One of: dev_packages, dist, host_deps, host_deps_rpm,
+                            host_toolchain, host_tools, minipix, native_packages,
+                            native_runtime, native_toolchain, native_tools.
+
+                            Prepend w/ `=' to inhibit group-group dependency expansion.
 
         <variable name>=<variable override>[ ..]
-                          Override build or package variable.
+                            Override build or package variable.
 ```
   
 [Back to top](#table-of-contents)

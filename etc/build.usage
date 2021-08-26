@@ -1,84 +1,97 @@
 [97musage[90m: [33m./[93mbuild.sh [90m[[33m-[93ma nt32[90m|[93mnt64[90m]  [[33m-[93mb debug[90m|[93mrelease[90m]    [[33m-[93mC dir[90m[[93m,[90m..]]  [[33m-[93mD kind[90m[[93m,[90m..]][0m
                   [90m[[33m-[93mF ipv4[90m|[93mipv6[90m|[93moffline[90m]    [[33m-[93mh[90m|[33m--[93mhelp[90m] [[33m-[93mp jobs[90m|[33m-[93mP[90m]    [[33m-[93mr ALL[90m|[93mLAST[90m][0m
                   [90m[[33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..]]        [[33m-[93mR[90m]
-		  [90m[[33m-[93mv[90m[[93mv[90m]]   [[33m-[93mV [90m{[93mnotice[90m,[93mverbose[90m,[93mbuild[90m,[93mfileops[90m,[93minstall[90m,[93mxtrace[90m}]   [90m[[33m-[93mx[90m][0m
+		  [90m[[33m-[93mv[90m] [[33m-[93mV [90m[[93m+[90m][93mtag[90m|[93mpat[90m[[93m,[90m..][90m][0m
 
                   [90m[[33m--[93mas-needed[90m]  [90m[[33m--[93mdebug-minipix[90m] [[33m--[93mdump-on-abort[90m]  [90m[[33m--[93mreset-state[90m][0m
                   [90m[[33m--[93mroar[90m]      [[[93m=[90m][90m<[93mgroup[90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
 
-        [33m-[93ma nt32[90m|[93mnt64[0m      [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
-        [33m-[93mb debug[90m|[93mrelease[0m  [96mSelects debug or release build kind; defaults to [93mdebug[96m.[0m
-        [33m-[93mC dir[90m[[93m,[90m..][0m       [96mClean build directory ([93mbuild[96m,) [93m${PREFIX}[96m before processing build[0m
-                          [96mscripts ([93mprefix[96m,) source directory ([93msrc[96m,) and/or destination[0m
-                          [96mdirectory ([93mdest[96m) after successful package builds.[0m
-        [33m-[93mD kind[90m[[93m,[90m..][0m      [96mProduce minimal midipix distribution directory ([93mminipix[96m,) RPM[0m
-                          [96mbinary packages ([93mrpm[96m,) and/or deployable distribution ZIP[0m
-                          [96marchive ([93mzipdist[96m.) [93mzipdist[96m implies [93mminipix[96m.[0m
+        [33m-[93ma nt32[90m|[93mnt64[0m        [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
+        [33m-[93mb debug[90m|[93mrelease[0m    [96mSelects debug or release build kind; defaults to [93mdebug[96m.[0m
+        [33m-[93mC dir[90m[[93m,[90m..][0m         [96mClean build directory ([93mbuild[96m,) [93m${PREFIX}[96m before processing build[0m
+                            [96mscripts ([93mprefix[96m,) source directory ([93msrc[96m,) and/or destination[0m
+                            [96mdirectory ([93mdest[96m) after successful package builds.[0m
+        [33m-[93mD kind[90m[[93m,[90m..][0m        [96mProduce minimal midipix distribution directory ([93mminipix[96m,) RPM[0m
+                            [96mbinary packages ([93mrpm[96m,) and/or deployable distribution ZIP[0m
+                            [96marchive ([93mzipdist[96m.) [93mzipdist[96m implies [93mminipix[96m.[0m
         [33m-[93mF ipv4[90m|[93mipv6[90m|[93moffline[0m
-                          [96mForce IPv4 ([93mipv4[96m) or IPv6 ([93mipv6[96m) when downloading package[0m
-                          [96marchives and/or Git repositories or don't download either at all[0m
-                          [96m([93moffline[96m.)[0m
-        [33m-[93mh[90m|[93m--help[0m         [96mShow short/full help screen, respectively.[0m
-        [33m-[93mp jobs[90m|[93m-P[0m        [96mEnables parallelisation at group-level, whenever applicable.[0m
-                          [96mThe maximum count of jobs defaults to the number of logical[0m
-                          [96mprocessors on the host system divided by two (2.)[0m
+                            [96mForce IPv4 ([93mipv4[96m) or IPv6 ([93mipv6[96m) when downloading package[0m
+                            [96marchives and/or Git repositories or don't download either at all[0m
+                            [96m([93moffline[96m.)[0m
+        [33m-[93mh[90m|[93m--help[0m           [96mShow short/full help screen, respectively.[0m
+        [33m-[93mp jobs[90m|[93m-P[0m          [96mEnables parallelisation at group-level, whenever applicable.[0m
+                            [96mThe maximum count of jobs defaults to the number of logical[0m
+                            [96mprocessors on the host system divided by two (2.)[0m
 
-                          [96mIf [33m-[93mR[96m is not specified and at least one (1) package fails to[0m
-                          [96mbuild, all remaining package builds will be forcibly aborted.[0m
+                            [96mIf [33m-[93mR[96m is not specified and at least one (1) package fails to[0m
+                            [96mbuild, all remaining package builds will be forcibly aborted.[0m
 
-        [33m-[93mr ALL[90m|[93mLAST[0m       [96mRestart all packages or the last failed package and resume[0m
-                          [96mbuild, resp.[0m
+        [33m-[93mr ALL[90m|[93mLAST[0m         [96mRestart all packages or the last failed package and resume[0m
+                            [96mbuild, resp.[0m
         [33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..][0m
-                          [96mRestart the specified comma-separated package(s) w/ inhibition[0m
-                          [96mof package build step state resetting completely ([90m`[93mALL[90m'[96m,) starting[0m
-                          [96mat the resp. last successfully executed build steps ([90m`[93mLAST[90m'[96m,) or the[0m
-                          [96mspecified comma-separated list of build steps, optionally subject[0m
-                          [96mconcerning package name(s) and/or build step(s) to the below modifiers:[0m
+                            [96mRestart the specified comma-separated package(s) w/ inhibition[0m
+                            [96mof package build step state resetting completely ([90m`[93mALL[90m'[96m,) starting[0m
+                            [96mat the resp. last successfully executed build steps ([90m`[93mLAST[90m'[96m,) or the[0m
+                            [96mspecified comma-separated list of build steps, optionally subject[0m
+                            [96mconcerning package name(s) and/or build step(s) to the below modifiers:[0m
 
-                          [96mPrepend name w/ [90m`[93m*[90m'[96m to automatically include dependencies, [90m`[93m**[90m'[0m
-                          [96mto forcibly rebuild all dependencies, and [90m`[93m***[90m'[96m to forcibly[0m
-                          [96mrebuild all packages that depend on the specified package(s).[0m
+                            [96mPrepend name w/ [90m`[93m*[90m'[96m to automatically include dependencies, [90m`[93m**[90m'[0m
+                            [96mto forcibly rebuild all dependencies, and [90m`[93m***[90m'[96m to forcibly[0m
+                            [96mrebuild all packages that depend on the specified package(s).[0m
 
-                          [96mPrepend step w/ [90m`[93m^[90m'[96m to filter build steps with, [90m`[93m<[90m'[96m or [90m`[93m<=[90m'[0m
-                          [96mto constrain build steps to below or below or equal with, resp.,[0m
-                          [90m`[93m>[90m'[96m or [90m`[93m>=[90m'[96m to constrain build steps to above or above or equal[0m
-                          [96mwith, resp.[0m
+                            [96mPrepend step w/ [90m`[93m^[90m'[96m to filter build steps with, [90m`[93m<[90m'[96m or [90m`[93m<=[90m'[0m
+                            [96mto constrain build steps to below or below or equal with, resp.,[0m
+                            [90m`[93m>[90m'[96m or [90m`[93m>=[90m'[96m to constrain build steps to above or above or equal[0m
+                            [96mwith, resp.[0m
 
-                          [96mCurrently defined build steps are:[0m
-                          [93mfetch_clean[90m,[93m fetch_download[90m,[93m fetch_extract[90m,[93m configure_clean[90m,[0m
-                          [93mconfigure_patch_pre[90m,[93m configure_autotools[90m,[93m configure_patch[90m,[0m
-                          [93mconfigure[90m,[93m build_clean[90m,[93m build[90m,[93m install_clean[90m,[93m install_subdirs[90m,[0m
-                          [93minstall_make[90m,[93m install_files[90m,[93m install_libs[90m,[93m install[90m,[93m install_rpm[90m,[0m
-                          [96mand [93mclean[90m.[0m
+                            [96mCurrently defined build steps are:[0m
+                            [93mfetch_clean[90m,[93m fetch_download[90m,[93m fetch_extract[90m,[93m configure_clean[90m,[0m
+                            [93mconfigure_patch_pre[90m,[93m configure_autotools[90m,[93m configure_patch[90m,[0m
+                            [93mconfigure[90m,[93m build_clean[90m,[93m build[90m,[93m install_clean[90m,[93m install_subdirs[90m,[0m
+                            [93minstall_make[90m,[93m install_files[90m,[93m install_libs[90m,[93m install[90m,[93m install_rpm[90m,[0m
+                            [96mand [93mclean[90m.[0m
 
-                          [96mAdditionally, the following virtual steps are provided:[0m
-                          [93m@fetch[90m,[93m @configure[90m,[93m @build[90m,[93m @install[90m,[93m @clean[90m,[96m and [93mfinish[90m.[0m
+                            [96mAdditionally, the following virtual steps are provided:[0m
+                            [93m@fetch[90m,[93m @configure[90m,[93m @build[90m,[93m @install[90m,[93m @clean[90m,[96m and [93mfinish[90m.[0m
 
-        [33m-[93mR[0m                [96mIgnore build failures, skip printing package logs, and continue[0m
-                          [96mbuilding (relaxed mode.)[0m
+        [33m-[93mR[0m                  [96mIgnore build failures, skip printing package logs, and continue[0m
+                            [96mbuilding (relaxed mode.)[0m
 
-        [33m-[93mv[90m[[93mv[90m][96m             [33m-[93mv[96m: log at [93minfo[90m, [93mnotice[96m, [33m-[93mvv[96m: log at [93minfo[90m,[93m notice[90m,[93m verbose[96m level.[0m
-        [33m-[93mV level[90m[[93m,[90m..][0m     [96mBe verbose concerning any of:[0m
-                          [93mnotice[90m...: [96mlog at [93minfo[90m, [93mnotice[96m level ([33m-[93mv[96m,)[0m
-                          [93mverbose[90m..: [96mlog at [93minfo[90m,[93m notice[90m,[93m verbose[96m level (implies [93mnotice[96m) ([33m-[93mvv[96m,)[0m
-                          [93mbuild[90m....: [96malways print package build logs (implies [93mnotice[96m,)[0m
-                          [93mfileops[90m..: [96mlog RTL file operations (implies [93mnotice[96m,)[0m
-                          [93minstall[90m..: [96mlog RTL installation DSL operations (implies [93mnotice[96m,)[0m
-                          [93mxtrace[90m...: [96mset [93mxtrace[96m during package builds (implies [93mnotice[96m) ([33m-[93mx[96m.)[0m
-        [33m-[93mx[96m                Set [93mxtrace[96m during package builds.[0m
+        [33m-[93mv[90m                  [96mIncrease logging verbosity.[0m
+        [33m-[93mV [90m[[93m+[90m][93mtag[90m|[93mpat[90m[[93m,[90m..][0m  [96mEnable logging for messages with [93mtag[96m or [93mpat[96mtern matching tags of:[0m
+                            [93m+[90m (prefix)..: [96minitialise tags with [93mnormal[96m verbosity (implies [93mnormal[96m) (see [93metc/build.theme[90m,[96m)[0m
+                            [93mall[90m.........: [96mlog everything (see [93metc/build.theme[90m,[96m)[0m
+                            [93mclear|none[90m..: [96mlog nothing,[0m
+                            [93mnormal[90m......: [96mlog at normal verbosity (see [93metc/build.theme[90m,[96m)[0m
+                            [93mverbose[90m.....: [96mlog at increased verbosity (implies [93mnormal[96m) (see [93metc/build.theme[96m) ([33m-[93mv[90m,[96m)[0m
 
-        [33m--[93mas-needed[0m       [96mDon't build unless the midipix_build repository has received[0m
-                          [96mnew commits.[0m
-        [33m--[93mdebug-minipix[0m   [96mDon't [93mstrip(1)[96m minipix binaries to facilitate debugging minipix.[0m
-        [33m--[93mdump-on-abort[0m   [96mProduce package environment dump files on build failure to be[0m
-                          [96mused in conjuction with pkg_shell.sh script (excludes [33m-[93mR[96m.)[0m
-        [33m--[93mreset-state[0m     [96mReset package build step state on exit.[0m
+                            [93mbuild[90m.......: [96mlog package build logs,[0m
+                            [93mfileops[90m.....: [96mlog RTL file operations,[0m
+                            [93minstall[90m.....: [96mlog RTL installation DSL operations,[0m
+                            [93mzipdist[90m.....: [96mlog deployable distribution ZIP archive operations,[0m
+                            [93mxtrace[90m......: [96mset [93mxtrace[96m during package builds,[0m
 
-        [90m<[93mgroup[90m>[ ..][96m      One of: [93mdev_packages[90m,[93m dist[90m,[93m host_deps[90m,[93m host_deps_rpm[90m,[0m
-                          [93mhost_toolchain[90m,[93m host_tools[90m,[93m minipix[90m,[93m native_packages[90m,[0m
-                          [93mnative_runtime[90m,[93m native_toolchain[90m,[93m native_tools[90m.[0m
+                            [93mfatal[90m.......: [96mfatal, unrecoverable errors,[0m
+                            [93minfo[90m........: [96minformational messages,[0m
+                            [93mverbose[90m.....: [96mverbose informational messages,[0m
+                            [93mwarning[90m.....: [96mwarning messages possibly relating to imminent fatal, unrecoverable errors,[0m
 
-                          [96mPrepend w/ [90m`[93m=[90m'[96m to inhibit group-group dependency expansion.[0m
+                            [93mbuild_*[90m.....: [96mgeneral build messages (viz.: [93mbegin[90m, [93mfinish[90m, [93mfinish_time[90m, [93mvars[90m,[96m)[0m
+                            [93mgroup_*[90m.....: [96mbuild group messages (viz.: [93mbegin[90m, [93mfinish[90m,[96m)[0m
+                            [93mpkg_*[90m.......: [96mpackage build messages (viz.: [93mbegin[90m, [93mfaildump[90m, [93mfinish[90m, [93mmsg[90m, [93mskip[90m, [93mstep[90m, [93mstrip[90m.[96m)[0m
+
+        [33m--[93mas-needed[0m         [96mDon't build unless the midipix_build repository has received[0m
+                            [96mnew commits.[0m
+        [33m--[93mdebug-minipix[0m     [96mDon't [93mstrip(1)[96m minipix binaries to facilitate debugging minipix.[0m
+        [33m--[93mdump-on-abort[0m     [96mProduce package environment dump files on build failure to be[0m
+                            [96mused in conjuction with pkg_shell.sh script (excludes [33m-[93mR[96m.)[0m
+        [33m--[93mreset-state[0m       [96mReset package build step state on exit.[0m
+
+        [90m<[93mgroup[90m>[ ..][96m        One of: [93mdev_packages[90m,[93m dist[90m,[93m host_deps[90m,[93m host_deps_rpm[90m,[0m
+                            [93mhost_toolchain[90m,[93m host_tools[90m,[93m minipix[90m,[93m native_packages[90m,[0m
+                            [93mnative_runtime[90m,[93m native_toolchain[90m,[93m native_tools[90m.[0m
+
+                            [96mPrepend w/ [90m`[93m=[90m'[96m to inhibit group-group dependency expansion.[0m
 
         [90m<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..][0m
-                          [96mOverride build or package variable.[0m
+                            [96mOverride build or package variable.[0m

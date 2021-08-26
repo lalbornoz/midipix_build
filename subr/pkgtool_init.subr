@@ -10,6 +10,9 @@ pkgtoolp_init_args() {
 	&&   [ -z "${ARG_RESTART_AT}" ]\
 	&&   [ "${ARG_UPDATE_DIFF:-0}" -eq 0 ]; then
 		cat etc/pkgtool.usage; _rc=1; _status="Error: one of -i, -m and/or -M, -r, -s, or -t must be specified.";
+	elif [ "${BUILD_HNAME:+1}" != 1 ]\
+	&& ! BUILD_HNAME="$(hostname)"; then
+		_rc=1; _status="failed to obtain hostname.";
 	else	_rc=0; export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
 	fi; return "${_rc}";
 };
@@ -20,7 +23,12 @@ pkgtoolp_init_env() {
 		printf "Error: failed to change working directory to \`${0%/*}'." >&2; exit 1;
 	elif ! umask 022; then
 		printf "Error: failed to set umask(2).\n" >&2; exit 1;
-	else	for _fname in $(find subr.rtl -name *.subr) $(find subr -name *.subr); do
+	else	for _fname in	\
+				$(find subr.rtl -name *.subr)	\
+				$(find subr -name *.subr)	\
+				etc/pkgtool.theme		\
+				;
+		do
 			if ! . "${_fname}"; then
 				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
@@ -75,8 +83,8 @@ pkgtoolp_init_getopts() {
 			_rc=1; _status="Error: missing package name.";
 		else	export PKGTOOL_PKG_NAME;
 			case "${ARG_VERBOSE:-0}" in
-			0)	rtl_fileop_set_log 0; rtl_log_set_lvl 0; ;;
-			1)	rtl_fileop_set_log 0; rtl_log_set_lvl 2; ;;
+			0)	rtl_log_enable_tags "${LOG_TAGS_normal}"; ;;
+			1)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
 			*)	_rc=1; _status="Error: invalid verbosity level (max. -v)"; ;;
 			esac;
 		fi;

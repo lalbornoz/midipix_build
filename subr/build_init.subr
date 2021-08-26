@@ -14,18 +14,18 @@ buildp_init_args() {
 	esac;
 	if [ "${BUILD_HNAME:+1}" != 1 ]\
 	&& ! BUILD_HNAME="$(hostname)"; then
-		_rc=1; _status="Error: failed to obtain hostname.";
+		_rc=1; _status="failed to obtain hostname.";
 	elif [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]\
 	&&   [ "${ARG_RELAXED:-0}" -eq 1 ]; then
-		_rc=1; _status="Error: --dump-on-abort excludes -R.";
+		_rc=1; _status="--dump-on-abort excludes -R.";
 	elif [ "${ARG_AS_NEEDED:-0}" -eq 1 ]\
 	&&   [ -e "${PREFIX}/build.gitref" ]\
 	&&   [ "$(git rev-parse HEAD)" = "$(cat "${PREFIX}/build.gitref")" ]; then
 		_rc=0; _status="Git repository has not changed since last build and --as-needed was specified.";
 	elif ! ex_pkg_process_restart_spec \$ARG_RESTART \$ARG_RESTART_AT \$ARG_RESTART_RECURSIVE; then
-		_rc=1; _status="Error: failed to process -r specification: ${_status}.";
+		_rc=1; _status="failed to process -r specification: ${_status}.";
 	elif ! ex_pkg_load_groups; then
-		_rc=1; _status="Error: failed to load build groups.";
+		_rc=1; _status="failed to load build groups.";
 	else	if ! rtl_lmatch "${ARG_DIST:-}" "rpm" ","\
 		&& [ "${ARG_DUMP_IN:+1}" != 1 ]\
 		&& [ "${ARG_DUMP_ON_ABORT:-0}" -eq 0 ]; then
@@ -41,7 +41,7 @@ buildp_init_args() {
 			if [ "${_foundfl}" -eq 0 ]; then
 				_foundfl=0; for _group in ${BUILD_GROUPS}; do
 					if rtl_lmatch "${EX_PKG_BUILD_GROUPS}" "${_group}"; then
-						_rc=1; _status="Error: unknown build group \`${_group}'."; break;
+						_rc=1; _status="unknown build group \`${_group}'."; break;
 					fi;
 				done;
 			fi;
@@ -59,8 +59,8 @@ buildp_init_args() {
 				done;
 				case "$(rtl_llength "${_pkg_names_unknown}")" in
 				0)	;;
-				1)	_rc=1; _status="Error: unknown package \`${_pkg_names_unknown}'."; ;;
-				*)	_rc=1; _status="Error: unknown packages: $(rtl_subst "${_pkg_names_unknown}" " " ", ")"; ;;
+				1)	_rc=1; _status="unknown package \`${_pkg_names_unknown}'."; ;;
+				*)	_rc=1; _status="unknown packages: $(rtl_subst "${_pkg_names_unknown}" " " ", ")"; ;;
 				esac;
 			fi;
 		fi;
@@ -76,9 +76,14 @@ buildp_init_env() {
 		printf "Error: failed to set umask(2).\n" >&2; exit 1;
 	elif ! BUILD_USER="$(id -nu)"; then
 		printf "Error: failed to obtain username." >&2; exit 1;
-	else	for _fname in $(find subr.rtl -name *.subr) $(find subr -name *.subr); do
+	else	for _fname in	\
+				$(find subr.rtl -name *.subr)	\
+				$(find subr -name *.subr)	\
+				etc/build.theme			\
+				;
+		do
 			if ! . "${_fname}"; then
-				printf "Error: failed to source \`%s'.\n" "${_fname}"; exit 1;
+				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
 		done;
 	fi; return "${_rc}";
@@ -90,11 +95,11 @@ buildp_init_files() {
 	if ! rtl_fileop mkdir "${BUILD_DLCACHEDIR}" "${BUILD_WORKDIR}"\
 	|| rtl_lmatch "${ARG_DIST}" "rpm" ","\
 	&& ! rtl_fileop mkdir "${PREFIX_RPM}"; then
-		_rc=1; _status="Error: cannot create build directories.";
+		_rc=1; _status="cannot create build directories.";
 	elif [ -e "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
-		_rc=1; _status="Error: another build targeting this architecture and build type is currently in progress.";
+		_rc=1; _status="another build targeting this architecture and build type is currently in progress.";
 	elif ! rtl_clean_env "${DEFAULT_CLEAR_ENV_VARS_EXCEPT}"; then
-		_rc=1; _status="Error: failed to clean environment.";
+		_rc=1; _status="failed to clean environment.";
 	elif ! rtl_check_path_vars "${DEFAULT_CHECK_PATH_VARS}"; then
 		_rc=1; _status="${_status}";
 	else	export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
@@ -109,11 +114,11 @@ buildp_init_files() {
 		fi;
 		rtl_fileop touch "${DEFAULT_BUILD_LOG_FNAME}"; rtl_log_set_fname "${DEFAULT_BUILD_LOG_FNAME}";
 		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "prefix" ","; then
-			trap "rm -f \"${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}\" 2>/dev/null; rtl_log_msg fatalexit \"Build aborted.\"" HUP INT TERM USR1 USR2;
-			rtl_log_msg info "-C prefix specified, cleaning prefix...";
+			trap "rm -f \"${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}\" 2>/dev/null; rtl_log_msg \"fatalexit\" \"Build aborted.\"" HUP INT TERM USR1 USR2;
+			rtl_log_msg "info" "-C prefix specified, cleaning prefix...";
 			for _pname in ${DEFAULT_CLEAR_PREFIX_PATHS}; do
 				if ! rtl_fileop rm "${PREFIX}/${_pname}"; then
-					_rc=1; _status="Error: failed to remove \`${PREFIX}/${_pname}'."; break;
+					_rc=1; _status="failed to remove \`${PREFIX}/${_pname}'."; break;
 				fi;
 			done;
 			trap - HUP INT TERM USR1 USR2;
@@ -124,12 +129,12 @@ buildp_init_files() {
 };
 
 buildp_init_getopts() {
-	local _arg="" _level="" _opt="" _rc=0 _shiftfl=0 _verbose=0 OPTIND=0; _status="";
+	local _arg="" _opt="" _rc=0 _shiftfl=0 OPTIND=0; _status="";
 
 	: ${ARCH:="nt64"}; : ${BUILD_KIND:="debug"};
 	ARG_AS_NEEDED=0; ARG_CLEAN_BUILDS=""; ARG_DEBUG_MINIPIX=0; ARG_DIST=""; ARG_DUMP_IN="";
 	ARG_DUMP_ON_ABORT=0; ARG_FETCH_FORCE=""; ARG_PARALLEL=1; ARG_RELAXED=0; ARG_RESET_PKG=0;
-	ARG_RESTART=""; ARG_RESTART_AT=""; ARG_RESTART_RECURSIVE=""; ARG_VERBOSE_LEVELS="";
+	ARG_RESTART=""; ARG_RESTART_AT=""; ARG_RESTART_RECURSIVE=""; ARG_VERBOSE=0; ARG_VERBOSE_TAGS="";
 
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
@@ -137,7 +142,7 @@ buildp_init_getopts() {
 		--dump-in)	if [ "${#}" -ge 2 ]; then
 					ARG_DUMP_IN="${2}"; ARG_DUMP_ON_ABORT=1; _shiftfl=2;
 				else
-					_rc=1; _status="Error: missing argument to option --dump-in.";
+					_rc=1; _status="missing argument to option --dump-in.";
 				fi; ;;
 		--dump-on-abort)
 				ARG_DUMP_ON_ABORT=1; _shiftfl=1; ;;
@@ -150,7 +155,7 @@ buildp_init_getopts() {
 			fi; exit 0; ;;
 		--reset-state)	ARG_RESET_PKG=1; _shiftfl=1; ;;
 		-v*)		_opt="${1#-}"; while [ -n "${_opt}" ]; do
-					: $((_verbose+=1)); _opt="${_opt#?}";
+					: $((ARG_VERBOSE+=1)); _opt="${_opt#?}";
 				done; _shiftfl=1; ;;
 		# {{{ --roar
 		--roar)		printf "%s\n" '
@@ -190,12 +195,12 @@ buildp_init_getopts() {
 			P)	ARG_PARALLEL="auto";
 				if [ -n "${2:-}" ]\
 				&& rtl_isnumber "${2}"; then
-					_rc=1; _status="Error: maximum parallelisation job count is set with the \`-p jobs' option."; break
+					_rc=1; _status="maximum parallelisation job count is set with the \`-p jobs' option."; break
 				fi; ;;
 			r)	ARG_RESTART="${OPTARG}"; ;;
 			R)	ARG_RELAXED=1; ;;
-			x)	ARG_VERBOSE_LEVELS="${ARG_VERBOSE_LEVELS:+${ARG_VERBOSE_LEVELS},}xtrace"; ;;
-			V)	ARG_VERBOSE_LEVELS="${OPTARG}"; ;;
+			x)	ARG_VERBOSE_TAGS="${ARG_VERBOSE_TAGS:+${ARG_VERBOSE_TAGS},}xtrace"; ;;
+			V)	ARG_VERBOSE_TAGS="${OPTARG}"; ;;
 			*)	cat etc/build.usage.short; exit 1; ;;
 			esac; shift $((${OPTIND}-1)); OPTIND=1;
 		else	if rtl_match "${1}" "=*"; then
@@ -205,8 +210,8 @@ buildp_init_getopts() {
 			fi;
 			case "${_arg}" in
 			*=*)		rtl_set_var_unsafe "${_arg%%=*}" "${_arg#*=}"; ;;
-			[!a-zA-Z]*)	_rc=1; _status="Error: build group names must start with [a-zA-Z] (in argument \`${_arg}'.)"; ;;
-			*[!_a-zA-Z]*)	_rc=1; _status="Error: build group names must not contain [!_a-zA-Z] (in argument \`${_arg}'.)"; ;;
+			[!a-zA-Z]*)	_rc=1; _status="build group names must start with [a-zA-Z] (in argument \`${_arg}'.)"; ;;
+			*[!_a-zA-Z]*)	_rc=1; _status="build group names must not contain [!_a-zA-Z] (in argument \`${_arg}'.)"; ;;
 			*)		BUILD_GROUPS="$(rtl_lconcat "${BUILD_GROUPS}" "${_arg}")"; ;;
 			esac; shift;
 		fi;
@@ -214,35 +219,52 @@ buildp_init_getopts() {
 	if [ "${_rc:-0}" -eq 0 ]; then
 		case "${ARG_PARALLEL}" in
 		auto)	if ! ARG_PARALLEL="$(rtl_get_cpu_count)"; then
-				_rc=1; _status="Error: failed to get CPU count.";
+				_rc=1; _status="failed to get CPU count.";
 			else
 				ARG_PARALLEL=$((${ARG_PARALLEL}/2));
 			fi; ;;
 		"")	ARG_PARALLEL=1; ;;
 		*)	if ! rtl_isnumber "${ARG_PARALLEL}"; then
-				_rc=1; _status="Error: invalid jobs count \`${ARG_PARALLEL}'.";
+				_rc=1; _status="invalid jobs count \`${ARG_PARALLEL}'.";
 			fi; ;;
 		esac;
 		if [ "${_rc:-0}" -eq 0 ]; then
 			DEFAULT_BUILD_CPUS="${ARG_PARALLEL}";
-			case "${_verbose:-0}" in
-			0)	;;
-			1)	ARG_VERBOSE_LEVELS="${ARG_VERBOSE_LEVELS:+${ARG_VERBOSE_LEVELS},}notice"; ;;
-			2)	ARG_VERBOSE_LEVELS="${ARG_VERBOSE_LEVELS:+${ARG_VERBOSE_LEVELS},}verbose"; ;;
-			*)	_rc=1; _status="Error: invalid verbosity level (max. -vv)"; ;;
-			esac;
-			rtl_log_set_lvl 0;
-			for _level in $(rtl_llift "${ARG_VERBOSE_LEVELS}" "," " "); do
-				case "${_level}" in
-				notice)		rtl_log_set_lvl 1; ;;
-				verbose)	rtl_log_set_lvl 2; ;;
-				build|install|xtrace)
-						rtl_log_set_lvl 1; ;;
-				fileops)	rtl_log_set_lvl 1; rtl_fileop_set_log 1; ;;
-				*)		_rc=1; _status="Error: invalid verbosity level \`${_level}'"; ;;
-				esac;
-			done;
 		fi;
+	fi;
+	return "${_rc}";
+};
+
+buildp_init_logging() {
+	local _tag="" _tags="" _rc=0; _status="";
+
+	rtl_log_clear_tags;
+	case "${ARG_VERBOSE}" in
+	0)	[ "${#ARG_VERBOSE_TAGS}" -eq 0 ] && rtl_log_enable_tags "${LOG_TAGS_normal}"; ;;
+	1)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+	*)	_rc=1; _status="invalid verbosity level (max. -v)"; ;;
+	esac;
+	if [ "${_rc}" -eq 0 ]; then
+		case "${ARG_VERBOSE_TAGS}" in
+		+*)	rtl_log_enable_tags "${LOG_TAGS_normal}";
+			ARG_VERBOSE_TAGS="${ARG_VERBOSE_TAGS#+}"; ;;
+		*)	;;
+		esac;
+		for _tag in $(rtl_llift "${ARG_VERBOSE_TAGS}" "," " "); do
+			case "${_tag}" in
+			all)		rtl_log_enable_tags "${LOG_TAGS_all}"; ;;
+			clear|none)	rtl_log_clear_tags; ;;
+			normal)		rtl_log_enable_tags "${LOG_TAGS_normal}"; ;;
+			verbose)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+			*)
+					_tags="$(rtl_lsearch_patternl "${LOG_TAGS_all}" "${_tag}" ",")";
+					if [ "${#_tags}" -gt 0 ]; then
+						rtl_log_enable_tags "${_tags}";
+					else
+						_rc=1; _status="invalid log tag or tag pattern \`${_tag}'"; break;
+					fi; ;;
+			esac;
+		done;
 	fi;
 	return "${_rc}";
 };
@@ -262,6 +284,7 @@ build_init() {
 	local _rc=0; _status="";
 	if ! buildp_init_env			\
 	|| ! buildp_init_getopts "${@}"		\
+	|| ! buildp_init_logging		\
 	|| ! ex_pkg_load_vars			\
 	|| ! buildp_init_prereqs		\
 	|| ! buildp_init_args			\
@@ -270,4 +293,4 @@ build_init() {
 	fi; return "${_rc}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh foldmethod=marker

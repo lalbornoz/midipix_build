@@ -86,9 +86,9 @@ rtl_rc() {
 	local _nflag="${1}" _cmd="${2}"; shift 2;
 	case "${_nflag}" in
 	1)	     if [ "${#}" -gt 0 ]; then
-			rtl_log_msg verbose "Command line: %s %s" "${_cmd}" "${*}";
+			rtl_log_msg "verbose" "Command line: %s %s" "${_cmd}" "${*}";
 		else
-			rtl_log_msg verbose "Command line: %s" "${_cmd}";
+			rtl_log_msg "verbose" "Command line: %s" "${_cmd}";
 		fi; ;;
 	*)	"${_cmd}" "${@}";
 	esac;

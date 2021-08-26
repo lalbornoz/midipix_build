@@ -6,10 +6,10 @@ pkg_dist_zipdist_all() {
 	local _dist_fname="" _pkg_name="" _pkglist_fname="${PREFIX}/pkglist.native";
 	if rtl_lmatch "${ARG_DIST}" "zipdist" ","; then
 		echo "msg_pkg dist dist_zipdist Building deployable distribution ZIP archive..." >&3;
-		rtl_log_msg info "Finished building deployable distribution ZIP archive.";
+		rtl_log_msg "zipdist" "Finished building deployable distribution ZIP archive.";
 		for _pkg_name in $(cat "${_pkglist_fname}"); do
 			if [ ! -e "${BUILD_WORKDIR}/${_pkg_name}-native-${DEFAULT_TARGET}" ]; then
-				rtl_log_msg fatalexit "Error: missing package build directory for package \`%s'." "${_pkg_name}";
+				rtl_log_msg "fatalexit" "Error: missing package build directory for package \`%s'." "${_pkg_name}";
 			fi;
 		done;
 		_dist_fname="${DEFAULT_ZIPDIST_FNAME_PREFIX}${BUILD_USER}@${BUILD_HNAME}-${BUILD_DATE_START}.zip";
@@ -34,19 +34,19 @@ pkg_dist_zipdist_all() {
 			return 1;
 		else
 			echo "msg_pkg dist dist_zipdist Finished building deployable distribution ZIP archive." >&3;
-			rtl_log_msg info "Finished building deployable distribution ZIP archive.";
+			rtl_log_msg "zipdist" "Finished building deployable distribution ZIP archive.";
 			if [ -n "${DEFAULT_ZIPDIST_SIGN_GPG_KEY:-}" ]\
 			&& [ -x "$(which gpg 2>/dev/null)" ]\
 			&& gpg --list-keys "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" >/dev/null 2>&1; then
 				echo "msg_pkg dist dist_zipdist Signing deployable distribution ZIP archive..." >&3;
-				rtl_log_msg info "Signing deployable distribution ZIP archive...";
+				rtl_log_msg "zipdist" "Signing deployable distribution ZIP archive...";
 				if ! gpg --armor --passphrase-file /dev/null		\
 					--local-user "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}"	\
 					--sign "${PREFIX}/${_dist_fname}"; then
 					return 1;
 				fi;
 				echo "msg_pkg dist dist_zipdist Signed deployable distribution ZIP archive." >&3;
-				rtl_log_msg info "Signed deployable distribution ZIP archive.";
+				rtl_log_msg "zipdist" "Signed deployable distribution ZIP archive.";
 			fi;
 		fi;
 	fi;

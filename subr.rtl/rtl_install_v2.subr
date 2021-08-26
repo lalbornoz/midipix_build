@@ -261,7 +261,7 @@ rtlp_install_rc() {
 
 	if [ "${_rir_nflag}" -eq 1 ]\
 	|| [ "${_rir_vflag}" -gt 0 ]; then
-		rtl_log_msg notice "%s" "${_rir_fn}${_rir_fn:+ ${*}}";
+		rtl_log_msg "install" "%s" "${_rir_fn}${_rir_fn:+ ${*}}";
 	fi;
 	if [ "${_rir_nflag}" -eq 0 ]; then
 		"${_rir_fn}" "${@}"; _rir_rc="${?}";

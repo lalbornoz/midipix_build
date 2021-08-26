@@ -6,7 +6,7 @@ buildp_ast() {
 	trap '' HUP INT TERM USR1 USR2;
 	local _param="${1}" _pids="" _pids_niter=0 _pkg_name="" RTL_KILL_TREE_PIDS="";
 	if [ "${_param}" = "abort" ]; then
-		rtl_log_msg fatalexit "Build aborted.";
+		rtl_log_msg "fatalexit" "Build aborted.";
 	fi;
 	while [ "${_pids_niter}" -lt 8 ]; do
 		_pids="$(rtl_lconcat "${_pids}" "${RTL_KILL_TREE_PIDS}")"; RTL_KILL_TREE_PIDS="";
@@ -18,14 +18,14 @@ buildp_ast() {
 		fi;
 	done;
 	if [ -n "${_pids}" ]; then
-		rtl_log_msg verbose "Killed PID(s): %s" "$(rtl_uniq ${_pids})";
+		rtl_log_msg "verbose" "Killed PID(s): %s" "$(rtl_uniq ${_pids})";
 	fi;
 	if [ -n "${EX_PKG_DISPATCH_WAIT}" ]\
 	&& [ "${ARG_RESET_PKG}" -eq 1 ]; then
 		for _pkg_name in ${EX_PKG_DISPATCH_WAIT}; do
 			rtl_state_clear "${BUILD_WORKDIR}" "${_pkg_name}";
 		done;
-		rtl_log_msg verbose "Reset package state for: %s" "${EX_PKG_DISPATCH_WAIT}";
+		rtl_log_msg "verbose" "Reset package state for: %s" "${EX_PKG_DISPATCH_WAIT}";
 	fi;
 	if [ -n "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 		rtl_fileop rm "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
@@ -36,17 +36,17 @@ buildp_dispatch_fail_pkg() {
 	local _group_name="${1}" _pkg_name="${2}";
 	: $((BUILD_NFAIL+=1)); BUILD_PKGS_FAILED="$(rtl_lconcat "${BUILD_PKGS_FAILED}" "${_pkg_name}")";
 	if [ "${ARG_RELAXED:-0}" -eq 0 ]; then
-		rtl_log_msg fatal "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
+		rtl_log_msg "fatal" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log:";
 		cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		if [ -n "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}" ]; then
 			printf "%s\n" "${_pkg_name}" > "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
 		fi;
-		rtl_log_msg fatal "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
-	else	rtl_log_msg warning "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
+		rtl_log_msg "fatal" "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
+	else	rtl_log_msg "warning" "Build failed in \`%s', check \`%s' for details." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 	fi;
 	if [ "${ARG_DUMP_ON_ABORT:-0}" -eq 1 ]; then
-		rtl_log_msg info "Logged environment dump for failed package \`%s' to \`%s'." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}.dump";
-		rtl_log_msg info "Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a %s -b %s \"%s\" PREFIX=\"%s\""\
+		rtl_log_msg "pkg_faildump" "Logged environment dump for failed package \`%s' to \`%s'." "${_pkg_name}" "${BUILD_WORKDIR}/${_pkg_name}.dump";
+		rtl_log_msg "pkg_faildump" "Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a %s -b %s \"%s\" PREFIX=\"%s\""\
 				"${ARCH}" "${BUILD_KIND}" "${_pkg_name}" "${PREFIX}";
 	fi;
 	if [ "${ARG_RELAXED:-0}" -eq 0 ]; then
@@ -57,31 +57,31 @@ buildp_dispatch_fail_pkg() {
 buildp_dispatch_group_state() {
 	local _msg="${1}" _group_name="${2}";
 	case "${_msg}" in
-	finish_group)	rtl_log_msg success_end "[%3d%%     ] [%03d/%03d] Finished \`%s' build group." "${6}" "${4}" "${5}" "${_group_name}"; ;;
-	start_group)	rtl_log_msg success "[%3d%%     ] [%03d/%03d] Starting \`%s' build group..." "${6}" "${4}" "${5}" "${_group_name}"; ;;
+	finish_group)	rtl_log_msg "group_finish" "[%3d%%     ] [%03d/%03d] Finished \`%s' build group." "${6}" "${4}" "${5}" "${_group_name}"; ;;
+	start_group)	rtl_log_msg "group_begin" "[%3d%%     ] [%03d/%03d] Starting \`%s' build group..." "${6}" "${4}" "${5}" "${_group_name}"; ;;
 	esac;
 };
 
 buildp_dispatch_pkg_state() {
 	local _msg="${1}" _group_name="${2}" _pkg_name="${3}";
 	case "${_msg}" in
-	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg notice "Skipping disabled package \`%s'." "${_pkg_name}"; ;;
-	missing_pkg)	rtl_log_msg fatalexit "Error: unknown package \`%s'." "${_pkg_name}"; ;;
-	msg_pkg)	shift 3; rtl_log_msg notice "%s/%s: %s" "${_group_name}" "${_pkg_name}" "${*}"; ;;
-	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg notice "Skipping finished package \`%s'." "${_pkg_name}"; ;;
-	start_pkg)	rtl_log_msg info "[%3d%%/%3d%%] [%03d/%03d] Starting \`%s' build..." "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
-	step_pkg)	rtl_log_msg notice "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}"; ;;
+	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg "pkg_skip" "Skipping disabled package \`%s'." "${_pkg_name}"; ;;
+	missing_pkg)	rtl_log_msg "fatalexit" "Error: unknown package \`%s'." "${_pkg_name}"; ;;
+	msg_pkg)	shift 3; rtl_log_msg "pkg_msg" "%s/%s: %s" "${_group_name}" "${_pkg_name}" "${*}"; ;;
+	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg "pkg_skip" "Skipping finished package \`%s'." "${_pkg_name}"; ;;
+	start_pkg)	rtl_log_msg "pkg_begin" "[%3d%%/%3d%%] [%03d/%03d] Starting \`%s' build..." "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
+	step_pkg)	rtl_log_msg "pkg_step" "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}"; ;;
 	finish_pkg)
 		: $((BUILD_NFINI+=1));
-		if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "build" ","; then
+		if rtl_lmatch "${ARG_VERBOSE_TAGS}" "build" ","; then
 			cat "${BUILD_WORKDIR}/${_pkg_name}_stderrout.log";
 		fi;
-		rtl_log_msg info_end "[%3d%%/%3d%%] [%03d/%03d] Finished \`%s' build." "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
+		rtl_log_msg "pkg_finish" "[%3d%%/%3d%%] [%03d/%03d] Finished \`%s' build." "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
 	start_pkg_child)
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
 			rtl_log_env_vars "notice" "build" $(rtl_get_vars_fast "^PKG_");
 		fi;
-		if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "xtrace" ","; then
+		if rtl_lmatch "${ARG_VERBOSE_TAGS}" "xtrace" ","; then
 			set -o xtrace;
 		fi; ;;
 	esac;
@@ -122,30 +122,30 @@ build() {
 		DEFAULT_TARGET="" DEFAULT_WGET_ARGS="" MIDIPIX_BUILD_PWD="";
 	DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME=""; EX_PKG_DISPATCH_WAIT="";
 	if ! . "${0%/*}/subr/build_init.subr"; then
-		_rc=1; printf "Error: failed to source \`${0%/*}/subr/build_init.subr'." >&2;
+		printf "Error: failed to source \`${0%/*}/subr/build_init.subr'." >&2; exit "${_rc}";
 	elif ! build_init "${@}"; then
-		_rc=1; _status="${_status}";
+		printf "Error during initilisation: %s.\n" "${_status}" >&2; exit "${_rc}";
 	elif [ -n "${_status}" ]; then
 		_rc=0; _status="${_status}";
 	else	trap "buildp_ast exit" EXIT; trap "buildp_ast abort" HUP INT TERM USR1 USR2;
 		buildp_time_init;
-		rtl_log_msg info "Build started by %s@%s at %s." "${BUILD_USER}" "${BUILD_HNAME}" "${BUILD_DATE_START}";
-		rtl_log_env_vars "notice" "build (global)" ${DEFAULT_LOG_ENV_VARS};
+		rtl_log_msg "build_begin" "Build started by %s@%s at %s." "${BUILD_USER}" "${BUILD_HNAME}" "${BUILD_DATE_START}";
+		rtl_log_env_vars "build_vars" "build (global)" ${DEFAULT_LOG_ENV_VARS};
 		ex_pkg_dispatch "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"			\
 				buildp_dispatch "${BUILD_GROUPS}" "${BUILD_GROUPS_INHIBIT_DEPS}"	\
 				"${ARG_PARALLEL}" "${BUILD_WORKDIR}/build.fifo" "${ARG_RESTART}"	\
 				"${ARG_RESTART_AT}" "${ARG_RESTART_RECURSIVE}" "${BUILD_WORKDIR}";
 		buildp_time_update;
-		rtl_log_msg info "%s finished, %s skipped, and %s failed package(s)." "${BUILD_NFINI:-0}" "${BUILD_NSKIP:-0}" "${BUILD_NFAIL:-0}";
-		rtl_log_msg info "Build time: %s hour(s), %s minute(s), and %s second(s)." "${_build_time_hours:-0}" "${_build_time_minutes:-0}" "${_build_time_secs:-0}";
+		rtl_log_msg "build_finish" "%s finished, %s skipped, and %s failed package(s)." "${BUILD_NFINI:-0}" "${BUILD_NSKIP:-0}" "${BUILD_NFAIL:-0}";
+		rtl_log_msg "build_finish_time" "Build time: %s hour(s), %s minute(s), and %s second(s)." "${_build_time_hours:-0}" "${_build_time_minutes:-0}" "${_build_time_secs:-0}";
 		if [ -n "${BUILD_PKGS_FAILED}" ]; then
 			_rc=1; _status="Build script failure(s) in: ${BUILD_PKGS_FAILED}.";
 		fi;
 	fi;
 	if [ "${_rc}" -ne 0 ]; then
-		rtl_log_msg fatalexit "${_status}";
+		rtl_log_msg "fatalexit" "${_status}";
 	elif [ -n "${_status}" ]; then
-		rtl_log_msg info "${_status}";
+		rtl_log_msg "info" "${_status}";
 	fi;
 };
 

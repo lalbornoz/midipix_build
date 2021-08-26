@@ -1,0 +1,56 @@
+#
+# Theme file for pkgtool.sh
+#
+
+#
+# {{{ ANSI attributes reference
+#
+# Attribute	Name 					Note
+# 0 		Reset or normal 			All attributes off
+# 1 		Bold or increased intensity	 	As with faint, the color change is a PC (SCO / CGA) invention.[30][better source needed]
+# 2 		Faint, decreased intensity, or dim 	May be implemented as a light font weight like bold.[31]
+# 4 		Underline 				Style extensions exist for Kitty, VTE, mintty and iTerm2.[32][33]
+# 7 		Reverse video or invert 		Swap foreground and background colors; inconsistent emulation[34]
+#
+# FG 	BG 	Colour name
+# 30 	40 	Black
+# 31 	41 	Red
+# 32 	42 	Green
+# 33 	43 	Yellow
+# 34 	44 	Blue
+# 35 	45 	Magenta
+# 36 	46 	Cyan
+# 37 	47 	White
+# 90 	100 	Bright Black (Gray)
+# 91 	101 	Bright Red
+# 92 	102 	Bright Green
+# 93 	103 	Bright Yellow
+# 94 	104 	Bright Blue
+# 95 	105 	Bright Magenta
+# 96 	106 	Bright Cyan
+# 97 	107 	Bright White
+# }}}
+#
+
+#
+# Tag sets
+#
+LOG_TAGS_all="fileop,install,fatal,info,verbose,warning";
+LOG_TAGS_normal="fatal,info,warning";
+LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}verbose";
+
+#
+# Subsystem tags
+#
+LOG_TAG_fileop=36;		# Cyan
+LOG_TAG_install=36;		# Cyan
+
+#
+# General level tags
+#
+LOG_TAG_fatal=91;		# Bright red
+LOG_TAG_info=93;		# Bright yellow
+LOG_TAG_verbose=96;		# Bright cyan
+LOG_TAG_warning=31;		# Dark red
+
+# vim:foldmethod=marker ft=sh

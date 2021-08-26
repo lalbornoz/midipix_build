@@ -72,7 +72,7 @@
 pkg_dist_minipix_all() {
 	local _vflag="";
 
-	if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "install" ","; then
+	if rtl_lmatch "${ARG_VERBOSE_TAGS}" "install" ","; then
 		_vflag="-v";
 	fi;
 	if rtl_lmatch "${ARG_DIST}" "minipix" ","								\

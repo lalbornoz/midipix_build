@@ -5,15 +5,14 @@
 #
 # Private globals and subroutines
 #
-RTLP_LOG_NO_ATTR=0;
+
 RTLP_LOG_FNAME="";
-RTLP_LOG_LVL="0";
-rtl_log_set_fname() { RTLP_LOG_FNAME="${1}"; };
-rtl_log_set_lvl() { RTLP_LOG_LVL="${1}"; };
-rtl_log_set_no_attr() { RTLP_LOG_NO_ATTR="${1}"; };
+RTLP_LOG_NO_ATTR=0;
+RTLP_LOG_TAGS="";
 
 rtlp_log_printf() {
 	local _attr="${1}" _fmt="${2}"; shift 2; _msg="$(printf "${_fmt}" "${@}")";
+
 	if [ -n "${RTLP_LOG_FNAME}" ]; then
 		printf "%s\n" "${_msg}" >> "${RTLP_LOG_FNAME}";
 	fi;
@@ -21,59 +20,61 @@ rtlp_log_printf() {
 		printf "\033[0m\033[${_attr}m%s\033[0m\n" "${_msg}";
 	else
 		printf "%s\n" "${_msg}";
-	fi;
+	fi; return 0;
 };
 
 #
-# Public globals
+# Public subroutines
 #
-RTL_LOG_MSG_FATAL_COLOUR=91;		# Bright red
-RTL_LOG_MSG_WARNING_COLOUR=31;		# Dark red
-RTL_LOG_MSG_SUCCESS_COLOUR=33;		# Dark yellow
-RTL_LOG_MSG_SUCCESS_END_COLOUR=32;	# Dark green
-RTL_LOG_MSG_INFO_COLOUR=93;		# Bright yellow
-RTL_LOG_MSG_INFO_END_COLOUR=92;		# Bright green
-RTL_LOG_MSG_NOTICE_COLOUR=90;		# Dark grey
-RTL_LOG_MSG_VERBOSE_COLOUR=96;		# Bright cyan
-RTL_LOG_MSG_DEBUG_COLOUR=36;		# Dark cyan
 
+rtl_log_clear_tags() {
+	RTLP_LOG_TAGS=""; return 0;
+};
+
+rtl_log_enable_tags() {
+	local IFS=","; set -- ${*};
+	while [ "${#}" -gt 0 ]; do
+		if ! rtl_lmatch "${RTLP_LOG_TAGS}" "${1}" ","; then
+			RTLP_LOG_TAGS="${RTLP_LOG_TAGS:+${RTLP_LOG_TAGS},}${1}";
+		fi; shift;
+	done; return 0;
+};
 
 rtl_log_env_vars() {
-	local _level="${1}" _type="${2}" _arg_len_max=0; shift 2;
-	rtl_log_msg "${_level}" "Variables for this ${_type}:";
+	local _tag="${1}" _type="${2}" _arg_len_max=0; shift 2;
+
+	rtl_log_msg "${_tag}" "Variables for this ${_type}:";
 	_arg_len_max="$(rtl_lmax "${@}")";
 	while [ "${#}" -gt 0 ]; do
-		rtl_log_msg "${_level}"				\
+		rtl_log_msg "${_tag}"				\
 			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
 			"${1%%=*}" "$(rtl_get_var_unsafe "${1#*=}")";
 		shift;
-	done;
+	done; return 0;
 };
 
 rtl_log_msg() {
-	local _lvl="${1}" _fmt="${2}" _attr=""; shift 2;
-	case "${RTLP_LOG_LVL:-0}" in
-	-1)	rtl_lmatch "info notice verbose debug" "${_lvl}" && return; ;;
-	0)	rtl_lmatch "notice verbose debug" "${_lvl}" && return; ;;
-	1)	rtl_lmatch "verbose debug" "${_lvl}" && return; ;;
-	2)	rtl_lmatch "debug" "${_lvl}" && return; ;;
-	3)	;;
-	esac;
-	case "${_lvl}" in
-	fatal|fatalexit)	_attr="${RTL_LOG_MSG_FATAL_COLOUR}"; ;;
-	warning)		_attr="${RTL_LOG_MSG_WARNING_COLOUR}"; ;;
-	success)		_attr="${RTL_LOG_MSG_SUCCESS_COLOUR}"; ;;
-	success_end)		_attr="${RTL_LOG_MSG_SUCCESS_END_COLOUR}"; ;;
-	info)			_attr="${RTL_LOG_MSG_INFO_COLOUR}"; ;;
-	info_end)		_attr="${RTL_LOG_MSG_INFO_END_COLOUR}"; ;;
-	notice)			_attr="${RTL_LOG_MSG_NOTICE_COLOUR}"; ;;
-	verbose)		_attr="${RTL_LOG_MSG_VERBOSE_COLOUR}"; ;;
-	debug)			_attr="${RTL_LOG_MSG_DEBUG_COLOUR}"; ;;
-	esac;
-	rtlp_log_printf "${_attr}" "==> %s ${_fmt}" "$(rtl_date)" "${@}";
-	if [ "x${_lvl}" = "xfatalexit" ]; then
-		exit 1;
-	fi;
+	local _tag="${1}" _fmt="${2}" _attr="" _exitfl=0; shift 2;
+
+	[ "x${_tag}" = "xfatalexit" ] && { _tag="fatal"; _exitfl=1; };
+	if rtl_lmatch "${RTLP_LOG_TAGS}" "${_tag}" ","; then
+		eval _attr='${LOG_TAG_'"${_tag}"':-}';
+		if [ "${#_attr}" -eq 0 ]; then
+			rtlp_log_printf "" "==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`%s' PASSED TO rtl_log_msg()[0m\n" "${_tag}";
+		fi;
+		rtlp_log_printf "${_attr}" "==> %s ${_fmt}" "$(rtl_date)" "${@}";
+		if [ "${_exitfl}" -eq 1 ]; then
+			exit 1;
+		fi;
+	fi; return 0;
+};
+
+rtl_log_set_fname() {
+	RTLP_LOG_FNAME="${1}"; return 0;
+};
+
+rtl_log_set_no_attr() {
+	RTLP_LOG_NO_ATTR="${1}"; return 0;
 };
 
 # vim:filetype=sh

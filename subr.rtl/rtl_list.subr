@@ -143,6 +143,19 @@ rtl_lsearch() {
 	printf "%s" "${_lnew}";
 };
 
+rtl_lsearch_patternl() {
+	local	_list="${1}" _pattern="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}"\
+		_litem="" _lnew="";
+	if [ -n "${_pattern}" ]; then
+		for _litem in ${_list}; do
+			if [ "${_litem#${_pattern}}" != "${_litem}" ]; then
+				_lnew="${_lnew:+${_lnew}${_sep}}${_litem}";
+			fi;
+		done;
+	fi;
+	printf "%s" "${_lnew}";
+};
+
 rtl_lsort() {
 	local _list="${1}" _sep="${2:- }";
 	printf "%s" "${_list}" | tr "${_sep}" "\n" | sort | paste -s -d "${_sep}";

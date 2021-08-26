@@ -1,0 +1,84 @@
+#
+# Theme file for build.sh
+#
+
+#
+# {{{ ANSI attributes reference
+#
+# Attribute	Name 					Note
+# 0 		Reset or normal 			All attributes off
+# 1 		Bold or increased intensity	 	As with faint, the color change is a PC (SCO / CGA) invention.[30][better source needed]
+# 2 		Faint, decreased intensity, or dim 	May be implemented as a light font weight like bold.[31]
+# 4 		Underline 				Style extensions exist for Kitty, VTE, mintty and iTerm2.[32][33]
+# 7 		Reverse video or invert 		Swap foreground and background colors; inconsistent emulation[34]
+#
+# FG 	BG 	Colour name
+# 30 	40 	Black
+# 31 	41 	Red
+# 32 	42 	Green
+# 33 	43 	Yellow
+# 34 	44 	Blue
+# 35 	45 	Magenta
+# 36 	46 	Cyan
+# 37 	47 	White
+# 90 	100 	Bright Black (Gray)
+# 91 	101 	Bright Red
+# 92 	102 	Bright Green
+# 93 	103 	Bright Yellow
+# 94 	104 	Bright Blue
+# 95 	105 	Bright Magenta
+# 96 	106 	Bright Cyan
+# 97 	107 	Bright White
+# }}}
+#
+
+#
+# Tag sets
+#
+LOG_TAGS_all="build,fileop,install,zipdist,xtrace,fatal,info,verbose,warning,build_begin,build_finish,build_finish_time,build_vars,group_begin,group_finish,pkg_begin,pkg_faildump,pkg_finish,pkg_msg,pkg_skip,pkg_step,pkg_strip";
+LOG_TAGS_normal="fatal,info,warning,build_begin,build_finish,build_finish_time,pkg_begin,pkg_faildump,pkg_finish,pkg_msg";
+LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}verbose,build_vars,group_begin,group_finish,pkg_skip,pkg_step,pkg_strip";
+
+#
+# Subsystem tags
+#
+LOG_TAG_build="";		# (UNUSED)
+LOG_TAG_fileop=36;		# Cyan
+LOG_TAG_install=36;		# Cyan
+LOG_TAG_zipdist=93;		# Bright yellow
+LOG_TAG_xtrace="";		# (UNUSED)
+
+#
+# General level tags
+#
+LOG_TAG_fatal=91;		# Bright red
+LOG_TAG_info=93;		# Bright yellow
+LOG_TAG_verbose=96;		# Bright cyan
+LOG_TAG_warning=31;		# Dark red
+
+#
+# General build tags
+#
+LOG_TAG_build_begin=93;		# Bright yellow
+LOG_TAG_build_finish=93;	# Bright yellow
+LOG_TAG_build_finish_time=93;	# Bright yellow
+LOG_TAG_build_vars=33;		# Dark yellow
+
+#
+# Build group tags
+#
+LOG_TAG_group_begin=33;		# Dark yellow
+LOG_TAG_group_finish=32;	# Dark green
+
+#
+# Package build tags
+#
+LOG_TAG_pkg_begin=93;		# Bright yellow
+LOG_TAG_pkg_faildump=93;	# Bright yellow
+LOG_TAG_pkg_finish=92;		# Bright green
+LOG_TAG_pkg_msg=90;		# Dark grey
+LOG_TAG_pkg_skip=90;		# Dark grey
+LOG_TAG_pkg_step=90;		# Dark grey
+LOG_TAG_pkg_strip=93;		# Bright yellow
+
+# vim:foldmethod=marker ft=sh

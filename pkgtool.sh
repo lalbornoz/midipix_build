@@ -15,20 +15,20 @@ pkgtoolp_info() {
 			"${_group_name}" 1 "${_pkg_name}" "" "${BUILD_WORKDIR}"; then
 		_rc=1; _status="Error: failed to set package environment for \`${_pkg_name}'.";
 	else	_pkg_version="$(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_VERSION")";
-		rtl_log_env_vars "notice" "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
-		rtl_log_msg info "Build group: %s" "${_group_name}";
+		rtl_log_env_vars "verbose" "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
+		rtl_log_msg "info" "Build group: %s" "${_group_name}";
 		if [ -z "${PKG_DEPENDS:-}" ]; then
-			rtl_log_msg info "Package \`%s' has no dependencies." "${_pkg_name}";
-		else	rtl_log_msg info "Direct dependencies of \`%s': %s" "${_pkg_name}" "${PKG_DEPENDS}";
+			rtl_log_msg "info" "Package \`%s' has no dependencies." "${_pkg_name}";
+		else	rtl_log_msg "info" "Direct dependencies of \`%s': %s" "${_pkg_name}" "${PKG_DEPENDS}";
 			if ! ex_pkg_unfold_depends 1 1 "${_group_name}" "${_pkg_names}" "${_pkg_name}" 0; then
-				rtl_log_msg warning "Warning: failed to unfold dependency-expanded package name list for \`%s'." "${_pkg_name}";
+				rtl_log_msg "warning" "Warning: failed to unfold dependency-expanded package name list for \`%s'." "${_pkg_name}";
 			else	EX_PKG_NAMES="$(rtl_lfilter "${EX_PKG_NAMES}" "${_pkg_name}")";
 				if [ -n "${EX_PKG_NAMES}" ]; then
-					rtl_log_msg info "Full dependencies of \`%s': %s"\
+					rtl_log_msg "info" "Full dependencies of \`%s': %s"\
 							"${_pkg_name}" "$(rtl_lsort "${EX_PKG_NAMES}")";
 				fi;
 				if [ -n "${EX_PKG_DISABLED}" ]; then
-					rtl_log_msg info "Full dependencies of \`%s' (disabled packages:) %s"\
+					rtl_log_msg "info" "Full dependencies of \`%s' (disabled packages:) %s"\
 							"${_pkg_name}" "$(rtl_lsort "${EX_PKG_DISABLED}")";
 				fi;
 			fi;
@@ -84,25 +84,25 @@ pkgtoolp_mirror_fetch() {
 
 	if _pkg_disabled="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_DISABLED")"\
 	&& [ "${_pkg_disabled:-0}" -eq 1 ]; then
-		rtl_log_msg notice "Package \`%s' (parent package: \`%s') disabled, skipping." "${_pkg_name}" "${_pkg_name_real}";
+		rtl_log_msg "verbose" "Package \`%s' (parent package: \`%s') disabled, skipping." "${_pkg_name}" "${_pkg_name_real}";
 	else	if _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URL")"\
 		&& _pkg_sha256sum="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_SHA256SUM")"; then
 			if [ -z "${_mirror_dname}" ]; then
-				_rc=0; rtl_log_msg notice "Archive URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
+				_rc=0; rtl_log_msg "verbose" "Archive URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
 			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
-				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
+				rtl_log_msg "info" "Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
 				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname}/${_pkg_name}"; then
-					_rc=1; rtl_log_msg warning "Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'."\
+					_rc=1; rtl_log_msg "warning" "Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'."\
 							"${_mirror_dname}/${_pkg_name}" "${_pkg_name}" "${_pkg_name_real}";
 				fi;
 			else
 				if ! _pkg_fname="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_FNAME")"; then
 					_pkg_fname="${_pkg_url##*/}";
 				fi;
-				rtl_log_msg info "Mirroring package \`%s', archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
+				rtl_log_msg "info" "Mirroring package \`%s', archive URL(s): \`%s'..." "${_pkg_name}" "${_pkg_url}";
 				if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
 				|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_fname}" "${_pkg_name_real}" ""; then
-					_rc=1; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
+					_rc=1; rtl_log_msg "warning" "Failed to mirror package \`%s', skipping." "${_pkg_name}";
 				else
 					pkg_fetch_download_clean_dlcache "${_mirror_dname}" "${_pkg_name}" "${_pkg_fname}" "${_pkg_urls_git}";
 				fi;
@@ -110,20 +110,20 @@ pkgtoolp_mirror_fetch() {
 		fi;
 		if _pkg_urls_git="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
 			if [ -z "${_mirror_dname_git}" ]; then
-				_rc=0; rtl_log_msg notice "Git URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
+				_rc=0; rtl_log_msg "verbose" "Git URL(s) mirroring disabled, skipping \`%s'." "${_pkg_name}";
 			elif [ "$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_MIRRORS_GIT")" = "skip" ]; then
-				_rc=0; rtl_log_msg notice "Package \`%s' specifies to skip Git URL(s) mirroring, skipping." "${_pkg_name}";
+				_rc=0; rtl_log_msg "verbose" "Package \`%s' specifies to skip Git URL(s) mirroring, skipping." "${_pkg_name}";
 			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
-				rtl_log_msg info "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_urls_git}";
+				rtl_log_msg "info" "Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_name_real}" "${_pkg_urls_git}";
 				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname_git}/${_pkg_name}"; then
-					_rc=1; rtl_log_msg warning "Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'."\
+					_rc=1; rtl_log_msg "warning" "Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'."\
 							"${_mirror_dname_git}/${_pkg_name}" "${_pkg_name}" "${_pkg_name_real}";
 				fi;
 			else
-				rtl_log_msg info "Mirroring package \`%s', Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_urls_git}";
+				rtl_log_msg "info" "Mirroring package \`%s', Git URL(s): \`%s'..." "${_pkg_name}" "${_pkg_urls_git}";
 				if ! rtl_fileop mkdir "${_mirror_dname_git}/${_pkg_name}"\
 				|| ! rtl_fetch_mirror_urls_git "${DEFAULT_GIT_ARGS}" "${_mirror_dname_git}/${_pkg_name}" ${_pkg_urls_git}; then
-					_rc=1; rtl_log_msg warning "Failed to mirror package \`%s', skipping." "${_pkg_name}";
+					_rc=1; rtl_log_msg "warning" "Failed to mirror package \`%s', skipping." "${_pkg_name}";
 				else
 					pkg_fetch_download_clean_dlcache "${_mirror_dname_git}" "${_pkg_name}" "${_pkg_fname}" "${_pkg_urls_git}";
 				fi;
@@ -132,7 +132,7 @@ pkgtoolp_mirror_fetch() {
 		if [ -z "${_pkg_url}" ]\
 		&& [ -z "${_pkg_sha256sum}" ]\
 		&& [ -z "${_pkg_urls_git}" ]; then
-			_rc=0; rtl_log_msg notice "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
+			_rc=0; rtl_log_msg "verbose" "Package \`%s' has neither archive nor Git URL(s), skipping." "${_pkg_name}";
 		fi;
 	fi; return "${_rc}";
 };
@@ -164,7 +164,7 @@ pkgtoolp_rdepends() {
 	elif ! ex_pkg_unfold_rdepends_direct "${_group_name}" "${_pkg_names}" "${_pkg_name}"; then
 		_rc=1; _status="Error: failed to unfold reverse dependency-expanded package name list for \`${_pkg_name}'.";
 	elif [ -z "${EX_PKG_DISABLED}" ] && [ -z "${EX_PKG_RDEPENDS_DIRECT}" ]; then
-		rtl_log_msg info "Package \`%s' has no reverse dependencies." "${_pkg_name}";
+		rtl_log_msg "info" "Package \`%s' has no reverse dependencies." "${_pkg_name}";
 	else	for _pkg_name_rdepend in $(rtl_lsort "${EX_PKG_RDEPENDS_DIRECT}"); do
 			_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "${_pkg_name_rdepend}")";
 			if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
@@ -173,10 +173,10 @@ pkgtoolp_rdepends() {
 			fi;
 		done;
 		if [ -n "${_pkg_rdepends}" ]; then
-			rtl_log_msg info "Reverse dependencies of \`%s': %s" "${_pkg_name}" "${_pkg_rdepends}";
+			rtl_log_msg "info" "Reverse dependencies of \`%s': %s" "${_pkg_name}" "${_pkg_rdepends}";
 		fi;
 		if [ -n "${EX_PKG_DISABLED}" ]; then
-			rtl_log_msg info "Reverse dependencies of \`%s' (disabled packages:) %s"\
+			rtl_log_msg "info" "Reverse dependencies of \`%s' (disabled packages:) %s"\
 					"${_pkg_name}" "$(rtl_lsort "${EX_PKG_DISABLED}")";
 		fi;
 	fi; return "${_rc}";
@@ -186,11 +186,11 @@ pkgtoolp_shell() {
 	local _pkg_name="${1}" _rc=0; _status="";
 	if ! ex_pkg_load_dump "${_pkg_name}" "${BUILD_WORKDIR}"; then
 		_rc=1; _status="${_status}";
-	else	rtl_log_env_vars "notice" "package" $(rtl_get_vars_fast "^PKG_");
-		rtl_log_msg info "Launching shell \`%s' within package environment and \`%s'." "${SHELL}" "${PKG_BUILD_DIR}";
-		rtl_log_msg info "Run \$R to rebuild \`%s'." "${_pkg_name}";
-		rtl_log_msg info "Run \$RS <step> to restart the specified build step of \`%s'" "${_pkg_name}";
-		rtl_log_msg info "Run \$D to automatically regenerate the patch for \`%s'." "${_pkg_name}";
+	else	rtl_log_env_vars "verbose" "package" $(rtl_get_vars_fast "^PKG_");
+		rtl_log_msg "info" "Launching shell \`%s' within package environment and \`%s'." "${SHELL}" "${PKG_BUILD_DIR}";
+		rtl_log_msg "info" "Run \$R to rebuild \`%s'." "${_pkg_name}";
+		rtl_log_msg "info" "Run \$RS <step> to restart the specified build step of \`%s'" "${_pkg_name}";
+		rtl_log_msg "info" "Run \$D to automatically regenerate the patch for \`%s'." "${_pkg_name}";
 		export	ARCH BUILD_KIND						\
 			BUILD_DLCACHEDIR BUILD_WORKDIR				\
 			MAKE="make LIBTOOL=${PKG_LIBTOOL:-slibtool}"		\
@@ -225,7 +225,7 @@ pkgtoolp_tarball() {
 			_pkg_name_full="${_pkg_name}";
 		fi;
 		_tarball_fname="${_pkg_name_full}@${_hname}-${_date}.tbz2";
-		rtl_log_msg info "Creating compressed tarball of \`%s' and \`%s_stderrout.log'..."\
+		rtl_log_msg "info" "Creating compressed tarball of \`%s' and \`%s_stderrout.log'..."\
 				"${PKG_BASE_DIR}" "${_pkg_name}";
 		if ! tar -C "${BUILD_WORKDIR}" -cpf -				\
 				"${PKG_BASE_DIR#${BUILD_WORKDIR%/}/}"		\
@@ -233,7 +233,7 @@ pkgtoolp_tarball() {
 					bzip2 -c -9 - > "${_tarball_fname}"; then
 			_rc=1; _status="Error: failed to create compressed tarball of \`${PKG_BASE_DIR}' and \`${_pkg_name}_stderrout.log'.";
 		else
-			rtl_log_msg info "Created compressed tarball of \`%s' and \`%s_stderrout.log'."\
+			rtl_log_msg "info" "Created compressed tarball of \`%s' and \`%s_stderrout.log'."\
 					"${PKG_BASE_DIR}" "${_pkg_name}";
 		fi;
 	fi; return "${_rc}";
@@ -266,7 +266,7 @@ pkgtoolp_update_diff() {
 			elif ! rtl_fileop mv "${_diff_fname_src}" "${MIDIPIX_BUILD_PWD}/patches/${_diff_fname_dst}"; then
 				_rc=1; _status="Error: failed to rename diff(1) to \`${MIDIPIX_BUILD_PWD}/patches/${_diff_fname_dst}'.";
 			else	trap - EXIT HUP INT TERM USR1 USR2;
-				rtl_log_msg info "Updated \`%s/patches/%s'."\
+				rtl_log_msg "info" "Updated \`%s/patches/%s'."\
 						"${MIDIPIX_BUILD_PWD}" "${_diff_fname_dst}";
 			fi;
 		fi;
@@ -290,9 +290,9 @@ pkgtool() {
 		esac; _rc="${?}";
 	fi;
 	if [ "${_rc}" -ne 0 ]; then
-		rtl_log_msg fatalexit "${_status}";
+		rtl_log_msg "fatalexit" "${_status}";
 	elif [ -n "${_status}" ]; then
-		rtl_log_msg info "${_status}";
+		rtl_log_msg "info" "${_status}";
 	fi;
 };
 
