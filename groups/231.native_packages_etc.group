@@ -8,7 +8,7 @@ dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghos
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer htop icoutils imagemagick infounzip infozip
 john lbreakout2 lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 php popt potrace procps_ng qemu
-qpdf qrencode rpm rw shared_mime_info slang sqlite3 tcl tdnf texinfo
+qpdf qrencode rpm rw sdlquake shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
 zstd")";
 : ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
@@ -429,6 +429,11 @@ ac_cv_write_stdout=yes"};
 : ${PKG_RW_VERSION:=1.0};
 : ${PKG_RW_URL:=https://sortix.org/rw/release/rw-portable-${PKG_RW_VERSION}.tar.gz}
 : ${PKG_RW_BUILD_DIR:=rw-portable-${PKG_RW_VERSION}};
+: ${PKG_SDLQUAKE_DEPENDS:="sdl1"};
+: ${PKG_SDLQUAKE_SHA256SUM:=097882b4613c87303dd068c41c95e77675da790cab63c7b440e70643d1741035};
+: ${PKG_SDLQUAKE_VERSION:=1.0.9};
+: ${PKG_SDLQUAKE_URL:=http://www.libsdl.org/projects/quake/src/sdlquake-${PKG_SDLQUAKE_VERSION}.tar.gz};
+: ${PKG_SDLQUAKE_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --target=${DEFAULT_TARGET} --with-sdl-prefix=${PREFIX_NATIVE}"};
 : ${PKG_SHARED_MIME_INFO_DEPENDS:="glib libxml2"};
 : ${PKG_SHARED_MIME_INFO_SHA256SUM:=2af55ef1a0319805b74ab40d331a3962c905477d76c086f49e34dc96363589e9};
 : ${PKG_SHARED_MIME_INFO_VERSION:=1.8};

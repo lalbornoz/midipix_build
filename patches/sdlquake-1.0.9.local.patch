@@ -1,0 +1,25 @@
+diff -ru sdlquake-1.0.9.orig/draw.c sdlquake-1.0.9/draw.c
+--- sdlquake-1.0.9.orig/draw.c	1999-12-22 00:53:24.000000000 +0100
++++ sdlquake-1.0.9/draw.c	2021-08-26 20:17:34.381572611 +0200
+@@ -557,6 +557,9 @@
+ #elif defined(__linux__)
+ 	sprintf (ver, "(Linux Quake %2.2f) %4.2f", (float)LINUX_VERSION, (float)VERSION);
+ 	dest = conback->data + 320*186 + 320 - 11 - 8*strlen(ver);
++#elif defined(__midipix__)
++	sprintf (ver, "(Midipix Quake) %4.2f", (float)VERSION);
++	dest = conback->data + 320*186 + 320 - 11 -8*strlen(ver);
+ #else
+ 	dest = conback->data + 320 - 43 + 320*186;
+ 	sprintf (ver, "%4.2f", VERSION);
+diff -ru sdlquake-1.0.9.orig/net.h sdlquake-1.0.9/net.h
+--- sdlquake-1.0.9.orig/net.h	1999-12-22 00:54:20.000000000 +0100
++++ sdlquake-1.0.9/net.h	2021-08-26 20:15:24.072736300 +0200
+@@ -238,7 +238,7 @@
+ extern int hostCacheCount;
+ extern hostcache_t hostcache[HOSTCACHESIZE];
+ 
+-#if !defined(_WIN32 ) && !defined (__linux__) && !defined (__sun__)
++#if !defined(_WIN32 ) && !defined (__linux__) && !defined(__midipix__) && !defined (__sun__)
+ #ifndef htonl
+ extern unsigned long htonl (unsigned long hostlong);
+ #endif
