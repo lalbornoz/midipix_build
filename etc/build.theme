@@ -37,7 +37,7 @@
 #
 LOG_TAGS_all="build,fileop,install,zipdist,xtrace,fatal,info,verbose,warning,build_begin,build_finish,build_finish_time,build_vars,group_begin,group_finish,pkg_begin,pkg_faildump,pkg_finish,pkg_msg,pkg_skip,pkg_step,pkg_strip";
 LOG_TAGS_normal="fatal,info,warning,build_begin,build_finish,build_finish_time,pkg_begin,pkg_faildump,pkg_finish,pkg_msg";
-LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}verbose,build_vars,group_begin,group_finish,pkg_skip,pkg_step,pkg_strip";
+LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}zipdist,verbose,build_vars,group_begin,group_finish,pkg_skip,pkg_step,pkg_strip";
 
 #
 # Subsystem tags
