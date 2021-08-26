@@ -495,8 +495,9 @@ env ARCH=nt64 BUILD_KIND=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D
 ```
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
                   [-F ipv4|ipv6|offline]    [-h|--help] [-p jobs|-P]    [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:[^|<|<=|>|>=]step,..]]
-                  [-R] [-v[v]] [-V level[,..]] [-x]
+                  [-r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]]        [-R]
+		  [-v[v]]   [-V {notice,verbose,build,fileops,install,xtrace}]   [-x]
+
                   [--as-needed]  [--debug-minipix] [--dump-on-abort]  [--reset-state]
                   [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
 
@@ -530,7 +531,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
                           concerning package name(s) and/or build step(s) to the below modifiers:
 
                           Prepend name w/ `*' to automatically include dependencies, `**'
-                          to forcibly rebuild all dependencies, and `***` to forcibly
+                          to forcibly rebuild all dependencies, and `***' to forcibly
                           rebuild all packages that depend on the specified package(s).
 
                           Prepend step w/ `^' to filter build steps with, `<' or `<='
@@ -551,14 +552,14 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
         -R                Ignore build failures, skip printing package logs, and continue
                           building (relaxed mode.)
 
-        -v[v]             -v: log at notice, -vv: log at verbose level.
+        -v[v]             -v: log at info, notice, -vv: log at info, notice, verbose level.
         -V level[,..]     Be verbose concerning any of:
                           notice...: log at notice level (-v,)
-                          verbose..: log at verbose level (-vv,)
-                          build....: always print package build logs,
-                          fileops..: log RTL file operations,
-                          install..: log RTL installation DSL operations,
-                          xtrace...: set xtrace during package builds (-x.)
+                          verbose..: log at verbose level (implies notice) (-vv,)
+                          build....: always print package build logs (implies notice,)
+                          fileops..: log RTL file operations (implies notice,)
+                          install..: log RTL installation DSL operations (implies notice,)
+                          xtrace...: set xtrace during package builds (implies notice) (-x.)
         -x                Set xtrace during package builds.
 
         --as-needed       Don't build unless the midipix_build repository has received
