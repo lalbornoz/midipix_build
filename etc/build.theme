@@ -67,8 +67,8 @@ LOG_TAG_build_vars=33;		# Dark yellow
 #
 # Build group tags
 #
-LOG_TAG_group_begin=33;		# Dark yellow
-LOG_TAG_group_finish=32;	# Dark green
+LOG_TAG_group_begin="4;93";	# Underline; Bright yellow
+LOG_TAG_group_finish="4;92";	# Underline; Bright green
 
 #
 # Package build tags
