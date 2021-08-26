@@ -120,7 +120,7 @@ ex_pkg_load_vars() {
 				../midipix_build.vars		\
 				./midipix.env; do
 			if [ -r "${_fname}" ]; then
-				rtl_log_msg notice "Sourcing \`%s'." "${_fname}";
+				rtl_log_msg verbose "Sourcing \`%s'." "${_fname}";
 				rtl_fileop source "${_fname}";
 			fi;
 		done;

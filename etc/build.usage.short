@@ -1,7 +1,7 @@
 [97musage[90m: [33m./[93mbuild.sh [90m[[33m-[93ma nt32[90m|[93mnt64[90m]  [[33m-[93mb debug[90m|[93mrelease[90m]    [[33m-[93mC dir[90m[[93m,[90m..]]  [[33m-[93mD kind[90m[[93m,[90m..]][0m
                   [90m[[33m-[93mF ipv4[90m|[93mipv6[90m|[93moffline[90m]    [[33m-[93mh[90m|[33m--[93mhelp[90m] [[33m-[93mp jobs[90m|[33m-[93mP[90m]    [[33m-[93mr ALL[90m|[93mLAST[90m][0m
-                  [90m[[33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..]][0m
-                  [90m[[33m-[93mR[90m] [[33m-[93mv[90m[[93mv[90m]] [[33m-[93mV level[90m[[93m,[90m..[90m]] [90m[[33m-[93mx[90m][0m
+                  [90m[[33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..]]        [[33m-[93mR[90m]
+		  [90m[[33m-[93mv[90m[[93mv[90m]]   [[33m-[93mV [90m{[93mnotice[90m,[93mverbose[90m,[93mbuild[90m,[93mfileops[90m,[93minstall[90m,[93mxtrace[90m}]   [90m[[33m-[93mx[90m][0m
 
                   [90m[[33m--[93mas-needed[90m]  [90m[[33m--[93mdebug-minipix[90m] [[33m--[93mdump-on-abort[90m]  [90m[[33m--[93mreset-state[90m][0m
                   [90m[[33m--[93mroar[90m]      [[[93m=[90m][90m<[93mgroup[90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
@@ -12,8 +12,14 @@
         [33m-[93mp jobs[90m|[93m-P[96m        Enables parallelisation at group-level, whenever applicable.[0m
         [33m-[93mr ALL[90m|[93mLAST[96m       Restart all/the last failed/the specified comma-separated package(s).[0m
         [33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..][0m
-        [33m-[93mv[90m[[93mv[90m][96m             [33m-[93mv[96m: log at notice, [33m-[93mvv[96m: log at verbose level.[0m
-        [33m-[93mx[96m                Set [93mxtrace[96m during package builds.[0m
+        [33m-[93mv[90m[[93mv[90m][96m             [33m-[93mv[96m: log at [93minfo[90m, [93mnotice[96m, [33m-[93mvv[96m: log at [93minfo[90m,[93m notice[90m,[93m verbose[96m level.[0m
+        [33m-[93mV level[90m[[93m,[90m..][0m     [96mBe verbose concerning any of:[0m
+                          [93mnotice[90m...: [96mlog at notice level ([33m-[93mv[96m,)[0m
+                          [93mverbose[90m..: [96mlog at verbose level (implies [93mnotice[96m) ([33m-[93mvv[96m,)[0m
+                          [93mbuild[90m....: [96malways print package build logs (implies [93mnotice[96m,)[0m
+                          [93mfileops[90m..: [96mlog RTL file operations (implies [93mnotice[96m,)[0m
+                          [93minstall[90m..: [96mlog RTL installation DSL operations (implies [93mnotice[96m,)[0m
+                          [93mxtrace[90m...: [96mset [93mxtrace[96m during package builds (implies [93mnotice[96m) ([33m-[93mx[96m.)[0m
 
         [90m<[93mgroup[90m>[ ..][96m      One of: [93mdev_packages[90m,[93m dist[90m,[93m host_deps[90m,[93m host_deps_rpm[90m,[0m
                           [93mhost_toolchain[90m,[93m host_tools[90m,[93m minipix[90m,[93m native_packages[90m,[0m

@@ -18,14 +18,14 @@ buildp_ast() {
 		fi;
 	done;
 	if [ -n "${_pids}" ]; then
-		rtl_log_msg notice "Killed PID(s): %s" "$(rtl_uniq ${_pids})";
+		rtl_log_msg verbose "Killed PID(s): %s" "$(rtl_uniq ${_pids})";
 	fi;
 	if [ -n "${EX_PKG_DISPATCH_WAIT}" ]\
 	&& [ "${ARG_RESET_PKG}" -eq 1 ]; then
 		for _pkg_name in ${EX_PKG_DISPATCH_WAIT}; do
 			rtl_state_clear "${BUILD_WORKDIR}" "${_pkg_name}";
 		done;
-		rtl_log_msg notice "Reset package state for: %s" "${EX_PKG_DISPATCH_WAIT}";
+		rtl_log_msg verbose "Reset package state for: %s" "${EX_PKG_DISPATCH_WAIT}";
 	fi;
 	if [ -n "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}" ]; then
 		rtl_fileop rm "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME}";
@@ -65,12 +65,12 @@ buildp_dispatch_group_state() {
 buildp_dispatch_pkg_state() {
 	local _msg="${1}" _group_name="${2}" _pkg_name="${3}";
 	case "${_msg}" in
-	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg verbose "Skipping disabled package \`%s'." "${_pkg_name}"; ;;
+	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg notice "Skipping disabled package \`%s'." "${_pkg_name}"; ;;
 	missing_pkg)	rtl_log_msg fatalexit "Error: unknown package \`%s'." "${_pkg_name}"; ;;
-	msg_pkg)	shift 3; rtl_log_msg verbose "%s/%s: %s" "${_group_name}" "${_pkg_name}" "${*}"; ;;
-	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg verbose "Skipping finished package \`%s'." "${_pkg_name}"; ;;
+	msg_pkg)	shift 3; rtl_log_msg notice "%s/%s: %s" "${_group_name}" "${_pkg_name}" "${*}"; ;;
+	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg notice "Skipping finished package \`%s'." "${_pkg_name}"; ;;
 	start_pkg)	rtl_log_msg info "[%3d%%/%3d%%] [%03d/%03d] Starting \`%s' build..." "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
-	step_pkg)	rtl_log_msg verbose "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}"; ;;
+	step_pkg)	rtl_log_msg notice "Finished build step %s of package \`%s'." "${4}" "${_pkg_name}"; ;;
 	finish_pkg)
 		: $((BUILD_NFINI+=1));
 		if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "build" ","; then

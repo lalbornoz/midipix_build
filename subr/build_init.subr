@@ -237,8 +237,8 @@ buildp_init_getopts() {
 				notice)		rtl_log_set_lvl 1; ;;
 				verbose)	rtl_log_set_lvl 2; ;;
 				build|install|xtrace)
-						;;
-				fileops)	rtl_fileop_set_log 1; ;;
+						rtl_log_set_lvl 1; ;;
+				fileops)	rtl_log_set_lvl 1; rtl_fileop_set_log 1; ;;
 				*)		_rc=1; _status="Error: invalid verbosity level \`${_level}'"; ;;
 				esac;
 			done;

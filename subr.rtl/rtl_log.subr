@@ -53,6 +53,7 @@ rtl_log_env_vars() {
 rtl_log_msg() {
 	local _lvl="${1}" _fmt="${2}" _attr=""; shift 2;
 	case "${RTLP_LOG_LVL:-0}" in
+	-1)	rtl_lmatch "info notice verbose debug" "${_lvl}" && return; ;;
 	0)	rtl_lmatch "notice verbose debug" "${_lvl}" && return; ;;
 	1)	rtl_lmatch "verbose debug" "${_lvl}" && return; ;;
 	2)	rtl_lmatch "debug" "${_lvl}" && return; ;;

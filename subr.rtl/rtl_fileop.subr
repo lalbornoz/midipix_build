@@ -18,7 +18,7 @@ rtlp_fileop_check() {
 rtlp_fileop_log() {
 	local _msg="${1}";
 	if [ "${RTLP_FILEOP_LOG:-0}" -eq 1 ]; then
-		rtl_log_msg debug "${_msg}";
+		rtl_log_msg notice "${_msg}";
 	fi;
 };
 
