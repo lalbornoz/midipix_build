@@ -1,2 +1,3 @@
+etc/*.theme.local
 .gdbhistory
 *.sw[op]

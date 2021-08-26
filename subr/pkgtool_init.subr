@@ -33,6 +33,11 @@ pkgtoolp_init_env() {
 				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
 		done;
+		if [ -e "etc/pkgtool.theme.local" ]; then
+			if ! . "etc/pkgtool.theme.local"; then
+				printf "Error: failed to source \`%s'.\n" "etc/pkgtool.theme.local" >&2; exit 1;
+			fi;
+		fi;
 	fi; return "${_rc}";
 };
 
