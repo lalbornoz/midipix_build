@@ -79,7 +79,7 @@ buildp_dispatch_pkg_state() {
 		rtl_log_msg info_end "[%3d%%/%3d%%] [%03d/%03d] Finished \`%s' build." "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
 	start_pkg_child)
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
-			rtl_log_env_vars "build" $(rtl_get_vars_fast "^PKG_");
+			rtl_log_env_vars "notice" "build" $(rtl_get_vars_fast "^PKG_");
 		fi;
 		if rtl_lmatch "${ARG_VERBOSE_LEVELS}" "xtrace" ","; then
 			set -o xtrace;
@@ -130,7 +130,7 @@ build() {
 	else	trap "buildp_ast exit" EXIT; trap "buildp_ast abort" HUP INT TERM USR1 USR2;
 		buildp_time_init;
 		rtl_log_msg info "Build started by %s@%s at %s." "${BUILD_USER}" "${BUILD_HNAME}" "${BUILD_DATE_START}";
-		rtl_log_env_vars "build (global)" ${DEFAULT_LOG_ENV_VARS};
+		rtl_log_env_vars "notice" "build (global)" ${DEFAULT_LOG_ENV_VARS};
 		ex_pkg_dispatch "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"			\
 				buildp_dispatch "${BUILD_GROUPS}" "${BUILD_GROUPS_INHIBIT_DEPS}"	\
 				"${ARG_PARALLEL}" "${BUILD_WORKDIR}/build.fifo" "${ARG_RESTART}"	\

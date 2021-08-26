@@ -15,7 +15,7 @@ pkgtoolp_info() {
 			"${_group_name}" 1 "${_pkg_name}" "" "${BUILD_WORKDIR}"; then
 		_rc=1; _status="Error: failed to set package environment for \`${_pkg_name}'.";
 	else	_pkg_version="$(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_VERSION")";
-		rtl_log_env_vars "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
+		rtl_log_env_vars "notice" "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
 		rtl_log_msg info "Build group: %s" "${_group_name}";
 		if [ -z "${PKG_DEPENDS:-}" ]; then
 			rtl_log_msg info "Package \`%s' has no dependencies." "${_pkg_name}";
@@ -186,7 +186,7 @@ pkgtoolp_shell() {
 	local _pkg_name="${1}" _rc=0; _status="";
 	if ! ex_pkg_load_dump "${_pkg_name}" "${BUILD_WORKDIR}"; then
 		_rc=1; _status="${_status}";
-	else	rtl_log_env_vars "package" $(rtl_get_vars_fast "^PKG_");
+	else	rtl_log_env_vars "notice" "package" $(rtl_get_vars_fast "^PKG_");
 		rtl_log_msg info "Launching shell \`%s' within package environment and \`%s'." "${SHELL}" "${PKG_BUILD_DIR}";
 		rtl_log_msg info "Run \$R to rebuild \`%s'." "${_pkg_name}";
 		rtl_log_msg info "Run \$RS <step> to restart the specified build step of \`%s'" "${_pkg_name}";

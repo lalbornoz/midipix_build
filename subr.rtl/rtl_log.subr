@@ -33,17 +33,17 @@ RTL_LOG_MSG_SUCCESS_COLOUR=33;		# Dark yellow
 RTL_LOG_MSG_SUCCESS_END_COLOUR=32;	# Dark green
 RTL_LOG_MSG_INFO_COLOUR=93;		# Bright yellow
 RTL_LOG_MSG_INFO_END_COLOUR=92;		# Bright green
-RTL_LOG_MSG_NOTICE_COLOUR=96;		# Bright cyan
-RTL_LOG_MSG_VERBOSE_COLOUR=90;		# Dark grey
+RTL_LOG_MSG_NOTICE_COLOUR=90;		# Dark grey
+RTL_LOG_MSG_VERBOSE_COLOUR=96;		# Bright cyan
 RTL_LOG_MSG_DEBUG_COLOUR=36;		# Dark cyan
 
 
 rtl_log_env_vars() {
-	local _arg_len_max=0;
-	rtl_log_msg info "Variables for this ${1:-build}:"; shift;
+	local _level="${1}" _type="${2}" _arg_len_max=0; shift 2;
+	rtl_log_msg "${_level}" "Variables for this ${_type}:";
 	_arg_len_max="$(rtl_lmax "${@}")";
 	while [ "${#}" -gt 0 ]; do
-		rtl_log_msg info				\
+		rtl_log_msg "${_level}"				\
 			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
 			"${1%%=*}" "$(rtl_get_var_unsafe "${1#*=}")";
 		shift;
