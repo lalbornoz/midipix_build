@@ -291,8 +291,8 @@ of package build steps and how they are overriden.
 
 During package build, standard error and output are redirected into a log file beneath
 ``${BUILD_WORKDIR}`` named ``${PKG_NAME}_stderrout.log``, following a package variable
-dump. If ``-vv`` was specified, package logs will additionally be printed to standard
-output. If ``-vvv`` was specified, ``xtrace`` will be set during package builds for
+dump. If ``-V build`` was specified, package logs will additionally be printed to standard
+output. If ``-V xtrace`` was specified, ``xtrace`` will be set during package builds for
 rudimentary debugging purposes. Additionally, packages using GNU autotools will, if
 package configuration failed or appears relevant, log the configuration process in detail
 in, most usually, ``${PKG_BUILD_DIR}/config.log``.  
