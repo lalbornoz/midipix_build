@@ -18,7 +18,7 @@ pkgtoolp_init_args() {
 };
 
 pkgtoolp_init_env() {
-	local _fname="" _lang="${LANG:-C}" _rc=0; _status=""; _lang="${_lang%%_*}";
+	local _fname="" _lang="${LANG:-C}" _name="" _rc=0; _status=""; _lang="${_lang%%_*}";
 
 	if ! cd "${0%/*}"; then
 		printf "Error: failed to change working directory to \`${0%/*}'." >&2; exit 1;
@@ -28,24 +28,33 @@ pkgtoolp_init_env() {
 				$(find subr.rtl -name *.subr)		\
 				$(find subr -name *.subr)		\
 				etc/pkgtool.theme			\
-				"etc/pkgtool.msgs.${_lang}"		\
-				"etc/rtl.msgs.${_lang}"			\
 				;
 		do
 			if ! . "${_fname}"; then
 				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
 			fi;
 		done;
-		for _fname in	\
-				"etc/pkgtool.theme.local"		\
-				"etc/pkgtool.msgs.${_lang}.local"	\
-				"etc/rtl.msgs.${_lang}.local"		\
-				;
-		do
-			if [ -e "${_fname}" ]; then
-				printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
+		if [ -e "etc/pkgtool.theme.local" ]; then
+			if ! . "etc/pkgtool.theme.local"; then
+				printf "Error: failed to source \`%s'.\n" "etc/pkgtool.theme.local" >&2; exit 1;
 			fi;
+		fi;
+		for _name in pkgtool rtl; do
+			for _lang_ in ${_lang} C; do
+				_fname="etc/${_name}.msgs.${_lang_}";
+				if [ -e "${_fname}" ]; then
+					if ! . "${_fname}"; then
+						printf "Error: failed to source \`%s'.\n" "${_fname}" >&2; exit 1;
+					fi;
+					if [ -e "${_fname}.local" ]; then
+						if ! . "${_fname}.local"; then
+							printf "Error: failed to source \`%s'.\n" "${_fname}.local" >&2; exit 1;
+						fi;
+					fi; break;
+				fi;
+			done;
 		done;
+
 	fi; export LANG=C LC_ALL=C; return "${_rc}";
 };
 
