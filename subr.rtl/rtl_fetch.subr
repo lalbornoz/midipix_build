@@ -37,31 +37,26 @@ rtl_fetch_url_wget() {
 		case "${_rc}" in
 		0)	break; ;;
 		1)	if [ "${_urls_count}" -ge 1 ]; then
-				rtl_log_msg "warning" "Warning: failed to acquire fetching lock for URL \`%s', retrying with alternative URL..." "${_url}";
+				rtl_log_msg "warning" "${MSG_rtl_fetch_lockfail_retryurl}" "${_url}";
 			else
-				rtl_log_msg "fatal" "Error: failed to acquire fetching lock for URL \`%s'." "${_url}";
+				rtl_log_msg "fatal" "${MSG_rtl_fetch_lockfail}" "${_url}";
 				rtl_fileop rm "${_target_fname_full}"; break;
 			fi; ;;
 		2)	if [ "${_urls_count}" -ge 1 ]; then
-				rtl_log_msg "warning" "Warning: hash mismatch for URL \`%s', retrying with alternative URL... (from build variables: %s.)"\
-						"${_url}" "${_sha256sum_src}";
+				rtl_log_msg "warning" "${MSG_rtl_fetch_hashfail_retryurl}" "${_url}" "${_sha256sum_src}";
 			else
 				if _sha256sum_target="$(sha256sum "${_target_fname_full}" |\
 							awk '{print $1}' 2>/dev/null)"; then
-					rtl_log_msg "fatal" "Error: hash mismatch for URL \`%s' (should be: %s vs.: %s.)"\
-							"${_url}" "${_sha256sum_src}" "${_sha256sum_target}";
+					rtl_log_msg "fatal" "${MSG_rtl_fetch_hashfail1}" "${_url}" "${_sha256sum_src}" "${_sha256sum_target}";
 				else
-					rtl_log_msg "fatal" "Error: hash mismatch for URL \`%s' (should be: %s.)"\
-							"${_url}" "${_sha256sum_src}";
+					rtl_log_msg "fatal" "${MSG_rtl_fetch_hashfail2}" "${_url}" "${_sha256sum_src}";
 				fi;
 				rtl_fileop rm "${_target_fname_full}"; break;
 			fi; ;;
 		*)	if [ "${_urls_count}" -ge 1 ]; then
-				rtl_log_msg "warning" "Warning: failed to fetch URL \`%s', retrying with alternative URL... (wget(1) exit status: %s)"\
-						"${_url}" "$((${_rc}-2))";
+				rtl_log_msg "warning" "${MSG_rtl_fetch_fail_retryurl}" "${_url}" "$((${_rc}-2))";
 			else
-				rtl_log_msg "fatal" "Error: failed to fetch URL \`%s' (wget(1) exit status: %s)"\
-						"${_url}" "$((${_rc}-2))";
+				rtl_log_msg "fatal" "${MSG_rtl_fetch_fail}" "${_url}" "$((${_rc}-2))";
 				rtl_fileop rm "${_target_fname_full}"; break;
 			fi; ;;
 		esac;

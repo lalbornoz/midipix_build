@@ -293,9 +293,9 @@ pkgtool() {
 		esac; _rc="${?}";
 	fi;
 	if [ "${_rc}" -ne 0 ]; then
-		rtl_log_msg "fatalexit" "${_status}";
+		rtl_log_msg "fatalexit" "0;${_status}";
 	elif [ -n "${_status}" ]; then
-		rtl_log_msg "info" "${_status}";
+		rtl_log_msg "info" "0;${_status}";
 	fi;
 };
 

@@ -11,7 +11,15 @@ RTLP_LOG_NO_ATTR=0;
 RTLP_LOG_TAGS="";
 
 rtlp_log_printf() {
-	local _attr="${1}" _fmt="${2}"; shift 2; _msg="$(printf "${_fmt}" "${@}")";
+	local _attr="${1}" _fmt_pfx="${2}" _fmt="${3#*;}" _fmt_argc="${3%%;*}"; shift 3;
+	if [ "${#}" -ne "${_fmt_argc}" ]; then
+		if [ "${_fmt_argc}" -eq 0 ]; then
+			shift "${#}";
+		else
+			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX MESSAGE STRING ARGUMENT COUNT MISMATCH[0m\n";
+		fi;
+	fi;
+	_msg="$(printf "${_fmt_pfx}${_fmt}" "${@}")";
 
 	if [ -n "${RTLP_LOG_FNAME}" ]; then
 		printf "%s\n" "${_msg}" >> "${RTLP_LOG_FNAME}";
@@ -43,11 +51,11 @@ rtl_log_enable_tags() {
 rtl_log_env_vars() {
 	local _tag="${1}" _type="${2}" _arg_len_max=0; shift 2;
 
-	rtl_log_msg "${_tag}" "Variables for this ${_type}:";
+	rtl_log_msg "${_tag}" "${MSG_rtl_log_vars_header}" "${_type}";
 	_arg_len_max="$(rtl_lmax "${@}")";
 	while [ "${#}" -gt 0 ]; do
-		rtl_log_msg "${_tag}"				\
-			"%${_arg_len_max}.${_arg_len_max}s=%s"	\
+		rtl_log_msg "${_tag}"					\
+			"2;%${_arg_len_max}.${_arg_len_max}s=%s"	\
 			"${1%%=*}" "$(rtl_get_var_unsafe "${1#*=}")";
 		shift;
 	done; return 0;
@@ -60,9 +68,9 @@ rtl_log_msg() {
 	if rtl_lmatch "${RTLP_LOG_TAGS}" "${_tag}" ","; then
 		eval _attr='${LOG_TAG_'"${_tag}"':-}';
 		if [ "${#_attr}" -eq 0 ]; then
-			rtlp_log_printf "" "==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`%s' PASSED TO rtl_log_msg()[0m\n" "${_tag}";
+			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`${_tag}' PASSED TO rtl_log_msg()[0m\n";
 		fi;
-		rtlp_log_printf "${_attr}" "==> %s ${_fmt}" "$(rtl_date)" "${@}";
+		rtlp_log_printf "${_attr}" "==> $(rtl_date) " "${_fmt}" "${@}";
 		if [ "${_exitfl}" -eq 1 ]; then
 			exit 1;
 		fi;
