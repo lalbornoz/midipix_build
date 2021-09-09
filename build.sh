@@ -123,7 +123,7 @@ build() {
 	if ! . "${0%/*}/subr/build_init.subr"; then
 		printf "Error: failed to source \`${0%/*}/subr/build_init.subr'." >&2; exit "${_rc}";
 	elif ! build_init "${@}"; then
-		printf "Error during initilisation: %s.\n" "${_status}" >&2; exit "${_rc}";
+		printf "Error during initialisation: %s\n" "${_status}" >&2; exit "${_rc}";
 	elif [ -n "${_status}" ]; then
 		_rc=0; _status="${_status}";
 	else	trap "buildp_ast exit" EXIT; trap "buildp_ast abort" HUP INT TERM USR1 USR2;
