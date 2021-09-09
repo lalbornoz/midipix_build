@@ -78,7 +78,7 @@ buildp_dispatch_pkg_state() {
 		rtl_log_msg "pkg_finish" "${MSG_pkg_finish}" "${7}" "${6}" "${4}" "${5}" "${_pkg_name}"; ;;
 	start_pkg_child)
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
-			rtl_log_env_vars "notice" "build" $(rtl_get_vars_fast "^PKG_");
+			rtl_log_env_vars "info" "build" $(rtl_get_vars_fast "^PKG_");
 		fi;
 		if rtl_lmatch "${ARG_VERBOSE_TAGS}" "xtrace" ","; then
 			set -o xtrace;
