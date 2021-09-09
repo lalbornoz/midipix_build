@@ -804,7 +804,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | FlagLine			| String of {SP,VT}-separated flags, arguments, options, etc. pp. to a command                                                                 |
 | List(<sep>[,<sep|type>..])	| <sep>-separated list, optionally recursively and/or sub-typing, e.g.: ``List(:,=,String)`` and ``"name=value:name2=va lue "``                |
 | PkgName			| Single name of package                                                                                                                       |
-| PkgRelation			| Single, possibly parametrised, package-package relation; see section [3.6](#36-package-package-and-packagegroup-group-relationships)        |
+| PkgRelation			| Single, possibly parametrised, package-package relation; see section [3.6](#36-package-package-and-packagegroup-group-relationships)         |
 | PkgVersion			| Single version of package                                                                                                                    |
 | Set(<type>)			| Set of alternatives of <type>, e.g. one of ``cross``, ``host``, ``native``                                                                   |
 | String			| Semantically generic string                                                                                                                  |
@@ -818,12 +818,13 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | Package variable name        | Type             | Description                                                                                                                                |
 | ---------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | AR                           | CmdName          | Toolchain library archive editor ``ar(1)``                                                                                                 |
+| AUTOCONF_CONFIG_GUESS        | String           | Either of ``midipix`` (copy Midipix ``config.guess`` from ``etc/config.guess``) or ``keep``; defaults to ``midipix``                       |
 | BASE_DIR                     | DirName(Abs)     | Package build root directory beneath ``${BUILD_WORKDIR}``                                                                                  |
 | BUILD_DIR                    | DirName(Unit)    | Package build directory beneath ``${PKG_BASE_DIR}``                                                                                        |
 | BUILD_STAGES_DISABLE         | List( )          | Build stages to disable during package build                                                                                               |
 | BUILD_TYPE                   | Set(String)      | ``cross``: Cross-compiled toolchain, ``host``: host, ``native``: cross-compiled package                                                    |
 | CC                           | FileName         | Toolchain C compiler ``cc(1)``                                                                                                             |
-| CFLAGS_BUILD_EXTRA           | FlagLine         | Additional C compiler flags during package ``make(1)``  build                                                                              |
+| CFLAGS_BUILD_EXTRA           | FlagLine         | Additional C compiler flags during package ``make(1)`` build                                                                               |
 | CFLAGS_BUILD                 | FlagLine         | C compiler flags during package ``make(1)``  build                                                                                         |
 | CFLAGS_CONFIGURE_EXTRA       | FlagLine         | Additional C compiler flags during package (GNU autotools in implementation and/or interface) configuration                                |
 | CFLAGS_CONFIGURE             | FlagLine         | C compiler flags during package (GNU autotools in implementation and/or interface) configuration                                           |

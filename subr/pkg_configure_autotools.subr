@@ -3,15 +3,22 @@
 #
 
 pkg_configure_autotools() {
-	local _config_cache="" _fname="" _subdir_tgt="";
+	local _config_cache="" _config_guest_fname="" _fname="" _subdir_tgt="";
 
 	if [ "${PKG_CONFIGURE_TYPE:+1}" = 1 ]\
 	&& [ "${PKG_CONFIGURE_TYPE}" != "autotools" ]; then
 		return 0;
 	fi;
 
+	if [ "${PKG_AUTOCONF_CONFIG_GUESS:-midipix}" = "midipix" ]; then
+		_config_guest_fname="config.guess";
+	else
+		_config_guest_fname="";
+	fi;
+
 	if rtl_exists_any "${PKG_BASE_DIR}/${PKG_SUBDIR}"							\
-			"config.guess" "configure.ac" "configure.in" "configure";
+			${_config_guest_fname:+"${_config_guest_fname}"}					\
+			"configure.ac" "configure.in" "configure";
 	then	rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}";
 		if [ "${PKG_FORCE_AUTORECONF:-0}" -eq 1 ]\
 		&& ! (cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoreconf -fiv); then
@@ -29,12 +36,15 @@ pkg_configure_autotools() {
 									"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
 									"${_subdir_tgt}/config.sub"; then
 								return 1;
-							elif ! rtl_fileop install -m 0700			\
-									"${MIDIPIX_BUILD_PWD}/etc/config.guess"	\
-									"${_subdir_tgt}/config.guess"; then
-								return 1;
-							else
-								break;
+							fi;
+							if [ "${PKG_AUTOCONF_CONFIG_GUESS:-midipix}" = "midipix" ]; then
+								if ! rtl_fileop install -m 0700			\
+										"${MIDIPIX_BUILD_PWD}/etc/config.guess"\
+										"${_subdir_tgt}/config.guess"; then
+									return 1;
+								else
+									break;
+								fi;
 							fi;
 						fi;
 					done;
@@ -55,13 +65,15 @@ pkg_configure_autotools() {
 			|| ! rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" "${_fname}"; then
 				return 1;
 			fi;
-		done
-		for _fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.guess); do
-			if ! rtl_fileop mv "${_fname}" "${_fname}.orig"\
-			|| ! rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.guess" "${_fname}"; then
-				return 1;
-			fi;
-		done
+		done;
+		if [ "${PKG_AUTOCONF_CONFIG_GUESS:-midipix}" = "midipix" ]; then
+			for _fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.guess); do
+				if ! rtl_fileop mv "${_fname}" "${_fname}.orig"\
+				|| ! rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.guess" "${_fname}"; then
+					return 1;
+				fi;
+			done;
+		fi;
 		if [ "${PKG_BUILD_TYPE}" != host ]; then
 			if ! rtl_fileop touch "${PKG_BUILD_DIR}/config.cache"; then
 				return 1;
