@@ -453,7 +453,7 @@ rtl_install_v2() {
 		esac; fi;
 	done; shift $((${OPTIND}-1));
 	_ri_prefix="${1:-}"; _ri_spec_list="${2:-}"; shift 2;
-	_ri_IFS0="${IFS}"; IFS="${_ri_IFS}"; set -- ${_ri_spec_list}; IFS="${_ri_IFS0}";
+	_ri_IFS0="${IFS:- 	}"; IFS="${_ri_IFS}"; set -- ${_ri_spec_list}; IFS="${_ri_IFS0}";
 
 	while [ ${#} -gt 0 ]; do
 		_ri_spec_src="${1}";
