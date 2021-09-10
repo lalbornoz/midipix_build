@@ -1,0 +1,53 @@
+--- rpm-4.17.0/configure.ac	2021-09-03 11:42:16.790237970 +0200
++++ rpm-4.17.0.new/configure.ac	2021-09-10 17:53:28.904112791 +0200
+@@ -248,14 +248,22 @@
+ 
+ #=================
+ # Check for libelf library. Prefer external, otherwise none.
+-WITH_LIBELF_LIB=
+-AC_CHECK_HEADER([libelf.h])
+-AC_CHECK_HEADERS([gelf.h], [
+-	AC_CHECK_LIB(elf, gelf_getvernaux, [
+-	    AC_DEFINE(HAVE_LIBELF, 1, [Define to 1 if you have the 'elf' library (-lelf).])
+-	    WITH_LIBELF_LIB="-lelf"
+-	    WITH_LIBELF=yes
+-	])
++AC_ARG_ENABLE([libelf],
++		[AS_HELP_STRING([--enable-libelf=@<:@yes/no/auto@:>@],
++				[build with libelf support (default=yes)])],
++		[enable_libelf="$enableval"],
++		[enable_libelf=yes])
++
++AS_IF([test "x$enable_libelf" != "xno"], [
++  WITH_LIBELF_LIB=
++  AC_CHECK_HEADER([libelf.h])
++  AC_CHECK_HEADERS([gelf.h], [
++    AC_CHECK_LIB(elf, gelf_getvernaux, [
++    AC_DEFINE(HAVE_LIBELF, 1, [Define to 1 if you have the 'elf' library (-lelf).])
++    WITH_LIBELF_LIB="-lelf"
++    WITH_LIBELF=yes
++    ])
++  ])
+ ])
+ AC_SUBST(WITH_LIBELF_LIB)
+ AM_CONDITIONAL(LIBELF,[test "$WITH_LIBELF" = yes])
+diff -ru rpm-4.16.0.orig/configure.ac rpm-4.16.0/configure.ac
+--- rpm-4.16.0.orig/configure.ac        2021-09-10 20:08:26.243318920 +0200
++++ rpm-4.16.0/configure.ac     2021-09-10 20:11:20.091320179 +0200
+@@ -498,6 +498,8 @@
+
+ #=================
+ # Check for elfutils libdw library with dwelf_elf_gnu_build_id.
++AS_IF([test "x$enable_libelf" != "xno"], [
++
+ WITH_LIBDW_LIB=
+ HAVE_LIBDW_STRTAB=
+ AS_IF([test "$WITH_LIBELF" = yes],[
+@@ -518,6 +520,7 @@
+     ])
+   ])
+ ])
++])
+ AC_SUBST(WITH_LIBDW_LIB)
+ AM_CONDITIONAL(LIBDW,[test "$WITH_LIBDW" = yes])
+ AM_CONDITIONAL(HAVE_LIBDW_STRTAB,[test "$HAVE_LIBDW_STRTAB" = yes])
