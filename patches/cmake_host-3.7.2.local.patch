@@ -1,3 +1,14 @@
+diff -ru cmake-3.7.2.orig/Source/cmServerProtocol.cxx cmake-3.7.2/Source/cmServerProtocol.cxx
+--- cmake-3.7.2.orig/Source/cmServerProtocol.cxx        2017-01-13 15:05:41.000000000 +0100
++++ cmake-3.7.2/Source/cmServerProtocol.cxx     2021-09-10 19:16:52.942413410 +0200
+@@ -26,6 +26,7 @@
+ #include <algorithm>
+ #include <string>
+ #include <vector>
++#include <limits>
+
+ // Get rid of some windows macros:
+ #undef max
 diff -ru cmake-3.7.2.orig/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h cmake-3.7.2/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h
 --- cmake-3.7.2.orig/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h	2017-01-13 15:05:42.000000000 +0100
 +++ cmake-3.7.2/Utilities/cmlibarchive/libarchive/archive_openssl_hmac_private.h	2018-05-08 22:39:23.249070904 +0200
