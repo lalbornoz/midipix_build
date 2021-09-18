@@ -32,7 +32,6 @@
 	+%[_native]/lib/libncurses.so.6=%[_minipix]/bin/libncurses.so.6						\
 	+%[_native]/lib/libncursesw.so.6=%[_minipix]/bin/libncursesw.so.6					\
 	+%[_native]/lib/libnettle.so.8=%[_minipix]/bin/libnettle.so.8						\
-	+%[_native]/lib/libnettle.so=%[_minipix]/bin/libnettle.so						\
 	+%[_native]/lib/libpcre2-8.so.0=%[_minipix]/bin/libpcre2-8.so.0						\
 	+%[_native]/lib/libpcre.so.1=%[_minipix]/bin/libpcre.so.1						\
 	+%[_native]/lib/libperk.so.0=%[_minipix]/bin/libperk.so.0						\
@@ -43,9 +42,7 @@
 	+%[_native]/lib/libssl.so.48=%[_minipix]/bin/libssl.so.48						\
 	+%[_native]/lib/libtasn1.so.6=%[_minipix]/bin/libtasn1.so.6						\
 	+%[_native]/lib/libtinfo.so.6=%[_minipix]/bin/libtinfo.so.6						\
-	+%[_native]/lib/libtinfo.so=%[_minipix]/bin/libtinfo.so		        				\
 	+%[_native]/lib/libtinfow.so.6=%[_minipix]/bin/libtinfow.so.6						\
-	+%[_native]/lib/libtinfow.so=%[_minipix]/bin/libtinfow.so						\
 	+%[_native]/lib/libu16ports.so.0=%[_minipix]/bin/libu16ports.so.0					\
 	+%[_native]/lib/libunistring.so.2=%[_minipix]/bin/libunistring.so.2					\
 	+%[_native]/lib/libuuid.so.1=%[_minipix]/bin/libuuid.so.1						\
