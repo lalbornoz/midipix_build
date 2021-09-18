@@ -19,6 +19,7 @@
 	+%[_native]/lib/libc.so=%[_minipix]/bin/libc.so		                				\
 	+%[_native]/lib/libcurl.so.4=%[_minipix]/bin/libcurl.so.4						\
 	+%[_native]/lib/libexpat.so.1=%[_minipix]/bin/libexpat.so.1						\
+	+%[_native]/lib/libgpgme.so.11=%[_minipix]/bin/libgpgme.so.11						\
 	+%[_native]/lib/libgmp.so.10=%[_minipix]/bin/libgmp.so.10						\
 	+%[_native]/lib/libgnutls.so.30=%[_minipix]/bin/libgnutls.so.30						\
 	+%[_native]/lib/libhogweed.so.6=%[_minipix]/bin/libhogweed.so.6						\
