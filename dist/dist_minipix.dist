@@ -15,21 +15,24 @@
 	+%[_native]/bin/tset=%[_minipix]/bin/tset								\
 	+%[_minipix_dist]/bin/%<*>=%[_minipix]/bin/%[FNAME]							\
 														\
+	+%[_native]/lib/libbz2.so.1=%[_minipix]/bin/libbz2.so.1							\
 	+%[_native]/lib/libcrypto.so.46=%[_minipix]/bin/libcrypto.so.46						\
 	+%[_native]/lib/libc.so=%[_minipix]/bin/libc.so		                				\
 	+%[_native]/lib/libcurl.so.4=%[_minipix]/bin/libcurl.so.4						\
 	+%[_native]/lib/libexpat.so.1=%[_minipix]/bin/libexpat.so.1						\
-	+%[_native]/lib/libgpgme.so.11=%[_minipix]/bin/libgpgme.so.11						\
 	+%[_native]/lib/libgmp.so.10=%[_minipix]/bin/libgmp.so.10						\
 	+%[_native]/lib/libgnutls.so.30=%[_minipix]/bin/libgnutls.so.30						\
+	+%[_native]/lib/libgpgme.so.11=%[_minipix]/bin/libgpgme.so.11						\
 	+%[_native]/lib/libhogweed.so.6=%[_minipix]/bin/libhogweed.so.6						\
 	+%[_native]/lib/libidn2.so.0=%[_minipix]/bin/libidn2.so.0						\
 	+%[_native]/lib/liblzma.so.5=%[_minipix]/bin/liblzma.so.5						\
 	+%[_native]/lib/libmagic.so.1=%[_minipix]/bin/libmagic.so.1						\
 	+%[_native]/lib/libmetalink.so.3=%[_minipix]/bin/libmetalink.so.3					\
+	+%[_native]/lib/libmpfr.so.4=%[_minipix]/bin/libmpfr.so.4						\
 	+%[_native]/lib/libncurses.so.6=%[_minipix]/bin/libncurses.so.6						\
 	+%[_native]/lib/libncursesw.so.6=%[_minipix]/bin/libncursesw.so.6					\
 	+%[_native]/lib/libnettle.so.8=%[_minipix]/bin/libnettle.so.8						\
+	+%[_native]/lib/libnettle.so=%[_minipix]/bin/libnettle.so						\
 	+%[_native]/lib/libpcre2-8.so.0=%[_minipix]/bin/libpcre2-8.so.0						\
 	+%[_native]/lib/libpcre.so.1=%[_minipix]/bin/libpcre.so.1						\
 	+%[_native]/lib/libperk.so.0=%[_minipix]/bin/libperk.so.0						\
@@ -39,9 +42,10 @@
 	+%[_native]/lib/libreadline.so.8=%[_minipix]/bin/libreadline.so.8					\
 	+%[_native]/lib/libssl.so.48=%[_minipix]/bin/libssl.so.48						\
 	+%[_native]/lib/libtasn1.so.6=%[_minipix]/bin/libtasn1.so.6						\
-	+%[_native]/lib/libtinfo.so=%[_minipix]/bin/libtinfo.so		        				\
 	+%[_native]/lib/libtinfo.so.6=%[_minipix]/bin/libtinfo.so.6						\
+	+%[_native]/lib/libtinfo.so=%[_minipix]/bin/libtinfo.so		        				\
 	+%[_native]/lib/libtinfow.so.6=%[_minipix]/bin/libtinfow.so.6						\
+	+%[_native]/lib/libtinfow.so=%[_minipix]/bin/libtinfow.so						\
 	+%[_native]/lib/libu16ports.so.0=%[_minipix]/bin/libu16ports.so.0					\
 	+%[_native]/lib/libunistring.so.2=%[_minipix]/bin/libunistring.so.2					\
 	+%[_native]/lib/libuuid.so.1=%[_minipix]/bin/libuuid.so.1						\
