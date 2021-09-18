@@ -19,7 +19,7 @@ diff -ru nettle-3.4.1.orig/configure nettle-3.4.1/configure
 +    LIBHOGWEED_SONAME='$(LIBHOGWEED_FORLINK).$(LIBHOGWEED_MAJOR)'
 +    LIBHOGWEED_FILE='$(LIBHOGWEED_SONAME).$(LIBHOGWEED_MINOR)'
 +    LIBHOGWEED_LINK='$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,--out-dsolib=libhogweed.lib.a -Wl,-soname=$(LIBHOGWEED_SONAME)'
-+    LIBHOGWEED_LIBS='$(LIBS) libnettle.lib.a'
++    LIBHOGWEED_LIBS='$(LIBS) .lib/libnettle.so.8'
 +    ;;
    darwin*)
      LIBNETTLE_FORLINK=libnettle.dylib
