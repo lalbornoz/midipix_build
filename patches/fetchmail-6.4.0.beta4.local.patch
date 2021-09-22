@@ -1,0 +1,14 @@
+diff -ru fetchmail-6.4.0.beta4.orig/socket.c fetchmail-6.4.0.beta4/socket.c
+--- fetchmail-6.4.0.beta4.orig/socket.c	2018-06-06 01:57:00.000000000 +0200
++++ fetchmail-6.4.0.beta4/socket.c	2021-09-22 09:50:13.654463039 +0200
+@@ -885,8 +885,8 @@
+ 	return ret;
+ }
+ 
+-#if defined(LIBRESSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER < 0x1010000fL
+-/* OSSL_proto_version_logic for OpenSSL 1.0.x and LibreSSL */
++#if OPENSSL_VERSION_NUMBER < 0x1010000fL
++/* OSSL_proto_version_logic for OpenSSL 1.0.x */
+ static int OSSL10X_proto_version_logic(int sock, const char **myproto, int *avoid_ssl_versions)
+ {
+ 	if (!*myproto) {
