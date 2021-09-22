@@ -169,7 +169,7 @@ zstd")";
 : ${PKG_GHOSTPDL_VERSION:=9.52};
 : ${PKG_GHOSTPDL_URL:=https://mirror.midipix.org/ghostpdl/ghostpdl-${PKG_GHOSTPDL_VERSION}.tar.xz};
 : ${PKG_GHOSTPDL_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
-: ${PKG_GHOSTPDL_CONFIGURE_ARGS_EXTRA:="--with-system-libtiff --with-memory-alignment=8"};
+: ${PKG_GHOSTPDL_CONFIGURE_ARGS_EXTRA:="--with-system-libtiff --with-memory-alignment=8 --without-x"};
 : ${PKG_GHOSTPDL_ENV_VARS_EXTRA:="CCAUX=cc:CFLAGSAUX=${DEFAULT_CFLAGS} -L${PREFIX}/lib:LDFLAGSAUX=-L${PREFIX}/lib:SHARE_ZLIB=-lz"}
 : ${PKG_GHOSTPDL_MAKEFLAGS_BUILD_EXTRA:="TARGET_ARCH_FILE=${BUILD_WORKDIR}/ghostpdl-native-${DEFAULT_TARGET}/ghostpdl-${PKG_GHOSTPDL_VERSION}/arch/${DEFAULT_TARGET}.h"}
 : ${PKG_GIFLIB_SHA256SUM:=31da5562f44c5f15d63340a09a4fd62b48c45620cd302f77a6d9acf0077879bd};
