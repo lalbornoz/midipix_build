@@ -126,7 +126,7 @@ make_cv_synchronous_posix_spawn=yes"};
 : ${PKG_PYTHON2_CONFIGURE_TYPE:="sofort"};
 : ${PKG_PYTHON2_SOFORT_NATIVE_CFLAGS_EXTRA:="-std=c99 -D_XOPEN_SOURCE=700"};
 : ${PKG_PYTHON2_SUBDIR:=Python-${PKG_PYTHON2_VERSION}};
-: ${PKG_PYTHON3_DEPENDS:="bzip2 curl expat gdbm libffi libressl libz ncursesw readline sqlite3 xz"};
+: ${PKG_PYTHON3_DEPENDS:="bzip2 curl expat gdbm libffi libressl libz ncursesw readline sqlite3 util_linux xz"};
 : ${PKG_PYTHON3_SHA256SUM:=f8d82e7572c86ec9d55c8627aae5040124fd2203af400c383c821b980306ee6b};
 : ${PKG_PYTHON3_VERSION:=3.7.10};
 : ${PKG_PYTHON3_URL:="https://www.python.org/ftp/python/${PKG_PYTHON3_VERSION}/Python-${PKG_PYTHON3_VERSION}.tar.xz"};
