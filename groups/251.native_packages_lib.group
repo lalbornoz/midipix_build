@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 glib jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
-libevent libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
+libevent libexif libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
@@ -67,6 +67,9 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBEVENT_VERSION:=2.1.12-stable};
 : ${PKG_LIBEVENT_URL:=https://github.com/libevent/libevent/releases/download/release-${PKG_LIBEVENT_VERSION}/libevent-${PKG_LIBEVENT_VERSION}.tar.gz};
 : ${PKG_LIBEVENT_CONFIG_CACHE_EXTRA:="ac_pe_target=true"};
+: ${PKG_LIBEXIF_SHA256SUM:=a740a99920eb81ae0aa802bb46e683ce6e0cde061c210f5d5bde5b8572380431};
+: ${PKG_LIBEXIF_VERSION:=0.6.23};
+: ${PKG_LIBEXIF_URL:=https://github.com/libexif/libexif/releases/download/v${PKG_LIBEXIF_VERSION}/libexif-${PKG_LIBEXIF_VERSION}.tar.xz};
 : ${PKG_LIBFASTJSON_SHA256SUM:=3544c757668b4a257825b3cbc26f800f59ef3c1ff2a260f40f96b48ab1d59e07};
 : ${PKG_LIBFASTJSON_VERSION:=0.99.8};
 : ${PKG_LIBFASTJSON_URL:=http://download.rsyslog.com/libfastjson/libfastjson-${PKG_LIBFASTJSON_VERSION}.tar.gz};
