@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
 microsocks mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
-proxytunnel rsync socat thttpd w3m weechat wget whois")";
+proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};
@@ -246,6 +246,10 @@ mutt_cv_regex_broken=no"};
 : ${PKG_WGET_CONFIGURE_ARGS_EXTRA:="--with-ssl=gnutls --with-gpgme-prefix=${PREFIX_NATIVE}"};
 : ${PKG_WGET_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
 : ${PKG_WGET_PYTHON:=${PREFIX}/bin/python3};
+: ${PKG_WGET2_DEPENDS:="gnutls gpgme libz libidn2 libpsl bzip2 pcre2 xz zstd"};
+: ${PKG_WGET2_SHA256SUM:=4fe2fba0abb653ecc1cc180bea7f04212c17e8fe05c85aaac8baeac4cd241544};
+: ${PKG_WGET2_VERSION:=2.0.0};
+: ${PKG_WGET2_URL:=https://ftp.gnu.org/gnu/wget/wget2-${PKG_WGET2_VERSION}.tar.gz};
 : ${PKG_WHOIS_DEPENDS:="libidn2"};
 : ${PKG_WHOIS_SHA256SUM:=982c755210b3ff3048fb196456147844c04ad8f47646e0622117f8ce11391e81};
 : ${PKG_WHOIS_VERSION:=5.5.10};
