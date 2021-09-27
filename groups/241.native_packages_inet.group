@@ -144,8 +144,8 @@ ac_cv_prog_have_pcre=%PREFIX%/bin/pcre-config"};
 : ${PKG_MICROSOCKS_URLS_GIT:=microsocks=https://github.com/rofl0r/microsocks.git@master};
 : ${PKG_MICROSOCKS_BUILD_DIR:=microsocks};
 : ${PKG_MUTT_DEPENDS:="gnutls libz ncursesw"};
-: ${PKG_MUTT_SHA256SUM:=4ae6d60f7f19854c375cc1c27b5768b71e9f450c2adc10c22e45de8a27de524a};
-: ${PKG_MUTT_VERSION:=2.1.1};
+: ${PKG_MUTT_SHA256SUM:=ef759cc94b921b099a3ee88085d384fd3564c97f511e907bc83cf9812dd5e47c};
+: ${PKG_MUTT_VERSION:=2.1.3};
 : ${PKG_MUTT_URL:=http://ftp.mutt.org/pub/mutt/mutt-${PKG_MUTT_VERSION}.tar.gz};
 : ${PKG_MUTT_CONFIG_CACHE_EXTRA:="
 mutt_cv_c99_snprintf=yes
