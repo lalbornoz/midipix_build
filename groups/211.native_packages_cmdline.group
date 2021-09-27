@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed figlet
+bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
 findutils gawk grep jush lzop mc mksh moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sbase screen sed sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
@@ -76,6 +76,10 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_ED_VERSION:=1.17};
 : ${PKG_ED_URL:=https://ftp.gnu.org/gnu/ed/ed-${PKG_ED_VERSION}.tar.lz};
 : ${PKG_ED_CONFIGURE_ARGS:="--prefix= CC=${DEFAULT_TARGET}-gcc"};
+: ${PKG_EXIF_DEPENDS:="libexif popt"};
+: ${PKG_EXIF_SHA256SUM:=0fe268736e0ca0538d4af941022761a438854a64c8024a4175e57bf0418117b9};
+: ${PKG_EXIF_VERSION:=0.6.22};
+: ${PKG_EXIF_URL:=https://github.com/libexif/exif/releases/download/exif-0_6_22-release/exif-${PKG_EXIF_VERSION}.tar.xz};
 : ${PKG_FIGLET_SHA256SUM:=bf88c40fd0f077dab2712f54f8d39ac952e4e9f2e1882f1195be9e5e4257417d};
 : ${PKG_FIGLET_VERSION:=2.2.5};
 : ${PKG_FIGLET_URL:=ftp://ftp.figlet.org/pub/figlet/program/unix/figlet-${PKG_FIGLET_VERSION}.tar.gz};
