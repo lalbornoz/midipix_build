@@ -17,7 +17,7 @@
 														\
 	+%[_native]/lib/libassuan.so.0=%[_minipix]/bin/libassuan.so.0						\
 	+%[_native]/lib/libbz2.so.1=%[_minipix]/bin/libbz2.so.1							\
-	+%[_native]/lib/libcrypto.so.46=%[_minipix]/bin/libcrypto.so.46						\
+	+%[_native]/lib/libcrypto.so.47=%[_minipix]/bin/libcrypto.so.47						\
 	+%[_native]/lib/libc.so=%[_minipix]/bin/libc.so		                				\
 	+%[_native]/lib/libcurl.so.4=%[_minipix]/bin/libcurl.so.4						\
 	+%[_native]/lib/libexpat.so.1=%[_minipix]/bin/libexpat.so.1						\
