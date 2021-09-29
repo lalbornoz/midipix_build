@@ -41,7 +41,7 @@
 	+%[_native]/lib/libpsxscl.so=%[_minipix]/bin/libpsxscl.so						\
 	+%[_native]/lib/libpython2.7.so.1=%[_minipix]/bin/libpython2.7.so.1					\
 	+%[_native]/lib/libreadline.so.8=%[_minipix]/bin/libreadline.so.8					\
-	+%[_native]/lib/libssl.so.48=%[_minipix]/bin/libssl.so.48						\
+	+%[_native]/lib/libssl.so.50=%[_minipix]/bin/libssl.so.50						\
 	+%[_native]/lib/libtasn1.so.6=%[_minipix]/bin/libtasn1.so.6						\
 	+%[_native]/lib/libtinfo.so.6=%[_minipix]/bin/libtinfo.so.6						\
 	+%[_native]/lib/libtinfow.so.6=%[_minipix]/bin/libtinfow.so.6						\
