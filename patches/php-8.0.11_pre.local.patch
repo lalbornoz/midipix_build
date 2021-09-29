@@ -1,3 +1,17 @@
+diff -ru php-8.0.11.orig/build/ php-8.0.11/build/libtool.m4
+--- php-8.0.11.orig/build/libtool.m4    2021-09-21 19:07:44.000000000 +0200
++++ php-8.0.11/build/libtool.m4 2021-09-29 22:21:23.610917784 +0200
+@@ -56,10 +56,6 @@
+ # This can be used to rebuild libtool when needed
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+
+-# Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+-AC_SUBST(LIBTOOL)dnl
+-
+ # Prevent multiple expansion
+ define([AC_PROG_LIBTOOL], [])
+ ])# _AC_PROG_LIBTOOL
 diff -ru php-8.0.8.orig/TSRM/TSRM.h php-8.0.8/TSRM/TSRM.h
 --- php-8.0.8.orig/TSRM/TSRM.h  2021-06-29 09:41:19.000000000 +0200
 +++ php-8.0.8/TSRM/TSRM.h       2021-07-17 21:51:11.409950944 +0200
@@ -27,7 +41,38 @@ diff -ru php-8.0.1.orig/configure php-8.0.1/configure
  
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-@@ -87098,6 +87101,16 @@
+@@ -81688,7 +81691,7 @@
+ enable_static=yes
+
+ case $php_sapi_module in
+-  shared)
++  *)
+     if test "$PHP_CGI" = "no" && test "$PHP_CLI" = "no" && test "$PHP_FPM" = "no" && test "$PHP_LITESPEED" = "no" && test "$PHP_PHPDBG" = "no"; then
+       enable_static=no
+     fi
+@@ -81702,12 +81705,6 @@
+     esac
+     EXTRA_LDFLAGS="$EXTRA_LDFLAGS -avoid-version -module"
+     ;;
+-  *)
+-    standard_libtool_flag='-prefer-non-pic -static'
+-    if test -z "$PHP_MODULES" && test -z "$PHP_ZEND_EX"; then
+-      enable_shared=no
+-    fi
+-    ;;
+ esac
+
+ EXTRA_LIBS="$EXTRA_LIBS $DLIBS $LIBS"
+@@ -85405,7 +85408,7 @@
+       lt_prog_compiler_static='-Bstatic'
+       ;;
+
+-    linux* | k*bsd*-gnu)
++    linux* | k*bsd*-gnu | midipix*)
+       case $cc_basename in
+       # old Intel for x86_64 which still supported -KPIC.
+       ecc*)
+@@ -87098,6 +87101,17 @@
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -39,11 +84,59 @@ diff -ru php-8.0.1.orig/configure php-8.0.1/configure
 +  soname_spec='$libname$release$shared_ext$major'
 +  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
 +  shlibpath_var=LD_LIBRARY_PATH
++  dynamic_linker='GNU/Linux ld.so'
 +  ;;
 +
  netbsd*)
    version_type=sunos
    need_lib_prefix=no
+@@ -89172,7 +89185,7 @@
+     hardcode_libdir_flag_spec_CXX='${wl}-rpath ${wl}$libdir'
+     hardcode_libdir_separator_CXX=:
+     ;;
+-  linux* | k*bsd*-gnu)
++  linux* | k*bsd*-gnu | midipix*)
+     case $cc_basename in
+       KCC*)
+        # Kuck and Associates, Inc. (KAI) C++ Compiler
+@@ -91441,37 +91448,6 @@
+ # This can be used to rebuild libtool when needed
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+
+-# Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+-
+-# Prevent multiple expansion
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-  if test -z "$LIBTOOL"; then
+-    LIBTOOL='$(SHELL) $(top_builddir)/libtool --silent'
+-  else
+-    LIBTOOL="$LIBTOOL --silent"
+-  fi
+-
+-
+-
+-  if test -z "$LIBTOOL"; then
+-    LIBTOOL='$(SHELL) $(top_builddir)/libtool --preserve-dup-deps'
+-  else
+-    LIBTOOL="$LIBTOOL --preserve-dup-deps"
+-  fi
+-
+-
+ test -z "$PHP_COMPILE" && PHP_COMPILE='$(LIBTOOL) --mode=compile $(COMPILE) -c $<'
+ test -z "$CXX_PHP_COMPILE" && CXX_PHP_COMPILE='$(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $<'
+ SHARED_LIBTOOL='$(LIBTOOL)'
 diff -ru php-8.0.1.orig/sapi/cgi/Makefile.frag php-8.0.1/sapi/cgi/Makefile.frag
 --- php-8.0.1.orig/sapi/cgi/Makefile.frag	2021-01-05 14:54:54.000000000 +0100
 +++ php-8.0.1/sapi/cgi/Makefile.frag	2021-01-14 00:20:44.769574312 +0100
