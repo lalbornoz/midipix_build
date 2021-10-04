@@ -8,7 +8,7 @@ libevent libexif libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_er
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
-libuv libvorbis libxml2 libxslt libz libzip lzo nettle sdl1 sdl1_net sdl1_mixer
+libuv libvorbis libxml2 libxslt libz libzip lzo nettle onig sdl1 sdl1_net sdl1_mixer
 sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=d64abd16813501c956c4e123ae79f47f1b58de573df9fdd3b0795f1e2c1aa789};
@@ -302,6 +302,10 @@ ksba_cv_visibility_attribute=yes"};
 	-DOPENSSL_SSL_LIBRARY=${PREFIX_NATIVE}/lib/libssl.lib.a
 	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
 	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.a"};
+: ${PKG_ONIG_SHA256SUM:=6444204b9c34e6eb6c0b23021ce89a0370dad2b2f5c00cd44c342753e0b204d9};
+: ${PKG_ONIG_VERSION:=6.9.7.1};
+: ${PKG_ONIG_URL:=https://github.com/kkos/oniguruma/releases/download/v${PKG_ONIG_VERSION}/onig-${PKG_ONIG_VERSION}.tar.gz};
+: ${PKG_ONIG_SUBDIR:=onig-${PKG_ONIG_VERSION%.*}};
 : ${PKG_LZO_SHA256SUM:=c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072};
 : ${PKG_LZO_VERSION:=2.10};
 : ${PKG_LZO_URL:=https://www.oberhumer.com/opensource/lzo/download/lzo-${PKG_LZO_VERSION}.tar.gz};
