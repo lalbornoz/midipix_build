@@ -376,14 +376,14 @@ gl_cv_func_getopt_gnu=yes"};
 : ${PKG_PCRE2_VERSION:=10.37};
 : ${PKG_PCRE2_URL:=https://ftp.pcre.org/pub/pcre/pcre2-${PKG_PCRE2_VERSION}.tar.bz2};
 : ${PKG_PCRE2_CONFIGURE_ARGS_EXTRA:="--enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2-16 --enable-pcre2-32 --enable-jit"};
-: ${PKG_PHP_DEPENDS:="bzip2 libz libxml2 sqlite3 pcre2"};
+: ${PKG_PHP_DEPENDS:="bzip2 curl libz libxml2 sqlite3 pcre2 readline libressl"};
 : ${PKG_PHP_SHA256SUM:=e3e5f764ae57b31eb65244a45512f0b22d7bef05f2052b23989c053901552e16};
 : ${PKG_PHP_VERSION:=8.0.11};
 : ${PKG_PHP_URL:=https://www.php.net/distributions/php-${PKG_PHP_VERSION}.tar.xz};
 : ${PKG_PHP_CONFIG_CACHE_EXTRA:="
 ac_cv_c_bigendian_php=no
 ac_cv_write_stdout=yes"};
-: ${PKG_PHP_CONFIGURE_ARGS_EXTRA:="--with-layout=GNU --with-zlib --with-external-pcre --with-bz2=${PREFIX_NATIVE} --with-gmp --disable-opcache --disable-phar --enable-embed=shared"};
+: ${PKG_PHP_CONFIGURE_ARGS_EXTRA:="--with-layout=GNU --with-external-pcre --with-gmp --disable-opcache --disable-gd --disable-phar --enable-pdo=static --enable-dom=static --enable-embed=shared --enable-all=shared --without-enchant --without-imap --disable-intl --without-ldap --without-oci8 --without-adabas --disable-pcntl --without-pdo-dblib --without-pdo-firebird --without-pdo-mysql --without-pdo-oci --without-pdo-odbc --without-pdo-pgsql --without-pdo-sqlite --without-pgsql --without-pspell --without-libedit --without-sapdb --without-snmp --without-sodium --without-password-argon2 --without-tidy --without-ffi --without-mysqli --without-unixODBC --without-dbmaker --without-solid --with-pdo-odbc=no --without-ibm-db2 --without-empress --without-empress-bcs --without-iodbc --without-esoob --without-custom-odbc --without-pear"};
 : ${PKG_PHP_LIBTOOL:=rdlibtool};
 : ${PKG_POPT_SHA256SUM:=5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1};
 : ${PKG_POPT_VERSION:=1.18};
