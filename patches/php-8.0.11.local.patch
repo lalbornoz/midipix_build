@@ -1,0 +1,10 @@
+--- php-8.0.9/ext/opcache/jit/Makefile.frag.orig	2021-07-29 14:53:58.000000000 +0200
++++ php-8.0.9/ext/opcache/jit/Makefile.frag	2021-10-04 16:03:01.168550564 +0200
+@@ -1,6 +1,6 @@
+ 
+ $(builddir)/minilua: $(srcdir)/jit/dynasm/minilua.c
+-	$(CC) $(srcdir)/jit/dynasm/minilua.c -lm -o $@
++	$(HOST_CC) $(srcdir)/jit/dynasm/minilua.c -lm -o $@
+ 
+ $(builddir)/jit/zend_jit_x86.c: $(srcdir)/jit/zend_jit_x86.dasc $(srcdir)/jit/dynasm/*.lua $(builddir)/minilua
+ 	$(builddir)/minilua $(srcdir)/jit/dynasm/dynasm.lua  $(DASM_FLAGS) -o $@ $(srcdir)/jit/zend_jit_x86.dasc
