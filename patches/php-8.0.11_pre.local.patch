@@ -1,3 +1,17 @@
+--- php-8.0.11.orig/build/Makefile.global       2021-09-21 19:07:44.000000000 +0200
++++ php-8.0.11/build/Makefile.global    2021-10-05 16:14:49.660147381 +0200
+@@ -11,9 +11,9 @@
+        @echo "Don't forget to run 'make test'."
+        @echo
+
+-build-modules: $(PHP_MODULES) $(PHP_ZEND_EX)
++build-modules: $(PHP_MODULES) $(PHP_ZEND_EX) libphp.la
+
+-build-binaries: $(PHP_BINARIES)
++build-binaries: $(PHP_BINARIES) libphp.la
+
+ libphp.la: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
+        $(LIBTOOL) --mode=link $(CC) $(LIBPHP_CFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -rpath $(phptempdir) $(EXTRA_LDFLAGS) $(LDFLAGS) $(PHP_RPATHS) $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@
 diff -ru php-8.0.11.orig/build/libtool.m4 php-8.0.11/build/libtool.m4
 --- php-8.0.11.orig/build/libtool.m4	2021-09-21 19:07:44.000000000 +0200
 +++ php-8.0.11/build/libtool.m4	2021-10-04 18:05:38.598149611 +0200
