@@ -241,7 +241,7 @@ diff -ru php-8.0.11.orig/configure php-8.0.11/configure
  
  $ext_builddir/opcache.$suffix: \$(shared_objects_opcache) \$(OPCACHE_SHARED_DEPENDENCIES)
 -	\$(LIBTOOL) --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_opcache) \$(OPCACHE_SHARED_LIBADD)
-+	\$(LIBTOOL) --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_opcache) \$(OPCACHE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
++	\$(LIBTOOL) --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_opcache) \$(OPCACHE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so \-lpcre2-8
  
  EOF
  
