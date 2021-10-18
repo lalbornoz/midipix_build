@@ -58,13 +58,16 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_GENGETOPT_SHA256SUM:=b941aec9011864978dd7fdeb052b1943535824169d2aa2b0e7eae9ab807584ac};
 : ${PKG_GENGETOPT_VERSION:=2.23};
 : ${PKG_GENGETOPT_URL:=https://ftp.gnu.org/gnu/gengetopt/gengetopt-${PKG_GENGETOPT_VERSION}.tar.xz};
-: ${PKG_LUA_SHA256SUM:=f681aa518233bc407e23acf0f5887c884f17436f000d453b2491a9f11a52400c};
-: ${PKG_LUA_VERSION:=5.3.4};
+: ${PKG_LUA_SHA256SUM:=f8612276169e3bfcbcfb8f226195bfc6e466fe13042f1076cbde92b7ec96bbfb};
+: ${PKG_LUA_VERSION:=5.4.3};
 : ${PKG_LUA_URL:=https://www.lua.org/ftp/lua-${PKG_LUA_VERSION}.tar.gz};
+: ${PKG_LUA_CFLAGS_BUILD:="${DEFAULT_CFLAGS:+${DEFAULT_CFLAGS} }--sysroot=${PREFIX_NATIVE}"};
+: ${PKG_LUA_CFLAGS_BUILD_EXTRA:="-DLUA_COMPAT_5_3 -DLUA_USE_LINUX -DLUA_USE_READLINE"};
+: ${PKG_LUA_LDFLAGS_BUILD_EXTRA:="--sysroot=${PREFIX_NATIVE} -lreadline"};
 : ${PKG_LUA_IN_TREE:=1};
-: ${PKG_LUA_CONFIGURE_ARGS_EXTRA:="--with-readline --with-compat-module"};
-: ${PKG_LUA_FORCE_AUTORECONF:=1};
-: ${PKG_LUA_INSTALL_FILES_V2:="@liblua.so=lib/liblua.so.0"};
+: ${PKG_LUA_INSTALL_FILES_V2:="
+    +%[_files]/lua.pc=lib/pkgconfig/lua.pc
+    m0644=lib/pkgconfig/lua.pc"};
 : ${PKG_INDENT_SHA256SUM:=b745a5dfc68f86a483d7f96dc1cda7aafd1e78ecba3c7d8ad304709e91e1defb};
 : ${PKG_INDENT_VERSION:=2.2.12};
 : ${PKG_INDENT_URL:=https://ftp.gnu.org/gnu/indent/indent-${PKG_INDENT_VERSION}.tar.xz};
