@@ -422,11 +422,11 @@ ac_cv_write_stdout=yes"};
 : ${PKG_QRENCODE_URL:=https://fukuchi.org/works/qrencode/qrencode-${PKG_QRENCODE_VERSION}.tar.gz};
 : ${PKG_QRENCODE_CONFIGURE_ARGS_EXTRA:=--disable-sdltest};
 : ${PKG_RPM_DEPENDS:="curl file libarchive libgcrypt libz lua popt xz zstd"};
-: ${PKG_RPM_SHA256SUM:=ca5974e9da2939afb422598818ef187385061889ba766166c4a3829c5ef8d411};
-: ${PKG_RPM_VERSION:=4.16.0};
+: ${PKG_RPM_SHA256SUM:=2e0d220b24749b17810ed181ac1ed005a56bbb6bc8ac429c21f314068dc65e6a};
+: ${PKG_RPM_VERSION:=4.17.0};
 : ${PKG_RPM_URL:=http://ftp.rpm.org/releases/rpm-${PKG_RPM_VERSION%.*}.x/rpm-${PKG_RPM_VERSION}.tar.bz2};
-: ${PKG_RPM_CONFIGURE_ARGS:="-C --disable-nls --host=${DEFAULT_TARGET} --prefix=/usr --target=${DEFAULT_TARGET} --with-lua --enable-ndb --disable-bdb --enable-zstd --with-vendor=midipix --disable-openmp"};
-: ${PKG_RPM_ENV_VARS_EXTRA:="LIBGCRYPT_CONFIG=${PREFIX_NATIVE}/bin/libgcrypt-config"};
+: ${PKG_RPM_CONFIGURE_ARGS:="-C --disable-nls --host=${DEFAULT_TARGET} --prefix=/usr --target=${DEFAULT_TARGET} --disable-inhibit-plugin --enable-ndb --with-vendor=midipix --disable-openmp"};
+: ${PKG_RPM_ENV_VARS_EXTRA:="LIBGCRYPT_LIBS=-lgcrypt:LUA_LIBS=-llua:SQLITE_LIBS=-lsqlite3"};
 : ${PKG_RW_SHA256SUM:=50009730e36991dfe579716f91f4f616f5ba05ffb7bf69c03d41bf305ed93b6d};
 : ${PKG_RW_VERSION:=1.0};
 : ${PKG_RW_URL:=https://sortix.org/rw/release/rw-portable-${PKG_RW_VERSION}.tar.gz}

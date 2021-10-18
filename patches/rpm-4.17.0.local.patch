@@ -1,0 +1,12 @@
+diff -ru rpm-4.15.1.orig/lib/rpmchroot.c rpm-4.15.1/lib/rpmchroot.c
+--- rpm-4.15.1.orig/lib/rpmchroot.c	2019-11-13 10:19:29.309710594 +0100
++++ rpm-4.15.1/lib/rpmchroot.c	2020-01-04 18:36:56.323408444 +0100
+@@ -66,7 +66,7 @@
+ 	setup_map("/proc/self/gid_map", 0, gid);
+ 	unshared = 1;
+     }
+-    rpmlog(RPMLOG_DEBUG, "user ns: %d original user %d:%d current %d:%d\n",
++    rpmlog(RPMLOG_DEBUG, "user ns: %d original user %ld:%ld current %ld:%ld\n",
+ 	    unshared, uid, gid, getuid(), getgid());
+ }
+ #else
