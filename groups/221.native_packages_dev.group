@@ -58,6 +58,7 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_GENGETOPT_SHA256SUM:=b941aec9011864978dd7fdeb052b1943535824169d2aa2b0e7eae9ab807584ac};
 : ${PKG_GENGETOPT_VERSION:=2.23};
 : ${PKG_GENGETOPT_URL:=https://ftp.gnu.org/gnu/gengetopt/gengetopt-${PKG_GENGETOPT_VERSION}.tar.xz};
+: ${PKG_LUA_DEPENDS:="readline"};
 : ${PKG_LUA_SHA256SUM:=f8612276169e3bfcbcfb8f226195bfc6e466fe13042f1076cbde92b7ec96bbfb};
 : ${PKG_LUA_VERSION:=5.4.3};
 : ${PKG_LUA_URL:=https://www.lua.org/ftp/lua-${PKG_LUA_VERSION}.tar.gz};
