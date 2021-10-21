@@ -426,7 +426,7 @@ ac_cv_write_stdout=yes"};
 : ${PKG_RPM_VERSION:=4.17.0};
 : ${PKG_RPM_URL:=http://ftp.rpm.org/releases/rpm-${PKG_RPM_VERSION%.*}.x/rpm-${PKG_RPM_VERSION}.tar.bz2};
 : ${PKG_RPM_CONFIGURE_ARGS:="-C --disable-nls --host=${DEFAULT_TARGET} --prefix=/usr --target=${DEFAULT_TARGET} --disable-inhibit-plugin --enable-ndb --with-vendor=midipix --disable-openmp"};
-: ${PKG_RPM_ENV_VARS_EXTRA:="LIBGCRYPT_LIBS=-lgcrypt:LUA_LIBS=-llua:SQLITE_LIBS=-lsqlite3"};
+: ${PKG_RPM_ENV_VARS_EXTRA:="LIBGCRYPT_LIBS=-lgcrypt:LUA_LIBS=-llua:SQLITE_LIBS=-lsqlite3:LUA_CFLAGS=-I${PREFIX_NATIVE}/include/lua5.4"};
 : ${PKG_RW_SHA256SUM:=50009730e36991dfe579716f91f4f616f5ba05ffb7bf69c03d41bf305ed93b6d};
 : ${PKG_RW_VERSION:=1.0};
 : ${PKG_RW_URL:=https://sortix.org/rw/release/rw-portable-${PKG_RW_VERSION}.tar.gz}
