@@ -9,3 +9,13 @@
      echo "$0: pkg-config not found"
      exit 1
    fi
+--- libcaca/configure.ac.orig	2021-10-21 13:53:20.773431316 +0200
++++ libcaca/configure.ac	2021-10-21 14:01:22.878201384 +0200
+@@ -1,6 +1,6 @@
+ 
+ AC_INIT([libcaca],[0.99.beta20])
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ AC_CONFIG_AUX_DIR(.auto)
+ AC_CANONICAL_TARGET
+ AM_INIT_AUTOMAKE([foreign no-define tar-ustar silent-rules subdir-objects])
