@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bison chicken cparser cssc diffutils flex gdb gengetopt indent lua lunix m4 make mandoc nasm
-patch patchutils perl posix_cc python2 python3 ruby sbsigntools smallbasic tk")";
+patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk")";
 : ${PKG_BISON_DEPENDS:="readline"};
 : ${PKG_BISON_SHA256SUM:=67d68ce1e22192050525643fc0a7a22297576682bef6a5c51446903f5aeef3cf};
 : ${PKG_BISON_VERSION:=3.7.6};
@@ -154,13 +154,6 @@ make_cv_synchronous_posix_spawn=yes"};
 : ${PKG_SBSIGNTOOLS_URLS_GIT:=sbsigntools-master=https://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git@master};
 : ${PKG_SBSIGNTOOLS_SUBDIR:=sbsigntools-master};
 : ${PKG_SBSIGNTOOLS_IN_TREE:=1};
-: ${PKG_SMALLBASIC_URLS_GIT:="SmallBASIC=https://github.com/smallbasic/SmallBASIC@master"};
-: ${PKG_SMALLBASIC_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
-: ${PKG_SMALLBASIC_CONFIG_CACHE_EXTRA:="
-ac_cv_path_PCRECONFIG=%PREFIX%/bin/pcre-config
-ac_cv_prog_have_pcre=%PREFIX%/bin/pcre-config"};
-: ${PKG_SMALLBASIC_IN_TREE:=1};
-: ${PKG_SMALLBASIC_DISABLED:=1};
 : ${PKG_TK_DEPENDS:="libX11 tcl"};
 : ${PKG_TK_SHA256SUM:=131e4bae43a15dff0324c0479358bb42cfd7b8de0e1ca8d93c9207643c7144dd};
 : ${PKG_TK_VERSION:=8.7a1};
