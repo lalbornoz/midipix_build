@@ -1,7 +1,20 @@
-diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
---- webserver.orig/cherokee/Makefile.am	2020-09-24 20:16:03.353687922 +0200
-+++ webserver/cherokee/Makefile.am	2020-09-24 23:10:46.335528123 +0200
-@@ -122,6 +122,7 @@
+diff --git a/autogen.sh b/autogen.sh
+index 74180136..f079773c 100755
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -10,6 +10,7 @@
+ # Basedir
+ srcdir=`dirname $0`
+ test -z "$srcdir" && srcdir=.
++touch "$srcdir/ltmain.sh" || false
+ 
+ ORIGDIR=`pwd`
+ cd $srcdir
+diff --git a/cherokee/Makefile.am b/cherokee/Makefile.am
+index b4537216..1bc1e2e5 100644
+--- a/cherokee/Makefile.am
++++ b/cherokee/Makefile.am
+@@ -122,6 +122,7 @@ rule_directory.h
  
  libplugin_directory_la_LDFLAGS = $(module_ldflags)
  libplugin_directory_la_SOURCES = $(rule_directory)
@@ -9,7 +22,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_DIRECTORY
  static_rule_directory_src = $(rule_directory)
-@@ -139,6 +140,7 @@
+@@ -139,6 +140,7 @@ rule_extensions.h
  
  libplugin_extensions_la_LDFLAGS = $(module_ldflags)
  libplugin_extensions_la_SOURCES = $(rule_extensions)
@@ -17,7 +30,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_EXTENSIONS
  static_rule_extensions_src = $(rule_extensions)
-@@ -156,6 +158,7 @@
+@@ -156,6 +158,7 @@ rule_request.h
  
  libplugin_request_la_LDFLAGS = $(module_ldflags)
  libplugin_request_la_SOURCES = $(rule_request)
@@ -25,7 +38,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_REQUEST
  static_rule_request_src = $(rule_request)
-@@ -173,6 +176,7 @@
+@@ -173,6 +176,7 @@ rule_header.h
  
  libplugin_header_la_LDFLAGS = $(module_ldflags)
  libplugin_header_la_SOURCES = $(rule_header)
@@ -33,7 +46,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_HEADER
  static_rule_header_src = $(rule_header)
-@@ -190,6 +194,7 @@
+@@ -190,6 +194,7 @@ rule_exists.h
  
  libplugin_exists_la_LDFLAGS = $(module_ldflags)
  libplugin_exists_la_SOURCES = $(rule_exists)
@@ -41,7 +54,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_EXISTS
  static_rule_exists_src = $(rule_exists)
-@@ -207,6 +212,7 @@
+@@ -207,6 +212,7 @@ rule_url_arg.h
  
  libplugin_url_arg_la_LDFLAGS = $(module_ldflags)
  libplugin_url_arg_la_SOURCES = $(rule_url_arg)
@@ -49,7 +62,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_URL_ARG
  static_rule_url_arg_src = $(rule_url_arg)
-@@ -224,6 +230,7 @@
+@@ -224,6 +230,7 @@ rule_fullpath.h
  
  libplugin_fullpath_la_LDFLAGS = $(module_ldflags)
  libplugin_fullpath_la_SOURCES = $(rule_fullpath)
@@ -57,7 +70,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_FULL_PATH
  static_rule_fullpath_src = $(rule_fullpath)
-@@ -241,6 +248,7 @@
+@@ -241,6 +248,7 @@ rule_bind.h
  
  libplugin_bind_la_LDFLAGS = $(module_ldflags)
  libplugin_bind_la_SOURCES = $(rule_bind)
@@ -65,7 +78,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_BIND
  static_rule_bind_src = $(rule_bind)
-@@ -258,6 +266,7 @@
+@@ -258,6 +266,7 @@ rule_tls.h
  
  libplugin_tls_la_LDFLAGS = $(module_ldflags)
  libplugin_tls_la_SOURCES = $(rule_tls)
@@ -73,7 +86,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_TLS
  static_rule_tls_src = $(rule_tls)
-@@ -275,6 +284,7 @@
+@@ -275,6 +284,7 @@ rule_method.h
  
  libplugin_method_la_LDFLAGS = $(module_ldflags)
  libplugin_method_la_SOURCES = $(rule_method)
@@ -81,7 +94,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_METHOD
  static_rule_method_src = $(rule_method)
-@@ -292,6 +302,7 @@
+@@ -292,6 +302,7 @@ rule_from.h
  
  libplugin_from_la_LDFLAGS = $(module_ldflags)
  libplugin_from_la_SOURCES = $(rule_from)
@@ -89,7 +102,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_FROM
  static_rule_from_src = $(rule_from)
-@@ -310,7 +321,7 @@
+@@ -310,7 +321,7 @@ rule_geoip.h
  
  libplugin_geoip_la_LDFLAGS = $(module_ldflags)
  libplugin_geoip_la_SOURCES = $(rule_geoip)
@@ -98,7 +111,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_HEADER
  static_rule_geoip_src = $(rule_geoip)
-@@ -330,6 +341,7 @@
+@@ -330,6 +341,7 @@ rule_not.h
  
  libplugin_not_la_LDFLAGS = $(module_ldflags)
  libplugin_not_la_SOURCES = $(rule_not)
@@ -106,7 +119,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_NOT
  static_rule_not_src = $(rule_not)
-@@ -347,6 +359,7 @@
+@@ -347,6 +359,7 @@ rule_and.h
  
  libplugin_and_la_LDFLAGS = $(module_ldflags)
  libplugin_and_la_SOURCES = $(rule_and)
@@ -114,7 +127,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_AND
  static_rule_and_src = $(rule_and)
-@@ -364,6 +377,7 @@
+@@ -364,6 +377,7 @@ rule_or.h
  
  libplugin_or_la_LDFLAGS = $(module_ldflags)
  libplugin_or_la_SOURCES = $(rule_or)
@@ -122,7 +135,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_RULE_OR
  static_rule_or_src = $(rule_or)
-@@ -381,6 +395,7 @@
+@@ -381,6 +395,7 @@ vrule_or.h
  
  libplugin_v_or_la_LDFLAGS = $(module_ldflags)
  libplugin_v_or_la_SOURCES = $(vrule_or)
@@ -130,7 +143,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_VRULE_OR
  static_vrule_or_src = $(vrule_or)
-@@ -398,6 +413,7 @@
+@@ -398,6 +413,7 @@ vrule_wildcard.h
  
  libplugin_wildcard_la_LDFLAGS = $(module_ldflags)
  libplugin_wildcard_la_SOURCES = $(vrule_wildcard)
@@ -138,7 +151,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_VRULE_WILDCARD
  static_vrule_wildcard_src = $(vrule_wildcard)
-@@ -415,6 +431,7 @@
+@@ -415,6 +431,7 @@ vrule_rehost.h
  
  libplugin_rehost_la_LDFLAGS = $(module_ldflags)
  libplugin_rehost_la_SOURCES = $(vrule_rehost)
@@ -146,7 +159,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_VRULE_REHOST
  static_vrule_rehost_src = $(vrule_rehost)
-@@ -432,6 +449,7 @@
+@@ -432,6 +449,7 @@ vrule_target_ip.h
  
  libplugin_target_ip_la_LDFLAGS = $(module_ldflags)
  libplugin_target_ip_la_SOURCES = $(vrule_target_ip)
@@ -154,7 +167,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_VRULE_TARGET_IP
  static_vrule_target_ip_src = $(vrule_target_ip)
-@@ -454,6 +472,7 @@
+@@ -454,6 +472,7 @@ collector_rrd.h
  
  libplugin_rrd_la_LDFLAGS = $(module_ldflags)
  libplugin_rrd_la_SOURCES = $(collector_rrd)
@@ -162,7 +175,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_COLLECTOR_RRD
  static_collector_rrd_src = $(collector_rrd)
-@@ -471,6 +490,7 @@
+@@ -471,6 +490,7 @@ gen_evhost.h
  
  libplugin_evhost_la_LDFLAGS = $(module_ldflags)
  libplugin_evhost_la_SOURCES = $(gen_evhost)
@@ -170,7 +183,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_GEN_EVHOST
  static_gen_evhost_src = $(gen_evhost)
-@@ -488,6 +508,7 @@
+@@ -488,6 +508,7 @@ post_track.c
  
  libplugin_post_track_la_LDFLAGS = $(module_ldflags)
  libplugin_post_track_la_SOURCES = $(post_track)
@@ -178,7 +191,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_POST_TRACK
  static_post_track_src = $(post_track)
-@@ -505,6 +526,7 @@
+@@ -505,6 +526,7 @@ handler_post_report.c
  
  libplugin_post_report_la_LDFLAGS = $(module_ldflags)
  libplugin_post_report_la_SOURCES = $(handler_post_report)
@@ -186,7 +199,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_POST_REPORT
  static_handler_post_report_src = $(handler_post_report)
-@@ -523,6 +545,7 @@
+@@ -523,6 +545,7 @@ logo.inc
  
  libplugin_server_info_la_LDFLAGS = $(module_ldflags)
  libplugin_server_info_la_SOURCES = $(handler_server_info)
@@ -194,7 +207,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_SERVER_INFO
  static_handler_server_info_src = $(handler_server_info)
-@@ -540,6 +563,7 @@
+@@ -540,6 +563,7 @@ handler_file.h
  
  libplugin_file_la_LDFLAGS = $(module_ldflags)
  libplugin_file_la_SOURCES = $(handler_file)
@@ -202,7 +215,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_FILE
  static_handler_file_src = $(handler_file)
-@@ -557,6 +581,7 @@
+@@ -557,6 +581,7 @@ handler_dirlist.h
  
  libplugin_dirlist_la_LDFLAGS = $(module_ldflags)
  libplugin_dirlist_la_SOURCES = $(handler_dirlist)
@@ -210,7 +223,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_DIRLIST
  static_handler_dirlist_src = $(handler_dirlist)
-@@ -580,6 +605,7 @@
+@@ -580,6 +605,7 @@ logo.inc
  
  libplugin_render_rrd_la_LDFLAGS = $(module_ldflags)
  libplugin_render_rrd_la_SOURCES = $(handler_render_rrd) $(handler_file)
@@ -218,7 +231,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_RENDER_RRD
  static_handler_render_rrd_src = $(handler_render_rrd)
-@@ -602,6 +628,7 @@
+@@ -602,6 +628,7 @@ handler_cgi.h
  
  libplugin_cgi_la_LDFLAGS = $(module_ldflags)
  libplugin_cgi_la_SOURCES = $(handler_cgi) $(handler_file)
@@ -226,7 +239,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_CGI
  static_handler_cgi_src = $(handler_cgi)
-@@ -624,6 +651,7 @@
+@@ -624,6 +651,7 @@ handler_scgi.c
  
  libplugin_scgi_la_LDFLAGS = $(module_ldflags)
  libplugin_scgi_la_SOURCES = $(handler_scgi) $(handler_file)
@@ -234,7 +247,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_SCGI
  static_handler_scgi_src = $(handler_scgi)
-@@ -647,6 +675,7 @@
+@@ -647,6 +675,7 @@ handler_fcgi.c
  
  libplugin_fcgi_la_LDFLAGS = $(module_ldflags)
  libplugin_fcgi_la_SOURCES = $(handler_fcgi) $(handler_file)
@@ -242,7 +255,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_FCGI
  static_handler_fcgi_src = $(handler_fcgi)
-@@ -669,6 +698,7 @@
+@@ -669,6 +698,7 @@ handler_uwsgi.c
  
  libplugin_uwsgi_la_LDFLAGS = $(module_ldflags)
  libplugin_uwsgi_la_SOURCES = $(handler_uwsgi) $(handler_file)
@@ -250,7 +263,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_UWSGI
  static_handler_uwsgi_src = $(handler_uwsgi)
-@@ -686,6 +716,7 @@
+@@ -686,6 +716,7 @@ handler_redir.h
  
  libplugin_redir_la_LDFLAGS = $(module_ldflags)
  libplugin_redir_la_SOURCES = $(handler_redir)
@@ -258,7 +271,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_REDIR
  static_handler_redir_src = $(handler_redir)
-@@ -702,7 +733,8 @@
+@@ -702,7 +733,8 @@ handler_error_redir.c \
  handler_error_redir.h
  
  libplugin_error_redir_la_LDFLAGS = $(module_ldflags)
@@ -268,7 +281,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_ERROR_REDIR
  static_handler_error_redir_src = $(handler_error_redir)
-@@ -722,6 +754,7 @@
+@@ -722,6 +754,7 @@ handler_error_nn.h
  
  libplugin_error_nn_la_LDFLAGS = $(module_ldflags)
  libplugin_error_nn_la_SOURCES = $(handler_error_nn)
@@ -276,7 +289,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_ERROR_NN
  static_handler_error_nn_src = $(handler_error_nn)
-@@ -738,7 +771,8 @@
+@@ -738,7 +771,8 @@ handler_common.c \
  handler_common.h
  
  libplugin_common_la_LDFLAGS = $(module_ldflags)
@@ -286,7 +299,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_COMMON
  static_handler_common_src = $(handler_common)
-@@ -758,6 +792,7 @@
+@@ -758,6 +792,7 @@ proxy_hosts.c
  
  libplugin_proxy_la_LDFLAGS = $(module_ldflags)
  libplugin_proxy_la_SOURCES = $(handler_proxy)
@@ -294,7 +307,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_PROXY
  static_handler_proxy_src = $(handler_proxy)
-@@ -777,6 +812,7 @@
+@@ -777,6 +812,7 @@ handler_ssi.h
  
  libplugin_ssi_la_LDFLAGS = $(module_ldflags)
  libplugin_ssi_la_SOURCES = $(handler_ssi)
@@ -302,7 +315,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_SSI
  static_handler_ssi_src = $(handler_ssi)
-@@ -793,7 +829,8 @@
+@@ -793,7 +829,8 @@ handler_secdownload.c \
  handler_secdownload.h
  
  libplugin_secdownload_la_LDFLAGS = $(module_ldflags)
@@ -312,7 +325,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_SECDOWNLOAD
  static_handler_secdownload_src = $(handler_secdownload)
-@@ -811,6 +848,7 @@
+@@ -811,6 +848,7 @@ handler_empty_gif.h
  
  libplugin_empty_gif_la_LDFLAGS = $(module_ldflags)
  libplugin_empty_gif_la_SOURCES = $(handler_empty_gif)
@@ -320,7 +333,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_EMPTY_GIF
  static_handler_empty_gif_src = $(handler_empty_gif)
-@@ -828,6 +866,7 @@
+@@ -828,6 +866,7 @@ handler_drop.h
  
  libplugin_drop_la_LDFLAGS = $(module_ldflags)
  libplugin_drop_la_SOURCES = $(handler_drop)
@@ -328,7 +341,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_DROP
  static_handler_drop_src = $(handler_drop)
-@@ -845,8 +884,8 @@
+@@ -845,8 +884,8 @@ handler_streaming.c \
  handler_streaming.h
  
  libplugin_streaming_la_LDFLAGS = $(module_ldflags)
@@ -339,7 +352,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  libplugin_streaming_la_CFLAGS  = $(FFMPEG_CFLAGS)
  
  if HAVE_FFMPEG
-@@ -870,6 +909,7 @@
+@@ -870,6 +909,7 @@ handler_dbslayer.c
  libplugin_dbslayer_la_LDFLAGS = $(module_ldflags) $(MYSQL_LDFLAGS)
  libplugin_dbslayer_la_SOURCES = $(handler_dbslayer)
  libplugin_dbslayer_la_CFLAGS  = $(MYSQL_CFLAGS)
@@ -347,7 +360,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if HAVE_MYSQL
  if STATIC_HANDLER_DBSLAYER
-@@ -891,7 +931,7 @@
+@@ -891,7 +931,7 @@ handler_custom_error.h
  
  libplugin_custom_error_la_LDFLAGS = $(module_ldflags)
  libplugin_custom_error_la_SOURCES = $(handler_custom_error)
@@ -356,7 +369,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_CUSTOM_ERROR
  static_handler_custom_error_src = $(handler_custom_error)
-@@ -911,7 +951,7 @@
+@@ -911,7 +951,7 @@ admin_server.c
  
  libplugin_admin_la_LDFLAGS = $(module_ldflags)
  libplugin_admin_la_SOURCES = $(handler_admin)
@@ -365,7 +378,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_HANDLER_ADMIN
  static_handler_admin_src = $(handler_admin)
-@@ -929,6 +969,7 @@
+@@ -929,6 +969,7 @@ encoder_gzip.c
  
  libplugin_gzip_la_LDFLAGS = $(module_ldflags)
  libplugin_gzip_la_SOURCES = $(encoder_gzip)
@@ -373,7 +386,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_ENCODER_GZIP
  static_encoder_gzip_src = $(encoder_gzip)
-@@ -946,6 +987,7 @@
+@@ -946,6 +987,7 @@ encoder_deflate.c
  
  libplugin_deflate_la_LDFLAGS = $(module_ldflags)
  libplugin_deflate_la_SOURCES = $(encoder_deflate)
@@ -381,7 +394,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_ENCODER_DEFLATE
  static_encoder_deflate_src = $(encoder_deflate)
-@@ -963,6 +1005,7 @@
+@@ -963,6 +1005,7 @@ logger_custom.c
  
  libplugin_custom_la_LDFLAGS = $(module_ldflags)
  libplugin_custom_la_SOURCES = $(logger_custom)
@@ -389,7 +402,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_LOGGER_CUSTOM
  static_logger_custom_src = $(logger_custom)
-@@ -980,6 +1023,7 @@
+@@ -980,6 +1023,7 @@ logger_ncsa.c
  
  libplugin_ncsa_la_LDFLAGS = $(module_ldflags)
  libplugin_ncsa_la_SOURCES = $(logger_ncsa)
@@ -397,7 +410,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_LOGGER_NCSA
  static_logger_ncsa_src = $(logger_ncsa)
-@@ -996,7 +1040,8 @@
+@@ -996,7 +1040,8 @@ logger_combined.h \
  logger_combined.c
  
  libplugin_combined_la_LDFLAGS = $(module_ldflags)
@@ -407,7 +420,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_LOGGER_COMBINED
  static_logger_combined_src = $(logger_combined)
-@@ -1062,7 +1107,7 @@
+@@ -1062,7 +1107,7 @@ validator_htpasswd.h
  
  libplugin_htpasswd_la_LDFLAGS = $(module_ldflags)
  libplugin_htpasswd_la_SOURCES = $(validator_htpasswd)
@@ -416,7 +429,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  libplugin_htpasswd_la_CFLAGS  = $(CRYPT_CFLAGS)
  
  if STATIC_VALIDATOR_HTPASSWD
-@@ -1088,6 +1133,7 @@
+@@ -1088,6 +1133,7 @@ validator_plain.h
  
  libplugin_plain_la_LDFLAGS = $(module_ldflags)
  libplugin_plain_la_SOURCES = $(validator_plain)
@@ -424,7 +437,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_VALIDATOR_PLAIN
  static_validator_plain_src = $(validator_plain)
-@@ -1110,6 +1156,7 @@
+@@ -1110,6 +1156,7 @@ validator_htdigest.h
  
  libplugin_htdigest_la_LDFLAGS = $(module_ldflags)
  libplugin_htdigest_la_SOURCES = $(validator_htdigest)
@@ -432,7 +445,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_VALIDATOR_HTDIGEST
  static_validator_htdigest_src = $(validator_htdigest)
-@@ -1127,6 +1174,7 @@
+@@ -1127,6 +1174,7 @@ validator_authlist.h
  
  libplugin_authlist_la_LDFLAGS = $(module_ldflags)
  libplugin_authlist_la_SOURCES = $(validator_authlist)
@@ -440,7 +453,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_VALIDATOR_AUTHLIST
  static_validator_authlist_src = $(validator_authlist)
-@@ -1145,6 +1193,7 @@
+@@ -1145,6 +1193,7 @@ validator_mysql.h
  libplugin_mysql_la_LDFLAGS = $(module_ldflags) $(MYSQL_LDFLAGS)
  libplugin_mysql_la_SOURCES = $(validator_mysql)
  libplugin_mysql_la_CFLAGS  = $(MYSQL_CFLAGS)
@@ -448,7 +461,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if HAVE_MYSQL
  if STATIC_VALIDATOR_MYSQL
-@@ -1173,6 +1222,7 @@
+@@ -1173,6 +1222,7 @@ cryptor_libssl_dh_4096.c
  libplugin_libssl_la_LDFLAGS = $(module_ldflags) $(LIBSSL_LIBS)
  libplugin_libssl_la_SOURCES = $(cryptor_libssl)
  libplugin_libssl_la_CFLAGS  = $(LIBSSL_CFLAGS)
@@ -456,7 +469,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if USE_OPENSSL
  if STATIC_CRYPTOR_LIBSSL
-@@ -1194,6 +1244,7 @@
+@@ -1194,6 +1244,7 @@ balancer_round_robin.h
  
  libplugin_round_robin_la_LDFLAGS = $(module_ldflags)
  libplugin_round_robin_la_SOURCES = $(balancer_round_robin)
@@ -464,7 +477,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_BALANCER_ROUND_ROBIN
  static_balancer_round_robin_src = $(balancer_round_robin)
-@@ -1211,6 +1262,7 @@
+@@ -1211,6 +1262,7 @@ balancer_ip_hash.h
  
  libplugin_ip_hash_la_LDFLAGS = $(module_ldflags)
  libplugin_ip_hash_la_SOURCES = $(balancer_ip_hash)
@@ -472,7 +485,7 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_BALANCER_IP_HASH
  static_balancer_ip_hash_src = $(balancer_ip_hash)
-@@ -1228,6 +1280,7 @@
+@@ -1228,6 +1280,7 @@ balancer_failover.h
  
  libplugin_failover_la_LDFLAGS = $(module_ldflags)
  libplugin_failover_la_SOURCES = $(balancer_failover)
@@ -480,3 +493,55 @@ diff -ru webserver.orig/cherokee/Makefile.am webserver/cherokee/Makefile.am
  
  if STATIC_BALANCER_FAILOVER
  static_balancer_failover_src = $(balancer_failover)
+diff --git a/configure.ac b/configure.ac
+index e7e4482d..1821b725 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -20,7 +20,7 @@ USA
+ ])
+ 
+ dnl require autoconf 2.68
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ dnl Version
+ m4_define([cherokee_major_version], [1])
+diff --git a/m4/nls.m4 b/m4/nls.m4
+index f28756b5..fd4d62a6 100644
+--- a/m4/nls.m4
++++ b/m4/nls.m4
+@@ -17,7 +17,7 @@ dnl Authors:
+ dnl   Ulrich Drepper <drepper@cygnus.com>, 1995-2000.
+ dnl   Bruno Haible <haible@clisp.cons.org>, 2000-2003.
+ 
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_DEFUN([AM_NLS],
+ [
+diff --git a/m4/po.m4 b/m4/po.m4
+index 7228ac08..d195a15c 100644
+--- a/m4/po.m4
++++ b/m4/po.m4
+@@ -17,7 +17,7 @@ dnl Authors:
+ dnl   Ulrich Drepper <drepper@cygnus.com>, 1995-2000.
+ dnl   Bruno Haible <haible@clisp.cons.org>, 2000-2003.
+ 
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ dnl Checks for all prerequisites of the po subdirectory.
+ AC_DEFUN([AM_PO_SUBDIRS],
+diff --git a/m4/progtest.m4 b/m4/progtest.m4
+index c6708fe3..19699a73 100644
+--- a/m4/progtest.m4
++++ b/m4/progtest.m4
+@@ -16,7 +16,7 @@ dnl They are *not* in the public domain.
+ dnl Authors:
+ dnl   Ulrich Drepper <drepper@cygnus.com>, 1996.
+ 
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ # Search path for a program which passes the given test.
+ 
