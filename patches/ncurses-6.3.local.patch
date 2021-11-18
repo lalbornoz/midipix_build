@@ -1,0 +1,118 @@
+diff -ru ncurses-6.3.orig/configure ncurses-6.3/configure
+--- ncurses-6.3.orig/configure	2021-10-17 17:12:23.000000000 +0200
++++ ncurses-6.3/configure	2021-11-17 20:37:05.654345556 +0100
+@@ -5940,7 +5940,7 @@
+ 			LD_RPATH_OPT="-rpath "
+ 		fi
+ 		;;
+-	(linux*|gnu*|k*bsd*-gnu|freebsd*)
++	(linux*|gnu*|k*bsd*-gnu|freebsd*|midipix*)
+ 		LD_RPATH_OPT="-Wl,-rpath,"
+ 		;;
+ 	(openbsd[2-9].*|mirbsd*)
+@@ -6299,7 +6299,7 @@
+ 		fi
+ 		cf_cv_rm_so_locs=yes
+ 		;;
+-	(linux*|gnu*|k*bsd*-gnu)
++	(linux*|gnu*|k*bsd*-gnu|midipix*)
+ 		if test "$DFT_LWR_MODEL" = "shared" && test -n "$LD_RPATH_OPT" ; then
+ 			LOCAL_LDFLAGS="${LD_RPATH_OPT}\$(LOCAL_LIBDIR)"
+ 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+diff -ru ncurses-6.3.orig/misc/gen-pkgconfig.in ncurses-6.3/misc/gen-pkgconfig.in
+--- ncurses-6.3.orig/misc/gen-pkgconfig.in	2021-08-07 23:36:33.000000000 +0200
++++ ncurses-6.3/misc/gen-pkgconfig.in	2021-11-17 20:35:45.111876569 +0100
+@@ -71,17 +71,7 @@
+ MENU_LIBRARY="${MENU_NAME}@USE_ARG_SUFFIX@"
+ PANEL_LIBRARY="${PANEL_NAME}@USE_ARG_SUFFIX@"
+ 
+-CFLAGS="@PKG_CFLAGS@"
+-if [ "$includedir" != "/usr/include" ]; then
+-	includetop=`echo "$includedir" | sed -e 's,/include/[^/]*$,/include,'`
+-	[ "$includetop" = "/usr/include" ] && includetop="$includedir"
+-	CFLAGS="$CFLAGS -I\${includedir}"
+-	if [ "x$includetop" != "x$includedir" ]
+-	then
+-		CFLAGS="$CFLAGS -I${includetop}"
+-	fi
+-fi
+-
++CFLAGS='-I${includedir}'
+ lib_flags=
+ for opt in -L$libdir @EXTRA_PKG_LDFLAGS@ @LIBS@
+ do
+diff -ru ncurses-6.3.orig/misc/Makefile.in ncurses-6.3/misc/Makefile.in
+--- ncurses-6.3.orig/misc/Makefile.in	2021-07-03 21:07:50.000000000 +0200
++++ ncurses-6.3/misc/Makefile.in	2021-11-17 20:44:37.633501552 +0100
+@@ -103,17 +103,17 @@
+ @MAKE_DATABASE@install :: @MISC_INSTALL_DATA@
+ 
+ @MAKE_DATABASE@install.data ::	terminfo.tmp \
+-@MAKE_DATABASE@		$(DESTDIR)$(libdir) \
+-@MAKE_DATABASE@		$(DESTDIR)$(datadir) \
+-@MAKE_DATABASE@		$(DESTDIR)$(tabsetdir)
++@MAKE_DATABASE@		$(DESTDIR)/lib \
++@MAKE_DATABASE@		$(DESTDIR)/share \
++@MAKE_DATABASE@		$(DESTDIR)/share/tabset
+ @MAKE_DATABASE@	DESTDIR=${DESTDIR} \
+-@MAKE_DATABASE@	prefix=${prefix} \
+-@MAKE_DATABASE@	exec_prefix=${exec_prefix} \
+-@MAKE_DATABASE@	bindir=${bindir} \
++@MAKE_DATABASE@	prefix="" \
++@MAKE_DATABASE@	exec_prefix="" \
++@MAKE_DATABASE@	bindir=/bin \
+ @MAKE_DATABASE@	top_srcdir=${top_srcdir} \
+ @MAKE_DATABASE@	srcdir=${srcdir} \
+-@MAKE_DATABASE@	datadir=${datadir} \
+-@MAKE_DATABASE@	ticdir=${ticdir} \
++@MAKE_DATABASE@	datadir=share \
++@MAKE_DATABASE@	ticdir=share/terminfo \
+ @MAKE_DATABASE@	source=terminfo.tmp \
+ @MAKE_DATABASE@	cross_compiling=@cross_compiling@ \
+ @MAKE_DATABASE@	$(SHELL) ./run_tic.sh
+@@ -121,7 +121,7 @@
+ @MAKE_DATABASE@		$(SHELL) -c 'for i in * ; do \
+ @MAKE_DATABASE@			if test -f $$i ; then \
+ @MAKE_DATABASE@			echo installing $$i; \
+-@MAKE_DATABASE@			$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir)/$$i; \
++@MAKE_DATABASE@			$(INSTALL_DATA) $$i $(DESTDIR)/share/tabset/$$i; \
+ @MAKE_DATABASE@			fi; done' )
+ install.data ::
+ 	@echo "finished $@"
+@@ -147,13 +147,13 @@
+ # directory during this rule:
+ @MAKE_PC_FILES@install \
+ @MAKE_PC_FILES@install.libs :: pc-files
+-@MAKE_PC_FILES@	@$(SHELL) -c 'case "x$(DESTDIR)$(PKG_CONFIG_LIBDIR)" in \
++@MAKE_PC_FILES@	@$(SHELL) -c 'case "x$(PKG_CONFIG_LIBDIR)" in \
+ @MAKE_PC_FILES@		x/*) \
+-@MAKE_PC_FILES@			mkdir -p $(DESTDIR)$(PKG_CONFIG_LIBDIR); \
++@MAKE_PC_FILES@			mkdir -p $(PKG_CONFIG_LIBDIR); \
+ @MAKE_PC_FILES@			for name in $(PC_FILES); do \
+ @MAKE_PC_FILES@				test -f $$name || continue; \
+ @MAKE_PC_FILES@				echo installing $$name; \
+-@MAKE_PC_FILES@				$(INSTALL_DATA) $$name $(DESTDIR)$(PKG_CONFIG_LIBDIR)/$$name; \
++@MAKE_PC_FILES@				$(INSTALL_DATA) $$name $(PKG_CONFIG_LIBDIR)/$$name; \
+ @MAKE_PC_FILES@			done \
+ @MAKE_PC_FILES@			;; \
+ @MAKE_PC_FILES@		*) \
+diff -ru ncurses-6.3.orig/misc/run_tic.in ncurses-6.3/misc/run_tic.in
+--- ncurses-6.3.orig/misc/run_tic.in	2020-02-15 16:30:53.000000000 +0100
++++ ncurses-6.3/misc/run_tic.in	2021-11-17 20:34:54.197118847 +0100
+@@ -43,16 +43,8 @@
+ #	make install.data
+ 
+ : ${suffix:=@EXEEXT@}
+-: ${DESTDIR:=@DESTDIR@}
+-: ${prefix:=@prefix@}
+-: ${exec_prefix:=@exec_prefix@}
+-: ${bindir:=@bindir@}
+-: ${top_srcdir:=@top_srcdir@}
+-: ${srcdir:=@srcdir@}
+ : ${datarootdir:=@datarootdir@}
+-: ${datadir:=@datadir@}
+ : ${TIC_PATH:=@TIC@}
+-: ${ticdir:=@TERMINFO@}
+ : ${source:=@TERMINFO_SRC@}
+ : ${LN_S:="@LN_S@"}
+ : ${cross_compiling:=no}
