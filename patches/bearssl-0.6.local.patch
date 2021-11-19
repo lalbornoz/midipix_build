@@ -1,0 +1,46 @@
+diff -ru bearssl-0.6.orig/conf/Unix.mk bearssl-0.6/conf/Unix.mk
+--- bearssl-0.6.orig/conf/Unix.mk	2018-08-14 22:41:54.000000000 +0200
++++ bearssl-0.6/conf/Unix.mk	2021-11-19 11:37:24.523722697 +0100
+@@ -38,7 +38,7 @@
+ 
+ # C compiler and flags.
+ CC = cc
+-CFLAGS = -W -Wall -Os -fPIC
++CFLAGS ?= -W -Wall -Os -fPIC
+ CCOUT = -c -o 
+ 
+ # Static library building tool.
+@@ -47,12 +47,12 @@
+ AROUT =
+ 
+ # DLL building tool.
+-LDDLL = cc
++LDDLL = $(CC)
+ LDDLLFLAGS = -shared
+ LDDLLOUT = -o 
+ 
+ # Static linker.
+-LD = cc
++LD = $(CC)
+ LDFLAGS = 
+ LDOUT = -o 
+ 
+@@ -67,3 +67,18 @@
+ #DLL = no
+ #TOOLS = no
+ #TESTS = no
++
++INSTALL ?= install
++PREFIX ?= 
++BINDIR ?= $(PREFIX)/bin
++LIBDIR ?= $(PREFIX)/lib
++INCDIR ?= $(PREFIX)/include
++
++install: build/brssl build/libbearssl.so build/libbearssl.a
++		$(MKDIR) $(DESTDIR)$(BINDIR)
++		$(MKDIR) $(DESTDIR)$(LIBDIR)
++		$(MKDIR) $(DESTDIR)$(INCDIR)
++		$(INSTALL) -c -m 0755 build/brssl $(DESTDIR)$(BINDIR)/brssl
++		$(INSTALL) -c -m 0755 build/libbearssl.so $(DESTDIR)$(LIBDIR)/libbearssl.so
++		$(INSTALL) -c -m 0644 build/libbearssl.a $(DESTDIR)$(LIBDIR)/libbearssl.a
++		$(INSTALL) -c -m 0644 inc/*.h $(DESTDIR)$(INCDIR)/

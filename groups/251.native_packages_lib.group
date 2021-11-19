@@ -3,13 +3,18 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-glib jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
+bearssl glib jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
 libuv libvorbis libxml2 libxslt libz libzip lzo nettle onig sdl1 sdl1_net sdl1_mixer
 sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
+: ${PKG_BEARSSL_SHA256SUM:=6705bba1714961b41a728dfc5debbe348d2966c117649392f8c8139efc83ff14};
+: ${PKG_BEARSSL_VERSION:=0.6};
+: ${PKG_BEARSSL_URL:=https://bearssl.org/bearssl-${PKG_BEARSSL_VERSION}.tar.gz};
+: ${PKG_BEARSSL_IN_TREE:=1};
+: ${PKG_BEARSSL_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
 : ${PKG_GLIB_DEPENDS:="libffi libz pcre"};
 : ${PKG_GLIB_SHA256SUM:=d64abd16813501c956c4e123ae79f47f1b58de573df9fdd3b0795f1e2c1aa789};
 : ${PKG_GLIB_VERSION:=2.56.2};
