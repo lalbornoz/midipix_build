@@ -1,0 +1,12 @@
+diff -ru libiconv-1.16.orig/src/Makefile.in libiconv-1.16/src/Makefile.in
+--- libiconv-1.16.orig/src/Makefile.in	2019-01-27 23:07:13.000000000 +0100
++++ libiconv-1.16/src/Makefile.in	2021-11-21 02:07:16.220970962 +0100
+@@ -113,7 +113,7 @@
+ 	if [ ! -d $(DESTDIR)$(bindir) ] ; then $(mkinstalldirs) $(DESTDIR)$(bindir) ; fi
+ 	case "@host_os@" in \
+ 	  hpux*) $(CC) $(LDFLAGS) $(CFLAGS) $(iconv_LDFLAGS) iconv.@OBJEXT@ ../srclib/libicrt.a -L$(DESTDIR)$(libdir) -liconv @LIBINTL@ $(OBJECTS_RES_@WOE32@) `if test -n '$(DESTDIR)'; then echo " -Wl,+b -Wl,$(libdir)"; fi` -o iconv$(EXEEXT);; \
+-	  *) $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) $(iconv_LDFLAGS) iconv.@OBJEXT@ ../srclib/libicrt.a $(DESTDIR)$(libdir)/libiconv.la @LTLIBINTL@ $(OBJECTS_RES_@WOE32@) -o iconv$(EXEEXT);; \
++	  *) $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) $(iconv_LDFLAGS) iconv.@OBJEXT@ ../srclib/libicrt.a ../lib/.libs/libiconv.so.2 @LTLIBINTL@ $(OBJECTS_RES_@WOE32@) -o iconv$(EXEEXT);; \
+ 	esac
+ 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) iconv$(EXEEXT) $(DESTDIR)$(bindir)/iconv$(EXEEXT)
+ 

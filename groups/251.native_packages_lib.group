@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bearssl glib jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
-libevent libexif libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libidn2 libite
+libevent libexif libfastjson libfetch libffi libfirm libflac libgcrypt libgpg_error libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
@@ -118,6 +118,9 @@ gcry_cv_visibility_attribute=yes"};
 : ${PKG_LIBGPG_ERROR_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${PKG_LIBGPG_ERROR_VERSION}.tar.bz2};
 : ${PKG_LIBGPG_ERROR_FORCE_AUTORECONF:=1};
 : ${PKG_LIBGPG_ERROR_IN_TREE:=1};
+: ${PKG_LIBICONV_SHA256SUM:=e6a1b1b589654277ee790cce3734f07876ac4ccfaecbee8afa0b649cf529cc04};
+: ${PKG_LIBICONV_VERSION:=1.16};
+: ${PKG_LIBICONV_URL:=https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_LIBICONV_VERSION}.tar.gz};
 : ${PKG_LIBIDN2_DEPENDS:="libunistring"};
 : ${PKG_LIBIDN2_SHA256SUM:=76940cd4e778e8093579a9d195b25fff5e936e9dc6242068528b437a76764f91};
 : ${PKG_LIBIDN2_VERSION:=2.3.2};
