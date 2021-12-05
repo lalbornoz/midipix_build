@@ -171,15 +171,6 @@ diff -Nru tcsh-6.22.00.orig/configure tcsh-6.22.00/configure
    * )
      as_fn_error $? "Tcsh can't guess the configuration file name
  for \`${host}' systems.
-@@ -4284,7 +4289,7 @@
-   return 0;
- }
- _ACEOF
--for ac_lib in '' termlib tinfo termcap curses ncurses; do
-+for ac_lib in '' termlib tinfo termcap curses ncurses tinfo; do
-   if test -z "$ac_lib"; then
-     ac_res="none required"
-   else
 diff -Nru tcsh-6.22.00.orig/ed.inputl.c tcsh-6.22.00/ed.inputl.c
 --- tcsh-6.22.00.orig/ed.inputl.c	2019-11-28 17:00:05.000000000 +0100
 +++ tcsh-6.22.00/ed.inputl.c	2020-08-21 19:22:12.899460169 +0200
