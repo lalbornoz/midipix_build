@@ -1,8 +1,8 @@
-diff -ru libtasn1-4.16.0.orig/configure libtasn1-4.16.0/configure
---- libtasn1-4.16.0.orig/configure	2020-02-01 23:22:23.000000000 +0100
-+++ libtasn1-4.16.0/configure	2020-04-12 15:39:06.225324685 +0200
-@@ -12621,6 +12621,16 @@
-   dynamic_linker='NetBSD ld.elf_so'
+diff -ru libtasn1-4.17.0.orig/configure libtasn1-4.17.0/configure
+--- libtasn1-4.17.0.orig/configure	2021-05-13 19:09:31.000000000 +0200
++++ libtasn1-4.17.0/configure	2021-12-07 16:59:10.538374562 +0100
+@@ -12844,6 +12844,16 @@
+   dynamic_linker='GNU/Linux ld.so'
    ;;
  
 +midipix*)
@@ -15,18 +15,18 @@ diff -ru libtasn1-4.16.0.orig/configure libtasn1-4.16.0/configure
 +  shlibpath_var=LD_LIBRARY_PATH
 +  ;;
 +
- netbsd*)
-   version_type=sunos
+ netbsdelf*-gnu)
+   version_type=linux
    need_lib_prefix=no
-diff -ru libtasn1-4.16.0.orig/Makefile.in libtasn1-4.16.0/Makefile.in
---- libtasn1-4.16.0.orig/Makefile.in	2020-02-01 23:22:24.000000000 +0100
-+++ libtasn1-4.16.0/Makefile.in	2020-04-12 22:44:21.614252148 +0200
-@@ -557,7 +557,7 @@
+diff -ru libtasn1-4.17.0.orig/Makefile.in libtasn1-4.17.0/Makefile.in
+--- libtasn1-4.17.0.orig/Makefile.in	2021-05-13 19:09:33.000000000 +0200
++++ libtasn1-4.17.0/Makefile.in	2021-12-07 17:00:22.742376855 +0100
+@@ -564,7 +564,7 @@
  	windows/test-tree/test-tree.vcproj windows/libtasn14win.mk \
- 	CONTRIBUTING.md cfg.mk maint.mk AUTHORS NEWS ChangeLog THANKS \
- 	LICENSE cfg.mk maint.mk .clcopying README.md
+ 	cfg.mk maint.mk CONTRIBUTING.md README.md \
+ 	$(top_srcdir)/.version
 -SUBDIRS = lib src fuzz tests $(am__append_1)
 +SUBDIRS = lib src fuzz $(am__append_1)
- @CODE_COVERAGE_ENABLED_TRUE@GITIGNOREFILES = $(GITIGNOREFILES) $(CODE_COVERAGE_OUTPUT_FILE) $(CODE_COVERAGE_OUTPUT_DIRECTORY)
+ @CODE_COVERAGE_ENABLED_TRUE@GITIGNOREFILES := $(GITIGNOREFILES) $(CODE_COVERAGE_OUTPUT_FILE) $(CODE_COVERAGE_OUTPUT_DIRECTORY)
  @CODE_COVERAGE_ENABLED_TRUE@code_coverage_v_lcov_cap = $(code_coverage_v_lcov_cap_$(V))
  @CODE_COVERAGE_ENABLED_TRUE@code_coverage_v_lcov_cap_ = $(code_coverage_v_lcov_cap_$(AM_DEFAULT_VERBOSITY))
