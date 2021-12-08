@@ -12,8 +12,8 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk")";
 : ${PKG_BISON_CONFIG_CACHE_EXTRA:="
 ac_cv_path_M4=/bin/m4
 ac_cv_prog_gnu_m4_gnu=yes"};
-: ${PKG_CHICKEN_SHA256SUM:=819149c8ce7303a9b381d3fdc1d5765c5f9ac4dee6f627d1652f47966a8780fa};
-: ${PKG_CHICKEN_VERSION:=5.2.0};
+: ${PKG_CHICKEN_SHA256SUM:=c3ad99d8f9e17ed810912ef981ac3b0c2e2f46fb0ecc033b5c3b6dca1bdb0d76};
+: ${PKG_CHICKEN_VERSION:=5.3.0};
 : ${PKG_CHICKEN_URL:=https://code.call-cc.org/releases/${PKG_CHICKEN_VERSION}/chicken-${PKG_CHICKEN_VERSION}.tar.gz};
 : ${PKG_CHICKEN_IN_TREE:=1};
 : ${PKG_CHICKEN_MAKEFLAGS_BUILD:="PLATFORM=midipix ARCH=${ARCH} PREFIX=${PREFIX_NATIVE} TARGET_PREFIX=${PREFIX_NATIVE} C_COMPILER=${DEFAULT_TARGET}-gcc HOSTSYSTEM=${DEFAULT_TARGET}"};
