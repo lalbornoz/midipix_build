@@ -1,7 +1,7 @@
-diff -ru isync-1.4.2.orig/configure isync-1.4.2/configure
---- isync-1.4.2.orig/configure	2021-07-16 12:36:23.344522571 +0200
-+++ isync-1.4.2/configure	2021-07-16 12:39:20.448517026 +0200
-@@ -3978,51 +3978,6 @@
+diff -ru isync-1.4.4.orig/configure isync-1.4.4/configure
+--- isync-1.4.4.orig/configure	2021-12-03 11:56:24.000000000 +0100
++++ isync-1.4.4/configure	2021-12-08 13:22:51.039227486 +0100
+@@ -4534,52 +4534,6 @@
  fi
  
  
@@ -43,12 +43,13 @@ diff -ru isync-1.4.2.orig/configure isync-1.4.2/configure
 -};
 -
 -_ACEOF
--if ac_fn_c_try_compile "$LINENO"; then :
+-if ac_fn_c_try_compile "$LINENO"
+-then :
 -
--else
+-else $as_nop
 -  as_fn_error $? "compiler does not support required C11 features" "$LINENO" 5
 -fi
--rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 -
  CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
  
