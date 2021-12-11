@@ -115,8 +115,8 @@ gl_cv_ld_output_def=no"};
 : ${PKG_LDNS_CONFIGURE_ARGS_EXTRA:="--with-ssl=${PREFIX_NATIVE} --disable-dane-ta-usage --with-drill --with-examples"};
 : ${PKG_LDNS_MAKEFLAGS_BUILD:="-j1"};
 : ${PKG_LIGHTTPD_DEPENDS:="bzip2 pcre libressl libz"};
-: ${PKG_LIGHTTPD_SHA256SUM:=fb953db273daef08edb6e202556cae8a3d07eed6081c96bd9903db957d1084d5};
-: ${PKG_LIGHTTPD_VERSION:=1.4.59};
+: ${PKG_LIGHTTPD_SHA256SUM:=2aef7f0102ebf54a1241a1c3ea8976892f8684bfb21697c9fffb8de0e2d6eab9};
+: ${PKG_LIGHTTPD_VERSION:=1.4.63};
 : ${PKG_LIGHTTPD_URL:=https://download.lighttpd.net/lighttpd/releases-${PKG_LIGHTTPD_VERSION%.*}.x/lighttpd-${PKG_LIGHTTPD_VERSION}.tar.xz};
 : ${PKG_LIGHTTPD_CONFIG_CACHE_EXTRA:="
 ac_cv_path_PCRECONFIG=%PREFIX%/bin/pcre-config
