@@ -118,10 +118,8 @@ gl_cv_ld_output_def=no"};
 : ${PKG_LIGHTTPD_SHA256SUM:=2aef7f0102ebf54a1241a1c3ea8976892f8684bfb21697c9fffb8de0e2d6eab9};
 : ${PKG_LIGHTTPD_VERSION:=1.4.63};
 : ${PKG_LIGHTTPD_URL:=https://download.lighttpd.net/lighttpd/releases-${PKG_LIGHTTPD_VERSION%.*}.x/lighttpd-${PKG_LIGHTTPD_VERSION}.tar.xz};
-: ${PKG_LIGHTTPD_CONFIG_CACHE_EXTRA:="
-ac_cv_path_PCRECONFIG=%PREFIX%/bin/pcre-config
-ac_cv_prog_have_pcre=%PREFIX%/bin/pcre-config"};
-: ${PKG_LIGHTTPD_CONFIGURE_ARGS_EXTRA:="--with-pcre=${PREFIX_NATIVE} --with-bzip2 --with-openssl"};
+: ${PKG_LIGHTTPD_CONFIGURE_ARGS_EXTRA:="--with-pcre2=${PREFIX_NATIVE} --with-bzip2 --with-openssl --with-gnutls --with-libxml --with-gdbm --with-geoip"};
+: ${PKG_LIGHTTPD_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/lua5.4"};
 : ${PKG_LINKS_DEPENDS:="bzip2 libz libpng libX11 libressl tiff libjpeg_turbo xz zstd"};
 : ${PKG_LINKS_SHA256SUM:=285eed8591c7781ec26213df82786665aaa1b9286782e8a7a1a7e2a6e1630d63};
 : ${PKG_LINKS_VERSION:=2.21};
