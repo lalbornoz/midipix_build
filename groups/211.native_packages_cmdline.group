@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
 findutils gawk grep jush lzop mc mksh moon_buggy mpg123 mp3splt nano ninvaders
-openbsd_baseutils profanity pixz pv rc sbase screen sed sloccount tar tcsh
+openbsd_baseutils profanity pixz pv rc sbase screen sed sharutils sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BAS_DEPENDS:="ncurses"};
 : ${PKG_BAS_SHA256SUM:=ec45efa90aaa7f15647fe7898fa0789ba26dc8e10b7ecf8e049b1310f626b884};
@@ -211,6 +211,14 @@ rc_cv_sysv_sigcld=no"};
 : ${PKG_SED_SHA256SUM:=f79b0cfea71b37a8eeec8490db6c5f7ae7719c35587f21edb0617f370eeff633};
 : ${PKG_SED_VERSION:=4.8};
 : ${PKG_SED_URL:=https://ftp.gnu.org/gnu/sed/sed-${PKG_SED_VERSION}.tar.xz};
+: ${PKG_SHARUTILS_SHA256SUM:=6a22459983d32ef4cbc201b4f43aa5505bc1bd02f2be4bbb81ef56bcb059f8a5};
+: ${PKG_SHARUTILS_VERSION:=4.15};
+: ${PKG_SHARUTILS_URL:=https://ftp.gnu.org/gnu/sharutils/sharutils-${PKG_SHARUTILS_VERSION}.tar.xz};
+: ${PKG_SHARUTILS_CONFIG_CACHE_EXTRA:="
+libopts_cv_test_dev_zero=yes
+libopts_cv_run_realpath=yes
+libopts_cv_run_strftime=yes
+libopts_cv_run_fopen_binary=yes"};
 : ${PKG_SLOCCOUNT_SHA256SUM:=fa7fa2bbf2f627dd2d0fdb958bd8ec4527231254c120a8b4322405d8a4e3d12b};
 : ${PKG_SLOCCOUNT_VERSION:=2.26};
 : ${PKG_SLOCCOUNT_URL:=https://www.dwheeler.com/sloccount/sloccount-${PKG_SLOCCOUNT_VERSION}.tar.gz};
