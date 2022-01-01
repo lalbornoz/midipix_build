@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-apk_tools aria2 bind ca_certificates curl dropbear fetchmail git gnupg gpgme
+apk_tools aria2 bind ca_certificates curl dropbear elinks fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
 microsocks mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
 proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
@@ -42,6 +42,12 @@ proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
 : ${PKG_DROPBEAR_VERSION:=2020.81};
 : ${PKG_DROPBEAR_URL:=http://repository.timesys.com/buildsources/d/dropbear/dropbear-${PKG_DROPBEAR_VERSION}/dropbear-${PKG_DROPBEAR_VERSION}.tar.bz2};
 : ${PKG_DROPBEAR_CONFIGURE_ARGS_EXTRA:=--disable-loginfunc};
+: ${PKG_ELINKS_DEPENDS:="gnutls libgcrypt libevent expat xz bzip2 ncurses zstd libz"};
+: ${PKG_ELINKS_SHA256SUM:=bf2e9d752921f2d83a7dcac1062c37ae6c8d7c4057d8537abe1c42fbac946fb3};
+: ${PKG_ELINKS_VERSION:=0.15.0};
+: ${PKG_ELINKS_URL:=https://github.com/rkd77/elinks/releases/download/v${PKG_ELINKS_VERSION}/elinks-${PKG_ELINKS_VERSION}.tar.xz};
+: ${PKG_ELINKS_CONFIGURE_ARGS_EXTRA:="--enable-fastmem --enable-88-colors --enable-256-colors --enable-true-color --enable-leds --enable-gemini --enable-gopher --enable-html-highlight --enable-fsp --with-terminfo --with-libevent --with-lzma --with-gnutls --without-spidermonkey --without-x"};
+: ${PKG_ELINKS_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/ncurses"};
 : ${PKG_FETCHMAIL_DEPENDS:="libressl"};
 : ${PKG_FETCHMAIL_SHA256SUM:=c7500bed3b0bb85722f7cf2d980e74a879ac57b13cfd225d278179d671c0f5e8};
 : ${PKG_FETCHMAIL_VERSION:=6.4.0.beta4};

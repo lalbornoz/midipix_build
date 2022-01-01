@@ -1,0 +1,65 @@
+diff -ru elinks-0.15.0.orig/configure elinks-0.15.0/configure
+--- elinks-0.15.0.orig/configure	2021-12-24 20:57:15.000000000 +0100
++++ elinks-0.15.0/configure	2022-01-01 15:57:15.992481385 +0100
+@@ -13347,59 +13347,9 @@
+ 
+ 		chosen_ssl_library="GNUTLS"
+ 
+-		# Extract the first word of "libgcrypt-config", so it can be a program name with args.
+-set dummy libgcrypt-config; ac_word=$2
+-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+-printf %s "checking for $ac_word... " >&6; }
+-if test ${ac_cv_path_LIBGCRYPT_CONFIG+y}
+-then :
+-  printf %s "(cached) " >&6
+-else $as_nop
+-  case $LIBGCRYPT_CONFIG in
+-  [\\/]* | ?:[\\/]*)
+-  ac_cv_path_LIBGCRYPT_CONFIG="$LIBGCRYPT_CONFIG" # Let the user override the test with a path.
+-  ;;
+-  *)
+-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+-for as_dir in $PATH
+-do
+-  IFS=$as_save_IFS
+-  case $as_dir in #(((
+-    '') as_dir=./ ;;
+-    */) ;;
+-    *) as_dir=$as_dir/ ;;
+-  esac
+-    for ac_exec_ext in '' $ac_executable_extensions; do
+-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+-    ac_cv_path_LIBGCRYPT_CONFIG="$as_dir$ac_word$ac_exec_ext"
+-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+-    break 2
+-  fi
+-done
+-  done
+-IFS=$as_save_IFS
+-
+-  test -z "$ac_cv_path_LIBGCRYPT_CONFIG" && ac_cv_path_LIBGCRYPT_CONFIG="no"
+-  ;;
+-esac
+-fi
+-LIBGCRYPT_CONFIG=$ac_cv_path_LIBGCRYPT_CONFIG
+-if test -n "$LIBGCRYPT_CONFIG"; then
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $LIBGCRYPT_CONFIG" >&5
+-printf "%s\n" "$LIBGCRYPT_CONFIG" >&6; }
+-else
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-fi
+-
+-
+-		if test "$LIBGCRYPT_CONFIG" = no; then
+-			as_fn_error $? "libgcrypt-config not found." "$LINENO" 5
+-		fi
+-
+ 		# gcry_create_nounce is part of libgcrypt
+-		LIBGCRYPT_CFLAGS=`libgcrypt-config --cflags`
+-		LIBGCRYPT_LIBS=`libgcrypt-config --libs`
++		LIBGCRYPT_CFLAGS=`$PKG_CONFIG --cflags libgcrypt`
++		LIBGCRYPT_LIBS=`$PKG_CONFIG --libs libgcrypt`
+ 
+ 		LIBS="$LIBGCRYPT_LIBS $GNUTLS_LIBS $LIBS"
+ 
