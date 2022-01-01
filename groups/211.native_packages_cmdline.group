@@ -195,6 +195,7 @@ rc_cv_sys_dev_fd=yes
 rc_cv_sysv_sigcld=no"};
 : ${PKG_RC_CONFIGURE_ARGS_EXTRA:=--with-edit=readline};
 : ${PKG_RC_IN_TREE=1};
+: ${PKG_SASH_DEPENDS:="libz"};
 : ${PKG_SASH_SHA256SUM:=13c4f9a911526949096bf543c21a41149e6b037061193b15ba6b707eea7b6579};
 : ${PKG_SASH_VERSION:=3.8};
 : ${PKG_SASH_URL:=http://members.tip.net.au/%7Edbell/programs/sash-${PKG_SASH_VERSION}.tar.gz};
