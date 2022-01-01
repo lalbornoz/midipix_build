@@ -1,0 +1,193 @@
+diff -ru sash-3.8.orig/Makefile sash-3.8/Makefile
+--- sash-3.8.orig/Makefile	2014-03-05 09:56:53.000000000 +0000
++++ sash-3.8/Makefile	2022-01-01 12:37:34.553415100 +0000
+@@ -19,17 +19,17 @@
+ #
+ 
+ HAVE_GZIP		= 1
+-HAVE_LINUX_ATTR		= 1
+-HAVE_LINUX_CHROOT	= 1
+-HAVE_LINUX_LOSETUP	= 1
+-HAVE_LINUX_PIVOT	= 1
+-HAVE_LINUX_MOUNT	= 1
++HAVE_LINUX_ATTR		= 0
++HAVE_LINUX_CHROOT	= 0
++HAVE_LINUX_LOSETUP	= 0
++HAVE_LINUX_PIVOT	= 0
++HAVE_LINUX_MOUNT	= 0
+ HAVE_BSD_MOUNT		= 0
+ MOUNT_TYPE		= '"ext3"'
+ 
+ OPT = -O3
+ 
+-CFLAGS = $(OPT) -Wall -Wmissing-prototypes \
++CFLAGS ?= $(OPT) -Wall -Wmissing-prototypes \
+ 	-DHAVE_GZIP=$(HAVE_GZIP) \
+ 	-DHAVE_LINUX_ATTR=$(HAVE_LINUX_ATTR) \
+  	-DHAVE_LINUX_CHROOT=$(HAVE_LINUX_CHROOT) \
+@@ -39,11 +39,11 @@
+ 	-DHAVE_BSD_MOUNT=$(HAVE_BSD_MOUNT) \
+ 	-DMOUNT_TYPE=$(MOUNT_TYPE)
+ 
+-LDFLAGS = -static
++LDFLAGS ?= 
+ LIBS = -lz
+ 
+ 
+-DESTDIR =
++DESTDIR ?=
+ BINDIR = /bin
+ MANDIR = /usr/man
+ 
+@@ -54,7 +54,6 @@
+ 
+ sash:	$(OBJS)
+ 	$(CC) $(LDFLAGS) -o sash $(OBJS) $(LIBS)
+-	strip sash
+ 
+ clean:
+ 	rm -f $(OBJS) sash
+diff -ru sash-3.8.orig/cmd_ls.c sash-3.8/cmd_ls.c
+--- sash-3.8.orig/cmd_ls.c	2014-03-07 13:22:12.000000000 +0000
++++ sash-3.8/cmd_ls.c	2022-01-01 12:28:01.965328000 +0000
+@@ -418,7 +418,7 @@
+ 			if (pwd)
+ 				strcpy(userName, pwd->pw_name);
+ 			else
+-				sprintf(userName, "%d", statBuf->st_uid);
++				sprintf(userName, "%ld", statBuf->st_uid);
+ 
+ 			userId = statBuf->st_uid;
+ 			userIdKnown = TRUE;
+@@ -437,7 +437,7 @@
+ 			if (grp)
+ 				strcpy(groupName, grp->gr_name);
+ 			else
+-				sprintf(groupName, "%d", statBuf->st_gid);
++				sprintf(groupName, "%ld", statBuf->st_gid);
+ 
+ 			groupId = statBuf->st_gid;
+ 			groupIdKnown = TRUE;
+diff -ru sash-3.8.orig/cmds.c sash-3.8/cmds.c
+--- sash-3.8.orig/cmds.c	2014-03-07 13:06:29.000000000 +0000
++++ sash-3.8/cmds.c	2022-01-01 12:33:17.337692200 +0000
+@@ -10,7 +10,9 @@
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#ifdef HAVE_SYS_MOUNT
+ #include <sys/mount.h>
++#endif
+ #include <signal.h>
+ #include <pwd.h>
+ #include <grp.h>
+@@ -21,6 +23,7 @@
+ #include <linux/fs.h>
+ #endif
+ 
++#ifdef __linux__
+ /* Need to tell loop.h what the actual dev_t type is. */
+ #undef dev_t
+ #if defined(__alpha) || (defined(__sparc__) && defined(__arch64__))
+@@ -31,7 +34,7 @@
+ #include <linux/loop.h>
+ #undef dev_t
+ #define dev_t dev_t
+-
++#endif
+ 
+ int
+ do_echo(int argc, const char ** argv)
+@@ -657,6 +660,7 @@
+ }
+ 
+ 
++#ifndef __midipix__
+ int
+ do_mount(int argc, const char ** argv)
+ {
+@@ -846,7 +850,7 @@
+ #endif
+ 	return 0;
+ }
+-
++#endif
+ 
+ int
+ do_cmp(int argc, const char ** argv)
+diff -ru sash-3.8.orig/sash.c sash-3.8/sash.c
+--- sash-3.8.orig/sash.c	2014-03-07 13:18:42.000000000 +0000
++++ sash-3.8/sash.c	2022-01-01 12:32:11.834448200 +0000
+@@ -107,7 +107,7 @@
+ 		"srcName ... destName"
+ 	},
+ 
+-#ifdef	HAVE_LINUX_CHROOT
++#if	HAVE_LINUX_CHROOT
+ 	{
+ 		"-chroot",	do_chroot,	2,	2,
+ 		"change root file system",
+@@ -189,7 +189,7 @@
+ 		"[-sig] pid ..."
+ 	},
+ 
+-#ifdef	HAVE_LINUX_LOSETUP
++#if	HAVE_LINUX_LOSETUP
+ 	{
+ 		"-losetup",	do_losetup,	3,	3,
+ 		"Associate a loopback device with a file",
+@@ -235,6 +235,7 @@
+ 		"fileName ..."
+ 	},
+ 
++#ifndef __midipix__
+ 	{
+ 		"-mount",	do_mount,	3,	INFINITE_ARGS,
+ 		"Mount or remount a filesystem on a directory",
+@@ -246,6 +247,7 @@
+ 		"[-t type] devName dirName"
+ #endif
+ 	},
++#endif
+ 
+ 	{
+ 		"-mv",		do_mv,		3,	INFINITE_ARGS,
+@@ -253,7 +255,7 @@
+ 		"srcName ... destName"
+ 	},
+ 
+-#ifdef	HAVE_LINUX_PIVOT
++#if	HAVE_LINUX_PIVOT
+ 	{
+ 		"-pivot_root",	do_pivot_root,	3,	3,
+ 		"pivot the root file system",
+@@ -339,6 +341,7 @@
+ 		"[mask]"
+ 	},
+ 
++#ifndef __midipix__
+ 	{
+ #if	HAVE_BSD_MOUNT
+ 		"-umount",	do_umount,	2,	3,
+@@ -350,6 +353,7 @@
+ 		"fileName"
+ #endif
+ 	},
++#endif
+ 
+ 	{
+ 		"unalias",	do_unalias,	2,	2,
+diff -ru sash-3.8.orig/sash.h sash-3.8/sash.h
+--- sash-3.8.orig/sash.h	2014-03-07 13:46:49.000000000 +0000
++++ sash-3.8/sash.h	2022-01-01 12:31:48.133317800 +0000
+@@ -88,8 +88,10 @@
+ extern	int	do_dd(int argc, const char ** argv);
+ extern	int	do_tar(int argc, const char ** argv);
+ extern	int	do_ar(int argc, const char ** argv);
++#ifndef __midipix__
+ extern	int	do_mount(int argc, const char ** argv);
+ extern	int	do_umount(int argc, const char ** argv);
++#endif
+ extern	int	do_setenv(int argc, const char ** argv);
+ extern	int	do_pwd(int argc, const char ** argv);
+ extern	int	do_echo(int argc, const char ** argv);

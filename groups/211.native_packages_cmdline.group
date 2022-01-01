@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
 findutils gawk grep jush lzop mc mksh moon_buggy mpg123 mp3splt nano ninvaders
-openbsd_baseutils profanity pixz pv rc sbase screen sed sharutils sloccount tar tcsh
+openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BAS_DEPENDS:="ncurses"};
 : ${PKG_BAS_SHA256SUM:=ec45efa90aaa7f15647fe7898fa0789ba26dc8e10b7ecf8e049b1310f626b884};
@@ -195,6 +195,12 @@ rc_cv_sys_dev_fd=yes
 rc_cv_sysv_sigcld=no"};
 : ${PKG_RC_CONFIGURE_ARGS_EXTRA:=--with-edit=readline};
 : ${PKG_RC_IN_TREE=1};
+: ${PKG_SASH_SHA256SUM:=13c4f9a911526949096bf543c21a41149e6b037061193b15ba6b707eea7b6579};
+: ${PKG_SASH_VERSION:=3.8};
+: ${PKG_SASH_URL:=http://members.tip.net.au/%7Edbell/programs/sash-${PKG_SASH_VERSION}.tar.gz};
+: ${PKG_SASH_BUILD_DIR:=sash-${PKG_SASH_VERSION}};
+: ${PKG_SASH_CFLAGS_BUILD_EXTRA:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE} -DHAVE_GZIP=1 -DHAVE_LINUX_ATTR=0 -DHAVE_LINUX_CHROOT=0 -DHAVE_LINUX_LOSETUP=0 -DHAVE_LINUX_PIVOT=0"};
+: ${PKG_SASH_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib"};
 : ${PKG_SBASE_URLS_GIT:="sbase=http://git.suckless.org/sbase@master"};
 : ${PKG_SBASE_DESTDIR:=destdir/suckless};
 : ${PKG_SBASE_CFLAGS_BUILD_EXTRA:="-std=c99 --include=sys/sysmacros.h"};
