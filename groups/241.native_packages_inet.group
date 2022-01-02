@@ -120,7 +120,7 @@ gl_cv_ld_output_def=no"};
 : ${PKG_LDNS_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/ldns/ldns-${PKG_LDNS_VERSION}.tar.gz};
 : ${PKG_LDNS_CONFIGURE_ARGS_EXTRA:="--with-ssl=${PREFIX_NATIVE} --disable-dane-ta-usage --with-drill --with-examples"};
 : ${PKG_LDNS_MAKEFLAGS_BUILD:="-j1"};
-: ${PKG_LIGHTTPD_DEPENDS:="bzip2 pcre libressl libz"};
+: ${PKG_LIGHTTPD_DEPENDS:="bzip2 pcre libressl libz gnutls"};
 : ${PKG_LIGHTTPD_SHA256SUM:=2aef7f0102ebf54a1241a1c3ea8976892f8684bfb21697c9fffb8de0e2d6eab9};
 : ${PKG_LIGHTTPD_VERSION:=1.4.63};
 : ${PKG_LIGHTTPD_URL:=https://download.lighttpd.net/lighttpd/releases-${PKG_LIGHTTPD_VERSION%.*}.x/lighttpd-${PKG_LIGHTTPD_VERSION}.tar.xz};
