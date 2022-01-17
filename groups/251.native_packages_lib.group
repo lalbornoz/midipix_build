@@ -328,14 +328,19 @@ gl_cv_ld_output_def=no"};
 : ${PKG_NETTLE_INSTALL_FILES_V2:="m0755=lib/%<lib*.so>"};
 : ${PKG_NETTLE_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_READLINE_DEPENDS:="ncurses ncursestw ncursesw"};
-: ${PKG_READLINE_SHA256SUM:=f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02};
-: ${PKG_READLINE_VERSION:=8.1};
+: ${PKG_READLINE_SHA256SUM:=7589a2381a8419e68654a47623ce7dfcb756815c8fee726b98f90bf668af7bc6};
+: ${PKG_READLINE_VERSION:=8.1.2};
 : ${PKG_READLINE_URL:=https://ftp.gnu.org/gnu/readline/readline-${PKG_READLINE_VERSION}.tar.gz};
 : ${PKG_READLINE_CFLAGS_CONFIGURE:="${DEFAULT_CFLAGS:+${DEFAULT_CFLAGS} }-I${PREFIX_NATIVE}/include"};
 : ${PKG_READLINE_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
 : ${PKG_READLINE_CONFIGURE_ARGS:="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET} --with-curses"};
 : ${PKG_READLINE_LDFLAGS_CONFIGURE:="${DEFAULT_LDFLAGS:+${DEFAULT_LDFLAGS} }-L${PREFIX_NATIVE}/lib"};
 : ${PKG_READLINE_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
+: ${PKG_READLINE_CONFIG_CACHE_EXTRA:="
+bash_cv_func_strcoll_broken=yes
+bash_cv_func_ctype_nonascii=no
+bash_cv_must_reinstall_sighandlers=no
+bash_cv_func_sigsetjmp=yes"};
 : ${PKG_SDL1_DEPENDS:="w32api w32lib"};
 : ${PKG_SDL1_SHA256SUM:=d6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00};
 : ${PKG_SDL1_VERSION:=1.2.15};
