@@ -1,0 +1,17 @@
+diff -ru tdnf-2.1.1.orig/tools/cli/main.c tdnf-2.1.1/tools/cli/main.c
+--- tdnf-2.1.1.orig/tools/cli/main.c	2020-05-29 19:28:42.000000000 +0200
++++ tdnf-2.1.1/tools/cli/main.c	2022-01-23 20:19:28.417829507 +0100
+@@ -66,11 +66,13 @@
+     //granular permissions for non root users are pending.
+     //blocking all operations for non root and show the
+     //right error to avoid confusion.
++#ifndef __midipix__
+     if(geteuid() != 0)
+     {
+         dwError = ERROR_TDNF_PERM;
+         BAIL_ON_CLI_ERROR(dwError);
+     }
++#endif
+ 
+     _context.pFnCheck = TDNFCliInvokeCheck;
+     _context.pFnCheckLocal = TDNFCliInvokeCheckLocal;
