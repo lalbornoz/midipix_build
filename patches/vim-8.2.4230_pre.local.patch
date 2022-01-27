@@ -1,0 +1,40 @@
+diff -ru vim-8.2.4230.orig/src/auto/configure vim-8.2.4230/src/auto/configure
+--- vim-8.2.4230.orig/src/auto/configure	2022-01-27 16:04:22.000000000 +0100
++++ vim-8.2.4230/src/auto/configure	2022-01-27 17:15:07.217234738 +0100
+@@ -3772,7 +3772,7 @@
+ fi
+ 
+ ac_ext=c
+-ac_cpp='$CPP $CPPFLAGS'
++ac_cpp='$CPP $CFLAGS $CPPFLAGS'
+ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+@@ -8343,6 +8343,7 @@
+ 
+ # Standard set of common directories for X headers.
+ # Check X11 before X11Rn because it is often a symlink to the current release.
++if test -z "$ac_x_header_dirs"; then
+ ac_x_header_dirs='
+ /usr/X11/include
+ /usr/X11R7/include
+@@ -8381,6 +8382,7 @@
+ 
+ /usr/openwin/include
+ /usr/openwin/share/include'
++fi
+ 
+ if test "$ac_x_includes" = no; then
+   # Guess where to find include files, by looking for Xlib.h.
+diff -ru vim-8.2.4230.orig/src/Makefile vim-8.2.4230/src/Makefile
+--- vim-8.2.4230.orig/src/Makefile	2022-01-27 16:04:22.000000000 +0100
++++ vim-8.2.4230/src/Makefile	2022-01-27 17:13:59.313233849 +0100
+@@ -3093,7 +3093,7 @@
+ 	    $(PERLLIB)/ExtUtils/typemap if_perl.xs >> $@
+ 
+ auto/osdef.h: auto/config.h osdef.sh osdef1.h.in osdef2.h.in
+-	CC="$(CC) $(OSDEF_CFLAGS)" srcdir=$(srcdir) sh $(srcdir)/osdef.sh
++	CC="$(CC) $(OSDEF_CFLAGS) -I$(PKG_PREFIX)/include" srcdir=$(srcdir) sh $(srcdir)/osdef.sh
+ 
+ auto/os_haiku.rdef: os_haiku.rdef.in
+ 	@echo creating $@

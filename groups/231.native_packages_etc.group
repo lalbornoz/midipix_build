@@ -498,14 +498,21 @@ ac_cv_lib_rt_timer_create=no
 ac_cv_search_timer_create=no
 ac_cv_prog_NCURSESW6_CONFIG=%PREFIX%/bin/ncursesw6-config"};
 : ${PKG_VIM_DEPENDS:="ncursesw"};
-: ${PKG_VIM_SHA256SUM:=8de19b12cabde17b87f915a05e1855f6ff8404962947c5cf2204cf51f1ce5d67};
-: ${PKG_VIM_VERSION:=7.4.1952};
+: ${PKG_VIM_SHA256SUM:=96f3653cd4e3d1f8519146b394c8780a855c440f7342745da2c69b793746fa91};
+: ${PKG_VIM_VERSION:=8.2.4230};
 : ${PKG_VIM_URL:=https://github.com/vim/vim/archive/v${PKG_VIM_VERSION}.tar.gz};
-: ${PKG_VIM_CONFIGURE_ARGS_EXTRA:="--enable-gui=no --with-tlib=tinfow --without-x"};
+: ${PKG_VIM_CONFIGURE_ARGS_EXTRA:="--enable-gui=no --with-tlib=tinfow --without-x --disable-canberra --disable-libsodium --disable-motif-check --disable-sysmouse --disable-gpm"};
 : ${PKG_VIM_IN_TREE:=1};
 : ${PKG_VIM_INSTALL_FILES_V2:="@vim=bin/vi"};
 : ${PKG_VIM_MAKEFLAGS_INSTALL_EXTRA:=STRIP=/bin/true};
 : ${PKG_VIM_SUBDIR:=vim-${PKG_VIM_VERSION}};
+: ${PKG_VIM_CONFIG_CACHE_EXTRA:="
+vim_cv_tgetent=zero
+vim_cv_toupper_broken=no
+vim_cv_terminfo=yes
+vim_cv_getcwd_broken=no
+vim_cv_stat_ignores_slash=yes
+vim_cv_memmove_handles_overlap=yes"};
 : ${PKG_VORBIS_TOOLS_DEPENDS:="curl libflac libogg libvorbis"};
 : ${PKG_VORBIS_TOOLS_SHA256SUM:=a389395baa43f8e5a796c99daf62397e435a7e73531c9f44d9084055a05d22bc};
 : ${PKG_VORBIS_TOOLS_VERSION:=1.4.0};
