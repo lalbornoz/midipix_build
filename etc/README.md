@@ -2,12 +2,19 @@
 the project's IRC channel #midipix on Libera and ask for the address of the
 internal repositories required in order to build Midipix.
 
+> N.B. Due to the present state of the (largely) automated package upstream
+updates integration script and, despite frequent contributions, lack of
+human resources, it bears mentioning that the 3rd party packages built
+and distributed by this script are often not up to date with their resp.
+upstream and *may* hence be **insecure**. It is advised that this be taken
+into account when deploying and using Midipix distributions.
+
 [//]: # "{{{ Table of contents"
 # Table of Contents
 
-1. [What is midipix, and how is it different?](#1-what-is-midipix-and-how-is-it-different)  
+1. [What is Midipix, and how is it different?](#1-what-is-midipix-and-how-is-it-different)  
 2. [Building and deployment](#2-building-and-deployment)  
-	2.1. [Building, installing, and using a midipix distribution](#21-building-installing-and-using-a-midipix-distribution)  
+	2.1. [Building, installing, and using a Midipix distribution](#21-building-installing-and-using-a-midipix-distribution)  
 		2.1.1. [Build-time dependencies](#211-build-time-dependencies)  
 			2.1.1.1. [Alpine-specific notate bene](#2111-alpine-specific-notate-bene)  
 	2.2. [Deployment](#22-deployment)  
@@ -34,8 +41,8 @@ internal repositories required in order to build Midipix.
 
 [//]: "}}}"
 
-[//]: # "{{{ 1. What is midipix, and how is it different?"
-## 1. What is midipix, and how is it different?
+[//]: # "{{{ 1. What is Midipix, and how is it different?"
+## 1. What is Midipix, and how is it different?
 
 midipix is a development environment that lets you create programs
 for Windows using the standard C and POSIX APIs. No compromises made,
@@ -62,8 +69,8 @@ in other projects.
 [//]: # "{{{ 2. Building and deployment"
 ## 2. Building and deployment
 [//]: # "}}}"
-[//]: # "{{{ 2.1. Building, installing, and using a midipix distribution"
-### 2.1. Building, installing and using a midipix distribution
+[//]: # "{{{ 2.1. Building, installing, and using a Midipix distribution"
+### 2.1. Building, installing and using a Midipix distribution
 
 A Midipix distribution consists of the following:
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
