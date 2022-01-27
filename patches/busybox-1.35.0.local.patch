@@ -1,0 +1,19 @@
+diff -ru busybox-1.35.0.orig/scripts/trylink busybox-1.35.0/scripts/trylink
+--- busybox-1.35.0.orig/scripts/trylink	2021-12-26 17:53:21.000000000 +0100
++++ busybox-1.35.0/scripts/trylink	2022-01-27 20:34:41.760003416 +0100
+@@ -290,7 +290,6 @@
+ 	cat $EXE.out
+ 	exit 1
+     }
+-    $STRIP -s --remove-section=.note --remove-section=.comment $EXE -o "$sharedlib_dir/busybox"
+     echo "busybox linked against libbusybox: $sharedlib_dir/busybox"
+ fi
+ 
+@@ -327,7 +326,6 @@
+ 	    exit 1
+ 	}
+ 	rm -- "$sharedlib_dir/applet.c" $EXE.out
+-	$STRIP -s --remove-section=.note --remove-section=.comment $EXE
+ 	# Let user see that we do something - list the names of created binaries:
+ 	echo "$EXE"
+ 
