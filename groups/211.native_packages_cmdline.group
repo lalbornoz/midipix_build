@@ -29,7 +29,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BUSYBOX_DESTDIR:=destdir/busybox};
 : ${PKG_BUSYBOX_IN_TREE=1};
 : ${PKG_BUSYBOX_INSTALL_FILES_V2:="
-	+%[_builddir]/_install/bin/%<*>=bin/%[FNAME]"};
+	:%[_builddir]/_install/bin/%<*>=bin/%[FNAME]"};
 : ${PKG_BUSYBOX_PREFIX:=${PREFIX_NATIVE}/busybox};
 : ${PKG_CABEXTRACT_DEPENDS:="libmspack"};
 : ${PKG_CABEXTRACT_SHA256SUM:=afc253673c8ef316b4d5c29cc4aa8445844bee14afffbe092ee9469405851ca7};
