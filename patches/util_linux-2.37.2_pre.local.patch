@@ -1,0 +1,29 @@
+diff -ru util-linux-2.37.2.orig/configure util-linux-2.37.2/configure
+--- util-linux-2.37.2.orig/configure	2021-08-16 15:25:13.436570514 +0200
++++ util-linux-2.37.2/configure	2022-02-01 17:03:06.700588486 +0100
+@@ -35807,25 +35807,6 @@
+   fi
+ 
+ 
+-
+-  if test "x$build_more" != xno; then
+-
+-    case $enable_more:$linux_os in #(
+-    no:*)
+-      build_more=no ;;
+-    yes:yes)
+-      build_more=yes ;;
+-    yes:*)
+-      as_fn_error $? "more selected for non-linux system" "$LINENO" 5;;
+-    check:yes)
+-      build_more=yes ;;
+-    check:*)
+-      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: non-linux system; not building more" >&5
+-$as_echo "$as_me: WARNING: non-linux system; not building more" >&2;}
+-      build_more=no ;;
+-    esac
+-  fi
+-
+  if test "x$build_more" = xyes; then
+   BUILD_MORE_TRUE=
+   BUILD_MORE_FALSE='#'
