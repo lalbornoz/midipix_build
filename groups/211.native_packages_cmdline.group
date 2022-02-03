@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
-findutils gawk grep jush lzop mc mksh moon_buggy mpg123 mp3splt nano ninvaders
+findutils gawk grep jush lzop mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BAS_DEPENDS:="ncurses"};
@@ -123,6 +123,12 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 	+../mksh/mksh.1=share/man/man1/%[FNAME]"};
 : ${PKG_MKSH_IN_TREE:=1};
 : ${PKG_MKSH_SUBDIR:=mksh};
+: ${PKG_MOE_DEPENDS:="ncurses"};
+: ${PKG_MOE_SHA256SUM:=8a885f2be426f8e04ad39c96012bd860954085a23744f2451663168826d7a1e8};
+: ${PKG_MOE_VERSION:=1.12};
+: ${PKG_MOE_URL:=https://ftp.gnu.org/gnu/moe/moe-${PKG_MOE_VERSION}.tar.lz};
+: ${PKG_MOE_CONFIGURE_ARGS:="--prefix= CXX=${DEFAULT_TARGET}-g++"};
+: ${PKG_MOE_ENV_VARS_EXTRA:="CXXFLAGS=${DEFAULT_CXXFLAGS}"};
 : ${PKG_MOON_BUGGY_DEPENDS:="ncurses"};
 : ${PKG_MOON_BUGGY_SHA256SUM:=352dc16ccae4c66f1e87ab071e6a4ebeb94ff4e4f744ce1b12a769d02fe5d23f};
 : ${PKG_MOON_BUGGY_VERSION:=1.0.51};
