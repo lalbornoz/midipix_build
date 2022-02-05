@@ -1,0 +1,27 @@
+diff -ru procps-3.3.17.orig/proc/escape.c procps-3.3.17/proc/escape.c
+--- procps-3.3.17.orig/proc/escape.c	2022-02-05 23:39:09.677115085 +0100
++++ procps-3.3.17/proc/escape.c	2022-02-05 23:32:43.385130312 +0100
+@@ -21,6 +21,7 @@
+ #include <sys/types.h>
+ #include <string.h>
+ #include <limits.h>
++#include <langinfo.h>
+ #include "procps.h"
+ #include "escape.h"
+ #include "readproc.h"
+diff -ru procps-3.3.17.orig/w.c procps-3.3.17/w.c
+--- procps-3.3.17.orig/w.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/w.c	2022-02-05 23:38:48.901114668 +0100
+@@ -55,11 +55,7 @@
+ #include <termios.h>
+ #include <time.h>
+ #include <unistd.h>
+-#ifdef HAVE_UTMPX_H
+-#	include <utmpx.h>
+-#else
+-#	include <utmp.h>
+-#endif
++#include <utmp.h>
+ #include <arpa/inet.h>
+ 
+ static int ignoreuser = 0;	/* for '-u' */
