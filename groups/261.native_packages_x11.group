@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-atk cairo fontconfig freetype freetype_pre fribidi gdk glew gtk2 harfbuzz imlib2
+atk cairo fontconfig freetype freetype_pre gdk glew gtk2 harfbuzz imlib2
 libcaca libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau
 libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile
 libXmu libXpm libXt libXtst libXcursor mesa pango pixman rdesktop rxvt_unicode
@@ -35,9 +35,6 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_FREETYPE_PRE_URL:=http://download.savannah.gnu.org/releases/freetype/freetype-${PKG_FREETYPE_PRE_VERSION}.tar.xz};
 : ${PKG_FREETYPE_PRE_CONFIGURE_ARGS_EXTRA:="--with-bzip2=yes --with-harfbuzz=no --with-png=yes --with-zlib=yes"};
 : ${PKG_FREETYPE_PRE_RPM_DISABLE:=1};
-: ${PKG_FRIBIDI_SHA256SUM:=6a64f2a687f5c4f203a46fa659f43dd43d1f8b845df8d723107e8a7e6158e4ce};
-: ${PKG_FRIBIDI_VERSION:=1.0.5};
-: ${PKG_FRIBIDI_URL:=https://github.com/fribidi/fribidi/releases/download/v${PKG_FRIBIDI_VERSION}/fribidi-${PKG_FRIBIDI_VERSION}.tar.bz2};
 : ${PKG_GDK_DEPENDS:="libjpeg_turbo libpng shared_mime_info tiff"};
 : ${PKG_GDK_VERSION:=2.36.10};
 : ${PKG_GDK_SHA256SUM:=f8f6fa896b89475c73b6e9e8d2a2b062fc359c4b4ccb8e96470d6ab5da949ace};
