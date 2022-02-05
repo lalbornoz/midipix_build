@@ -1,0 +1,33 @@
+diff -ru busybox-1.35.0.orig/procps/kill.c busybox-1.35.0/procps/kill.c
+--- busybox-1.35.0.orig/procps/kill.c	2021-12-26 17:53:21.000000000 +0100
++++ busybox-1.35.0/procps/kill.c	2022-02-05 22:46:30.981801454 +0100
+@@ -189,6 +189,29 @@
+ 	if (is_killall5 && arg[0] == 'o')
+ 		goto do_it_now;
+ 
++#if ENABLE_KILL && defined(__midipix__)
++	extern intptr_t __sys_dbg_kill(int pfd);
++	extern intptr_t __sys_dbg_attach(pid_t pid);
++
++	/* -n PID (native PID) */
++	if (arg[0] == 'n') {
++		arg = *++argv;
++		if(!arg) {
++			bb_error_msg("-n requires a PID argument");
++			return EXIT_FAILURE;
++		}
++		pid = bb_strtoi(arg, NULL, 10);
++		if (errno) {
++			bb_error_msg("invalid number '%s'", arg);
++			return EXIT_FAILURE;
++		} else if ((__sys_dbg_kill(__sys_dbg_attach(pid))) != 0) {
++			bb_perror_msg("can't kill native pid %d", (int)pid);
++			return EXIT_FAILURE;
++		}
++		return EXIT_SUCCESS;
++	}
++#endif
++
+ 	/* "--" separates options from args. Testcase: "kill -- -123" */
+ 	if (!is_killall5 && arg[0] == '-' && arg[1] == '\0')
+ 		goto do_it_sooner;
