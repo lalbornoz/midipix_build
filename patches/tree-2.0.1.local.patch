@@ -1,0 +1,35 @@
+diff -ru tree-2.0.1.orig/Makefile tree-2.0.1/Makefile
+--- tree-2.0.1.orig/Makefile	2022-01-03 20:11:10.000000000 +0100
++++ tree-2.0.1/Makefile	2022-02-06 10:15:01.067413455 +0100
+@@ -23,17 +23,18 @@
+ 
+ VERSION=2.0.1
+ TREE_DEST=tree
+-DESTDIR=${PREFIX}/bin
++DESTDIR=${DESTDIR}
++BINDIR=${DESTDIR}${PREFIX}/bin
+ MAN=tree.1
+-MANDIR=${PREFIX}/man
++MANDIR=${DESTDIR}${PREFIX}/man
+ OBJS=tree.o list.o hash.o color.o file.o filter.o info.o unix.o xml.o json.o html.o strverscmp.o
+ 
+ # Uncomment options below for your particular OS:
+ 
+ # Linux defaults:
+ #CFLAGS=-ggdb -pedantic -Wall -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+-CFLAGS=-O3 -pedantic -Wall -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+-LDFLAGS=-s
++#CFLAGS=-O3 -pedantic -Wall -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
++#LDFLAGS=-s
+ 
+ # Uncomment for FreeBSD:
+ #CC=cc
+@@ -104,7 +105,7 @@
+ install: tree
+ 	$(INSTALL) -d $(DESTDIR)
+ 	$(INSTALL) -d $(MANDIR)/man1
+-	$(INSTALL) $(TREE_DEST) $(DESTDIR)/$(TREE_DEST); \
++	$(INSTALL) $(TREE_DEST) $(BINDIR)/$(TREE_DEST); \
+ 	$(INSTALL) -m 644 doc/$(MAN) $(MANDIR)/man1/$(MAN)
+ 
+ distclean:

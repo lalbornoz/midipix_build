@@ -251,13 +251,11 @@ libopts_cv_run_fopen_binary=yes"};
 : ${PKG_TOILET_DEPENDS:="libcaca"};
 : ${PKG_TOILET_URLS_GIT:=toilet=https://github.com/cacalabs/toilet@master};
 : ${PKG_TOILET_ENV_VARS_EXTRA:="CACA_CFLAGS=-I${PREFIX_NATIVE}/include:CACA_LIBS=-L${PREFIX_NATIVE} -lcaca"};
-: ${PKG_TREE_SHA256SUM:=715d5d4b434321ce74706d0dd067505bb60c5ea83b5f0b3655dae40aa6f9b7c2};
-: ${PKG_TREE_VERSION:=1.8.0};
+: ${PKG_TREE_SHA256SUM:=e3339c5a194cf6b4080f15ec59faa3679f02d5a793b2147912fbfcfb4cdf2239};
+: ${PKG_TREE_VERSION:=2.0.1};
 : ${PKG_TREE_URL:=http://mama.indstate.edu/users/ice/tree/src/tree-${PKG_TREE_VERSION}.tgz};
-: ${PKG_TREE_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_TREE_INSTALL_FILES_V2:="
-	../tree-${PKG_TREE_VERSION}/tree=bin/%[FNAME]
-	../tree-${PKG_TREE_VERSION}/doc/tree.1=share/man/man1/%[FNAME]"};
+: ${PKG_TREE_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
+: ${PKG_TREE_CFLAGS_BUILD_EXTRA:="-std=c99"};
 : ${PKG_TREE_IN_TREE:=1};
 : ${PKG_TERMINALLY_TETRIS_DEPENDS:="ncurses"};
 : ${PKG_TERMINALLY_TETRIS_URLS_GIT:=terminally_tetris=https://github.com/thecardkid/terminally-tetris.git@master};
