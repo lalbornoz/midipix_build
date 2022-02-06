@@ -1,0 +1,240 @@
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx_accurate.S mpg123-1.29.3/src/libmpg123/synth_stereo_avx_accurate.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx_accurate.S        2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_stereo_avx_accurate.S     2022-02-06 12:06:07.611318610 +0100
+@@ -284,3 +284,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_s_avx_accurate_asm,"r"
++	.global __imp_synth_1to1_s_avx_accurate_asm
++__imp_synth_1to1_s_avx_accurate_asm:
++	.quad	synth_1to1_s_avx_accurate_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx.S mpg123-1.29.3/src/libmpg123/synth_stereo_avx.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx.S 2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_stereo_avx.S      2022-02-06 12:07:07.334358395 +0100
+@@ -254,3 +254,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_s_avx_asm,"r"
++	.global __imp_synth_1to1_s_avx_asm
++__imp_synth_1to1_s_avx_asm:
++	.quad	synth_1to1_s_avx_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx_s32.S mpg123-1.29.3/src/libmpg123/synth_stereo_avx_s32.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx_s32.S     2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_stereo_avx_s32.S  2022-02-06 12:02:45.963314559 +0100
+@@ -290,3 +290,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_s32_s_avx_asm,"r"
++	.global __imp_synth_1to1_s32_s_avx_asm
++__imp_synth_1to1_s32_s_avx_asm:
++	.quad	synth_1to1_s32_s_avx_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_stereo_x86_64_accurate.S mpg123-1.29.3/src/libmpg123/synth_stereo_x86_64_accurate.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_stereo_x86_64_accurate.S     2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_stereo_x86_64_accurate.S  2022-02-06 11:59:29.707170585 +0100
+@@ -452,3 +452,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_s_x86_64_accurate_asm,"r"
++	.global __imp_synth_1to1_s_x86_64_accurate_asm
++__imp_synth_1to1_s_x86_64_accurate_asm:
++	.quad	synth_1to1_s_x86_64_accurate_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_stereo_x86_64_s32.S mpg123-1.29.3/src/libmpg123/synth_stereo_x86_64_s32.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_stereo_x86_64_s32.S  2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_stereo_x86_64_s32.S       2022-02-06 12:01:09.539312622 +0100
+@@ -471,3 +471,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_s32_s_x86_64_asm,"r"
++	.global __imp_synth_1to1_s32_s_x86_64_asm
++__imp_synth_1to1_s32_s_x86_64_asm:
++	.quad	synth_1to1_s32_s_x86_64_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_x86_64.S mpg123-1.29.3/src/libmpg123/synth_x86_64.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_x86_64.S     2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_x86_64.S  2022-02-06 11:58:07.943168942 +0100
+@@ -242,3 +242,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_x86_64_asm,"r"
++	.global __imp_synth_1to1_x86_64_asm
++__imp_synth_1to1_x86_64_asm:
++	.quad	synth_1to1_x86_64_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/dct64_avx_float.S mpg123-1.29.3/src/libmpg123/dct64_avx_float.S
+--- mpg123-1.29.3.orig/src/libmpg123/dct64_avx_float.S  2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/dct64_avx_float.S       2022-02-06 11:52:06.176565095 +0100
+@@ -292,3 +292,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$dct64_real_avx,"r"
++	.global __imp_dct64_real_avx
++__imp_dct64_real_avx:
++	.quad	dct64_real_avx
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_stereo_x86_64_float.S mpg123-1.29.3/src/libmpg123/synth_stereo_x86_64_float.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_stereo_x86_64_float.S        2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_stereo_x86_64_float.S     2022-02-06 11:50:36.312563290 +0100
+@@ -394,3 +394,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_real_s_x86_64_asm,"r"
++	.global __imp_synth_1to1_real_s_x86_64_asm
++__imp_synth_1to1_real_s_x86_64_asm:
++	.quad	synth_1to1_real_s_x86_64_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_x86_64_float.S mpg123-1.29.3/src/libmpg123/synth_x86_64_float.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_x86_64_float.S       2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_x86_64_float.S    2022-02-06 11:54:06.276567508 +0100
+@@ -257,3 +257,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_real_x86_64_asm,"r"
++	.global __imp_synth_1to1_real_x86_64_asm
++__imp_synth_1to1_real_x86_64_asm:
++	.quad	synth_1to1_real_x86_64_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/dct36_avx.S mpg123-1.29.3/src/libmpg123/dct36_avx.S
+--- mpg123-1.29.3.orig/src/libmpg123/dct36_avx.S	2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/dct36_avx.S	2022-02-06 11:38:40.677575897 +0100
+@@ -356,3 +356,11 @@
+ 	ret
+ 
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$dct36_avx,"r"
++	.global __imp_dct36_avx
++__imp_dct36_avx:
++	.quad	dct36_avx
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/dct36_x86_64.S mpg123-1.29.3/src/libmpg123/dct36_x86_64.S
+--- mpg123-1.29.3.orig/src/libmpg123/dct36_x86_64.S	2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/dct36_x86_64.S	2022-02-06 11:39:47.129577232 +0100
+@@ -392,3 +392,11 @@
+ 	ret
+ 
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$dct36_x86_64,"r"
++	.global __imp_dct36_x86_64
++__imp_dct36_x86_64:
++	.quad   dct36_x86_64
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/dct64_x86_64_float.S mpg123-1.29.3/src/libmpg123/dct64_x86_64_float.S
+--- mpg123-1.29.3.orig/src/libmpg123/dct64_x86_64_float.S	2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/dct64_x86_64_float.S	2022-02-06 11:41:43.217579564 +0100
+@@ -424,3 +424,11 @@
+ 	ret
+ 
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$dct64_real_x86_64,"r"
++	.global __imp_dct64_real_x86_64
++__imp_dct64_real_x86_64:
++	.quad   dct64_real_x86_64
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/dct64_x86_64.S mpg123-1.29.3/src/libmpg123/dct64_x86_64.S
+--- mpg123-1.29.3.orig/src/libmpg123/dct64_x86_64.S	2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/dct64_x86_64.S	2022-02-06 11:40:50.589578507 +0100
+@@ -462,3 +462,11 @@
+ 	ret
+ 
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$dct64_x86_64,"r"
++	.global __imp_dct64_x86_64
++__imp_dct64_x86_64:
++	.quad   dct64_x86_64
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx_float.S mpg123-1.29.3/src/libmpg123/synth_stereo_avx_float.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_stereo_avx_float.S	2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_stereo_avx_float.S	2022-02-06 11:47:18.576954543 +0100
+@@ -241,3 +241,11 @@
+ 	ret
+ 
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_real_s_avx_asm,"r"
++	.global __imp_synth_1to1_real_s_avx_asm
++__imp_synth_1to1_real_s_avx_asm:
++	.quad	synth_1to1_real_s_avx_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_x86_64_accurate.S mpg123-1.29.3/src/libmpg123/synth_x86_64_accurate.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_x86_64_accurate.S	2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_x86_64_accurate.S	2022-02-06 11:42:58.005581067 +0100
+@@ -299,3 +299,11 @@
+ 	ret
+ 
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_x86_64_accurate_asm,"r"
++	.global __imp_synth_1to1_x86_64_accurate_asm
++__imp_synth_1to1_x86_64_accurate_asm:
++	.quad	synth_1to1_x86_64_accurate_asm
++	.linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/synth_x86_64_s32.S mpg123-1.29.3/src/libmpg123/synth_x86_64_s32.S
+--- mpg123-1.29.3.orig/src/libmpg123/synth_x86_64_s32.S	2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/synth_x86_64_s32.S	2022-02-06 11:45:17.044952102 +0100
+@@ -310,3 +310,11 @@
+ 	ret
+ 
+ NONEXEC_STACK
++
++#ifdef __midipix__
++	.section .got$synth_1to1_s32_x86_64_asm,"r"
++	.global __imp_synth_1to1_s32_x86_64_asm
++__imp_synth_1to1_s32_x86_64_asm:
++	.quad	synth_1to1_s32_x86_64_asm
++	.linkonce discard
++#endif

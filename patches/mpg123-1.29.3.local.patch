@@ -1,0 +1,98 @@
+diff -ru mpg123-1.29.3.orig/src/libmpg123/getcpuflags_x86_64.S mpg123-1.29.3/src/libmpg123/getcpuflags_x86_64.S
+--- mpg123-1.29.3.orig/src/libmpg123/getcpuflags_x86_64.S       2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/getcpuflags_x86_64.S    2022-02-06 11:23:51.183460189 +0100
+@@ -55,3 +55,11 @@
+        ret
+
+ NONEXEC_STACK
++
++#ifdef __midipix__
++        .section .got$getcpuflags,"r"
++        .global __imp_getcpuflags
++__imp_getcpuflags:
++        .quad   getcpuflags
++        .linkonce discard
++#endif
+diff -ru mpg123-1.29.3.orig/src/libmpg123/mangle.h mpg123-1.29.3/src/libmpg123/mangle.h
+--- mpg123-1.29.3.orig/src/libmpg123/mangle.h   2021-12-10 08:00:58.000000000 +0100
++++ mpg123-1.29.3/src/libmpg123/mangle.h        2022-02-06 11:22:16.299458283 +0100
+@@ -172,7 +172,7 @@
+ #define NONEXEC_STACK
+ #endif
+
+-#if (defined(__x86_64__) || defined(_M_X64)) && (defined(_WIN64) || defined (__CYGWIN__))
++#if (defined(__x86_64__) || defined(_M_X64)) && (defined(_WIN64) || defined (__CYGWIN__) || defined(__midipix__))
+ #define IS_MSABI 1 /* Not using SYSV */
+ #endif
+
+diff -ru mpg123-1.25.10.orig/src/intsym.h mpg123-1.25.10/src/intsym.h
+--- mpg123-1.25.10.orig/src/intsym.h	2018-02-27 11:26:38.000000000 +0100
++++ mpg123-1.25.10/src/intsym.h	2018-11-04 01:04:36.017552210 +0100
+@@ -3,6 +3,7 @@
+ /* Mapping of internal mpg123 symbols to something that is less likely to
+    conflict in case of static linking. */
+ #include "config.h"
++#ifndef __midipix__
+ #define COS9 INT123_COS9
+ #define tfcos36 INT123_tfcos36
+ #define pnts INT123_pnts
+@@ -358,3 +359,4 @@
+ #define strerror INT123_strerror
+ #endif
+ #endif
++#endif
+diff -ru mpg123-1.25.10.orig/src/libout123/modules/win32.c mpg123-1.25.10/src/libout123/modules/win32.c
+--- mpg123-1.25.10.orig/src/libout123/modules/win32.c	2018-02-27 11:26:38.000000000 +0100
++++ mpg123-1.25.10/src/libout123/modules/win32.c	2018-11-04 12:29:01.346944126 +0100
+@@ -11,8 +11,51 @@
+ 
+ #include "out123_int.h"
+ #include <windows.h>
++#include <mmsystem.h>
+ #include "debug.h"
+ 
++/* temporary stuffs :D */
++
++  typedef struct tagWAVEOUTCAPSA {
++    WORD wMid;
++    WORD wPid;
++    UINT vDriverVersion;
++    CHAR szPname[32];
++    DWORD dwFormats;
++    WORD wChannels;
++    WORD wReserved1;
++    DWORD dwSupport;
++  } WAVEOUTCAPSA,*PWAVEOUTCAPSA,*NPWAVEOUTCAPSA,*LPWAVEOUTCAPSA;
++
++#define waveOutGetDevCaps waveOutGetDevCapsW
++
++#define WAVE_MAPPER ((UINT)-1)
++
++#define WAVE_FORMAT_PCM 1
++#define WAVE_FORMAT_1M08 0x00000001
++#define WAVE_FORMAT_1M16 0x00000004
++#define WAVE_FORMAT_2M08 0x00000010
++#define WAVE_FORMAT_2S08 0x00000020
++#define WAVE_FORMAT_2M16 0x00000040
++#define WAVE_FORMAT_2S16 0x00000080
++#define WAVE_FORMAT_4M08 0x00000100
++#define WAVE_FORMAT_4S08 0x00000200
++#define WAVE_FORMAT_4M16 0x00000400
++#define WAVE_FORMAT_4S16 0x00000800
++
++#define INFINITE 0xffffffff
++
++#define WAVERR_BASE 32
++#define WAVERR_BADFORMAT (WAVERR_BASE + 0)
++
++#define MMSYSERR_BASE 0
++#define MMSYSERR_NOERROR 0
++#define MMSYSERR_ALLOCATED (MMSYSERR_BASE + 4)
++#define MMSYSERR_NODRIVER (MMSYSERR_BASE + 6)
++#define MMSYSERR_NOMEM (MMSYSERR_BASE + 7)
++/* hello there! */
++
++
+ /*
+     Buffer size and number of buffers in the playback ring
+     NOTE: This particular num/size combination performs best under heavy
