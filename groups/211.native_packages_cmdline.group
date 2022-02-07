@@ -51,6 +51,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_COREUTILS_SHA256SUM:=ce30acdf4a41bc5bb30dd955e9eaa75fa216b4e3deb08889ed32433c7b3b97ce};
 : ${PKG_COREUTILS_VERSION:=9.0};
 : ${PKG_COREUTILS_URL:=https://ftp.gnu.org/gnu/coreutils/coreutils-${PKG_COREUTILS_VERSION}.tar.xz};
+: ${PKG_COREUTILS_CONFIGURE_ARGS_EXTRA:="--enable-no-install-program=kill"}
 : ${PKG_CPIO_SHA256SUM:=eab5bdc5ae1df285c59f2a4f140a98fc33678a0bf61bdba67d9436ae26b46f6d};
 : ${PKG_CPIO_VERSION:=2.13};
 : ${PKG_CPIO_URL:=https://ftp.gnu.org/gnu/cpio/cpio-${PKG_CPIO_VERSION}.tar.bz2};
