@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bison chicken cparser cssc diffutils flex gdb gengetopt indent lua lunix m4 make mandoc nasm
+bison chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
 patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk")";
 : ${PKG_BISON_DEPENDS:="readline"};
 : ${PKG_BISON_SHA256SUM:=9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2};
@@ -58,6 +58,12 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_GENGETOPT_SHA256SUM:=b941aec9011864978dd7fdeb052b1943535824169d2aa2b0e7eae9ab807584ac};
 : ${PKG_GENGETOPT_VERSION:=2.23};
 : ${PKG_GENGETOPT_URL:=https://ftp.gnu.org/gnu/gengetopt/gengetopt-${PKG_GENGETOPT_VERSION}.tar.xz};
+: ${PKG_GNUCOBOL_DEPENDS:="ncursesw"}
+: ${PKG_GNUCOBOL_SHA256SUM:=597005d71fd7d65b90cbe42bbfecd5a9ec0445388639404662e70d53ddf22574};
+: ${PKG_GNUCOBOL_VERSION:=3.1.2};
+: ${PKG_GNUCOBOL_URL:=https://ftp.gnu.org/gnu/gnucobol/gnucobol-${PKG_GNUCOBOL_VERSION}.tar.xz};
+: ${PKG_GNUCOBOL_CONFIGURE_ARGS_EXTRA:="--without-db --without-json --with-math=gmp"};
+: ${PKG_GNUCOBOL_LDFLAGS_CONFIGURE_EXTRA:="-ltinfow"};
 : ${PKG_LUA_DEPENDS:="readline"};
 : ${PKG_LUA_SHA256SUM:=f8612276169e3bfcbcfb8f226195bfc6e466fe13042f1076cbde92b7ec96bbfb};
 : ${PKG_LUA_VERSION:=5.4.3};

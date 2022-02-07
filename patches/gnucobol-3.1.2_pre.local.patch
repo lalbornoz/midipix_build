@@ -1,0 +1,173 @@
+diff -ru gnucobol-3.1.2.orig/configure gnucobol-3.1.2/configure
+--- gnucobol-3.1.2.orig/configure	2020-12-23 13:04:58.000000000 +0100
++++ gnucobol-3.1.2/configure	2022-02-07 11:04:34.765517654 +0100
+@@ -18217,165 +18217,10 @@
+ fi
+ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ 
+-# Checks for size of long
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if size of long int = size of long long" >&5
+-$as_echo_n "checking if size of long int = size of long long... " >&6; }
+-if test "$cross_compiling" = yes; then :
+-  if test "$COB_LI_IS_LL" = "0"; then
+-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: specified \"no\" on configure line" >&5
+-$as_echo "specified \"no\" on configure line" >&6; }
+-	 else
+-		if test "$COB_LI_IS_LL" = "1"; then
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: specified \"yes\" on configure line" >&5
+-$as_echo "specified \"yes\" on configure line" >&6; }
+-		else
+-			COB_LI_IS_LL=1
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: assumed - cross-compilation" >&5
+-$as_echo "assumed - cross-compilation" >&6; }
+-		fi
+-	 fi
+-	 $as_echo "#define COB_LI_IS_LL \$COB_LI_IS_LL" >>confdefs.h
+-
+-	 { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot run test program while cross-compiling" >&5
+-$as_echo "$as_me: WARNING: cannot run test program while cross-compiling" >&2;}
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main ()
+-{
+-
+-	if (sizeof(long int) == sizeof(long long))
+-		return 0;
+-	return 1;
+-
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
+-  $as_echo "#define COB_LI_IS_LL 1" >>confdefs.h
+- { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-$as_echo "yes" >&6; }
+-else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-$as_echo "no" >&6; }
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if long is 32 bits" >&5
+-$as_echo_n "checking if long is 32 bits... " >&6; }
+-if test "$cross_compiling" = yes; then :
+-  if test "$COB_32_BIT_LONG" = "0"; then
+-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: specified \"no\" on configure line" >&5
+-$as_echo "specified \"no\" on configure line" >&6; }
+-	 else
+-		if test "$COB_32_BIT_LONG" = "1"; then
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: specified \"yes\" on configure line" >&5
+-$as_echo "specified \"yes\" on configure line" >&6; }
+-		else
+-			COB_32_BIT_LONG=1
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: assumed - cross-compilation" >&5
+-$as_echo "assumed - cross-compilation" >&6; }
+-		fi
+-	 fi
+-	 $as_echo "#define COB_32_BIT_LONG \$COB_32_BIT_LONG" >>confdefs.h
+-
+-	 { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot run test program while cross-compiling" >&5
+-$as_echo "$as_me: WARNING: cannot run test program while cross-compiling" >&2;}
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main ()
+-{
+-
+-	if (sizeof (long) == 4)
+-		return 0;
+-	return 1;
+-
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
+-  $as_echo "#define COB_32_BIT_LONG 1" >>confdefs.h
+- { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-$as_echo "yes" >&6; }
+-else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-$as_echo "no" >&6; }
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-
+-
+-if test "cross_compiling" != "yes"; then
+-	COB_HAS_64_BIT_POINTER="no"
+-fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if pointer is longer than 32 bits" >&5
+-$as_echo_n "checking if pointer is longer than 32 bits... " >&6; }
+-if test "$cross_compiling" = yes; then :
+-  if test "$COB_HAS_64_BIT_POINTER" = "0"; then
+-		COB_HAS_64_BIT_POINTER="no"
+-		$as_echo "#define COB_64_BIT_POINTER 0" >>confdefs.h
+-
+-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: specified \"no\" on configure line" >&5
+-$as_echo "specified \"no\" on configure line" >&6; }
+-	 else
+-		if test "$COB_HAS_64_BIT_POINTER" = "1"; then
+-			COB_HAS_64_BIT_POINTER="yes"
+-			$as_echo "#define COB_64_BIT_POINTER 1" >>confdefs.h
+-
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: specified \"yes\" on configure line" >&5
+-$as_echo "specified \"yes\" on configure line" >&6; }
+-		else
+-			COB_HAS_64_BIT_POINTER="no"
+-			$as_echo "#define COB_64_BIT_POINTER 0" >>confdefs.h
+-
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: assumed \"no\" - cross-compilation" >&5
+-$as_echo "assumed \"no\" - cross-compilation" >&6; }
+-		fi
+-	 fi
+-	 { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot run test program while cross-compiling" >&5
+-$as_echo "$as_me: WARNING: cannot run test program while cross-compiling" >&2;}
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main ()
+-{
+-
+-	if (sizeof (void *) > 4U)
+-		return 0;
+-	return 1;
+-
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
+-  COB_HAS_64_BIT_POINTER="yes"
+-	 $as_echo "#define COB_64_BIT_POINTER 1" >>confdefs.h
+-
+-	 { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-$as_echo "yes" >&6; }
+-else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-$as_echo "no" >&6; }
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
++# 64-bit midipix
++$as_echo "#define COB_LI_IS_LL 1" >>confdefs.h
++$as_echo "#define COB_32_BIT_LONG 0" >>confdefs.h
++$as_echo "#define COB_64_BIT_POINTER 1" >>confdefs.h
+ 
+ # Check gcc wrapv option
+ # We likely don't need this and remove it before 3.0 final release
