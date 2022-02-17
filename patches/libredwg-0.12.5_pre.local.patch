@@ -1,0 +1,13 @@
+diff -ru libredwg-0.12.5.orig/examples/Makefile.in libredwg-0.12.5/examples/Makefile.in
+--- libredwg-0.12.5.orig/examples/Makefile.in	2022-02-06 20:47:26.000000000 +0100
++++ libredwg-0.12.5/examples/Makefile.in	2022-02-16 09:45:52.881509621 +0100
+@@ -91,8 +91,7 @@
+ host_triplet = @host@
+ @USE_WRITE_TRUE@bin_PROGRAMS = dwgadd$(EXEEXT)
+ check_PROGRAMS = load_dwg$(EXEEXT) dwg2svg2$(EXEEXT) dwgfuzz$(EXEEXT)
+-EXTRA_PROGRAMS = unknown$(EXEEXT) bd$(EXEEXT) bits$(EXEEXT) \
+-	llvmfuzz$(EXEEXT) llvmfuzz_standalone$(EXEEXT)
++EXTRA_PROGRAMS = unknown$(EXEEXT) bd$(EXEEXT) bits$(EXEEXT)
+ @ENABLE_GCOV_TRUE@am__append_1 = @GCOV_CFLAGS@
+ @ENABLE_GCOV_TRUE@am__append_2 = @GCOV_LIBS@
+ @ENABLE_GCOV_TRUE@am__append_3 = *.gcov *.gcno *.gcda gcov.log
