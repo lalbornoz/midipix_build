@@ -85,12 +85,12 @@ gl_cv_func_working_getdelim=yes
 gl_cv_ld_output_def=no"};
 : ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="--disable-static --disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --without-p11-kit --disable-hardware-acceleration --enable-guile=no --with-default-trust-store-dir=/etc/ssl/certs"};
 : ${PKG_GNUTLS_LIBTOOL:=rdlibtool};
-: ${PKG_HTTPD_SHA256SUM:=f87ec2df1c9fee3e6bfde3c8b855a3ddb7ca1ab20ca877bd0e2b6bf3f05c80b2};
-: ${PKG_HTTPD_VERSION:=2.4.25};
+: ${PKG_HTTPD_SHA256SUM:=0127f7dc497e9983e9c51474bed75e45607f2f870a7675a86dc90af6d572f5c9};
+: ${PKG_HTTPD_VERSION:=2.4.52};
 : ${PKG_HTTPD_URL:=https://archive.apache.org/dist/httpd/httpd-${PKG_HTTPD_VERSION}.tar.bz2};
 : ${PKG_HTTPD_CONFIG_CACHE_EXTRA:="ap_cv_void_ptr_lt_long=no"};
-: ${PKG_HTTPD_CONFIGURE_ARGS_EXTRA:="--with-pcre=${PREFIX_NATIVE}/bin/pcre-config --with-apr=${PREFIX_NATIVE}/bin/${DEFAULT_TARGET}-apr-1-config --with-apr-util=${PREFIX_NATIVE}/bin/apu-1-config"};
-: ${PKG_HTTPD_ENV_VARS_EXTRA:="PCRE_LIBS=-L${PREFIX_NATIVE}/lib -lpcre"};
+: ${PKG_HTTPD_CONFIGURE_ARGS_EXTRA:="--with-apr=${PREFIX_NATIVE}/bin/${DEFAULT_TARGET}-apr-1-config --with-apr-util=${PREFIX_NATIVE}/bin/apu-1-config --with-z=${PREFIX_NATIVE} --with-ssl=${PREFIX_NATIVE} --with-pcre=${PREFIX}/bin/pcre-config --enable-mods-static=all --disable-ext-filter --disable-lua --sysconfdir=/etc/apache2 --localstatedir=/var/lib/apache2 --datadir=/srv/www"};
+: ${PKG_HTTPD_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/lua5.4"};
 : ${PKG_HTTPD_DISABLED:=1};
 : ${PKG_ICECAST_DEPENDS:="curl expat libvorbis libxml2 libxslt wolfssl"};
 : ${PKG_ICECAST_SHA256SUM:=49b5979f9f614140b6a38046154203ee28218d8fc549888596a683ad604e4d44};
