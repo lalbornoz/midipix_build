@@ -224,7 +224,7 @@ diff -Nru php-8.1.0.orig/configure php-8.1.0/configure
  
  $ext_builddir/iconv.$suffix: \$(shared_objects_iconv) \$(ICONV_SHARED_DEPENDENCIES)
 -	\$(LIBTOOL) --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_iconv) \$(ICONV_SHARED_LIBADD)
-+	\$(LIBTOOL) --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_iconv) \$(ICONV_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
++	\$(LIBTOOL) --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_iconv) \$(ICONV_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so \-liconv
  
  EOF
  
