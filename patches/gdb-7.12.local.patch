@@ -18,6 +18,15 @@
  # Where are the other opcode tables which only have header file
  # versions?
  OP_INCLUDE = $(INCLUDE_DIR)/opcode
+@@ -1244,7 +1244,7 @@
+ 		  true ; \
+ 		fi ; \
+ 		$(SHELL) $(srcdir)/../mkinstalldirs $(DESTDIR)$(bindir) ; \
+-		$(INSTALL_PROGRAM) gdb$(EXEEXT) \
++		slibtool --mode=install $(INSTALL_PROGRAM) gdb$(EXEEXT) \
+ 			$(DESTDIR)$(bindir)/$$transformed_name$(EXEEXT) ; \
+ 		$(SHELL) $(srcdir)/../mkinstalldirs $(DESTDIR)$(includedir)/gdb ; \
+ 		$(INSTALL_DATA) jit-reader.h $(DESTDIR)$(includedir)/gdb/jit-reader.h
 @@ -1407,7 +1407,8 @@
  # Removing the old gdb first works better if it is running, at least on SunOS.
  gdb$(EXEEXT): gdb.o $(LIBGDB_OBS) $(ADD_DEPS) $(CDEPS) $(TDEPLIBS)
