@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bison chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
 patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk")";
-: ${PKG_BISON_DEPENDS:="readline"};
+: ${PKG_BISON_DEPENDS:="readline libiconv"};
 : ${PKG_BISON_SHA256SUM:=9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2};
 : ${PKG_BISON_VERSION:=3.8.2};
 : ${PKG_BISON_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_VERSION}.tar.xz};
