@@ -26,6 +26,7 @@
 	+%[_native]/lib/libgpgme.so.11=%[_minipix]/bin/libgpgme.so.11						\
 	+%[_native]/lib/libgpg-error.so.0=%[_minipix]/bin/libgpg-error.so.0					\
 	+%[_native]/lib/libhogweed.so.6=%[_minipix]/bin/libhogweed.so.6						\
+	+%[_native]/lib/libiconv.so.2=%[_minipix]/bin/libiconv.so.2						\
 	+%[_native]/lib/libidn2.so.0=%[_minipix]/bin/libidn2.so.0						\
 	+%[_native]/lib/liblzma.so.5=%[_minipix]/bin/liblzma.so.5						\
 	+%[_native]/lib/libmagic.so.1=%[_minipix]/bin/libmagic.so.1						\
