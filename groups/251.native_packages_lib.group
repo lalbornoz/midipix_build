@@ -113,8 +113,8 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBGLOB_URLS_GIT:=libglob=https://github.com/void-linux/libglob.git@master};
 : ${PKG_LIBGLOB_BUILD_DIR:=libglob};
 : ${PKG_LIBGCRYPT_DEPENDS:="libgpg_error"};
-: ${PKG_LIBGCRYPT_SHA256SUM:=ea849c83a72454e3ed4267697e8ca03390aee972ab421e7df69dfe42b65caaf7};
-: ${PKG_LIBGCRYPT_VERSION:=1.9.4};
+: ${PKG_LIBGCRYPT_SHA256SUM:=6a00f5c05caa4c4acc120c46b63857da0d4ff61dc4b4b03933fa8d46013fae81};
+: ${PKG_LIBGCRYPT_VERSION:=1.10.0};
 : ${PKG_LIBGCRYPT_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${PKG_LIBGCRYPT_VERSION}.tar.bz2};
 : ${PKG_LIBGCRYPT_CONFIG_CACHE_EXTRA:="
 gcry_cv_broken_visibility_attribute=no
