@@ -1,0 +1,222 @@
+diff -ru bind-9.13.2.orig/lib/dns/dst_openssl.h bind-9.13.2/lib/dns/dst_openssl.h
+--- bind-9.13.2.orig/lib/dns/dst_openssl.h	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/dns/dst_openssl.h	2022-03-03 17:33:45.630920499 +0100
+@@ -23,7 +23,7 @@
+ #include <openssl/crypto.h>
+ #include <openssl/bn.h>
+ 
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ /*
+  * These are new in OpenSSL 1.1.0.  BN_GENCB _cb needs to be declared in
+  * the function like this before the BN_GENCB_new call:
+@@ -37,7 +37,7 @@
+ #define BN_GENCB_get_arg(x) ((x)->arg)
+ #endif
+ 
+-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L || LIBRESSL_VERSION_NUMBER >= 0x3050000fL
+ /*
+  * EVP_dss1() is a version of EVP_sha1() that was needed prior to
+  * 1.1.0 because there was a link between digests and signing algorithms;
+diff -ru bind-9.13.2.orig/lib/dns/openssldh_link.c bind-9.13.2/lib/dns/openssldh_link.c
+--- bind-9.13.2.orig/lib/dns/openssldh_link.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/dns/openssldh_link.c	2022-03-03 17:28:31.794993951 +0100
+@@ -255,7 +255,7 @@
+ openssldh_generate(dst_key_t *key, int generator, void (*callback)(int)) {
+ 	DH *dh = NULL;
+ 	BN_GENCB *cb;
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	BN_GENCB _cb;
+ #endif
+ 	union {
+@@ -296,7 +296,7 @@
+ 		if (dh == NULL)
+ 			return (dst__openssl_toresult(ISC_R_NOMEMORY));
+ 		cb = BN_GENCB_new();
+-#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L && LIBRESSL_VERSION_NUMBER >= 0x3050000fL
+ 		if (cb == NULL) {
+ 			DH_free(dh);
+ 			return (dst__openssl_toresult(ISC_R_NOMEMORY));
+diff -ru bind-9.13.2.orig/lib/dns/openssldsa_link.c bind-9.13.2/lib/dns/openssldsa_link.c
+--- bind-9.13.2.orig/lib/dns/openssldsa_link.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/dns/openssldsa_link.c	2022-03-03 17:35:08.250987970 +0100
+@@ -342,7 +342,7 @@
+ 	DSA *dsa;
+ 	unsigned char rand_array[ISC_SHA1_DIGESTLENGTH];
+ 	BN_GENCB *cb;
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	BN_GENCB _cb;
+ #endif
+ 	union {
+@@ -358,7 +358,7 @@
+ 	if (dsa == NULL)
+ 		return (dst__openssl_toresult(DST_R_OPENSSLFAILURE));
+ 	cb = BN_GENCB_new();
+-#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L || LIBRESSL_VERSION_NUMBER >= 0x3050000fL
+ 	if (cb == NULL) {
+ 		DSA_free(dsa);
+ 		return (dst__openssl_toresult(DST_R_OPENSSLFAILURE));
+diff -ru bind-9.13.2.orig/lib/dns/opensslrsa_link.c bind-9.13.2/lib/dns/opensslrsa_link.c
+--- bind-9.13.2.orig/lib/dns/opensslrsa_link.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/dns/opensslrsa_link.c	2022-03-03 17:36:13.226989276 +0100
+@@ -487,7 +487,7 @@
+ 	} u;
+ 	RSA *rsa = RSA_new();
+ 	BIGNUM *e = BN_new();
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	BN_GENCB _cb;
+ #endif
+ 	BN_GENCB *cb = BN_GENCB_new();
+diff -ru bind-9.13.2.orig/lib/isc/aes.c bind-9.13.2/lib/isc/aes.c
+--- bind-9.13.2.orig/lib/isc/aes.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/aes.c	2022-03-03 17:10:21.765781027 +0100
+@@ -27,7 +27,7 @@
+ #include <openssl/opensslv.h>
+ #include <openssl/evp.h>
+ 
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ #define EVP_CIPHER_CTX_new() &(_context), EVP_CIPHER_CTX_init(&_context)
+ #define EVP_CIPHER_CTX_free(c) RUNTIME_CHECK(EVP_CIPHER_CTX_cleanup(c) == 1)
+ #endif
+@@ -36,7 +36,7 @@
+ isc_aes128_crypt(const unsigned char *key, const unsigned char *in,
+ 		 unsigned char *out)
+ {
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	EVP_CIPHER_CTX _context;
+ #endif
+ 	EVP_CIPHER_CTX *c;
+@@ -56,7 +56,7 @@
+ isc_aes192_crypt(const unsigned char *key, const unsigned char *in,
+ 		 unsigned char *out)
+ {
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	EVP_CIPHER_CTX _context;
+ #endif
+ 	EVP_CIPHER_CTX *c;
+@@ -76,7 +76,7 @@
+ isc_aes256_crypt(const unsigned char *key, const unsigned char *in,
+ 		 unsigned char *out)
+ {
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	EVP_CIPHER_CTX _context;
+ #endif
+ 	EVP_CIPHER_CTX *c;
+diff -ru bind-9.13.2.orig/lib/isc/hmacmd5.c bind-9.13.2/lib/isc/hmacmd5.c
+--- bind-9.13.2.orig/lib/isc/hmacmd5.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/hmacmd5.c	2022-03-03 17:15:13.809786894 +0100
+@@ -35,7 +35,7 @@
+ #endif
+ 
+ #ifdef ISC_PLATFORM_OPENSSLHASH
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ #define HMAC_CTX_new() &(ctx->_ctx), HMAC_CTX_init(&(ctx->_ctx))
+ #define HMAC_CTX_free(ptr) HMAC_CTX_cleanup(ptr)
+ #endif
+diff -ru bind-9.13.2.orig/lib/isc/hmacsha.c bind-9.13.2/lib/isc/hmacsha.c
+--- bind-9.13.2.orig/lib/isc/hmacsha.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/hmacsha.c	2022-03-03 17:22:31.285434086 +0100
+@@ -33,7 +33,7 @@
+ #endif
+ 
+ #ifdef ISC_PLATFORM_OPENSSLHASH
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ #define HMAC_CTX_new() &(ctx->_ctx), HMAC_CTX_init(&(ctx->_ctx))
+ #define HMAC_CTX_free(ptr) HMAC_CTX_cleanup(ptr)
+ #endif
+diff -ru bind-9.13.2.orig/lib/isc/include/isc/hmacmd5.h bind-9.13.2/lib/isc/include/isc/hmacmd5.h
+--- bind-9.13.2.orig/lib/isc/include/isc/hmacmd5.h	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/include/isc/hmacmd5.h	2022-03-03 17:16:24.627248672 +0100
+@@ -35,7 +35,7 @@
+ 
+ typedef struct {
+ 	HMAC_CTX *ctx;
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	HMAC_CTX _ctx;
+ #endif
+ } isc_hmacmd5_t;
+diff -ru bind-9.13.2.orig/lib/isc/include/isc/hmacsha.h bind-9.13.2/lib/isc/include/isc/hmacsha.h
+--- bind-9.13.2.orig/lib/isc/include/isc/hmacsha.h	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/include/isc/hmacsha.h	2022-03-03 17:20:52.731254059 +0100
+@@ -36,7 +36,7 @@
+ 
+ typedef struct {
+ 	HMAC_CTX *ctx;
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	HMAC_CTX _ctx;
+ #endif
+ } isc_hmacsha_t;
+diff -ru bind-9.13.2.orig/lib/isc/include/isc/md5.h bind-9.13.2/lib/isc/include/isc/md5.h
+--- bind-9.13.2.orig/lib/isc/include/isc/md5.h	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/include/isc/md5.h	2022-03-03 17:16:46.283249108 +0100
+@@ -53,7 +53,7 @@
+ 
+ typedef struct {
+ 	EVP_MD_CTX *ctx;
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	EVP_MD_CTX _ctx;
+ #endif
+ } isc_md5_t;
+diff -ru bind-9.13.2.orig/lib/isc/include/isc/sha1.h bind-9.13.2/lib/isc/include/isc/sha1.h
+--- bind-9.13.2.orig/lib/isc/include/isc/sha1.h	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/include/isc/sha1.h	2022-03-03 17:21:12.915254464 +0100
+@@ -34,7 +34,7 @@
+ 
+ typedef struct {
+ 	EVP_MD_CTX *ctx;
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 	EVP_MD_CTX _ctx;
+ #endif
+ } isc_sha1_t;
+diff -ru bind-9.13.2.orig/lib/isc/md5.c bind-9.13.2/lib/isc/md5.c
+--- bind-9.13.2.orig/lib/isc/md5.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/md5.c	2022-03-03 17:23:28.373435233 +0100
+@@ -48,7 +48,7 @@
+ #include <isc/util.h>
+ 
+ #ifdef ISC_PLATFORM_OPENSSLHASH
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ #define EVP_MD_CTX_new() &(ctx->_ctx)
+ #define EVP_MD_CTX_free(ptr) EVP_MD_CTX_cleanup(ptr)
+ #endif
+diff -ru bind-9.13.2.orig/lib/isc/openssl_shim.c bind-9.13.2/lib/isc/openssl_shim.c
+--- bind-9.13.2.orig/lib/isc/openssl_shim.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/openssl_shim.c	2022-03-03 17:24:22.517436320 +0100
+@@ -15,7 +15,7 @@
+ 
+ #include <openssl/opensslv.h>
+ 
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ 
+ #include <stdlib.h>
+ #include <string.h>
+diff -ru bind-9.13.2.orig/lib/isc/sha1.c bind-9.13.2/lib/isc/sha1.c
+--- bind-9.13.2.orig/lib/isc/sha1.c	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/lib/isc/sha1.c	2022-03-03 17:25:09.085437256 +0100
+@@ -43,7 +43,7 @@
+ #endif
+ 
+ #ifdef ISC_PLATFORM_OPENSSLHASH
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ #define EVP_MD_CTX_new() &(context->_ctx)
+ #define EVP_MD_CTX_free(ptr) EVP_MD_CTX_cleanup(ptr)
+ #endif
