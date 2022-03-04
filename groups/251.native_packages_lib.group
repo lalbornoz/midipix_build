@@ -36,7 +36,7 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf wolfssl")";
 : ${PKG_LIBARCHIVE_VERSION:=3.6.0};
 : ${PKG_LIBARCHIVE_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.xz};
 : ${PKG_LIBARCHIVE_CONFIGURE_ARGS_EXTRA:="--without-zstd"};
-:3. ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
+: ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_LIBARCHIVE_LIBTOOL:=rlibtool};
 : ${PKG_LIBASS_DEPENDS:="freetype fontconfig harfbuzz fribidi"};
 : ${PKG_LIBASS_SHA256SUM:=1be2df9c4485a57d78bb18c0a8ed157bc87a5a8dd48c661961c625cb112832fd};
