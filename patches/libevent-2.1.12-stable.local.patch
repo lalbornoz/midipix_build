@@ -1,0 +1,12 @@
+diff -ru libevent-2.1.12-stable.orig/openssl-compat.h libevent-2.1.12-stable/openssl-compat.h
+--- libevent-2.1.12-stable.orig/openssl-compat.h	2020-07-05 14:01:34.000000000 +0200
++++ libevent-2.1.12-stable/openssl-compat.h	2022-03-03 11:07:17.024094244 +0100
+@@ -40,7 +40,7 @@
+ #endif /* (OPENSSL_VERSION_NUMBER < 0x10100000L) || \
+ 	(defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20700000L) */
+ 
+-#if defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER >= 0x20700000L
++#if defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER >= 0x20700000L && LIBRESSL_VERSION_NUMBER < 0x3050000fL
+ #define BIO_get_init(b) (b)->init
+ #endif
+ 
