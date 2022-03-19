@@ -441,26 +441,26 @@ Build step status is tracked on a per-package basis by state files beneath
 ``${BUILD_WORKDIR}`` following the format ``.<package name>.<build step>``;
 package build completion corresponds to the pseudo-build step ``finish``.
 
-| Name                | Description                                                                                                                                                                                                           |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fetch_clean         | Delete and create ``${PKG_SUBDIR}''                                                                                                                                                                                   |
-| fetch_download      | Download package archive & verify w/ SHA-256 message digest and/or clone Git repository/ies                                                                                                                           |
-| fetch_extract       | Extract package archive, if any                                                                                                                                                                                       |
-| configure_clean     | Delete and create ``${PKG_BUILD_DIR}''                                                                                                                                                                                |
-| configure_patch_pre | Apply ``chainport`` patches and/or patches beneath ``patches/`` prior to (GNU autotools or similar) configuration                                                                                                     |
-| configure_autotools | Bootstrap (GNU autools or similar) environment, and install ``config.sub`` and ``config.cache``                                                                                                                       |
-| configure_patch     | Apply patches beneath ``patches/`` and/or set in ``${PKG_PATCHES_EXTRA}`` after (GNU autotools or similar) configuration                                                                                              |
-| configure           | Perform package (GNU autools or similar or CMake) configuration w/ configuration-time set of environment variables                                                                                                    |
-| build_clean         | Clean ``${PKG_BUILD_DIR}'' w/ ``make clean'' invocation                                                                                                                                                               |
-| build               | Call ``make(1)`` w/ build-time set of make variables                                                                                                                                                                  |
-| install_clean       | Delete and create ``${PKG_DESTDIR}''                                                                                                                                                                                  |
-| install_subdirs     | Create default directory hierarchy in ``${PKG_DESTDIR}``, optionally amended w/ ``${PKG_INSTALL_FILES_DESTDIR_EXTRA}``                                                                                                |
-| install_make        | Call ``make(1)`` w/ ``${PKG_INSTALL_TARGET}`` (defaults to ``install``) and installation-time set of make variables                                                                                                   |
-| install_files       | Install ``${PKG_INSTALL_FILES}``, fix directory and file mode bits within ``${PKG_DESTDIR}`` and optionally ``${PKG_DESTDIR_HOST}``, ``pkgconf(1)`` package files, and/or stripped binaries within ``${PKG_DESTDIR}`` |
-| install_libs        | Purge libtool ``.la`` files and install shared objects within ``${PKG_DESTDIR}`` w/ ``perk`` and corresponding symbolic links                                                                                         |
-| install             | Install into ``${PKG_PREFIX}``, and optionally ``${PKG_DESTDIR_HOST}`` into ``${PREFIX}``, under mutex, and add package to ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}`` (unless inhibited)                                 |
-| install_rpm         | Build package RPM w/ auto-generated specifiation file based on ``etc/package.spec`` beneath ``${PREFIX_RPM}``                                                                                                         |
-| clean               | Clean ``${PKG_BUILD_DIR}`` and/or ``${PKG_DESTDIR}`` and/or ``${PKG_DESTDIR_HOST}`` and/or ``${PKG_BASE_DIR}/${PKG_SUBDIR}`` as per ``-C build,dest,src``, resp., if any                                              |
+| Name                | Description                                                                                                                                                                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fetch_clean         | Delete and create ``${PKG_SUBDIR}''                                                                                                                                                                                                                      |
+| fetch_download      | Download package archive & verify w/ SHA-256 message digest and/or clone Git repository/ies                                                                                                                                                              |
+| fetch_extract       | Extract package archive, if any                                                                                                                                                                                                                          |
+| configure_clean     | Delete and create ``${PKG_BUILD_DIR}''                                                                                                                                                                                                                   |
+| configure_patch_pre | Apply ``chainport`` patches and/or patches beneath ``patches/`` prior to (GNU autotools or similar) configuration                                                                                                                                        |
+| configure_autotools | Bootstrap (GNU autools or similar) environment, and install ``config.sub`` and ``config.cache``                                                                                                                                                          |
+| configure_patch     | Apply patches beneath ``patches/`` and/or set in ``${PKG_PATCHES_EXTRA}`` after (GNU autotools or similar) configuration                                                                                                                                 |
+| configure           | Perform package (GNU autools or similar or CMake) configuration w/ configuration-time set of environment variables                                                                                                                                       |
+| build_clean         | Clean ``${PKG_BUILD_DIR}'' w/ ``make clean'' invocation                                                                                                                                                                                                  |
+| build               | Call ``make(1)`` w/ build-time set of make variables                                                                                                                                                                                                     |
+| install_clean       | Delete and create ``${PKG_DESTDIR}''                                                                                                                                                                                                                     |
+| install_subdirs     | Create default directory hierarchy in ``${PKG_DESTDIR}``, optionally amended w/ ``${PKG_INSTALL_FILES_DESTDIR_EXTRA}``                                                                                                                                   |
+| install_make        | Call ``make(1)`` w/ ``${PKG_INSTALL_TARGET}`` (defaults to ``install``) and installation-time set of make variables                                                                                                                                      |
+| install_files       | Install ``${PKG_INSTALL_FILES}`` and/or ``${PKG_INSTALL_FILES_V2}``, fix directory and file mode bits within ``${PKG_DESTDIR}`` and optionally ``${PKG_DESTDIR_HOST}``, ``pkgconf(1)`` package files, and/or stripped binaries within ``${PKG_DESTDIR}`` |
+| install_libs        | Purge libtool ``.la`` files and install shared objects within ``${PKG_DESTDIR}`` w/ ``perk`` and corresponding symbolic links                                                                                                                            |
+| install             | Install into ``${PKG_PREFIX}``, and optionally ``${PKG_DESTDIR_HOST}`` into ``${PREFIX}``, under mutex, and add package to ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}`` (unless inhibited)                                                                    |
+| install_rpm         | Build package RPM w/ auto-generated specifiation file based on ``etc/package.spec`` beneath ``${PREFIX_RPM}``                                                                                                                                            |
+| clean               | Clean ``${PKG_BUILD_DIR}`` and/or ``${PKG_DESTDIR}`` and/or ``${PKG_DESTDIR_HOST}`` and/or ``${PKG_BASE_DIR}/${PKG_SUBDIR}`` as per ``-C build,dest,src``, resp., if any                                                                                 |
   
 [Back to top](#table-of-contents)
 
@@ -608,10 +608,10 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 File and directory installation, comprising e.g. copying, moving, creating
 symbolic links, setting owner and/or permission metadata, are expressed in
 a descriptive domain-specific language and integrated with package building
-via the package variables ``${PKG_INSTALL_FILES}``, applying during ``install_files``
-after the ``install_make`` build step,``${PKG_INSTALL_FILES_DESTDIR}`` and
-``${PKG_INSTALL_FILES_DESTDIR_EXTRA}`` during ``install_subdirs`` with the
-following syntax specified in EBNF:  
+via the package variable ``${PKG_INSTALL_FILES_V2}``, applying during
+``install_files`` after the ``install_make`` build step, and ``${PKG_INSTALL_FILES_DESTDIR}``
+and ``${PKG_INSTALL_FILES_DESTDIR_EXTRA}`` during ``install_subdirs``. The
+``${PKG_INSTALL_FILES_V2}`` must adhere to the following syntax specified in EBNF:  
 
 ```
 (*
@@ -736,7 +736,7 @@ The following subexpression operators are defined:
 
 #
 # Manual invocation:
-PKG_INSTALL_FILES="
+PKG_INSTALL_FILES_V2="
         [ ... ]
 ";
 rtl_install                                                     \
@@ -747,7 +747,7 @@ rtl_install                                                     \
                 -p "_subdir=${PKG_BASE_DIR}/${PKG_SUBDIR}"      \
                 -p "_target=${PKG_TARGET}"                      \
                 -n -- "${PREFIX}"                               \
-                "${PKG_INSTALL_FILES}"; then
+                "${PKG_INSTALL_FILES_V2}"; then
         return 1;
 fi;
 
@@ -861,6 +861,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | INSTALL_FILES_DESTDIR_EXTRA  | List( )          | Additional files to initialise the package installation destination directory beneath ``${PKG_BASE_DIR}`` with                             |
 | INSTALL_FILES_DESTDIR        | List( )          | Files to initialise the package installation destination directory beneath ``${PKG_BASE_DIR}`` with                                        |
 | INSTALL_FILES                | List( )          | Files to manually install into the package installation destination directory beneath ``${PKG_BASE_DIR}``                                  |
+| INSTALL_FILES_V2             | List( )          | Files to manually install into the package installation destination directory beneath ``${PKG_BASE_DIR}``                                  |
 | INSTALL_TARGET_EXTRA         | String           | Additional name of package build ``make(1)`` installation target                                                                           |
 | INSTALL_TARGET               | String           | Name of package build ``make(1)`` installation target                                                                                      |
 | IN_TREE                      | Flag(UInt,auto)  | Build package in-tree within ``${PKG_SUBDIR}``                                                                                             |
