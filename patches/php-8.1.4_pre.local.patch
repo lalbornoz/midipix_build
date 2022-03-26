@@ -562,8 +562,8 @@ diff -Nru php-8.1.0.orig/TSRM/TSRM.h php-8.1.0/TSRM/TSRM.h
  # define __has_attribute(x) 0
  #endif
  
--#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__)
-+#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__) || defined(__midipix__)
+-#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__) || defined(__HAIKU__)
++#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__) || defined(__HAIKU__) || defined(__midipix__)
  # define TSRM_TLS_MODEL_ATTR
  #elif __PIC__
  # define TSRM_TLS_MODEL_ATTR __attribute__((tls_model("initial-exec")))
