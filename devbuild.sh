@@ -27,9 +27,14 @@ devbuild_all() {
 	./build.sh -a nt64 -b debug -D minipix,rpm,zipdist -F ipv4 -p "${1:-auto}" -v;
 };
 
+devbuild_mirror() {
+	./pkgtool.sh -m ~/public_html/archives -M ~/public_html/repos_git;
+};
+
 case "${1:-}" in
---all)	shift; devbuild_all "${@}"; ;;
-*)	devbuild_midipix "${@}"; ;;
+--all)		shift; devbuild_all "${@}"; ;;
+--mirror)	shift; devbuild_mirror "${@}"; ;;
+*)		devbuild_midipix "${@}"; ;;
 esac;
 
 # vim:filetype=sh textwidth=0
