@@ -243,6 +243,9 @@ buildp_init_getopts() {
 			else
 				ARG_PARALLEL=$((${ARG_PARALLEL}/2));
 			fi; ;;
+		max)	if ! ARG_PARALLEL="$(rtl_get_cpu_count)"; then
+				_rc=1; _status="failed to get CPU count.";
+			fi; ;;
 		"")	ARG_PARALLEL=1; ;;
 		*)	if ! rtl_isnumber "${ARG_PARALLEL}"; then
 				_rc=1; _status="invalid jobs count \`${ARG_PARALLEL}'.";

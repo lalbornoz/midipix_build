@@ -23,8 +23,8 @@ devbuild_midipix() {
 };
 
 devbuild_all() {
-	./build.sh -a nt64 -b release -D minipix,rpm,zipdist -F ipv4 -p "${1:-auto}" -v &&\
-	./build.sh -a nt64 -b debug -D minipix,rpm,zipdist -F ipv4 -p "${1:-auto}" -v;
+	./build.sh -a nt64 -b release -D minipix,rpm,zipdist -p max -v "${@}" &&\
+	./build.sh -a nt64 -b debug -D minipix,rpm,zipdist -p max -v "${@}";
 };
 
 devbuild_mirror() {
