@@ -686,7 +686,7 @@
 +
 --- nginx-1.11.3.dist/objs/Makefile	1970-01-01 00:00:00.000000000 +0000
 +++ nginx-1.11.3/objs/Makefile	2017-02-02 18:37:11.770727563 +0000
-@@ -0,0 +1,1196 @@
+@@ -0,0 +1,1214 @@
 +
 +CPP =	$(CC) -E
 +LINK =	$(CC)
@@ -832,6 +832,7 @@
 +	objs/src/event/ngx_event_accept.o \
 +	objs/src/event/ngx_event_connect.o \
 +	objs/src/event/ngx_event_pipe.o \
++	objs/src/event/ngx_event_udp.o \
 +	objs/src/os/unix/ngx_time.o \
 +	objs/src/os/unix/ngx_errno.o \
 +	objs/src/os/unix/ngx_alloc.o \
@@ -840,6 +841,7 @@
 +	objs/src/os/unix/ngx_recv.o \
 +	objs/src/os/unix/ngx_readv_chain.o \
 +	objs/src/os/unix/ngx_udp_recv.o \
++	objs/src/os/unix/ngx_udp_sendmsg_chain.o \
 +	objs/src/os/unix/ngx_send.o \
 +	objs/src/os/unix/ngx_writev_chain.o \
 +	objs/src/os/unix/ngx_udp_send.o \
@@ -948,6 +950,7 @@
 +	objs/src/event/ngx_event_accept.o \
 +	objs/src/event/ngx_event_connect.o \
 +	objs/src/event/ngx_event_pipe.o \
++	objs/src/event/ngx_event_udp.o \
 +	objs/src/os/unix/ngx_time.o \
 +	objs/src/os/unix/ngx_errno.o \
 +	objs/src/os/unix/ngx_alloc.o \
@@ -956,6 +959,7 @@
 +	objs/src/os/unix/ngx_recv.o \
 +	objs/src/os/unix/ngx_readv_chain.o \
 +	objs/src/os/unix/ngx_udp_recv.o \
++	objs/src/os/unix/ngx_udp_sendmsg_chain.o \
 +	objs/src/os/unix/ngx_send.o \
 +	objs/src/os/unix/ngx_writev_chain.o \
 +	objs/src/os/unix/ngx_udp_send.o \
@@ -1321,6 +1325,13 @@
 +		src/event/ngx_event_pipe.c
 +
 +
++objs/src/event/ngx_event_udp.o:	$(CORE_DEPS) \
++	src/event/ngx_event_udp.c
++	$(CC) -c $(CFLAGS) $(CORE_INCS) \
++		-o objs/src/event/ngx_event_udp.o \
++		src/event/ngx_event_udp.c
++
++
 +objs/src/os/unix/ngx_time.o:	$(CORE_DEPS) \
 +	src/os/unix/ngx_time.c
 +	$(CC) -c $(CFLAGS) $(CORE_INCS) \
@@ -1375,6 +1386,13 @@
 +	$(CC) -c $(CFLAGS) $(CORE_INCS) \
 +		-o objs/src/os/unix/ngx_udp_recv.o \
 +		src/os/unix/ngx_udp_recv.c
++
++
++objs/src/os/unix/ngx_udp_sendmsg_chain.o:	$(CORE_DEPS) \
++	src/os/unix/ngx_udp_sendmsg_chain.c
++	$(CC) -c $(CFLAGS) $(CORE_INCS) \
++		-o objs/src/os/unix/ngx_udp_sendmsg_chain.o \
++		src/os/unix/ngx_udp_sendmsg_chain.c
 +
 +
 +objs/src/os/unix/ngx_send.o:	$(CORE_DEPS) \
