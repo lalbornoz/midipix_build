@@ -1,0 +1,81 @@
+--- git-2.35.2/Makefile.orig	2022-03-24 00:31:43.000000000 +0100
++++ git-2.35.2/Makefile	2022-04-14 12:43:38.240213010 +0200
+@@ -2213,7 +2213,7 @@
+ 	'-DGIT_MAN_PATH="$(mandir_relative_SQ)"' \
+ 	'-DGIT_INFO_PATH="$(infodir_relative_SQ)"'
+ 
+-git$X: git.o GIT-LDFLAGS $(BUILTIN_OBJS) $(GITLIBS)
++git$X: git.o $(BUILTIN_OBJS) $(GITLIBS)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) \
+ 		$(filter %.o,$^) $(LIBS)
+ 
+@@ -2390,7 +2390,7 @@
+ $(SCRIPT_PYTHON_GEN): GIT-BUILD-OPTIONS
+ 
+ ifndef NO_PYTHON
+-$(SCRIPT_PYTHON_GEN): GIT-CFLAGS GIT-PREFIX GIT-PYTHON-VARS
++$(SCRIPT_PYTHON_GEN): GIT-PREFIX GIT-PYTHON-VARS
+ $(SCRIPT_PYTHON_GEN): % : %.py
+ 	$(QUIET_GEN) \
+ 	sed -e '1s|#!.*python|#!$(PYTHON_PATH_SQ)|' \
+@@ -2538,12 +2538,12 @@
+ 
+ .SUFFIXES:
+ 
+-$(C_OBJ): %.o: %.c GIT-CFLAGS $(missing_dep_dirs) $(missing_compdb_dir)
++$(C_OBJ): %.o: %.c $(missing_dep_dirs) $(missing_compdb_dir)
+ 	$(QUIET_CC)$(CC) -o $*.o -c $(dep_args) $(compdb_args) $(ALL_CFLAGS) $(EXTRA_CPPFLAGS) $<
+-$(ASM_OBJ): %.o: %.S GIT-CFLAGS $(missing_dep_dirs) $(missing_compdb_dir)
++$(ASM_OBJ): %.o: %.S $(missing_dep_dirs) $(missing_compdb_dir)
+ 	$(QUIET_CC)$(CC) -o $*.o -c $(dep_args) $(compdb_args) $(ALL_CFLAGS) $(EXTRA_CPPFLAGS) $<
+ 
+-%.s: %.c GIT-CFLAGS FORCE
++%.s: %.c FORCE
+ 	$(QUIET_CC)$(CC) -o $@ -S $(ALL_CFLAGS) $(EXTRA_CPPFLAGS) $<
+ 
+ ifdef USE_COMPUTED_HEADER_DEPENDENCIES
+@@ -2607,17 +2607,17 @@
+ compat/nedmalloc/nedmalloc.sp: SP_EXTRA_FLAGS += -Wno-non-pointer-null
+ endif
+ 
+-git-%$X: %.o GIT-LDFLAGS $(GITLIBS)
++git-%$X: %.o $(GITLIBS)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) $(LIBS)
+ 
+-git-imap-send$X: imap-send.o $(IMAP_SEND_BUILDDEPS) GIT-LDFLAGS $(GITLIBS)
++git-imap-send$X: imap-send.o $(IMAP_SEND_BUILDDEPS) $(GITLIBS)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) \
+ 		$(IMAP_SEND_LDFLAGS) $(LIBS)
+ 
+-git-http-fetch$X: http.o http-walker.o http-fetch.o GIT-LDFLAGS $(GITLIBS)
++git-http-fetch$X: http.o http-walker.o http-fetch.o $(GITLIBS)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) \
+ 		$(CURL_LIBCURL) $(LIBS)
+-git-http-push$X: http.o http-push.o GIT-LDFLAGS $(GITLIBS)
++git-http-push$X: http.o http-push.o $(GITLIBS)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) \
+ 		$(CURL_LIBCURL) $(EXPAT_LIBEXPAT) $(LIBS)
+ 
+@@ -2627,11 +2627,11 @@
+ 	ln -s $< $@ 2>/dev/null || \
+ 	cp $< $@
+ 
+-$(REMOTE_CURL_PRIMARY): remote-curl.o http.o http-walker.o GIT-LDFLAGS $(GITLIBS)
++$(REMOTE_CURL_PRIMARY): remote-curl.o http.o http-walker.o $(GITLIBS)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) \
+ 		$(CURL_LIBCURL) $(EXPAT_LIBEXPAT) $(LIBS)
+ 
+-contrib/scalar/scalar$X: $(SCALAR_OBJECTS) GIT-LDFLAGS $(GITLIBS)
++contrib/scalar/scalar$X: $(SCALAR_OBJECTS) $(GITLIBS)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) \
+ 		$(filter %.o,$^) $(LIBS)
+ 
+@@ -2945,7 +2945,7 @@
+ 
+ t/helper/test-tool$X: $(patsubst %,t/helper/%,$(TEST_BUILTINS_OBJS))
+ 
+-t/helper/test-%$X: t/helper/test-%.o GIT-LDFLAGS $(GITLIBS) $(REFTABLE_TEST_LIB)
++t/helper/test-%$X: t/helper/test-%.o $(GITLIBS) $(REFTABLE_TEST_LIB)
+ 	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) $(filter %.a,$^) $(LIBS)
+ 
+ check-sha1:: t/helper/test-tool$X
