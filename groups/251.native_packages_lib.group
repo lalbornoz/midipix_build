@@ -284,13 +284,14 @@ gl_cv_ld_output_def=no"};
 : ${PKG_LIBVORBIS_VERSION:=1.3.7};
 : ${PKG_LIBVORBIS_URL:=https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-${PKG_LIBVORBIS_VERSION}.tar.xz};
 : ${PKG_LIBXML2_DEPENDS:="libz xz"};
-: ${PKG_LIBXML2_SHA256SUM:=aafee193ffb8fe0c82d4afef6ef91972cbaf5feea100edc2f262750611b4be1f};
-: ${PKG_LIBXML2_VERSION:=2.9.10};
-: ${PKG_LIBXML2_URL:=ftp://xmlsoft.org/libxml2/libxml2-${PKG_LIBXML2_VERSION}.tar.gz};
+: ${PKG_LIBXML2_SHA256SUM:=0d676b10cfd13ab966907a3917bd86b17a1c22befdf42144cdc1ad5bb9e65c45};
+: ${PKG_LIBXML2_VERSION:=2.9.13};
+: ${PKG_LIBXML2_URL:=https://gitlab.gnome.org/GNOME/libxml2/-/archive/v${PKG_LIBXML2_VERSION}/libxml2-v${PKG_LIBXML2_VERSION}.tar.gz};
 : ${PKG_LIBXML2_CONFIGURE_ARGS_EXTRA:="--with-python=no"};
 : ${PKG_LIBXML2_INSTALL_FILES_V2:="
 	+%[_files]/bin/\%[_target]-xml2-config=bin/%[_target]-xml2-config
 	m0755=bin/%[_target]-xml2-config"};
+: ${PKG_LIBXML2_IN_TREE:=1};
 : ${PKG_LIBXSLT_DEPENDS:="libxml2 libgcrypt"};
 : ${PKG_LIBXSLT_SHA256SUM:=98b1bd46d6792925ad2dfe9a87452ea2adebf69dcb9919ffd55bf926a7f93f7f};
 : ${PKG_LIBXSLT_VERSION:=1.1.34};
