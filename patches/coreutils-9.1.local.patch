@@ -1,26 +1,3 @@
-diff --git a/src/chmod.c b/src/chmod.c
-index 37b04f500..57ac47f33 100644
---- a/src/chmod.c
-+++ b/src/chmod.c
-@@ -44,8 +44,8 @@ struct change_status
-   enum
-     {
-       CH_NO_STAT,
--      CH_NOT_APPLIED,
-       CH_FAILED,
-+      CH_NOT_APPLIED,
-       CH_NO_CHANGE_REQUESTED,
-       CH_SUCCEEDED
-     }
-@@ -322,7 +322,7 @@ process_file (FTS *fts, FTSENT *ent)
-   if ( ! recurse)
-     fts_set (fts, ent, FTS_SKIP);
- 
--  return CH_NO_CHANGE_REQUESTED <= ch.status;
-+  return CH_NOT_APPLIED <= ch.status;
- }
- 
- /* Recursively change the modes of the specified FILES (the last entry
 diff -ru coreutils-9.0.orig/lib/lchmod.c coreutils-9.0/lib/lchmod.c
 --- coreutils-9.0.orig/lib/lchmod.c     2021-09-24 13:32:44.000000000 +0200
 +++ coreutils-9.0/lib/lchmod.c  2021-09-28 21:21:23.721953133 +0200
@@ -33,28 +10,6 @@ diff -ru coreutils-9.0.orig/lib/lchmod.c coreutils-9.0/lib/lchmod.c
    static char const fmt[] = "/proc/self/fd/%d";
    char buf[sizeof fmt - sizeof "%d" + INT_BUFSIZE_BOUND (int)];
    sprintf (buf, fmt, fd);
-diff -ru coreutils-9.0.orig/src/ls.c coreutils-9.0/src/ls.c
---- coreutils-9.0.orig/src/ls.c 2021-09-24 13:31:05.000000000 +0200
-+++ coreutils-9.0/src/ls.c      2021-09-28 19:14:34.301611763 +0200
-@@ -2273,18 +2273,14 @@
-       if (linelen < 0)
-         {
-           /* Suppress bogus warning re comparing ws.ws_col to big integer.  */
--# if __GNUC_PREREQ (4, 6)
- #  pragma GCC diagnostic push
- #  pragma GCC diagnostic ignored "-Wtype-limits"
--# endif
-           struct winsize ws;
-           if (stdout_isatty ()
-               && 0 <= ioctl (STDOUT_FILENO, TIOCGWINSZ, &ws)
-               && 0 < ws.ws_col)
-             linelen = ws.ws_col <= MIN (PTRDIFF_MAX, SIZE_MAX) ? ws.ws_col : 0;
--# if __GNUC_PREREQ (4, 6)
- #  pragma GCC diagnostic pop
--# endif
-         }
- #endif
-       if (linelen < 0)
 diff -ru coreutils-8.27.orig/configure coreutils-8.27/configure
 --- coreutils-8.27.orig/configure	2017-03-09 06:00:50.000000000 +0100
 +++ coreutils-8.27/configure	2017-08-11 19:04:46.135115372 +0200
