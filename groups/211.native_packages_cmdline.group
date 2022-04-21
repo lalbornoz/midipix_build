@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
-findutils gawk grep jush lzop mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
+findutils gawk grep html_xml_utils jush lzop mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BAS_DEPENDS:="ncurses"};
@@ -99,6 +99,10 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_GREP_VERSION:=3.7};
 : ${PKG_GREP_URL:=https://ftp.gnu.org/gnu/grep/grep-${PKG_GREP_VERSION}.tar.xz};
 : ${PKG_GREP_CONFIGURE_ARGS_EXTRA:=--enable-perl-regexp};
+: ${PKG_HTML_XML_UTILS_DEPENDS:="curl libidn2 libiconv"};
+: ${PKG_HTML_XML_UTILS_SHA256SUM:=41bb9b14e1f4cd6102e3f8dfb79e7146a24c09693869873165c421769a57d137};
+: ${PKG_HTML_XML_UTILS_VERSION:=8.4};
+: ${PKG_HTML_XML_UTILS_URL:=https://www.w3.org/Tools/HTML-XML-utils/html-xml-utils-${PKG_HTML_XML_UTILS_VERSION}.tar.gz};
 : ${PKG_JUSH_DEPENDS:="libeditline"};
 : ${PKG_JUSH_URLS_GIT:="jush-master=https://github.com/troglobit/jush.git@master"};
 : ${PKG_JUSH_SUBDIR:="jush-master"};
