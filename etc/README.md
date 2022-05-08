@@ -115,6 +115,41 @@ amount of logical processors on the build host divided by two (2).
 * **OpenSUSE Linux**:
   binutils bzip2 cmake coreutils curl findutils gawk gcc gcc-c++ git grep gzip hostname linux-glibc-devel lzip make patch perl perl-XML-Parser procps sed tar util-linux wget xz zip
   
+#### The distro matrix:
+
+|   Alpine Linux:   |   Debian/-derived Linux:   |   Gentoo Linux:      |   OpenSUSE Linux:   |
+|                   |                            |                      |                     |
+| binutils          | binutils                   | binutils             | binutils            |
+| bzip2             | bzip2                      | bzip2                | bzip2               |
+| cmake             | cmake                      | cmake                | cmake               |
+| coreutils         | coreutils                  | coreutils            | coreutils           |
+| curl              | curl                       | curl                 | curl                |
+| findutils         | findutils                  | findutils            | findutils           |
+| g++               | g++                        | -                    | gcc-c++             |
+| gawk              | gawk                       | gawk                 | gawk                |
+| gcc               | gcc                        | =gcc-7.5.0-r1        | gcc                 |
+| git               | git                        | dev-vcs/git          | git                 |
+| grep              | grep                       | grep                 | grep                |
+| gzip              | gzip                       | gzip                 | gzip                |
+| -                 | hostname                   | -                    | hostname            |
+| libc-dev          | libc6-dev                  | -                    | linux-glibc-devel   |
+| -                 | libxml-parser-perl         | -                    | -                   |
+| linux-headers     | -                          | -                    | -                   |
+| lzip              | lzip                       | lzip                 | lzip                |
+| make              | make                       | make                 | make                |
+| musl-dev          | -                          | -                    | -                   |
+| net-tools         | -                          | -                    | -                   |
+| patch             | patch                      | patch                | patch               |
+| perl              | perl                       | perl                 | perl                |
+| perl-xml-parser   | -                          | dev-perl/XML-Parser  | perl-XML-Parser     |
+| procps            | procps                     | procps               | procps              |
+| sed               | sed                        | sed                  | sed                 |
+| tar               | tar                        | tar                  | tar                 |
+| util-linux        | util-linux                 | util-linux           | util-linux          |
+| wget              | wget                       | wget                 | wget                |
+| xz                | xz-utils                   | xz-utils             | xz                  |
+| zip               | zip                        | zip                  | zip                 |
+
 > N.B. Busybox is not supported. Awk implementations other than GNU Awk are not supported.  
   
 > N.B. gcc versions >7.5.0 are not supported. clang is not supported.  
