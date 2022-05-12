@@ -2190,3 +2190,16 @@
  
  # if unit tests are enabled, build a static library to link them with
  @BUILD_UNITTESTS_TRUE@noinst_LTLIBRARIES = libcurltool.la
+--- curl-7.83.1/lib/multihandle.h.orig	2022-05-09 09:52:19.000000000 +0200
++++ curl-7.83.1/lib/multihandle.h	2022-05-12 17:53:13.903809251 +0200
+@@ -70,10 +70,6 @@
+ 
+ #define CURLPIPE_ANY (CURLPIPE_MULTIPLEX)
+ 
+-#if !defined(CURL_DISABLE_SOCKETPAIR)
+-#define ENABLE_WAKEUP
+-#endif
+-
+ /* value for MAXIMUM CONCURRENT STREAMS upper limit */
+ #define INITIAL_MAX_CONCURRENT_STREAMS ((1U << 31) - 1)
+ 
