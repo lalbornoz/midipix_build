@@ -78,13 +78,13 @@ ac_cv_snprintf_returns_bogus=0"};
 : ${PKG_GPGME_CONFIGURE_ARGS_EXTRA:="--disable-g13-test --disable-gpgconf-test --disable-gpgsm-test --disable-gpg-test --with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE} --enable-languages=cl"};
 : ${PKG_GPGME_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
 : ${PKG_GNUTLS_DEPENDS:="libunistring libtasn1 nettle"};
-: ${PKG_GNUTLS_SHA256SUM:=646e6c5a9a185faa4cea796d378a1ba8e1148dbb197ca6605f95986a25af2752};
-: ${PKG_GNUTLS_VERSION:=3.7.2};
+: ${PKG_GNUTLS_SHA256SUM:=77065719a345bfb18faa250134be4c53bef70c1bd61f6c0c23ceb8b44f0262ff};
+: ${PKG_GNUTLS_VERSION:=3.7.6};
 : ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
 : ${PKG_GNUTLS_CONFIG_CACHE_EXTRA:="
 gl_cv_func_working_getdelim=yes
 gl_cv_ld_output_def=no"};
-: ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="--disable-static --disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --without-p11-kit --disable-hardware-acceleration --enable-guile=no --with-default-trust-store-dir=/etc/ssl/certs"};
+: ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="PYTHON=python3 --disable-static --disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --without-p11-kit --disable-hardware-acceleration --enable-guile=no --with-default-trust-store-dir=/etc/ssl/certs --without-zstd"};
 : ${PKG_GNUTLS_LIBTOOL:=rdlibtool};
 : ${PKG_HTTPD_SHA256SUM:=0127f7dc497e9983e9c51474bed75e45607f2f870a7675a86dc90af6d572f5c9};
 : ${PKG_HTTPD_VERSION:=2.4.52};
