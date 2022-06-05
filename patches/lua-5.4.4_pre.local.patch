@@ -99,7 +99,7 @@ diff -ru lua-5.4.3.orig/src/Makefile lua-5.4.3/src/Makefile
 +LIB_VERSION = 9:3:4
 +RPATH = /lib
 +V = 5.4
-+R = $V.3
++R = $V.4
 +
 +# The following rules use libtool for compiling and linking in order to
 +# provide shared library support.
