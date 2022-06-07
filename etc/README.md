@@ -73,6 +73,7 @@ in other projects.
 ### 2.1. Building, installing and using a Midipix distribution
 
 A Midipix distribution consists of the following:
+
 * the native Midipix toolchain, consisting of perk, gcc, its dependencies,
   and binutils,
 * musl, a lightweight, fast, simple, and free libc&lbrack;[1](https://www.musl-libc.org/faq.html)&rbrack; used by Midipix,
@@ -693,6 +694,7 @@ pathname of the current item being processed relative to a specification
 with a pattern in it.
   
 The following parameters are defined by default during ``install_files``:
+
 | Name           | Value                                  |
 | -------------  | -------------------------------------- |
 | _builddir      | ${PKG_BUILD_DIR}                       |
@@ -709,11 +711,13 @@ The following parameters are defined by default during ``install_files``:
 | _workdir       | ${BUILD_WORKDIR}                       |
   
 The following operation flags are defined:
+
 | Flag      | Description              |
 | --------- | ------------------------ |
 | ``?``     | Continue on soft failure |
   
 The following operations are defined:
+
 | Operation      | Arity  | Description                                                      |
 | -------------- | ------ | ---------------------------------------------------------------- |
 | ``-``          | Unary  | Remove directories and/or files                                  |
@@ -729,11 +733,13 @@ The following operations are defined:
 | ``T``          | Binary | touch(1) files and/or directories with timestamp                 |
   
 The following expression modifiers are defined:
+
 | Modifier       | Description                               |
 | -------------- | ----------------------------------------- |
 | ``@``          | Recursively reevaluate after substituting |
   
 The following subexpression operators are defined:
+
 | Operation      | Arity  | Description                                                      |
 | -------------- | ------ | ---------------------------------------------------------------- |
 | ``##``         | Unary  | Remove largest prefix from left-hand side                        |
