@@ -196,6 +196,7 @@ owing to the UAC-related filtering policy of tokens introduced by Windows Vista&
 
 The following build-time system requirements are assessed on build hosts
 equipped with the following hardware at minimum:
+
 * Intel(R) Xeon(R) CPU W3520 @ 2.67GHz (8 cores)
 * 7200 RPM SATA 3.1 HDD
 * 6 GB RAM
