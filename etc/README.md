@@ -119,7 +119,7 @@ amount of logical processors on the build host divided by two (2).
 #### The distro matrix:
 
 |   Alpine Linux:   |   Debian/-derived Linux:   |   Gentoo Linux:      |   OpenSUSE Linux:   |
-|                   |                            |                      |                     |
+| ----------------- | -------------------------- | -------------------- | ------------------- |
 | binutils          | binutils                   | binutils             | binutils            |
 | bzip2             | bzip2                      | bzip2                | bzip2               |
 | cmake             | cmake                      | cmake                | cmake               |
