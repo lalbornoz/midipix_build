@@ -77,7 +77,6 @@ HOST_TOOLS_PREFIX="${PREFIX}";
 	@pkgconf=bin/pkg-config
 	+%[_files]/bin/\%[_target]-pkg-config=bin/%[_target]-pkg-config
 	m0755=bin/%[_target]-pkg-config"};
-: ${PKG_SLIBTOOL_HOST_DEPENDS:="m4_host"};
 : ${PKG_SLIBTOOL_HOST_URLS_GIT:="slibtool=${DEFAULT_GITROOT}/slibtool"};
 : ${PKG_SLIBTOOL_HOST_CONFIGURE_ARGS:=--prefix=};
 : ${PKG_TPAX_HOST_URLS_GIT:="tpax=https://git.midipix.org/tpax@main"};
