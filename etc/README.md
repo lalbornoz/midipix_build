@@ -134,7 +134,6 @@ amount of logical processors on the build host divided by two (2).
 | gzip              | gzip                       | gzip                 | gzip                |
 | -                 | hostname                   | -                    | hostname            |
 | libc-dev          | libc6-dev                  | -                    | linux-glibc-devel   |
-| -                 | libxml-parser-perl         | -                    | -                   |
 | linux-headers     | -                          | -                    | -                   |
 | lzip              | lzip                       | lzip                 | lzip                |
 | m4                | m4                         | m4                   | m4                  |
@@ -143,7 +142,7 @@ amount of logical processors on the build host divided by two (2).
 | net-tools         | -                          | -                    | -                   |
 | patch             | patch                      | patch                | patch               |
 | perl              | perl                       | perl                 | perl                |
-| perl-xml-parser   | -                          | dev-perl/XML-Parser  | perl-XML-Parser     |
+| perl-xml-parser   | libxml-parser-perl         | dev-perl/XML-Parser  | perl-XML-Parser     |
 | procps            | procps                     | procps               | procps              |
 | sed               | sed                        | sed                  | sed                 |
 | tar               | tar                        | tar                  | tar                 |
