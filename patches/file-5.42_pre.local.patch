@@ -1,0 +1,12 @@
+diff -ru file-5.42.orig/src/Makefile.in file-5.42/src/Makefile.in
+--- file-5.42.orig/src/Makefile.in	2022-06-29 22:49:15.379469079 +0200
++++ file-5.42/src/Makefile.in	2022-06-29 22:56:35.117265729 +0200
+@@ -199,7 +199,7 @@
+ CCLD = $(CC)
+ LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
++	$(AM_LDFLAGS) -o $@
+ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+ am__v_CCLD_0 = @echo "  CCLD    " $@;
