@@ -9,9 +9,12 @@ HOST_DEPS_RPM_GROUP_DEPENDS="host_deps host_tools";
 HOST_DEPS_RPM_LDFLAGS_CONFIGURE="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 HOST_DEPS_RPM_MAKEFLAGS_INSTALL_EXTRA="prefix= PREFIX=";
 HOST_DEPS_RPM_PACKAGES="
-libarchive_host popt_host rpm_host";
+file_host libarchive_host popt_host rpm_host";
 HOST_DEPS_RPM_PKG_CONFIG="${PREFIX}/bin/pkgconf";
 HOST_DEPS_RPM_PREFIX="${PREFIX}";
+: ${PKG_FILE_HOST_SHA256SUM:=c076fb4d029c74073f15c43361ef572cfb868407d347190ba834af3b1639b0e4};
+: ${PKG_FILE_HOST_VERSION:=5.42};
+: ${PKG_FILE_HOST_URL:=http://ftp.astron.com/pub/file/file-${PKG_FILE_HOST_VERSION}.tar.gz};
 : ${PKG_LIBARCHIVE_HOST_SHA256SUM:=f0b19ff39c3c9a5898a219497ababbadab99d8178acc980155c7e1271089b5a0};
 : ${PKG_LIBARCHIVE_HOST_VERSION:=3.5.2};
 : ${PKG_LIBARCHIVE_HOST_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_HOST_VERSION}.tar.xz};
