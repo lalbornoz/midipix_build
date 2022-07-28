@@ -19,7 +19,8 @@ ex_pkg_check_depends() {
 	&& _pkg_depends="$(rtl_uniq $(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS")))"; then
 		for _pkg_name_depend in $(rtl_uniq ${_pkg_depends}); do
 			if ! rtl_lmatch "${_pkg_disabled}" "${_pkg_name_depend}"\
-			&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name_depend}"; then
+			&& ! rtl_lmatch "${_pkg_finished}" "${_pkg_name_depend}"\
+			&& ! ex_pkg_state_test "${_pkg_name_depend}" finish; then
 				if ! rtl_lmatch "${_pkg_names}" "${_pkg_name_depend}"; then
 					rtl_log_msg "fatalexit" "${MSG_build_unknown_dep}" "${_pkg_name_depend}" "${_pkg_name}";
 				else
