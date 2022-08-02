@@ -3,13 +3,17 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bearssl fribidi glib ivykis jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
+aspell bearssl fribidi glib ivykis jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
 libuv libvorbis libxml2 libxslt libz libzip lzo nettle onig sdl1 sdl1_net sdl1_mixer
 sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
+: ${PKG_ASPELL_SHA256SUM:=f9b77e515334a751b2e60daab5db23499e26c9209f5e7b7443b05235ad0226f2};
+: ${PKG_ASPELL_VERSION:=0.60.8};
+: ${PKG_ASPELL_URL:=https://ftp.gnu.org/gnu/aspell/aspell-${PKG_ASPELL_VERSION}.tar.gz};
+: ${PKG_ASPELL_LDFLAGS_CONFIGURE_EXTRA:="-ltinfow"};
 : ${PKG_BEARSSL_SHA256SUM:=6705bba1714961b41a728dfc5debbe348d2966c117649392f8c8139efc83ff14};
 : ${PKG_BEARSSL_VERSION:=0.6};
 : ${PKG_BEARSSL_URL:=https://bearssl.org/bearssl-${PKG_BEARSSL_VERSION}.tar.gz};
