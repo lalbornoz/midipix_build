@@ -1,0 +1,27 @@
+diff -ru enchant-2.3.3.orig/configure enchant-2.3.3/configure
+--- enchant-2.3.3.orig/configure	2022-04-16 15:58:24.000000000 +0000
++++ enchant-2.3.3/configure	2022-08-02 12:42:43.209993400 +0000
+@@ -8100,23 +8100,6 @@
+ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ 
+-  if test x$ax_cxx_compile_cxx11_required = xtrue; then
+-    if test x$ac_success = xno; then
+-      as_fn_error $? "*** A compiler with support for C++11 language features is required." "$LINENO" 5
+-    fi
+-  fi
+-  if test x$ac_success = xno; then
+-    HAVE_CXX11=0
+-    { $as_echo "$as_me:${as_lineno-$LINENO}: No compiler with C++11 support was found" >&5
+-$as_echo "$as_me: No compiler with C++11 support was found" >&6;}
+-  else
+-    HAVE_CXX11=1
+-
+-$as_echo "#define HAVE_CXX11 1" >>confdefs.h
+-
+-  fi
+-
+-
+ 
+ ac_ext=mm
+ ac_cpp='$OBJCXXCPP $CPPFLAGS'

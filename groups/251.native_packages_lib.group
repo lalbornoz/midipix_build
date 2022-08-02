@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-aspell bearssl fribidi glib hunspell ivykis jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
+aspell bearssl enchant fribidi glib hunspell ivykis jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
@@ -19,6 +19,11 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
 : ${PKG_BEARSSL_URL:=https://bearssl.org/bearssl-${PKG_BEARSSL_VERSION}.tar.gz};
 : ${PKG_BEARSSL_IN_TREE:=1};
 : ${PKG_BEARSSL_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
+: ${PKG_ENCHANT_DEPENDS:="glib hunspell aspell"};
+: ${PKG_ENCHANT_SHA256SUM:=3da12103f11cf49c3cf2fd2ce3017575c5321a489e5b9bfa81dd91ec413f3891};
+: ${PKG_ENCHANT_VERSION:=2.3.3};
+: ${PKG_ENCHANT_URL:=https://github.com/AbiWord/enchant/releases/download/v${PKG_ENCHANT_VERSION}/enchant-${PKG_ENCHANT_VERSION}.tar.gz};
+: ${PKG_ENCHANT_CXXFLAGS_CONFIGURE_EXTRA:="-std=c++0x"};
 : ${PKG_FRIBIDI_SHA256SUM:=0cd233f97fc8c67bb3ac27ce8440def5d3ffacf516765b91c2cc654498293495};
 : ${PKG_FRIBIDI_VERSION:=1.0.12};
 : ${PKG_FRIBIDI_URL:=https://github.com/fribidi/fribidi/releases/download/v${PKG_FRIBIDI_VERSION}/fribidi-${PKG_FRIBIDI_VERSION}.tar.xz};
