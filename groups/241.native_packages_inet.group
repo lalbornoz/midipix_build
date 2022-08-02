@@ -242,7 +242,7 @@ mutt_cv_regex_broken=no"};
 : ${PKG_WEECHAT_SHA256SUM:=f095f452aca0a92d86f46db74d712a890bca130fe1f20f7fad6e515b5c3be644};
 : ${PKG_WEECHAT_VERSION:=3.6};
 : ${PKG_WEECHAT_URL:=https://weechat.org/files/src/weechat-${PKG_WEECHAT_VERSION}.tar.gz};
-: ${PKG_WEECHAT_CONFIGURE_ARGS_EXTRA:="--disable-aspell --disable-guile --disable-javascript --disable-perl --disable-python --disable-ruby --disable-tcl"};
+: ${PKG_WEECHAT_CONFIGURE_ARGS_EXTRA:="--disable-guile --disable-javascript --disable-perl --disable-python --disable-ruby --disable-tcl"};
 : ${PKG_WEECHAT_ENV_VARS_EXTRA:="CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config:LIBGCRYPT_CONFIG=${PREFIX_NATIVE}/bin/libgcrypt-config:PKGCONFIG=${DEFAULT_TARGET}-pkg-config"};
 : ${PKG_WEECHAT_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/lua5.4 -I${PREFIX_NATIVE}/include/php -I${PREFIX_NATIVE}/include/php/main -I${PREFIX_NATIVE}/include/php/Zend -I${PREFIX_NATIVE}/include/php/TSRM"};
 : ${PKG_WEECHAT_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfow -Wl,--no-as-needed"};
