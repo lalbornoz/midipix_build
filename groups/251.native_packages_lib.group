@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-aspell bearssl fribidi glib ivykis jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
+aspell bearssl fribidi glib hunspell ivykis jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
@@ -27,6 +27,11 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
 : ${PKG_GLIB_VERSION:=2.56.2};
 : ${PKG_GLIB_URL:="https://download.gnome.org/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz https://ftp.pieskovisko.sk/slackware/slackware-current/source/l/glib2/glib-${PKG_GLIB_VERSION}.tar.xz"};
 : ${PKG_GLIB_CONFIGURE_ARGS_EXTRA:="--disable-dtrace --disable-libelf --disable-libmount --with-python=${PREFIX}/bin/python3 --with-libiconv=gnu"};
+: ${PKG_HUNSPELL_DEPENDS:="readline"};
+: ${PKG_HUNSPELL_SHA256SUM:=57be4e03ae9dd62c3471f667a0d81a14513e314d4d92081292b90435944ff951};
+: ${PKG_HUNSPELL_VERSION:=1.7.0};
+: ${PKG_HUNSPELL_URL:=https://github.com/hunspell/hunspell/files/2573619/hunspell-${PKG_HUNSPELL_VERSION}.tar.gz};
+: ${PKG_HUNSPELL_CONFIGURE_ARGS_EXTRA:="--with-ui --with-readline"};
 : ${PKG_IVYKIS_SHA256SUM:=6ef8ed255814e5068473356877da55d67493eeafd978884cdecc5a3e58067129};
 : ${PKG_IVYKIS_VERSION:=0.42.4};
 : ${PKG_IVYKIS_URL:=https://mirrors.dotsrc.org/debian/pool/main/i/ivykis/ivykis_${PKG_IVYKIS_VERSION}.orig.tar.gz};
