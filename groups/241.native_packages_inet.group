@@ -191,8 +191,8 @@ mutt_cv_regex_broken=no"};
 : ${PKG_OPENLITESPEED_MAKEFLAGS_BUILD:=-j1};
 : ${PKG_OPENLITESPEED_PREFIX:=${PREFIX_NATIVE}/lsws};
 : ${PKG_OPENSMTPD_DEPENDS:="libevent libressl libz musl_fts"};
-: ${PKG_OPENSMTPD_SHA256SUM:=7478e918b41e734a39ad082df55cb2607f0933a506fab2c3dd3554a95cdf08ca};
-: ${PKG_OPENSMTPD_VERSION:=6.7.1p1};
+: ${PKG_OPENSMTPD_SHA256SUM:=51bf05312fe56764748faab9e63170bfbb7c7d84a37c4117b62b2681eb3a4d17};
+: ${PKG_OPENSMTPD_VERSION:=6.8.0p2};
 : ${PKG_OPENSMTPD_URL:=https://www.opensmtpd.org/archives/opensmtpd-${PKG_OPENSMTPD_VERSION}.tar.gz}
 : ${PKG_OPENSMTPD_CONFIGURE_ARGS_EXTRA:="--with-maildir=/var/mail --with-libz=${PREFIX_NATIVE} --with-libevent=${PREFIX_NATIVE}"};
 : ${PKG_OPENSMTPD_IN_TREE:=1};
