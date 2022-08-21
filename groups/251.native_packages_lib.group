@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-aspell bearssl enchant fribidi glib hunspell ivykis jansson lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
+aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
@@ -44,6 +44,10 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
 : ${PKG_JANSSON_SHA256SUM:=f4f377da17b10201a60c1108613e78ee15df6b12016b116b6de42209f47a474f};
 : ${PKG_JANSSON_VERSION:=2.13.1};
 : ${PKG_JANSSON_URL:=https://digip.org/jansson/releases/jansson-${PKG_JANSSON_VERSION}.tar.gz};
+: ${PKG_KVAZAAR_SHA256SUM:=a76998462924ab8409cf8de4947ba5a5023daa33207676e9c4eefc2bbd46c834};
+: ${PKG_KVAZAAR_VERSION:=2.1.0};
+: ${PKG_KVAZAAR_URL:=https://github.com/ultravideo/kvazaar/releases/download/v${PKG_KVAZAAR_VERSION}/kvazaar-${PKG_KVAZAAR_VERSION}.tar.xz};
+: ${PKG_KVAZAAR_CONFIGURE_ARGS_EXTRA:="--disable-asm"};
 : ${PKG_LAME_SHA256SUM:=ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e};
 : ${PKG_LAME_VERSION:=3.100};
 : ${PKG_LAME_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/lame/lame-${PKG_LAME_VERSION}.tar.gz};
