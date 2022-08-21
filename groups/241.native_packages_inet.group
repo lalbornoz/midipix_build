@@ -150,8 +150,8 @@ gl_cv_ld_output_def=no"};
 : ${PKG_MICROSOCKS_URLS_GIT:=microsocks=https://github.com/rofl0r/microsocks.git@master};
 : ${PKG_MICROSOCKS_BUILD_DIR:=microsocks};
 : ${PKG_MUTT_DEPENDS:="gnutls libz ncursesw"};
-: ${PKG_MUTT_SHA256SUM:=ffa2d93517cfc606fe01daffc5f12e42062a1c134d3b9af78484ebc5430888d3};
-: ${PKG_MUTT_VERSION:=2.2.6};
+: ${PKG_MUTT_SHA256SUM:=eb13858f58bb369f477bf652d90e9b6aaddd0d610acbea3455049e5efad36df1};
+: ${PKG_MUTT_VERSION:=2.2.7};
 : ${PKG_MUTT_URL:=http://ftp.mutt.org/pub/mutt/mutt-${PKG_MUTT_VERSION}.tar.gz};
 : ${PKG_MUTT_CONFIG_CACHE_EXTRA:="
 mutt_cv_c99_snprintf=yes
