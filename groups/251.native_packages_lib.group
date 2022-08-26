@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
+aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libao libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
@@ -53,6 +53,13 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
 : ${PKG_LAME_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/lame/lame-${PKG_LAME_VERSION}.tar.gz};
 : ${PKG_LAME_CONFIGURE_ARGS_EXTRA:="--enable-nasm"};
 : ${PKG_LAME_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfo -Wl,--no-as-needed"};
+: ${PKG_LIBAO_DEPENDS:="w32api w32lib"};
+: ${PKG_LIBAO_SHA256SUM:=03ad231ad1f9d64b52474392d63c31197b0bc7bd416e58b1c10a329a5ed89caf};
+: ${PKG_LIBAO_VERSION:=1.2.0};
+: ${PKG_LIBAO_URL:=http://downloads.xiph.org/releases/ao/libao-${PKG_LIBAO_VERSION}.tar.gz};
+: ${PKG_LIBAO_CONFIGURE_ARGS_EXTRA:="--enable-wmm --disable-esd --without-x"};
+: ${PKG_LIBAO_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_ANSI_DEFAULT"};
+: ${PKG_LIBAO_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lwinmm"}
 : ${PKG_LIBARCHIVE_DEPENDS:="libxml2 xz libiconv bzip2"};
 : ${PKG_LIBARCHIVE_SHA256SUM:=5a411aceb978f43e626f0c2d1812ddd8807b645ed892453acabd532376c148e6};
 : ${PKG_LIBARCHIVE_VERSION:=3.6.1};

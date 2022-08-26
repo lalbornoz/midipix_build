@@ -1,0 +1,88 @@
+diff -ru libao-1.2.0.orig/src/ao_wmm.c libao-1.2.0/src/ao_wmm.c
+--- libao-1.2.0.orig/src/ao_wmm.c	2012-02-14 00:46:06.000000000 +0000
++++ libao-1.2.0/src/ao_wmm.c	2022-08-26 14:17:15.193852800 +0000
+@@ -31,9 +31,7 @@
+ #define _CRT_SECURE_NO_DEPRECATE
+ 
+ #include <windows.h>
+-#include <mmreg.h>
+ #include <mmsystem.h>
+-#include <ksmedia.h>
+ 
+ #include <stdlib.h>
+ #include <string.h>
+@@ -41,6 +39,47 @@
+ #include <stdarg.h>
+ #include <stdio.h>
+ 
++#define waveOutGetErrorText waveOutGetErrorTextA
++#define waveOutGetDevCaps waveOutGetDevCapsA
++
++#ifndef WAVE_MAPPER
++#define WAVE_MAPPER ((unsigned int)-1)
++#endif
++
++#ifndef WAVE_FORMAT_EXTENSIBLE
++#define WAVE_FORMAT_EXTENSIBLE 0xFFFE
++#endif
++
++#ifndef WAVE_ALLOWSYNC
++#define WAVE_ALLOWSYNC 0x0002
++#endif
++
++#ifndef CALLBACK_NULL
++#define CALLBACK_NULL (unsigned int)(0x00000000)
++#endif
++
++typedef struct {
++	WAVEFORMATEX Format;
++	union {
++		WORD wValidBitsPerSample;
++		WORD wSamplesPerBlock;
++		WORD wReserved;
++	} Samples;
++	DWORD dwChannelMask;
++	GUID SubFormat;
++} WAVEFORMATEXTENSIBLE,*PWAVEFORMATEXTENSIBLE;
++
++typedef struct tagWAVEOUTCAPSA {
++	WORD wMid;
++	WORD wPid;
++	UINT vDriverVersion;
++	CHAR szPname[32];
++	DWORD dwFormats;
++	WORD wChannels;
++	WORD wReserved1;
++	DWORD dwSupport;
++} WAVEOUTCAPS;
++
+ #ifndef KSDATAFORMAT_SUBTYPE_PCM
+ #define KSDATAFORMAT_SUBTYPE_PCM (GUID) {0x00000001,0x0000,0x0010,{0x80,0x00,0x00,0xaa,0x00,0x38,0x9b,0x71}}
+ #endif
+@@ -339,7 +378,7 @@
+       unsigned int ms = (internal->msPerBlock>>1)+1;
+       if (wait_all) ms *= n;
+       adebug("sleep for %ums wait on %d blocks\n",ms, internal->sent_blocks);
+-      Sleep(ms);
++      usleep(ms * 1000);
+     }
+   }
+ 
+@@ -558,7 +597,7 @@
+     const int idx = _ao_get_free_block(device);
+ 
+     if (idx == -1) {
+-      Sleep(internal->msPerBlock);
++      usleep(internal->msPerBlock * 1000);
+       continue;
+     }
+ 
+@@ -572,7 +611,7 @@
+     }
+ 
+     /* Do copy */
+-    CopyMemory((char*)internal->wh[idx].wh.lpData
++    memcpy((char*)internal->wh[idx].wh.lpData
+ 	       + internal->wh[idx].count,
+ 	       output_samples, n);
+ 

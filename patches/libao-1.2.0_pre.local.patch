@@ -1,0 +1,12 @@
+diff -ru libao-1.2.0.orig/configure libao-1.2.0/configure
+--- libao-1.2.0.orig/configure	2014-01-27 17:10:36.000000000 +0000
++++ libao-1.2.0/configure	2022-08-26 14:36:45.678689200 +0000
+@@ -12333,7 +12333,7 @@
+ 
+ 
+ 
+-have_wmm="no"
++have_wmm="yes"
+ # Check whether --enable-wmm was given.
+ if test "${enable_wmm+set}" = set; then :
+   enableval=$enable_wmm;
