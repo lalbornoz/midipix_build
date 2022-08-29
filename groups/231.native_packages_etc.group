@@ -164,6 +164,7 @@ zstd")";
 : ${PKG_GETTEXT_TINY_VERSION:=0.3.2};
 : ${PKG_GETTEXT_TINY_URL:=https://toolchains.bootlin.com/downloads/releases/sources/gettext-tiny-${PKG_GETTEXT_TINY_VERSION}/gettext-tiny-${PKG_GETTEXT_TINY_VERSION}.tar.gz};
 : ${PKG_GETTEXT_TINY_BUILD_DIR:=gettext-tiny-${PKG_GETTEXT_TINY_VERSION}};
+: ${PKG_GETTEXT_TINY_CFLAGS_BUILD_EXTRA:="-DLIBICONV_PLUG"};
 : ${PKG_GHOSTPDL_DEPENDS:="libpng tiff fontconfig libz libXt libX11 freetype expat openjpeg"};
 : ${PKG_GHOSTPDL_SHA256SUM:=9059bf9c0685e88206d34b702f5a15f148451959f73ab2d01d44a5b12088a762};
 : ${PKG_GHOSTPDL_VERSION:=9.52};
