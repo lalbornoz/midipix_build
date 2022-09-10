@@ -1,0 +1,21 @@
+diff -ru tree-2.0.4.orig/Makefile tree-2.0.4/Makefile
+--- tree-2.0.4.orig/Makefile	2022-09-06 15:31:53.000000000 +0200
++++ tree-2.0.4/Makefile	2022-09-10 22:06:29.081774574 +0200
+@@ -26,7 +26,7 @@
+ DESTDIR=${PREFIX}/bin
+ MAN=tree.1
+ # Probably needs to be ${PREFIX}/share/man for most systems now
+-MANDIR=${PREFIX}/man
++MANDIR=${DESTDIR}${PREFIX}/man
+ OBJS=tree.o list.o hash.o color.o file.o filter.o info.o unix.o xml.o json.o html.o strverscmp.o
+ 
+ # Uncomment options below for your particular OS:
+@@ -105,7 +105,7 @@
+ install: tree
+ 	$(INSTALL) -d $(DESTDIR)
+ 	$(INSTALL) -d $(MANDIR)/man1
+-	$(INSTALL) $(TREE_DEST) $(DESTDIR)/$(TREE_DEST); \
++	$(INSTALL) $(TREE_DEST) $(DESTDIR)/bin/$(TREE_DEST); \
+ 	$(INSTALL) -m 644 doc/$(MAN) $(MANDIR)/man1/$(MAN)
+ 
+ distclean:
