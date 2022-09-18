@@ -1,0 +1,14 @@
+diff -ru xorgproto-2022.2.orig/include/X11/Xwindows.h xorgproto-2022.2/include/X11/Xwindows.h
+--- xorgproto-2022.2.orig/include/X11/Xwindows.h	2022-08-11 02:16:33.000000000 +0200
++++ xorgproto-2022.2/include/X11/Xwindows.h	2022-09-18 23:34:11.811510908 +0200
+@@ -101,10 +101,6 @@
+ # define RT_CURSOR       ((RESTYPE)5)
+ #endif
+ 
+-#ifndef __CYGWIN__
+-#define sleep(x) Sleep((x) * 1000)
+-#endif
+-
+ #if defined(WIN32) && (!defined(PATH_MAX) || PATH_MAX < 1024)
+ # undef PATH_MAX
+ # define PATH_MAX 1024
