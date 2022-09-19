@@ -94,7 +94,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_GAWK_SHA256SUM:=d87629386e894bbea11a5e00515fc909dc9b7249529dad9e6a3a2c77085f7ea2};
 : ${PKG_GAWK_VERSION:=5.1.1};
 : ${PKG_GAWK_URL:=https://ftp.gnu.org/gnu/gawk/gawk-${PKG_GAWK_VERSION}.tar.xz};
-: ${PKG_GREP_DEPENDS:="pcre"};
+: ${PKG_GREP_DEPENDS:="pcre2"};
 : ${PKG_GREP_SHA256SUM:=498d7cc1b4fb081904d87343febb73475cf771e424fb7e6141aff66013abc382};
 : ${PKG_GREP_VERSION:=3.8};
 : ${PKG_GREP_URL:=https://ftp.gnu.org/gnu/grep/grep-${PKG_GREP_VERSION}.tar.xz};
