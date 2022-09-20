@@ -1,0 +1,11 @@
+--- openssh-9.0p1/configure.orig	2022-04-07 06:51:43.000000000 +0200
++++ openssh-9.0p1/configure	2022-09-20 05:19:31.505197136 +0200
+@@ -11394,8 +11394,6 @@
+ 		if test "x$use_pkgconfig_for_libedit" = "xyes"; then
+ 			LIBEDIT=`$PKGCONFIG --libs libedit`
+ 			CPPFLAGS="$CPPFLAGS `$PKGCONFIG --cflags libedit`"
+-		else
+-			LIBEDIT="-ledit -lcurses"
+ 		fi
+ 		OTHERLIBS=`echo $LIBEDIT | sed 's/-ledit//'`
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for el_init in -ledit" >&5
