@@ -389,6 +389,7 @@ have_shm_mmap_posix=yes"};
 : ${PKG_PHP_ENV_VARS_EXTRA:="HOST_CC=gcc:READLINE_DIR=${PREFIX_NATIVE}/include/readline"};
 : ${PKG_PHP_LIBTOOL:=rdlibtool};
 : ${PKG_PHP_MAKEFLAGS_BUILD:=-j1};
+: ${PKG_PHP_MAKEFLAGS_INSTALL_EXTRA:="prefix=${PREFIX_NATIVE}"};
 : ${PKG_POPT_SHA256SUM:=5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1};
 : ${PKG_POPT_VERSION:=1.18};
 : ${PKG_POPT_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/popt/popt-${PKG_POPT_VERSION}.tar.gz};
