@@ -1,0 +1,12 @@
+diff -ru mailutils-3.15.orig/lib/Makefile.in mailutils-3.15/lib/Makefile.in
+--- mailutils-3.15.orig/lib/Makefile.in	2022-04-17 20:20:37.000000000 +0200
++++ mailutils-3.15/lib/Makefile.in	2022-09-23 01:00:08.964321598 +0200
+@@ -1031,7 +1031,7 @@
+ noinst_LIBRARIES = libmuscript.a libmutcpwrap.a
+ libmuaux_la_SOURCES = mailcap.c manlock.c mdecode.c signal.c strexit.c \
+ 	mu_umaxtostr.c mu_umaxtostr.h $(am__append_3) $(am__append_4)
+-libmuaux_la_LIBADD = gnu/libgnu.la
++libmuaux_la_LIBADD = gnu/libgnu.la ../libmailutils/libmailutils.la
+ libmuaux_la_LDFLAGS = -version-info @VI_CURRENT@:@VI_REVISION@:@VI_AGE@
+ libmutcpwrap_a_SOURCES = tcpwrap.c
+ noinst_HEADERS = \
