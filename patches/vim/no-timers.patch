@@ -1,0 +1,18 @@
+diff -ru vim-9.0.0234.orig/src/feature.h vim-9.0.0234/src/feature.h
+--- vim-9.0.0234.orig/src/feature.h	2022-08-21 11:40:07.000000000 +0200
++++ vim-9.0.0234/src/feature.h	2022-10-08 01:45:47.482619953 +0200
+@@ -288,12 +288,14 @@
+ /*
+  * +reltime		reltime() function
+  */
++#ifndef __midipix__
+ #if defined(FEAT_NORMAL) \
+ 	&& defined(FEAT_EVAL) \
+ 	&& ((defined(HAVE_GETTIMEOFDAY) && defined(HAVE_SYS_TIME_H)) \
+ 		|| defined(MSWIN))
+ # define FEAT_RELTIME
+ #endif
++#endif
+ 
+ /*
+  * +timers		timer_start()
