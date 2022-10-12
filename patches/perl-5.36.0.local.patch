@@ -1,0 +1,13 @@
+diff -ru perl-5.36.0.orig/installman perl-5.36.0/installman
+--- perl-5.36.0.orig/installman	2022-10-12 21:41:08.169953621 +0200
++++ perl-5.36.0/installman	2022-10-12 21:59:24.769494586 +0200
+@@ -152,9 +152,7 @@
+ 	    next;
+ 	}
+ 
+-	if ($^O eq 'os2' || $^O eq 'amigaos' || $^O eq 'cygwin') {
+             $manpage =~ s#::#.#g;
+-	}
+         my $tmp = "${mandir}/${manpage}.tmp";
+ 	$manpage = "${mandir}/${manpage}.${manext}";
+ 
