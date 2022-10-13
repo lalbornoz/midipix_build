@@ -122,6 +122,7 @@ make_cv_synchronous_posix_spawn=yes"};
 : ${PKG_PERL_CFLAGS_CONFIGURE_EXTRA:="-std=gnu99"};
 : ${PKG_PERL_ENV_VARS_EXTRA:="TARGET=${DEFAULT_TARGET}"};
 : ${PKG_PERL_MAKEFLAGS_BUILD:="-j1 PERL_ARCHIVE_AFTER=${PREFIX}/tmp/perl-native-${DEFAULT_TARGET}/perl-${PKG_PERL_VERSION}/libperl.so OTHERLDFLAGS=--sysroot=${PREFIX_NATIVE}"};
+: ${PKG_PERL_INSTALL_FILES_V2:="+%[_subdir]/libperl.so=lib/libperl.so"};
 : ${PKG_PERL_SUBDIR:=perl-${PKG_PERL_VERSION}};
 : ${PKG_PERL_IN_TREE:=1};
 : ${PKG_POSIX_CC_DEPENDS:="musl_compat"};
