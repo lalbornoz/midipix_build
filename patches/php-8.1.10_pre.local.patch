@@ -40,6 +40,15 @@ diff -Nru php-8.1.0.orig/configure php-8.1.0/configure
    *)
      BUILD_CLI="\$(LIBTOOL) --mode=link \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \$(PHP_GLOBAL_OBJS:.lo=.o) \$(PHP_BINARY_OBJS:.lo=.o) \$(PHP_CLI_OBJS:.lo=.o) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CLI_PATH)"
      ;;
+@@ -7982,7 +7982,7 @@
+   php_sapi_module=static
+ ;;
+     esac
+-    install_sapi="install-sapi"
++    install_sapi=""
+
+
+   case sapi/embed in
 @@ -11403,14 +11406,12 @@
  
    BUILD_PHPDBG="\$(LIBTOOL) --mode=link \
