@@ -1,3 +1,32 @@
+diff -ru php-8.1.10.orig/build/Makefile.global php-8.1.10/build/Makefile.global
+--- php-8.1.10.orig/build/Makefile.global       2022-10-18 01:06:50.776890570 +0200
++++ php-8.1.10/build/Makefile.global    2022-10-18 01:07:22.908889564 +0200
+@@ -11,9 +11,9 @@
+        @echo "Don't forget to run 'make test'."
+        @echo
+
+-build-modules: $(PHP_MODULES) $(PHP_ZEND_EX)
++build-modules: $(PHP_MODULES) $(PHP_ZEND_EX) libphp.la
+
+-build-binaries: $(PHP_BINARIES)
++build-binaries: $(PHP_BINARIES) libphp.la
+
+ libphp.la: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
+        $(LIBTOOL) --mode=link $(CC) $(LIBPHP_CFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -rpath $(phptempdir) $(EXTRA_LDFLAGS) $(LDFLAGS) $(PHP_RPATHS) $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@
+@@ -41,10 +41,10 @@
+
+ install-modules: build-modules
+	@test -d modules && \
+-	$(mkinstalldirs) $(INSTALL_ROOT)$(EXTENSION_DIR)
+-	@echo "Installing shared extensions:     $(INSTALL_ROOT)$(EXTENSION_DIR)/"
++	$(mkinstalldirs) $(DESTDIR)$(EXTENSION_DIR)
++	@echo "Installing shared extensions:     $(DESTDIR)$(EXTENSION_DIR)/"
+	@rm -f modules/*.la >/dev/null 2>&1
+-	@$(INSTALL) modules/* $(INSTALL_ROOT)$(EXTENSION_DIR)
++	@$(INSTALL) modules/* $(DESTDIR)$(EXTENSION_DIR)
+
+ install-headers:
+        -@if test "$(INSTALL_HEADERS)"; then \
 diff -Nru php-8.1.0.orig/build/libtool.m4 php-8.1.0/build/libtool.m4
 --- php-8.1.0.orig/build/libtool.m4	2021-11-23 19:56:11.000000000 +0100
 +++ php-8.1.0/build/libtool.m4	2021-11-26 11:59:47.795396689 +0100
@@ -12,21 +41,6 @@ diff -Nru php-8.1.0.orig/build/libtool.m4 php-8.1.0/build/libtool.m4
  # Prevent multiple expansion
  define([AC_PROG_LIBTOOL], [])
  ])# _AC_PROG_LIBTOOL
-diff -Nru php-8.1.0.orig/build/Makefile.global php-8.1.0/build/Makefile.global
---- php-8.1.0.orig/build/Makefile.global	2021-11-23 19:56:11.000000000 +0100
-+++ php-8.1.0/build/Makefile.global	2021-11-26 11:59:25.139396233 +0100
-@@ -11,9 +11,9 @@
- 	@echo "Don't forget to run 'make test'."
- 	@echo
- 
--build-modules: $(PHP_MODULES) $(PHP_ZEND_EX)
-+build-modules: $(PHP_MODULES) $(PHP_ZEND_EX) libphp.la
- 
--build-binaries: $(PHP_BINARIES)
-+build-binaries: $(PHP_BINARIES) libphp.la
- 
- libphp.la: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
- 	$(LIBTOOL) --mode=link $(CC) $(LIBPHP_CFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -rpath $(phptempdir) $(EXTRA_LDFLAGS) $(LDFLAGS) $(PHP_RPATHS) $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@
 diff -Nru php-8.1.0.orig/configure php-8.1.0/configure
 --- php-8.1.0.orig/configure	2021-11-23 19:56:11.000000000 +0100
 +++ php-8.1.0/configure	2021-11-28 11:23:38.328485103 +0100
