@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-atk cairo fontconfig freetype freetype_pre gdk glew gtk2 harfbuzz imlib2
+atk cairo fontconfig freetype freetype_pre gdk glew gtk2 gxemul harfbuzz imlib2
 libcaca libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau
 libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile
 libXmu libXpm libXt libXtst libXcursor mesa pango pixman rdesktop rxvt_unicode
@@ -60,6 +60,14 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_GTK2_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -I${PREFIX_NATIVE}/include/pango-1.0 -I${PREFIX_NATIVE}/include/gdk-pixbuf-2.0 -I${PREFIX_NATIVE}/include/atk-1.0 -I${PREFIX_NATIVE}/include/cairo -I${PREFIX_NATIVE}/include/glib-2.0 -I${PREFIX_NATIVE}/include/glib-2.0/gio -I${PREFIX_NATIVE}/lib/glib-2.0/include"};
 : ${PKG_GTK2_CONFIGURE_ARGS_EXTRA:="--disable-cups --disable-papi"};
 : ${PKG_GTK2_DISABLED:=1};
+: ${PKG_GXEMUL_DEPENDS:="libX11"};
+: ${PKG_GXEMUL_SHA256SUM:=79c4437c6f8ca904f46d33ac36062a65fdcf4a92a248478e408ab11295cf8e83};
+: ${PKG_GXEMUL_VERSION:=0.7.0};
+: ${PKG_GXEMUL_URL:=http://gavare.se/gxemul/src/gxemul-${PKG_GXEMUL_VERSION}.tar.gz};
+: ${PKG_GXEMUL_CONFIGURE_ARGS:=""};
+: ${PKG_GXEMUL_CFLAGS_CONFIGURE_EXTRA:="-std=gnu99"};
+: ${PKG_GXEMUL_ENV_VARS_EXTRA:="XLIB=-lX11"};
+: ${PKG_GXEMUL_IN_TREE:=1};
 : ${PKG_HARFBUZZ_DEPENDS:="freetype_pre glib"};
 : ${PKG_HARFBUZZ_SHA256SUM:=613264460bb6814c3894e3953225c5357402915853a652d40b4230ce5faf0bee};
 : ${PKG_HARFBUZZ_VERSION:=2.1.3};

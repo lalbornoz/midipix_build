@@ -1,0 +1,525 @@
+diff -ru gxemul-0.7.0.orig/configure gxemul-0.7.0/configure
+--- gxemul-0.7.0.orig/configure	2021-04-22 18:04:21.000000000 +0000
++++ gxemul-0.7.0/configure	2022-10-18 18:28:37.542626000 +0000
+@@ -112,11 +112,6 @@
+ 			echo "value, which on this platform is: $DEFAULTPREFIX"
+ 			echo
+ 			exit
+-		else
+-			echo "Invalid option: $a"
+-			echo "Run  $0 --help  to get a list of" \
+-			    "available options."
+-			exit
+ 		fi; fi; fi
+ 	done
+ fi
+@@ -267,44 +262,6 @@
+ 	CC=cc
+ fi
+ 
+-printf "#!/bin/sh\n$CC $CFLAGS _testprog.c -o _testprog >" > _test.sh
+-printf " /dev/null 2> /dev/null\n" >> _test.sh
+-chmod 755 _test.sh
+-./_test.sh > /dev/null 2> /dev/null
+-OK=0
+-if [ -x _testprog ]; then
+-	OK=1
+-	if [ z`./_testprog` = z0,1,1,1,2 ]; then
+-		OK=2
+-	fi
+-fi
+-
+-if [ z$OK = z0 ]; then
+-	printf "broken cc detected: $CC $CFLAGS\n"
+-	printf "The test program:\n\n"
+-	cat _testprog.c
+-	printf "could not be compiled at all.\n"
+-fi
+-
+-if [ z$OK = z1 ]; then
+-	printf "broken cc detected: $CC $CFLAGS\n"
+-	printf "The test program:\n\n"
+-	cat _testprog.c
+-	printf "should have resulted in  0,1,1,1,2  but the result was: "
+-	./_testprog
+-fi
+-
+-if [ z$OK != z2 ]; then
+-	printf "\nPlease set the CC environment variable to a working C "
+-	printf "compiler before running\nthe configure script, and make"
+-	printf " sure that the CFLAGS environment variable is\nalso valid"
+-	printf " for that compiler (e.g. -std=c99 if needed).\n"
+-	exit
+-fi
+-
+-rm -f _testprog
+-rm -f _test.sh
+-
+ 
+ echo "$CC $CFLAGS"
+ 
+@@ -317,120 +274,12 @@
+ if [ z$NOX11 = z ]; then
+ 	printf "checking for X11 headers and libs\n"
+ 
+-	#  Try to compile a small X11 test program:
+-	printf "#include <X11/Xlib.h>
+-	#include <stdio.h>
+-	Display *dis;
+-	void f(void) {
+-		dis = XOpenDisplay(NULL);
+-	}
+-	int main(int argc, char *argv[])
+-	{ printf(\"1\"); return 0; }
+-	" > _test_x11.c
+-
+-	XOK=0
+-
+-	XINCLUDE=-I/usr/X11R6/include
+-	$CC $CFLAGS _test_x11.c -c -o _test_x11.o $XINCLUDE 2> /dev/null
+-
+-	XLIB="-L/usr/X11R6/lib -lX11 -Wl,-rpath,/usr/X11R6/lib"
+-	$CC $CFLAGS _test_x11.o -o _test_x11 $XLIB 2> /dev/null
+-
+-	if [ -x _test_x11 ]; then
+-		if [ 1 = `./_test_x11` ]; then
+-			XOK=1
+-		fi
+-	fi
+-
+-	rm -f _test_x11 _test_x11.o
+-
+-	if [ z$XOK = z0 ]; then
+-		XINCLUDE=-I/usr/X11R7/include
+-		$CC $CFLAGS _test_x11.c -c -o _test_x11.o $XINCLUDE 2> /dev/null
+-
+-		XLIB="-L/usr/X11R7/lib -lX11 -Wl,-rpath,/usr/X11R7/lib"
+-		$CC $CFLAGS _test_x11.o -o _test_x11 $XLIB 2> /dev/null
+-
+-		if [ -x _test_x11 ]; then
+-			if [ 1 = `./_test_x11` ]; then
+-				XOK=1
+-			fi
+-		fi
+-	fi
+-	rm -f _test_x11 _test_x11.o
+-
+-	if [ z$XOK = z0 ]; then
+-		XINCLUDE=-I/usr/local/include
+-		$CC $CFLAGS _test_x11.c -c -o _test_x11.o $XINCLUDE 2> /dev/null
+-
+-		XLIB="-L/usr/local/lib -lX11 -Wl,-rpath,/usr/local/lib"
+-		$CC $CFLAGS _test_x11.o -o _test_x11 $XLIB 2> /dev/null
+-
+-		if [ -x _test_x11 ]; then
+-			if [ 1 = `./_test_x11` ]; then
+-				XOK=1
+-			fi
+-		fi
+-	fi
+-	rm -f _test_x11 _test_x11.o
+-
+-	# MacOS:
+-	if [ z$XOK = z0 ]; then
+-		XINCLUDE=-I/opt/X11/include
+-		$CC $CFLAGS _test_x11.c -c -o _test_x11.o $XINCLUDE 2> /dev/null
+-
+-		XLIB="-L/opt/X11/lib -lX11"
+-		$CC $CFLAGS _test_x11.o -o _test_x11 $XLIB 2> /dev/null
+-
+-		if [ -x _test_x11 ]; then
+-			XOK=1
+-		fi
+-	fi
+-	rm -f _test_x11 _test_x11.o
+-
+-	#  Special case for some 64-bit Linux/x86_64 systems:
+-	if [ z$XOK = z0 ]; then
+-		$CC $CFLAGS _test_x11.c -c -o _test_x11.o $XINCLUDE 2> /dev/null
+-
+-		XLIB="-L/usr/X11R6/lib64 -lX11"
+-		$CC $CFLAGS _test_x11.o -o _test_x11 $XLIB 2> /dev/null
+-
+-		if [ -x _test_x11 ]; then
+-			if [ 1 = `./_test_x11` ]; then
+-				XOK=1
+-			fi
+-		fi
+-	fi
+-	rm -f _test_x11 _test_x11.o
+-
+-	if [ z$XOK = z0 ]; then
+-		XINCLUDE=""
+-		$CC $CFLAGS _test_x11.c -c -o _test_x11.o $XINCLUDE 2> /dev/null
+-
+-		#  -lsocket for Solaris
+-		XLIB="-lX11 -lsocket"
+-		$CC $CFLAGS _test_x11.o -o _test_x11 $XLIB 2> /dev/null
+-
+-		if [ -x _test_x11 ]; then
+-			if [ 1 = `./_test_x11` ]; then
+-				XOK=1
+-			fi
+-		fi
+-		rm -f _test_x11 _test_x11.o
+-	fi
+-
+-	if [ z$XOK = z0 ]; then
+-		echo "Failed to compile X11 test program." \
+-		    "Configuring without X11."
+-	else
+ 		printf "   headers:   $XINCLUDE\n"
+ 		printf "   libraries: $XLIB\n"
+ 		echo "XINCLUDE=$XINCLUDE" >> _Makefile.header
+ 		echo "XLIB=$XLIB" >> _Makefile.header
+ 		printf "#define WITH_X11\n" >> config.h
+-	fi
+ 
+-	rm -f _test_x11.c
+ fi
+ 
+ 
+@@ -549,8 +398,8 @@
+ 		rm -f _testprog
+ 		$CC $CFLAGS -O3 _testprog.c -o _testprog 2> /dev/null
+ 		if [ -x _testprog ]; then
+-			CFLAGS="-O3 $CFLAGS"
+-			printf "yes, -O3\n"
++			CFLAGS="-O0 $CFLAGS"
++			printf "yes, -O0\n"
+ 		else
+ 			CFLAGS="-O $CFLAGS"
+ 			printf "yes, -O\n"
+@@ -843,83 +692,17 @@
+ 
+ #  Check for PRIx64 in inttypes.h:
+ printf "checking for PRIx64 in inttypes.h... "
+-printf "#include <inttypes.h>\nint main(int argc, char *argv[])\n
+-{\n#ifdef PRIx64\nreturn 0;\n#else\nreturn 1;\n#endif\n}\n" > _testpri.c
+-$CC $CFLAGS _testpri.c -o _testpri 2> /dev/null
+-if [ ! -x _testpri ]; then
+-	printf "\nERROR! COULD NOT COMPILE PRIx64 TEST PROGRAM AT ALL!\n"
+-	exit
+-else
+-	if ./_testpri; then
+-		printf "yes\n"
+-	else
+-		$CC $CFLAGS -D__STDC_FORMAT_MACROS _testpri.c -o _testpri 2> /dev/null
+-		if [ -x _testpri ]; then
+-			printf "using __STDC_FORMAT_MACROS\n"
+-			CFLAGS="$CFLAGS -D__STDC_FORMAT_MACROS"
+-		else
+-			printf "no, using an ugly hack instead, "
+-			printf "#define NO_C99_PRINTF_DEFINES\n" >> config.h
+-
+-			# Try llx first:
+-			printf "#include <stdio.h>\n#include <inttypes.h>\nint main(int argc, char *argv[]){
+-			    printf(\"%%llx\\\n\", (int64_t)128);return 0;}\n" > _testpri.c
+-			rm -f _testpri
+-			$CC $CFLAGS $CWARNINGS _testpri.c -o _testpri 2> /dev/null
+-			if [ z`./_testpri` = z80 ]; then
+-				printf "PRIx64=llx\n"
+-				printf "#define NO_C99_64BIT_LONGLONG\n" >> config.h
+-			else
+-				# Try lx too:
+-				printf "#include <stdio.h>\n#include <inttypes.h>\nint main(int argc, char *argv[]){
+-				    printf(\"%%lx\\\n\", (int64_t)128);return 0;}\n" > _testpri.c
+-				rm -f _testpri
+-				$CC $CFLAGS $CWARNINGS _testpri.c -o _testpri 2> _testpri.result
+-				if [ z`./_testpri` = z80 ]; then
+-					printf "PRIx64=lx\n"
+-				else
+-					printf "\nFailed, neither lx nor llx worked!\n"
+-					exit
+-				fi
+-			fi
+-		fi
+-	fi
+-fi
+-rm -f _testpri.c _testpri _testpri.result
+ 
++printf "using __STDC_FORMAT_MACROS\n"
++CFLAGS="$CFLAGS -D__STDC_FORMAT_MACROS"
+ 
+ #  Check for 64-bit off_t:
+ printf "checking for 64-bit off_t... "
+-printf "#include <stdio.h>\n#include <inttypes.h>\n#include <sys/types.h>\n
+-int main(int argc, char *argv[]){printf(\"%%i\\\n\",
+- (int)sizeof(off_t));return 0;}\n" > _testoff.c
+-$CC $CFLAGS _testoff.c -o _testoff 2> /dev/null
+-if [ ! -x _testoff ]; then
+-	printf "\nWARNING! COULD NOT COMPILE off_t TEST PROGRAM AT ALL!\n"
+-else
+-	if [ z`./_testoff` = z8 ]; then
+-		printf "yes\n"
+-	else
+-		$CC $CFLAGS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE \
+-		    _testoff.c -o _testoff 2> /dev/null
+-		if [ ! -x _testoff ]; then
+-			printf "\nWARNING! COULD NOT COMPILE off_t TEST "
+-			printf "PROGRAM!\n"
+-		else
+-			if [ z`./_testoff` = z8 ]; then
+-				CFLAGS="-D_FILE_OFFSET_BITS=64 $CFLAGS"
+-				CFLAGS="-D_LARGEFILE_SOURCE $CFLAGS"
+-				printf "using -D_FILE_OFFSET_BITS=64"
+-				printf " -D_LARGEFILE_SOURCE\n"
+-			else
+-				printf "NO\n"
+-				printf "Warning! No 64-bit off_t. Continuing "
+-				printf "anyway.\n"
+-			fi
+-		fi
+-	fi
+-fi
+-rm -f _testoff.c _testoff
++
++CFLAGS="-D_FILE_OFFSET_BITS=64 $CFLAGS"
++CFLAGS="-D_LARGEFILE_SOURCE $CFLAGS"
++printf "using -D_FILE_OFFSET_BITS=64"
++printf " -D_LARGEFILE_SOURCE\n"
+ 
+ 
+ #  Check for u_int8_t etc:
+@@ -1004,7 +787,7 @@
+ if (*p) printf("little\\\n"); else printf("big\\\n"); }
+ ' > _test_end.c
+ $CC $CFLAGS _test_end.c -o _test_end 2> /dev/null
+-X=`./_test_end`
++X=little
+ echo $X
+ if [ z$X = zlittle ]; then
+ 	printf "#define HOST_LITTLE_ENDIAN\n" >> config.h
+diff -ru gxemul-0.7.0.orig/src/cpus/Makefile.skel gxemul-0.7.0/src/cpus/Makefile.skel
+--- gxemul-0.7.0.orig/src/cpus/Makefile.skel	2021-04-22 18:04:18.000000000 +0000
++++ gxemul-0.7.0/src/cpus/Makefile.skel	2022-10-18 17:51:18.073318900 +0000
+@@ -21,184 +21,50 @@
+ 
+ ###############################################################################
+ 
+-cpu_alpha.o: cpu_alpha.c cpu_alpha_instr.c cpu_dyntrans.c memory_rw.c \
+-	tmp_alpha_head.c tmp_alpha_tail.c
++cpu_alpha.o: cpu_alpha.c cpu_alpha_instr.c cpu_dyntrans.c memory_rw.c
+ 
+-cpu_alpha_instr.c: cpu_alpha_instr_alu.c tmp_alpha_misc.c
+-
+-tmp_alpha_misc.c: cpu_alpha_instr_loadstore.c generate_alpha_misc
+-	./generate_alpha_misc > tmp_alpha_misc.c
+-
+-tmp_alpha_head.c: generate_head
+-	./generate_head alpha Alpha > tmp_alpha_head.c
+-
+-tmp_alpha_tail.c: generate_tail
+-	./generate_tail alpha Alpha > tmp_alpha_tail.c
++cpu_alpha_instr.c: cpu_alpha_instr_alu.c
+ 
+ 
+ ###############################################################################
+ 
+-cpu_arm.o: cpu_arm.c cpu_arm_instr.c cpu_dyntrans.c memory_rw.c \
+-	tmp_arm_head.c tmp_arm_tail.c
++cpu_arm.o: cpu_arm.c cpu_arm_instr.c cpu_dyntrans.c memory_rw.c
+ 
+ cpu_arm_instr.c: cpu_arm_instr_misc.c
+ 
+-tmp_arm_loadstore.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore > tmp_arm_loadstore.c
+-tmp_arm_loadstore_p0_u0_w0.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 0 0 0 > tmp_arm_loadstore_p0_u0_w0.c
+-tmp_arm_loadstore_p0_u0_w1.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 0 0 1 > tmp_arm_loadstore_p0_u0_w1.c
+-tmp_arm_loadstore_p0_u1_w0.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 0 1 0 > tmp_arm_loadstore_p0_u1_w0.c
+-tmp_arm_loadstore_p0_u1_w1.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 0 1 1 > tmp_arm_loadstore_p0_u1_w1.c
+-tmp_arm_loadstore_p1_u0_w0.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 1 0 0 > tmp_arm_loadstore_p1_u0_w0.c
+-tmp_arm_loadstore_p1_u0_w1.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 1 0 1 > tmp_arm_loadstore_p1_u0_w1.c
+-tmp_arm_loadstore_p1_u1_w0.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 1 1 0 > tmp_arm_loadstore_p1_u1_w0.c
+-tmp_arm_loadstore_p1_u1_w1.c: cpu_arm_instr_loadstore.c generate_arm_loadstore
+-	./generate_arm_loadstore 1 1 1 > tmp_arm_loadstore_p1_u1_w1.c
+-
+-tmp_arm_multi.c: generate_arm_multi cpu_arm_multi.txt
+-	./generate_arm_multi `cat cpu_arm_multi.txt` > tmp_arm_multi.c
+-
+-tmp_arm_dpi.c: cpu_arm_instr_dpi.c generate_arm_dpi
+-	./generate_arm_dpi > tmp_arm_dpi.c
+-
+-tmp_arm_r0.c: generate_arm_r
+-	./generate_arm_r 0x000 0x0ff > tmp_arm_r0.c
+-tmp_arm_r1.c: generate_arm_r
+-	./generate_arm_r 0x100 0x1ff > tmp_arm_r1.c
+-tmp_arm_r2.c: generate_arm_r
+-	./generate_arm_r 0x200 0x2ff > tmp_arm_r2.c
+-tmp_arm_r3.c: generate_arm_r
+-	./generate_arm_r 0x300 0x3ff > tmp_arm_r3.c
+-tmp_arm_r4.c: generate_arm_r
+-	./generate_arm_r 0x400 0x4ff > tmp_arm_r4.c
+-tmp_arm_r5.c: generate_arm_r
+-	./generate_arm_r 0x500 0x5ff > tmp_arm_r5.c
+-tmp_arm_r6.c: generate_arm_r
+-	./generate_arm_r 0x600 0x6ff > tmp_arm_r6.c
+-tmp_arm_r7.c: generate_arm_r
+-	./generate_arm_r 0x700 0x7ff > tmp_arm_r7.c
+-tmp_arm_r8.c: generate_arm_r
+-	./generate_arm_r 0x800 0x8ff > tmp_arm_r8.c
+-tmp_arm_r9.c: generate_arm_r
+-	./generate_arm_r 0x900 0x9ff > tmp_arm_r9.c
+-tmp_arm_ra.c: generate_arm_r
+-	./generate_arm_r 0xa00 0xaff > tmp_arm_ra.c
+-tmp_arm_rb.c: generate_arm_r
+-	./generate_arm_r 0xb00 0xbff > tmp_arm_rb.c
+-tmp_arm_rc.c: generate_arm_r
+-	./generate_arm_r 0xc00 0xcff > tmp_arm_rc.c
+-tmp_arm_rd.c: generate_arm_r
+-	./generate_arm_r 0xd00 0xdff > tmp_arm_rd.c
+-tmp_arm_re.c: generate_arm_r
+-	./generate_arm_r 0xe00 0xeff > tmp_arm_re.c
+-tmp_arm_rf.c: generate_arm_r
+-	./generate_arm_r 0xf00 0xfff > tmp_arm_rf.c
+-
+-tmp_arm_r.c: generate_arm_r
+-	./generate_arm_r 0 0 > tmp_arm_r.c
+-
+-tmp_arm_head.c: generate_head
+-	./generate_head arm ARM > tmp_arm_head.c
+-
+-tmp_arm_tail.c: generate_tail
+-	./generate_tail arm ARM > tmp_arm_tail.c
+-
+-
+-###############################################################################
+-
+-cpu_i960.o: cpu_i960.c cpu_i960_instr.c cpu_dyntrans.c memory_rw.c \
+-	tmp_i960_head.c tmp_i960_tail.c
+-
+-tmp_i960_head.c: generate_head
+-	./generate_head i960 I960 > tmp_i960_head.c
+-
+-tmp_i960_tail.c: generate_tail
+-	./generate_tail i960 I960 > tmp_i960_tail.c
+-
+-
+-###############################################################################
+-
+-cpu_m88k.o: cpu_m88k.c cpu_m88k_instr.c cpu_dyntrans.c memory_rw.c \
+-	tmp_m88k_loadstore.c tmp_m88k_head.c tmp_m88k_tail.c tmp_m88k_bcnd.c
+-
+-tmp_m88k_bcnd.c: generate_m88k_bcnd
+-	./generate_m88k_bcnd > tmp_m88k_bcnd.c
+ 
+-tmp_m88k_loadstore.c: cpu_m88k_instr_loadstore.c generate_m88k_loadstore
+-	./generate_m88k_loadstore > tmp_m88k_loadstore.c
+-
+-tmp_m88k_head.c: generate_head
+-	./generate_head m88k M88K > tmp_m88k_head.c
++###############################################################################
+ 
+-tmp_m88k_tail.c: generate_tail
+-	./generate_tail m88k M88K > tmp_m88k_tail.c
++cpu_i960.o: cpu_i960.c cpu_i960_instr.c cpu_dyntrans.c memory_rw.c
+ 
+ 
+ ###############################################################################
+ 
+-cpu_mips.o: cpu_mips.c cpu_dyntrans.c memory_mips.c \
+-	cpu_mips_instr.c tmp_mips_loadstore.c tmp_mips_loadstore_multi.c \
+-	tmp_mips_head.c tmp_mips_tail.c
+-
+-memory_mips.c: memory_rw.c memory_mips_v2p.c
++cpu_m88k.o: cpu_m88k.c cpu_m88k_instr.c cpu_dyntrans.c memory_rw.c
+ 
+-tmp_mips_loadstore.c: cpu_mips_instr_loadstore.c generate_mips_loadstore
+-	./generate_mips_loadstore > tmp_mips_loadstore.c
+ 
+-tmp_mips_loadstore_multi.c: generate_mips_loadstore_multi
+-	./generate_mips_loadstore_multi > tmp_mips_loadstore_multi.c
++###############################################################################
+ 
+-tmp_mips_head.c: generate_head
+-	./generate_head mips MIPS > tmp_mips_head.c
++cpu_mips.o: cpu_mips.c cpu_dyntrans.c memory_mips.c \
++	cpu_mips_instr.c
+ 
+-tmp_mips_tail.c: generate_tail
+-	./generate_tail mips MIPS > tmp_mips_tail.c
++memory_mips.c: memory_rw.c memory_mips_v2p.c
+ 
+ 
+ ###############################################################################
+ 
+ cpu_ppc.o: cpu_ppc.c cpu_ppc_instr.c cpu_dyntrans.c memory_ppc.c \
+-	memory_rw.c tmp_ppc_head.c tmp_ppc_tail.c tmp_ppc_loadstore.c
+-
+-tmp_ppc_loadstore.c: cpu_ppc_instr_loadstore.c generate_ppc_loadstore
+-	./generate_ppc_loadstore > tmp_ppc_loadstore.c
+-
+-tmp_ppc_head.c: generate_head
+-	./generate_head ppc PPC > tmp_ppc_head.c
+-
+-tmp_ppc_tail.c: generate_tail
+-	./generate_tail ppc PPC > tmp_ppc_tail.c
++	memory_rw.c
+ 
+ 
+ ###############################################################################
+ 
+-cpu_riscv.o: cpu_riscv.c cpu_riscv_instr.c cpu_dyntrans.c memory_rw.c \
+-	tmp_riscv_head.c tmp_riscv_tail.c
+-
+-tmp_riscv_head.c: generate_head
+-	./generate_head riscv RISCV > tmp_riscv_head.c
+-
+-tmp_riscv_tail.c: generate_tail
+-	./generate_tail riscv RISCV > tmp_riscv_tail.c
++cpu_riscv.o: cpu_riscv.c cpu_riscv_instr.c cpu_dyntrans.c memory_rw.c
+ 
+ 
+ ###############################################################################
+ 
+-cpu_sh.o: cpu_sh.c cpu_sh_instr.c cpu_dyntrans.c memory_rw.c \
+-	tmp_sh_head.c tmp_sh_tail.c
+-
+-tmp_sh_head.c: generate_head
+-	./generate_head sh SH > tmp_sh_head.c
+-
+-tmp_sh_tail.c: generate_tail
+-	./generate_tail sh SH > tmp_sh_tail.c
++cpu_sh.o: cpu_sh.c cpu_sh_instr.c cpu_dyntrans.c memory_rw.c
+ 
+ 
+ ###############################################################################
+diff -ru gxemul-0.7.0.orig/src/devices/fonts/Makefile.skel gxemul-0.7.0/src/devices/fonts/Makefile.skel
+--- gxemul-0.7.0.orig/src/devices/fonts/Makefile.skel	2021-04-22 18:04:20.000000000 +0000
++++ gxemul-0.7.0/src/devices/fonts/Makefile.skel	2022-10-18 18:14:35.825867300 +0000
+@@ -1,13 +1,13 @@
+ all: font8x8.c font8x10.c font8x16.c
+ 
+ font8x8.c: Xconv_raw_to_c
+-	./Xconv_raw_to_c vt220l.808 font8x8 > font8x8.c
++	@echo foo.
+ 
+ font8x10.c: Xconv_raw_to_c
+-	./Xconv_raw_to_c vt220l.810 font8x10 > font8x10.c
++	@echo foo.
+ 
+ font8x16.c: Xconv_raw_to_c
+-	./Xconv_raw_to_c vt220l.816 font8x16 > font8x16.c
++	@echo foo.
+ 
+ clean:
+ 	rm -f Xconv_raw_to_c font8x16.c font8x8.c font8x10.c
+diff -ru gxemul-0.7.0.orig/src/include/Makefile.skel gxemul-0.7.0/src/include/Makefile.skel
+--- gxemul-0.7.0.orig/src/include/Makefile.skel	2021-04-22 18:04:15.000000000 +0000
++++ gxemul-0.7.0/src/include/Makefile.skel	2022-10-18 17:19:09.499745700 +0000
+@@ -5,7 +5,7 @@
+ all: ppc_spr_strings.h
+ 
+ ppc_spr_strings.h: make_ppc_spr_strings
+-	grep '#define.SPR_' thirdparty/ppc_spr.h |cut -d _ -f 2- | ./make_ppc_spr_strings > ppc_spr_strings.h
++	@echo foo.
+ 
+ clean:
+ 	rm -f *core ppc_spr_strings.h make_ppc_spr_strings

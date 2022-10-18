@@ -1,0 +1,56 @@
+diff -ru gxemul-0.7.0.orig/src/cpus/cpu_riscv.c gxemul-0.7.0/src/cpus/cpu_riscv.c
+--- gxemul-0.7.0.orig/src/cpus/cpu_riscv.c	2021-04-22 18:04:18.000000000 +0000
++++ gxemul-0.7.0/src/cpus/cpu_riscv.c	2022-10-18 15:23:16.025840300 +0000
+@@ -401,13 +401,13 @@
+ 		if (!(cpu->cd.riscv.extensions & RISCV_EXT_C))
+ 			debug("compressed (req. C ext)\t; ");
+ 
+-		uint w13 = (iw >> 13) & 7;
+-		uint w0 = (iw >> 0) & 3;
+-		uint op = (w13 << 2) | w0;
++		uint32_t w13 = (iw >> 13) & 7;
++		uint32_t w0 = (iw >> 0) & 3;
++		uint32_t op = (w13 << 2) | w0;
+ 
+-		uint rs1rd = (iw >> 7) & 31;
+-		uint rs2 = (iw >> 2) & 31;
+-		uint rprim_2 = ((iw >> 2) & 7) + RISCV_CREGBASE;
++		uint32_t rs1rd = (iw >> 7) & 31;
++		uint32_t rs2 = (iw >> 2) & 31;
++		uint32_t rprim_2 = ((iw >> 2) & 7) + RISCV_CREGBASE;
+ 		uint64_t nzimm5 = ((iw & (1 << 12)) ? -1 : 0) << 5;
+ 		uint64_t nzimm;
+ 
+diff -ru gxemul-0.7.0.orig/src/cpus/cpu_riscv_instr.c gxemul-0.7.0/src/cpus/cpu_riscv_instr.c
+--- gxemul-0.7.0.orig/src/cpus/cpu_riscv_instr.c	2021-04-22 18:04:18.000000000 +0000
++++ gxemul-0.7.0/src/cpus/cpu_riscv_instr.c	2022-10-18 15:22:53.407914100 +0000
+@@ -209,11 +209,11 @@
+ 	 */
+ 
+ 	if (instr_length_in_bytes == sizeof(uint16_t)) {
+-		uint w13 = (iw >> 13) & 7;
+-		uint w0 = (iw >> 0) & 3;
+-		uint op = (w13 << 2) | w0;
++		uint32_t w13 = (iw >> 13) & 7;
++		uint32_t w0 = (iw >> 0) & 3;
++		uint32_t op = (w13 << 2) | w0;
+ 
+-		uint rs1rd = (iw >> 7) & 31;
++		uint32_t rs1rd = (iw >> 7) & 31;
+ 		uint64_t nzimm5 = ((iw & (1 << 12)) ? -1 : 0) << 5;
+ 		uint64_t nzimm = nzimm5 | ((iw >> 2) & 31);
+ 
+diff -ru gxemul-0.7.0.orig/src/include/thirdparty/alpha_rpb.h gxemul-0.7.0/src/include/thirdparty/alpha_rpb.h
+--- gxemul-0.7.0.orig/src/include/thirdparty/alpha_rpb.h	2021-04-22 18:04:14.000000000 +0000
++++ gxemul-0.7.0/src/include/thirdparty/alpha_rpb.h	2022-10-18 15:15:22.740823100 +0000
+@@ -334,8 +334,8 @@
+ 	u_int64_t	pcs_reserved_soft;	/* 120: preserved software */
+ 
+ 	struct {				/* 128: inter-console buffers */
+-		u_int	iccb_rxlen;
+-		u_int	iccb_txlen;
++		u_int32_t	iccb_rxlen;
++		u_int32_t	iccb_txlen;
+ 		char	iccb_rxbuf[80];
+ 		char	iccb_txbuf[80];
+ 	} pcs_iccb;
