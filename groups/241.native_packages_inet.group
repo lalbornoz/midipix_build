@@ -54,8 +54,8 @@ proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
 : ${PKG_FETCHMAIL_URL:=http://krusty.dt.e-technik.tu-dortmund.de/~ma/fetchmail/fetchmail-${PKG_FETCHMAIL_VERSION}.tar.xz};
 : ${PKG_FETCHMAIL_CONFIGURE_ARGS_EXTRA:="--with-kerberos5=no --with-kerberos=no --with-ssl=${PREFIX_NATIVE}"};
 : ${PKG_GIT_DEPENDS:="curl libz"};
-: ${PKG_GIT_SHA256SUM:=6f2287bbde2d215394966732836f3aba62b029161e8eaadaf236578d92c06fe9};
-: ${PKG_GIT_VERSION:=2.35.2};
+: ${PKG_GIT_SHA256SUM:=f4f3c80704217c907ba21891119d2096672e892e4198cc3405bfe3cf6197a5d5};
+: ${PKG_GIT_VERSION:=2.35.5};
 : ${PKG_GIT_URL:=https://github.com/git/git/archive/v${PKG_GIT_VERSION}.tar.gz};
 : ${PKG_GIT_CFLAGS_BUILD_EXTRA:="-std=gnu99"};
 : ${PKG_GIT_CONFIG_CACHE_EXTRA:="

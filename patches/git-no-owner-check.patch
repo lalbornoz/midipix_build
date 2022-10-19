@@ -1,0 +1,25 @@
+diff -ru git-2.35.5.orig/setup.c git-2.35.5/setup.c
+--- git-2.35.5.orig/setup.c	2022-10-06 23:44:02.000000000 +0200
++++ git-2.35.5/setup.c	2022-10-19 13:48:26.183628821 +0200
+@@ -1130,6 +1130,13 @@
+ static int ensure_valid_ownership(const char *gitfile,
+ 				const char *worktree, const char *gitdir)
+ {
++#ifdef __midipix__
++	(void)gitfile;
++	(void)worktree;
++	(void)gitdir;
++
++	return 1;
++#else
+ 	struct safe_directory_data data = {
+ 		.path = worktree ? worktree : gitdir
+ 	};
+@@ -1148,6 +1155,7 @@
+ 	read_very_early_config(safe_directory_cb, &data);
+ 
+ 	return data.is_safe;
++#endif
+ }
+ 
+ enum discovery_result {
