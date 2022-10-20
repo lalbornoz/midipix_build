@@ -1,0 +1,29 @@
+diff -ru cvs-1.12.13.orig/src/main.c cvs-1.12.13/src/main.c
+--- cvs-1.12.13.orig/src/main.c	2022-10-20 15:44:42.306215161 +0200
++++ cvs-1.12.13/src/main.c	2022-10-20 15:50:55.838352069 +0200
+@@ -24,10 +24,6 @@
+ #include "strftime.h"
+ #include "xgethostname.h"
+ 
+-#ifdef USE_LIBBSD
+-uint32_t arc4random(void);
+-#endif
+-
+ const char *program_name;
+ const char *program_path;
+ const char *cvs_cmd_name;
+@@ -749,10 +745,13 @@
+ 
+     /* Calculate the cvs global session ID */
+ 
++	int random;
++	getentropy(&random, sizeof(int));
++
+     global_session_id = Xasprintf("1%010llX%04X%04X",
+       (unsigned long long)time(NULL),
+       (unsigned int)(getpid() & 0xFFFF),
+-      (unsigned int)(arc4random() & 0xFFFF));
++      (unsigned int)random & 0xFFFF);
+ 
+     TRACE (TRACE_FUNCTION, "main: Session ID is %s", global_session_id);
+ 

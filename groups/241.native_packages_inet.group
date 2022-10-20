@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-apk_tools aria2 bind ca_certificates curl dropbear elinks fetchmail git gnupg gpgme
+apk_tools aria2 bind ca_certificates curl cvs dropbear elinks fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
 microsocks mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
 proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
@@ -37,6 +37,14 @@ proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
 : ${PKG_CURL_VERSION:=7.83.1};
 : ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
 : ${PKG_CURL_CONFIGURE_ARGS_EXTRA:="--disable-symbol-hiding --enable-shared --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-ca-path=/etc/ssl/certs --with-gnutls --without-ssl --disable-socketpair"};
+: ${PKG_CVS_SHA256SUM:=4734971a59471744e4ad8665c1dca54cb3ebf9fc66ce9c2dff3d04670d3f7312};
+: ${PKG_CVS_VERSION:=1.12.13};
+: ${PKG_CVS_URL:=https://deb.debian.org/debian/pool/main/c/cvs/cvs_${PKG_CVS_VERSION}+real.orig.tar.gz};
+: ${PKG_CVS_SUBDIR:=cvs-${PKG_CVS_VERSION}};
+: ${PKG_CVS_CONFIGURE_ARGS_EXTRA:="--disable-pam --enable-client --enable-password-authenticated-client --enable-server -enable-proxy --enable-case-sensitivity --disable-lock-compatibility --enable-rootcommit --disable-old-info-format-support --enable-config-override=no --with-rsh=ssh --with-editor=vi --with-tmpdir=/tmp --with-umask=002 --with-external-zlib"};
+: ${PKG_CVS_CONFIG_CACHE_EXTRA:="
+cvs_cv_func_printf_ptr=yes
+ac_cv_path_PS2PDF=false"};
 : ${PKG_DROPBEAR_DEPENDS:="libz"};
 : ${PKG_DROPBEAR_SHA256SUM:=48235d10b37775dbda59341ac0c4b239b82ad6318c31568b985730c788aac53b};
 : ${PKG_DROPBEAR_VERSION:=2020.81};
