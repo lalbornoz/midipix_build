@@ -1,0 +1,13 @@
+diff -ru gnupg-2.3.8.orig/dirmngr/server.c gnupg-2.3.8/dirmngr/server.c
+--- gnupg-2.3.8.orig/dirmngr/server.c	2022-10-07 15:23:50.000000000 +0200
++++ gnupg-2.3.8/dirmngr/server.c	2022-10-22 15:52:13.224088828 +0200
+@@ -3137,7 +3137,9 @@
+                ctrl->refcount);
+   else
+     {
++#if USE_LDAP
+       ks_ldap_free_state (ctrl->ks_get_state);
++#endif
+       ctrl->ks_get_state = NULL;
+       release_ctrl_ocsp_certs (ctrl);
+       xfree (ctrl->server_local);

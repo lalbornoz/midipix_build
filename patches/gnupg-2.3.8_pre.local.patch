@@ -1,0 +1,21 @@
+diff -ru gnupg-2.3.8.orig/configure gnupg-2.3.8/configure
+--- gnupg-2.3.8.orig/configure	2022-10-13 17:56:41.000000000 +0200
++++ gnupg-2.3.8/configure	2022-10-22 15:45:44.541933579 +0200
+@@ -9004,7 +9004,7 @@
+ 
+   if test $ok = yes; then
+     LIBASSUAN_CFLAGS=`$LIBASSUAN_CONFIG --cflags`
+-    LIBASSUAN_LIBS=`$LIBASSUAN_CONFIG --libs`
++    LIBASSUAN_LIBS="-lassuan -lgpg-error"
+     have_libassuan=yes
+   else
+     LIBASSUAN_CFLAGS=""
+@@ -9183,7 +9183,7 @@
+   fi
+   if test $ok = yes; then
+     KSBA_CFLAGS=`$KSBA_CONFIG --cflags`
+-    KSBA_LIBS=`$KSBA_CONFIG --libs`
++    KSBA_LIBS="-lksba -lgpg-error -lnpth"
+     have_ksba=yes
+     if test -z "$use_gpgrt_config"; then
+       libksba_config_host=`$KSBA_CONFIG --host 2>/dev/null || echo none`
