@@ -16012,3 +16012,14 @@ diff -ru cvs-1.12.13.orig/src/Makefile.in cvs-1.12.13/src/Makefile.in
  
  	if (status == -2)
  	    /* Don't try to recover from memory allcoation errors.  */
+--- cvs-1.12.13/configure.orig	2005-10-03 15:36:42.000000000 +0200
++++ cvs-1.12.13/configure	2022-10-23 14:36:34.653406085 +0200
+@@ -10582,7 +10582,7 @@
+   am_aux_dir=`cd $ac_aux_dir && pwd`
+ 
+   # getdate.y works with bison only.
+-  : ${YACC="\${SHELL} $am_aux_dir/bison-missing --run bison -y"}
++  : ${YACC="\${SHELL} $am_aux_dir/missing --run bison -y"}
+ 
+ 
+ 
