@@ -1,48 +1,48 @@
 diff --git a/include/private/gcconfig.h b/include/private/gcconfig.h
-index b342883..174dd88 100644
+index ea9996a9..40a470f8 100644
 --- a/include/private/gcconfig.h
 +++ b/include/private/gcconfig.h
-@@ -109,6 +109,21 @@ EXTERN_C_BEGIN
+@@ -110,6 +110,20 @@ EXTERN_C_BEGIN
  #   define LINUX
  # endif
  
 +# if defined(__midipix__)
-+#    define MIDIPIX
++#   define MIDIPIX
 +
-+#    include <fcntl.h>
-+#    include <sys/select.h>
++#   include <fcntl.h>
++#   include <sys/select.h>
 +
-+#    include <psxtypes/psxtypes.h>
-+#    include <pemagine/pemagine.h>
-+#    include <ntapi/nt_thread.h>
++#   include <psxtypes/psxtypes.h>
++#   include <pemagine/pemagine.h>
++#   include <ntapi/nt_thread.h>
 +
-+     int __gc_data_start_mark__[1];
-+     int __gc_data_end_mark__[1];
-+
-+# endif
++    int __gc_data_start_mark__[1];
++    int __gc_data_end_mark__[1];
++#endif
 +
  /* And one for NetBSD: */
  # if defined(__NetBSD__)
- #    define NETBSD
-@@ -350,6 +359,16 @@ EXTERN_C_BEGIN
- #    define X86_64
- #    define mach_type_known
+ #   define NETBSD
+@@ -514,7 +528,7 @@ EXTERN_C_BEGIN
+ #   define mach_type_known
+ # elif (defined(__i386__) || defined(i386)) \
+        && (defined(DARWIN) || defined(LINUX) || defined(FREEBSD) \
+-            || defined(NETBSD) || defined(OPENBSD) || defined(__QNX__))
++            || defined(NETBSD) || defined(OPENBSD) || defined(__QNX__) || defined(MIDIPIX))
+ #   define I386
+ #   define mach_type_known
+ # elif (defined(__ia64) || defined(__ia64__)) && defined(LINUX)
+@@ -567,7 +581,7 @@ EXTERN_C_BEGIN
+ #   define mach_type_known
+ # elif (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__)) \
+        && (defined(DARWIN) || defined(LINUX) || defined(FREEBSD) \
+-            || defined(NETBSD) || defined(OPENBSD))
++            || defined(NETBSD) || defined(OPENBSD) || defined(MIDIPIX))
+ #   define X86_64
+ #   define mach_type_known
  # endif
-+# if defined(MIDIPIX)
-+#    if defined(__i386__)
-+#      define I386
-+#      define mach_type_known
-+#    endif
-+#    if defined(__x86_64__)
-+#      define X86_64
-+#      define mach_type_known
-+#    endif
-+# endif
- # if defined(LINUX) && (defined(i386) || defined(__i386__))
- #    define I386
- #    define mach_type_known
-@@ -1542,6 +1561,13 @@ EXTERN_C_BEGIN
-           EXTERN_C_BEGIN
+@@ -1416,6 +1430,13 @@ EXTERN_C_BEGIN
+ #         define SOFT_VDB
  #       endif
  #   endif
 +#   ifdef MIDIPIX
@@ -53,23 +53,23 @@ index b342883..174dd88 100644
 +#      define USE_MMAP_ANON
 +#   endif
  #   ifdef CYGWIN32
- #       define OS_TYPE "CYGWIN32"
  #       define WOW64_THREAD_CONTEXT_WORKAROUND
-@@ -2706,6 +2732,13 @@ EXTERN_C_BEGIN
-           EXTERN_C_BEGIN
+ #       define DATASTART ((ptr_t)GC_DATASTART)  /* From gc.h */
+@@ -2193,6 +2214,13 @@ EXTERN_C_BEGIN
+ #         define SOFT_VDB
  #       endif
  #   endif
 +#   ifdef MIDIPIX
-+#      define OS_TYPE "MIDIPIX"
-+#      define DATASTART   ((ptr_t)__gc_data_start_mark__)
-+#      define DATAEND     ((ptr_t)__gc_data_end_mark__)
-+#      define STACKBOTTOM (ptr_t)(((nt_tib *)pe_get_teb_address())->stack_base)
-+#      define USE_MMAP_ANON
++#       define OS_TYPE "MIDIPIX"
++#       define DATASTART   ((ptr_t)__gc_data_start_mark__)
++#       define DATAEND     ((ptr_t)__gc_data_end_mark__)
++#       define STACKBOTTOM (ptr_t)(((nt_tib *)pe_get_teb_address())->stack_base)
++#       define USE_MMAP_ANON
 +#   endif
  #   ifdef DARWIN
- #     define OS_TYPE "DARWIN"
  #     define DARWIN_DONT_PARSE_STACK 1
-@@ -3111,7 +3144,7 @@ EXTERN_C_BEGIN
+ #     define STACKBOTTOM ((ptr_t)0x7fff5fc00000)
+@@ -2520,7 +2548,7 @@ EXTERN_C_BEGIN
  #if defined(SVR4) || defined(LINUX) || defined(IRIX5) || defined(HPUX) \
      || defined(OPENBSD) || defined(NETBSD) || defined(FREEBSD) \
      || defined(DGUX) || defined(BSD) || defined(HAIKU) || defined(HURD) \
