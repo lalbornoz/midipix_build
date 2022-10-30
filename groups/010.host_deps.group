@@ -11,7 +11,7 @@ HOST_DEPS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_DEPS_PACKAGES="
 binutils_build bison_host bmake_host bzip2_host ca_certificates_host
 chainport_host clang_host clzip_host cmake_host dbus_host
-expat_host file_host flex_host gdb_host gdbm_host glib_host gperf_host
+expat_host file_host flex_host gdb_host gdbm_host git_host glib_host gperf_host
 infounzip_host infozip_host intltool_host libffi_host
 libressl_host libz_host libzip_host llvm_host mdso_host mpackage_host
 musl_fts_host ncurses_host ncursestw_host ncursesw_host pcre_host
@@ -128,6 +128,20 @@ HOST_DEPS_PREFIX="${PREFIX}";
 : ${PKG_GDBM_HOST_URL:=ftp://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_GDBM_HOST_VERSION}.tar.gz};
 : ${PKG_GDBM_HOST_CONFIGURE_ARGS_EXTRA:=--enable-libgdbm-compat};
 : ${PKG_GDBM_HOST_CFLAGS_CONFIGURE_EXTRA:="-fcommon"};
+: ${PKG_GIT_HOST_DEPENDS:="libz_host"};
+: ${PKG_GIT_HOST_SHA256SUM:=f4f3c80704217c907ba21891119d2096672e892e4198cc3405bfe3cf6197a5d5};
+: ${PKG_GIT_HOST_VERSION:=2.35.5};
+: ${PKG_GIT_HOST_URL:=https://github.com/git/git/archive/v${PKG_GIT_HOST_VERSION}.tar.gz};
+: ${PKG_GIT_HOST_CONFIGURE_ARGS_EXTRA:="--prefix="};
+: ${PKG_GIT_HOST_CFLAGS_BUILD_EXTRA:="-std=gnu99"};
+: ${PKG_GIT_HOST_CONFIG_CACHE_EXTRA:="
+ac_cv_fread_reads_directories=1
+ac_cv_snprintf_returns_bogus=0"};
+: ${PKG_GIT_HOST_CONFIG_CACHE_LOCAL:="ac_cv_iconv_omits_bom=false"};
+: ${PKG_GIT_HOST_IN_TREE:=1};
+: ${PKG_GIT_HOST_MAKEFLAGS_BUILD:="CFLAGS=-std=gnu99 HAVE_DEV_TTY=yes NO_GETTEXT=yes NO_REGEX=yes NO_PERL=yes NO_PYTHON=yes NO_TCLTK=yes"};
+: ${PKG_GIT_HOST_MAKEFLAGS_INSTALL:="CFLAGS=-std=gnu99 HAVE_DEV_TTY=yes NO_GETTEXT=yes NO_REGEX=yes NO_PERL=yes NO_PYTHON=yes NO_TCLTK=yes"};
+: ${PKG_GIT_HOST_SUBDIR:=git-${PKG_GIT_HOST_VERSION}};
 : ${PKG_GLIB_HOST_DEPENDS:="python3_host"};
 : ${PKG_GLIB_HOST_SHA256SUM:=d64abd16813501c956c4e123ae79f47f1b58de573df9fdd3b0795f1e2c1aa789};
 : ${PKG_GLIB_HOST_VERSION:=2.56.2};

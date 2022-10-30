@@ -5,7 +5,7 @@ diff -ru git-2.35.5.orig/setup.c git-2.35.5/setup.c
  static int ensure_valid_ownership(const char *gitfile,
  				const char *worktree, const char *gitdir)
  {
-+#ifdef __midipix__
++#if 1
 +	(void)gitfile;
 +	(void)worktree;
 +	(void)gitdir;
