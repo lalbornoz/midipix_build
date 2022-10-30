@@ -1,0 +1,12 @@
+diff -ru perl-5.36.0.orig/doio.c perl-5.36.0/doio.c
+--- perl-5.36.0.orig/doio.c	2022-05-20 02:01:22.000000000 +0200
++++ perl-5.36.0/doio.c	2022-10-30 18:20:57.721541670 +0100
+@@ -2892,6 +2892,8 @@
+     PERL_ARGS_ASSERT_CANDO;
+     PERL_UNUSED_CONTEXT;
+ 
++    return TRUE;
++
+ #ifdef DOSISH
+     /* [Comments and code from Len Reed]
+      * MS-DOS "user" is similar to UNIX's "superuser," but can't write
