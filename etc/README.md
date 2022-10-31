@@ -852,7 +852,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | FileName			| Absolute or relative pathname to file                                                                                                        |
 | Flag(<type>,<default>)	| Boolean flag of type <type>, e.g. Flag(Boolean) (``true``, ``false``,) Flag(UInt) (0, 1,) Flag(ExitStatus) (>=1, 0) with default or ``auto`` |
 | FlagLine			| String of {SP,VT}-separated flags, arguments, options, etc. pp. to a command                                                                 |
-| List(<sep>[,<sep|type>..])	| <sep>-separated list, optionally recursively and/or sub-typing, e.g.: ``List(:,=,String)`` and ``"name=value:name2=va lue "``                |
+| List(<sep>[,<sep\|type>..])	| \<sep\>-separated list, optionally recursively and/or sub-typing, e.g.: ``List(:,=,String)`` and ``"name=value:name2=value"``                |
 | PkgName			| Single name of package                                                                                                                       |
 | PkgRelation			| Single, possibly parametrised, package-package relation; see section [3.6](#36-package-package-and-packagegroup-group-relationships)         |
 | PkgVersion			| Single version of package                                                                                                                    |
