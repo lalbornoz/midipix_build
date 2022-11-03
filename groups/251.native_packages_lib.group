@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libao libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
-libjpeg_turbo libksba libmad libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
+libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
 libuv libvorbis libxml2 libxslt libz libzip lzo nettle onig sdl1 sdl1_net sdl1_mixer
@@ -185,6 +185,9 @@ ksba_cv_visibility_attribute=yes"};
 : ${PKG_LIBMAD_VERSION:=0.15.1b};
 : ${PKG_LIBMAD_URL:=ftp://ftp.mars.org/pub/mpeg/libmad-${PKG_LIBMAD_VERSION}.tar.gz};
 : ${PKG_LIBMAD_CONFIGURE_ARGS_EXTRA:="--enable-fpm=64bit --enable-accuracy"};
+: ${PKG_LIBMD_SHA256SUM:=f51c921042e34beddeded4b75557656559cf5b1f2448033b4c1eec11c07e530f};
+: ${PKG_LIBMD_VERSION:=1.0.4};
+: ${PKG_LIBMD_URL:=https://archive.hadrons.org/software/libmd/libmd-${PKG_LIBMD_VERSION}.tar.xz};
 : ${PKG_LIBMSPACK_SHA256SUM:=bac862dee6e0fc10d92c70212441d9f8ad9b0222edc9a708c3ead4adb1b24a8e};
 : ${PKG_LIBMSPACK_VERSION:=0.10.1alpha};
 : ${PKG_LIBMSPACK_URL:=https://www.cabextract.org.uk/libmspack/libmspack-${PKG_LIBMSPACK_VERSION}.tar.gz};
