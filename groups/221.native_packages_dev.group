@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-bison chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
+bison cdecl chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
 patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk")";
 : ${PKG_BISON_DEPENDS:="readline libiconv"};
 : ${PKG_BISON_SHA256SUM:=9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2};
@@ -12,6 +12,12 @@ patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk")";
 : ${PKG_BISON_CONFIG_CACHE_EXTRA:="
 ac_cv_path_M4=/bin/m4
 ac_cv_prog_gnu_m4_gnu=yes"};
+: ${PKG_CDECL_DEPENDS:="ncurses"};
+: ${PKG_CDECL_SHA256SUM:=04d1f4ecc9868771843e0ba55c72100c805ee4de2d0618a69d9dbf853df7eefd};
+: ${PKG_CDECL_VERSION:=13.0};
+: ${PKG_CDECL_URL:=https://github.com/paul-j-lucas/cdecl/releases/download/cdecl-${PKG_CDECL_VERSION}/cdecl-${PKG_CDECL_VERSION}.tar.gz};
+: ${PKG_CDECL_CONFIGURE_ARGS_EXTRA:="--with-readline=${PREFIX_NATIVE}"};
+: ${PKG_CDECL_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/ncurses"};
 : ${PKG_CHICKEN_SHA256SUM:=c3ad99d8f9e17ed810912ef981ac3b0c2e2f46fb0ecc033b5c3b6dca1bdb0d76};
 : ${PKG_CHICKEN_VERSION:=5.3.0};
 : ${PKG_CHICKEN_URL:=https://code.call-cc.org/releases/${PKG_CHICKEN_VERSION}/chicken-${PKG_CHICKEN_VERSION}.tar.gz};
