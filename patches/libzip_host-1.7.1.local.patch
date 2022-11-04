@@ -1,0 +1,12 @@
+diff -ru libzip-1.7.1.orig/lib/zip_crypto_openssl.c libzip-1.7.1/lib/zip_crypto_openssl.c
+--- libzip-1.7.1.orig/lib/zip_crypto_openssl.c	2020-06-13 12:12:26.000000000 +0200
++++ libzip-1.7.1/lib/zip_crypto_openssl.c	2022-11-04 12:32:54.040171710 +0100
+@@ -39,7 +39,7 @@
+ 
+ #include <openssl/rand.h>
+ 
+-#if OPENSSL_VERSION_NUMBER < 0x1010000fL || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x1010000fL || (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x02070000fL)
+ #define USE_OPENSSL_1_0_API
+ #endif
+ 
