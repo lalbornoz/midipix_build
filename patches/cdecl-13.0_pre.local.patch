@@ -1,0 +1,12 @@
+diff -ru cdecl-13.0.orig/configure cdecl-13.0/configure
+--- cdecl-13.0.orig/configure	2022-10-31 01:22:38.000000000 +0100
++++ cdecl-13.0/configure	2022-11-04 20:36:34.626729430 +0100
+@@ -6143,7 +6143,7 @@
+   printf %s "(cached) " >&6
+ else $as_nop
+       # Double quotes because $CC needs to be expanded
+-    for CPP in "$CC -E" "$CC -E -traditional-cpp" cpp /lib/cpp
++    for CPP in "$CC -E" "$CC -E -traditional-cpp"
+     do
+       ac_preproc_ok=false
+ for ac_c_preproc_warn_flag in '' yes
