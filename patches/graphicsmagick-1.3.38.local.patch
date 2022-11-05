@@ -1,0 +1,175 @@
+diff -ru GraphicsMagick-1.3.38.orig/magick/module.c GraphicsMagick-1.3.38/magick/module.c
+--- GraphicsMagick-1.3.38.orig/magick/module.c	2022-03-26 18:45:36.000000000 +0100
++++ GraphicsMagick-1.3.38/magick/module.c	2022-11-05 20:08:54.097212410 +0100
+@@ -47,12 +47,9 @@
+ #include "magick/map.h"
+ #include "magick/module.h"
+ #include "magick/utility.h"
+-#if defined(HasLTDL)
+-#  include "ltdl.h"
+-   typedef lt_dlhandle ModuleHandle;
+-#else
+-   typedef void *ModuleHandle;
+-#endif
++
++#include <dlfcn.h>
++typedef void *ModuleHandle;
+ 
+ /*
+   Define declarations.
+@@ -60,7 +57,7 @@
+ #define MAX_MODULES 511 /* Maximum number of modules supported by build. */
+ #define ModuleFilename  "modules.mgk"
+ #if defined(HasLTDL)
+-#  define ModuleGlobExpression "*.la"
++#  define ModuleGlobExpression "*.so"
+ #else
+ #  if defined(_DEBUG)
+ #    define ModuleGlobExpression "IM_MOD_DB_*.dll"
+@@ -297,9 +294,6 @@
+   */
+   if (ltdl_initialized)
+     {
+-#if !defined(HasJP2)
+-      (void) lt_dlexit();
+-#endif
+       ltdl_initialized=False;
+     }
+ }
+@@ -375,13 +369,13 @@
+       return(MagickFail);
+ 
+     /* Open the module */
+-    handle=lt_dlopen(module_path);
++    handle=dlopen(module_path, RTLD_NOW);
+     if (handle == (ModuleHandle) NULL)
+       {
+         char
+           message[MaxTextExtent];
+ 
+-        FormatString(message,"\"%.256s: %.256s\"",module_path,lt_dlerror());
++        FormatString(message,"\"%.256s: %.256s\"",module_path,dlerror());
+         ThrowException(&(*image)->exception,ModuleError,UnableToLoadModule,
+           message);
+         return(status);
+@@ -401,7 +395,7 @@
+     FormatString(method_name,"%.64sImage",tag);
+ #endif
+     method=(unsigned int (*)(Image **,const int,char **))
+-      lt_dlsym(handle,method_name);
++      dlsym(handle,method_name);
+ 
+ 
+     /* Execute module method */
+@@ -429,7 +423,7 @@
+ 
+   }
+   /* Close the module */
+-  (void) lt_dlclose(handle);
++  (void) dlclose(handle);
+   return(status);
+ }
+ 
+@@ -822,9 +816,11 @@
+       */
+       if (!ltdl_initialized)
+         {
++#if 0
+           if (lt_dlinit() != 0)
+             MagickFatalError(ModuleFatalError,
+-              UnableToInitializeModuleLoader,lt_dlerror());
++              UnableToInitializeModuleLoader,dlerror());
++#endif
+           ltdl_initialized=True;
+         }
+       (void) ReadModuleConfigureFile(ModuleFilename,0,&exception);
+@@ -1359,8 +1355,8 @@
+     CoderInfo
+       *coder_info;
+ 
+-    ModuleHandle
+-      handle;
++    void
++      *handle;
+ 
+     register ModuleInfo
+       *p;
+@@ -1419,10 +1415,10 @@
+     (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+       "Opening module at path \"%s\" ...", path);
+ 
+-    handle=lt_dlopen(path);
++    handle=dlopen(path, RTLD_NOW);
+     if (handle == (ModuleHandle) NULL)
+       {
+-        FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
++        FormatString(message,"\"%.1024s: %.1024s\"",path,dlerror());
+         ThrowException(exception,ModuleError,UnableToLoadModule,message);
+         return(MagickFail);
+       }
+@@ -1432,7 +1428,7 @@
+     coder_info=SetCoderInfo(module_name);
+     if (coder_info == (CoderInfo*) NULL)
+       {
+-        (void) lt_dlclose(handle);
++        (void) dlclose(handle);
+         return(MagickFail);
+       }
+     coder_info->handle=handle;
+@@ -1443,10 +1439,10 @@
+       Locate and record RegisterFORMATImage function
+     */
+     TagToFunctionName(module_name,"Register%sImage",name);
+-    coder_info->register_function=(void (*)(void)) lt_dlsym(handle,name);
++    coder_info->register_function=(void (*)(void)) dlsym(handle,name);
+     if (coder_info->register_function == (void (*)(void)) NULL)
+       {
+-        FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
++        FormatString(message,"\"%.1024s: %.1024s\"",module_name,dlerror());
+         ThrowException(exception,ModuleError,UnableToRegisterImageFormat,
+           message);
+         return(MagickFail);
+@@ -1460,10 +1456,10 @@
+       Locate and record UnregisterFORMATImage function
+     */
+     TagToFunctionName(module_name,"Unregister%sImage",name);
+-    coder_info->unregister_function=(void (*)(void)) lt_dlsym(handle,name);
++    coder_info->unregister_function=(void (*)(void)) dlsym(handle,name);
+     if (coder_info->unregister_function == (void (*)(void)) NULL)
+       {
+-        FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
++        FormatString(message,"\"%.1024s: %.1024s\"",module_name,dlerror());
+         ThrowException(exception,ModuleError,UnableToRegisterImageFormat,
+           message);
+         return(MagickFail);
+@@ -1983,7 +1979,7 @@
+   assert(tag != (char *) NULL);
+   assert(module_name != (char *) NULL);
+ #if defined(HasLTDL)
+-  (void) FormatString(module_name,"%.1024s.la",tag);
++  (void) FormatString(module_name,"%.1024s.so",tag);
+   (void) LocaleLower(module_name);
+ #else
+ #if defined(MSWINDOWS)
+@@ -2030,7 +2026,7 @@
+   assert(tag != (char *) NULL);
+   assert(module_name != (char *) NULL);
+ #if defined(HasLTDL)
+-  (void) FormatString(module_name,"%.1024s.la",tag);
++  (void) FormatString(module_name,"%.1024s.so",tag);
+   (void) LocaleLower(module_name);
+ #else
+   (void) FormatString(module_name,"%.1024s.dll",tag);
+@@ -2142,10 +2138,10 @@
+   */
+   if ( strcmp("JP2",coder_info->tag) != 0 )
+     {
+-      if (lt_dlclose((ModuleHandle) coder_info->handle))
++      if (dlclose((ModuleHandle) coder_info->handle))
+         {
+           FormatString(message,"\"%.1024s: %.1024s\"",coder_info->tag,
+-                       lt_dlerror());
++                       dlerror());
+           ThrowException(exception,ModuleError,FailedToCloseModule,message);
+           status=False;
+         }
