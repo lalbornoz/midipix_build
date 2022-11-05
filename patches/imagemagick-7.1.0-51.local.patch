@@ -1,0 +1,196 @@
+diff -ru ImageMagick-7.1.0-51.orig/configure ImageMagick-7.1.0-51/configure
+--- ImageMagick-7.1.0-51.orig/configure	2022-10-16 17:54:02.000000000 +0200
++++ ImageMagick-7.1.0-51/configure	2022-11-05 22:37:15.089499439 +0100
+@@ -18236,6 +18236,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
+@@ -22765,6 +22775,16 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
+Only in ImageMagick-7.1.0-51: configure.orig
+diff -ru ImageMagick-7.1.0-51.orig/MagickCore/module.c ImageMagick-7.1.0-51/MagickCore/module.c
+--- ImageMagick-7.1.0-51.orig/MagickCore/module.c	2022-10-16 17:53:13.000000000 +0200
++++ ImageMagick-7.1.0-51/MagickCore/module.c	2022-11-05 22:34:35.101498468 +0100
+@@ -66,18 +66,14 @@
+ #include "MagickCore/utility.h"
+ #include "MagickCore/utility-private.h"
+ #if defined(MAGICKCORE_MODULES_SUPPORT)
+-#if defined(MAGICKCORE_LTDL_DELEGATE)
+-#include "ltdl.h"
+-typedef lt_dlhandle ModuleHandle;
+-#else
++#include <dlfcn.h>
+ typedef void *ModuleHandle;
+-#endif
+ 
+ /*
+   Define declarations.
+ */
+ #if defined(MAGICKCORE_LTDL_DELEGATE)
+-#  define ModuleGlobExpression "*.la"
++#  define ModuleGlobExpression "*.so"
+ #else
+ #  if defined(_DEBUG)
+ #    define ModuleGlobExpression "IM_MOD_DB_*.dll"
+@@ -893,9 +889,6 @@
+           if (status == MagickFalse)
+             ThrowFatalException(ResourceLimitFatalError,
+               "MemoryAllocationFailed");
+-          if (lt_dlinit() != 0)
+-            ThrowFatalException(ModuleFatalError,
+-              "UnableToInitializeModuleLoader");
+           module_list=splay_tree;
+         }
+       UnlockSemaphoreInfo(module_semaphore);
+@@ -992,11 +985,11 @@
+   /*
+     Open the module.
+   */
+-  handle=(ModuleHandle) lt_dlopen(path);
++  handle=(ModuleHandle) dlopen(path, RTLD_NOW);
+   if (handle == (ModuleHandle) NULL)
+     {
+       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+-        "UnableToLoadModule","'%s': %s",name,lt_dlerror());
++        "UnableToLoadModule","'%s': %s",name,dlerror());
+       return(MagickFalse);
+     }
+   /*
+@@ -1012,10 +1005,10 @@
+     Execute the module.
+   */
+   ClearMagickException(exception);
+-  image_filter=(ImageFilterHandler *) lt_dlsym(handle,name);
++  image_filter=(ImageFilterHandler *) dlsym(handle,name);
+   if (image_filter == (ImageFilterHandler *) NULL)
+     (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+-      "UnableToLoadModule","'%s': %s",name,lt_dlerror());
++      "UnableToLoadModule","'%s': %s",name,dlerror());
+   else
+     {
+       size_t
+@@ -1036,9 +1029,9 @@
+   /*
+     Close the module.
+   */
+-  if (lt_dlclose(handle) != 0)
++  if (dlclose(handle) != 0)
+     (void) ThrowMagickException(exception,GetMagickModule(),ModuleWarning,
+-      "UnableToCloseModule","'%s': %s",name,lt_dlerror());
++      "UnableToCloseModule","'%s': %s",name,dlerror());
+   return(exception->severity < ErrorException ? MagickTrue : MagickFalse);
+ }
+ 
+@@ -1283,11 +1276,11 @@
+   */
+   (void) LogMagickEvent(ModuleEvent,GetMagickModule(),
+     "Opening module at path \"%s\"",path);
+-  handle=(ModuleHandle) lt_dlopen(path);
++  handle=(ModuleHandle) dlopen(path, RTLD_NOW);
+   if (handle == (ModuleHandle) NULL)
+     {
+       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+-        "UnableToLoadModule","'%s': %s",path,lt_dlerror());
++        "UnableToLoadModule","'%s': %s",path,dlerror());
+       return(MagickFalse);
+     }
+   /*
+@@ -1301,11 +1294,11 @@
+     Define RegisterFORMATImage method.
+   */
+   TagToModuleName(module_name,"Register%sImage",name);
+-  module_info->register_module=(size_t (*)(void)) lt_dlsym(handle,name);
++  module_info->register_module=(size_t (*)(void)) dlsym(handle,name);
+   if (module_info->register_module == (size_t (*)(void)) NULL)
+     {
+       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+-        "UnableToRegisterImageFormat","'%s': %s",module_name,lt_dlerror());
++        "UnableToRegisterImageFormat","'%s': %s",module_name,dlerror());
+       return(MagickFalse);
+     }
+   (void) LogMagickEvent(ModuleEvent,GetMagickModule(),
+@@ -1315,11 +1308,11 @@
+     Define UnregisterFORMATImage method.
+   */
+   TagToModuleName(module_name,"Unregister%sImage",name);
+-  module_info->unregister_module=(void (*)(void)) lt_dlsym(handle,name);
++  module_info->unregister_module=(void (*)(void)) dlsym(handle,name);
+   if (module_info->unregister_module == (void (*)(void)) NULL)
+     {
+       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+-        "UnableToRegisterImageFormat","'%s': %s",module_name,lt_dlerror());
++        "UnableToRegisterImageFormat","'%s': %s",module_name,dlerror());
+       return(MagickFalse);
+     }
+   (void) LogMagickEvent(ModuleEvent,GetMagickModule(),
+@@ -1471,7 +1464,7 @@
+   if (IsEventLogging() != MagickFalse)
+     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
+ #if defined(MAGICKCORE_LTDL_DELEGATE)
+-  (void) FormatLocaleString(name,MagickPathExtent,"%s.la",tag);
++  (void) FormatLocaleString(name,MagickPathExtent,"%s.so",tag);
+   (void) LocaleLower(name);
+ #else
+ #if defined(MAGICKCORE_WINDOWS_SUPPORT)
+@@ -1525,7 +1518,7 @@
+ #elif !defined(MAGICKCORE_LTDL_DELEGATE)
+   (void) FormatLocaleString(name,MagickPathExtent,"%s.dll",tag);
+ #else
+-  (void) FormatLocaleString(name,MagickPathExtent,"%s.la",tag);
++  (void) FormatLocaleString(name,MagickPathExtent,"%s.so",tag);
+ #endif
+ }
+ 
+@@ -1622,10 +1615,10 @@
+   if (module_info->unregister_module == NULL)
+     return(MagickTrue);
+   module_info->unregister_module();
+-  if (lt_dlclose((ModuleHandle) module_info->handle) != 0)
++  if (dlclose((ModuleHandle) module_info->handle) != 0)
+     {
+       (void) ThrowMagickException(exception,GetMagickModule(),ModuleWarning,
+-        "UnableToCloseModule","'%s': %s",module_info->tag,lt_dlerror());
++        "UnableToCloseModule","'%s': %s",module_info->tag,dlerror());
+       return(MagickFalse);
+     }
+   return(MagickTrue);
+diff -ru ImageMagick-7.1.0-51.orig/MagickCore/opencl.c ImageMagick-7.1.0-51/MagickCore/opencl.c
+--- ImageMagick-7.1.0-51.orig/MagickCore/opencl.c	2022-10-16 17:53:13.000000000 +0200
++++ ImageMagick-7.1.0-51/MagickCore/opencl.c	2022-11-05 22:36:35.473499198 +0100
+@@ -2607,7 +2607,7 @@
+   if (openCL_library != (MagickLibrary *) NULL)
+     {
+       if (openCL_library->library != (void *) NULL)
+-        (void) lt_dlclose(openCL_library->library);
++        (void) dlclose(openCL_library->library);
+       openCL_library=(MagickLibrary *) RelinquishMagickMemory(openCL_library);
+     }
+ }

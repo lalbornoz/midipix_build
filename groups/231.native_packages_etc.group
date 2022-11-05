@@ -225,13 +225,12 @@ ac_cv_lib_ncursesw6_addnwstr=yes"};
 : ${PKG_ICOUTILS_CONFIG_CACHE_EXTRA:="
 am_cv_func_working_getline=yes
 gl_cv_func_getopt_gnu=yes"};
-: ${PKG_IMAGEMAGICK_DEPENDS:="curl bzip2 libz xz zstd"};
-: ${PKG_IMAGEMAGICK_SHA256SUM:=67859f9cba97f2c06b5e416898216e49216be00c7cba3dd89896e49331aef96d};
-: ${PKG_IMAGEMAGICK_VERSION:=7.0.9-12};
+: ${PKG_IMAGEMAGICK_DEPENDS:="bzip2 curl freetype2 fontconfig libpng libz libzip libxml2 tiff xz zstd"};
+: ${PKG_IMAGEMAGICK_SHA256SUM:=d1976c829c10aadfd52549d59934db4e9ea5d1f457a167445b37883ee751a0f9};
+: ${PKG_IMAGEMAGICK_VERSION:=7.1.0-51};
 : ${PKG_IMAGEMAGICK_URL:=https://imagemagick.org/download/releases/ImageMagick-${PKG_IMAGEMAGICK_VERSION}.tar.xz};
 : ${PKG_IMAGEMAGICK_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2"};
-: ${PKG_IMAGEMAGICK_CONFIGURE_ARGS_EXTRA:="--enable-shared=yes --with-modules=yes --without-x --without-pango"};
-: ${PKG_IMAGEMAGICK_DISABLED:=1};
+: ${PKG_IMAGEMAGICK_CONFIGURE_ARGS_EXTRA:="--with-modules --without-x --without-pango --without-jemalloc --without-tcmalloc --without-umem"};
 : ${PKG_INFOUNZIP_URLS_GIT:=infounzip=https://github.com/Redfoxmoon3/infounzip.git@master};
 : ${PKG_INFOUNZIP_IN_TREE:=1};
 : ${PKG_INFOUNZIP_CFLAGS_BUILD_EXTRA:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
