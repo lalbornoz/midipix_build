@@ -1,6 +1,59 @@
+diff -ru procps-3.3.17.orig/lib/nsutils.c procps-3.3.17/lib/nsutils.c
+--- procps-3.3.17.orig/lib/nsutils.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/lib/nsutils.c	2022-11-07 00:01:25.779153614 +0100
+@@ -16,7 +16,7 @@
+ 	int i, rc = 0;
+ 
+ 	for (i = 0; i < NUM_NS; i++) {
+-		snprintf(buff, sizeof(buff), "/proc/%i/ns/%s", pid,
++		snprintf(buff, sizeof(buff), "/proc/syspid/%i/ns/%s", pid,
+ 			get_ns_name(i));
+ 		if (stat(buff, &st)) {
+ 			if (errno != ENOENT)
+diff -ru procps-3.3.17.orig/pidof.c procps-3.3.17/pidof.c
+--- procps-3.3.17.orig/pidof.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/pidof.c	2022-11-07 00:01:45.927153736 +0100
+@@ -117,7 +117,7 @@
+ 	ssize_t path_alloc_size;
+ 	ssize_t len;
+ 
+-	snprintf(link, sizeof(link), "/proc/%d/%s", pid, base_name);
++	snprintf(link, sizeof(link), "/proc/syspid/%d/%s", pid, base_name);
+ 
+ 	len = path_alloc_size = 0;
+ 	result = NULL;
+diff -ru procps-3.3.17.orig/pmap.c procps-3.3.17/pmap.c
+--- procps-3.3.17.orig/pmap.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/pmap.c	2022-11-07 00:02:54.791154154 +0100
+@@ -539,11 +539,11 @@
+ 	printf("%u:   %s\n", p->tgid, cmdbuf);
+ 
+ 	if (x_option || X_option || c_option) {
+-		snprintf(buf, sizeof buf, "/proc/%u/smaps", p->tgid);
++		snprintf(buf, sizeof buf, "/proc/syspid/%u/smaps", p->tgid);
+ 		if ((fp = fopen(buf, "r")) == NULL)
+ 			return 1;
+ 	} else {
+-		snprintf(buf, sizeof buf, "/proc/%u/maps", p->tgid);
++		snprintf(buf, sizeof buf, "/proc/syspid/%u/maps", p->tgid);
+ 		if ((fp = fopen(buf, "r")) == NULL)
+ 			return 1;
+ 	}
+diff -ru procps-3.3.17.orig/proc/devname.c procps-3.3.17/proc/devname.c
+--- procps-3.3.17.orig/proc/devname.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/proc/devname.c	2022-11-06 23:54:22.462970842 +0100
+@@ -289,7 +289,7 @@
+   struct stat sbuf;
+   char path[32];
+   ssize_t count;
+-  const int len = snprintf(path, sizeof path, "/proc/%d/%s", pid, name);  /* often permission denied */
++  const int len = snprintf(path, sizeof path, "/proc/syspid/%d/%s", pid, name);  /* often permission denied */
+   if(len <= 0 || (size_t)len >= sizeof path) return 0;
+   count = readlink(path,buf,TTY_NAME_SIZE-1);
+   if(count <= 0 || count >= TTY_NAME_SIZE-1) return 0;
 diff -ru procps-3.3.17.orig/proc/escape.c procps-3.3.17/proc/escape.c
---- procps-3.3.17.orig/proc/escape.c	2022-02-05 23:39:09.677115085 +0100
-+++ procps-3.3.17/proc/escape.c	2022-02-05 23:32:43.385130312 +0100
+--- procps-3.3.17.orig/proc/escape.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/proc/escape.c	2022-11-04 15:46:20.305190037 +0100
 @@ -21,6 +21,7 @@
  #include <sys/types.h>
  #include <string.h>
@@ -9,9 +62,144 @@ diff -ru procps-3.3.17.orig/proc/escape.c procps-3.3.17/proc/escape.c
  #include "procps.h"
  #include "escape.h"
  #include "readproc.h"
+diff -ru procps-3.3.17.orig/proc/readproc.c procps-3.3.17/proc/readproc.c
+--- procps-3.3.17.orig/proc/readproc.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/proc/readproc.c	2022-11-06 23:57:14.382411315 +0100
+@@ -883,7 +883,7 @@
+ // warning: interface may change
+ int read_cmdline(char *restrict const dst, unsigned sz, unsigned pid) {
+     char path[PROCPATHLEN];
+-    snprintf(path, sizeof(path), "/proc/%u", pid);
++    snprintf(path, sizeof(path), "/proc/syspid/%u", pid);
+     return read_unvectored(dst, sz, path, "cmdline", ' ');
+ }
+ 
+@@ -1239,7 +1239,7 @@
+   }
+   p->tgid = strtoul(ent->d_name, NULL, 10);
+   p->tid = p->tgid;
+-  snprintf(path, PROCPATHLEN, "/proc/%s", ent->d_name);
++  snprintf(path, PROCPATHLEN, "/proc/syspid/%s", ent->d_name);
+   return 1;
+ }
+ 
+@@ -1253,7 +1253,7 @@
+       closedir(PT->taskdir);
+     }
+     // use "path" as some tmp space
+-    snprintf(path, PROCPATHLEN, "/proc/%d/task", p->tgid);
++    snprintf(path, PROCPATHLEN, "/proc/syspid/%d/task", p->tgid);
+     PT->taskdir = opendir(path);
+     if(!PT->taskdir) return 0;
+     PT->taskdir_user = p->tgid;
+@@ -1266,7 +1266,7 @@
+   t->tid = strtoul(ent->d_name, NULL, 10);
+   t->tgid = p->tgid;
+ //t->ppid = p->ppid;  // cover for kernel behavior? we want both actually...?
+-  snprintf(path, PROCPATHLEN, "/proc/%d/task/%s", p->tgid, ent->d_name);
++  snprintf(path, PROCPATHLEN, "/proc/syspid/%d/task/%s", p->tgid, ent->d_name);
+   return 1;
+ }
+ 
+@@ -1277,7 +1277,7 @@
+   char *restrict const path = PT->path;
+   pid_t tgid = *(PT->pids)++;
+   if(likely(tgid)){
+-    snprintf(path, PROCPATHLEN, "/proc/%d", tgid);
++    snprintf(path, PROCPATHLEN, "/proc/syspid/%d", tgid);
+     p->tgid = tgid;
+     p->tid = tgid;  // they match for leaders
+   }
+@@ -1677,7 +1677,7 @@
+     static char path[32];
+     struct stat statbuf;
+ 
+-    snprintf(path, sizeof path, "/proc/%d", pid);
++    snprintf(path, sizeof path, "/proc/syspid/%d", pid);
+     if (stat(path, &statbuf)) {
+         perror("stat");
+         return NULL;
+diff -ru procps-3.3.17.orig/proc/sysinfo.c procps-3.3.17/proc/sysinfo.c
+--- procps-3.3.17.orig/proc/sysinfo.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/proc/sysinfo.c	2022-11-06 23:53:23.999176866 +0100
+@@ -488,7 +488,7 @@
+     char c;
+ 
+     if (!isdigit(ent->d_name[0])) continue;
+-    snprintf(tbuf, sizeof(tbuf), "/proc/%s/stat", ent->d_name);
++    snprintf(tbuf, sizeof(tbuf), "/proc/syspid/%s/stat", ent->d_name);
+ 
+     fd = open(tbuf, O_RDONLY, 0);
+     if (fd == -1) continue;
+diff -ru procps-3.3.17.orig/proc/wchan.c procps-3.3.17/proc/wchan.c
+--- procps-3.3.17.orig/proc/wchan.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/proc/wchan.c	2022-11-06 23:55:15.750410595 +0100
+@@ -32,7 +32,7 @@
+    ssize_t num;
+    int fd;
+ 
+-   snprintf(buf, sizeof buf, "/proc/%d/wchan", pid);
++   snprintf(buf, sizeof buf, "/proc/syspid/%d/wchan", pid);
+    fd = open(buf, O_RDONLY);
+    if (fd==-1) return "?";
+ 
+diff -ru procps-3.3.17.orig/ps/output.c procps-3.3.17/ps/output.c
+--- procps-3.3.17.orig/ps/output.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/ps/output.c	2022-11-06 23:59:52.026412271 +0100
+@@ -1229,7 +1229,7 @@
+     int fd;
+     u_int32_t luid;
+ 
+-    snprintf(filename, sizeof filename, "/proc/%d/loginuid", pp->tgid);
++    snprintf(filename, sizeof filename, "/proc/syspid/%d/loginuid", pp->tgid);
+ 
+     if ((fd = open(filename, O_RDONLY, 0)) != -1) {
+         num_read = read(fd, outbuf, OUTBUF_SIZE - 1);
+@@ -1255,7 +1255,7 @@
+     char filename[48];
+     ssize_t num_read;
+ 
+-    snprintf(filename, sizeof filename, "/proc/%d/exe", pp->tgid);
++    snprintf(filename, sizeof filename, "/proc/syspid/%d/exe", pp->tgid);
+ 
+     num_read = readlink(filename, outbuf, OUTBUF_SIZE-1);
+     if (num_read > 0) {
+@@ -1371,7 +1371,7 @@
+ 
+ // wchan file is suitable for testing
+ //snprintf(filename, sizeof filename, "/proc/%d/wchan", pp->tgid);
+-    snprintf(filename, sizeof filename, "/proc/%d/attr/current", pp->tgid);
++    snprintf(filename, sizeof filename, "/proc/syspid/%d/attr/current", pp->tgid);
+ 
+     if ((fd = open(filename, O_RDONLY, 0)) != -1) {
+       num_read = read(fd, outbuf, OUTBUF_SIZE-1);
+diff -ru procps-3.3.17.orig/pwdx.c procps-3.3.17/pwdx.c
+--- procps-3.3.17.orig/pwdx.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/pwdx.c	2022-11-07 00:00:51.339153405 +0100
+@@ -118,7 +118,7 @@
+ 		 * the first char is possible
+ 		 */
+ 		if (argv[i][0] != '/')
+-			snprintf(buf, buflen, "/proc/%s/cwd", argv[i]);
++			snprintf(buf, buflen, "/proc/syspid/%s/cwd", argv[i]);
+ 		else
+ 			snprintf(buf, buflen, "%s/cwd", argv[i]);
+ 
+diff -ru procps-3.3.17.orig/skill.c procps-3.3.17/skill.c
+--- procps-3.3.17.orig/skill.c	2021-02-09 11:11:25.000000000 +0100
++++ procps-3.3.17/skill.c	2022-11-07 00:00:34.811153304 +0100
+@@ -181,7 +181,7 @@
+ 	if (pid == my_pid || pid == 0)
+ 		return;
+ 	/* pid (cmd) state ppid pgrp session tty */
+-	sprintf(buf, "/proc/%d/stat", pid);
++	sprintf(buf, "/proc/syspid/%d/stat", pid);
+ 	fd = open(buf, O_RDONLY);
+ 	if (fd == -1) {
+ 		/* process exited maybe */
 diff -ru procps-3.3.17.orig/w.c procps-3.3.17/w.c
 --- procps-3.3.17.orig/w.c	2021-02-09 11:11:25.000000000 +0100
-+++ procps-3.3.17/w.c	2022-02-05 23:38:48.901114668 +0100
++++ procps-3.3.17/w.c	2022-11-04 15:46:20.305190037 +0100
 @@ -55,11 +55,7 @@
  #include <termios.h>
  #include <time.h>
