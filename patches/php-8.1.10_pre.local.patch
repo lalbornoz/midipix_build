@@ -1,3 +1,22 @@
+diff -ru php-8.1.10.orig/sapi/cli/Makefile.frag php-8.1.10/sapi/cli/Makefile.frag
+--- php-8.1.10.orig/sapi/cli/Makefile.frag      2022-11-08 17:54:00.260075317 +0100
++++ php-8.1.10/sapi/cli/Makefile.frag   2022-11-08 17:53:43.524075216 +0100
+@@ -4,9 +4,9 @@
+	$(BUILD_CLI)
+
+ install-cli: $(SAPI_CLI_PATH)
+-	@echo "Installing PHP CLI binary:        $(INSTALL_ROOT)$(bindir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+-	@$(INSTALL) -m 0755 $(SAPI_CLI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
+-	@echo "Installing PHP CLI man page:      $(INSTALL_ROOT)$(mandir)/man1/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
+-	@$(INSTALL_DATA) sapi/cli/php.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)php$(program_suffix).1
++	@echo "Installing PHP CLI binary:        $(DESTDIR)$(bindir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(bindir)
++	@$(LIBTOOL) --mode=install cp $(SAPI_CLI_PATH) $(DESTDIR)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
++	@echo "Installing PHP CLI man page:      $(DESTDIR)$(mandir)/man1/"
++	@$(mkinstalldirs) $(DESTDIR)$(mandir)/man1
++	@$(INSTALL_DATA) sapi/cli/php.1 $(DESTDIR)$(mandir)/man1/$(program_prefix)php$(program_suffix).1
 diff -ru php-8.1.10.orig/build/Makefile.global php-8.1.10/build/Makefile.global
 --- php-8.1.10.orig/build/Makefile.global       2022-10-18 01:06:50.776890570 +0200
 +++ php-8.1.10/build/Makefile.global    2022-10-18 01:07:22.908889564 +0200
@@ -554,18 +573,6 @@ diff -Nru php-8.1.0.orig/sapi/cgi/Makefile.frag php-8.1.0/sapi/cgi/Makefile.frag
  	@echo "Installing PHP CGI man page:      $(INSTALL_ROOT)$(mandir)/man1/"
  	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
  	@$(INSTALL_DATA) sapi/cgi/php-cgi.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)php-cgi$(program_suffix).1
-diff -Nru php-8.1.0.orig/sapi/cli/Makefile.frag php-8.1.0/sapi/cli/Makefile.frag
---- php-8.1.0.orig/sapi/cli/Makefile.frag	2021-11-23 19:56:11.000000000 +0100
-+++ php-8.1.0/sapi/cli/Makefile.frag	2021-11-26 12:01:05.943398259 +0100
-@@ -6,7 +6,7 @@
- install-cli: $(SAPI_CLI_PATH)
- 	@echo "Installing PHP CLI binary:        $(INSTALL_ROOT)$(bindir)/"
- 	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
--	@$(INSTALL) -m 0755 $(SAPI_CLI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
-+	@$(LIBTOOL) --mode=install cp $(SAPI_CLI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
- 	@echo "Installing PHP CLI man page:      $(INSTALL_ROOT)$(mandir)/man1/"
- 	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
- 	@$(INSTALL_DATA) sapi/cli/php.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)php$(program_suffix).1
 diff -Nru php-8.1.0.orig/sapi/phpdbg/Makefile.frag php-8.1.0/sapi/phpdbg/Makefile.frag
 --- php-8.1.0.orig/sapi/phpdbg/Makefile.frag	2021-11-23 19:56:11.000000000 +0100
 +++ php-8.1.0/sapi/phpdbg/Makefile.frag	2021-11-26 12:01:32.975398802 +0100
