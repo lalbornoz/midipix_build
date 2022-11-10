@@ -188,6 +188,7 @@ zstd")";
 : ${PKG_GRAPHICSMAGICK_CONFIGURE_ARGS_EXTRA:="--enable-shared --with-modules --without-x --without-gs --without-trio --without-wmf --without-gdi32 --without-dps --without-fpx --without-jbig --without-jp2 --without-jxl"};
 : ${PKG_GRAPHICSMAGICK_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
 : ${PKG_GRAPHICSMAGICK_LIBTOOL=rdlibtool};
+: ${PKG_GRAPHICSMAGICK_IN_TREE:=1};
 : ${PKG_GZIP_SHA256SUM:=ce5e03e519f637e1f814011ace35c4f87b33c0bbabeec35baf5fbd3479e91956};
 : ${PKG_GZIP_VERSION:=1.12};
 : ${PKG_GZIP_URL:=https://ftp.gnu.org/gnu/gzip/gzip-${PKG_GZIP_VERSION}.tar.xz};
