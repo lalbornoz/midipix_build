@@ -6,7 +6,7 @@ diff -ru procps-3.3.17.orig/lib/nsutils.c procps-3.3.17/lib/nsutils.c
  
  	for (i = 0; i < NUM_NS; i++) {
 -		snprintf(buff, sizeof(buff), "/proc/%i/ns/%s", pid,
-+		snprintf(buff, sizeof(buff), "/proc/syspid/%i/ns/%s", pid,
++		snprintf(buff, sizeof(buff), "/proc/sysproc/%i/ns/%s", pid,
  			get_ns_name(i));
  		if (stat(buff, &st)) {
  			if (errno != ENOENT)
@@ -18,7 +18,7 @@ diff -ru procps-3.3.17.orig/pidof.c procps-3.3.17/pidof.c
  	ssize_t len;
  
 -	snprintf(link, sizeof(link), "/proc/%d/%s", pid, base_name);
-+	snprintf(link, sizeof(link), "/proc/syspid/%d/%s", pid, base_name);
++	snprintf(link, sizeof(link), "/proc/sysproc/%d/%s", pid, base_name);
  
  	len = path_alloc_size = 0;
  	result = NULL;
@@ -30,12 +30,12 @@ diff -ru procps-3.3.17.orig/pmap.c procps-3.3.17/pmap.c
  
  	if (x_option || X_option || c_option) {
 -		snprintf(buf, sizeof buf, "/proc/%u/smaps", p->tgid);
-+		snprintf(buf, sizeof buf, "/proc/syspid/%u/smaps", p->tgid);
++		snprintf(buf, sizeof buf, "/proc/sysproc/%u/smaps", p->tgid);
  		if ((fp = fopen(buf, "r")) == NULL)
  			return 1;
  	} else {
 -		snprintf(buf, sizeof buf, "/proc/%u/maps", p->tgid);
-+		snprintf(buf, sizeof buf, "/proc/syspid/%u/maps", p->tgid);
++		snprintf(buf, sizeof buf, "/proc/sysproc/%u/maps", p->tgid);
  		if ((fp = fopen(buf, "r")) == NULL)
  			return 1;
  	}
@@ -47,7 +47,7 @@ diff -ru procps-3.3.17.orig/proc/devname.c procps-3.3.17/proc/devname.c
    char path[32];
    ssize_t count;
 -  const int len = snprintf(path, sizeof path, "/proc/%d/%s", pid, name);  /* often permission denied */
-+  const int len = snprintf(path, sizeof path, "/proc/syspid/%d/%s", pid, name);  /* often permission denied */
++  const int len = snprintf(path, sizeof path, "/proc/sysproc/%d/%s", pid, name);  /* often permission denied */
    if(len <= 0 || (size_t)len >= sizeof path) return 0;
    count = readlink(path,buf,TTY_NAME_SIZE-1);
    if(count <= 0 || count >= TTY_NAME_SIZE-1) return 0;
@@ -70,7 +70,7 @@ diff -ru procps-3.3.17.orig/proc/readproc.c procps-3.3.17/proc/readproc.c
  int read_cmdline(char *restrict const dst, unsigned sz, unsigned pid) {
      char path[PROCPATHLEN];
 -    snprintf(path, sizeof(path), "/proc/%u", pid);
-+    snprintf(path, sizeof(path), "/proc/syspid/%u", pid);
++    snprintf(path, sizeof(path), "/proc/sysproc/%u", pid);
      return read_unvectored(dst, sz, path, "cmdline", ' ');
  }
  
@@ -79,7 +79,7 @@ diff -ru procps-3.3.17.orig/proc/readproc.c procps-3.3.17/proc/readproc.c
    p->tgid = strtoul(ent->d_name, NULL, 10);
    p->tid = p->tgid;
 -  snprintf(path, PROCPATHLEN, "/proc/%s", ent->d_name);
-+  snprintf(path, PROCPATHLEN, "/proc/syspid/%s", ent->d_name);
++  snprintf(path, PROCPATHLEN, "/proc/sysproc/%s", ent->d_name);
    return 1;
  }
  
@@ -88,7 +88,7 @@ diff -ru procps-3.3.17.orig/proc/readproc.c procps-3.3.17/proc/readproc.c
      }
      // use "path" as some tmp space
 -    snprintf(path, PROCPATHLEN, "/proc/%d/task", p->tgid);
-+    snprintf(path, PROCPATHLEN, "/proc/syspid/%d/task", p->tgid);
++    snprintf(path, PROCPATHLEN, "/proc/sysproc/%d/task", p->tgid);
      PT->taskdir = opendir(path);
      if(!PT->taskdir) return 0;
      PT->taskdir_user = p->tgid;
@@ -97,7 +97,7 @@ diff -ru procps-3.3.17.orig/proc/readproc.c procps-3.3.17/proc/readproc.c
    t->tgid = p->tgid;
  //t->ppid = p->ppid;  // cover for kernel behavior? we want both actually...?
 -  snprintf(path, PROCPATHLEN, "/proc/%d/task/%s", p->tgid, ent->d_name);
-+  snprintf(path, PROCPATHLEN, "/proc/syspid/%d/task/%s", p->tgid, ent->d_name);
++  snprintf(path, PROCPATHLEN, "/proc/sysproc/%d/task/%s", p->tgid, ent->d_name);
    return 1;
  }
  
@@ -106,7 +106,7 @@ diff -ru procps-3.3.17.orig/proc/readproc.c procps-3.3.17/proc/readproc.c
    pid_t tgid = *(PT->pids)++;
    if(likely(tgid)){
 -    snprintf(path, PROCPATHLEN, "/proc/%d", tgid);
-+    snprintf(path, PROCPATHLEN, "/proc/syspid/%d", tgid);
++    snprintf(path, PROCPATHLEN, "/proc/sysproc/%d", tgid);
      p->tgid = tgid;
      p->tid = tgid;  // they match for leaders
    }
@@ -115,7 +115,7 @@ diff -ru procps-3.3.17.orig/proc/readproc.c procps-3.3.17/proc/readproc.c
      struct stat statbuf;
  
 -    snprintf(path, sizeof path, "/proc/%d", pid);
-+    snprintf(path, sizeof path, "/proc/syspid/%d", pid);
++    snprintf(path, sizeof path, "/proc/sysproc/%d", pid);
      if (stat(path, &statbuf)) {
          perror("stat");
          return NULL;
@@ -127,7 +127,7 @@ diff -ru procps-3.3.17.orig/proc/sysinfo.c procps-3.3.17/proc/sysinfo.c
  
      if (!isdigit(ent->d_name[0])) continue;
 -    snprintf(tbuf, sizeof(tbuf), "/proc/%s/stat", ent->d_name);
-+    snprintf(tbuf, sizeof(tbuf), "/proc/syspid/%s/stat", ent->d_name);
++    snprintf(tbuf, sizeof(tbuf), "/proc/sysproc/%s/stat", ent->d_name);
  
      fd = open(tbuf, O_RDONLY, 0);
      if (fd == -1) continue;
@@ -139,7 +139,7 @@ diff -ru procps-3.3.17.orig/proc/wchan.c procps-3.3.17/proc/wchan.c
     int fd;
  
 -   snprintf(buf, sizeof buf, "/proc/%d/wchan", pid);
-+   snprintf(buf, sizeof buf, "/proc/syspid/%d/wchan", pid);
++   snprintf(buf, sizeof buf, "/proc/sysproc/%d/wchan", pid);
     fd = open(buf, O_RDONLY);
     if (fd==-1) return "?";
  
@@ -151,7 +151,7 @@ diff -ru procps-3.3.17.orig/ps/output.c procps-3.3.17/ps/output.c
      u_int32_t luid;
  
 -    snprintf(filename, sizeof filename, "/proc/%d/loginuid", pp->tgid);
-+    snprintf(filename, sizeof filename, "/proc/syspid/%d/loginuid", pp->tgid);
++    snprintf(filename, sizeof filename, "/proc/sysproc/%d/loginuid", pp->tgid);
  
      if ((fd = open(filename, O_RDONLY, 0)) != -1) {
          num_read = read(fd, outbuf, OUTBUF_SIZE - 1);
@@ -160,7 +160,7 @@ diff -ru procps-3.3.17.orig/ps/output.c procps-3.3.17/ps/output.c
      ssize_t num_read;
  
 -    snprintf(filename, sizeof filename, "/proc/%d/exe", pp->tgid);
-+    snprintf(filename, sizeof filename, "/proc/syspid/%d/exe", pp->tgid);
++    snprintf(filename, sizeof filename, "/proc/sysproc/%d/exe", pp->tgid);
  
      num_read = readlink(filename, outbuf, OUTBUF_SIZE-1);
      if (num_read > 0) {
@@ -169,7 +169,7 @@ diff -ru procps-3.3.17.orig/ps/output.c procps-3.3.17/ps/output.c
  // wchan file is suitable for testing
  //snprintf(filename, sizeof filename, "/proc/%d/wchan", pp->tgid);
 -    snprintf(filename, sizeof filename, "/proc/%d/attr/current", pp->tgid);
-+    snprintf(filename, sizeof filename, "/proc/syspid/%d/attr/current", pp->tgid);
++    snprintf(filename, sizeof filename, "/proc/sysproc/%d/attr/current", pp->tgid);
  
      if ((fd = open(filename, O_RDONLY, 0)) != -1) {
        num_read = read(fd, outbuf, OUTBUF_SIZE-1);
@@ -181,7 +181,7 @@ diff -ru procps-3.3.17.orig/pwdx.c procps-3.3.17/pwdx.c
  		 */
  		if (argv[i][0] != '/')
 -			snprintf(buf, buflen, "/proc/%s/cwd", argv[i]);
-+			snprintf(buf, buflen, "/proc/syspid/%s/cwd", argv[i]);
++			snprintf(buf, buflen, "/proc/sysproc/%s/cwd", argv[i]);
  		else
  			snprintf(buf, buflen, "%s/cwd", argv[i]);
  
@@ -193,7 +193,7 @@ diff -ru procps-3.3.17.orig/skill.c procps-3.3.17/skill.c
  		return;
  	/* pid (cmd) state ppid pgrp session tty */
 -	sprintf(buf, "/proc/%d/stat", pid);
-+	sprintf(buf, "/proc/syspid/%d/stat", pid);
++	sprintf(buf, "/proc/sysproc/%d/stat", pid);
  	fd = open(buf, O_RDONLY);
  	if (fd == -1) {
  		/* process exited maybe */
