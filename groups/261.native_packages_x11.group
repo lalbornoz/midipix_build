@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-atk cairo fontconfig freetype freetype_pre gdk glew gtk2 gxemul harfbuzz imlib2
+atk cairo fontconfig freetype freetype_pre gdk gtk2 gxemul harfbuzz imlib2
 libcaca libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau
 libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile
 libXmu libXpm libXt libXtst libXcursor mesa pango pixman rdesktop rxvt_unicode
@@ -40,19 +40,6 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_GDK_SHA256SUM:=f8f6fa896b89475c73b6e9e8d2a2b062fc359c4b4ccb8e96470d6ab5da949ace};
 : ${PKG_GDK_URL:=http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${PKG_GDK_VERSION%.*}/gdk-pixbuf-${PKG_GDK_VERSION}.tar.xz};
 : ${PKG_GDK_CONFIG_CACHE_EXTRA:="enable_gio_sniffing=yes"};
-: ${PKG_GLEW_DEPENDS:="libX11 mesa"};
-: ${PKG_GLEW_SHA256SUM:=04de91e7e6763039bc11940095cd9c7f880baba82196a7765f727ac05a993c95};
-: ${PKG_GLEW_VERSION:=2.1.0};
-: ${PKG_GLEW_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/glew/glew-${PKG_GLEW_VERSION}.tgz};
-: ${PKG_GLEW_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_GLEW_CFLAGS_BUILD_EXTRA:=-Iinclude};
-: ${PKG_GLEW_INSTALL_FILES_V2:="
-	+../glew-${PKG_GLEW_VERSION}/bin/glewinfo=bin/%[FNAME]
-	+../glew-${PKG_GLEW_VERSION}/bin/visualinfo=bin/%[FNAME]
-	+../glew-${PKG_GLEW_VERSION}/lib/libGLEW.%<*>=lib/%[FNAME]
-"};
-: ${PKG_GLEW_IN_TREE:=1};
-: ${PKG_GLEW_MAKEFLAGS_BUILD_EXTRA:="SYSTEM=midipix STRIP= LD=${DEFAULT_TARGET}-gcc CC=${DEFAULT_TARGET}-gcc CFLAGS=-isystem${PREFIX_NATIVE}/include LDFLAGS.EXTRA=-L${PREFIX_NATIVE}/lib"};
 : ${PKG_GTK2_DEPENDS:="atk cairo freetype gdk glib libX11 pango Xrender"};
 : ${PKG_GTK2_SHA256SUM:=68c1922732c7efc08df4656a5366dcc3afdc8791513400dac276009b40954658};
 : ${PKG_GTK2_VERSION:=2.24.31};
