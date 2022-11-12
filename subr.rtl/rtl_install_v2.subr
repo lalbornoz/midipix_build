@@ -272,7 +272,7 @@ rtlp_install_rc() {
 # {{{ rtlp_install_splitl($_rlhs, $_rrhs, $_sep)
 #
 # rtlp_install_splitl()
-# Slit @_rlhs from left-hand side into left-hand and right-hand side
+# Split @_rlhs from left-hand side into left-hand and right-hand side
 # according to @_sep w/ backslash escaping
 #
 # @_rlhs:		inout reference to string and left-hand side result
