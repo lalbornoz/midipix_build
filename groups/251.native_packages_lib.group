@@ -439,10 +439,10 @@ bash_cv_func_sigsetjmp=yes"};
 : ${PKG_SDL2_NET_VERSION:=2.0.1};
 : ${PKG_SDL2_NET_URL:=https://www.libsdl.org/projects/SDL_net/release/SDL2_net-${PKG_SDL2_NET_VERSION}.tar.gz};
 : ${PKG_SDL2_NET_CONFIGURE_ARGS_EXTRA:="--disable-gui"};
-: ${PKG_WOLFSSL_SHA256SUM:=97339e6956c90e7c881ba5c748dd04f7c30e5dbe0c06da765418c51375a6dee3};
-: ${PKG_WOLFSSL_VERSION:=5.5.1};
+: ${PKG_WOLFSSL_SHA256SUM:=fd3135b8657d09fb96a8aad16585da850b96ea420ae8ce5ac4d5fdfc614c2683};
+: ${PKG_WOLFSSL_VERSION:=5.5.3};
 : ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
-: ${PKG_WOLFSSL_CONFIGURE_ARGS_EXTRA:="--enable-distro --with-libz=${PREFIX_NATIVE}"};
+: ${PKG_WOLFSSL_CONFIGURE_ARGS_EXTRA:="--enable-distro --disable-examples --enable-reproducible-build --enable-ed25519 --enable-ed25519-stream --with-libz=${PREFIX_NATIVE}"};
 : ${PKG_WOLFSSL_SUBDIR:=wolfssl-${PKG_WOLFSSL_VERSION}-stable};
 : ${PKG_WOLFSSL_INSTALL_FILES_V2:="
 	+../obj/cyassl/options.h=include/cyassl/%[FNAME]
