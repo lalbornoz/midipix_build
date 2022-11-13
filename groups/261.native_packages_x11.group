@@ -174,6 +174,7 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_MESA_CONFIGURE_ARGS_EXTRA:="--enable-glx=xlib --with-platforms=x11 --disable-dri --disable-gbm --disable-egl --with-gallium-drivers= --disable-llvm --disable-asm"};
 : ${PKG_MESA_CXXFLAGS_CONFIGURE_EXTRA:="-D_GNU_SOURCE"};
 : ${PKG_MESA_LIBTOOL:=slibtool-shared};
+: ${PKG_MESA_DISABLED:=1};
 : ${PKG_PANGO_DEPENDS:="cairo fontconfig harfbuzz"};
 : ${PKG_PANGO_VERSION:=1.40.11};
 : ${PKG_PANGO_SHA256SUM:=5b11140590e632739e4151cae06b8116160d59e22bf36a3ccd5df76d1cf0383e};
