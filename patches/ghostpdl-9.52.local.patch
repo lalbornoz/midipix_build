@@ -31,7 +31,17 @@ diff -ru ghostpdl-9.52.orig/base/fapi_ft.c ghostpdl-9.52/base/fapi_ft.c
 diff -ru ghostpdl-9.52.orig/configure ghostpdl-9.52/configure
 --- ghostpdl-9.52.orig/configure        2020-06-05 13:19:23.032760767 +0200
 +++ ghostpdl-9.52/configure     2020-06-05 13:18:58.367780811 +0200
-@@ -10957,7 +10957,7 @@
+@@ -7566,9 +7566,6 @@
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for local zlib source" >&5
+ $as_echo_n "checking for local zlib source... " >&6; }
+-# we must define ZLIBDIR regardless because png.mak does a -I$(ZLIBDIR)
+-# this seems a harmless default
+-ZLIBDIR=src
+ AUX_SHARED_ZLIB=
+ ZLIBCFLAGS=""
+ 
+@@ -10957,7 +10954,7 @@
    enableval=$enable_dynamic;
    if test "x$enable_dynamic" != xno; then
      case $host in
