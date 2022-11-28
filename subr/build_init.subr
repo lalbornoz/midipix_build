@@ -47,6 +47,10 @@ buildp_init_args() {
 			fi;
 		fi;
 		if [ "${_rc:-0}" -eq 0 ]; then
+			if   rtl_lmatch "${ARG_DIST}" "zipdist" ","\
+			&& ! rtl_lmatch "${ARG_DIST}" "minipix" ","; then
+				ARG_DIST="$(rtl_lconcat "${ARG_DIST}" "minipix" ",")";
+			fi;
 			if [ "${ARG_DIST:+1}" = 1 ]; then
 				BUILD_GROUPS="$(rtl_lconcat "$(rtl_lfilter "${BUILD_GROUPS}" "dist")" "dist")";
 			fi;
