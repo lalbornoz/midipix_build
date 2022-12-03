@@ -86,8 +86,8 @@ ac_cv_snprintf_returns_bogus=0"};
 : ${PKG_GPGME_CONFIGURE_ARGS_EXTRA:="--disable-g13-test --disable-gpgconf-test --disable-gpgsm-test --disable-gpg-test --with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE} --enable-languages=cl"};
 : ${PKG_GPGME_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
 : ${PKG_GNUTLS_DEPENDS:="libunistring libtasn1 nettle"};
-: ${PKG_GNUTLS_SHA256SUM:=77065719a345bfb18faa250134be4c53bef70c1bd61f6c0c23ceb8b44f0262ff};
-: ${PKG_GNUTLS_VERSION:=3.7.6};
+: ${PKG_GNUTLS_SHA256SUM:=c58ad39af0670efe6a8aee5e3a8b2331a1200418b64b7c51977fb396d4617114};
+: ${PKG_GNUTLS_VERSION:=3.7.8};
 : ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
 : ${PKG_GNUTLS_CONFIG_CACHE_EXTRA:="
 gl_cv_func_working_getdelim=yes
