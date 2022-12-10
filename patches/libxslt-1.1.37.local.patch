@@ -1,0 +1,12 @@
+diff -ru libxslt-1.1.37.orig/Makefile.in libxslt-1.1.37/Makefile.in
+--- libxslt-1.1.37.orig/Makefile.in	2022-12-10 12:03:50.891594062 +0100
++++ libxslt-1.1.37/Makefile.in	2022-12-10 12:05:46.048683627 +0100
+@@ -427,7 +427,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ ACLOCAL_AMFLAGS = -I m4
+-SUBDIRS = libxslt libexslt xsltproc doc tests $(am__append_1)
++SUBDIRS = libxslt libexslt xsltproc $(am__append_1)
+ DIST_SUBDIRS = libxslt libexslt xsltproc python doc tests
+ confexecdir = $(libdir)
+ confexec_DATA = xsltConf.sh
