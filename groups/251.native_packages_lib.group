@@ -60,9 +60,9 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
 : ${PKG_LIBAO_CONFIGURE_ARGS_EXTRA:="--enable-wmm --disable-esd --without-x"};
 : ${PKG_LIBAO_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_ANSI_DEFAULT"};
 : ${PKG_LIBAO_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lwinmm"}
-: ${PKG_LIBARCHIVE_DEPENDS:="libxml2 xz libiconv bzip2"};
-: ${PKG_LIBARCHIVE_SHA256SUM:=5a411aceb978f43e626f0c2d1812ddd8807b645ed892453acabd532376c148e6};
-: ${PKG_LIBARCHIVE_VERSION:=3.6.1};
+: ${PKG_LIBARCHIVE_DEPENDS:="libxml2 xz libiconv bzip2 libmd"};
+: ${PKG_LIBARCHIVE_SHA256SUM:=9e2c1b80d5fbe59b61308fdfab6c79b5021d7ff4ff2489fb12daf0a96a83551d};
+: ${PKG_LIBARCHIVE_VERSION:=3.6.2};
 : ${PKG_LIBARCHIVE_URL:=https://www.libarchive.de/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.xz};
 : ${PKG_LIBARCHIVE_CONFIGURE_ARGS_EXTRA:="--without-zstd"};
 : ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
