@@ -1,3 +1,23 @@
+diff -ru tcsh-6.24.05.orig/Makefile.in tcsh-6.24.05/Makefile.in
+--- tcsh-6.24.05.orig/Makefile.in       2022-12-04 09:20:48.000000000 +0100
++++ tcsh-6.24.05/Makefile.in    2022-12-13 13:36:05.821910068 +0100
+@@ -421,6 +421,7 @@
+ #CC=   cc      -h0,ansi,novector,float0
+ #CC=   lcc     -wa
+ CC_FOR_GETHOST = @CC_FOR_GETHOST@
++CPPFLAGS_FOR_GETHOST=-I. -I$(srcdir)
+ ED=	ed
+ AS=	as
+ RM=	rm
+@@ -497,7 +498,7 @@
+ #	emxbind tcsh
+
+ gethost.${SUF}: gethost.c sh.err.h tc.const.h sh.h
+-	${CC_FOR_GETHOST} ${CF} ${CPPFLAGS} ${CFLAGS} $(srcdir)/gethost.c
++	${CC_FOR_GETHOST} ${CF} ${CPPFLAGS_FOR_GETHOST} ${CFLAGS_FOR_GETHOST} $(srcdir)/gethost.c
+
+ gethost:  gethost.${SUF}
+        rm -f gethost
 diff -ru tcsh-6.23.02.orig/config_f.h tcsh-6.23.02/config_f.h
 --- tcsh-6.23.02.orig/config_f.h        2022-01-03 09:03:03.000000000 +0100
 +++ tcsh-6.23.02/config_f.h     2022-02-01 11:36:23.327968800 +0100
@@ -5,14 +25,14 @@ diff -ru tcsh-6.23.02.orig/config_f.h tcsh-6.23.02/config_f.h
   *             This can be much slower and no memory statistics will be
   *             provided.
   */
--#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__) || defined (__CYGWIN__) || defined(__GLIBC__) || defined(__OpenBSD__) || defined(__APPLE__) || defined (__ANDROID__) || defined(__NetBSD__)
-+#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__) || defined (__CYGWIN__) || defined(__GLIBC__) || defined(__OpenBSD__) || defined(__APPLE__) || defined (__ANDROID__) || defined(__NetBSD__) || defined(__midipix__)
+-#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__) || defined (__CYGWIN__) || defined(__GLIBC__) || defined(__OpenBSD__) || defined(__APPLE__) || defined (__ANDROID__) || defined(__NetBSD__) || !defined(HAVE_WORKING_SBRK)
++#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX) || defined(__MVS__) || defined (__CYGWIN__) || defined(__GLIBC__) || defined(__OpenBSD__) || defined(__APPLE__) || defined (__ANDROID__) || defined(__NetBSD__) || defined(__midipix__) || !defined(HAVE_WORKING_SBRK)
  # define SYSMALLOC
  #else
  # undef SYSMALLOC
 diff -Nru tcsh-6.22.00.orig/config/midipix tcsh-6.22.00/config/midipix
---- tcsh-6.22.00.orig/config/midipix	1970-01-01 01:00:00.000000000 +0100
-+++ tcsh-6.22.00/config/midipix	2020-08-21 19:12:56.066600827 +0200
+--- tcsh-6.22.00.orig/system/midipix	1970-01-01 01:00:00.000000000 +0100
++++ tcsh-6.22.00/system/midipix	2020-08-21 19:12:56.066600827 +0200
 @@ -0,0 +1,138 @@
 +/*
 + * config.h -- configure various defines for tcsh
@@ -179,26 +199,6 @@ diff -Nru tcsh-6.22.00.orig/ed.inputl.c tcsh-6.22.00/ed.inputl.c
  #define OKCMD INT_MAX
  
  /* ed.inputl -- routines to get a single line from the input. */
-diff -Nru tcsh-6.22.00.orig/Makefile.in tcsh-6.22.00/Makefile.in
---- tcsh-6.22.00.orig/Makefile.in	2019-11-28 17:00:05.000000000 +0100
-+++ tcsh-6.22.00/Makefile.in	2020-08-21 19:28:01.686381892 +0200
-@@ -339,6 +339,7 @@
- #CC=	cc	-h0,ansi,novector,float0
- #CC=	lcc	-wa 
- CC_FOR_GETHOST = @CC_FOR_GETHOST@
-+CPPFLAGS_FOR_GETHOST=-I. -I$(srcdir)
- ED=	ed
- AS=	as
- RM=	rm
-@@ -447,7 +448,7 @@
- 
- gethost:  gethost.c sh.err.h tc.const.h sh.h
- 	rm -f gethost
--	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} $(srcdir)/gethost.c
-+	${CC_FOR_GETHOST} -o gethost ${CPPFLAGS_FOR_GETHOST} ${CFLAGS_FOR_GETHOST} ${LDFLAGS_FOR_GETHOST} $(srcdir)/gethost.c
- 
- tc.defs.c:	gethost host.defs
- 	@rm -f $@.tmp
 diff -Nru tcsh-6.22.00.orig/sh.h tcsh-6.22.00/sh.h
 --- tcsh-6.22.00.orig/sh.h	2019-11-28 17:00:05.000000000 +0100
 +++ tcsh-6.22.00/sh.h	2020-08-21 19:10:44.030604961 +0200
