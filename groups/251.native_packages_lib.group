@@ -158,7 +158,9 @@ gcry_cv_visibility_attribute=yes"};
 : ${PKG_LIBICONV_VERSION:=1.17};
 : ${PKG_LIBICONV_URL:=https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_LIBICONV_VERSION}.tar.gz};
 : ${PKG_LIBICONV_CONFIGURE_ARGS_EXTRA:="--enable-extra-encodings"};
-: ${PKG_LIBICONV_INSTALL_FILES_V2:="@../../native/include/iconv.h=%[_prefix]/../x86_64-nt64-midipix/include/iconv.h"};
+: ${PKG_LIBICONV_INSTALL_FILES_V2:="
+	@../../native/include/iconv.h=%[_prefix]/../x86_64-nt64-midipix/include/iconv.v
+	+%[_files]/lib/pkgconfig/iconv.pc=lib/pkgconfig/iconv.pc"};
 : ${PKG_LIBIDN2_DEPENDS:="libunistring libiconv"};
 : ${PKG_LIBIDN2_SHA256SUM:=93caba72b4e051d1f8d4f5a076ab63c99b77faee019b72b9783b267986dbb45f};
 : ${PKG_LIBIDN2_VERSION:=2.3.4};

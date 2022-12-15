@@ -1,0 +1,13 @@
+prefix=
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: iconv
+Description: library that provides an iconv() implementation, for use on systems which don't have one, or whose implementation cannot convert from/to Unicode
+Version: 1.17
+Cflags: -I${includedir}
+Cflags.private:
+Libs: -L${libdir} -liconv
+Libs.private:
+Requires.private:
