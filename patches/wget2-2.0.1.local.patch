@@ -1,7 +1,23 @@
 diff -ru wget2-2.0.1.orig/libwget/net.c wget2-2.0.1/libwget/net.c
---- wget2-2.0.1.orig/libwget/net.c	2022-02-27 19:21:11.000000000 +0100
-+++ wget2-2.0.1/libwget/net.c	2022-12-21 12:51:40.841232059 +0100
-@@ -608,9 +608,11 @@
+--- wget2-2.0.1.orig/libwget/net.c	2022-12-21 13:17:32.426227872 +0100
++++ wget2-2.0.1/libwget/net.c	2022-12-21 13:16:45.802227589 +0100
+@@ -52,6 +52,7 @@
+ # include <fcntl.h>
+ #endif
+ 
++#if 0
+ #if defined __APPLE__ && defined __MACH__ && defined CONNECT_DATA_IDEMPOTENT && defined CONNECT_RESUME_ON_READ_WRITE
+ # define TCP_FASTOPEN_OSX
+ #elif defined TCP_FASTOPEN_CONNECT // since Linux 4.11
+@@ -59,6 +60,7 @@
+ #elif defined TCP_FASTOPEN && defined MSG_FASTOPEN
+ # define TCP_FASTOPEN_LINUX
+ #endif
++#endif
+ 
+ #include <wget.h>
+ #include "private.h"
+@@ -608,9 +610,11 @@
  	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&on, sizeof(on)) == -1)
  		error_printf(_("Failed to set socket option REUSEADDR\n"));
  
