@@ -1,0 +1,15 @@
+diff -ru wget2-2.0.1.orig/libwget/net.c wget2-2.0.1/libwget/net.c
+--- wget2-2.0.1.orig/libwget/net.c	2022-02-27 19:21:11.000000000 +0100
++++ wget2-2.0.1/libwget/net.c	2022-12-21 12:51:40.841232059 +0100
+@@ -608,9 +608,11 @@
+ 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&on, sizeof(on)) == -1)
+ 		error_printf(_("Failed to set socket option REUSEADDR\n"));
+ 
++#ifndef __midipix__
+ 	on = 1;
+ 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (void *)&on, sizeof(on)) == -1)
+ 		error_printf(_("Failed to set socket option NODELAY\n"));
++#endif
+ 
+ #ifdef SO_BINDTODEVICE
+ 	if (tcp->bind_interface) {
