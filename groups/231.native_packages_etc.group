@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
-giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer htop icoutils imagemagick infounzip infozip
+giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer icoutils imagemagick infounzip infozip
 john lbreakout2 lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 php popt potrace procps_ng qemu
 qpdf qrencode rpm rw sdlquake shared_mime_info slang sqlite3 tcl tdnf texinfo
@@ -209,16 +209,6 @@ zstd")";
 : ${PKG_HEXER_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib"};
 : ${PKG_HEXER_ENV_VARS_EXTRA:="CC_FOR_BUILD=gcc"};
 : ${PKG_HEXER_IN_TREE:=1};
-: ${PKG_HTOP_DEPENDS:="ncursesw"};
-: ${PKG_HTOP_SHA256SUM:=d9d6826f10ce3887950d709b53ee1d8c1849a70fa38e91d5896ad8cbc6ba3c57};
-: ${PKG_HTOP_VERSION:=2.2.0};
-: ${PKG_HTOP_URL:=https://src.fedoraproject.org/lookaside/extras/htop/htop-2.2.0.tar.gz/sha512/ec1335bf0e3e0387e5e50acbc508d0effad19c4bc1ac312419dc97b82901f4819600d6f87a91668f39d429536d17304d4b14634426a06bec2ecd09df24adc62e/htop-${PKG_HTOP_VERSION}.tar.gz};
-: ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-proc --enable-unicode --verbose"};
-: ${PKG_HTOP_CFLAGS_CONFIGURE_EXTRA:="--include=sys/sysmacros.h"};
-: ${PKG_HTOP_CONFIG_CACHE_EXTRA:="
-ac_cv_lib_ncursesw_addnwstr=yes
-ac_cv_lib_ncursesw6_addnwstr=yes"};
-: ${PKG_HTOP_ENV_VARS_EXTRA:="HTOP_NCURSES_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses-config:HTOP_NCURSES6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncurses6-config:HTOP_NCURSESW_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw-config:HTOP_NCURSESW6_CONFIG_SCRIPT=${PREFIX_NATIVE}/bin/ncursesw6-config"}
 : ${PKG_ICOUTILS_DEPENDS:="libpng"};
 : ${PKG_ICOUTILS_SHA256SUM:=17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0};
 : ${PKG_ICOUTILS_VERSION:=0.32.3};
