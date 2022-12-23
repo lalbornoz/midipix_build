@@ -1,0 +1,62 @@
+diff -ru ncdu-1.18.orig/src/dir.h ncdu-1.18/src/dir.h
+--- ncdu-1.18.orig/src/dir.h	2022-04-28 11:16:45.000000000 +0200
++++ ncdu-1.18/src/dir.h	2022-12-23 15:57:39.201824078 +0100
+@@ -113,7 +113,7 @@
+ extern int dir_import_active;
+ int dir_import_init(const char *fn);
+ 
+-#if HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS
++#if HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS || __midipix__
+ extern int exclude_kernfs;
+ #endif
+ 
+diff -ru ncdu-1.18.orig/src/dir_scan.c ncdu-1.18/src/dir_scan.c
+--- ncdu-1.18.orig/src/dir_scan.c	2022-04-28 11:16:57.000000000 +0200
++++ ncdu-1.18/src/dir_scan.c	2022-12-23 15:57:10.769823906 +0100
+@@ -38,10 +38,12 @@
+ #include <sys/attr.h>
+ #endif
+ 
+-#if HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS
++#if HAVE_SYS_STATFS_H && HAVE_STATFS
+ #include <sys/statfs.h>
++#if HAVE_LINUX_MAGIC_H
+ #include <linux/magic.h>
+ #endif
++#endif
+ 
+ 
+ /* set S_BLKSIZE if not defined already in sys/stat.h */
+@@ -60,7 +62,7 @@
+ static unsigned int buf_nlink;
+ 
+ 
+-#if HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS
++#if HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS || __midipix__
+ int exclude_kernfs; /* Exclude Linux pseudo filesystems */
+ 
+ static int is_kernfs(unsigned long type) {
+diff -ru ncdu-1.18.orig/src/main.c ncdu-1.18/src/main.c
+--- ncdu-1.18.orig/src/main.c	2022-11-30 11:30:55.000000000 +0100
++++ ncdu-1.18/src/main.c	2022-12-23 15:58:20.801824331 +0100
+@@ -291,7 +291,7 @@
+   printf("  -X, --exclude-from FILE    Exclude files that match any pattern in FILE\n");
+   printf("  -L, --follow-symlinks      Follow symbolic links (excluding directories)\n");
+   printf("  --exclude-caches           Exclude directories containing CACHEDIR.TAG\n");
+-#if HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS
++#if HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS || __midipix__
+   printf("  --exclude-kernfs           Exclude Linux pseudo filesystems (procfs,sysfs,cgroup,...)\n");
+ #endif
+ #if HAVE_SYS_ATTR_H && HAVE_GETATTRLIST && HAVE_DECL_ATTR_CMNEXT_NOFIRMLINKPATH
+@@ -395,9 +395,11 @@
+     else if(!arg_option()) die("Unknown option '%s'.\n", argparser_state.last);
+   }
+ 
++#ifndef __midipix__
+ #if !(HAVE_LINUX_MAGIC_H && HAVE_SYS_STATFS_H && HAVE_STATFS)
+   if(exclude_kernfs) die("The --exclude-kernfs flag is currently only supported on Linux.\n");
+ #endif
++#endif
+ 
+   if(export) {
+     if(dir_export_init(export)) die("Can't open %s: %s\n", export, strerror(errno));
