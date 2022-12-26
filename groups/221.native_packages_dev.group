@@ -29,7 +29,7 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_CHICKEN_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= TARGET_PREFIX="};
 : ${PKG_CHICKEN_MAKE_INSTALL_VNAME:=DESTDIR};
 : ${PKG_CPARSER_DEPENDS:="libfirm"};
-: ${PKG_CPARSER_URLS_GIT:="cparser=http://pp.info.uni-karlsruhe.de/git/cparser.git@master bcparser=${DEFAULT_GITROOT}/compilers/bcparser@main"};
+: ${PKG_CPARSER_URLS_GIT:="cparser=http://github.com/Lucía Andrea Illanes Albornoz/cparser.git@main bcparser=${DEFAULT_GITROOT}/compilers/bcparser@main"};
 : ${PKG_CPARSER_BASE_DIR:=${BUILD_WORKDIR}/cparser+libfirm-native-${DEFAULT_TARGET}};
 : ${PKG_CPARSER_BUILD_DIR:=build/cparser};
 : ${PKG_CPARSER_CONFIGURE:=bcparser/configure};
