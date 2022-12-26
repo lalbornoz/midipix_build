@@ -4,7 +4,8 @@
 
 pkg_clean() {
 	if [ "${PKG_NO_CLEAN:-0}" -eq 0 ]; then
-		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "build" ","; then
+		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "build" ","\
+		&& [ "${PKG_NO_CLEAN_BUILD_DIR:-0}" -eq 0 ]; then
 			if ! rtl_fileop rm "${PKG_BUILD_DIR}"; then
 				return 1;
 			fi;
