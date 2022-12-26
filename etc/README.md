@@ -154,7 +154,7 @@ amount of logical processors on the build host divided by two (2).
 
 > N.B. Busybox is not supported. Awk implementations other than GNU Awk are not supported.  
   
-> N.B. gcc versions >7.5.0 are not supported. clang is not supported.  
+> N.B. clang is not supported.  
   
 [Back to top](#table-of-contents)
 
