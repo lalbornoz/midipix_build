@@ -68,6 +68,7 @@ NATIVE_TOOLCHAIN_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_MUSL_FULL_BUILD_DIR:=build/musl};
 : ${PKG_MUSL_FULL_CONFIGURE:=build/mmglue/configure};
 : ${PKG_MUSL_FULL_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_FULL_VERSION} --prefix= --target=${DEFAULT_TARGET} --sysroot=${PREFIX_CROSS}"};
+: ${PKG_MUSL_FULL_INSTALL_FILES_V2:="-=include/iconv.h"};
 : ${PKG_MUSL_FULL_SUBDIR:=musl-${PKG_MUSL_FULL_VERSION}};
 : ${PKG_MUSL_FULL_VARS_FILE:="vars/musl.vars"};
 
