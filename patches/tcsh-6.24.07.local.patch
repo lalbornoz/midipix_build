@@ -1,3 +1,17 @@
+diff -ru tcsh-6.24.07.orig/configure tcsh-6.24.07/configure
+--- tcsh-6.24.07.orig/configure 2022-12-21 20:44:53.000000000 +0100
++++ tcsh-6.24.07/configure      2022-12-27 12:27:29.897963800 +0100
+@@ -6171,6 +6171,10 @@
+   *-qnx6*) :
+         tcsh_config_file=qnx6
+    ;; #(
++  ## Midipix
++  *-midipix*) :
++        tcsh_config_file=midipix
++   ;; #(
+   *) :
+     as_fn_error $? "Tcsh can't guess the configuration file name
+ for \`${host}' systems.
 diff -ru tcsh-6.24.05.orig/Makefile.in tcsh-6.24.05/Makefile.in
 --- tcsh-6.24.05.orig/Makefile.in       2022-12-04 09:20:48.000000000 +0100
 +++ tcsh-6.24.05/Makefile.in    2022-12-13 13:36:05.821910068 +0100
@@ -172,21 +186,6 @@ diff -Nru tcsh-6.22.00.orig/config/midipix tcsh-6.22.00/config/midipix
 +#define HAVE_SLASHSLASH 1
 +
 +#endif /* _h_config */
-diff -Nru tcsh-6.22.00.orig/configure tcsh-6.22.00/configure
---- tcsh-6.22.00.orig/configure	2019-11-28 17:00:05.000000000 +0100
-+++ tcsh-6.22.00/configure	2020-08-21 19:08:03.600976202 +0200
-@@ -2975,6 +2975,11 @@
-     tcsh_config_file=qnx6
-   ;;
- 
-+  ## midipix
-+  *-midipix*)
-+    tcsh_config_file=midipix
-+  ;;
-+
-   * )
-     as_fn_error $? "Tcsh can't guess the configuration file name
- for \`${host}' systems.
 diff -Nru tcsh-6.22.00.orig/ed.inputl.c tcsh-6.22.00/ed.inputl.c
 --- tcsh-6.22.00.orig/ed.inputl.c	2019-11-28 17:00:05.000000000 +0100
 +++ tcsh-6.22.00/ed.inputl.c	2020-08-21 19:22:12.899460169 +0200
