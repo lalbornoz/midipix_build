@@ -1,0 +1,9 @@
+--- libassuan-2.5.5/src/libassuan-config.in.orig	2018-10-25 11:20:28.000000000 +0200
++++ libassuan-2.5.5/src/libassuan-config.in	2022-12-27 11:09:39.104865932 +0100
+@@ -139,5 +139,5 @@
+ 	fi
+       done
+     fi
+-    echo $libdirs $lib $extralibs
++    echo $lib $extralibs
+ fi
