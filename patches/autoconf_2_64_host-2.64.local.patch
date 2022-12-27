@@ -58,3 +58,27 @@
  	-e 's|@M4[@]|$(M4)|g' \
  	-e 's|@AWK[@]|$(AWK)|g' \
  	-e 's|@VERSION[@]|$(VERSION)|g' \
+--- autoconf-2.69/man/Makefile.am	2022-12-27 15:22:52.186142107 +0800
++++ autoconf-2.69/man/Makefile.am.orig	2012-01-21 21:46:39.000000000 +0800
+@@ -58,7 +58,8 @@
+ 	    --include=$*.x \
+ 	    --include=$(srcdir)/common.x \
+ 	    --source='$(PACKAGE_STRING)' \
+-	    --output=$@.t `echo '$*' | sed 's,.*/,,'`
++	    --output=$@.t \
++	    --no-discard-stderr `echo '$*' | sed 's,.*/,,'`
+ 	if sed $(remove_time_stamp) $@ >$@a.t 2>/dev/null && \
+ 	   sed $(remove_time_stamp) $@.t | cmp $@a.t - >/dev/null 2>&1; then \
+ 		touch $@; \
+--- autoconf-2.69/man/Makefile.in	2022-12-27 15:23:19.743692892 +0800
++++ autoconf-2.69/man/Makefile.in.orig	2012-04-25 10:40:26.000000000 +0800
+@@ -464,7 +464,8 @@
+ 	    --include=$*.x \
+ 	    --include=$(srcdir)/common.x \
+ 	    --source='$(PACKAGE_STRING)' \
+-	    --output=$@.t `echo '$*' | sed 's,.*/,,'`
++	    --output=$@.t \
++	    --no-discard-stderr `echo '$*' | sed 's,.*/,,'`
+ 	if sed $(remove_time_stamp) $@ >$@a.t 2>/dev/null && \
+ 	   sed $(remove_time_stamp) $@.t | cmp $@a.t - >/dev/null 2>&1; then \
+ 		touch $@; \
