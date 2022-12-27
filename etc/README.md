@@ -109,6 +109,8 @@ amount of logical processors on the build host divided by two (2).
 
 * **Alpine Linux**:
   binutils bison bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip libc-dev linux-headers lzip m4 make musl-dev net-tools patch perl perl-xml-parser procps sed tar util-linux wget xz zip
+* **Arch Linux**:
+  binutils bison bzip2 cmake coreutils curl findutils gawk gcc git grep gzip linux-headers lzip m4 make net-tools patch perl perl-xml-parser procps-ng sed tar util-linux wget xz zip
 * **Debian/-derived Linux**:
   binutils bison bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip hostname libc6-dev libxml-parser-perl lzip m4 make patch perl procps sed tar util-linux wget xz-utils zip
 * **Gentoo Linux**:
@@ -118,39 +120,40 @@ amount of logical processors on the build host divided by two (2).
   
 #### The distro matrix:
 
-|   Alpine Linux:   |   Debian/-derived Linux:   |   Gentoo Linux:      |   OpenSUSE Linux:   |
-| ----------------- | -------------------------- | -------------------- | ------------------- |
-| binutils          | binutils                   | binutils             | binutils            |
-| bison             | bison                      | bison                | bison               |
-| bzip2             | bzip2                      | bzip2                | bzip2               |
-| cmake             | cmake                      | cmake                | cmake               |
-| coreutils         | coreutils                  | coreutils            | coreutils           |
-| curl              | curl                       | curl                 | curl                |
-| findutils         | findutils                  | findutils            | findutils           |
-| g++               | g++                        | -                    | gcc-c++             |
-| gawk              | gawk                       | gawk                 | gawk                |
-| gcc               | gcc                        | =gcc-7.5.0-r1        | gcc                 |
-| git               | git                        | dev-vcs/git          | git                 |
-| grep              | grep                       | grep                 | grep                |
-| gzip              | gzip                       | gzip                 | gzip                |
-| -                 | hostname                   | -                    | hostname            |
-| libc-dev          | libc6-dev                  | -                    | linux-glibc-devel   |
-| linux-headers     | -                          | -                    | -                   |
-| lzip              | lzip                       | lzip                 | lzip                |
-| m4                | m4                         | m4                   | m4                  |
-| make              | make                       | make                 | make                |
-| musl-dev          | -                          | -                    | -                   |
-| net-tools         | -                          | -                    | -                   |
-| patch             | patch                      | patch                | patch               |
-| perl              | perl                       | perl                 | perl                |
-| perl-xml-parser   | libxml-parser-perl         | dev-perl/XML-Parser  | perl-XML-Parser     |
-| procps            | procps                     | procps               | procps              |
-| sed               | sed                        | sed                  | sed                 |
-| tar               | tar                        | tar                  | tar                 |
-| util-linux        | util-linux                 | util-linux           | util-linux          |
-| wget              | wget                       | wget                 | wget                |
-| xz                | xz-utils                   | xz-utils             | xz                  |
-| zip               | zip                        | zip                  | zip                 |
+|  Alpine Linux:  |    Arch Linux:     |   Debian/-derived Linux:   |    Gentoo Linux:    |  OpenSUSE Linux:  |
+| --------------- | ------------------ | -------------------------- | ------------------- | ----------------- |
+| binutils        | binutils           | binutils                   | binutils            | binutils          |
+| bison           | bison              | bison                      | bison               | bison             |
+| bzip2           | bzip2              | bzip2                      | bzip2               | bzip2             |
+| cmake           | cmake              | cmake                      | cmake               | cmake             |
+| coreutils       | coreutils          | coreutils                  | coreutils           | coreutils         |
+| curl            | curl               | curl                       | curl                | curl              |
+| findutils       | findutils          | findutils                  | findutils           | findutils         |
+| g++             | -                  | g++                        | -                   | gcc-c++           |
+| gawk            | gawk               | gawk                       | gawk                | gawk              |
+| gcc             | gcc                | gcc                        | =gcc-7.5.0-r1       | gcc               |
+| git             | git                | git                        | dev-vcs/git         | git               |
+| grep            | grep               | grep                       | grep                | grep              |
+| gzip            | gzip               | gzip                       | gzip                | gzip              |
+| -               | -                  | hostname                   | -                   | hostname          |
+| libc-dev        | -                  | libc6-dev                  | -                   | linux-glibc-devel |
+| linux-headers   | linux-headers      | -                          | -                   | -                 |
+| lzip            | lzip               | lzip                       | lzip                | lzip              |
+| m4              | m4                 | m4                         | m4                  | m4                |
+| make            | make               | make                       | make                | make              |
+| musl-dev        | -                  | -                          | -                   | -                 |
+| net-tools       | net-tools          | -                          | -                   | -                 |
+| patch           | patch              | patch                      | patch               | patch             |
+| perl            | perl               | perl                       | perl                | perl              |
+| perl-xml-parser | perl-xml-parser    | libxml-parser-perl         | dev-perl/XML-Parser | perl-XML-Parser   |
+| procps          | procps-ng          | procps                     | procps              | procps            |
+| sed             | sed                | sed                        | sed                 | sed               |
+| tar             | tar                | tar                        | tar                 | tar               |
+| util-linux      | util-linux         | util-linux                 | util-linux          | util-linux        |
+| -               | vi                 | -                          | -                   | -                 |
+| wget            | wget               | wget                       | wget                | wget              |
+| xz              | xz                 | xz-utils                   | xz-utils            | xz                |
+| zip             | zip                | zip                        | zip                 | zip               |
 
 > N.B. Busybox is not supported. Awk implementations other than GNU Awk are not supported.  
   
