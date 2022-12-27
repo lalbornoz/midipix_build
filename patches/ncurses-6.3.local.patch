@@ -19,10 +19,9 @@ diff -ru ncurses-6.3.orig/configure ncurses-6.3/configure
  		if test "$DFT_LWR_MODEL" = "shared" && test -n "$LD_RPATH_OPT" ; then
  			LOCAL_LDFLAGS="${LD_RPATH_OPT}\$(LOCAL_LIBDIR)"
  			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
-diff -ru ncurses-6.3.orig/misc/gen-pkgconfig.in ncurses-6.3/misc/gen-pkgconfig.in
---- ncurses-6.3.orig/misc/gen-pkgconfig.in	2021-08-07 23:36:33.000000000 +0200
-+++ ncurses-6.3/misc/gen-pkgconfig.in	2021-11-17 20:35:45.111876569 +0100
-@@ -71,17 +71,7 @@
+--- ncurses-6.3/misc/gen-pkgconfig.in.orig	2021-08-07 23:36:33.000000000 +0200
++++ ncurses-6.3/misc/gen-pkgconfig.in	2022-12-27 09:17:07.295020120 +0100
+@@ -71,19 +71,9 @@
  MENU_LIBRARY="${MENU_NAME}@USE_ARG_SUFFIX@"
  PANEL_LIBRARY="${PANEL_NAME}@USE_ARG_SUFFIX@"
  
@@ -39,8 +38,11 @@ diff -ru ncurses-6.3.orig/misc/gen-pkgconfig.in ncurses-6.3/misc/gen-pkgconfig.i
 -
 +CFLAGS='-I${includedir}'
  lib_flags=
- for opt in -L$libdir @EXTRA_PKG_LDFLAGS@ @LIBS@
+-for opt in -L$libdir @EXTRA_PKG_LDFLAGS@ @LIBS@
++for opt in @EXTRA_PKG_LDFLAGS@ @LIBS@
  do
+ 	case $opt in
+ 	-l*) # LIBS is handled specially below
 diff -ru ncurses-6.3.orig/misc/Makefile.in ncurses-6.3/misc/Makefile.in
 --- ncurses-6.3.orig/misc/Makefile.in	2021-07-03 21:07:50.000000000 +0200
 +++ ncurses-6.3/misc/Makefile.in	2021-11-17 20:44:37.633501552 +0100
