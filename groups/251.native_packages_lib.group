@@ -8,7 +8,7 @@ libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt l
 libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
-libuv libvorbis libxml2 libxslt libz libzip lzo nettle onig sdl1 sdl1_net sdl1_mixer
+libuv libvorbis libxml2 libxslt libz libzip lzlib lzo nettle onig sdl1 sdl1_net sdl1_mixer
 sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
 : ${PKG_ASPELL_SHA256SUM:=f9b77e515334a751b2e60daab5db23499e26c9209f5e7b7443b05235ad0226f2};
 : ${PKG_ASPELL_VERSION:=0.60.8};
@@ -357,6 +357,11 @@ gl_cv_ld_output_def=no"};
 	-DOPENSSL_SSL_LIBRARY=${PREFIX_NATIVE}/lib/libssl.lib.a
 	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
 	-DZLIB_LIBRARY=${PREFIX_NATIVE}/lib/libz.a"};
+: ${PKG_LZLIB_SHA256SUM:=a1ab58f3148ba4b2674e938438166042137a9275bed747306641acfddc9ffb80};
+: ${PKG_LZLIB_VERSION:=1.13};
+: ${PKG_LZLIB_URL:=http://download.savannah.gnu.org/releases/lzip/lzlib/lzlib-${PKG_LZLIB_VERSION}.tar.gz};
+: ${PKG_LZLIB_CONFIGURE_ARGS:=--prefix= CC=${DEFAULT_TARGET}-gcc AR=${DEFAULT_TARGET}-ar};
+: ${PKG_LZLIB_CFLAGS_BUILD:=${DEFAULT_CFLAGS}};
 : ${PKG_ONIG_SHA256SUM:=28cd62c1464623c7910565fb1ccaaa0104b2fe8b12bcd646e81f73b47535213e};
 : ${PKG_ONIG_VERSION:=6.9.8};
 : ${PKG_ONIG_URL:=https://github.com/kkos/oniguruma/releases/download/v${PKG_ONIG_VERSION}/onig-${PKG_ONIG_VERSION}.tar.gz};
