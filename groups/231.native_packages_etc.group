@@ -498,9 +498,9 @@ ac_cv_func_timer_create=no
 ac_cv_lib_rt_timer_create=no
 ac_cv_search_timer_create=no
 ac_cv_prog_NCURSESW6_CONFIG=%PREFIX%/bin/ncursesw6-config"};
-: ${PKG_VIM_DEPENDS:="ncursesw"};
-: ${PKG_VIM_SHA256SUM:=51931a951e45dda11a69d3c59639898193ed9b1c7809060eb9eeb487c463d7a8};
-: ${PKG_VIM_VERSION:=9.0.0828};
+: ${PKG_VIM_DEPENDS:="ncursesw libiconv"};
+: ${PKG_VIM_SHA256SUM:=754d3c240b9f9ab5b37eb407cd2533e02c90bc6f23ac3c74c420256ba7220129};
+: ${PKG_VIM_VERSION:=9.0.1128};
 : ${PKG_VIM_URL:=https://github.com/vim/vim/archive/v${PKG_VIM_VERSION}.tar.gz};
 : ${PKG_VIM_CONFIGURE_ARGS_EXTRA:="--enable-gui=no --with-tlib=tinfow --without-x --disable-canberra --disable-libsodium --disable-motif-check --disable-sysmouse --disable-gpm"};
 : ${PKG_VIM_IN_TREE:=1};
