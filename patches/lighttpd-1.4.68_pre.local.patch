@@ -1,0 +1,21 @@
+diff -ru lighttpd-1.4.68.orig/configure lighttpd-1.4.68/configure
+--- lighttpd-1.4.68.orig/configure	2023-01-03 14:05:40.000000000 +0100
++++ lighttpd-1.4.68/configure	2023-01-07 13:13:44.702656206 +0100
+@@ -18388,7 +18388,7 @@
+   ac_status=$?
+   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+   test $ac_status = 0; }; then
+-  pkg_cv_GNUTLS_LIBS=`$PKG_CONFIG --libs "gnutls >= 3.3.0" 2>/dev/null`
++  pkg_cv_GNUTLS_LIBS=`$PKG_CONFIG --libs-only-l "gnutls >= 3.3.0" 2>/dev/null`
+ 		      test "x$?" != "x0" && pkg_failed=yes
+ else
+   pkg_failed=yes
+@@ -18771,7 +18771,7 @@
+   ac_status=$?
+   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+   test $ac_status = 0; }; then
+-  pkg_cv_PCRE2_LIBS=`$PKG_CONFIG --libs "libpcre2-8" 2>/dev/null`
++  pkg_cv_PCRE2_LIBS=`$PKG_CONFIG --libs-only-l "libpcre2-8" 2>/dev/null`
+ 		      test "x$?" != "x0" && pkg_failed=yes
+ else
+   pkg_failed=yes
