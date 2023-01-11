@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-alsa_lib apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
+apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante dbus
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer icoutils imagemagick infounzip infozip
 john lbreakout2 lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
@@ -11,11 +11,6 @@ ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 php popt potr
 qpdf qrencode rpm rw sdlquake shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
 zstd")";
-: ${PKG_ALSA_LIB_SHA256SUM:=3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf};
-: ${PKG_ALSA_LIB_VERSION:=1.1.8};
-: ${PKG_ALSA_LIB_URL:=ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PKG_ALSA_LIB_VERSION}.tar.bz2};
-: ${PKG_ALSA_LIB_CFLAGS_BUILD_EXTRA:="-D__u8=uint8_t"};
-: ${PKG_ALSA_LIB_CONFIGURE_ARGS_EXTRA:="--disable-python --with-versioned=no"};
 : ${PKG_APR_SHA256SUM:=a67ca9fcf9c4ff59bce7f428a323c8b5e18667fdea7b0ebad47d194371b0a105};
 : ${PKG_APR_VERSION:=1.6.5};
 : ${PKG_APR_URL:=http://ftp.fau.de/apache/apr/apr-${PKG_APR_VERSION}.tar.bz2};
