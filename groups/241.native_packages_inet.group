@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-apk_tools aria2 bind ca_certificates curl cvs dropbear elinks fetchmail git gnupg gpgme
+apk_tools bind ca_certificates curl cvs dropbear elinks fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
 microsocks mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
 proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
@@ -15,10 +15,6 @@ proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
 : ${PKG_APK_TOOLS_IN_TREE:=1};
 : ${PKG_APK_TOOLS_MAKEFLAGS_INSTALL_EXTRA:="PREFIX=${PREFIX_NATIVE} MANDIR=/share/man DOCDIR=/share/doc/apk"};
 : ${PKG_APK_TOOLS_DISABLED:=1};
-: ${PKG_ARIA2_SHA256SUM:=546e9194a9135d665fce572cb93c88f30fb5601d113bfa19951107ced682dc50};
-: ${PKG_ARIA2_VERSION:=1.32.0};
-: ${PKG_ARIA2_URL:=https://github.com/aria2/aria2/releases/download/release-${PKG_ARIA2_VERSION}/aria2-${PKG_ARIA2_VERSION}.tar.xz};
-: ${PKG_ARIA2_DISABLED:=1};
 : ${PKG_BIND_DEPENDS:="curl libressl libz"};
 : ${PKG_BIND_SHA256SUM:=6c044e9ea81add9dbbd2f5dfc224964cc6b6e364e43a8d6d8b574d9282651802};
 : ${PKG_BIND_VERSION:=9.13.2};
