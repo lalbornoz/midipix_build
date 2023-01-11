@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 atk cairo fontconfig freetype freetype_pre gdk gtk2 gxemul harfbuzz imlib2
-libcaca libepoxy libfontenc libICE libpthread_stubs libSM libX11 libXau
+libcaca libfontenc libICE libpthread_stubs libSM libX11 libXau
 libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile
 libXmu libXpm libXt libXtst libXcursor mesa pango pixman rdesktop rxvt_unicode
 st util_macros xcb xcb_proto xcb_util xcb_util_image xcb_util_wm xcowsay xcalc
@@ -71,11 +71,6 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_LIBCACA_URLS_GIT:=libcaca=https://github.com/cacalabs/libcaca@main};
 : ${PKG_LIBCACA_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -std=gnu99"};
 : ${PKG_LIBCACA_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfow -Wl,--as-needed"};
-: ${PKG_LIBEPOXY_DEPENDS:="libX11"};
-: ${PKG_LIBEPOXY_SHA256SUM:=4c94995398a6ebf691600dda2e9685a0cac261414175c2adf4645cdfab42a5d5};
-: ${PKG_LIBEPOXY_VERSION:=1.5.0};
-: ${PKG_LIBEPOXY_URL:=https://github.com/anholt/libepoxy/releases/download/${PKG_LIBEPOXY_VERSION}/libepoxy-${PKG_LIBEPOXY_VERSION}.tar.xz};
-: ${PKG_LIBEPOXY_CONFIGURE_ARGS_EXTRA:="--enable-egl=no"};
 : ${PKG_LIBFONTENC_DEPENDS:="libz xorgproto"};
 : ${PKG_LIBFONTENC_SHA256SUM:=6fba26760ca8d5045f2b52ddf641c12cedc19ee30939c6478162b7db8b6220fb};
 : ${PKG_LIBFONTENC_VERSION:=1.1.3};
