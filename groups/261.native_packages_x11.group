@@ -6,7 +6,7 @@ NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 atk cairo fontconfig freetype freetype_pre gdk gtk2 gxemul harfbuzz imlib2
 libcaca libfontenc libICE libpthread_stubs libSM libX11 libXau
 libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile
-libXmu libXpm libXt libXtst libXcursor mesa pango pixman rdesktop rxvt_unicode
+libXmu libXpm libXt libXtst libXcursor pango pixman rdesktop rxvt_unicode
 st util_macros xcb xcb_proto xcb_util xcb_util_image xcb_util_wm xcowsay xcalc
 xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_ATK_DEPENDS:="glib"};
@@ -161,15 +161,6 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_LIBXCURSOR_SHA256SUM:=77f96b9ad0a3c422cfa826afabaf1e02b9bfbfc8908c5fa1a45094faad074b98};
 : ${PKG_LIBXCURSOR_VERSION:=1.2.1};
 : ${PKG_LIBXCURSOR_URL:=https://www.x.org/releases/individual/lib/libXcursor-${PKG_LIBXCURSOR_VERSION}.tar.gz};
-: ${PKG_MESA_DEPENDS:="expat libpthread_stubs libX11 libXext libz xcb"};
-: ${PKG_MESA_SHA256SUM:=694e5c3d37717d23258c1f88bc134223c5d1aac70518d2f9134d6df3ee791eea};
-: ${PKG_MESA_VERSION:=18.0.0};
-: ${PKG_MESA_URL:=https://mesa.freedesktop.org/archive/mesa-${PKG_MESA_VERSION}.tar.xz};
-: ${PKG_MESA_CFLAGS_CONFIGURE_EXTRA:="-D_GNU_SOURCE"};
-: ${PKG_MESA_CONFIGURE_ARGS_EXTRA:="--enable-glx=xlib --with-platforms=x11 --disable-dri --disable-gbm --disable-egl --with-gallium-drivers= --disable-llvm --disable-asm"};
-: ${PKG_MESA_CXXFLAGS_CONFIGURE_EXTRA:="-D_GNU_SOURCE"};
-: ${PKG_MESA_LIBTOOL:=slibtool-shared};
-: ${PKG_MESA_DISABLED:=1};
 : ${PKG_PANGO_DEPENDS:="cairo fontconfig harfbuzz"};
 : ${PKG_PANGO_VERSION:=1.40.11};
 : ${PKG_PANGO_SHA256SUM:=5b11140590e632739e4151cae06b8116160d59e22bf36a3ccd5df76d1cf0383e};
