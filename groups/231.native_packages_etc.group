@@ -217,8 +217,8 @@ zstd")";
 am_cv_func_working_getline=yes
 gl_cv_func_getopt_gnu=yes"};
 : ${PKG_IMAGEMAGICK_DEPENDS:="bzip2 curl freetype fontconfig libpng libz libzip libxml2 tiff xz zstd"};
-: ${PKG_IMAGEMAGICK_SHA256SUM:=ee06d385bb5c92a57aefb1c64abe5107728b8f8448195843e6d8cf142a5b3191};
-: ${PKG_IMAGEMAGICK_VERSION:=7.1.0-55};
+: ${PKG_IMAGEMAGICK_SHA256SUM:=9c3bc3de37376b90a643b9437435cb477db68596b26a778a584020915196870b};
+: ${PKG_IMAGEMAGICK_VERSION:=7.1.0-57};
 : ${PKG_IMAGEMAGICK_URL:=https://imagemagick.org/download/releases/ImageMagick-${PKG_IMAGEMAGICK_VERSION}.tar.xz};
 : ${PKG_IMAGEMAGICK_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2"};
 : ${PKG_IMAGEMAGICK_CONFIGURE_ARGS_EXTRA:="--with-modules --without-x --without-pango --without-jemalloc --without-tcmalloc --without-umem"};
