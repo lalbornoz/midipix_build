@@ -9,7 +9,7 @@ libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpipeli
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
 libuv libvorbis libxml2 libxslt libz libzip lzlib lzo nettle onig opus sdl1 sdl1_net sdl1_mixer
-sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net wolfssl")";
+sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net twolame wolfssl")";
 : ${PKG_ASPELL_SHA256SUM:=f9b77e515334a751b2e60daab5db23499e26c9209f5e7b7443b05235ad0226f2};
 : ${PKG_ASPELL_VERSION:=0.60.8};
 : ${PKG_ASPELL_URL:=https://ftp.gnu.org/gnu/aspell/aspell-${PKG_ASPELL_VERSION}.tar.gz};
@@ -451,6 +451,10 @@ bash_cv_func_sigsetjmp=yes"};
 : ${PKG_SDL2_NET_VERSION:=2.0.1};
 : ${PKG_SDL2_NET_URL:=https://www.libsdl.org/projects/SDL_net/release/SDL2_net-${PKG_SDL2_NET_VERSION}.tar.gz};
 : ${PKG_SDL2_NET_CONFIGURE_ARGS_EXTRA:="--disable-gui"};
+: ${PKG_TWOLAME_DEPENDS:="libsndfile"};
+: ${PKG_TWOLAME_SHA256SUM:=cc35424f6019a88c6f52570b63e1baf50f62963a3eac52a03a800bb070d7c87d};
+: ${PKG_TWOLAME_VERSION:=0.4.0};
+: ${PKG_TWOLAME_URL:=https://github.com/njh/twolame/releases/download/${PKG_TWOLAME_VERSION}/twolame-${PKG_TWOLAME_VERSION}.tar.gz};
 : ${PKG_WOLFSSL_DEPENDS:="libz"};
 : ${PKG_WOLFSSL_SHA256SUM:=b7ee150e49def77c765bc02aac92ddeb0bebefd4cb12aa263d8f95e405221fb8};
 : ${PKG_WOLFSSL_VERSION:=5.5.4};
