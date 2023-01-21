@@ -30,8 +30,8 @@ diff -ru bochs-2.6.9.orig/configure bochs-2.6.9/configure
 
    fi
    case "$target" in
--    *-pc-windows* | *-pc-winnt* | *-cygwin* | *-mingw32*)
-+    *-pc-windows* | *-pc-winnt* | *-cygwin* | *-mingw32* | *-midipix*)
+-    *-pc-windows* | *-pc-winnt* | *-cygwin* | *-mingw32* | *-msys)
++    *-pc-windows* | *-pc-winnt* | *-cygwin* | *-mingw32* | *-msys | *-midipix*)
      NETLOW_OBJS="$NETLOW_OBJS eth_win32.o"
      ethernet_modules="$ethernet_modules win32"
      $as_echo "#define BX_NETMOD_WIN32 1" >>confdefs.h
