@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
-findutils gawk grep html_xml_utils jush lzop mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
+findutils gawk gcal grep html_xml_utils jush lzop mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BAS_DEPENDS:="ncurses"};
@@ -94,6 +94,12 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_GAWK_SHA256SUM:=d87629386e894bbea11a5e00515fc909dc9b7249529dad9e6a3a2c77085f7ea2};
 : ${PKG_GAWK_VERSION:=5.1.1};
 : ${PKG_GAWK_URL:=https://ftp.gnu.org/gnu/gawk/gawk-${PKG_GAWK_VERSION}.tar.xz};
+: ${PKG_GCAL_DEPENDS:="ncurses libunistring"};
+: ${PKG_GCAL_SHA256SUM:=91b56c40b93eee9bda27ec63e95a6316d848e3ee047b5880ed71e5e8e60f61ab};
+: ${PKG_GCAL_VERSION:=4.1};
+: ${PKG_GCAL_URL:=https://ftp.gnu.org/gnu/gcal/gcal-${PKG_GCAL_VERSION}.tar.xz};
+: ${PKG_GCAL_CONFIGURE_ARGS_EXTRA:="--enable-unicode"};
+: ${PKG_GCAL_ENV_VARS_EXTRA:="LIBS=-lunistring"};
 : ${PKG_GREP_DEPENDS:="pcre2"};
 : ${PKG_GREP_SHA256SUM:=498d7cc1b4fb081904d87343febb73475cf771e424fb7e6141aff66013abc382};
 : ${PKG_GREP_VERSION:=3.8};

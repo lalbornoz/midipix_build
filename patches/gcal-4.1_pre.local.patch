@@ -1,0 +1,12 @@
+diff -ru gcal-4.1.orig/configure gcal-4.1/configure
+--- gcal-4.1.orig/configure	2017-01-22 18:09:59.000000000 +0100
++++ gcal-4.1/configure	2023-01-31 14:35:28.553255306 +0100
+@@ -8769,7 +8769,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_initscr" >&5
+ $as_echo "$ac_cv_lib_ncurses_initscr" >&6; }
+ if test "x$ac_cv_lib_ncurses_initscr" = xyes; then :
+-  TTYLIBS="-lncurses"
++  TTYLIBS="-lncurses -ltinfo"
+ fi
+ 
+   if test -z "$TTYLIBS"; then
