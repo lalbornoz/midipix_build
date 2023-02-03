@@ -5,7 +5,7 @@ GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libao libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
-libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpipeline libpng libpsl
+libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
 libuv libvorbis libxml2 libxslt libz libzip lzlib lzo nettle onig opus sdl1 sdl1_net sdl1_mixer
@@ -207,9 +207,6 @@ ksba_cv_visibility_attribute=yes"};
 : ${PKG_LIBPCAP_URL:=https://github.com/the-tcpdump-group/libpcap/archive/libpcap-${PKG_LIBPCAP_VERSION}.tar.gz};
 : ${PKG_LIBPCAP_CONFIG_CACHE_EXTRA:="ac_cv_lbl_unaligned_fail=no"};
 : ${PKG_LIBPCAP_SUBDIR:="libpcap-libpcap-${PKG_LIBPCAP_VERSION}"};
-: ${PKG_LIBPIPELINE_SHA256SUM:=5dbf08faf50fad853754293e57fd4e6c69bb8e486f176596d682c67e02a0adb0};
-: ${PKG_LIBPIPELINE_VERSION:=1.5.3};
-: ${PKG_LIBPIPELINE_URL:=http://download.savannah.gnu.org/releases/libpipeline/libpipeline-${PKG_LIBPIPELINE_VERSION}.tar.gz};
 : ${PKG_LIBPNG_DEPENDS:="libz"};
 : ${PKG_LIBPNG_SHA256SUM:=1f4696ce70b4ee5f85f1e1623dc1229b210029fa4b7aee573df3e2ba7b036937};
 : ${PKG_LIBPNG_VERSION:=1.6.39};
