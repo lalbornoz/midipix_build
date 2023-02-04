@@ -4,7 +4,7 @@
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
-findutils gawk gcal grep html_xml_utils jush lzop mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
+findutils gawk gcal grep html_xml_utils jush lzop mawk mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_BAS_DEPENDS:="ncurses"};
@@ -116,6 +116,9 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
 : ${PKG_LZOP_SHA256SUM:=7e72b62a8a60aff5200a047eea0773a8fb205caf7acbe1774d95147f305a2f41};
 : ${PKG_LZOP_VERSION:=1.04};
 : ${PKG_LZOP_URL:=https://www.lzop.org/download/lzop-${PKG_LZOP_VERSION}.tar.gz};
+: ${PKG_MAWK_SHA256SUM:=7fd4cd1e1fae9290fe089171181bbc6291dfd9bca939ca804f0ddb851c8b8237};
+: ${PKG_MAWK_VERSION:=1.3.4-20200120};
+: ${PKG_MAWK_URL:=https://invisible-island.net/archives/mawk/mawk-${PKG_MAWK_VERSION}.tgz};
 : ${PKG_MC_DEPENDS:="glib libX11 ncursesw"};
 : ${PKG_MC_SHA256SUM:=31be59225ffa9920816e9a8b3be0ab225a16d19e4faf46890f25bdffa02a4ff4};
 : ${PKG_MC_VERSION:=4.8.27};
