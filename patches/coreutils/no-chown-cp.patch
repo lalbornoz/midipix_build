@@ -1,0 +1,54 @@
+diff -ru coreutils-9.1.orig/src/copy.c coreutils-9.1/src/copy.c
+--- coreutils-9.1.orig/src/copy.c	2022-04-15 15:53:28.000000000 +0200
++++ coreutils-9.1/src/copy.c	2023-02-07 21:10:41.696869950 +0100
+@@ -859,6 +859,7 @@
+         }
+     }
+ 
++#if 0
+   if (! chown_failure_ok (x))
+     {
+       error (0, errno, _("failed to preserve ownership for %s"),
+@@ -866,6 +867,7 @@
+       if (x->require_preserve)
+         return -1;
+     }
++#endif
+ 
+   return 0;
+ }
+@@ -2877,6 +2879,7 @@
+       if (x->preserve_security_context)
+         restore_default_fscreatecon_or_die ();
+ 
++#if 0
+       if (x->preserve_ownership)
+         {
+           /* Preserve the owner and group of the just-'copied'
+@@ -2900,6 +2903,7 @@
+                  preserving owner/group is a potential security problem.  */
+             }
+         }
++#endif
+     }
+   else
+     {
+diff -ru coreutils-9.1.orig/src/cp.c coreutils-9.1/src/cp.c
+--- coreutils-9.1.orig/src/cp.c	2023-02-07 21:11:39.720870709 +0100
++++ coreutils-9.1/src/cp.c	2023-02-07 21:06:22.167995788 +0100
+@@ -303,6 +303,7 @@
+             }
+         }
+ 
++#if 0
+       if (x->preserve_ownership)
+         {
+           if (lchownat (dst_dirfd, src_name, p->st.st_uid, p->st.st_gid) != 0)
+@@ -318,6 +319,7 @@
+               ignore_value (lchownat (dst_dirfd, src_name, -1, p->st.st_gid));
+             }
+         }
++#endif
+ 
+       if (x->preserve_mode)
+         {
