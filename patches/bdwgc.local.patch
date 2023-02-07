@@ -1,14 +1,12 @@
-diff --git a/include/private/gcconfig.h b/include/private/gcconfig.h
-index ea9996a9..40a470f8 100644
---- a/include/private/gcconfig.h
-+++ b/include/private/gcconfig.h
-@@ -110,6 +110,20 @@ EXTERN_C_BEGIN
+diff -ru bdwgc.orig/include/private/gcconfig.h bdwgc/include/private/gcconfig.h
+--- bdwgc.orig/include/private/gcconfig.h	2023-02-07 14:35:54.616933050 +0100
++++ bdwgc/include/private/gcconfig.h	2023-02-07 14:41:11.028698667 +0100
+@@ -110,6 +110,20 @@
  #   define LINUX
  # endif
  
 +# if defined(__midipix__)
 +#   define MIDIPIX
-+
 +#   include <fcntl.h>
 +#   include <sys/select.h>
 +
@@ -16,32 +14,33 @@ index ea9996a9..40a470f8 100644
 +#   include <pemagine/pemagine.h>
 +#   include <ntapi/nt_thread.h>
 +
-+    int __gc_data_start_mark__[1];
-+    int __gc_data_end_mark__[1];
++int __gc_data_start_mark__[1];
++int __gc_data_end_mark__[1];
 +#endif
++
 +
  /* And one for NetBSD: */
  # if defined(__NetBSD__)
  #   define NETBSD
-@@ -514,7 +528,7 @@ EXTERN_C_BEGIN
+@@ -527,7 +541,7 @@
  #   define mach_type_known
- # elif (defined(__i386__) || defined(i386)) \
+ # elif (defined(__i386__) || defined(i386) || defined(__X86__)) \
         && (defined(DARWIN) || defined(LINUX) || defined(FREEBSD) \
--            || defined(NETBSD) || defined(OPENBSD) || defined(__QNX__))
-+            || defined(NETBSD) || defined(OPENBSD) || defined(__QNX__) || defined(MIDIPIX))
+-            || defined(NETBSD) || defined(OPENBSD) || defined(QNX))
++            || defined(NETBSD) || defined(OPENBSD) || defined(QNX) || defined(MIDIPIX))
  #   define I386
  #   define mach_type_known
  # elif (defined(__ia64) || defined(__ia64__)) && defined(LINUX)
-@@ -567,7 +581,7 @@ EXTERN_C_BEGIN
- #   define mach_type_known
- # elif (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__)) \
+@@ -584,7 +598,7 @@
+ # elif (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__) \
+         || defined(__X86_64__)) \
         && (defined(DARWIN) || defined(LINUX) || defined(FREEBSD) \
--            || defined(NETBSD) || defined(OPENBSD))
-+            || defined(NETBSD) || defined(OPENBSD) || defined(MIDIPIX))
+-            || defined(NETBSD) || defined(OPENBSD) || defined(QNX))
++            || defined(NETBSD) || defined(OPENBSD) || defined(QNX) || defined(MIDIPIX))
  #   define X86_64
  #   define mach_type_known
  # endif
-@@ -1416,6 +1430,13 @@ EXTERN_C_BEGIN
+@@ -1464,6 +1478,13 @@
  #         define SOFT_VDB
  #       endif
  #   endif
@@ -55,7 +54,7 @@ index ea9996a9..40a470f8 100644
  #   ifdef CYGWIN32
  #       define WOW64_THREAD_CONTEXT_WORKAROUND
  #       define DATASTART ((ptr_t)GC_DATASTART)  /* From gc.h */
-@@ -2193,6 +2214,13 @@ EXTERN_C_BEGIN
+@@ -2259,6 +2280,13 @@
  #         define SOFT_VDB
  #       endif
  #   endif
@@ -69,12 +68,12 @@ index ea9996a9..40a470f8 100644
  #   ifdef DARWIN
  #     define DARWIN_DONT_PARSE_STACK 1
  #     define STACKBOTTOM ((ptr_t)0x7fff5fc00000)
-@@ -2520,7 +2548,7 @@ EXTERN_C_BEGIN
+@@ -2581,7 +2609,7 @@
  #if defined(SVR4) || defined(LINUX) || defined(IRIX5) || defined(HPUX) \
      || defined(OPENBSD) || defined(NETBSD) || defined(FREEBSD) \
      || defined(DGUX) || defined(BSD) || defined(HAIKU) || defined(HURD) \
--    || defined(AIX) || defined(DARWIN) || defined(OSF1)
-+    || defined(AIX) || defined(DARWIN) || defined(OSF1) || defined(MIDIPIX)
+-    || defined(AIX) || defined(DARWIN) || defined(OSF1) || defined(QNX)
++    || defined(AIX) || defined(DARWIN) || defined(OSF1) || defined(QNX) || defined(MIDIPIX)
  # define UNIX_LIKE      /* Basic Unix-like system calls work.   */
  #endif
  
