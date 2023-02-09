@@ -167,8 +167,8 @@ gcry_cv_visibility_attribute=yes"};
 : ${PKG_LIBIDN2_URL:=https://ftp.gnu.org/gnu/libidn/libidn2-${PKG_LIBIDN2_VERSION}.tar.gz};
 : ${PKG_LIBITE_URLS_GIT:=libite=https://github.com/troglobit/libite.git@master};
 : ${PKG_LIBITE_SUBDIR:=libite};
-: ${PKG_LIBJPEG_TURBO_SHA256SUM:=d3ed26a1131a13686dfca4935e520eb7c90ae76fbc45d98bb50a8dc86230342b};
-: ${PKG_LIBJPEG_TURBO_VERSION:=2.1.4};
+: ${PKG_LIBJPEG_TURBO_SHA256SUM:=bc12bc9dce55300c6bf4342bc233bcc26bd38bf289eedf147360d731c668ddaf};
+: ${PKG_LIBJPEG_TURBO_VERSION:=2.1.5};
 : ${PKG_LIBJPEG_TURBO_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libjpeg-turbo/libjpeg-turbo-${PKG_LIBJPEG_TURBO_VERSION}.tar.gz};
 : ${PKG_LIBJPEG_TURBO_CMAKE_ARGS_EXTRA:="
 	-DCMAKE_ASM_NASM_COMPILER=${PREFIX}/bin/${DEFAULT_TARGET}-nasm
