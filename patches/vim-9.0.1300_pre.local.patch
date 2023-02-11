@@ -1,3 +1,15 @@
+diff -ru vim-8.2.4230.orig/src/libvterm/src/vterm_internal.h vim-8.2.4230/src/libvterm/src/vterm_internal.h
+--- vim-8.2.4230.orig/src/libvterm/src/vterm_internal.h 2022-01-27 16:04:22.000000000 +0100
++++ vim-8.2.4230/src/libvterm/src/vterm_internal.h  2022-01-27 17:07:13.522370456 +0100
+@@ -5,7 +5,7 @@
+
+ #include <stdarg.h>
+
+-#if defined(__GNUC__) && !defined(__MINGW32__)
++#if defined(__GNUC__) && !defined(__MINGW32__) && !defined(__midipix__)
+ # define INTERNAL __attribute__((visibility("internal")))
+ # define UNUSED __attribute__((unused))
+ #else
 diff -ru vim-8.2.4230.orig/src/auto/configure vim-8.2.4230/src/auto/configure
 --- vim-8.2.4230.orig/src/auto/configure	2022-01-27 16:04:22.000000000 +0100
 +++ vim-8.2.4230/src/auto/configure	2022-01-27 17:15:07.217234738 +0100
