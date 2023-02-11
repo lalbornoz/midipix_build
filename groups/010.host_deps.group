@@ -10,7 +10,7 @@ HOST_DEPS_LDFLAGS_CONFIGURE="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 HOST_DEPS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_DEPS_PACKAGES="
 binutils_build bison_host bmake_host bzip2_host ca_certificates_host
-chainport_host clang_host clzip_host cmake_host dbus_host
+chainport_host clang_host clzip_host cmake_host
 expat_host file_host flex_host gdb_host gdbm_host glib_host gperf_host
 infounzip_host infozip_host intltool_host libffi_host
 libressl_host libz_host libzip_host llvm_host mdso_host mpackage_host
@@ -88,14 +88,6 @@ HOST_DEPS_TOOLS_RPM_DISABLE=1;
 	-DLIBMD_LIBRARY=
 "};
 : ${PKG_CMAKE_HOST_INSTALL_FILES_V2:="+../cmake-${PKG_CMAKE_HOST_VERSION}/Modules/Platform/BSDOS.cmake=share/cmake-${PKG_CMAKE_HOST_VERSION%.*}/Modules/Platform/Midipix.cmake"};
-: ${PKG_DBUS_HOST_DEPENDS:="expat_host"};
-: ${PKG_DBUS_HOST_VERSION:=1.11.20};
-: ${PKG_DBUS_HOST_URL:=https://dbus.freedesktop.org/releases/dbus/dbus-${PKG_DBUS_HOST_VERSION}.tar.gz};
-: ${PKG_DBUS_HOST_SHA256SUM:=7fd9d0536f7ec2f2afc94b84d5b5487f88c464e8d47c661d8e0b54aa83974bfa};
-: ${PKG_DBUS_HOST_CONFIGURE_ARGS_EXTRA:="--disable-tests --with-dbus-daemondir=/bin"};
-: ${PKG_DBUS_HOST_INSTALL_FILES_V2:="
-	-=etc/%<*>
-	-=var/%<*>"};
 : ${PKG_EXPAT_HOST_SHA256SUM:=ef2420f0232c087801abf705e89ae65f6257df6b7931d37846a193ef2e8cdcbe};
 : ${PKG_EXPAT_HOST_VERSION:=2.5.0};
 : ${PKG_EXPAT_HOST_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_HOST_VERSION}.tar.xz};
