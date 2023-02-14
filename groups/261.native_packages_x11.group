@@ -3,7 +3,7 @@
 #
 GROUP_TARGET="native_packages";
 NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
-cairo fontconfig freetype freetype_pre gdk gxemul harfbuzz imlib2
+cairo fontconfig freetype freetype_pre gxemul harfbuzz imlib2
 libcaca libfontenc libICE libpthread_stubs libSM libX11 libXau
 libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile
 libXmu libXpm libXt libXtst libXcursor pango pixman rdesktop rxvt_unicode
@@ -31,11 +31,6 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin")";
 : ${PKG_FREETYPE_PRE_URL:=http://download.savannah.gnu.org/releases/freetype/freetype-${PKG_FREETYPE_PRE_VERSION}.tar.xz};
 : ${PKG_FREETYPE_PRE_CONFIGURE_ARGS_EXTRA:="--with-bzip2=yes --with-harfbuzz=no --with-png=yes --with-zlib=yes"};
 : ${PKG_FREETYPE_PRE_RPM_DISABLE:=1};
-: ${PKG_GDK_DEPENDS:="libjpeg_turbo libpng shared_mime_info tiff"};
-: ${PKG_GDK_VERSION:=2.36.10};
-: ${PKG_GDK_SHA256SUM:=f8f6fa896b89475c73b6e9e8d2a2b062fc359c4b4ccb8e96470d6ab5da949ace};
-: ${PKG_GDK_URL:=http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${PKG_GDK_VERSION%.*}/gdk-pixbuf-${PKG_GDK_VERSION}.tar.xz};
-: ${PKG_GDK_CONFIG_CACHE_EXTRA:="enable_gio_sniffing=yes"};
 : ${PKG_GXEMUL_DEPENDS:="libX11"};
 : ${PKG_GXEMUL_SHA256SUM:=79c4437c6f8ca904f46d33ac36062a65fdcf4a92a248478e408ab11295cf8e83};
 : ${PKG_GXEMUL_VERSION:=0.7.0};
