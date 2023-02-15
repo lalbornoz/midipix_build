@@ -1,7 +1,8 @@
---- curl-7.83.1/configure.orig	2022-05-09 11:03:42.000000000 +0200
-+++ curl-7.83.1/configure	2022-05-11 16:30:58.671831912 +0200
-@@ -15337,6 +15337,16 @@
-   dynamic_linker='GNU/Linux ld.so'
+diff -ru curl-7.88.0.orig/configure curl-7.88.0/configure
+--- curl-7.88.0.orig/configure	2023-02-15 22:15:26.342600801 +0100
++++ curl-7.88.0/configure	2023-02-15 22:24:01.526208156 +0100
+@@ -15876,6 +15876,16 @@
+   version_type=windows
    ;;
  
 +midipix)
@@ -17,10 +18,1076 @@
  netbsdelf*-gnu)
    version_type=linux
    need_lib_prefix=no
-@@ -17792,2132 +17802,6 @@
-   return 0
- }
+@@ -17446,3199 +17456,6 @@
+   flags_prefer_cppflags="no"
+   #
  
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is DEC/Compaq/HP C" >&5
+-printf %s "checking if compiler is DEC/Compaq/HP C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __DECC
+-CURL_DEF_TOKEN __DECC
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__DECC"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___DECC=no
+-
+-  else
+-    curl_cv_have_def___DECC=yes
+-    curl_cv_def___DECC=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __DECC_VER
+-CURL_DEF_TOKEN __DECC_VER
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__DECC_VER"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___DECC_VER=no
+-
+-  else
+-    curl_cv_have_def___DECC_VER=yes
+-    curl_cv_def___DECC_VER=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___DECC" = "yes" &&
+-    test "$curl_cv_have_def___DECC_VER" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="DEC_C"
+-    flags_dbg_yes="-g2"
+-    flags_opt_all="-O -O0 -O1 -O2 -O3 -O4"
+-    flags_opt_yes="-O1"
+-    flags_opt_off="-O0"
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is HP-UX C" >&5
+-printf %s "checking if compiler is HP-UX C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __HP_cc
+-CURL_DEF_TOKEN __HP_cc
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__HP_cc"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___HP_cc=no
+-
+-  else
+-    curl_cv_have_def___HP_cc=yes
+-    curl_cv_def___HP_cc=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___HP_cc" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="HP_UX_C"
+-    flags_dbg_yes="-g"
+-    flags_opt_all="-O +O0 +O1 +O2 +O3 +O4"
+-    flags_opt_yes="+O2"
+-    flags_opt_off="+O0"
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is IBM C" >&5
+-printf %s "checking if compiler is IBM C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __IBMC__
+-CURL_DEF_TOKEN __IBMC__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__IBMC__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___IBMC__=no
+-
+-  else
+-    curl_cv_have_def___IBMC__=yes
+-    curl_cv_def___IBMC__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___IBMC__" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="IBM_C"
+-    flags_dbg_yes="-g"
+-    flags_opt_all="-O -O0 -O1 -O2 -O3 -O4 -O5"
+-    flags_opt_all="$flags_opt_all -qnooptimize"
+-    flags_opt_all="$flags_opt_all -qoptimize=0"
+-    flags_opt_all="$flags_opt_all -qoptimize=1"
+-    flags_opt_all="$flags_opt_all -qoptimize=2"
+-    flags_opt_all="$flags_opt_all -qoptimize=3"
+-    flags_opt_all="$flags_opt_all -qoptimize=4"
+-    flags_opt_all="$flags_opt_all -qoptimize=5"
+-    flags_opt_yes="-O2"
+-    flags_opt_off="-qnooptimize"
+-    flags_prefer_cppflags="yes"
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is Intel C" >&5
+-printf %s "checking if compiler is Intel C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __INTEL_COMPILER
+-CURL_DEF_TOKEN __INTEL_COMPILER
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__INTEL_COMPILER"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___INTEL_COMPILER=no
+-
+-  else
+-    curl_cv_have_def___INTEL_COMPILER=yes
+-    curl_cv_def___INTEL_COMPILER=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___INTEL_COMPILER" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_num="$curl_cv_def___INTEL_COMPILER"
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __unix__
+-CURL_DEF_TOKEN __unix__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = ""; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___unix__=no
+-
+-  else
+-    curl_cv_have_def___unix__=yes
+-    curl_cv_def___unix__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-    if test "$curl_cv_have_def___unix__" = "yes"; then
+-      compiler_id="INTEL_UNIX_C"
+-      flags_dbg_yes="-g"
+-      flags_opt_all="-O -O0 -O1 -O2 -O3 -Os"
+-      flags_opt_yes="-O2"
+-      flags_opt_off="-O0"
+-    else
+-      compiler_id="INTEL_WINDOWS_C"
+-      flags_dbg_yes="/Zi /Oy-"
+-      flags_opt_all="/O /O0 /O1 /O2 /O3 /Od /Og /Og- /Oi /Oi-"
+-      flags_opt_yes="/O2"
+-      flags_opt_off="/Od"
+-    fi
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is clang" >&5
+-printf %s "checking if compiler is clang... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __clang__
+-CURL_DEF_TOKEN __clang__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__clang__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___clang__=no
+-
+-  else
+-    curl_cv_have_def___clang__=yes
+-    curl_cv_def___clang__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___clang__" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is xlclang" >&5
+-printf %s "checking if compiler is xlclang... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __ibmxl__
+-CURL_DEF_TOKEN __ibmxl__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__ibmxl__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___ibmxl__=no
+-
+-  else
+-    curl_cv_have_def___ibmxl__=yes
+-    curl_cv_def___ibmxl__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-    if test "$curl_cv_have_def___ibmxl__" = "yes" ; then
+-            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-      compiler_id="XLCLANG"
+-    else
+-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-      compiler_id="CLANG"
+-    fi
+-    fullclangver=`$CC -v 2>&1 | grep version`
+-    clangver=`echo $fullclangver | grep "based on LLVM " | "$SED" 's/.*(based on LLVM \([0-9]*\.[0-9]*\).*)/\1/'`
+-    if test -z "$clangver"; then
+-      if echo $fullclangver | grep "Apple LLVM version " >/dev/null; then
+-                clangver="3.7"
+-      else
+-        clangver=`echo $fullclangver | "$SED" 's/.*version \([0-9]*\.[0-9]*\).*/\1/'`
+-      fi
+-    fi
+-    clangvhi=`echo $clangver | cut -d . -f1`
+-    clangvlo=`echo $clangver | cut -d . -f2`
+-    compiler_num=`(expr $clangvhi "*" 100 + $clangvlo) 2>/dev/null`
+-    flags_dbg_yes="-g"
+-    flags_opt_all="-O -O0 -O1 -O2 -Os -O3 -O4"
+-    flags_opt_yes="-O2"
+-    flags_opt_off="-O0"
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is GNU C" >&5
+-printf %s "checking if compiler is GNU C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __GNUC__
+-CURL_DEF_TOKEN __GNUC__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__GNUC__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___GNUC__=no
+-
+-  else
+-    curl_cv_have_def___GNUC__=yes
+-    curl_cv_def___GNUC__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___GNUC__" = "yes" &&
+-    test "$compiler_id" = "unknown"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="GNU_C"
+-    gccver=`$CC -dumpversion`
+-    gccvhi=`echo $gccver | cut -d . -f1`
+-    gccvlo=`echo $gccver | cut -d . -f2`
+-    compiler_num=`(expr $gccvhi "*" 100 + $gccvlo) 2>/dev/null`
+-    flags_dbg_yes="-g"
+-    flags_opt_all="-O -O0 -O1 -O2 -O3 -Os -Og -Ofast"
+-    flags_opt_yes="-O2"
+-    flags_opt_off="-O0"
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef _WIN32
+-CURL_DEF_TOKEN _WIN32
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "_WIN32"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def__WIN32=no
+-
+-  else
+-    curl_cv_have_def__WIN32=yes
+-    curl_cv_def__WIN32=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is LCC" >&5
+-printf %s "checking if compiler is LCC... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __LCC__
+-CURL_DEF_TOKEN __LCC__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__LCC__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___LCC__=no
+-
+-  else
+-    curl_cv_have_def___LCC__=yes
+-    curl_cv_def___LCC__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___LCC__" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="LCC"
+-    flags_dbg_yes="-g"
+-    flags_opt_all=""
+-    flags_opt_yes=""
+-    flags_opt_off=""
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is SGI MIPSpro C" >&5
+-printf %s "checking if compiler is SGI MIPSpro C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __GNUC__
+-CURL_DEF_TOKEN __GNUC__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__GNUC__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___GNUC__=no
+-
+-  else
+-    curl_cv_have_def___GNUC__=yes
+-    curl_cv_def___GNUC__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef _COMPILER_VERSION
+-CURL_DEF_TOKEN _COMPILER_VERSION
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "_COMPILER_VERSION"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def__COMPILER_VERSION=no
+-
+-  else
+-    curl_cv_have_def__COMPILER_VERSION=yes
+-    curl_cv_def__COMPILER_VERSION=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef _SGI_COMPILER_VERSION
+-CURL_DEF_TOKEN _SGI_COMPILER_VERSION
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "_SGI_COMPILER_VERSION"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def__SGI_COMPILER_VERSION=no
+-
+-  else
+-    curl_cv_have_def__SGI_COMPILER_VERSION=yes
+-    curl_cv_def__SGI_COMPILER_VERSION=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___GNUC__" = "no" &&
+-    (test "$curl_cv_have_def__SGI_COMPILER_VERSION" = "yes" ||
+-     test "$curl_cv_have_def__COMPILER_VERSION" = "yes"); then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="SGI_MIPSPRO_C"
+-    flags_dbg_yes="-g"
+-    flags_opt_all="-O -O0 -O1 -O2 -O3 -Ofast"
+-    flags_opt_yes="-O2"
+-    flags_opt_off="-O0"
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is SGI MIPS C" >&5
+-printf %s "checking if compiler is SGI MIPS C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __GNUC__
+-CURL_DEF_TOKEN __GNUC__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__GNUC__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___GNUC__=no
+-
+-  else
+-    curl_cv_have_def___GNUC__=yes
+-    curl_cv_def___GNUC__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __sgi
+-CURL_DEF_TOKEN __sgi
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__sgi"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___sgi=no
+-
+-  else
+-    curl_cv_have_def___sgi=yes
+-    curl_cv_def___sgi=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___GNUC__" = "no" &&
+-    test "$curl_cv_have_def___sgi" = "yes" &&
+-    test "$compiler_id" = "unknown"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="SGI_MIPS_C"
+-    flags_dbg_yes="-g"
+-    flags_opt_all="-O -O0 -O1 -O2 -O3 -Ofast"
+-    flags_opt_yes="-O2"
+-    flags_opt_off="-O0"
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is SunPro C" >&5
+-printf %s "checking if compiler is SunPro C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __SUNPRO_C
+-CURL_DEF_TOKEN __SUNPRO_C
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__SUNPRO_C"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___SUNPRO_C=no
+-
+-  else
+-    curl_cv_have_def___SUNPRO_C=yes
+-    curl_cv_def___SUNPRO_C=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___SUNPRO_C" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="SUNPRO_C"
+-    flags_dbg_yes="-g"
+-    flags_opt_all="-O -xO -xO1 -xO2 -xO3 -xO4 -xO5"
+-    flags_opt_yes="-xO2"
+-    flags_opt_off=""
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler is Tiny C" >&5
+-printf %s "checking if compiler is Tiny C... " >&6; }
+-
+-    OLDCPPFLAGS=$CPPFLAGS
+-  # CPPPFLAG comes from CURL_CPP_P
+-  CPPFLAGS="$CPPFLAGS $CPPPFLAG"
+-      if test -z "$SED"; then
+-    as_fn_error $? "SED not set. Cannot continue without SED being set." "$LINENO" 5
+-  fi
+-  if test -z "$GREP"; then
+-    as_fn_error $? "GREP not set. Cannot continue without GREP being set." "$LINENO" 5
+-  fi
+-
+-  tmp_exp=""
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-
+-#ifdef __TINYC__
+-CURL_DEF_TOKEN __TINYC__
+-#endif
+-
+-
+-_ACEOF
+-if ac_fn_c_try_cpp "$LINENO"
+-then :
+-
+-    tmp_exp=`eval "$ac_cpp conftest.$ac_ext" 2>/dev/null | \
+-      "$GREP" CURL_DEF_TOKEN 2>/dev/null | \
+-      "$SED" 's/.*CURL_DEF_TOKEN[ ][ ]*//' 2>/dev/null | \
+-      "$SED" 's/["][ ]*["]//g' 2>/dev/null`
+-    if test -z "$tmp_exp" || test "$tmp_exp" = "__TINYC__"; then
+-      tmp_exp=""
+-    fi
+-
+-fi
+-rm -f conftest.err conftest.i conftest.$ac_ext
+-  if test -z "$tmp_exp"; then
+-    curl_cv_have_def___TINYC__=no
+-
+-  else
+-    curl_cv_have_def___TINYC__=yes
+-    curl_cv_def___TINYC__=$tmp_exp
+-
+-  fi
+-      CPPFLAGS=$OLDCPPFLAGS
+-
+-  if test "$curl_cv_have_def___TINYC__" = "yes"; then
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-    compiler_id="TINY_C"
+-    flags_dbg_yes="-g"
+-    flags_opt_all=""
+-    flags_opt_yes=""
+-    flags_opt_off=""
+-  else
+-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-  fi
+-
+-  #
+-  if test "$compiler_id" = "unknown"; then
+-  cat <<_EOF 1>&2
+-***
+-*** Warning: This configure script does not have information about the
+-*** compiler you are using, relative to the flags required to enable or
+-*** disable generation of debug info, optimization options or warnings.
+-***
+-*** Whatever settings are present in CFLAGS will be used for this run.
+-***
+-*** If you wish to help the curl project to better support your compiler
+-*** you can report this and the required info on the libcurl development
+-*** mailing list: https://lists.haxx.selistinfo/curl-library/
+-***
+-_EOF
+-  fi
+-
+-
+-squeeze() {
+-  _sqz_result=""
+-  eval _sqz_input=\$$1
+-  for _sqz_token in $_sqz_input; do
+-    if test -z "$_sqz_result"; then
+-      _sqz_result="$_sqz_token"
+-    else
+-      _sqz_result="$_sqz_result $_sqz_token"
+-    fi
+-  done
+-  eval $1=\$_sqz_result
+-  return 0
+-}
+-
 -
 -      #
 -  if test "$compiler_id" != "unknown"; then
@@ -69,8 +1136,8 @@
 -      INTEL_UNIX_C)
 -        #
 -                        tmp_CFLAGS="$tmp_CFLAGS -std=gnu89"
--                                                tmp_CPPFLAGS="$tmp_CPPFLAGS -we140,147,165,266"
--                                        tmp_CPPFLAGS="$tmp_CPPFLAGS -wd279,981,1469"
+-                                                tmp_CPPFLAGS="$tmp_CPPFLAGS -diag-error 140,147,165,266"
+-                                                        tmp_CPPFLAGS="$tmp_CPPFLAGS -diag-disable 279,981,1025,1469,2259"
 -        ;;
 -        #
 -      INTEL_WINDOWS_C)
@@ -1110,6 +2177,7 @@
 -      GNU_C)
 -        #
 -        if test "$want_warnings" = "yes"; then
+-          tmp_CFLAGS="$tmp_CFLAGS -std=gnu89"
 -          #
 -                              if test "x$cross_compiling" != "xyes" ||
 -            test "$compiler_num" -ge "300"; then
@@ -2150,43 +3218,3 @@
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if compiler halts on compilation errors" >&5
  printf %s "checking if compiler halts on compilation errors... " >&6; }
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
---- curl-7.83.1/curl-config.in.orig	2022-05-09 09:52:19.000000000 +0200
-+++ curl-7.83.1/curl-config.in	2022-05-11 16:28:11.191258534 +0200
-@@ -155,11 +155,7 @@
-         ;;
- 
-     --libs)
--        if test "X@libdir@" != "X/usr/lib" -a "X@libdir@" != "X/usr/lib64"; then
--           CURLLIBDIR="-L@libdir@ "
--        else
--           CURLLIBDIR=""
--        fi
-+        CURLLIBDIR=""
-         if test "X@ENABLE_SHARED@" = "Xno"; then
-           echo ${CURLLIBDIR}-lcurl @LIBCURL_LIBS@
-         else
---- curl-7.83.1/src/Makefile.in.orig	2022-05-09 11:03:44.000000000 +0200
-+++ curl-7.83.1/src/Makefile.in	2022-05-12 17:27:11.606680950 +0200
-@@ -260,9 +260,9 @@
- am_curl_OBJECTS = $(am__objects_8)
- curl_OBJECTS = $(am_curl_OBJECTS)
- @USE_EXPLICIT_LIB_DEPS_FALSE@curl_DEPENDENCIES =  \
--@USE_EXPLICIT_LIB_DEPS_FALSE@	$(top_builddir)/lib/libcurl.la
-+@USE_EXPLICIT_LIB_DEPS_FALSE@	$(top_builddir)/lib/.libs/libcurl.a
- @USE_EXPLICIT_LIB_DEPS_TRUE@curl_DEPENDENCIES =  \
--@USE_EXPLICIT_LIB_DEPS_TRUE@	$(top_builddir)/lib/libcurl.la
-+@USE_EXPLICIT_LIB_DEPS_TRUE@	$(top_builddir)/lib/.libs/libcurl.a
- AM_V_P = $(am__v_P_@AM_V@)
- am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
- am__v_P_0 = false
-@@ -814,8 +814,8 @@
- 
- # CURL_FILES comes from Makefile.inc
- curl_SOURCES = $(CURL_FILES)
--@USE_EXPLICIT_LIB_DEPS_FALSE@curl_LDADD = $(top_builddir)/lib/libcurl.la @NSS_LIBS@ @SSL_LIBS@ @ZLIB_LIBS@ @CURL_NETWORK_AND_TIME_LIBS@
--@USE_EXPLICIT_LIB_DEPS_TRUE@curl_LDADD = $(top_builddir)/lib/libcurl.la @LIBCURL_LIBS@
-+@USE_EXPLICIT_LIB_DEPS_FALSE@curl_LDADD = $(top_builddir)/lib/.libs/libcurl.a @NSS_LIBS@ @SSL_LIBS@ @ZLIB_LIBS@ @CURL_NETWORK_AND_TIME_LIBS@
-+@USE_EXPLICIT_LIB_DEPS_TRUE@curl_LDADD = $(top_builddir)/lib/.libs/libcurl.a @LIBCURL_LIBS@
- 
- # if unit tests are enabled, build a static library to link them with
- @BUILD_UNITTESTS_TRUE@noinst_LTLIBRARIES = libcurltool.la
