@@ -10,10 +10,10 @@ HOST_DEPS_LDFLAGS_CONFIGURE="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib";
 HOST_DEPS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_DEPS_PACKAGES="
 binutils_build bison_host bmake_host bzip2_host ca_certificates_host
-chainport_host clang_host clzip_host cmake_host
+chainport_host clzip_host cmake_host
 expat_host file_host flex_host gdb_host gdbm_host glib_host gperf_host
 infounzip_host infozip_host intltool_host libffi_host
-libressl_host libz_host libzip_host llvm_host mdso_host mpackage_host
+libressl_host libz_host libzip_host mdso_host mpackage_host
 musl_fts_host ncurses_host ncursestw_host ncursesw_host pcre_host
 perk_host python2_host python3_host readline_host ruby_host sbsigntools_host
 sqlite3_host texinfo_host tzdb_host util_linux_host xz_host";
@@ -60,19 +60,6 @@ HOST_DEPS_TOOLS_RPM_DISABLE=1;
 : ${PKG_CHAINPORT_HOST_INSTALL_FILES_V2:="
 	-=%[_workdir]/chainport
 	+../chainport=%[_workdir]/chainport"};
-: ${PKG_CLANG_HOST_DEPENDS:="llvm_host"};
-: ${PKG_CLANG_HOST_SHA256SUM:=4cd3836dfb4b88b597e075341cae86d61c63ce3963e45c7fe6a8bf59bb382cdf};
-: ${PKG_CLANG_HOST_VERSION:=3.8.1};
-: ${PKG_CLANG_HOST_URL:=http://releases.llvm.org/${PKG_CLANG_HOST_VERSION}/cfe-${PKG_CLANG_HOST_VERSION}.src.tar.xz};
-: ${PKG_CLANG_HOST_DISABLED:=1};
-: ${PKG_CLANG_HOST_CMAKE_ARGS_EXTRA:="
-	-DCLANG_BUILD_EXAMPLES:BOOL=OFF
-	-DCLANG_INCLUDE_DOCS:BOOL=OFF
-	-DCLANG_INCLUDE_TESTS:BOOL=OFF
-	-DLIBCLANG_BUILD_STATIC:BOOL=ON
-	-DLLVM_PREFIX=${PREFIX_NATIVE}
-	-G Unix Makefiles
-	-Wno-dev"};
 : ${PKG_CLZIP_HOST_SHA256SUM:=d9d51212afa80371dc2546d278ef8ebbb3cd57c06fdd761b7b204497586d24c0};
 : ${PKG_CLZIP_HOST_VERSION:=1.11};
 : ${PKG_CLZIP_HOST_URL:=http://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_HOST_VERSION}.tar.gz};
@@ -163,20 +150,6 @@ HOST_DEPS_TOOLS_RPM_DISABLE=1;
 : ${PKG_LIBZIP_HOST_CMAKE_ARGS_EXTRA:="
 	-DENABLE_GNUTLS=:BOOL=OFF
 	-DENABLE_MBEDTLS=:BOOL=OFF"};
-: ${PKG_LLVM_HOST_SHA256SUM:=6e82ce4adb54ff3afc18053d6981b6aed1406751b8742582ed50f04b5ab475f9};
-: ${PKG_LLVM_HOST_VERSION:=3.8.1};
-: ${PKG_LLVM_HOST_URL:=http://releases.llvm.org/${PKG_LLVM_HOST_VERSION}/llvm-${PKG_LLVM_HOST_VERSION}.src.tar.xz};
-: ${PKG_LLVM_HOST_DISABLED:=1};
-: ${PKG_LLVM_HOST_CMAKE_ARGS_EXTRA:="
-	-DCMAKE_BUILD_TYPE=Release
-	-DLLVM_BUILD_DOCS=NO
-	-DLLVM_BUILD_EXAMPLES=NO
-	-DLLVM_BUILD_TESTS=NO
-	-DLLVM_ENABLE_SPHINX=NO
-	-DLLVM_TARGETS_TO_BUILD=X86
-	-DSPHINX_WARNINGS_AS_ERRORS=NO
-	-G Unix Makefiles
-	-Wno-dev"};
 : ${PKG_MDSO_HOST_URLS_GIT:="mdso=${DEFAULT_GITROOT}/mdso"};
 : ${PKG_MDSO_HOST_CONFIGURE_ARGS:="--prefix="};
 : ${PKG_MDSO_HOST_INSTALL_FILES_V2:="
