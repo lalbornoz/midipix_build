@@ -1,21 +1,287 @@
-diff -ru nettle-3.8.1.orig/x86_64/ghash-update.asm nettle-3.8.1/x86_64/ghash-update.asm
---- nettle-3.8.1.orig/x86_64/ghash-update.asm   2022-07-27 21:23:20.000000000 +0200
-+++ nettle-3.8.1/x86_64/ghash-update.asm        2023-02-17 11:58:31.875634006 +0100
-@@ -164,6 +164,14 @@
+diff -ru nettle-3.8.1.orig/x86_64/fat/aes128-decrypt-2.asm nettle-3.8.1/x86_64/fat/aes128-decrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/aes128-decrypt-2.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/aes128-decrypt-2.asm        2023-02-17 13:40:13.492569768 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/aes128-decrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_aes128_decrypt_aesni,"r"
++        .global __imp__nettle_aes128_decrypt_aesni
++__imp__nettle_aes128_decrypt_aesni:
++        .quad   _nettle_aes128_decrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/aes128-encrypt-2.asm nettle-3.8.1/x86_64/fat/aes128-encrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/aes128-encrypt-2.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/aes128-encrypt-2.asm        2023-02-17 13:39:44.528569389 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/aes128-encrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_aes128_encrypt_aesni,"r"
++        .global __imp__nettle_aes128_encrypt_aesni
++__imp__nettle_aes128_encrypt_aesni:
++        .quad   _nettle_aes128_encrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/aes192-decrypt-2.asm nettle-3.8.1/x86_64/fat/aes192-decrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/aes192-decrypt-2.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/aes192-decrypt-2.asm        2023-02-17 13:41:00.400570382 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/aes192-decrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_aes192_decrypt_aesni,"r"
++        .global __imp__nettle_aes192_decrypt_aesni
++__imp__nettle_aes192_decrypt_aesni:
++        .quad   _nettle_aes192_decrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/aes192-encrypt-2.asm nettle-3.8.1/x86_64/fat/aes192-encrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/aes192-encrypt-2.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/aes192-encrypt-2.asm        2023-02-17 13:40:37.196570078 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/aes192-encrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_aes192_encrypt_aesni,"r"
++        .global __imp__nettle_aes192_encrypt_aesni
++__imp__nettle_aes192_encrypt_aesni:
++        .quad   _nettle_aes192_encrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/aes256-decrypt-2.asm nettle-3.8.1/x86_64/fat/aes256-decrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/aes256-decrypt-2.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/aes256-decrypt-2.asm        2023-02-17 13:44:55.409072440 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/aes256-decrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_aes256_decrypt_aesni,"r"
++        .global __imp__nettle_aes256_decrypt_aesni
++__imp__nettle_aes256_decrypt_aesni:
++        .quad   _nettle_aes256_decrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/aes256-encrypt-2.asm nettle-3.8.1/x86_64/fat/aes256-encrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/aes256-encrypt-2.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/aes256-encrypt-2.asm        2023-02-17 13:44:31.165072123 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/aes256-encrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_aes256_encrypt_aesni,"r"
++        .global __imp__nettle_aes256_encrypt_aesni
++__imp__nettle_aes256_encrypt_aesni:
++        .quad   _nettle_aes256_encrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/cbc-aes128-encrypt-2.asm nettle-3.8.1/x86_64/fat/cbc-aes128-encrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/cbc-aes128-encrypt-2.asm       2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/cbc-aes128-encrypt-2.asm    2023-02-17 13:45:43.369073067 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/cbc-aes128-encrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_cbc_aes128_encrypt_aesni,"r"
++        .global __imp__nettle_cbc_aes128_encrypt_aesni
++__imp__nettle_cbc_aes128_encrypt_aesni:
++        .quad   _nettle_cbc_aes128_encrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/cbc-aes192-encrypt-2.asm nettle-3.8.1/x86_64/fat/cbc-aes192-encrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/cbc-aes192-encrypt-2.asm       2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/cbc-aes192-encrypt-2.asm    2023-02-17 13:46:09.457073408 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/cbc-aes192-encrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_cbc_aes192_encrypt_aesni,"r"
++        .global __imp__nettle_cbc_aes192_encrypt_aesni
++__imp__nettle_cbc_aes192_encrypt_aesni:
++        .quad   _nettle_cbc_aes192_encrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/cbc-aes256-encrypt-2.asm nettle-3.8.1/x86_64/fat/cbc-aes256-encrypt-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/cbc-aes256-encrypt-2.asm       2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/cbc-aes256-encrypt-2.asm    2023-02-17 13:46:31.545073697 +0100
+@@ -34,3 +34,11 @@
+
+ define(`fat_transform', `_$1_aesni')
+ include_src(`x86_64/aesni/cbc-aes256-encrypt.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_cbc_aes256_encrypt_aesni,"r"
++        .global __imp__nettle_cbc_aes256_encrypt_aesni
++__imp__nettle_cbc_aes256_encrypt_aesni:
++        .quad   _nettle_cbc_aes256_encrypt_aesni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/sha1-compress-2.asm nettle-3.8.1/x86_64/fat/sha1-compress-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/sha1-compress-2.asm    2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/sha1-compress-2.asm 2023-02-17 12:37:28.782267505 +0100
+@@ -32,3 +32,11 @@
+
+ define(`fat_transform', `_$1_sha_ni')
+ include_src(`x86_64/sha_ni/sha1-compress.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_sha1_compress_sha_ni,"r"
++        .global __imp__nettle_sha1_compress_sha_ni
++__imp__nettle_sha1_compress_sha_ni:
++        .quad   _nettle_sha1_compress_sha_ni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/sha1-compress.asm nettle-3.8.1/x86_64/fat/sha1-compress.asm
+--- nettle-3.8.1.orig/x86_64/fat/sha1-compress.asm      2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/sha1-compress.asm   2023-02-17 12:37:57.546267881 +0100
+@@ -32,3 +32,11 @@
+
+ define(`fat_transform', `_$1_x86_64')
+ include_src(`x86_64/sha1-compress.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_sha1_compress_x86_64,"r"
++        .global __imp__nettle_sha1_compress_x86_64
++__imp__nettle_sha1_compress_x86_64:
++        .quad   _nettle_sha1_compress_x86_64
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/ghash-set-key-2.asm nettle-3.8.1/x86_64/fat/ghash-set-key-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/ghash-set-key-2.asm    2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/ghash-set-key-2.asm 2023-02-17 12:32:21.594437764 +0100
+@@ -35,3 +35,11 @@
+
+ define(`fat_transform', `$1_pclmul')
+ include_src(`x86_64/pclmul/ghash-set-key.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_ghash_set_key_pclmul,"r"
++        .global __imp__nettle_ghash_set_key_pclmul
++__imp__nettle_ghash_set_key_pclmul:
++        .quad   _nettle_ghash_set_key_pclmul
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/sha256-compress-2.asm nettle-3.8.1/x86_64/fat/sha256-compress-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/sha256-compress-2.asm  2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/sha256-compress-2.asm       2023-02-17 12:35:29.438265944 +0100
+@@ -32,3 +32,11 @@
+
+ define(`fat_transform', `$1_sha_ni')
+ include_src(`x86_64/sha_ni/sha256-compress.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_sha256_compress_sha_ni,"r"
++        .global __imp__nettle_sha256_compress_sha_ni
++__imp__nettle_sha256_compress_sha_ni:
++        .quad   _nettle_sha256_compress_sha_ni
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/sha256-compress.asm nettle-3.8.1/x86_64/fat/sha256-compress.asm
+--- nettle-3.8.1.orig/x86_64/fat/sha256-compress.asm    2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/sha256-compress.asm 2023-02-17 12:34:02.826264811 +0100
+@@ -32,3 +32,11 @@
+
+ define(`fat_transform', `$1_x86_64')
+ include_src(`x86_64/sha256-compress.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_sha256_compress_x86_64,"r"
++        .global __imp__nettle_sha256_compress_x86_64
++__imp__nettle_sha256_compress_x86_64:
++        .quad   _nettle_sha256_compress_x86_64
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/ghash-update-2.asm nettle-3.8.1/x86_64/fat/ghash-update-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/ghash-update-2.asm     2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/ghash-update-2.asm  2023-02-17 12:29:12.138435285 +0100
+@@ -35,3 +35,11 @@
+
+ define(`fat_transform', `$1_pclmul')
+ include_src(`x86_64/pclmul/ghash-update.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_ghash_update_pclmul,"r"
++        .global __imp__nettle_ghash_update_pclmul
++__imp__nettle_ghash_update_pclmul:
++        .quad   _nettle_ghash_update_pclmul
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/memxor-2.asm nettle-3.8.1/x86_64/fat/memxor-2.asm
+--- nettle-3.8.1.orig/x86_64/fat/memxor-2.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/memxor-2.asm        2023-02-17 12:27:46.702434168 +0100
+@@ -34,3 +34,11 @@
+ define(`fat_transform', `_$1_sse2')
+ define(`USE_SSE2', `yes')
+ include_src(`x86_64/memxor.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_memxor_sse2,"r"
++        .global __imp__nettle_memxor_sse2
++__imp__nettle_memxor_sse2:
++        .quad   _nettle_memxor_sse2
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/memxor.asm nettle-3.8.1/x86_64/fat/memxor.asm
+--- nettle-3.8.1.orig/x86_64/fat/memxor.asm     2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/memxor.asm  2023-02-17 12:25:20.797229091 +0100
+@@ -33,3 +33,11 @@
+
+ define(`fat_transform', `_$1_x86_64')
+ include_src(`x86_64/memxor.asm')
++
++#ifdef __midipix__
++        .section .got$_nettle_memxor_x86_64,"r"
++        .global __imp__nettle_memxor_x86_64
++__imp__nettle_memxor_x86_64:
++        .quad   _nettle_memxor_x86_64
++        .linkonce discard
++#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/cpuid.asm nettle-3.8.1/x86_64/fat/cpuid.asm
+--- nettle-3.8.1.orig/x86_64/fat/cpuid.asm      2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/cpuid.asm   2023-02-17 12:20:01.842500301 +0100
+@@ -57,3 +57,10 @@
         ret
- EPILOGUE(_nettle_ghash_update)
+ EPILOGUE(_nettle_cpuid)
 
 +#ifdef __midipix__
-+   .section .got$_nettle_ghash_update,"r"
-+   .global __imp__nettle_ghash_update
-+__imp__nettle_ghash_update:
-+   .quad   _nettle_ghash_update
-+   .linkonce discard
++        .section .got$_nettle_cpuid,"r"
++        .global __imp__nettle_cpuid
++__imp__nettle_cpuid:
++        .quad   _nettle_cpuid
++        .linkonce discard
 +#endif
+diff -ru nettle-3.8.1.orig/x86_64/fat/ghash-update.asm nettle-3.8.1/x86_64/fat/ghash-update.asm
+--- nettle-3.8.1.orig/x86_64/fat/ghash-update.asm       2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/fat/ghash-update.asm    2023-02-17 12:22:38.869226973 +0100
+@@ -35,3 +35,11 @@
+
+ define(`fat_transform', `$1_table')
+ include_src(`x86_64/ghash-update.asm')
 +
- define(`W', `0x$2$1')
-        RODATA
-        ALIGN(2)
++#ifdef __midipix__
++        .section .got$_nettle_ghash_update_table,"r"
++        .global __imp__nettle_ghash_update_table
++__imp__nettle_ghash_update_table:
++        .quad   _nettle_ghash_update_table
++        .linkonce discard
++#endif
 diff -ru nettle-3.7.2.orig/x86_64/salsa20-2core.asm nettle-3.7.2/x86_64/salsa20-2core.asm
 --- nettle-3.7.2.orig/x86_64/salsa20-2core.asm  2021-03-21 09:32:25.000000000 +0100
 +++ nettle-3.7.2/x86_64/salsa20-2core.asm       2021-04-10 14:56:55.970009499 +0200
@@ -226,21 +492,6 @@ diff -ru nettle-3.6.orig/x86_64/memxor3.asm nettle-3.6/x86_64/memxor3.asm
 +	.quad   nettle_memxor3
 +	.linkonce discard
 +#endif
-diff -ru nettle-3.6.orig/x86_64/memxor.asm nettle-3.6/x86_64/memxor.asm
---- nettle-3.6.orig/x86_64/memxor.asm	2020-04-29 20:11:44.000000000 +0200
-+++ nettle-3.6/x86_64/memxor.asm	2020-09-07 13:46:40.999633408 +0200
-@@ -171,3 +171,11 @@
- >)	
- 
- EPILOGUE(nettle_memxor)
-+
-+#ifdef __midipix__
-+	.section .got$nettle_memxor,"r"
-+	.global __imp_nettle_memxor
-+__imp_nettle_memxor:
-+	.quad   nettle_memxor
-+	.linkonce discard
-+#endif
 diff -ru nettle-3.6.orig/x86_64/poly1305-internal.asm nettle-3.6/x86_64/poly1305-internal.asm
 --- nettle-3.6.orig/x86_64/poly1305-internal.asm	2020-04-29 20:11:44.000000000 +0200
 +++ nettle-3.6/x86_64/poly1305-internal.asm	2020-09-07 13:51:14.239748557 +0200
@@ -310,36 +561,6 @@ diff -ru nettle-3.6.orig/x86_64/serpent-encrypt.asm nettle-3.6/x86_64/serpent-en
 +        .global __imp_nettle_serpent_encrypt
 +__imp_nettle_serpent_encrypt:
 +        .quad   nettle_serpent_encrypt
-+        .linkonce discard
-+#endif
-diff -ru nettle-3.6.orig/x86_64/sha1-compress.asm nettle-3.6/x86_64/sha1-compress.asm
---- nettle-3.6.orig/x86_64/sha1-compress.asm	2020-04-29 20:11:44.000000000 +0200
-+++ nettle-3.6/x86_64/sha1-compress.asm	2020-09-07 13:56:37.603788439 +0200
-@@ -305,3 +305,11 @@
- 	W64_EXIT(2, 0)
- 	ret
- EPILOGUE(nettle_sha1_compress)
-+
-+#ifdef __midipix__
-+        .section .got$nettle_sha1_compress,"r"
-+        .global __imp_nettle_sha1_compress
-+__imp_nettle_sha1_compress:
-+        .quad   nettle_sha1_compress
-+        .linkonce discard
-+#endif
-diff -ru nettle-3.6.orig/x86_64/sha256-compress.asm nettle-3.6/x86_64/sha256-compress.asm
---- nettle-3.6.orig/x86_64/sha256-compress.asm	2020-04-29 20:11:44.000000000 +0200
-+++ nettle-3.6/x86_64/sha256-compress.asm	2020-09-07 13:56:57.671787810 +0200
-@@ -208,3 +208,11 @@
- 	W64_EXIT(3, 0)
- 	ret
- EPILOGUE(_nettle_sha256_compress)
-+
-+#ifdef __midipix__
-+        .section .got$_nettle_sha256_compress,"r"
-+        .global __imp__nettle_sha256_compress
-+__imp__nettle_sha256_compress:
-+        .quad   _nettle_sha256_compress
 +        .linkonce discard
 +#endif
 diff -ru nettle-3.6.orig/x86_64/sha3-permute.asm nettle-3.6/x86_64/sha3-permute.asm
