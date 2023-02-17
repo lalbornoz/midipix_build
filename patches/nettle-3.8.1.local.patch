@@ -1,3 +1,21 @@
+diff -ru nettle-3.8.1.orig/x86_64/ghash-update.asm nettle-3.8.1/x86_64/ghash-update.asm
+--- nettle-3.8.1.orig/x86_64/ghash-update.asm   2022-07-27 21:23:20.000000000 +0200
++++ nettle-3.8.1/x86_64/ghash-update.asm        2023-02-17 11:58:31.875634006 +0100
+@@ -164,6 +164,14 @@
+        ret
+ EPILOGUE(_nettle_ghash_update)
+
++#ifdef __midipix__
++   .section .got$_nettle_ghash_update,"r"
++   .global __imp__nettle_ghash_update
++__imp__nettle_ghash_update:
++   .quad   _nettle_ghash_update
++   .linkonce discard
++#endif
++
+ define(`W', `0x$2$1')
+        RODATA
+        ALIGN(2)
 diff -ru nettle-3.7.2.orig/x86_64/salsa20-2core.asm nettle-3.7.2/x86_64/salsa20-2core.asm
 --- nettle-3.7.2.orig/x86_64/salsa20-2core.asm  2021-03-21 09:32:25.000000000 +0100
 +++ nettle-3.7.2/x86_64/salsa20-2core.asm       2021-04-10 14:56:55.970009499 +0200
@@ -176,21 +194,6 @@ diff -ru nettle-3.6.orig/x86_64/ecc-secp521r1-modp.asm nettle-3.6/x86_64/ecc-sec
 +	.global __imp__nettle_ecc_secp521r1_modp
 +__imp__nettle_ecc_secp521r1_modp:
 +	.quad   _nettle_ecc_secp521r1_modp
-+	.linkonce discard
-+#endif
-diff -ru nettle-3.6.orig/x86_64/gcm-hash8.asm nettle-3.6/x86_64/gcm-hash8.asm
---- nettle-3.6.orig/x86_64/gcm-hash8.asm	2020-04-29 20:11:44.000000000 +0200
-+++ nettle-3.6/x86_64/gcm-hash8.asm	2020-09-07 13:42:31.107641232 +0200
-@@ -238,3 +238,11 @@
- .value W(a7,d0),W(a6,12),W(a4,54),W(a5,96),W(a0,d8),W(a1,1a),W(a3,5c),W(a2,9e)
- .value W(b5,e0),W(b4,22),W(b6,64),W(b7,a6),W(b2,e8),W(b3,2a),W(b1,6c),W(b0,ae)
- .value W(bb,f0),W(ba,32),W(b8,74),W(b9,b6),W(bc,f8),W(bd,3a),W(bf,7c),W(be,be)
-+
-+#ifdef __midipix__
-+	.section .got$_nettle_gcm_hash8,"r"
-+	.global __imp__nettle_gcm_hash8
-+__imp__nettle_gcm_hash8:
-+	.quad   _nettle_gcm_hash8
 +	.linkonce discard
 +#endif
 diff -ru nettle-3.6.orig/x86_64/md5-compress.asm nettle-3.6/x86_64/md5-compress.asm
