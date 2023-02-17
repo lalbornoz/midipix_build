@@ -5,173 +5,280 @@
 #
 
 rtl_lassign() {
-	local	_vnames="${1}" _sep="${2}" _vname="" _vval=""\
-		IFS RTL_LFIRST_HEAD="" RTL_LFIRST_TAIL="";
-	IFS="${_sep}"; shift 2;
-	for _vval in ${@}; do
-		if ! rtl_lfirst "${_vnames}" " "; then
+	local	_rla_vnames="${1}" _rla_sep="${2}"	\
+		_rla_head="" _rla_tail="" _rla_vname="" _rla_vval="" IFS;
+	IFS="${_rla_sep}"; shift 2;
+
+	for _rla_vval in ${@}; do
+		if ! rtl_lfirst \$_rla_head \$_rla_tail "${_rla_vnames}" " "; then
 			return 1;
 		else
-			_vname="${RTL_LFIRST_HEAD}"; _vnames="${RTL_LFIRST_TAIL}";
-			rtl_set_var_unsafe "${_vname}" "${_vval}";
+			_rla_vname="${_rla_head}"; _rla_vnames="${_rla_tail}";
+			rtl_set_var_unsafe "${_rla_vname}" "${_rla_vval}";
 		fi;
 	done;
+	return 0;
 };
 
 rtl_lconcat() {
-	local _list="${1}" _litem_new="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}";
-	if [ -n "${_list}" ]; then
-		printf "%s%s%s" "${_list}" "${_sep}" "${_litem_new}";
+	rtl_lconcat2 "${1}" "${1}" "${2}" "${3:-}";
+};
+
+rtl_lconcat2() {
+	local	_rlc2_rlist_new="${1#\$}" _rlc2_rlist="${2#\$}" _rlc2_litem_new="${3}"	\
+		_rlc2_sep="${4:- }" IFS="${4:-${IFS:- }}";
+
+	if eval [ \"'${'${_rlc2_rlist}':+1}'\" = 1 ]; then
+		eval ${_rlc2_rlist_new}='${'"${_rlc2_rlist}"'}${_rlc2_sep}${_rlc2_litem_new}';
 	else
-		printf "%s" "${_litem_new}";
+		eval ${_rlc2_rlist_new}='${_rlc2_litem_new}';
 	fi;
+	return 0;
 };
 
 rtl_lfilter() {
-	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}"\
-		_filterfl="" _litem="" _litem_filter="" _lnew="";
-	if [ -z "${_filter}" ]; then
-		printf "%s" "${_list}"; return 0;
-	else for _litem in ${_list}; do
-		_filterfl=0;
-		for _litem_filter in ${_filter}; do
-			if [ "${_litem_filter}" = "${_litem}" ]; then
-				_filterfl=1; break;
-			fi;
-		done;
-		if [ "${_filterfl:-0}" -eq 0 ]; then
-			_lnew="${_lnew:+${_lnew}${_sep}}${_litem}";
-		fi;
-	done; fi;
-	printf "%s" "${_lnew}";
-};
-
-rtl_lfilter2() {
-	local	_rlist="${1#\$}" _rlist_new="${2#\$}" _filter="${3}" _sep="${4:- }" IFS="${4:-${IFS:- }}"\
-		_filterfl="" _litem="" _litem_filter="" _lnew="";
-
-	if [ "${_filter:+1}" != 1 ]; then
-		eval ${_rlist_new}=; return 0;
-	else	eval set -- '${'"${_rlist}"'}'\; ${_rlist_new}=;
-		while [ "${#}" -gt 0 ]; do
-			_litem="${1}"; shift; _filterfl=0;
-			for _litem_filter in ${_filter}; do
-				if [ "${_litem_filter}" = "${_litem}" ]; then
-					_filterfl=1; break;
-				fi;
-			done;
-			if [ "${_filterfl:-0}" -eq 0 ]; then
-				eval ${_rlist_new}='${'"${_rlist_new}"':+${'"${_rlist_new}"'}${_sep}}${_litem}';
-			fi;
-		done;
-	fi;
-};
-
-rtl_lfilter3() {
 	rtl_lfilter2 "${1}" "${1}" "${2}" "${3:-}";
 };
 
-rtl_lfirst() {
-	local _list="${1}" _sep="${2}" IFS; IFS="${_sep}";
-	set -- ${_list}; RTL_LFIRST_HEAD="${1}";
-	if [ "${#}" -ge 0 ]; then
-		shift; RTL_LFIRST_TAIL="${*}";
+rtl_lfilter2() {
+	local	_rlf2_rlist="${1#\$}" _rlf2_rlist_new="${2#\$}" _rlf2_filter="${3}" _rlf2_sep="${4:-}"\
+		_rlf2_filterfl="" _rlf2_list="" _rlf2_litem="" _rlf2_litem_filter="" _rlf2_lnew="";
+
+	if [ "${_rlf2_sep:+1}" = 1 ]; then
+		local IFS="${_rlf2_sep}";
 	else
-		RTL_LFIRST_TAIL="";
+		local _rlf2_sep=" " IFS="${RTL_IFS_ORIG}";
 	fi;
+
+	if [ "${_rlf2_filter:+1}" != 1 ]; then
+		eval ${_rlf2_rlist_new}=;
+	else
+		eval _rlf2_list='${'"${_rlf2_rlist}"'}';
+		eval ${_rlf2_rlist_new}=;
+		for _rlf2_litem in ${_rlf2_list}; do
+			_rlf2_filterfl=0;
+			for _rlf2_litem_filter in ${_rlf2_filter}; do
+				if [ "${_rlf2_litem_filter}" = "${_rlf2_litem}" ]; then
+					_rlf2_filterfl=1; break;
+				fi;
+			done;
+			if [ "${_rlf2_filterfl:-0}" -eq 0 ]; then
+				eval ${_rlf2_rlist_new}='${'"${_rlf2_rlist_new}"':+${'"${_rlf2_rlist_new}"'}${_rlf2_sep}}${_rlf2_litem}';
+			fi;
+		done;
+	fi;
+	return 0;
+};
+
+rtl_lfirst() {
+	local _rlf_rhead="${1#\$}" _rlf_rtail="${2#\$}" _rlf_list="${3}" _rlf_sep="${4}" IFS="${4}";
+
+	set -- ${_rlf_list}; eval ${_rlf_rhead}='${1}';
+	if [ "${#}" -ge 0 ]; then
+		shift; eval ${_rlf_rtail}=\"'${*}'\";
+	else
+		eval ${_rlf_rtail}=;
+	fi;
+	return 0;
+};
+
+rtl_lindexV() {
+	local	_rliV_rlout="${1#\$}" _rliV_idx="${2}"	\
+		_rliV_limit=0; shift 2;
+
+	if [ "${_rliV_idx#-}" != "${_rliV_idx}" ]; then
+		_rliV_idx="${_rliV_idx#-}";
+		while [ "${#}" -gt "${_rliV_idx}" ]; do
+			shift;
+		done;
+		_rliV_limit=$((${#} + 1));
+	else
+		_rliV_limit="${#}";
+		shift "${_rliV_idx}";
+	fi;
+
+	if [ "${#}" -ge 1 ]\
+	&& [ "${_rliV_idx}" -lt "${_rliV_limit}" ]; then
+		eval ${_rliV_rlout}='${1}';
+	else
+		eval ${_rliV_rlout}=;
+	fi;
+	return 0;
 };
 
 rtl_llength() {
-	local _list="${1}" _sep="${2:- }" IFS="${2:-${IFS:- }}" _litem="" _llength=0;
-	for _litem in ${_list}; do
-		: $((_llength+=1));
-	done;
-	printf "%s" "${_llength}";
-};
+	local _rll_rlen="${1#\$}" _rll_rlist="${2#\$}" _rll_sep="${3:- }" IFS="${3:-${IFS:- }}";
 
-rtl_llength2() {
-	local _rlist="${1#\$}" _rlen="${2#\$}" _sep="${3:- }" IFS="${3:-${IFS:- }}";
-	eval set -- '${'"${_rlist}"'}'\; ${_rlen}='${#}';
+	eval set -- '${'"${_rll_rlist}"'}'\; ${_rll_rlen}='${#}';
+	return 0;
 };
 
 rtl_llift() {
-	local _list="${1}" _sep="${2}" _sep_new="${3}" IFS; IFS="${_sep}";
-	set -- ${_list}; IFS="${_sep_new}";
-	printf "%s" "${*}";
-};
-
-rtl_llift2() {
-	local	_rlist="${1#\$}" _rlist_new="${2#\$}" _sep="${3}"	\
-		_sep_new="${4}" IFS; IFS="${_sep}";
-
-	eval set -- '${'"${_rlist}"'}'; IFS="${_sep_new}";
-	eval ${_rlist_new}='"${*}"';
-};
-
-rtl_llift3() {
 	rtl_llift2 "${1}" "${1}" "${2}" "${3}";
 };
 
+rtl_llift2() {
+	local	_rl2_rlist="${1#\$}" _rl2_rlist_new="${2#\$}" _rl2_sep="${3:-}"	\
+		_rl2_sep_new="${4}";
+
+	if [ "${_rl2_sep:+1}" = 1 ]; then
+		local IFS="${_rl2_sep}";
+	else
+		local _rl2_sep=" " IFS="${RTL_IFS_ORIG}";
+	fi;
+
+	eval set -- '${'"${_rl2_rlist}"'}'; IFS="${_rl2_sep_new}";
+	eval ${_rl2_rlist_new}='"${*}"';
+	return 0;
+};
+
 rtl_lmatch() {
-	local _list="${1}" _item="${2}" _sep="${3:- }";
-	[ -n "$(rtl_lsearch "${_list}" "${_item}" "${_sep}")" ];
+	local _rlm_rlist="${1#\$}" _rlm_item="${2}" _rlm_sep="${3:-}" _rlm_list_="";
+
+	rtl_lsearch2 "${_rlm_rlist}" \$_rlm_list_ "${_rlm_item}" "${_rlm_sep}";
+	[ "${_rlm_list_:+1}" = 1 ];
 };
 
 rtl_lmax() {
-	local _len=0 _len_max=0;
+	local	_rlm2_rlist="${1#\$}" _rlm2_rmax="${2#\$}"	\
+		_rlm2_len=0 _rlm2_len_max=0;
+
+	eval set -- '${'"${_rlm2_rlist}"'}';
 	while [ "${#}" -gt 0 ]; do
-		_len="${#1}";
-		if [ "${_len}" -gt "${_len_max}" ]; then
-			_len_max="${_len}";
+		_rlm2_len="${#1}";
+		if [ "${_rlm2_len}" -gt "${_rlm2_len_max}" ]; then
+			_rlm2_len_max="${_rlm2_len}";
 		fi; shift;
-	done; printf "%s" "${_len_max}";
+	done;
+	eval ${_rlm2_rmax}='${_rlm2_len_max}';
+	return 0;
+};
+
+rtl_lrangeV() {
+	local	_rlrV_rlout="${1#\$}" _rlrV_idx0="${2}" _rlrV_idx1="${3}" _rlrV_sep="${4}"	\
+		_rlrV_limit=0; shift 4;
+
+	if [ "${_rlrV_idx0#-}" != "${_rlrV_idx0}" ]; then
+		eval ${_rlrV_rlout}=;
+
+		return 1;
+	elif [ "${_rlrV_idx1#-}" != "${_rlrV_idx1}" ]; then
+		_rlrV_idx1="${_rlrV_idx1#-}";
+
+		_rlrV_limit="${#}";
+		shift "${_rlrV_idx0}";
+
+		eval ${_rlrV_rlout}=;
+		while [ "${#}" -gt 0 ]\
+		   && [ "${_rlrV_idx1}" -lt "${#}" ];
+		do
+			eval ${_rlrV_rlout}='${'"${_rlrV_rlout}"':+${'"${_rlrV_rlout}"'}${_rlrV_sep}}${1}';
+			shift;
+		done;
+
+		return 0;
+	elif [ "${_rlrV_idx1}" -ge "${_rlrV_idx0}" ]; then
+		_rlrV_limit="${#}";
+		shift "${_rlrV_idx0}";
+		: $((_rlrV_idx1 -= ${_rlrV_idx0}));
+		: $((_rlrV_idx1 += 1));
+
+		eval ${_rlrV_rlout}=;
+		while [ "${_rlrV_idx1}" -gt 0 ]\
+		   && [ "${#}" -gt 0 ];
+		do
+			eval ${_rlrV_rlout}='${'"${_rlrV_rlout}"':+${'"${_rlrV_rlout}"'}${_rlrV_sep}}${1}';
+			: $((_rlrV_idx1 -= 1));
+			shift;
+		done;
+
+		return 0;
+	fi;
 };
 
 rtl_lsearch() {
-	local	_list="${1}" _filter="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}"\
-		_litem="" _litem_filter="" _lnew="";
-	if [ -z "${_filter}" ]; then
-		printf "%s" "${_list}"; return 0;
-	else for _litem in ${_list}; do
-		for _litem_filter in ${_filter}; do
-			if [ "${_litem_filter}" = "${_litem}" ]; then
-				_lnew="${_lnew:+${_lnew}${_sep}}${_litem}";
-				break;
-			fi;
+	rtl_lsearch2 "${1}" "${1}" "${2}" "${3:-}";
+}
+
+rtl_lsearch2() {
+	local	_rls2_rlist="${1#\$}" _rls2_rlist_new="${2#\$}"		\
+		_rls2_filter="${3}" _rls2_sep="${4:-}"			\
+		_rls2_list="" _rls2_litem="" _rls2_litem_filter=""	\
+		_rls2_lnew="";
+
+	if [ "${_rls2_sep:+1}" = 1 ]; then
+		local IFS="${_rls2_sep}";
+	else
+		local _rls2_sep=" " IFS="${RTL_IFS_ORIG}";
+	fi;
+	if [ "${_rls2_filter:+1}" != 1 ]; then
+		eval ${_rls2_rlist_new}='${_rls2_list}'; return 0;
+	else
+		eval _rls2_list='${'"${_rls2_rlist}"'}';
+		for _rls2_litem in ${_rls2_list}; do
+			for _rls2_litem_filter in ${_rls2_filter}; do
+				if [ "${_rls2_litem_filter}" = "${_rls2_litem}" ]; then
+					_rls2_lnew="${_rls2_lnew:+${_rls2_lnew}${_rls2_sep}}${_rls2_litem}";
+					break;
+				fi;
+			done;
 		done;
-	done; fi;
-	printf "%s" "${_lnew}";
+	fi;
+
+	eval ${_rls2_rlist_new}='${_rls2_lnew}';
+	return 0;
 };
 
 rtl_lsearch_patternl() {
-	local	_list="${1}" _pattern="${2}" _sep="${3:- }" IFS="${3:-${IFS:- }}"\
-		_litem="" _lnew="";
-	if [ -n "${_pattern}" ]; then
-		for _litem in ${_list}; do
-			if [ "${_litem#${_pattern}}" != "${_litem}" ]; then
-				_lnew="${_lnew:+${_lnew}${_sep}}${_litem}";
+	rtl_lsearch_patternl2 "${1}" "${1}" "${2}" "${3:-}";
+};
+
+rtl_lsearch_patternl2() {
+	local	_rlsp2_rlist="${1#\$}" _rlsp2_rlist_new="${2#\$}"	\
+		_rlsp2_pattern="${3}" _rlsp2_sep="${4:- }"		\
+		IFS="${4:-${IFS:- }}"					\
+		_rlsp2_litem="" _rlsp2_lnew="";
+
+	if [ "${_rlsp2_pattern:+1}" = 1 ]; then
+		eval _rlsp2_list='${'"${_rlsp2_rlist}"'}';
+		for _rlsp2_litem in ${_rlsp2_list}; do
+			if [ "${_rlsp2_litem#${_rlsp2_pattern}}" != "${_rlsp2_litem}" ]; then
+				_rlsp2_lnew="${_rlsp2_lnew:+${_rlsp2_lnew}${_rlsp2_sep}}${_rlsp2_litem}";
 			fi;
 		done;
 	fi;
-	printf "%s" "${_lnew}";
+	eval ${_rlsp2_rlist_new}='${_rlsp2_lnew}';
+	return 0;
 };
 
 rtl_lsort() {
-	local _list="${1}" _sep="${2:- }";
-	printf "%s" "${_list}" | tr "${_sep}" "\n" | sort | paste -s -d "${_sep}";
+	printf "%s" "${*}" | tr " " "\n" | sort | paste -s -d " ";
+	return 0;
 };
 
+RTL_LUNFOLD_DEPENDS_LEVEL=0;
 rtl_lunfold_depends() {
-	local _vname_template="${1}" _depends="" _name="" _names=""; shift;
-	for _name in "${@}"; do
-		if _depends="$(rtl_get_var_unsafe -u "$(eval printf \"%s\" \""${_vname_template}"\")")"\
-		&& [ -n "${_depends}" ]; then
-			_depends="$(rtl_lunfold_depends "${_vname_template}" ${_depends})";
-			_names="$(rtl_lconcat "${_names}" "${_depends}")";
+	local	_rld_vname_template="${1}" _rld_rlist="${2#\$}"		\
+		_rld_depends="" _rld_list="" _rld_name="" _rld_names=""	\
+		_rld_vname_template_="";
+		shift 2;
+
+	for _rld_name in "${@}"; do
+		eval _rld_vname_template_=\"${_rld_vname_template}\";
+		if rtl_get_var_unsafe \$_rld_depends -u "${_rld_vname_template_}"\
+		&& [ "${_rld_depends:+1}" = 1 ]; then
+			: $((RTL_LUNFOLD_DEPENDS_LEVEL+=1));
+			eval _rld_depends${RTL_LUNFOLD_DEPENDS_LEVEL}='${_rld_depends}';
+			rtl_lunfold_depends "${_rld_vname_template}" \$_rld_depends${RTL_LUNFOLD_DEPENDS_LEVEL} ${_rld_depends};
+			eval _rld_depends='${_rld_depends'"${RTL_LUNFOLD_DEPENDS_LEVEL}"'}';
+			unset '_rld_depends'"${RTL_LUNFOLD_DEPENDS_LEVEL}";
+			: $((RTL_LUNFOLD_DEPENDS_LEVEL-=1));
+			rtl_lconcat \$_rld_names "${_rld_depends}";
 		fi;
-		_names="$(rtl_lconcat "${_names}" "${_name}")";
+		rtl_lconcat \$_rld_names "${_rld_name}";
 	done;
-	printf "%s" "${_names}";
+	eval ${_rld_rlist}='${_rld_names}';
+	return 0;
 };
 
 # vim:filetype=sh

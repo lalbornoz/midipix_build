@@ -2,7 +2,7 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
-RTLP_INSTALL_NL="
+RTL_NL="
 ";
 
 # XXX optimise
@@ -14,264 +14,305 @@ RTLP_INSTALL_NL="
 #
 # DSL functor implementation
 #
-# {{{ rtlp_install_fmap($_rparams, $_prefix, $_spec, $_fn, [$_param[...], --, [$_spec[...]]])
-rtlp_install_fmap() {
-	local	_rif_rparams="${1#\$}" _rif_prefix="${2}" _rif_spec="${3}"	\
-		_rif_fn="${4}" _rif_IFS0="${IFS:- 	}" _rif_paramsc=0	\
-		_rif_spec_cur="" _rif_spec_list="" _rif_spec0="" _rif_specsc=0	\
-		_rif_nspec=0 _rif_rc=0 IFS; shift 4;
+# {{{ rtlp_install_v2_fmap($_rstatus, $_rparams, $_prefix, $_spec, $_fn, [$_param[...], --, [$_spec[...]]])
+rtlp_install_v2_fmap() {
+	local	_ri2f_rstatus="${1#\$}" _ri2f_rparams="${2#\$}" _ri2f_prefix="${3}" _ri2f_spec="${4}" _ri2f_fn="${5}"	\
+		_ri2f_IFS0="${IFS:- 	}" _ri2f_paramsc=0 _ri2f_spec_cur="" _ri2f_spec_list="" _ri2f_spec0=""		\
+		_ri2f_specsc=0 _ri2f_nspec=0 _ri2f_rc=0 IFS;
+	shift 5;
+
 	while [ "${#}" -gt 0 ] && [ "x${1}" != "x--" ]; do
-		: $((_rif_paramsc+=1)); local "${_rif_rparams}${_rif_paramsc}=${1}"; shift;
+		: $((_ri2f_paramsc+=1)); local "${_ri2f_rparams}${_ri2f_paramsc}=${1}"; shift;
 	done; shift;
 	while [ "${#}" -gt 0 ] && [ "x${1}" != "x--" ]; do
-		: $((_rif_specsc+=1)); local "_rif_specs${_rif_specsc}=${1}"; shift;
+		: $((_ri2f_specsc+=1)); local "_ri2f_specs${_ri2f_specsc}=${1}"; shift;
 	done;
 
-	if rtlp_install_fmap_params "${_rif_rparams}" \$_rif_spec ""\
-	&& rtlp_install_fmap_patterns "${_rif_rparams}" "${_rif_prefix}" "${_rif_spec}" \$_rif_spec_list; then
-		IFS="${RTLP_INSTALL_NL}"; for _rif_spec_cur in ${_rif_spec_list}; do
-			IFS="${_rif_IFS0}"; set --;
-			_rif_nspec=1; while [ "${_rif_nspec}" -le "${_rif_specsc}" ]; do
-				eval _rif_spec0=\"\${_rif_specs${_rif_nspec}}\";
-				rtlp_install_fmap_params			\
-					"${_rif_rparams}"			\
-					\$_rif_spec0 "${_rif_spec_cur}";
-				eval set -- '"${@}"' '"${_rif_spec0}"'; : $((_rif_nspec+=1));
+	if rtlp_install_v2_fmap_params "${_ri2f_rstatus}" "${_ri2f_rparams}" \$_ri2f_spec ""\
+	&& rtlp_install_v2_fmap_patterns "${_ri2f_rstatus}" "${_ri2f_rparams}" "${_ri2f_prefix}" "${_ri2f_spec}" \$_ri2f_spec_list; then
+		IFS="${RTL_NL}"; for _ri2f_spec_cur in ${_ri2f_spec_list}; do
+			IFS="${_ri2f_IFS0}"; set --;
+			_ri2f_nspec=1; while [ "${_ri2f_nspec}" -le "${_ri2f_specsc}" ]; do
+				eval _ri2f_spec0=\"\${_ri2f_specs${_ri2f_nspec}}\";
+				rtlp_install_v2_fmap_params	\
+					"${_ri2f_rstatus}"	\
+					"${_ri2f_rparams}"	\
+					\$_ri2f_spec0 "${_ri2f_spec_cur}";
+				eval set -- '"${@}"' '"${_ri2f_spec0}"'; : $((_ri2f_nspec+=1));
 			done;
-			eval "${_rif_fn}" \"\$\{@\}\"; _rif_rc=$((${?} ? ${?} : ${_rif_rc}));
-			[ "${_rif_rc}" -ne 0 ] && break;
-		done; IFS="${_rif_IFS0}";
+			eval "${_ri2f_fn}" \"\$\{@\}\"; _ri2f_rc=$((${?} ? ${?} : ${_ri2f_rc}));
+			[ "${_ri2f_rc}" -ne 0 ] && break;
+		done; IFS="${_ri2f_IFS0}";
 	else
-		_rif_rc=1;
+		_ri2f_rc=1;
 	fi;
-	return "${_rif_rc}";
+	return "${_ri2f_rc}";
 };
 # }}}
-# {{{ rtlp_install_fmap_params($_rparams, $_rspec, $_item)
+# {{{ rtlp_install_v2_fmap_params($_rstatus, $_rparams, $_rspec, $_item)
 RTLP_INSTALL_FMAP_PARAMS_LEVEL=0;
-rtlp_install_fmap_params() {
-	local	_rifp_rparams="${1#\$}" _rifp_rspec="${2#\$}" _rifp_item="${3}"		\
-		_rifp_expr="" _rifp_expr_="" _rifp_expr_sub="" _rifp_expr_op=""		\
-		_rifp_lhs="" _rifp_rc=0 _rifp_rhs="" _rifp_subexpr=""; _status="";
-	eval _rifp_lhs='${'"${_rifp_rspec}"'}'\; ${_rifp_rspec}=;
+rtlp_install_v2_fmap_params() {
+	local	_ri2fp_rstatus="${1#\$}" _ri2fp_rparams="${2#\$}" _ri2fp_rspec="${3#\$}" _ri2fp_item="${4}"	\
+		_ri2fp_expr="" _ri2fp_expr_="" _ri2fp_expr_sub="" _ri2fp_expr_op="" _ri2fp_lhs="" _ri2fp_rc=0	\
+		_ri2fp_rhs="" _ri2fp_subexpr="";
+	eval _ri2fp_lhs='${'"${_ri2fp_rspec}"'}'\; ${_ri2fp_rspec}=;
 
 	while true; do
-		if ! rtlp_install_splitl_ref \$_rifp_expr \$_rifp_lhs \$_rifp_rhs '%[' ']'; then
-			eval ${_rifp_rspec}='${'"${_rifp_rspec}"'}${_rifp_lhs}'; break;
-		else case "${_rifp_expr}" in
+		if ! rtlp_install_v2_splitl_ref \$_ri2fp_expr \$_ri2fp_lhs \$_ri2fp_rhs '%[' ']'; then
+			eval ${_ri2fp_rspec}='${'"${_ri2fp_rspec}"'}${_ri2fp_lhs}'; break;
+		else
+		case "${_ri2fp_expr}" in
+
 		[0-9]*)
-			eval _rifp_expr='${'"${_rifp_rparams}${_rifp_expr}"'}'; ;;
+			eval _ri2fp_expr='${'"${_ri2fp_rparams}${_ri2fp_expr}"'}'; ;;
+
 		@[0-9]*)
 			: $((RTLP_INSTALL_FMAP_PARAMS_LEVEL+=1));
-			eval _rifp_expr${RTLP_INSTALL_FMAP_PARAMS_LEVEL}='${'"${_rifp_rparams}${_rifp_expr#@}"'}';
-			rtlp_install_fmap_params "${_rifp_rparams}"			\
-					\$_rifp_expr${RTLP_INSTALL_FMAP_PARAMS_LEVEL}	\
-					"${_rifp_item}"; _rifp_rc="${?}";
-			eval _rifp_expr='${_rifp_expr'"${RTLP_INSTALL_FMAP_PARAMS_LEVEL}"'}';
+			eval _ri2fp_expr${RTLP_INSTALL_FMAP_PARAMS_LEVEL}='${'"${_ri2fp_rparams}${_ri2fp_expr#@}"'}';
+			rtlp_install_v2_fmap_params "${_ri2fp_rstatus}" "${_ri2fp_rparams}"	\
+					\$_ri2fp_expr${RTLP_INSTALL_FMAP_PARAMS_LEVEL}		\
+					"${_ri2fp_item}"; _ri2fp_rc="${?}";
+			eval _ri2fp_expr='${_ri2fp_expr'"${RTLP_INSTALL_FMAP_PARAMS_LEVEL}"'}';
+			unset '_ri2fp_expr'"${RTLP_INSTALL_FMAP_PARAMS_LEVEL}";
 			: $((RTLP_INSTALL_FMAP_PARAMS_LEVEL-=1));
-			[ "${_rifp_rc}" -eq 1 ] && break; ;;
+			[ "${_ri2fp_rc}" -eq 1 ] && break; ;;
 
 		[_0-9a-zA-Z]*)
-			case "${_rifp_expr}" in
-			DNAME*)	_rifp_subexpr="${_rifp_expr#DNAME}"; _rifp_expr="${_rifp_item%/*}"; ;;
-			FNAME*)	_rifp_subexpr="${_rifp_expr#FNAME}"; _rifp_expr="${_rifp_item##*/}"; ;;
-			ITEM*)	_rifp_subexpr="${_rifp_expr#ITEM}"; _rifp_expr="${_rifp_item}"; ;;
-			"")	_rifp_rc=1; _status="zero-length parameter name in expression"; ;;
+			case "${_ri2fp_expr}" in
+
+			DNAME*)	_ri2fp_subexpr="${_ri2fp_expr#DNAME}"; _ri2fp_expr="${_ri2fp_item%/*}"; ;;
+			FNAME*)	_ri2fp_subexpr="${_ri2fp_expr#FNAME}"; _ri2fp_expr="${_ri2fp_item##*/}"; ;;
+			ITEM*)	_ri2fp_subexpr="${_ri2fp_expr#ITEM}"; _ri2fp_expr="${_ri2fp_item}"; ;;
+
+			"")	_ri2fp_rc=1;
+				rtl_setrstatus "${_ri2fp_rstatus}" 'zero-length parameter name in expression';
+				;;
+
 			*)
-				_rifp_expr_="${_rifp_expr%%[!_0-9a-zA-Z]*}";
-				_rifp_subexpr="${_rifp_expr#${_rifp_expr_}}";
-				_rifp_expr="${_rifp_expr_}";
-				if eval [ '"${'"${_rifp_rparams}${_rifp_expr}"':+1}"' = 1 ]; then
-					eval _rifp_expr='${'"${_rifp_rparams}${_rifp_expr}"'}';
-				else	_rifp_rc=1; _status="unknown parameter name \`${_rifp_expr}' in expression";
-				fi; ;;
+				_ri2fp_expr_="${_ri2fp_expr%%[!_0-9a-zA-Z]*}";
+				_ri2fp_subexpr="${_ri2fp_expr#${_ri2fp_expr_}}";
+				_ri2fp_expr="${_ri2fp_expr_}";
+				if eval [ '"${'"${_ri2fp_rparams}${_ri2fp_expr}"':+1}"' = 1 ]; then
+					eval _ri2fp_expr='${'"${_ri2fp_rparams}${_ri2fp_expr}"'}';
+				else	_ri2fp_rc=1;
+					rtl_setrstatus "${_ri2fp_rstatus}" 'unknown parameter name \`'"${_ri2fp_expr}"''\'' in expression';
+				fi;
+				;;
+
 			esac;
 
-			if [ "${_rifp_rc}" -eq 0 ]; then
+			if [ "${_ri2fp_rc}" -eq 0 ]; then
 				while true; do
-					if ! rtlp_install_splitl_subexpr		\
-							\$_rifp_subexpr_		\
-							\$_rifp_subexpr			\
+					if ! rtlp_install_v2_splitl_subexpr	\
+							\$_ri2fp_subexpr_	\
+							\$_ri2fp_subexpr	\
 							'## # %% %'; then
 						break;
-					else case "${_rifp_subexpr_}" in
+					else case "${_ri2fp_subexpr_}" in
+
 					/*)	;;
-					\#\#*)	_rifp_expr="${_rifp_expr##${_rifp_subexpr_#\#\#}}"; ;;
-					\#*)	_rifp_expr="${_rifp_expr#${_rifp_subexpr_#\#}}"; ;;
-					%%*)	_rifp_expr="${_rifp_expr%%${_rifp_subexpr_#%%}}"; ;;
-					%*)	_rifp_expr="${_rifp_expr%${_rifp_subexpr_#%}}"; ;;
-					"")	_rifp_rc=1; _status="zero-length subexpression in expression"; ;;
-					*)	_rifp_rc=1; _status="invalid subexpression \`${_rifp_subexpr_}' in expression"; ;;
+					\#\#*)	_ri2fp_expr="${_ri2fp_expr##${_ri2fp_subexpr_#\#\#}}"; ;;
+					\#*)	_ri2fp_expr="${_ri2fp_expr#${_ri2fp_subexpr_#\#}}"; ;;
+					%%*)	_ri2fp_expr="${_ri2fp_expr%%${_ri2fp_subexpr_#%%}}"; ;;
+					%*)	_ri2fp_expr="${_ri2fp_expr%${_ri2fp_subexpr_#%}}"; ;;
+
+					"")	_ri2fp_rc=1;
+						rtl_setrstatus "${_ri2fp_rstatus}" 'zero-length subexpression in expression';
+						;;
+
+					*)	_ri2fp_rc=1;
+						rtl_setrstatus "${_ri2fp_rstatus}" 'invalid subexpression \`'"${_ri2fp_subexpr_}"''\'' in expression';
+						;;
+
 					esac; fi;
 				done;
 			fi; ;;
 
-		"")	_rifp_rc=1; _status="zero-length expression"; break; ;;
-		*)	_rifp_rc=1; _status="invalid expression \`${_rifp_expr}'"; break; ;;
+		"")	_ri2fp_rc=1;
+			rtl_setrstatus "${_ri2fp_rstatus}" 'zero-length expression';
+			break; ;;
+
+		*)	_ri2fp_rc=1;
+			rtl_setrstatus "${_ri2fp_rstatus}" 'invalid expression \`'"${_ri2fp_expr}"''\';
+			break; ;;
+
 		esac; fi;
-		eval ${_rifp_rspec}='${'"${_rifp_rspec}"'}${_rifp_lhs}${_rifp_expr}'; _rifp_lhs="${_rifp_rhs}";
-	done; return "${_rifp_rc}";
+
+		eval ${_ri2fp_rspec}='${'"${_ri2fp_rspec}"'}${_ri2fp_lhs}${_ri2fp_expr}'; _ri2fp_lhs="${_ri2fp_rhs}";
+	done;
+
+	return "${_ri2fp_rc}";
 };
 # }}}
-# {{{ rtlp_install_fmap_patterns($_rparams, $_prefix, $_spec, $_rspec_list)
-rtlp_install_fmap_patterns() {
-	local	_rifp2_rparams="${1#\$}" _rifp2_prefix="${2}" _rifp2_spec="${3}"	\
-		_rifp2_rspec_list="${4#\$}" _rifp2_expr="" _rifp2_lhs="" _rifp2_rc=0	\
-		_rifp2_rhs="" IFS="${RTLP_INSTALL_NL}"; _status="";
-	_rifp2_lhs="${_rifp2_spec}";
+# {{{ rtlp_install_v2_fmap_patterns($_rstatus, $_rparams, $_prefix, $_spec, $_rspec_list)
+rtlp_install_v2_fmap_patterns() {
+	local	_ri2fp2_rstatus="${1#\$}" _ri2fp2_rparams="${2#\$}" _ri2fp2_prefix="${3}"	\
+		_ri2fp2_spec="${4}" _ri2fp2_rspec_list="${5#\$}"				\
+		_ri2fp2_expr="" _ri2fp2_lhs="" _ri2fp2_rc=0 _ri2fp2_rhs=""			\
+		IFS="${RTL_NL}";
+	_ri2fp2_lhs="${_ri2fp2_spec}";
 
 	while true; do
-		if rtlp_install_splitl_ref \$_rifp2_expr \$_rifp2_lhs \$_rifp2_rhs '%<' '>'; then
-			case "${_rifp2_expr}" in
+		if rtlp_install_v2_splitl_ref \$_ri2fp2_expr \$_ri2fp2_lhs \$_ri2fp2_rhs '%<' '>'; then
+			case "${_ri2fp2_expr}" in
+
 			*\**)
-				if [ "${_rifp2_lhs#/}" = "${_rifp2_lhs}" ]; then
-					_rifp2_lhs_full="${_rifp2_prefix:+${_rifp2_prefix%}/}${_rifp2_lhs:+${_rifp2_lhs%/}/}";
+				if [ "${_ri2fp2_lhs#/}" = "${_ri2fp2_lhs}" ]; then
+					_ri2fp2_lhs_full="${_ri2fp2_prefix:+${_ri2fp2_prefix%}/}${_ri2fp2_lhs:+${_ri2fp2_lhs%/}/}";
 				else
-					_rifp2_lhs_full="${_rifp2_lhs:+${_rifp2_lhs%/}/}";
+					_ri2fp2_lhs_full="${_ri2fp2_lhs:+${_ri2fp2_lhs%/}/}";
 				fi;
-				set +o noglob; for _rifp2_pname in ${_rifp2_lhs_full}${_rifp2_expr}; do
-					set -o noglob; _rifp2_pname="${_rifp2_pname%/}${_rifp2_rhs:+/${_rifp2_rhs}}";
-					if [ -e "${_rifp2_pname}" ]; then
-						eval ${_rifp2_rspec_list}='${'"${_rifp2_rspec_list}"':+${'"${_rifp2_rspec_list}"'}${RTLP_INSTALL_NL}}${_rifp2_pname}';
+				set +o noglob; for _ri2fp2_pname in ${_ri2fp2_lhs_full}${_ri2fp2_expr}; do
+					set -o noglob; _ri2fp2_pname="${_ri2fp2_pname%/}${_ri2fp2_rhs:+/${_ri2fp2_rhs}}";
+					if [ -e "${_ri2fp2_pname}" ]; then
+						eval ${_ri2fp2_rspec_list}='${'"${_ri2fp2_rspec_list}"':+${'"${_ri2fp2_rspec_list}"'}${RTL_NL}}${_ri2fp2_pname}';
 					fi;
 				done; set -o noglob; ;;
 
-			"")	_rifp2_rc=1; _status="zero-length pattern"; break; ;;
-			*)	_rifp2_rc=1; _status="invalid pattern \`${_rifp2_expr}'"; break; ;;
-			esac; _rifp2_lhs="${_rifp2_rhs}";
+			"")	_ri2fp2_rc=1;
+				rtl_setrstatus "${_ri2fp2_rstatus}" 'zero-length pattern';
+				break; ;;
+
+			*)	_ri2fp2_rc=1;
+				rtl_setrstatus "${_ri2fp2_rstatus}" 'invalid pattern \`'"${_ri2fp2_expr}"''\';
+				break; ;;
+
+			esac; _ri2fp2_lhs="${_ri2fp2_rhs}";
 		else
-			eval ${_rifp2_rspec_list}='${'"${_rifp2_rspec_list}"':+${'"${_rifp2_rspec_list}"'}${RTLP_INSTALL_NL}}${_rifp2_lhs}';
+			eval ${_ri2fp2_rspec_list}='${'"${_ri2fp2_rspec_list}"':+${'"${_ri2fp2_rspec_list}"'}${RTL_NL}}${_ri2fp2_lhs}';
 			break;
 		fi;
-	done; return "${_rifp2_rc}";
+	done;
+
+	return "${_ri2fp2_rc}";
 };
 # }}}
 
 #
 # Install OPeration functions
 #
-# {{{ rtlp_install_op_chmod($_nflag, $_prefix, $_vflag, $_fname, $_mode)
-rtlp_install_op_chmod() {
-	local _rioc_nflag="${1}" _rioc_prefix="${2}" _rioc_vflag="${3}" _rioc_fname="${4}" _rioc_mode="${5}";
+# {{{ rtlp_install_v2_op_chmod($_nflag, $_prefix, $_vflag, $_fname, $_mode)
+rtlp_install_v2_op_chmod() {
+	local _ri2oc_nflag="${1}" _ri2oc_prefix="${2}" _ri2oc_vflag="${3}" _ri2oc_fname="${4}" _ri2oc_mode="${5}";
 
-	rtlp_install_fixup_fname \$_rioc_fname "${_rioc_prefix}";
-	rtlp_install_rc "${_rioc_nflag}" "${_rioc_vflag}" rtl_fileop chmod "${_rioc_mode}" "${_rioc_fname}";
+	rtlp_install_v2_fixup_fname \$_ri2oc_fname "${_ri2oc_prefix}";
+	rtlp_install_v2_rc "${_ri2oc_nflag}" "${_ri2oc_vflag}" rtl_fileop chmod "${_ri2oc_mode}" "${_ri2oc_fname}";
 };
 # }}}
-# {{{ rtlp_install_op_chgrp($_nflag, $_prefix, $_vflag, $_fname, $_group)
-rtlp_install_op_chgrp() {
-	local _rioc2_nflag="${1}" _rioc2_prefix="${2}" _rioc2_vflag="${3}" _rioc2_fname="${4}" _rioc2_group="${5}";
+# {{{ rtlp_install_v2_op_chgrp($_nflag, $_prefix, $_vflag, $_fname, $_group)
+rtlp_install_v2_op_chgrp() {
+	local _ri2oc2_nflag="${1}" _ri2oc2_prefix="${2}" _ri2oc2_vflag="${3}" _ri2oc2_fname="${4}" _ri2oc2_group="${5}";
 
-	rtlp_install_fixup_fname \$_rioc2_fname "${_rioc2_prefix}";
-	rtlp_install_rc "${_rioc2_nflag}" "${_rioc2_vflag}" rtl_fileop chgrp "${_rioc2_group}" "${_rioc2_fname}";
+	rtlp_install_v2_fixup_fname \$_ri2oc2_fname "${_ri2oc2_prefix}";
+	rtlp_install_v2_rc "${_ri2oc2_nflag}" "${_ri2oc2_vflag}" rtl_fileop chgrp "${_ri2oc2_group}" "${_ri2oc2_fname}";
 };
 # }}}
-# {{{ rtlp_install_op_chown($_nflag, $_prefix, $_vflag, $_fname, $_owner)
-rtlp_install_op_chown() {
-	local _rioc3_nflag="${1}" _rioc3_prefix="${2}" _rioc3_vflag="${3}" _rioc3_fname="${4}" _rioc3_owner="${5}";
+# {{{ rtlp_install_v2_op_chown($_nflag, $_prefix, $_vflag, $_fname, $_owner)
+rtlp_install_v2_op_chown() {
+	local _ri2oc3_nflag="${1}" _ri2oc3_prefix="${2}" _ri2oc3_vflag="${3}" _ri2oc3_fname="${4}" _ri2oc3_owner="${5}";
 
-	rtlp_install_fixup_fname \$_rioc3_fname "${_rioc3_prefix}";
-	rtlp_install_rc "${_rioc3_nflag}" "${_rioc3_vflag}" rtl_fileop chown "${_rioc3_owner}" "${_rioc3_fname}";
+	rtlp_install_v2_fixup_fname \$_ri2oc3_fname "${_ri2oc3_prefix}";
+	rtlp_install_v2_rc "${_ri2oc3_nflag}" "${_ri2oc3_vflag}" rtl_fileop chown "${_ri2oc3_owner}" "${_ri2oc3_fname}";
 };
 # }}}
-# {{{ rtlp_install_op_cp($_nflag, $_prefix, $_vflag, $_file_fname_dst, $_file_fname_src)
-rtlp_install_op_cp() {
-	local _rioc4_nflag="${1}" _rioc4_prefix="${2}" _rioc4_vflag="${3}" _rioc4_fname_dst="${4}" _rioc4_fname_src="${5}";
+# {{{ rtlp_install_v2_op_cp($_nflag, $_prefix, $_vflag, $_file_fname_dst, $_file_fname_src)
+rtlp_install_v2_op_cp() {
+	local _ri2oc4_nflag="${1}" _ri2oc4_prefix="${2}" _ri2oc4_vflag="${3}" _ri2oc4_fname_dst="${4}" _ri2oc4_fname_src="${5}";
 
-	rtlp_install_fixup_fname \$_rioc4_fname_dst "${_rioc4_prefix}";
-	rtlp_install_fixup_fname \$_rioc4_fname_src "${_rioc4_prefix}";
-	rtlp_install_rc "${_rioc4_nflag}" "${_rioc4_vflag}" rtl_fileop cp "${_rioc4_fname_src}" "${_rioc4_fname_dst}";
+	rtlp_install_v2_fixup_fname \$_ri2oc4_fname_dst "${_ri2oc4_prefix}";
+	rtlp_install_v2_fixup_fname \$_ri2oc4_fname_src "${_ri2oc4_prefix}";
+	rtlp_install_v2_rc "${_ri2oc4_nflag}" "${_ri2oc4_vflag}" rtl_fileop cp "${_ri2oc4_fname_src}" "${_ri2oc4_fname_dst}";
 };
 # }}}
-# {{{ rtlp_install_op_cp_follow_if_newer($_nflag, $_prefix, $_vflag, $_file_fname_dst, $_file_fname_src)
-rtlp_install_op_cp_follow_if_newer() {
-	local _riocfin_nflag="${1}" _riocfin_prefix="${2}" _riocfin_vflag="${3}" _riocfin_fname_dst="${4}" _riocfin_fname_src="${5}";
+# {{{ rtlp_install_v2_op_cp_follow_if_newer($_nflag, $_prefix, $_vflag, $_file_fname_dst, $_file_fname_src)
+rtlp_install_v2_op_cp_follow_if_newer() {
+	local _ri2ocfin_nflag="${1}" _ri2ocfin_prefix="${2}" _ri2ocfin_vflag="${3}" _ri2ocfin_fname_dst="${4}" _ri2ocfin_fname_src="${5}";
 
-	rtlp_install_fixup_fname \$_riocfin_fname_dst "${_riocfin_prefix}";
-	rtlp_install_fixup_fname \$_riocfin_fname_src "${_riocfin_prefix}";
-	if [ -e "${_riocfin_fname_dst}" ]\
-	&& rtl_is_newer "${_riocfin_fname_src}" "${_riocfin_fname_dst}"; then
+	rtlp_install_v2_fixup_fname \$_ri2ocfin_fname_dst "${_ri2ocfin_prefix}";
+	rtlp_install_v2_fixup_fname \$_ri2ocfin_fname_src "${_ri2ocfin_prefix}";
+	if [ -e "${_ri2ocfin_fname_dst}" ]\
+	&& rtl_is_newer "${_ri2ocfin_fname_src}" "${_ri2ocfin_fname_dst}"; then
 		return 0;
 	else
-		rtlp_install_rc "${_riocfin_nflag}" "${_riocfin_vflag}" rtl_fileop cp_follow "${_riocfin_fname_src}" "${_riocfin_fname_dst}";
+		rtlp_install_v2_rc "${_ri2ocfin_nflag}" "${_ri2ocfin_vflag}" rtl_fileop cp_follow "${_ri2ocfin_fname_src}" "${_ri2ocfin_fname_dst}";
 	fi;
 };
 # }}}
-# {{{ rtlp_install_op_ln_symbolic($_nflag, $_prefix, $_vflag, $_ln_fname, $_ln_target)
-rtlp_install_op_ln_symbolic() {
-	local _riols_nflag="${1}" _riols_prefix="${2}" _riols_vflag="${3}" _riols_ln_fname="${4}" _riols_ln_target="${5}";
+# {{{ rtlp_install_v2_op_ln_symbolic($_nflag, $_prefix, $_vflag, $_ln_fname, $_ln_target)
+rtlp_install_v2_op_ln_symbolic() {
+	local _ri2ols_nflag="${1}" _ri2ols_prefix="${2}" _ri2ols_vflag="${3}" _ri2ols_ln_fname="${4}" _ri2ols_ln_target="${5}";
 
-	rtlp_install_fixup_fname \$_riols_ln_fname "${_riols_prefix}";
-	if [ -e "${_riols_ln_fname}" ]; then
-		rtlp_install_rc "${_riols_nflag}" "${_riols_vflag}" rtl_fileop rm "${_riols_ln_fname}";
+	rtlp_install_v2_fixup_fname \$_ri2ols_ln_fname "${_ri2ols_prefix}";
+	if [ -e "${_ri2ols_ln_fname}" ]; then
+		rtlp_install_v2_rc "${_ri2ols_nflag}" "${_ri2ols_vflag}" rtl_fileop rm "${_ri2ols_ln_fname}";
 	fi;
-	rtlp_install_rc "${_riols_nflag}" "${_riols_vflag}" rtl_fileop ln_symbolic "${_riols_ln_target}" "${_riols_ln_fname}";
+	rtlp_install_v2_rc "${_ri2ols_nflag}" "${_ri2ols_vflag}" rtl_fileop ln_symbolic "${_ri2ols_ln_target}" "${_ri2ols_ln_fname}";
 };
 # }}}
-# {{{ rtlp_install_op_mkdir($_nflag, $_prefix, $_vflag, $_dname)
-rtlp_install_op_mkdir() {
-	local _riom_nflag="${1}" _riom_prefix="${2}" _riom_vflag="${3}" _riom_dname="${4}";
+# {{{ rtlp_install_v2_op_mkdir($_nflag, $_prefix, $_vflag, $_dname)
+rtlp_install_v2_op_mkdir() {
+	local _ri2om_nflag="${1}" _ri2om_prefix="${2}" _ri2om_vflag="${3}" _ri2om_dname="${4}";
 
-	rtlp_install_fixup_fname \$_riom_dname "${_riom_prefix}";
-	rtlp_install_rc "${_riom_nflag}" "${_riom_vflag}" rtl_fileop mkdir "${_riom_dname}";
+	rtlp_install_v2_fixup_fname \$_ri2om_dname "${_ri2om_prefix}";
+	rtlp_install_v2_rc "${_ri2om_nflag}" "${_ri2om_vflag}" rtl_fileop mkdir "${_ri2om_dname}";
 };
 # }}}
-# {{{ rtlp_install_op_mv($_nflag, $_prefix, $_vflag, $_file_fname_dst, $_file_fname_src)
-rtlp_install_op_mv() {
-	local _riom2_nflag="${1}" _riom2_prefix="${2}" _riom2_vflag="${3}" _riom2_fname_dst="${4}" _riom2_fname_src="${5}";
+# {{{ rtlp_install_v2_op_mv($_nflag, $_prefix, $_vflag, $_file_fname_dst, $_file_fname_src)
+rtlp_install_v2_op_mv() {
+	local _ri2om2_nflag="${1}" _ri2om2_prefix="${2}" _ri2om2_vflag="${3}" _ri2om2_fname_dst="${4}" _ri2om2_fname_src="${5}";
 
-	rtlp_install_fixup_fname \$_riom2_fname_dst "${_riom2_prefix}";
-	rtlp_install_fixup_fname \$_riom2_fname_src "${_riom2_prefix}";
-	rtlp_install_rc "${_riom2_nflag}" "${_riom2_vflag}" rtl_fileop mv "${_riom2_fname_src}" "${_riom2_fname_dst}";
+	rtlp_install_v2_fixup_fname \$_ri2om2_fname_dst "${_ri2om2_prefix}";
+	rtlp_install_v2_fixup_fname \$_ri2om2_fname_src "${_ri2om2_prefix}";
+	rtlp_install_v2_rc "${_ri2om2_nflag}" "${_ri2om2_vflag}" rtl_fileop mv "${_ri2om2_fname_src}" "${_ri2om2_fname_dst}";
 };
 # }}}
-# {{{ rtlp_install_op_rm($_nflag, $_prefix, $_vflag, $_pname)
-rtlp_install_op_rm() {
-	local _rior_nflag="${1}" _rior_prefix="${2}" _rior_vflag="${3}" _rior_pname="${4}";
+# {{{ rtlp_install_v2_op_rm($_nflag, $_prefix, $_vflag, $_pname)
+rtlp_install_v2_op_rm() {
+	local _ri2or_nflag="${1}" _ri2or_prefix="${2}" _ri2or_vflag="${3}" _ri2or_pname="${4}";
 
-	rtlp_install_fixup_fname \$_rior_pname "${_rior_prefix}";
-	rtlp_install_rc "${_rior_nflag}" "${_rior_vflag}" rtl_fileop rm "${_rior_pname}";
+	rtlp_install_v2_fixup_fname \$_ri2or_pname "${_ri2or_prefix}";
+	rtlp_install_v2_rc "${_ri2or_nflag}" "${_ri2or_vflag}" rtl_fileop rm "${_ri2or_pname}";
 };
 # }}}
-# {{{ rtlp_install_op_touch($_nflag, $_prefix, $_vflag, $_fname, $_ts)
-rtlp_install_op_touch() {
-	local _riot_nflag="${1}" _riot_prefix="${2}" _riot_vflag="${3}" _riot_fname="${4}" _riot_ts="${5:-}";
+# {{{ rtlp_install_v2_op_touch($_nflag, $_prefix, $_vflag, $_fname, $_ts)
+rtlp_install_v2_op_touch() {
+	local _ri2ot_nflag="${1}" _ri2ot_prefix="${2}" _ri2ot_vflag="${3}" _ri2ot_fname="${4}" _ri2ot_ts="${5:-}";
 
-	rtlp_install_fixup_fname \$_riot_fname "${_riot_prefix}";
-	rtlp_install_rc "${_riot_nflag}" "${_riot_vflag}" rtl_fileop touch "${_riot_fname}" "${_riot_ts}";
+	rtlp_install_v2_fixup_fname \$_ri2ot_fname "${_ri2ot_prefix}";
+	rtlp_install_v2_rc "${_ri2ot_nflag}" "${_ri2ot_vflag}" rtl_fileop touch "${_ri2ot_fname}" "${_ri2ot_ts}";
 };
 # }}}
 
 #
 # Ancillary functions
 #
-# {{{ rtlp_install_fixup_fname($_rfname, $_prefix)
-rtlp_install_fixup_fname() {
-	local _riff_rfname="${1#\$}" __riff_prefix="${2}" _riff_fname="";
-	eval _riff_fname='${'"${_riff_rfname}"'}';
+# {{{ rtlp_install_v2_fixup_fname($_rfname, $_prefix)
+rtlp_install_v2_fixup_fname() {
+	local _ri2ff_rfname="${1#\$}" _ri2ff_prefix="${2}" _ri2ff_fname="";
+	eval _ri2ff_fname='${'"${_ri2ff_rfname}"'}';
 
-	if [ "${_riff_fname#/}" = "${_riff_fname}" ]; then
-		eval ${_riff_rfname}='${__riff_prefix:+${__riff_prefix}/}${_riff_fname}';
+	if [ "${_ri2ff_fname#/}" = "${_ri2ff_fname}" ]; then
+		eval ${_ri2ff_rfname}='${_ri2ff_prefix:+${_ri2ff_prefix}/}${_ri2ff_fname}';
 	fi;
 };
 # }}}
-# {{{ rtlp_install_rc($_nflag, $_vflag, $_fn, [...])
-rtlp_install_rc() {
-	local _rir_nflag="${1}" _rir_vflag="${2}" _rir_fn="${3}" _rir_rc=0; shift 3;
+# {{{ rtlp_install_v2_rc($_nflag, $_vflag, $_fn, [...])
+rtlp_install_v2_rc() {
+	local _ri2r_nflag="${1}" _ri2r_vflag="${2}" _ri2r_fn="${3}" _ri2r_rc=0; shift 3;
 
-	if [ "${_rir_nflag}" -eq 1 ]\
-	|| [ "${_rir_vflag}" -gt 0 ]; then
-		rtl_log_msg "install" "${MSG_rtl_install_v2_rc}" "${_rir_fn}${_rir_fn:+ ${*}}";
+	if [ "${_ri2r_nflag}" -eq 1 ]\
+	|| [ "${_ri2r_vflag}" -gt 0 ]; then
+		rtl_log_msg "install" "${MSG_rtl_install_v2_rc}" "${_ri2r_fn}${_ri2r_fn:+ ${*}}";
 	fi;
-	if [ "${_rir_nflag}" -eq 0 ]; then
-		"${_rir_fn}" "${@}"; _rir_rc="${?}";
+	if [ "${_ri2r_nflag}" -eq 0 ]; then
+		"${_ri2r_fn}" "${@}"; _ri2r_rc="${?}";
 	fi;
-	return "${_rir_rc}";
+	return "${_ri2r_rc}";
 };
 # }}}
-# {{{ rtlp_install_splitl($_rlhs, $_rrhs, $_sep)
+# {{{ rtlp_install_v2_splitl($_rlhs, $_rrhs, $_sep)
 #
-# rtlp_install_splitl()
+# rtlp_install_v2_splitl()
 # Split @_rlhs from left-hand side into left-hand and right-hand side
 # according to @_sep w/ backslash escaping
 #
@@ -283,29 +324,30 @@ rtlp_install_rc() {
 # Notate bene:		@_sep is a shell pattern
 # Returns:		zero (0) on success, non-zero (>0) on absence of unescaped @_sep in @_rlhs
 #
-rtlp_install_splitl() {
-	local	_ris_rlhs="${1#\$}" _ris_rrhs="${2#\$}" _ris_sep="${3}" _ris_lhs=""	\
-		_ris_lhs_new="" _ris_rc=1 _ris_rhs="" _ris_rhs_new="";
+rtlp_install_v2_splitl() {
+	local	_ri2s_rlhs="${1#\$}" _ri2s_rrhs="${2#\$}" _ri2s_sep="${3}" _ri2s_lhs=""	\
+		_ri2s_lhs_new="" _ri2s_rc=1 _ri2s_rhs="" _ri2s_rhs_new="";
 
-	eval _ris_rhs='${'"${_ris_rlhs}"'}';
-	while [ "${_ris_rhs:+1}" = 1 ]; do
-		_ris_lhs_new="${_ris_rhs%%${_ris_sep}*}";
-		if [ "${_ris_lhs_new}" != "${_ris_rhs}" ]; then
-			_ris_rhs_new="${_ris_rhs#*${_ris_sep}}";
-			if [ "${_ris_lhs_new%\\}" = "${_ris_lhs_new}" ]; then
-				eval	${_ris_rlhs}='${_ris_lhs}${_ris_lhs_new}'	\
-					${_ris_rrhs}='${_ris_rhs_new}'; _ris_rc=0; break;
+	eval _ri2s_rhs='${'"${_ri2s_rlhs}"'}';
+	while [ "${_ri2s_rhs:+1}" = 1 ]; do
+		_ri2s_lhs_new="${_ri2s_rhs%%${_ri2s_sep}*}";
+		if [ "${_ri2s_lhs_new}" != "${_ri2s_rhs}" ]; then
+			_ri2s_rhs_new="${_ri2s_rhs#*${_ri2s_sep}}";
+			if [ "${_ri2s_lhs_new%\\}" = "${_ri2s_lhs_new}" ]; then
+				eval	${_ri2s_rlhs}='${_ri2s_lhs}${_ri2s_lhs_new}'	\
+					${_ri2s_rrhs}='${_ri2s_rhs_new}'; _ri2s_rc=0; break;
 			else
-				_ris_lhs="${_ris_lhs}${_ris_lhs_new%\\}${_ris_sep}";
-				_ris_rhs="${_ris_rhs_new}";
+				_ri2s_lhs="${_ri2s_lhs}${_ri2s_lhs_new%\\}${_ri2s_sep}";
+				_ri2s_rhs="${_ri2s_rhs_new}";
 			fi;
 		else break; fi;
-	done; return "${_ris_rc}";
+	done;
+	return "${_ri2s_rc}";
 };
 # }}}
-# {{{ rtlp_install_splitl_ref($_ritem, $_rlhs, $_rrhs, $_sepl, $_sepr)
+# {{{ rtlp_install_v2_splitl_ref($_ritem, $_rlhs, $_rrhs, $_sepl, $_sepr)
 #
-# rtlp_install_splitl_ref()
+# rtlp_install_v2_splitl_ref()
 # Split @_rlhs from left-hand side into left-hand, reference, and
 # right-hand side according to left-hand (beginning) and right-hand
 # (ending) side separators w/ backslash escaping
@@ -320,48 +362,48 @@ rtlp_install_splitl() {
 # Notate bene:		@_sepl and @_sepr are shell patterns
 # Returns:		zero (0) on success, non-zero (>0) on absence of unescaped references in @_rlhs
 #
-rtlp_install_splitl_ref() {
-	local	_risr_rref="${1#\$}" _risr_rlhs="${2#\$}" _risr_rrhs="${3#\$}" _risr_sepl="${4}"	\
-		_risr_sepr="${5}" _risr_item="" _risr_item_lhs="" _risr_item_lhs_new=""			\
-		_risr_item_rhs="" _risr_item_rhs_new="" _risr_lhs="" _risr_lhs_new="" _risr_rc=1	\
-		_risr_rhs="" _risr_rhs_new="";
+rtlp_install_v2_splitl_ref() {
+	local	_ri2sr_rref="${1#\$}" _ri2sr_rlhs="${2#\$}" _ri2sr_rrhs="${3#\$}" _ri2sr_sepl="${4}"	\
+		_ri2sr_sepr="${5}" _ri2sr_item="" _ri2sr_item_lhs="" _ri2sr_item_lhs_new=""		\
+		_ri2sr_item_rhs="" _ri2sr_item_rhs_new="" _ri2sr_lhs="" _ri2sr_lhs_new="" _ri2sr_rc=1	\
+		_ri2sr_rhs="" _ri2sr_rhs_new="";
 
-	eval _risr_rhs='${'"${_risr_rlhs}"'}';
-	while [ "${_risr_rhs:+1}" = 1 ]; do
-		_risr_lhs_new="${_risr_rhs%%${_risr_sepl}*}";
-		if [ "${_risr_lhs_new}" != "${_risr_rhs}" ]; then
-			_risr_rhs_new="${_risr_rhs#*${_risr_sepl}}";
-			if [ "${_risr_lhs_new%\\}" = "${_risr_lhs_new}" ]; then
-				_risr_item=""; _risr_item_lhs=""; _risr_item_rhs="${_risr_rhs_new}";
-				while [ "${_risr_item_rhs:+1}" = 1 ]; do
-					_risr_item_lhs_new="${_risr_item_rhs%%${_risr_sepr}*}";
-					if [ "${_risr_item_lhs_new}" != "${_risr_item_rhs}" ]; then
-						_risr_item_rhs_new="${_risr_item_rhs#*${_risr_sepr}}";
-						if [ "${_risr_item_lhs_new%\\}" = "${_risr_item_lhs_new}" ]; then
-							_risr_item="${_risr_item_lhs}${_risr_item_lhs_new}";
-							_risr_item_rhs="${_risr_item_rhs_new}";
-							_risr_rc=0; break;
+	eval _ri2sr_rhs='${'"${_ri2sr_rlhs}"'}';
+	while [ "${_ri2sr_rhs:+1}" = 1 ]; do
+		_ri2sr_lhs_new="${_ri2sr_rhs%%${_ri2sr_sepl}*}";
+		if [ "${_ri2sr_lhs_new}" != "${_ri2sr_rhs}" ]; then
+			_ri2sr_rhs_new="${_ri2sr_rhs#*${_ri2sr_sepl}}";
+			if [ "${_ri2sr_lhs_new%\\}" = "${_ri2sr_lhs_new}" ]; then
+				_ri2sr_item=""; _ri2sr_item_lhs=""; _ri2sr_item_rhs="${_ri2sr_rhs_new}";
+				while [ "${_ri2sr_item_rhs:+1}" = 1 ]; do
+					_ri2sr_item_lhs_new="${_ri2sr_item_rhs%%${_ri2sr_sepr}*}";
+					if [ "${_ri2sr_item_lhs_new}" != "${_ri2sr_item_rhs}" ]; then
+						_ri2sr_item_rhs_new="${_ri2sr_item_rhs#*${_ri2sr_sepr}}";
+						if [ "${_ri2sr_item_lhs_new%\\}" = "${_ri2sr_item_lhs_new}" ]; then
+							_ri2sr_item="${_ri2sr_item_lhs}${_ri2sr_item_lhs_new}";
+							_ri2sr_item_rhs="${_ri2sr_item_rhs_new}";
+							_ri2sr_rc=0; break;
 						else
-							_risr_item_lhs="${_risr_item_lhs}${_risr_item_lhs_new%\\}${_risr_sepr}";
-							_risr_item_rhs="${_risr_item_rhs_new}";
+							_ri2sr_item_lhs="${_ri2sr_item_lhs}${_ri2sr_item_lhs_new%\\}${_ri2sr_sepr}";
+							_ri2sr_item_rhs="${_ri2sr_item_rhs_new}";
 						fi;
 					else break; fi;
 				done; break;
 			else
-				_risr_lhs="${_risr_lhs}${_risr_lhs_new%\\}${_risr_sepl}"; _risr_rhs="${_risr_rhs_new}";
+				_ri2sr_lhs="${_ri2sr_lhs}${_ri2sr_lhs_new%\\}${_ri2sr_sepl}"; _ri2sr_rhs="${_ri2sr_rhs_new}";
 			fi;
 		else break; fi;
 	done;
 
-	eval	${_risr_rref}='${_risr_item}'								\
-		${_risr_rlhs}='${_risr_lhs}${_risr_lhs_new}'						\
-		${_risr_rrhs}='${_risr_item_rhs}';
-	return "${_risr_rc}";
+	eval	${_ri2sr_rref}='${_ri2sr_item}'			\
+		${_ri2sr_rlhs}='${_ri2sr_lhs}${_ri2sr_lhs_new}'	\
+		${_ri2sr_rrhs}='${_ri2sr_item_rhs}';
+	return "${_ri2sr_rc}";
 };
 # }}}
-# {{{ rtlp_install_splitl_subexpr($_rexpr, $_rlhs, $_lsep)
+# {{{ rtlp_install_v2_splitl_subexpr($_rexpr, $_rlhs, $_lsep)
 #
-# rtlp_install_splitl_subexpr()
+# rtlp_install_v2_splitl_subexpr()
 # Split @_rlhs from left-hand side into left-hand (subexpression) and right-hand
 # side according to list of expression operator prefixes w/ backslash escaping
 #
@@ -373,69 +415,77 @@ rtlp_install_splitl_ref() {
 # Notate bene:		@_lsep list items are shell patterns
 # Returns:		zero (0) on success, non-zero (>0) on absence of unescaped expressions in @_rlhs
 #
-rtlp_install_splitl_subexpr() {
-	local	_riss_rexpr="${1#\$}" _riss_rlhs="${2#\$}" _riss_lsep="${3}" _riss_lhs=""		\
-		_riss_matchfl="" _riss_nsep="" _riss_rc=1 _riss_sep="" _riss_sexpr=""			\
-		_riss_sexpr_lhs="" _riss_sexpr_lhs_new="" _riss_sexpr_rhs=""				\
-		_riss_sexpr_rhs_new="" _riss_sexpr_rhs_new_min="" _riss_sexpr_rhs_new_min_new=""	\
-		_riss_sexpr_sep="" _riss_sexpr_sep_new=""
+rtlp_install_v2_splitl_subexpr() {
+	local	_ri2ss_rexpr="${1#\$}" _ri2ss_rlhs="${2#\$}" _ri2ss_lsep="${3}" _ri2ss_lhs=""		\
+		_ri2ss_matchfl="" _ri2ss_nsep="" _ri2ss_rc=1 _ri2ss_sep="" _ri2ss_sexpr=""		\
+		_ri2ss_sexpr_lhs="" _ri2ss_sexpr_lhs_new="" _ri2ss_sexpr_rhs=""				\
+		_ri2ss_sexpr_rhs_new="" _ri2ss_sexpr_rhs_new_min="" _ri2ss_sexpr_rhs_new_min_new=""	\
+		_ri2ss_sexpr_sep="" _ri2ss_sexpr_sep_new=""
 
-	eval _riss_lhs='${'"${_riss_rlhs}"'}'; set -- ${_riss_lsep};
-	if [ "${_riss_lhs:+1}" = 1 ]; then
-		_riss_matchfl=0; _riss_nsep=1; while [ "${_riss_nsep}" -le "${#}" ]; do
-			eval _riss_sep='${'"${_riss_nsep}"'}';
-			case "${_riss_lhs}" in
-			${_riss_sep}*)	_riss_matchfl=1; break; ;;
-			*)		: $((_riss_nsep+=1)); ;;
+	eval _ri2ss_lhs='${'"${_ri2ss_rlhs}"'}'; set -- ${_ri2ss_lsep};
+
+	if [ "${_ri2ss_lhs:+1}" = 1 ]; then
+		_ri2ss_matchfl=0; _ri2ss_nsep=1; while [ "${_ri2ss_nsep}" -le "${#}" ]; do
+			eval _ri2ss_sep='${'"${_ri2ss_nsep}"'}';
+			case "${_ri2ss_lhs}" in
+			${_ri2ss_sep}*)	_ri2ss_matchfl=1; break; ;;
+			*)		: $((_ri2ss_nsep+=1)); ;;
 			esac;
 		done;
-		if [ "${_riss_matchfl}" -eq 1 ]; then
-			_riss_sexpr=""; _riss_sexpr_lhs="${_riss_sep}";
-			_riss_sexpr_rhs="${_riss_lhs#${_riss_sep}}";
-			while [ "${_riss_sexpr_rhs:+1}" = 1 ]; do
-				_riss_sexpr_rhs_new_min=-1; _riss_sexpr_sep=""; _riss_nsep=1;
-				while [ "${_riss_nsep}" -le "${#}" ]; do
-					eval _riss_sexpr_sep_new='${'"${_riss_nsep}"'}';
-					_riss_sexpr_rhs_new="${_riss_sexpr_rhs%%${_riss_sexpr_sep_new}*}";
-					if [ "${_riss_sexpr_rhs_new}" != "${_riss_sexpr_rhs}" ]; then
-						_riss_sexpr_rhs_new_min_new="${#_riss_sexpr_rhs_new}";
-						if [ "${_riss_sexpr_rhs_new_min_new}" -le "${_riss_sexpr_rhs_new_min}" ]\
-						|| [ "${_riss_sexpr_rhs_new_min}" -eq -1 ]; then
-							_riss_sexpr_rhs_new_min="${_riss_sexpr_rhs_new_min_new}";
-							_riss_sexpr_sep="${_riss_sexpr_sep_new}";
+
+		if [ "${_ri2ss_matchfl}" -eq 1 ]; then
+			_ri2ss_sexpr=""; _ri2ss_sexpr_lhs="${_ri2ss_sep}";
+			_ri2ss_sexpr_rhs="${_ri2ss_lhs#${_ri2ss_sep}}";
+
+			while [ "${_ri2ss_sexpr_rhs:+1}" = 1 ]; do
+				_ri2ss_sexpr_rhs_new_min=-1; _ri2ss_sexpr_sep=""; _ri2ss_nsep=1;
+				while [ "${_ri2ss_nsep}" -le "${#}" ]; do
+					eval _ri2ss_sexpr_sep_new='${'"${_ri2ss_nsep}"'}';
+					_ri2ss_sexpr_rhs_new="${_ri2ss_sexpr_rhs%%${_ri2ss_sexpr_sep_new}*}";
+					if [ "${_ri2ss_sexpr_rhs_new}" != "${_ri2ss_sexpr_rhs}" ]; then
+						_ri2ss_sexpr_rhs_new_min_new="${#_ri2ss_sexpr_rhs_new}";
+						if [ "${_ri2ss_sexpr_rhs_new_min_new}" -le "${_ri2ss_sexpr_rhs_new_min}" ]\
+						|| [ "${_ri2ss_sexpr_rhs_new_min}" -eq -1 ]; then
+							_ri2ss_sexpr_rhs_new_min="${_ri2ss_sexpr_rhs_new_min_new}";
+							_ri2ss_sexpr_sep="${_ri2ss_sexpr_sep_new}";
 						fi;
-					fi; : $((_riss_nsep+=1));
+					fi; : $((_ri2ss_nsep+=1));
 				done;
-				if [ "${_riss_sexpr_sep:+1}" = 1 ]; then
-					_riss_sexpr_lhs_new="${_riss_sexpr_rhs%%${_riss_sexpr_sep}*}";
-					if [ "${_riss_sexpr_lhs_new%\\}" = "${_riss_sexpr_lhs_new}" ]; then
-						_riss_sexpr_lhs="${_riss_sexpr_lhs}${_riss_sexpr_lhs_new}";
-						_riss_sexpr_rhs="${_riss_sexpr_sep}${_riss_sexpr_rhs#*${_riss_sexpr_sep}}"; break;
+				if [ "${_ri2ss_sexpr_sep:+1}" = 1 ]; then
+					_ri2ss_sexpr_lhs_new="${_ri2ss_sexpr_rhs%%${_ri2ss_sexpr_sep}*}";
+					if [ "${_ri2ss_sexpr_lhs_new%\\}" = "${_ri2ss_sexpr_lhs_new}" ]; then
+						_ri2ss_sexpr_lhs="${_ri2ss_sexpr_lhs}${_ri2ss_sexpr_lhs_new}";
+						_ri2ss_sexpr_rhs="${_ri2ss_sexpr_sep}${_ri2ss_sexpr_rhs#*${_ri2ss_sexpr_sep}}"; break;
 					else
-						_riss_sexpr_lhs="${_riss_sexpr_lhs}${_riss_sexpr_rhs%%\\${_riss_sexpr_sep}*}${_riss_sexpr_sep}";
-						_riss_sexpr_rhs="${_riss_sexpr_rhs#*\\${_riss_sexpr_sep}}";
+						_ri2ss_sexpr_lhs="${_ri2ss_sexpr_lhs}${_ri2ss_sexpr_rhs%%\\${_ri2ss_sexpr_sep}*}${_ri2ss_sexpr_sep}";
+						_ri2ss_sexpr_rhs="${_ri2ss_sexpr_rhs#*\\${_ri2ss_sexpr_sep}}";
 					fi;
 				else
-					_riss_sexpr_lhs="${_riss_sexpr_lhs}${_riss_sexpr_rhs}"; _riss_sexpr_rhs=""; break;
+					_ri2ss_sexpr_lhs="${_ri2ss_sexpr_lhs}${_ri2ss_sexpr_rhs}"; _ri2ss_sexpr_rhs=""; break;
 				fi;
 			done;
-			eval ${_riss_rexpr}='${_riss_sexpr_lhs}' ${_riss_rlhs}='${_riss_sexpr_rhs}'; _riss_rc=0;
+
+			eval ${_ri2ss_rexpr}='${_ri2ss_sexpr_lhs}' ${_ri2ss_rlhs}='${_ri2ss_sexpr_rhs}'; _ri2ss_rc=0;
 		fi;
-	fi; return "${_riss_rc}";
+	fi;
+
+	return "${_ri2ss_rc}";
 };
 # }}}
 
 rtl_install_v2() {
-	local	_ri_prefix="" _ri_spec_flag="" _ri_spec_list="" _ri_iflag=0 _ri_IFS="${IFS:- 	}"	\
-		_ri_nflag=0 _ri_paramsc=0 _ri_vflag=0 _ri_IFS0 _ri_nparam=0 _ri_opt="" _ri_param=""	\
-		_ri_rc=0 _ri_spec="" _ri_spec_dst="" _ri_spec_src="" IFS OPTARG="" OPTIND=1; _status="";
+	local	_ri2_rstatus="${1#\$}"										\
+		_ri2_prefix="" _ri2_spec_flag="" _ri2_spec_list="" _ri2_iflag=0 _ri2_IFS="${IFS:- 	}"	\
+		_ri2_nflag=0 _ri2_paramsc=0 _ri2_vflag=0 _ri2_IFS0 _ri2_nparam=0 _ri2_opt="" _ri2_param=""	\
+		_ri2_rc=0 _ri2_spec="" _ri2_spec_dst="" _ri2_spec_src="" IFS OPTARG="" OPTIND=1;
+	shift;
 
 	while true; do
 		if [ "${1:-}" = "--" ]; then
 			: $((OPTIND+=1)); break;
-		elif ! getopts hiI:np:v _ri_opt; then
+		elif ! getopts hiI:np:v _ri2_opt; then
 			break;
-		else case "${_ri_opt}" in
+		else case "${_ri2_opt}" in
 		h)	printf "usage: rtl_install [-i] [-I ifs] [-n] [-p name=val] [-v] prefix spec_list\n" >&2;
 			printf "       -i...........: continue on soft errors\n" >&2;
 			printf "       -I ifs.......: process spec_list with ifs instead of NL\n" >&2;
@@ -444,102 +494,107 @@ rtl_install_v2() {
 			printf "       -v...........: increase verbosity\n" >&2;
 			printf "       prefix.......: pathname prefix\n" >&2;
 			printf "       spec_list....: ifs-separated list of specs\n" >&2; return 1; ;;
-		i)	_ri_iflag=1; ;;
-		I)	_ri_IFS="${OPTARG}"; ;;
-		n)	_ri_nflag=1; ;;
-		p)	: $((_ri_paramsc+=1)); local _ri_params${OPTARG%%=*}="${OPTARG#*=}"; ;;
-		v)	: $((_ri_vflag+=1)); ;;
+		i)	_ri2_iflag=1; ;;
+		I)	_ri2_IFS="${OPTARG}"; ;;
+		n)	_ri2_nflag=1; ;;
+		p)	: $((_ri2_paramsc+=1)); local _ri2_params${OPTARG%%=*}="${OPTARG#*=}"; ;;
+		v)	: $((_ri2_vflag+=1)); ;;
 		*)	return 1; ;;
 		esac; fi;
 	done; shift $((${OPTIND}-1));
-	_ri_prefix="${1:-}"; _ri_spec_list="${2:-}"; shift 2;
-	_ri_IFS0="${IFS:- 	}"; IFS="${_ri_IFS}"; set -- ${_ri_spec_list}; IFS="${_ri_IFS0}";
+	_ri2_prefix="${1:-}"; _ri2_spec_list="${2:-}"; shift 2;
+	_ri2_IFS0="${IFS:- 	}"; IFS="${_ri2_IFS}"; set -- ${_ri2_spec_list}; IFS="${_ri2_IFS0}";
 
 	while [ ${#} -gt 0 ]; do
-		_ri_spec_src="${1}";
-		case "${_ri_spec_src}" in
-		\?*)	_ri_spec_flag="?"; ;;
-		*)	_ri_spec_flag=""; ;;
+		_ri2_spec_src="${1}";
+		case "${_ri2_spec_src}" in
+		\?*)	_ri2_spec_flag="?"; ;;
+		*)	_ri2_spec_flag=""; ;;
 		esac;
-		if ! rtlp_install_splitl \$_ri_spec_src \$_ri_spec_dst "="; then
-			_ri_rc=1; _status="zero-length or invalid specification \`${1}'";
-		else case "${_ri_spec_src}" in
+		if ! rtlp_install_v2_splitl \$_ri2_spec_src \$_ri2_spec_dst "="; then
+			_ri2_rc=1;
+			rtl_setrstatus "${_ri2_rstatus}" 'zero-length or invalid specification \`'"${1}"''\';
+		else case "${_ri2_spec_src}" in
+
 		-)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_rm "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					""								\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_rm "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"			\
+					""										\
 					-- "%[1]" "%[2]" "%[3]" "%[ITEM]"; ;;
 
 		/)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_mkdir "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					""								\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_mkdir "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"		\
+					""										\
 				       	-- "%[1]" "%[2]" "%[3]" "%[ITEM]"; ;;
 
 		t*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_touch "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					"" "" 								\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_touch "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"		\
+					"" "" 										\
 					-- "%[1]" "%[2]" "%[3]" "%[ITEM]" "%[5]"; ;;
 
 		:*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_src#:}"		\
-				rtlp_install_op_cp "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					"${_ri_spec_dst}" ""						\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_src#:}"	\
+				rtlp_install_v2_op_cp "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"			\
+					"${_ri2_spec_dst}" ""								\
 					-- "%[1]" "%[2]" "%[3]" "%[@4]" "%[ITEM]"; ;;
 
 		!*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_src#!}"		\
-				rtlp_install_op_mv "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					"${_ri_spec_dst}" ""						\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_src#!}"	\
+				rtlp_install_v2_op_mv "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"			\
+					"${_ri2_spec_dst}" ""								\
 					--  "%[1]" "%[2]" "%[3]" "%[@4]" "%[ITEM]"; ;;
 
 		@*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_ln_symbolic "${_ri_nflag}" "${_ri_prefix}"		\
-					"${_ri_vflag}" "" "${_ri_spec_src#@}" ""			\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_ln_symbolic "${_ri2_nflag}" "${_ri2_prefix}"				\
+					"${_ri2_vflag}" "" "${_ri2_spec_src#@}" ""					\
 					-- "%[1]" "%[2]" "%[3]" "%[ITEM]" "%[@5]"; ;;
 
 		+*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_src#+}"		\
-				rtlp_install_op_cp_follow_if_newer "${_ri_nflag}" "${_ri_prefix}"	\
-					"${_ri_vflag}" "${_ri_spec_dst}" ""				\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_src#+}"	\
+				rtlp_install_v2_op_cp_follow_if_newer "${_ri2_nflag}" "${_ri2_prefix}"			\
+					"${_ri2_vflag}" "${_ri2_spec_dst}" ""						\
 					-- "%[1]" "%[2]" "%[3]" "%[@4]" "%[ITEM]"; ;;
 
 		g*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_chgrp "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					"" "${_ri_spec_src#g}" 						\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_chgrp "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"		\
+					"" "${_ri2_spec_src#g}" 							\
 					-- "%[1]" "%[2]" "%[3]" "%[ITEM]" "%[5]"; ;;
 
 		m[0-7][0-7][0-7][0-7])
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_chmod "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					"" "${_ri_spec_src#m}"						\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_chmod "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"		\
+					"" "${_ri2_spec_src#m}"								\
 					-- "%[1]" "%[2]" "%[3]" "%[ITEM]" "%[5]"; ;;
 
 		o*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_chown "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					"" "${_ri_spec_src#o}" 						\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_chown "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"		\
+					"" "${_ri2_spec_src#o}" 							\
 					-- "%[1]" "%[2]" "%[3]" "%[ITEM]" "%[5]"; ;;
 
 		T*)
-			rtlp_install_fmap \$_ri_params "${_ri_prefix}" "${_ri_spec_dst}"		\
-				rtlp_install_op_touch "${_ri_nflag}" "${_ri_prefix}" "${_ri_vflag}"	\
-					"" "${_ri_spec_src#T}" 						\
+			rtlp_install_v2_fmap "${_ri2_rstatus}" \$_ri2_params "${_ri2_prefix}" "${_ri2_spec_dst}"	\
+				rtlp_install_v2_op_touch "${_ri2_nflag}" "${_ri2_prefix}" "${_ri2_vflag}"		\
+					"" "${_ri2_spec_src#T}" 							\
 					-- "%[1]" "%[2]" "%[3]" "%[ITEM]" "%[5]"; ;;
 
 		\#*|"")
 			;;
-		esac; _ri_rc="${?}"; fi;
+
+		esac; _ri2_rc="${?}"; fi;
 		shift;
-		if [ "${_ri_rc}" -ne 0 ]\
-		&& [ "${_ri_iflag}" -eq 0 ]; then
+
+		if [ "${_ri2_rc}" -ne 0 ]\
+		&& [ "${_ri2_iflag}" -eq 0 ]; then
 			break;
 		fi;
 	done;
-	return "${_ri_rc}";
+
+	return "${_ri2_rc}";
 };
 
 # vim:filetype=sh

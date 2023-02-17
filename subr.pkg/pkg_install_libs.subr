@@ -1,0 +1,94 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+pkgp_install_libs_purge_la() {
+	local _ppilpl_la_path="";
+
+	for _ppilpl_la_path in $(find "${PKG_DESTDIR}" -type f -name \*.la); do
+		if ! rtl_fileop rm "${_ppilpl_la_path}"; then
+			return 1;
+		fi;
+	done;
+	return 0;
+};
+
+pkgp_install_libs_shared_link() {
+	local	_ppilsl_lib_name="${1}" _ppilsl_so_dir="${2}" _ppilsl_so_path="${3}"	\
+		_ppilsl_lib_link_path="${3%.so*}.lib.a" _ppilsl_fname="" _ppilsl_lib_link_tgt="";
+
+	if _ppilsl_lib_link_tgt="$(find "${_ppilsl_so_dir}" -name "${_ppilsl_lib_name%%.*}.*.lib.a" | sort | tail -1)"\
+	&& [ "${_ppilsl_lib_link_tgt:+1}" = 1 ]\
+	&& [ "${_ppilsl_lib_link_tgt}" != "${_ppilsl_lib_link_path}" ];
+	then
+		rtl_basename2 \$_ppilsl_lib_link_tgt \$_ppilsl_fname;
+
+		if ! rtl_fileop rm "${_ppilsl_lib_link_path}"\
+		|| ! rtl_fileop ln_symbolic "${_ppilsl_fname}" "${_ppilsl_lib_link_path}"; then
+			return 1;
+		fi;
+	fi;
+	return 0;
+};
+
+pkgp_install_libs_shared() {
+	local	_ppils_head="" _ppils_lib_dst_path="" _ppils_lib_name=""	\
+		_ppils_lib_src_path="" _ppils_so_dst_dir="" _ppils_so_src_path="";
+
+	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
+		for _ppils_so_src_path in 		\
+			$(find	"${PKG_DESTDIR}"	\
+				\(  -name "*.so" -or -name "*.so.*" \) -print);
+		do
+			if [ "$(readlink -f "${_ppils_so_src_path}")" != "/dev/null" ]\
+			&& rtl_head "[0-9.]" "${_ppils_so_src_path##*.so}" \$_ppils_head\
+			&& [ "${_ppils_head:+1}" != 1 ]; then
+				case "${_ppils_so_src_path}" in
+				*.so)	_ppils_lib_src_path="${_ppils_so_src_path%%.so}.lib.a"; ;;
+				*.so.*)	_ppils_lib_src_path="${_ppils_so_src_path%%.so.*}.${_ppils_so_src_path##*.so.}.lib.a"; ;;
+				esac;
+
+				_ppils_so_dst_dir="${_ppils_so_src_path%/*}";
+				rtl_basename2 \$_ppils_lib_src_path \$_ppils_lib_name;
+				_ppils_lib_dst_path="${_ppils_so_dst_dir}/${_ppils_lib_name}";
+
+				if [ ! -L "${_ppils_lib_src_path}" ]\
+				&& [ ! -e "${_ppils_lib_dst_path}" ]; then
+					if ! (rtl_basename2 \$_ppils_so_src_path \$_ppils_fname;	\
+					      rtl_basename2 \$_ppils_lib_dst_path \$_ppils_fname_dst;	\
+					      rtl_dirname2 \$_ppils_so_src_path \$_ppils_dname;		\
+					      rtl_fileop cd "${_ppils_dname}" &&			\
+							perk -e "${_ppils_fname}"			|\
+								"${PKG_TARGET}-mdso"			\
+									-i "${_ppils_fname_dst}"	\
+									-n "${_ppils_fname}" -);
+					then
+						return 1;
+					fi;
+				fi;
+
+				if ! pkgp_install_libs_shared_link				\
+						"${_ppils_lib_name}" "${_ppils_so_dst_dir}"	\
+						"${_ppils_so_src_path}";
+				then
+					return 1;
+				fi;
+			fi;
+		done;
+	fi;
+
+	return 0;
+};
+
+pkg_install_libs() {
+	local _pil_group_name="${1}" _pil_pkg_name="${2}" _pil_restart_at="${3}";
+
+	if ! pkgp_install_libs_purge_la\
+	|| ! pkgp_install_libs_shared;
+	then
+		return 1;
+	fi;
+	return 0;
+};
+
+# vim:filetype=sh

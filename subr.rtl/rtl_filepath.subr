@@ -3,16 +3,28 @@
 #
 
 rtl_basename() {
-	local _fname="${1##*/}"; printf "%s" "${_fname}";
+	rtl_basename2 "${1}" "${1}";
+};
+
+rtl_basename2() {
+	local	_rb2_rfname="${1#\$}" _rb2_rfname_out="${2#\$}"	\
+		_rb2_fname="";
+
+	eval _rb2_fname="\${${_rb2_rfname}}";
+	eval ${_rb2_rfname_out}='${_rb2_fname##*/}';
+	return 0;
 };
 
 rtl_check_digest() {
-	local _fname="${1}" _digest_check="${2}" _digest=""; RTL_CHECK_DIGEST_DIGEST="";
-	if ! [ -e "${_fname}" ]; then
+	local	_rcd_rdigest="${1#\$}" _rcd_fname="${2}" _rcd_digest_check="${3}"	\
+		_rcd_digest="";
+
+	if ! [ -e "${_rcd_fname}" ]; then
 		return 1;
-	else	set -- $(sha256sum "${_fname}");
-		RTL_CHECK_DIGEST_DIGEST="${1}";
-		if [ "${RTL_CHECK_DIGEST_DIGEST}" = "${_digest_check}" ]; then
+	else	set -- $(sha256sum "${_rcd_fname}");
+		_rcd_digest="${1}";
+		eval ${_rcd_rdigest}='${_rcd_digest}';
+		if [ "${_rcd_digest}" = "${_rcd_digest_check}" ]; then
 			return 0;
 		else
 			return 1;
@@ -21,57 +33,88 @@ rtl_check_digest() {
 };
 
 rtl_check_digest_file() {
-	local _fname="${1}" _digest_check="${2}" _digest_fname="${3}" _digest="" RTL_CHECK_DIGEST_DIGEST="";
-	if !  [ -e "${_digest_fname}" ]; then
+	local	_rcdf_fname="${1}" _rcdf_digest_check="${2}" _rcdf_digest_fname="${3}"	\
+		_rcdf_digest="" _rcdf_digest_file="";
+
+	if !  [ -e "${_rcdf_digest_fname}" ]; then
 		return 1;
-	else	_digest="$(cat "${_digest_fname}")";
-		if [ "${_digest}" != "${_digest_check}" ]\
-		|| ! rtl_check_digest "${_fname}" "${_digest_check}"; then
+	else	_rcdf_digest_file="$(cat "${_rcdf_digest_fname}")";
+		if [ "${_rcdf_digest_file}" != "${_rcdf_digest_check}" ]\
+		|| ! rtl_check_digest \$_rcdf_digest "${_rcdf_fname}"	\
+				"${_rcdf_digest_check}";
+		then
 			return 1;
+		else
+			return 0;
 		fi;
 	fi;
 };
 
 rtl_check_path_vars() {
-	local _vnames="${1}" _rc=0 _vname="" _vname_val=""; _status="";
-	for _vname in ${_vnames}; do
-		_vname_val="$(rtl_get_var_unsafe "${_vname}")";
-		if [ -z "${_vname_val}" ]; then
-			_rc=1; _status="Error: variable \`${_vname}' is empty or unset."; break;
-		elif [ "${_vname_val#* *}" != "${_vname_val}" ]; then
-			_rc=2; _status="Error: variable \`${_vname}' contains one or more whitespace characters."; break;
+	local	_rcpv_rstatus="${1#\$}" _rcpv_vnames="${2}"	\
+		_rcpv_rc=0 _rcpv_vname="" _rcpv_vname_val="";
+
+	for _rcpv_vname in ${_rcpv_vnames}; do
+		rtl_get_var_unsafe \$_rcpv_vname_val "${_rcpv_vname}";
+		if [ "${_rcpv_vname_val:+1}" != 1 ]; then
+			_rcpv_rc=1;
+			rtl_setrstatus "${_rcpv_rstatus}" 'Error: variable \`'"${_rcpv_vname}'"' is empty or unset.';
+			break;
+		elif [ "${_rcpv_vname_val#* *}" != "${_rcpv_vname_val}" ]; then
+			_rcpv_rc=2;
+			rtl_setrstatus "${_rcpv_rstatus}" 'Error: variable \`'"${_rcpv_vname}'"' contains one or more whitespace characters.';
+			break;
 		fi;
 	done;
-	return "${_rc}";
+	return "${_rcpv_rc}";
 };
 
 rtl_dirname() {
-	local _dname="${1%/*}";
-	case "${_dname}" in
-	"")	_dname="."; ;;
-	*)	while rtl_matchr "${_dname}" "*/"; do
-			_dname="${_dname%/}";
+	rtl_dirname2 "${1}" "${1}";
+};
+
+rtl_dirname2() {
+	local	_rdname="${1#\$}" _rdname_out="${2#\$}"	\
+		_rd2_dname="";
+
+	eval _rd2_dname="\${${_rdname}}";
+	_rd2_dname="${_rd2_dname%/*}";
+
+	case "${_rd2_dname}" in
+	"")	_rd2_dname="."; ;;
+	*)	while rtl_matchr "${_rd2_dname}" "*/"; do
+			_rd2_dname="${_rd2_dname%/}";
 		done; ;;
-	esac; printf "%s" "${_dname:-/}";
+	esac;
+
+	eval ${_rdname_out}='${_rd2_dname}';
+	return 0;
 };
 
 rtl_exists_any() {
-	local _subdir="${1}"; shift;
+	local _rea_subdir="${1}"; shift;
+
 	while [ "${#}" -gt 0 ]; do
-		if [ -e "${_subdir}/${1}" ]; then
+		if [ -e "${_rea_subdir}/${1}" ]; then
 			return 0;
 		else
 			shift;
 		fi;
-	done; return 1;
+	done;
+	return 1;
 };
 
 rtl_flock_acquire() {
-	local _fd="${1}" _conflict_exit_code="${2:-253}" _wait="${3:-3600}"
+	local _rfa_fd="${1}" _rfa_conflict_exit_code="${2:-253}" _rfa_wait="${3:-3600}";
+
 	while true; do
-		if flock -E "${_conflict_exit_code}" -w "${_wait}" "${_fd}"; then
-			break;
-		elif [ "${?}" -eq "${_conflict_exit_code}" ]; then
+		if flock				\
+			-E "${_rfa_conflict_exit_code}"	\
+			-w "${_rfa_wait}"		\
+			"${_rfa_fd}";
+		then
+			return 0;
+		elif [ "${?}" -eq "${_rfa_conflict_exit_code}" ]; then
 			continue;
 		else
 			return "${?}";
@@ -80,12 +123,16 @@ rtl_flock_acquire() {
 };
 
 rtl_is_newer() {
-	local _new_fname="${1}" _old_fname="${2}" _new_ts="" _old_ts="";
-	if ! [ -e "${_old_fname}" ]; then
+	local	_ris_new_fname="${1}" _ris_old_fname="${2}"	\
+		_ris_new_ts="" _ris_old_ts="";
+
+	if ! [ -e "${_ris_old_fname}" ]; then
 		return 0;
-	else	_new_ts="$(stat -c %Y "${_new_fname}" 2>/dev/null)";
-		_old_ts="$(stat -c %Y "${_old_fname}" 2>/dev/null)";
-		if [ "${_new_ts:-0}" -gt "${_old_ts:-0}" ]; then
+	else
+		_ris_new_ts="$(stat -c %Y "${_ris_new_fname}" 2>/dev/null)";
+		_ris_old_ts="$(stat -c %Y "${_ris_old_fname}" 2>/dev/null)";
+
+		if [ "${_ris_new_ts:-0}" -gt "${_ris_old_ts:-0}" ]; then
 			return 0;
 		else
 			return 1;

@@ -3,14 +3,16 @@
 #
 
 pkg_clean() {
+	local _pc_group_name="${1}" _pc_pkg_name="${2}" _pc_restart_at="${3}";
+
 	if [ "${PKG_NO_CLEAN:-0}" -eq 0 ]; then
-		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "build" ","\
+		if rtl_lmatch \$ARG_CLEAN_BUILDS "build" ","\
 		&& [ "${PKG_NO_CLEAN_BUILD_DIR:-0}" -eq 0 ]; then
 			if ! rtl_fileop rm "${PKG_BUILD_DIR}"; then
 				return 1;
 			fi;
 		fi;
-		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "dest" ","; then
+		if rtl_lmatch \$ARG_CLEAN_BUILDS "dest" ","; then
 			if ! rtl_fileop rm "${PKG_DESTDIR}"; then
 				return 1;
 			elif [ -e "${PKG_DESTDIR_HOST}" ]\
@@ -18,12 +20,13 @@ pkg_clean() {
 				return 1;
 			fi;
 		fi;
-		if rtl_lmatch "${ARG_CLEAN_BUILDS}" "src" ","; then
+		if rtl_lmatch \$ARG_CLEAN_BUILDS "src" ","; then
 			if ! rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}"; then
 				return 1;
 			fi;
 		fi;
 	fi;
+	return 0;
 };
 
 # vim:filetype=sh

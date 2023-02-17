@@ -2,299 +2,476 @@
 # Copyright (c) 2020, 2021 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 #
 
-pkgtoolp_info() {
-	local	_pkg_name="${1}" _group_name="" _pkg_name_uc="$(rtl_toupper "${1}")" _fname="" _pkg_names=""\
-		_rc=0 EX_PKG_BUILD_GROUPS="" EX_PKG_DISABLED="" EX_PKG_FINISHED="" EX_PKG_NAMES=""; _status="";
+# {{{ pkgtoolp_init($_rstatus)
+pkgtoolp_init() {
+	local	_pi_rstatus="${1#\$}"						\
+		_pi_args_long=""						\
+		_pi_name_base="pkgtool"						\
+		_pi_optstring="a:b:him:M:rRtv"					\
+		_pi_prereqs="
+			awk bzip2 cat chmod cp date find grep hostname mkdir
+			mktemp mv paste printf readlink rm sed sort tar test
+			touch tr uniq"						\
+		_pi_fname="" _pi_rc=0;
+	shift;
 
-	if ! ex_pkg_load_groups; then
-		_rc=1; _status="Error: failed to load build groups.";
-	elif ! _group_name="$(ex_pkg_find_package "${EX_PKG_BUILD_GROUPS}" "${_pkg_name}")"; then
-		_rc=1; _status="Error: unknown package \`${_pkg_name}'.";
-	elif ! _pkg_names="$(ex_pkg_get_packages "${_group_name}")"; then
-		_rc=1; _status="Error: failed to expand package list of build group \`${_group_name}'.";
+	if ! . "${0%/*}/subr.ex/ex_init.subr"; then
+		_pi_rc=1;
+		_pi_status='failed to source \`'"${0%/*}/subr/ex_init.subr"\';
+		eval ${_pi_rstatus}=\"${_pi_status}\";
+	elif ! ex_init_help						\
+			"${_pi_rstatus}" "${_pi_args_long}"		\
+			"${_pi_name_base}" "${_pi_optstring}" "${@}"	\
+	  || ! ex_init_env						\
+	  		"${_pi_rstatus}" \$BUILD_HNAME \$BUILD_USER	\
+			"${_pi_name_base}"				\
+	  || ! ex_init_getopts						\
+	  		"${_pi_rstatus}" "pkgtoolp_init_getopts_fn"	\
+			"${_pi_optstring}" "${@}"			\
+	  || ! ex_init_prereqs "${_pi_rstatus}" "${_pi_prereqs}"	\
+	  || ! ex_pkg_load_vars "${_pi_rstatus}"			\
+	  || ! pkgtoolp_init_args "${_pi_rstatus}";
+	then
+		_pi_rc=1;
+	fi;
+	return "${_pi_rc}";
+};
+# }}}
+# {{{ pkgtoolp_init_args($_rstatus)
+pkgtoolp_init_args() {
+	local	_ppia_rstatus="${1#\$}"	\
+		_ppia_rc=0;
+
+	if [ "$((${ARG_INFO:-0}
+	   + ${ARG_MIRROR:-0}
+	   + ${ARG_RDEPENDS:-0}
+	   + ${ARG_RDEPENDS_FULL:-0}
+	   + ${ARG_TARBALL:-0}))" -gt 1 ];
+	then
+		cat etc/pkgtool.usage;
+		_ppia_rc=1;
+		rtl_setrstatus "${_ppia_rstatus}" 'only one of -i, -m and/or -M, -r, -R, -s, or -t must be specified.';
+	elif [ "$((${ARG_INFO:-0}
+	     + ${ARG_MIRROR:-0}
+	     + ${ARG_RDEPENDS:-0}
+	     + ${ARG_RDEPENDS_FULL:-0}
+	     + ${ARG_TARBALL:-0}))" -eq 0 ];
+	then
+		cat etc/pkgtool.usage;
+		_ppia_rc=1;
+		rtl_setrstatus "${_ppia_rstatus}" 'one of -i, -m and/or -M, -r, -R, -s, or -t must be specified.';
+	else
+		_ppia_rc=0;
+		export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
+	fi;
+
+	return "${_ppia_rc}";
+};
+# }}}
+# {{{ pkgtoolp_init_getopts_fn(...)
+pkgtoolp_init_getopts_fn() {
+	local _ppigf_rc=0 _ppigf_shiftfl=0;
+
+	case "${1}" in
+	init)
+		local	_ppigf_verb="${1}" _ppigf_rstatus="${2#\$}";
+
+		: ${ARCH:="nt64"};
+		: ${BUILD_KIND:="debug"};
+
+		ARG_INFO=0; ARG_MIRROR=0; ARG_MIRROR_DNAME=""; ARG_MIRROR_DNAME_GIT="";
+		ARG_RDEPENDS=0; ARG_RDEPENDS_FULL=0; ARG_TARBALL=0; ARG_VERBOSE=0;
+		;;
+
+	longopt)
+		_ppigf_rc=1;
+		;;
+
+	opt)
+		local	_ppigf_verb="${1}" _ppigf_rstatus="${2#\$}"	\
+			_ppigf_opt="${3}" _ppigf_optarg="${4:-}";
+		shift 4;
+
+		case "${_ppigf_opt}" in
+		a)	ARCH="${OPTARG}"; _ppigf_shiftfl=2; ;;
+		b)	BUILD_KIND="${OPTARG}"; _ppigf_shiftfl=2; ;;
+		h)	cat etc/pkgtool.usage; exit 0; ;;
+		i)	ARG_INFO=1; _ppigf_shiftfl=1; ;;
+		m)	ARG_MIRROR=1; ARG_MIRROR_DNAME="${OPTARG}"; _ppigf_shiftfl=2; ;;
+		M)	ARG_MIRROR=1; ARG_MIRROR_DNAME_GIT="${OPTARG}"; _ppigf_shiftfl=2; ;;
+		r)	ARG_RDEPENDS=1; _ppigf_shiftfl=1; ;;
+		R)	ARG_RDEPENDS_FULL=1; _ppigf_shiftfl=1; ;;
+		t)	ARG_TARBALL=1; _ppigf_shiftfl=1; ;;
+		v)	ARG_VERBOSE=1; _ppigf_shiftfl=1; ;;
+		*)	cat etc/pkgtool.usage; exit 1; ;;
+		esac;
+		;;
+
+	nonopt)
+		local _ppigf_verb="${1}" _ppigf_rstatus="${2#\$}";
+		shift 2;
+
+		case "${1}" in
+		*=*)	rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+		*)	PKGTOOL_PKG_NAME="${1}"; ;;
+		esac;
+		_ppigf_shiftfl=1;
+		;;
+
+	done)
+		local _ppigf_verb="${1}" _ppigf_rstatus="${2#\$}";
+
+		if [ "${PKGTOOL_PKG_NAME:+1}" != 1 ]\
+		&& [ "${ARG_MIRROR:-0}" -eq 0 ]; then
+			_ppigf_rc=1;
+			rtl_setrstatus "${_ppigf_rstatus}" 'missing package name.';
+		else
+			export PKGTOOL_PKG_NAME;
+			case "${ARG_VERBOSE:-0}" in
+
+			0)	rtl_log_enable_tags "${LOG_TAGS_normal}"; ;;
+			1)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+			*)	_ppigf_rc=1;
+				rtl_setrstatus "${_ppigf_rstatus}" 'invalid verbosity level (max. -v)';
+				;;
+
+			esac;
+		fi;
+
+		if [ "${_ppigf_rc}" -ne 0 ]; then
+			return "${_ppigf_rc}";
+		fi;
+		;;
+
+	*)
+		return 1;
+		;;
+	esac;
+
+	if [ "${_ppigf_shiftfl}" -ge 1 ]; then
+		return "$((${_ppigf_shiftfl} + 1))";
+	else
+		return 0;
+	fi;
+
+	return "${_ppigf_rc}";
+};
+# }}}
+
+# {{{ pkgtoolp_info($_rstatus, $_pkg_name)
+pkgtoolp_info() {
+	local	_ppi_rstatus="${1}" _ppi_pkg_name="${2}"				\
+		_ppi_fname="" _ppi_group_name="" _ppi_groups="" _ppi_groups_noauto=""	\
+		_ppi_pkg_disabled="" _ppi_pkg_finished="" _ppi_pkg_name_uc=""		\
+		_ppi_pkg_names="" _ppi_rc=0;
+	rtl_toupper2 \$_ppi_pkg_name \$_ppi_pkg_name_uc;
+
+	if ! ex_pkg_load_groups \$_ppi_groups \$_ppi_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+		_ppi_rc=1;
+		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to load build groups.';
+	elif ! ex_pkg_find_package \$_ppi_group_name "${_ppi_groups}" "${_ppi_pkg_name}"; then
+		_ppi_rc=1;
+		rtl_setrstatus "${_ppi_rstatus}" 'Error: unknown package \`'"${_ppi_pkg_name}'"'.';
+	elif ! ex_pkg_get_packages \$_ppi_pkg_names "${_ppi_group_name}"; then
+		_ppi_rc=1;
+		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to expand package list of build group \`'"${_ppi_group_name}'"'.';
 	elif ! ex_pkg_env "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"\
-			"${_group_name}" 1 "${_pkg_name}" "" "${BUILD_WORKDIR}"; then
-		_rc=1; _status="Error: failed to set package environment for \`${_pkg_name}'.";
-	else	_pkg_version="$(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_VERSION")";
-		rtl_log_env_vars "verbose" "package" $(rtl_get_vars_fast "^PKG_${_pkg_name_uc}");
-		rtl_log_msg "info" "${MSG_pkgtool_build_group}" "${_group_name}";
-		if [ -z "${PKG_DEPENDS:-}" ]; then
-			rtl_log_msg "info" "${MSG_pkgtool_pkg_no_deps}" "${_pkg_name}";
-		else	rtl_log_msg "info" "${MSG_pkgtool_pkg_direct_deps}" "${_pkg_name}" "${PKG_DEPENDS}";
-			if ! ex_pkg_unfold_depends 1 1 "${_group_name}" "${_pkg_names}" "${_pkg_name}" 0; then
-				rtl_log_msg "warning" "${MSG_pkgtool_pkg_deps_fail}" "${_pkg_name}";
-			else	EX_PKG_NAMES="$(rtl_lfilter "${EX_PKG_NAMES}" "${_pkg_name}")";
-				if [ -n "${EX_PKG_NAMES}" ]; then
+			"${_ppi_group_name}" "${_ppi_pkg_name}" "" "${BUILD_WORKDIR}"; then
+		_ppi_rc=1;
+		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to set package environment for \`'"${_ppi_pkg_name}'"'.';
+	else
+		rtl_get_var_unsafe \$_ppi_pkg_version -u "PKG_${_ppi_pkg_name}_VERSION";
+		rtl_log_env_vars "verbose" "package" $(rtl_get_vars_fast "^PKG_${_ppi_pkg_name_uc}");
+		rtl_log_msg "info" "${MSG_pkgtool_build_group}" "${_ppi_group_name}";
+
+		if [ "${PKG_DEPENDS:+1}" != 1 ]; then
+			rtl_log_msg "info" "${MSG_pkgtool_pkg_no_deps}" "${_ppi_pkg_name}";
+		else
+			rtl_log_msg "info" "${MSG_pkgtool_pkg_direct_deps}" "${_ppi_pkg_name}" "${PKG_DEPENDS}";
+			if ! ex_pkg_unfold_depends					\
+					\$_ppi_pkg_disabled \$_ppi_pkg_finished		\
+					\$_ppi_pkg_names 1 1 "${_ppi_group_name}"	\
+					"${_ppi_pkg_names}" "${_ppi_pkg_name}" 0	\
+					"${BUILD_WORKDIR}";
+			then
+				rtl_log_msg "warning" "${MSG_pkgtool_pkg_deps_fail}" "${_ppi_pkg_name}";
+			else
+				rtl_lfilter \$_ppi_pkg_names "${_ppi_pkg_name}";
+
+				if [ "${_ppi_pkg_names:+1}" = 1 ]; then
 					rtl_log_msg "info" "${MSG_pkgtool_pkg_deps_full}"\
-							"${_pkg_name}" "$(rtl_lsort "${EX_PKG_NAMES}")";
+							"${_ppi_pkg_name}" "$(rtl_lsort "${_ppi_pkg_names}")";
 				fi;
-				if [ -n "${EX_PKG_DISABLED}" ]; then
+
+				if [ "${_ppi_pkg_disabled:+1}" = 1 ]; then
 					rtl_log_msg "info" "${MSG_pkgtool_pkg_deps_full_disabled}"\
-							"${_pkg_name}" "$(rtl_lsort "${EX_PKG_DISABLED}")";
+							"${_ppi_pkg_name}" "$(rtl_lsort "${_ppi_pkg_disabled}")";
 				fi;
 			fi;
 		fi;
+
 		set +o noglob;
-		for _fname in	\
-				"vars/${_pkg_name}.vars"								\
-				"patches/${_pkg_name}/"*.patch								\
-				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}.local.patch"			\
-				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}.local@${BUILD_HNAME}.patch"	\
-				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}_pre.local.patch"			\
-				"patches/${_pkg_name}${_pkg_version:+-${_pkg_version}}_pre.local@${BUILD_HNAME}.patch"	\
-				"${BUILD_WORKDIR}/chainport/patches/${_pkg_name%%_*}/${_pkg_name%%_*}-${_pkg_version}.midipix.patch"; do
-			if [ -e "${_fname}" ]; then
-				sha256sum "${_fname}";
+		for _ppi_fname in													\
+				"vars/${_ppi_pkg_name}.vars"										\
+				"patches/${_ppi_pkg_name}/"*.patch									\
+				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}.local.patch"				\
+				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}.local@${BUILD_HNAME}.patch"		\
+				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_ppi_pre.local.patch"			\
+				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_ppi_pre.local@${BUILD_HNAME}.patch"	\
+				"${BUILD_WORKDIR}/chainport/patches/${_ppi_pkg_name%%_ppi_*}/${_ppi_pkg_name%%_ppi_*}-${_ppi_pkg_version}.midipix.patch";
+		do
+			if [ -e "${_ppi_fname}" ]; then
+				sha256sum "${_ppi_fname}";
 			fi;
 		done;
 		set -o noglob;
-	fi; return "${_rc}";
-};
 
+	fi;
+
+	return "${_ppi_rc}";
+};
+# }}}
+# {{{ pkgtoolp_mirror($_rstatus, $_mirror_dname, $_mirror_dname_git)
 pkgtoolp_mirror() {
-	local	_mirror_dname="${1}" _mirror_dname_git="${2}" _group_name="" _pkg_name="" _pkg_parent="" _rc=0;
+	local	_ppm_rstatus="${1}" _ppm_mirror_dname="${2}" _ppm_mirror_dname_git="${3}"	\
+		_ppm_group_name="" _ppm_groups="" _ppm_groups_noauto="" _ppm_pkg_name=""	\
+		_ppm_pkg_names="" _ppm_pkg_parent="" _ppm_rc=0;
 
 	umask 022;
-	_mirror_dname="$(rtl_subst "${_mirror_dname}" "~" "${HOME}")";
-	_mirror_dname_git="$(rtl_subst "${_mirror_dname_git}" "~" "${HOME}")";
-	if ! ex_pkg_load_groups; then
-		_rc=1; _status="Error: failed to load build groups.";
-	elif [ -n "${_mirror_dname}" ]\
-	&& ! rtl_fileop mkdir "${_mirror_dname}"; then
-		_rc=1; _status="Error: failed to create \`${_mirror_dname}'.";
-	elif [ -n "${_mirror_dname_git}" ]\
-	&& ! rtl_fileop mkdir "${_mirror_dname_git}"; then
-		_rc=1; _status="Error: failed to create \`${_mirror_dname_git}'.";
-	else	for _group_name in ${EX_PKG_BUILD_GROUPS}; do
-			for _pkg_name in $(ex_pkg_get_packages "${_group_name}"); do
-				_pkg_parent="$(rtl_get_var_unsafe -u "PKG_${_pkg_name}_INHERIT_FROM")";
-				if ! pkgtoolp_mirror_fetch						\
-						"${_mirror_dname}" "${_mirror_dname_git}" "${_pkg_name}"\
-						"${_pkg_parent:-${_pkg_name}}"; then
-					_rc=1; _status="Warning: failed to mirror one or more packages.";
+	rtl_subst \$_ppm_mirror_dname "~" "${HOME}";
+	rtl_subst \$_ppm_mirror_dname_git "~" "${HOME}";
+
+	if ! ex_pkg_load_groups \$_ppm_groups \$_ppm_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+		_ppm_rc=1;
+		rtl_setrstatus "${_ppm_rstatus}" 'Error: failed to load build groups.';
+	elif [ "${_ppm_mirror_dname:+1}" = 1 ]\
+	&& ! rtl_fileop mkdir "${_ppm_mirror_dname}"; then
+		_ppm_rc=1;
+		rtl_setrstatus "${_ppm_rstatus}" 'Error: failed to create \`${_ppm_mirror_dname}'"'"'.';
+	elif [ "${_ppm_mirror_dname_git:+1}" = 1 ]\
+	&& ! rtl_fileop mkdir "${_ppm_mirror_dname_git}"; then
+		_ppm_rc=1;
+		rtl_setrstatus "${_ppm_rstatus}" 'Error: failed to create \`${_ppm_mirror_dname_git}'"'"'.';
+	else
+		for _ppm_group_name in ${_ppm_groups}; do
+			ex_pkg_get_packages \$_ppm_pkg_names "${_ppm_group_name}";
+
+			for _ppm_pkg_name in ${_ppm_pkg_names}; do
+				rtl_get_var_unsafe \$_ppm_pkg_parent -u "PKG_${_ppm_pkg_name}_INHERIT_FROM";
+				if ! pkgtoolp_mirror_fetch					\
+						"${_ppm_rstatus}" "${_ppm_mirror_dname}"	\
+						"${_ppm_mirror_dname_git}" "${_ppm_pkg_name}"	\
+						"${_ppm_pkg_parent:-${_ppm_pkg_name}}";
+				then
+					_ppm_rc=1;
+					rtl_setrstatus "${_ppm_rstatus}" 'Warning: failed to mirror one or more packages.';
 				fi;
 			done;
 		done;
-	fi; return "${_rc}";
-};
+	fi;
 
+	return "${_ppm_rc}";
+};
+# }}}
+# {{{ pkgtoolp_mirror_fetch($_rstatus, $_mirror_dname, $_mirror_dname_git, $_pkg_name)
 pkgtoolp_mirror_fetch() {
-	local	_mirror_dname="${1}" _mirror_dname_git="${2}" _pkg_name="${3}" _pkg_name_real="${4}"\
-		_fname="" _pkg_disabled=0 _pkg_fname="" _pkg_sha256sum="" _pkg_url="" _pkg_urls_git=""\
-		_rc=0;
+	local	_ppmf_rstatus="${1}" _ppmf_mirror_dname="${2}" _ppmf_mirror_dname_git="${3}" _ppmf_pkg_name="${4}"	\
+		_ppmf_pkg_name_real="${5}"										\
+		_ppmf_fname="" _ppmf_pkg_disabled=0 _ppmf_pkg_fname="" _ppmf_pkg_mirrors_git="" _ppmf_pkg_sha256sum=""	\
+		_ppmf_pkg_url="" _ppmf_pkg_urls_git="" _ppmf_rc=0;
 
-	if _pkg_disabled="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_DISABLED")"\
-	&& [ "${_pkg_disabled:-0}" -eq 1 ]; then
-		rtl_log_msg "verbose" "${MSG_pkgtool_pkg_disabled}" "${_pkg_name}" "${_pkg_name_real}";
-	else	if _pkg_url="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URL")"\
-		&& _pkg_sha256sum="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_SHA256SUM")"; then
-			if [ -z "${_mirror_dname}" ]; then
-				_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_archive_mirror}" "${_pkg_name}";
-			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
-				rtl_log_msg "info" "${MSG_pkgtool_pkg_archive_mirroring_parent}" "${_pkg_name}" "${_pkg_name_real}" "${_pkg_url}";
-				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname}/${_pkg_name}"; then
-					_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"\
-							"${_mirror_dname}/${_pkg_name}" "${_pkg_name}" "${_pkg_name_real}";
+	if rtl_get_var_unsafe \$_ppmf_pkg_disabled -u "PKG_${_ppmf_pkg_name_real}_DISABLED"\
+	&& [ "${_ppmf_pkg_disabled:-0}" -eq 1 ]; then
+		rtl_log_msg "verbose" "${MSG_pkgtool_pkg_disabled}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
+	else
+		if rtl_get_var_unsafe \$_ppmf_pkg_url -u "PKG_${_ppmf_pkg_name_real}_URL"\
+		&& rtl_get_var_unsafe \$_ppmf_pkg_sha256sum -u "PKG_${_ppmf_pkg_name_real}_SHA256SUM"; then
+			if [ "${_ppmf_mirror_dname:+1}" != 1 ]; then
+				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_archive_mirror}" "${_ppmf_pkg_name}";
+			elif [ "${_ppmf_pkg_name}" != "${_ppmf_pkg_name_real}" ]; then
+				rtl_log_msg "info" "${MSG_pkgtool_pkg_archive_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_url}";
+				if ! rtl_fileop ln_symbolic "${_ppmf_pkg_name_real}" "${_ppmf_mirror_dname}/${_ppmf_pkg_name}"; then
+					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"\
+							"${_ppmf_mirror_dname}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 				fi;
 			else
-				if ! _pkg_fname="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_FNAME")"; then
-					_pkg_fname="${_pkg_url##*/}";
+				if ! rtl_get_var_unsafe \$_ppmf_pkg_fname -u "PKG_${_ppmf_pkg_name_real}_FNAME"; then
+					_ppmf_pkg_fname="${_ppmf_pkg_url##*/}";
 				fi;
-				rtl_log_msg "info" "${MSG_pkgtool_pkg_archive_mirroring}" "${_pkg_name}" "${_pkg_url}";
-				if ! rtl_fileop mkdir "${_mirror_dname}/${_pkg_name}"\
-				|| ! rtl_fetch_url_wget "${_pkg_url}" "${_pkg_sha256sum}" "${_mirror_dname}/${_pkg_name}" "${_pkg_fname}" "${_pkg_name_real}" ""; then
-					_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_pkg_name}";
+				rtl_log_msg "info" "${MSG_pkgtool_pkg_archive_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_url}";
+				if ! rtl_fileop mkdir "${_ppmf_mirror_dname}/${_ppmf_pkg_name}"\
+				|| ! rtl_fetch_url_wget "${_ppmf_pkg_url}" "${_ppmf_pkg_sha256sum}" "${_ppmf_mirror_dname}/${_ppmf_pkg_name}" "${_ppmf_pkg_fname}" "${_ppmf_pkg_name_real}" ""; then
+					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_ppmf_pkg_name}";
 				else
-					pkg_fetch_download_clean_dlcache "${_mirror_dname}" "${_pkg_name}" "${_pkg_fname}" "${_pkg_urls_git}";
+					rtl_fetch_clean_dlcache "${_ppmf_mirror_dname}" "${_ppmf_pkg_name}" "${_ppmf_pkg_fname}" "${_ppmf_pkg_urls_git}";
 				fi;
 			fi;
 		fi;
-		if _pkg_urls_git="$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_URLS_GIT")"; then
-			if [ -z "${_mirror_dname_git}" ]; then
-				_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_git_mirror}" "${_pkg_name}";
-			elif [ "$(rtl_get_var_unsafe -u "PKG_${_pkg_name_real}_MIRRORS_GIT")" = "skip" ]; then
-				_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_git_mirror_disabled}" "${_pkg_name}";
-			elif [ "${_pkg_name}" != "${_pkg_name_real}" ]; then
-				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring_parent}" "${_pkg_name}" "${_pkg_name_real}" "${_pkg_urls_git}";
-				if ! rtl_fileop ln_symbolic "${_pkg_name_real}" "${_mirror_dname_git}/${_pkg_name}"; then
-					_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"\
-							"${_mirror_dname_git}/${_pkg_name}" "${_pkg_name}" "${_pkg_name_real}";
+
+		if rtl_get_var_unsafe \$_ppmf_pkg_urls_git -u "PKG_${_ppmf_pkg_name_real}_URLS_GIT"; then
+			if [ "${_ppmf_mirror_dname_git:+1}" != 1 ]; then
+				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_git_mirror}" "${_ppmf_pkg_name}";
+			elif rtl_get_var_unsafe \$_ppmf_pkg_mirrors_git -u "PKG_${_ppmf_pkg_name_real}_MIRRORS_GIT"\
+			&&   [ "${_ppmf_pkg_mirrors_git}" = "skip" ]; then
+				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_git_mirror_disabled}" "${_ppmf_pkg_name}";
+			elif [ "${_ppmf_pkg_name}" != "${_ppmf_pkg_name_real}" ]; then
+				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_urls_git}";
+				if ! rtl_fileop ln_symbolic "${_ppmf_pkg_name_real}" "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"; then
+					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"\
+							"${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 				fi;
 			else
-				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring}" "${_pkg_name}" "${_pkg_urls_git}";
-				if ! rtl_fileop mkdir "${_mirror_dname_git}/${_pkg_name}"\
-				|| ! rtl_fetch_mirror_urls_git "${DEFAULT_GIT_ARGS}" "${_mirror_dname_git}/${_pkg_name}" ${_pkg_urls_git}; then
-					_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_pkg_name}";
+				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_urls_git}";
+				if ! rtl_fileop mkdir "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"\
+				|| ! rtl_fetch_mirror_urls_git "${DEFAULT_GIT_ARGS}" "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" ${_ppmf_pkg_urls_git}; then
+					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_ppmf_pkg_name}";
 				else
-					pkg_fetch_download_clean_dlcache "${_mirror_dname_git}" "${_pkg_name}" "${_pkg_fname}" "${_pkg_urls_git}";
+					rtl_fetch_clean_dlcache "${_ppmf_mirror_dname_git}" "${_ppmf_pkg_name}" "${_ppmf_pkg_fname}" "${_ppmf_pkg_urls_git}";
 				fi;
 			fi;
 		fi;
-		if [ -z "${_pkg_url}" ]\
-		&& [ -z "${_pkg_sha256sum}" ]\
-		&& [ -z "${_pkg_urls_git}" ]; then
-			_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_no_urls}" "${_pkg_name}";
+
+		if [ "${_ppmf_pkg_url:+1}" != 1 ]\
+		&& [ "${_ppmf_pkg_sha256sum:+1}" != 1 ]\
+		&& [ "${_ppmf_pkg_urls_git:+1}" != 1 ]; then
+			_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_no_urls}" "${_ppmf_pkg_name}";
 		fi;
-	fi; return "${_rc}";
+	fi;
+
+	return "${_ppmf_rc}";
 };
-
-pkgtoolp_restart_at() {
-	local _pkg_name="${1}" _rc=0; _status="";
-
-	if ! ex_pkg_load_dump "${_pkg_name}" "${BUILD_WORKDIR}"; then
-		_rc=1; _status="${_status}";
-	else	case "${ARG_RESTART_AT}" in
-		ALL)	if ! "${MIDIPIX_BUILD_PWD}/build.sh" -P -r "${_pkg_name}" -v; then
-				_rc=1; _status="Error: failed to run command line ${MIDIPIX_BUILD_PWD}/build.sh -P -r ${_pkg_name} -v";
-			fi; ;;
-		*)	if ! "${MIDIPIX_BUILD_PWD}/build.sh" -P -r "${_pkg_name}:${ARG_RESTART_AT}" -v; then
-				_rc=1; _status="Error: failed to run command line ${MIDIPIX_BUILD_PWD}/build.sh -P -r ${_pkg_name}:${ARG_RESTART_AT} -v";
-			fi; ;;
-		esac;
-	fi; return "${_rc}";
-};
-
+# }}}
+# {{{ pkgtoolp_rdepends($_rstatus, $_pkg_name, $_full_rdependsfl)
 pkgtoolp_rdepends() {
-	local	_pkg_name="${1}" _group_name="" _pkg_depends="" _pkg_name_rdepend="" _pkg_names=""\
-		_pkg_rdepends="" _rc=0 EX_PKG_BUILD_GROUPS="" EX_PKG_DISABLED="" EX_PKG_RDEPENDS_DIRECT=""; _status="";
+	local	_ppr_rstatus="${1}" _ppr_pkg_name="${2}" _ppr_full_rdependsfl="${3}"	\
+		_ppr_depends="" _ppr_group_name="" _ppr_groups="" _ppr_groups_noauto=""	\
+		_ppr_pkg_depends="" _ppr_pkg_disabled="" _ppr_pkg_finished=""		\
+		_ppr_pkg_name_rdepend="" _ppr_pkg_names="" _ppr_pkg_rdepends=""		\
+		_ppr_pkg_rdepends_direct="" _ppr_rc=0;
 
-	if ! ex_pkg_load_groups; then
-		_rc=1; _status="Error: failed to load build groups.";
-	elif ! _group_name="$(ex_pkg_find_package "${EX_PKG_BUILD_GROUPS}" "${_pkg_name}")"; then
-		_rc=1; _status="Error: unknown package \`${_pkg_name}'.";
-	elif ! _pkg_names="$(ex_pkg_get_packages "${_group_name}")"; then
-		_rc=1; _status="Error: failed to expand package list of build group \`${_group_name}'.";
-	elif ! ex_pkg_unfold_rdepends_direct "${_group_name}" "${_pkg_names}" "${_pkg_name}"; then
-		_rc=1; _status="Error: failed to unfold reverse dependency-expanded package name list for \`${_pkg_name}'.";
-	elif [ -z "${EX_PKG_DISABLED}" ] && [ -z "${EX_PKG_RDEPENDS_DIRECT}" ]; then
-		rtl_log_msg "info" "${MSG_pkgtool_pkg_deps_rev_none}" "${_pkg_name}";
-	else	for _pkg_name_rdepend in $(rtl_lsort "${EX_PKG_RDEPENDS_DIRECT}"); do
-			_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "${_pkg_name_rdepend}")";
-			if _pkg_depends="$(rtl_lunfold_depends 'PKG_${_name}_DEPENDS' $(rtl_get_var_unsafe -u "PKG_"${_pkg_name}"_DEPENDS"))"\
-			&& [ -n "${_pkg_depends}" ]; then
-				_pkg_rdepends="$(rtl_lconcat "${_pkg_rdepends}" "[33m${_pkg_depends}[93m")";
+	if ! ex_pkg_load_groups \$_ppr_groups \$_ppr_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+		_ppr_rc=1;
+		rtl_setrstatus "${_ppr_rstatus}" 'Error: failed to load build groups.';
+	elif ! ex_pkg_find_package \$_ppr_group_name "${_ppr_groups}" "${_ppr_pkg_name}"; then
+		_ppr_rc=1;
+		rtl_setrstatus "${_ppr_rstatus}" 'Error: unknown package \`'"${_ppr_pkg_name}'"'.';
+	elif ! ex_pkg_get_packages \$_ppr_pkg_names "${_ppr_group_name}"; then
+		_ppr_rc=1;
+		rtl_setrstatus "${_ppr_rstatus}" 'Error: failed to expand package list of build group \`'"${_ppr_group_name}'"'.';
+	elif ! ex_pkg_unfold_rdepends					\
+			\$_ppr_pkg_disabled \$_ppr_pkg_finished		\
+			\$_ppr_pkg_rdepends_direct			\
+			"${_ppr_group_name}" "${_ppr_pkg_names}"	\
+			"${_ppr_pkg_name}" 1 "${BUILD_WORKDIR}";
+	then
+		_ppr_rc=1;
+		rtl_setrstatus "${_ppr_rstatus}" 'Error: failed to unfold reverse dependency-expanded package name list for \`'"${_ppr_pkg_name}'"'.';
+	elif [ "${_ppr_pkg_disabled:+1}" != 1 ]\
+	  && [ "${_ppr_pkg_finished:+1}" != 1 ]\
+	  && [ "${_ppr_pkg_rdepends_direct:+1}" != 1 ];
+	then
+		rtl_log_msg "info" "${MSG_pkgtool_pkg_deps_rev_none}" "${_ppr_pkg_name}";
+	else
+		for _ppr_pkg_name_rdepend in $(rtl_lsort	\
+				${_ppr_pkg_finished}		\
+				${_ppr_pkg_rdepends_direct});
+		do
+			rtl_lconcat \$_ppr_pkg_rdepends "${_ppr_pkg_name_rdepend}";
+
+			if [ "${_ppr_full_rdependsfl}" -eq 1 ]; then
+				rtl_get_var_unsafe \$_ppr_depends -u "PKG_"${_ppr_pkg_name}"_DEPENDS";
+				if rtl_lunfold_depends 'PKG_${_rld_name}_DEPENDS' \$_ppr_pkg_depends ${_ppr_depends}\
+				&& [ "${_ppr_pkg_depends:+1}" = 1 ]; then
+					rtl_lconcat \$_ppr_pkg_rdepends "[33m${_ppr_pkg_depends}[93m";
+				fi;
 			fi;
 		done;
-		if [ -n "${_pkg_rdepends}" ]; then
-			rtl_log_msg "info" "${MSG_pkgtool_pkgs_deps_rev}" "${_pkg_name}" "${_pkg_rdepends}";
+
+		if [ "${_ppr_pkg_rdepends:+1}" = 1 ]; then
+			rtl_log_msg "info" "${MSG_pkgtool_pkgs_deps_rev}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
 		fi;
-		if [ -n "${EX_PKG_DISABLED}" ]; then
-			rtl_log_msg "info" "${MSG_pkgtool_pkgs_deps_rev_disabled}" "${_pkg_name}" "$(rtl_lsort "${EX_PKG_DISABLED}")";
+
+		if [ "${_ppr_pkg_disabled:+1}" = 1 ]; then
+			rtl_log_msg "info" "${MSG_pkgtool_pkgs_deps_rev_disabled}" "${_ppr_pkg_name}" "$(rtl_lsort "${_ppr_pkg_disabled}")";
 		fi;
-	fi; return "${_rc}";
+	fi;
+
+	return "${_ppr_rc}";
 };
-
-pkgtoolp_shell() {
-	local _pkg_name="${1}" _rc=0; _status="";
-
-	if ! ex_pkg_load_dump "${_pkg_name}" "${BUILD_WORKDIR}"; then
-		_rc=1; _status="${_status}";
-	else	rtl_log_env_vars "verbose" "package" $(rtl_get_vars_fast "^PKG_");
-		rtl_log_msg "info" "${MSG_pkgtool_shell_env1}" "${SHELL}" "${PKG_BUILD_DIR}";
-		rtl_log_msg "info" "${MSG_pkgtool_shell_env2}" "${_pkg_name}";
-		rtl_log_msg "info" "${MSG_pkgtool_shell_env3}" "${_pkg_name}";
-		rtl_log_msg "info" "${MSG_pkgtool_shell_env4}" "${_pkg_name}";
-		export	ARCH BUILD_KIND						\
-			BUILD_DLCACHEDIR BUILD_WORKDIR				\
-			MAKE="make LIBTOOL=${PKG_LIBTOOL:-slibtool}"		\
-			MIDIPIX_BUILD_PWD					\
-			PKG_NAME						\
-			PREFIX PREFIX_CROSS PREFIX_MINGW32 PREFIX_MINIPIX	\
-			PREFIX_NATIVE PREFIX_ROOT PREFIX_RPM;
-		D="${MIDIPIX_BUILD_PWD}/${0##*/} --update-diff"			\
-		R="${MIDIPIX_BUILD_PWD}/${0##*/} --restart-at ALL"		\
-		RS="${MIDIPIX_BUILD_PWD}/${0##*/} --restart-at "		\
-		"${SHELL}";
-	fi; return "${_rc}";
-};
-
+# }}}
+# {{{ pkgtoolp_tarball($_rstatus, $_pkg_name)
 pkgtoolp_tarball() {
-	local	_pkg_name="${1}" _date="" _group_name="" _hname="" _pkg_name_full=""\
-		_pkg_version="" _rc=0 _tarball_fname="" EX_PKG_BUILD_GROUPS=""; _status="";
+	local	_ppt_rstatus="${1}" _ppt_pkg_name="${2}"				\
+		_ppt_date="" _ppt_group_name="" _ppt_groups="" _ppt_groups_noauto=""	\
+		_ppt_hname="" _ppt_pkg_name_full="" _ppt_pkg_version="" _ppt_rc=0	\
+		_ppt_tarball_fname="";
 
-	if ! ex_pkg_load_groups; then
-		_rc=1; _status="Error: failed to load build groups.";
-	elif ! _group_name="$(ex_pkg_find_package "${EX_PKG_BUILD_GROUPS}" "${_pkg_name}")"; then
-		_rc=1; _status="Error: unknown package \`${_pkg_name}'.";
+	if ! ex_pkg_load_groups \$_ppt_groups \$_ppt_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+		_ppt_rc=1;
+		rtl_setrstatus "${_ppt_rstatus}" 'Error: failed to load build groups.';
+	elif ! ex_pkg_find_package \$_ppt_group_name "${_ppt_groups}" "${_ppt_pkg_name}"; then
+		_ppt_rc=1;
+		rtl_setrstatus "${_ppt_rstatus}" 'Error: unknown package \`'"${_ppt_pkg_name}'"'.';
 	elif ! ex_pkg_env "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"	\
-			"${_group_name}" 0 "${_pkg_name}" "" "${BUILD_WORKDIR}"; then
-		_rc=1; _status="Error: failed to set package environment for \`${_pkg_name}'.";
-	elif ! _date="$(date +%Y%m%d_%H%M%S)"; then
-		_rc=1; _status="Error: failed to call date(1).";
-	elif ! _hname="$(hostname -f)"; then
-		_rc=1; _status="Error: failed to call hostname(1).";
-	else	if [ -n "${PKG_VERSION}" ]; then
-			_pkg_name_full="${_pkg_name}-${PKG_VERSION}";
+			"${_ppt_group_name}" 0 "${_ppt_pkg_name}" "" "${BUILD_WORKDIR}";
+	then
+		_ppt_rc=1;
+		rtl_setrstatus "${_ppt_rstatus}" 'Error: failed to set package environment for \`'"${_ppt_pkg_name}'"'.';
+	elif ! _ppt_date="$(date +%Y%m%d_%H%M%S)"; then
+		_ppt_rc=1;
+		rtl_setrstatus "${_ppt_rstatus}" 'Error: failed to call date(1).';
+	elif ! _ppt_hname="$(hostname -f)"; then
+		_ppt_rc=1;
+		rtl_setrstatus "${_ppt_rstatus}" 'Error: failed to call hostname(1).';
+	else
+		if [ "${PKG_VERSION:+1}" = 1 ]; then
+			_ppt_pkg_name_full="${_ppt_pkg_name}-${PKG_VERSION}";
 		else
-			_pkg_name_full="${_pkg_name}";
+			_ppt_pkg_name_full="${_ppt_pkg_name}";
 		fi;
-		_tarball_fname="${_pkg_name_full}@${_hname}-${_date}.tbz2";
-		rtl_log_msg "info" "${MSG_pkgtool_tarball_creating}" "${PKG_BASE_DIR}" "${_pkg_name}";
-		if ! tar -C "${BUILD_WORKDIR}" -cpf -				\
-				"${PKG_BASE_DIR#${BUILD_WORKDIR%/}/}"		\
-				"${_pkg_name}_stderrout.log"			|\
-					bzip2 -c -9 - > "${_tarball_fname}"; then
-			_rc=1; _status="Error: failed to create compressed tarball of \`${PKG_BASE_DIR}' and \`${_pkg_name}_stderrout.log'.";
-		else
-			rtl_log_msg "info" "${MSG_pkgtool_tarball_created}" "${PKG_BASE_DIR}" "${_pkg_name}";
-		fi;
-	fi; return "${_rc}";
-};
 
-pkgtoolp_update_diff() {
-	local	_pkg_name="${1}" _diff_fname_dst="" _diff_fname_src="" _fname=""\
-		_fname_base="" _rc=0; _status="";
+		_ppt_tarball_fname="${_ppt_pkg_name_full}@${_ppt_hname}-${_ppt_date}.tbz2";
+		rtl_log_msg "info" "${MSG_pkgtool_tarball_creating}" "${PKG_BASE_DIR}" "${_ppt_pkg_name}";
 
-	if ! ex_pkg_load_dump "${_pkg_name}" "${BUILD_WORKDIR}"; then
-		_rc=1; _status="${_status}";
-	else	if [ -n "${PKG_VERSION}" ]; then
-			_diff_fname_dst="${_pkg_name}-${PKG_VERSION}.local.patch";
+		if ! tar -C "${BUILD_WORKDIR}" -cpf -			\
+				"${PKG_BASE_DIR#${BUILD_WORKDIR%/}/}"	\
+				"${_ppt_pkg_name}_stderrout.log"	|\
+					bzip2 -c -9 - > "${_ppt_tarball_fname}";
+		then
+			_ppt_rc=1;
+			rtl_setrstatus "${_ppt_rstatus}" 'Error: failed to create compressed tarball of \`'"${PKG_BASE_DIR}'"' and \`'"${_ppt_pkg_name}"'_stderrout.log'"'"'.';
 		else
-			_diff_fname_dst="${_pkg_name}.local.patch";
+			rtl_log_msg "info" "${MSG_pkgtool_tarball_created}" "${PKG_BASE_DIR}" "${_ppt_pkg_name}";
 		fi;
-		if ! _diff_fname_src="$(mktemp)"; then
-			_rc=1; _status="Error: failed to create temporary target diff(1) file.";
-		else	trap "rm -f \"${_diff_fname_src}\" >/dev/null 2>&1" EXIT HUP INT TERM USR1 USR2;
-			(cd "${PKG_BASE_DIR}" && printf "" > "${_diff_fname_src}";
-			 for _fname in $(find "${PKG_SUBDIR}" -iname \*.orig); do
-				_fname_base="${_fname##*/}"; _fname_base="${_fname_base%.orig}";
-				case "${_fname_base}" in
-				config.sub)
-					continue; ;;
-				*)	diff -u "${_fname}" "${_fname%.orig}" >> "${_diff_fname_src}"; ;;
-				esac;
-			done);
-			if [ "${?}" -ne 0 ]; then
-				_rc=1; _status="Error: failed to create diff(1).";
-			elif ! rtl_fileop mv "${_diff_fname_src}" "${MIDIPIX_BUILD_PWD}/patches/${_diff_fname_dst}"; then
-				_rc=1; _status="Error: failed to rename diff(1) to \`${MIDIPIX_BUILD_PWD}/patches/${_diff_fname_dst}'.";
-			else	trap - EXIT HUP INT TERM USR1 USR2;
-				rtl_log_msg "info" "${MSG_pkgtool_updated_patches}" "${MIDIPIX_BUILD_PWD}" "${_diff_fname_dst}";
-			fi;
-		fi;
-	fi; return "${_rc}";
+	fi;
+
+	return "${_ppt_rc}";
 };
+# }}}
 
 pkgtool() {
-	local _rc=0 _status="" BUILD_GROUPS="" ARCH BUILD_KIND BUILD_WORKDIR PKGTOOL_PKGNAME PREFIX;
+	local	_rc=0 _status=""		\
+		BUILD_GROUPS="" ARCH BUILD_KIND	\
+		BUILD_WORKDIR PKGTOOL_PKGNAME PREFIX;
 
-	if ! . "${0%/*}/subr/pkgtool_init.subr"; then
-		_rc=1; printf "Error: failed to source \`${0%/*}/subr/pkgtool_init.subr'." >&2;
-	elif ! pkgtool_init "${@}"; then
-		_rc=1; _status="${_status}";
-	else	case "1" in
-		"${ARG_INFO:-0}")		pkgtoolp_info "${PKGTOOL_PKG_NAME}"; ;;
-		"${ARG_MIRROR:-0}")		pkgtoolp_mirror "${ARG_MIRROR_DNAME}" "${ARG_MIRROR_DNAME_GIT}"; ;;
-		"${ARG_RDEPENDS:-0}")		pkgtoolp_rdepends "${PKGTOOL_PKG_NAME}"; ;;
-		"${ARG_RESTART_AT:+1}")		pkgtoolp_restart_at "${PKGTOOL_PKG_NAME}"; ;;
-		"${ARG_SHELL:-0}")		pkgtoolp_shell "${PKGTOOL_PKG_NAME}"; ;;
-		"${ARG_TARBALL:-0}")		pkgtoolp_tarball "${PKGTOOL_PKG_NAME}"; ;;
-		"${ARG_UPDATE_DIFF:-0}")	pkgtoolp_update_diff "${PKGTOOL_PKG_NAME}"; ;;
+	if ! pkgtoolp_init \$_status "${@}"; then
+		_rc=1;
+		_status="Error: ${_status}";
+	else
+		case "1" in
+		"${ARG_INFO:-0}")		pkgtoolp_info \$_status "${PKGTOOL_PKG_NAME}"; ;;
+		"${ARG_MIRROR:-0}")		pkgtoolp_mirror \$_status "${ARG_MIRROR_DNAME}" "${ARG_MIRROR_DNAME_GIT}"; ;;
+		"${ARG_RDEPENDS:-0}")		pkgtoolp_rdepends \$_status "${PKGTOOL_PKG_NAME}" 0; ;;
+		"${ARG_RDEPENDS_FULL:-0}")	pkgtoolp_rdepends \$_status "${PKGTOOL_PKG_NAME}" 1; ;;
+		"${ARG_TARBALL:-0}")		pkgtoolp_tarball \$_status "${PKGTOOL_PKG_NAME}"; ;;
 		esac; _rc="${?}";
 	fi;
+
 	if [ "${_rc}" -ne 0 ]; then
+		rtl_log_enable_tags "${LOG_TAGS_all}";
 		rtl_log_msg "fatalexit" "0;${_status}";
-	elif [ -n "${_status}" ]; then
+	elif [ "${_status:+1}" = 1 ]; then
+		rtl_log_enable_tags "${LOG_TAGS_all}";
 		rtl_log_msg "info" "0;${_status}";
 	fi;
 };

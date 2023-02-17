@@ -3,19 +3,24 @@
 #
 
 pkg_install_subdirs() {
-	local _spec="";
-	for _spec in \
+	local	_pis_group_name="${1}" _pkg_name="${2}" _restart_at="${3}"	\
+		_pis_gspec="";
+
+	for _pis_gspec in 					\
 			"${PKG_INSTALL_FILES_DESTDIR:-}"	\
 			"${PKG_INSTALL_FILES_DESTDIR_EXTRA:-}"; do
-		if ! rtl_install "${PKG_DESTDIR}" ${_spec}; then
+		if ! rtl_install "${PKG_DESTDIR}" ${_pis_gspec}; then
 			return 1;
 		fi;
 	done;
+
 	if [ "${PKG_PREFIX%/}" = "${PREFIX_NATIVE%/}" ]; then
 		if ! rtl_install "${PKG_DESTDIR}/${DEFAULT_TARGET}" ${PKG_INSTALL_FILES_DESTDIR}; then
 			return 1;
 		fi;
 	fi;
+
+	return 0;
 };
 
 # vim:filetype=sh

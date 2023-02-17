@@ -3,7 +3,6 @@
 #
 
 MSG_pkgtool_build_group="1;Build group: %s";
-MSG_pkgtool_no_env_dump="2;Warning: failed to locate environment dump for package \`%s' in \`%s'.";
 MSG_pkgtool_pkg_archive_mirroring="2;Mirroring package \`%s', archive URL(s): \`%s'...";
 MSG_pkgtool_pkg_archive_mirroring_parent="3;Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'...";
 MSG_pkgtool_pkg_deps_fail="1;Warning: failed to unfold dependency-expanded package name list for \`%s'.";
@@ -23,11 +22,6 @@ MSG_pkgtool_pkg_skip_archive_mirror="1;Archive URL(s) mirroring disabled, skippi
 MSG_pkgtool_pkg_skip_git_mirror_disabled="1;Package \`%s' specifies to skip Git URL(s) mirroring, skipping.";
 MSG_pkgtool_pkg_skip_git_mirror="1;Git URL(s) mirroring disabled, skipping \`%s'.";
 MSG_pkgtool_pkg_skip_no_urls="1;Package \`%s' has neither archive nor Git URL(s), skipping.";
-MSG_pkgtool_rebuilding_pkg="1;Rebuilding package \`%s' w/ --dump-in build...";
-MSG_pkgtool_shell_env1="2;Launching shell \`%s' within package environment and \`%s'.";
-MSG_pkgtool_shell_env2="1;Run \$R to rebuild \`%s'.";
-MSG_pkgtool_shell_env3="1;Run \$RS <step> to restart the specified build step of \`%s'";
-MSG_pkgtool_shell_env4="1;Run \$D to automatically regenerate the patch for \`%s'.";
 MSG_pkgtool_tarball_created="2;Created compressed tarball of \`%s' and \`%s_stderrout.log'.";
 MSG_pkgtool_tarball_creating="2;Creating compressed tarball of \`%s' and \`%s_stderrout.log'...";
 MSG_pkgtool_updated_patches="2;Updated \`%s/patches/%s'.";

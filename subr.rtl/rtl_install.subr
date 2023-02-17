@@ -3,81 +3,89 @@
 #
 
 rtl_install() {
-	local	_verbose="" _prefix="" _chmod_mode="" _dname="" _file_fname_dst=""	\
-		_file_fname_src="" _fname="" _ln_fname="" _ln_target="" _owner_spec=""	\
-		_pname="";
-	[ "${1}" = "-v" ] && { _verbose=1; shift; }; _prefix="${1}"; shift;
+	local	_ri_verbose="" _ri_prefix=""							\
+		_ri_chmod_mode="" _ri_dname="" _ri_file_fname_dst="" _ri_file_fname_src=""	\
+		_ri_fname="" _ri_ln_fname="" _ri_ln_target="" _ri_owner_spec="" _ri_pname="";
+
+	if [ "${1}" = "-v" ]; then
+	       _ri_verbose=1; shift;
+	fi;
+	_ri_prefix="${1}"; shift;
 
 	while [ ${#} -gt 0 ]; do
 	case "${1}" in
+
 	-*)
-		_pname="${1#-}";
-		if [ "${_pname#/}" = "${_pname}" ]; then
-			_pname="${_prefix:+${_prefix}/}${_pname}";
+		_ri_pname="${1#-}";
+		if [ "${_ri_pname#/}" = "${_ri_pname}" ]; then
+			_ri_pname="${_ri_prefix:+${_ri_prefix}/}${_ri_pname}";
 		fi;
-		if ! rtl_fileop rm "${_pname}"; then
+		if ! rtl_fileop rm "${_ri_pname}"; then
 			return 1;
 		fi; ;;
 
 	!*=*)
-		_file_fname_src="${1#!}"; _file_fname_src="${_file_fname_src%=*}";
-	       	_file_fname_dst="${1#!}"; _file_fname_dst="${_file_fname_dst#*=}";
-		if [ "${_file_fname_src#/}" = "${_file_fname_src}" ]; then
-			_file_fname_src="${_prefix:+${_prefix}/}${_file_fname_src}";
+		_ri_file_fname_src="${1#!}"; _ri_file_fname_src="${_ri_file_fname_src%=*}";
+	       	_ri_file_fname_dst="${1#!}"; _ri_file_fname_dst="${_ri_file_fname_dst#*=}";
+		if [ "${_ri_file_fname_src#/}" = "${_ri_file_fname_src}" ]; then
+			_ri_file_fname_src="${_ri_prefix:+${_ri_prefix}/}${_ri_file_fname_src}";
 		fi;
-		if [ "${_file_fname_dst#/}" = "${_file_fname_dst}" ]; then
-			_file_fname_dst="${_prefix:+${_prefix}/}${_file_fname_dst}";
+		if [ "${_ri_file_fname_dst#/}" = "${_ri_file_fname_dst}" ]; then
+			_ri_file_fname_dst="${_ri_prefix:+${_ri_prefix}/}${_ri_file_fname_dst}";
 		fi;
-		if ! rtl_fileop mv "${_file_fname_src}" "${_file_fname_dst}"; then
+		if ! rtl_fileop mv "${_ri_file_fname_src}" "${_ri_file_fname_dst}"; then
 			return 1;
 		fi; ;;
 
 	/=*)
-		_dname="${1#/=}";
-		if [ "${_dname#/}" = "${_dname}" ]; then
-			_dname="${_prefix:+${_prefix}/}${_dname}";
+		_ri_dname="${1#/=}";
+		if [ "${_ri_dname#/}" = "${_ri_dname}" ]; then
+			_ri_dname="${_ri_prefix:+${_ri_prefix}/}${_ri_dname}";
 		fi;
-		if ! rtl_fileop mkdir "${_dname}"; then
+		if ! rtl_fileop mkdir "${_ri_dname}"; then
 			return 1;
 		fi; ;;
 
 	@*=*)
-		_ln_target="${1%=*}"; _ln_target="${_ln_target#@}"; _ln_fname="${1#*=}";
-		if [ "${_ln_fname#/}" = "${_ln_fname}" ]; then
-			_ln_fname="${_prefix:+${_prefix}/}${_ln_fname}";
+		_ri_ln_target="${1%=*}"; _ri_ln_target="${_ri_ln_target#@}"; _ri_ln_fname="${1#*=}";
+		if [ "${_ri_ln_fname#/}" = "${_ri_ln_fname}" ]; then
+			_ri_ln_fname="${_ri_prefix:+${_ri_prefix}/}${_ri_ln_fname}";
 		fi;
-		if [ -e "${_ln_fname}" ]; then
-			rtl_fileop rm "${_ln_fname}";
+		if [ -e "${_ri_ln_fname}" ]; then
+			rtl_fileop rm "${_ri_ln_fname}";
 		fi;
-		if ! rtl_fileop ln_symbolic "${_ln_target}" "${_ln_fname}"; then
+		if ! rtl_fileop ln_symbolic "${_ri_ln_target}" "${_ri_ln_fname}"; then
 			return 1;
 		fi; ;;
 
 	m[0-7][0-7][0-7][0-7]=*)
-		_fname="${1#m[0-7][0-7][0-7][0-7]=}"; _chmod_mode="${1%%=*}"; _chmod_mode="${_chmod_mode#m}";
-		if ! rtl_fileop chmod "${_chmod_mode}" "${_fname}"; then
+		_ri_fname="${1#m[0-7][0-7][0-7][0-7]=}"; _ri_chmod_mode="${1%%=*}"; _ri_chmod_mode="${_ri_chmod_mode#m}";
+		if ! rtl_fileop chmod "${_ri_chmod_mode}" "${_ri_fname}"; then
 			return 1;
 		fi; ;;
 
 	o*=*)
-		_fname="${1#o*=}"; _owner_spec="${1%%=*}"; _owner_spec="${_owner_spec#o}";
-		if ! rtl_fileop chown "${_owner_spec}" "${_fname}"; then
+		_ri_fname="${1#o*=}"; _ri_owner_spec="${1%%=*}"; _ri_owner_spec="${_ri_owner_spec#o}";
+		if ! rtl_fileop chown "${_ri_owner_spec}" "${_ri_fname}"; then
 			return 1;
 		fi; ;;
 
 	*=*)
-		_file_fname_src="${1%=*}"; _file_fname_dst="${1#*=}";
-		if [ "${_file_fname_src#/}" = "${_file_fname_src}" ]; then
-			_file_fname_src="${_prefix:+${_prefix}/}${_file_fname_src}";
+		_ri_file_fname_src="${1%=*}"; _ri_file_fname_dst="${1#*=}";
+		if [ "${_ri_file_fname_src#/}" = "${_ri_file_fname_src}" ]; then
+			_ri_file_fname_src="${_ri_prefix:+${_ri_prefix}/}${_ri_file_fname_src}";
 		fi;
-		if [ "${_file_fname_dst#/}" = "${_file_fname_dst}" ]; then
-			_file_fname_dst="${_prefix:+${_prefix}/}${_file_fname_dst}";
+		if [ "${_ri_file_fname_dst#/}" = "${_ri_file_fname_dst}" ]; then
+			_ri_file_fname_dst="${_ri_prefix:+${_ri_prefix}/}${_ri_file_fname_dst}";
 		fi;
-		if ! rtl_fileop cp "${_file_fname_src}" "${_file_fname_dst}"; then
+		if ! rtl_fileop cp "${_ri_file_fname_src}" "${_ri_file_fname_dst}"; then
 			return 1;
 		fi; ;;
+
 	esac; shift;
 	done;
+
+	return 0;
 };
 
 # vim:filetype=sh

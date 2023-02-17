@@ -1,0 +1,397 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+exp_setrstatus() {
+	local _epsrs_rstatus="${1#\$}" _epsrs_status="${2}";
+	eval ${_epsrs_rstatus}=\"${_epsrs_status}\";
+	return 0;
+};
+
+#
+# ex_init_env() - initialise build environment
+# @_rstatus:		reference to out variable of status string on failure
+# @_rhname:		reference to out variable of build hostname
+# @_ruser:		reference to out variable of build user
+# @_name_base:		base name for messages and theme file(s)
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_init_env() {
+	local	_eie_rstatus="${1#\$}" _eie_rhname="${2#\$}" _eie_ruser="${3#\$}"	\
+		_eie_name_base="${4}"							\
+		_eie_fname="" _eie_lang="${LANG:-C}" _eie_lang_="" _eie_name=""		\
+		_eie_rc=0;
+	_eie_lang="${_eie_lang%%_*}";
+
+	if ! cd "${0%/*}"; then
+		_eie_rc=1;
+		exp_setrstatus "${_eie_rstatus}" 'failed to change working directory to \`'"${0%/*}"''\''.';
+	elif ! umask 022; then
+		_eie_rc=1;
+		exp_setrstatus "${_eie_rstatus}" 'failed to set umask(2).';
+	elif ! eval ${_eie_rhname}=\"\$\(hostname\)\"; then
+		_eie_rc=1;
+		exp_setrstatus "${_eie_rstatus}" 'failed to obtain hostname.';
+	elif ! eval ${_eie_ruser}=\"\$\(id -nu\)\"; then
+		_eie_rc=1;
+		exp_setrstatus "${_eie_rstatus}" 'failed to obtain username.';
+	else
+		for _eie_fname in				\
+				$(find subr.ex -name *.subr)	\
+				$(find subr.pkg -name *.subr)	\
+				$(find subr.rtl -name *.subr)	\
+				"etc/${_eie_name_base}.theme"	\
+				;
+		do
+			if ! . "${_eie_fname}"; then
+				_eie_rc=1;
+				exp_setrstatus "${_eie_rstatus}" 'failed to source \`'"${_eie_fname}"''\''.';
+				break;
+			fi;
+		done;
+
+		if [ "${_eie_rc}" -eq 0 ]; then
+			if [ -e "${_eie_name_base}.local" ]; then
+				if ! . "${_eie_name_base}.local"; then
+					_eie_rc=1;
+					exp_setrstatus "${_eie_rstatus}" 'failed to source \`'"${_eie_name_base}"'.local'\''.';
+				fi;
+			fi;
+		fi;
+
+		if [ "${_eie_rc}" -eq 0 ]; then
+			for _eie_name in ${_eie_name_base} rtl; do
+				for _eie_lang_ in ${_eie_lang} C; do
+					_eie_fname="etc/${_eie_name}.msgs.${_eie_lang_}";
+					if [ -e "${_eie_fname}" ]; then
+						if ! . "${_eie_fname}"; then
+							_eie_rc=1;
+							exp_setrstatus "${_eie_rstatus}" 'failed to source \`'"${_eie_fname}"''\''.';
+							break;
+						fi;
+
+						if [ -e "${_eie_fname}.local" ]; then
+							if ! . "${_eie_fname}.local"; then
+								_eie_rc=1;
+								exp_setrstatus "${_eie_rstatus}" 'failed to source \`'"${_eie_fname}"'.local'\''.';
+							fi;
+						fi;
+						break;
+					fi;
+				done;
+
+				if [ "${_eie_rc}" -ne 0 ]; then
+					break;
+				fi;
+			done;
+		fi;
+	fi;
+	export LANG=C LC_ALL=C;
+
+	return "${_eie_rc}";
+};
+
+#
+# ex_init_getopts() - process command-line arguments
+# @_rstatus:	reference to out variable of status string on failure
+# @_fn:		reference to function called to process command-line argument
+# @_optstring:	getopts(1) optstring
+# @...:		command-line arguments as "${@}"
+#
+# Return:	zero (0) on success, non-zero (>0) on failure
+#
+ex_init_getopts() {
+	local	_eig_rstatus="${1#\$}" _eig_fn="${2}" _eig_optstring="${3}"	\
+		_eig_arg="" _eig_fn_rc=0 _eig_opt="" _eig_shiftfl=0		\
+		OPTARG="" OPTIND=0;
+	shift 3;
+
+	if ! "${_eig_fn}" init "${_eig_rstatus}"; then
+		return 1;
+	fi;
+
+	while [ "${#}" -gt 0 ]; do
+		case "${1}" in
+		--*)
+			"${_eig_fn}" longopt "${_eig_rstatus}" "${1}";
+			_eig_fn_rc="${?}";
+
+			case "${_eig_fn_rc}" in
+			0)	;;
+			1)	return 1; ;;
+
+			*)	shift "$((${_eig_fn_rc} - 1))";
+				continue; ;;
+			esac;
+			;;
+		esac;
+
+		if getopts "${_eig_optstring}" _eig_opt; then
+			"${_eig_fn}" opt "${_eig_rstatus}" "${_eig_opt}" "${OPTARG:-}" "${@}";
+			_eig_fn_rc="${?}";
+
+			case "${_eig_fn_rc}" in
+			0)	;;
+			1)	return 1; ;;
+
+			*)	shift "$((${_eig_fn_rc} - 1))";
+				continue; ;;
+			esac;
+		else
+			"${_eig_fn}" nonopt "${_eig_rstatus}" "${@}";
+			_eig_fn_rc="${?}";
+
+			case "${_eig_fn_rc}" in
+			0)	;;
+			1)	return 1; ;;
+
+			*)	shift "$((${_eig_fn_rc} - 1))";
+				continue; ;;
+			esac;
+		fi;
+	done;
+
+	if ! "${_eig_fn}" done "${_eig_rstatus}"; then
+		return 1;
+	fi;
+
+	return 0;
+};
+
+#
+# ex_init_help() - display usage screen and exit if requested in command-line arguments
+# @_rstatus:	reference to out variable of status string on failure
+# @_args_long:	optional list of long (prefixed with `--') arguments
+# @_name_base:	base name for usage screen file
+# @_optstring:	getopts(1) optstring
+#
+# Return:	zero (0) on success, non-zero (>0) on failure
+#
+ex_init_help() {
+	local	_eih_rstatus="${1#\$}" _eih_args_long="${2}"	\
+		_eih_name_base="${3}" _eih_optstring="${4}"	\
+		_eih_arg_long="" _eih_opt="" _eih_shiftfl=0;
+	shift 4;
+
+	while [ "${#}" -gt 0 ]; do
+		case "${1}" in
+		-h|--help)
+			if [ -t 1 ]; then
+				cat "etc/${_eih_name_base}.usage";
+			else
+				sed 's/\[[0-9]\+m//g' "etc/${_eih_name_base}.usage";
+			fi;
+			exit 0;
+			;;
+
+		*=*)	shift; continue;
+			;;
+
+		*)	_eih_shiftfl=0;
+			for _eih_arg_long in ${_eih_args_long}; do
+				if [ "${_eih_arg_long}" = "${1}" ]; then
+					_eih_shiftfl=1;
+				fi;
+			done;
+			if [ "${_eih_shiftfl}" = 1 ]; then
+				shift; continue;
+			fi;
+			;;
+		esac;
+
+		if getopts "${_eih_optstring}" _eih_opt 2>/dev/null; then
+			case "${_eih_opt}" in
+			h)
+				if [ -t 1 ]; then
+					cat "etc/${_eih_name_base}.usage";
+				else
+					sed 's/\[[0-9]\+m//g' "etc/${_eih_name_base}.usage";
+				fi;
+				exit 0;
+				;;
+			esac;
+			shift $((${OPTIND}-1)); OPTIND=1;
+		else
+			shift;
+		fi;
+	done;
+
+	return 0;
+};
+
+#
+# ex_init_files() - initialise build files
+# @_rstatus:				reference to out variable of status string on failure
+# @_rclean_builds:			reference to in variable of -C argument value
+# @_rdist:				reference to in variable of -D argument value
+# @_build_log_fname:			absolute pathname to build log file
+# @_build_log_last_fname:		absolute pathname to last build log file
+# @_build_status_in_progress_fname:	absolute pathname to build-in-progress status file
+# @_check_path_vars:			list of pathname variables to check
+# @_clear_env_vars_except:		list of environment variables to not unset when clearing the environment
+# @_clear_prefix_paths:			list of directory pathnames to clear in the top-level prefix
+# @_dlcachedir:				absolute pathname to download cache directory
+# @_prefix:				absolute pathname to top-level prefix
+# @_prefix_rpm:				absolute pathname to RPM files prefix
+# @_workdir:				absolute pathname to build-specific temporary directory
+#
+# Return:				zero (0) on success, non-zero (>0) on failure
+#
+ex_init_files() {
+	local	_eif_rstatus="${1#\$}" _eif_rclean_builds="${2#\$}" _eif_rdist="${3#\$}"	\
+		_eif_build_log_fname="${4}" _eif_build_log_last_fname="${5}"			\
+		_eif_build_status_in_progress_fname="${6}" _eif_check_path_vars="${7}"		\
+		_eif_clear_env_vars_except="${8}" _eif_clear_prefix_paths="${9}"		\
+		_eif_dlcachedir="${10}" _eif_prefix="${11}" _eif_prefix_rpm="${12}"		\
+		_eif_workdir="${13}"								\
+		_eif_log_last_fname="" _eif_log_last_num=1 _eif_rc=0;
+
+	if ! rtl_fileop mkdir "${_eif_dlcachedir}" "${_eif_workdir}"\
+	|| rtl_lmatch "${_eif_rdist}" "rpm" ","\
+	&& ! rtl_fileop mkdir "${_eif_prefix_rpm}"; then
+		_eif_rc=1;
+		rtl_setrstatus "${_eif_rstatus}" 'cannot create build directories.';
+	elif [ -e "${_eif_build_status_in_progress_fname}" ]; then
+		_eif_rc=1;
+		rtl_setrstatus "${_eif_rstatus}" 'another build targeting this architecture and build type is currently in progress.';
+	elif ! rtl_clean_env "${_eif_clear_env_vars_except}"; then
+		_eif_rc=1;
+		rtl_setrstatus "${_eif_rstatus}" 'failed to clean environment.';
+	elif ! rtl_check_path_vars "${_eif_rstatus}" "${_eif_check_path_vars}"; then
+		_eif_rc=1;
+	else
+		export TMP="${_eif_workdir}" TMPDIR="${_eif_workdir}";
+		touch "${_eif_build_status_in_progress_fname}";
+
+		if [ -e "${_eif_build_log_fname}" ]; then
+			while [ -e "${_eif_build_log_fname}.${_eif_log_last_num}" ]; do
+				: $((_eif_log_last_num+=1));
+			done;
+
+			_eif_log_last_fname="${_eif_build_log_fname}.${_eif_log_last_num}";
+			rtl_fileop mv "${_eif_build_log_fname}" "${_eif_log_last_fname}";
+			rtl_fileop ln_symbolic "${_eif_log_last_fname}" "${_eif_build_log_last_fname}";
+		fi;
+
+		rtl_fileop touch "${_eif_build_log_fname}"; rtl_log_set_fname "${_eif_build_log_fname}";
+		if rtl_lmatch "${_eif_rclean_builds}" $"prefix" ","; then
+			trap "rm -f \"${_eif_build_status_in_progress_fname}\" 2>/dev/null;
+
+			rtl_log_msg \"fatalexit\" \"${MSG_build_aborted}\"" HUP INT TERM USR1 USR2;
+			rtl_log_msg "info" "${MSG_build_clean_prefix}";
+
+			for _eif_pname in ${_eif_clear_prefix_paths}; do
+				if ! rtl_fileop rm "${_eif_prefix}/${_eif_pname}"; then
+					_eif_rc=1;
+					rtl_setrstatus "${_eif_rstatus}" 'failed to remove \`'"${_eif_prefix:+${_eif_prefix}/}${_eif_pname}'"'.';
+					break;
+				fi;
+			done;
+
+			trap - HUP INT TERM USR1 USR2;
+		fi;
+
+		export PATH="${_eif_prefix}/bin${PATH:+:${PATH}}";
+	fi;
+
+	return "${_eif_rc}";
+};
+
+#
+# ex_init_logging() - initialise build logging
+# @_rstatus:		reference to out variable of status string on failure
+# @_rverbose_tags:	reference to inout variable of -V argument value
+# @_verbose:		-[vV] argument value
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_init_logging() {
+	local	_eil_rstatus="${1#\$}" _eil_rverbose_tags="${2#\$}" _eil_verbose="${3}"	\
+		_eil_tag="" _eil_tags="" _eil_tags_enable="" _eil_rc=0;
+
+	rtl_log_clear_tags;
+	case "${_eil_verbose}" in
+
+	0)	if eval [ \"\${#${_eil_rverbose_tags}}\" -eq 0 ]; then
+			rtl_log_enable_tags "${LOG_TAGS_normal}";
+		fi;
+		;;
+
+	1)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+
+	*)	_eil_rc=1;
+		rtl_setrstatus "${_eil_rstatus}" 'invalid verbosity level (max. -v)';
+		;;
+
+	esac;
+
+	if [ "${_eil_rc}" -eq 0 ]; then
+		eval _eil_tags="\${${_eil_rverbose_tags}}";
+		case "${_eil_tags}" in
+
+		+*)	rtl_log_enable_tags "${LOG_TAGS_normal}";
+			eval ${_eil_rverbose_tags}="\${${_eil_rverbose_tags}#+}";
+			;;
+
+		*)	;;
+
+		esac;
+
+		rtl_llift2 "${_eil_rverbose_tags}" \$_eil_tags "," " ";
+
+		for _eil_tag in ${_eil_tags}; do
+			case "${_eil_tag}" in
+
+			all)		rtl_log_enable_tags "${LOG_TAGS_all}"; ;;
+
+			clear|none)	rtl_log_clear_tags; ;;
+
+			normal)		rtl_log_enable_tags "${LOG_TAGS_normal}"; ;;
+
+			verbose)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+
+			*)		rtl_lsearch_patternl2 \$LOG_TAGS_all \$_eil_tags_enable "${_eil_tag}" ",";
+					if [ "${#_eil_tags_enable}" -gt 0 ]; then
+						rtl_log_enable_tags "${_eil_tags_enable}";
+					else
+						_eil_rc=1;
+						rtl_setrstatus "${_eil_rstatus}" 'invalid log tag or tag pattern \`'"${_eil_tag}"''\''.';
+						break;
+					fi;
+					;;
+
+			esac;
+		done;
+	fi;
+
+	return "${_eil_rc}";
+};
+
+#
+# ex_init_prereqs() - initialise build prerequisite commands
+# @_rstatus:	reference to out variable of status string on failure
+# @_prereqs:	list of prerequisite commands
+#
+# Return:	zero (0) on success, non-zero (>0) on failure
+#
+ex_init_prereqs() {
+	local	_eip_rstatus="${1#\$}" _eip_prereqs="${2}"	\
+		_eip_rc=0;
+
+	if ! rtl_check_prereqs "${_eip_rstatus}" ${_eip_prereqs}; then
+		_eip_rc=1;
+	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
+		_eip_rc=1;
+		rtl_setrstatus "${_eip_rstatus}" 'awk(1) in \$PATH must be GNU Awk.';
+	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;	\
+			sed -i'' -e '' "${FNAME}" >/dev/null 2>&1; });
+	then
+		_eip_rc=1;
+		rtl_setrstatus "${_eip_rstatus}" 'sed(1) in \${PATH} does not support the \`-i'\'' option.';
+	fi;
+
+	return "${_eip_rc}";
+};
+
+# vim:filetype=sh textwidth=0

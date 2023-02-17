@@ -3,7 +3,7 @@
                   [90m[[33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..]]        [[33m-[93mR[90m]
 		  [90m[[33m-[93mv[90m] [[33m-[93mV [90m[[93m+[90m][93mtag[90m|[93mpat[90m[[93m,[90m..][90m][0m
 
-                  [90m[[33m--[93mas-needed[90m]  [90m[[33m--[93mdebug-minipix[90m] [[33m--[93mdump-on-abort[90m]  [90m[[33m--[93mreset-state[90m][0m
+                  [90m[[33m--[93mas-needed[90m] [90m[[33m--[93mdebug-minipix[90m] [90m[[33m--[93mreset-state[90m][0m
                   [90m[[33m--[93mroar[90m]      [[[93m=[90m][90m<[93mgroup[90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
 
         [33m-[93ma nt32[90m|[93mnt64[0m        [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
@@ -78,13 +78,11 @@
 
                             [93mbuild_*[90m.....: [96mgeneral build messages (viz.: [93mbegin[90m, [93mfinish[90m, [93mfinish_time[90m, [93mvars[90m,[96m)[0m
                             [93mgroup_*[90m.....: [96mbuild group messages (viz.: [93mbegin[90m, [93mfinish[90m,[96m)[0m
-                            [93mpkg_*[90m.......: [96mpackage build messages (viz.: [93mbegin[90m, [93mfaildump[90m, [93mfinish[90m, [93mmsg[90m, [93mskip[90m, [93mstep[90m, [93mstrip[90m.[96m)[0m
+                            [93mpkg_*[90m.......: [96mpackage build messages (viz.: [93mbegin[90m, [93mfinish[90m, [93mmsg[90m, [93mskip[90m, [93mstep[90m, [93mstrip[90m.[96m)[0m
 
         [33m--[93mas-needed[0m         [96mDon't build unless the midipix_build repository has received[0m
                             [96mnew commits.[0m
         [33m--[93mdebug-minipix[0m     [96mDon't [93mstrip(1)[96m minipix binaries to facilitate debugging minipix.[0m
-        [33m--[93mdump-on-abort[0m     [96mProduce package environment dump files on build failure to be[0m
-                            [96mused in conjuction with pkg_shell.sh script (excludes [33m-[93mR[96m.)[0m
         [33m--[93mreset-state[0m       [96mReset package build step state on exit.[0m
 
         [90m<[93mgroup[90m>[ ..][96m        One of: [93mdev_packages[90m,[93m dist[90m,[93m host_deps[90m,[93m host_deps_rpm[90m,[0m

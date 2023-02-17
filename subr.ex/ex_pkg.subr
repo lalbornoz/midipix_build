@@ -1,0 +1,324 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+#
+# ex_pkg_check_depends() - check single named package for unsatisfied dependencies
+# @_checkfl:		enable (1) or inhibit (0) dependency expansion
+# @_rpkg_disabled:	reference to in variable of list of disabled packages
+# @_rpkg_finished:	reference to in variable of list of finished packages
+# @_pkg_name:		single package name
+# @_rpkg_names:		reference to in variable of list of package names
+# @_workdir:		pathname to build-specific temporary directory
+#
+# Return:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
+# Side effects:		${PKG_${_PKG_NAME}_DEPENDS_FULL} may be mutated
+#
+ex_pkg_check_depends() {
+	local	_epcd_checkfl="${1}" _epcd_rpkg_disabled="${2}" _epcd_rpkg_finished="${3#\$}"	\
+		_epcd_pkg_name="${4}" _epcd_rpkg_names="${5#\$}" _epcd_workdir="${6}"		\
+		_epcd_dependfl=0 _epcd_depends="" _epcd_pkg_name_depend="";
+
+	if [ "${_epcd_checkfl}" -eq 1 ]; then
+		if ! rtl_get_var_unsafe \$_epcd_depends -u "PKG_"${_epcd_pkg_name}"_DEPENDS_FULL"\
+		|| [ "${_epcd_depends:+1}" != 1 ];
+		then
+			if rtl_get_var_unsafe \$_epcd_depends -u "PKG_"${_epcd_pkg_name}"_DEPENDS";
+			then
+				eval PKG_"${_epcd_pkg_name}"_DEPENDS_FULL='$(rtl_uniq ${_epcd_depends})';
+			else
+				return 0;
+			fi;
+		fi;
+
+		for _epcd_pkg_name_depend in ${_epcd_depends}; do
+			if ! rtl_lmatch "${_epcd_rpkg_disabled}" "${_epcd_pkg_name_depend}"\
+			&& ! rtl_lmatch "${_epcd_rpkg_finished}" "${_epcd_pkg_name_depend}"\
+			&& ! ex_pkg_state_test2 "${_epcd_workdir}" "${_epcd_pkg_name_depend}" finish;
+			then
+				if ! rtl_lmatch "${_epcd_rpkg_names}" "${_epcd_pkg_name_depend}"; then
+					rtl_log_msg "fatalexit" "${MSG_build_unknown_dep}" "${_epcd_pkg_name_depend}" "${_epcd_pkg_name}";
+				else
+					_epcd_dependfl=1; break;
+				fi;
+			fi;
+		done;
+	fi;
+
+	return "${_epcd_dependfl}";
+};
+
+#
+# ex_pkg_find_package() - find build group a single named package belongs to
+# @_rgroup_name:	reference to out variable of build group name
+# @_group_names:	build group names
+# @_pkg_name:		single named package
+#
+# Return:		zero (0) on success, non-zero (>0) if package not found, group name on stdout if package was found.
+#
+ex_pkg_find_package() {
+	local	_epfp_rgroup_name="${1#\$}" _epfp_group_names="${2}" _epfp_pkg_name="${3}"	\
+		_epfp_foundfl=0 _epfp_group_name="" _epfp_pkg_names="";
+
+	for _epfp_group_name in ${_epfp_group_names}; do
+		if rtl_get_var_unsafe \$_epfp_pkg_names -u "${_epfp_group_name}_PACKAGES"\
+		&& [ "${_epfp_pkg_names:+1}" = 1 ]\
+		&& rtl_lmatch \$_epfp_pkg_names "${_epfp_pkg_name}"; then
+			_epfp_foundfl=1; break;
+		fi;
+	done;
+
+	case "${_epfp_foundfl:-0}" in
+	0)	eval ${_epfp_rgroup_name}=;
+		return 1; ;;
+
+	1)	eval ${_epfp_rgroup_name}='${_epfp_group_name}';
+		return 0; ;;
+	esac;
+};
+
+#
+# ex_pkg_get_packages() - get list of packages belonging to single named build group
+# @_rpkg_names:	reference to out variable of package names
+# @_group_name:	build group name
+#
+# Return:	zero (0) on success, non-zero (>0) on failure, list of package names on stdout on success.
+#
+ex_pkg_get_packages() {
+	local	_epgp_rpkg_names="${1#\$}" _epgp_group_name="${2}"	\
+		_epgp_pkg_names="";
+
+	if rtl_get_var_unsafe \$_epgp_pkg_names -u "${_epgp_group_name}_PACKAGES"\
+	&& [ "${_epgp_pkg_names:+1}" = 1 ]; then
+		eval ${_epgp_rpkg_names}='${_epgp_pkg_names}';
+		return 0;
+	else
+		eval ${_epgp_rpkg_names}=;
+		return 1;
+	fi;
+};
+
+#
+# ex_pkg_load_vars() - load build variables
+# @_rstatus:	out reference to status string
+#
+# Return:	zero (0) on success, non-zero (>0) on failure, build variables post-return on success.
+#
+ex_pkg_load_vars() {
+	local	_eplv_rstatus="${1#\$}"	\
+		_eplv_rc=0 _eplv_fname="";
+
+	if ! rtl_lmatch \$ARCH "nt32 nt64"; then
+		_eplv_rc=1;
+		rtl_setrstatus "${_eplv_rstatus}" 'Error: invalid architecture \`'"${ARCH}"''\''.';
+	elif ! rtl_lmatch \$BUILD_KIND "debug release"; then
+		_eplv_rc=1;
+		rtl_setrstatus "${_eplv_rstatus}" 'Error: unknown build type \`'"${BUILD_KIND}"''\''.';
+	else
+		case "${ARCH}" in
+		nt32)	DEFAULT_TARGET="i686-nt32-midipix"; ;;
+		nt64)	DEFAULT_TARGET="x86_64-nt64-midipix"; ;;
+		esac;
+
+		for _eplv_fname in				\
+				"${HOME}/midipix_build.vars"	\
+				"${HOME}/.midipix_build.vars"	\
+				../midipix_build.vars		\
+				./midipix.env;
+		do
+			if [ -r "${_eplv_fname}" ]; then
+				rtl_fileop source "${_eplv_fname}";
+			fi;
+		done;
+
+		if [ "${PREFIX:+1}" != 1 ]; then
+			_eplv_rc=1;
+			rtl_setrstatus "${_eplv_rstatus}" 'Error: ${PREFIX} empty or unset.';
+		fi;
+	fi;
+
+	return "${_eplv_rc}";
+};
+
+#
+# ex_pkg_load_groups() - load all available build groups
+# @_rgroups:		reference to out variable of build groups
+# @_rgroups_noauoto:	optional reference to out variable of build groups not built automatically
+# @_rgroup_auto:	reference to in variable of flag controlling whether to build group automatically
+# @_rgroup_target:	reference to in variable of build group targets
+#
+# Return:		zero (0) on success, non-zero (>0) on failure.
+#
+ex_pkg_load_groups() {
+	local	_eplg_rgroups="${1#\$}" _eplg_rgroups_noauto="${2#\$}"		\
+		_eplg_rgroup_auto="${3#\$}" _eplg_rgroup_target="${4#\$}"	\
+		_eplg_build_groups="" _eplg_build_groups_noauto=""		\
+		_eplg_fname="" _eplg_group="" _eplg_groups="";
+
+	for _eplg_fname in $(find ./groups -name *.group | sort); do
+		rtl_fileop source_opt "${_eplg_fname}";
+
+		if eval [ \"\${${_eplg_rgroup_target}:+1}\" = 1 ]; then
+			eval _eplg_group=\"\${${_eplg_rgroup_target}}\";
+			eval unset ${_eplg_rgroup_target};
+		else
+			_eplg_group="${_eplg_fname##*/}";
+			_eplg_group="${_eplg_group%.group}";
+			_eplg_group="${_eplg_group#*.}";
+		fi;
+
+		if ! rtl_lmatch \$_eplg_groups "${_eplg_group}"; then
+			rtl_lconcat \$_eplg_groups "${_eplg_group}";
+			if eval [ \"\${${_eplg_rgroup_auto}:+1}\" = 1 ]; then
+				if eval [ \"\${${_eplg_rgroup_auto}:-0}\" -ne 0 ]; then
+					rtl_lconcat \$_eplg_build_groups "${_eplg_group}";
+				else
+					rtl_lconcat \$_eplg_build_groups_noauto "${_eplg_group}";
+				fi;
+				eval unset ${_eplg_rgroup_auto};
+			else
+				rtl_lconcat \$_eplg_build_groups "${_eplg_group}";
+			fi;
+		fi;
+	done;
+
+	_eplg_build_groups="$(rtl_uniq "${_eplg_build_groups}")";
+	eval ${_eplg_rgroups}=\"${_eplg_build_groups}\";
+
+	if [ "${_eplg_rgroups_noauto:+1}" = 1 ]; then
+		_eplg_build_groups_noauto="$(rtl_uniq "${_eplg_build_groups_noauto}")";
+		eval ${_eplg_rgroups_noauto}=\"${_eplg_build_groups_noauto}\";
+	fi;
+
+	return 0;
+};
+
+#
+# ex_pkg_unfold_depends() - unfold list of package names into dependency-expanded set of complete, disabled, finished, and outstanding package names
+# @_rdisabled:		reference to inout variable of disabled packages
+# @_rfinished:		reference to inout variable of finished packages
+# @_rnames:		reference to out variable of package names
+# @_checkfl:		enable (1) or inhibit (0) dependency expansion
+# @_forcefl:		enable (1) or inhibit (0) forcibly rebuilding finished packages
+# @_group_name:		build group name
+# @_pkg_names:		list of package names
+# @_restart:		optional whitespace-separated list of package names to rebuild
+# @_test_finished:	only exclude disabled packages (0,) split finished packages
+# @_workdir:		pathname to build-specific temporary directory
+#
+# Return:		zero (0) on success, non-zero (>0) on failure.
+#
+ex_pkg_unfold_depends() {
+	local	_epud_rdisabled="${1#\$}" _epud_rfinished="${2#\$}" _epud_rnames="${3#\$}"	\
+		_epud_checkfl="${4}" _epud_forcefl="${5}" _epud_group_name="${6}"		\
+		_epud_pkg_names="${7}" _epud_restart="${8}" _epud_test_finished="${9}"		\
+		_epud_workdir="${10}"								\
+		_epud_pkg_disabled="" _epud_pkg_force="" _epud_pkg_name=""			\
+		_epud_pkg_names_new=""	_epud_restartfl=0;
+
+	if [ "${_epud_restart:+1}" = 1 ]\
+	&& ! rtl_lmatch \$_epud_restart "ALL LAST"; then
+		rtl_lsearch \$_epud_pkg_names "${_epud_restart}";
+	fi;
+	if [ "${_epud_restart:+1}" = 1 ]\
+	&& [ "${_epud_checkfl:-0}" -eq 1 ]; then
+		rtl_lunfold_depends 'PKG_${_rld_name}_DEPENDS' \$_epud_pkg_names ${_epud_pkg_names};
+		_epud_pkg_names="$(rtl_uniq ${_epud_pkg_names})";
+	fi;
+
+	for _epud_pkg_name in ${_epud_pkg_names}; do
+		if [ "${_epud_restart}" = "ALL" ]\
+		|| rtl_lmatch \$_epud_restart "${_epud_pkg_name}"; then
+			_epud_restartfl=1;
+		else
+			_epud_restartfl=0;
+		fi;
+
+		if rtl_get_var_unsafe \$_epud_pkg_disabled -u "PKG_${_epud_pkg_name}_DISABLED"\
+		&& [ "${_epud_pkg_disabled}" = 1 ];
+		then
+			rtl_lconcat "${_epud_rdisabled}" "${_epud_pkg_name}";
+
+		elif [ "${_epud_test_finished:-1}" -eq 1 ]\
+		&&   ex_pkg_state_test2 "${_epud_workdir}" "${_epud_pkg_name}" finish\
+		&&   [ "${_epud_restartfl:-0}" -eq 0 ]\
+		&&   [ "${_epud_forcefl:-0}" -ne 1 ]\
+		&&   rtl_get_var_unsafe \$_epud_pkg_force -u "${_epud_group_name}_FORCE"\
+		&&   [ "${_epud_pkg_force}" != 1 ];
+		then
+			rtl_lconcat "${_epud_rfinished}" "${_epud_pkg_name}";
+
+		else
+			rtl_lconcat \$_epud_pkg_names_new "${_epud_pkg_name}";
+		fi;
+	done;
+
+	eval ${_epud_rdisabled}='$(rtl_uniq2 "${_epud_rdisabled}")';
+	eval ${_epud_rfinished}='$(rtl_uniq2 "${_epud_rfinished}")';
+	eval ${_epud_rnames}='$(rtl_uniq "${_epud_pkg_names_new}")';
+
+	return 0;
+};
+
+#
+# ex_pkg_unfold_rdepends() - unfold list of package names into reverse dependency-expanded set of complete, disabled, finished, and outstanding package names
+# @_rdisabled:		reference to inout variable of disabled packages
+# @_rfinished:		reference to inout variable of finished packages
+# @_rnames:		reference to out variable of package names
+# @_group_name:		build group name
+# @_pkg_names:		list of package names
+# @_restart:		optional whitespace-separated list of package names to rebuild
+# @_test_finished:	only exclude disabled packages (0,) split finished packages
+# @_workdir:		pathname to build-specific temporary directory
+#
+# Return:		zero (0) on success, non-zero (>0) on failure.
+#
+ex_pkg_unfold_rdepends() {
+	local	_epur_rdisabled="${1#\$}" _epur_rfinished="${2#\$}" _epur_rnames="${3#\$}"	\
+		_epur_group_name="${4}" _epur_pkg_names="${5}" _epur_restart="${6}"		\
+		_epur_test_finished="${7}" _epur_workdir="${8}"					\
+		_epur_depends="" _epur_disabled=0 _epur_force=0 _epur_pkg_depends=""		\
+		_epur_pkg_name="" _epur_pkg_names_new="" _epur_pkg_name_depend=""		\
+		_epur_pkg_rdepends="";
+
+	for _epur_pkg_name_depend in ${_epur_restart}; do
+		for _epur_pkg_name in ${_epur_pkg_names}; do
+			if [ "${_epur_pkg_name}" = "${_epur_pkg_name_depend}" ]; then
+				continue;
+
+			elif rtl_get_var_unsafe \$_epur_depends -u "PKG_"${_epur_pkg_name}"_DEPENDS"\
+			  && rtl_lunfold_depends 'PKG_${_rld_name}_DEPENDS' \$_epur_pkg_depends ${_epur_depends}\
+			  && [ "${_epur_pkg_depends:+1}" = 1 ]\
+			  && rtl_lmatch \$_epur_pkg_depends "${_epur_pkg_name_depend}";
+			then
+				if rtl_get_var_unsafe \$_epur_disabled -u "PKG_${_epur_pkg_name}_DISABLED"\
+				&& [ "${_epur_disabled}" = 1 ];
+				then
+					rtl_lconcat "${_epur_rdisabled}" "${_epur_pkg_name}";
+
+				elif [ "${_epur_test_finished}" -eq 1 ]\
+				&&   ex_pkg_state_test2 "${_epur_workdir}" "${_epur_pkg_name}" finish\
+				&&   rtl_get_var_unsafe \$_epur_force -u "${_epur_group_name}_FORCE"\
+				&&   [ "${_epur_force}" != 1 ];
+				then
+					rtl_lconcat "${_epur_rfinished}" "${_epur_pkg_name}";
+
+				elif [ "${_epur_test_finished:-1}" -eq 0 ]\
+				||   ! ex_pkg_state_test2 "${_epur_workdir}" "${_epur_pkg_name}" finish\
+				||   ( rtl_get_var_unsafe \$_epur_force -u "${_epur_group_name}_FORCE"\
+				&&   [ "${_epur_force}" = 1 ] );
+				then
+					rtl_lconcat \$_epur_pkg_names_new "${_epur_pkg_name}";
+				fi;
+			fi;
+		done;
+	done;
+
+	eval ${_epur_rdisabled}='$(rtl_uniq2 "${_epur_rdisabled}")';
+	eval ${_epur_rfinished}='$(rtl_uniq2 "${_epur_rfinished}")';
+	eval ${_epur_rnames}='$(rtl_uniq "${_epur_pkg_names_new}")';
+
+	return 0;
+};
+
+# vim:filetype=sh textwidth=0

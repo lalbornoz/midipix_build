@@ -3,35 +3,46 @@
 #
 
 pkgp_fetch_extract_type() {
-	local _fname="${1}";
+	local _ppfet_fname="${1}" _ppfet_rtype="${2#\$}";
+
 	if [ "${1##*.tar.}" != "${1}" ]; then
-		printf "%s" "${1##*.tar.}";
+		eval ${_ppfet_rtype}='${1##*.tar.}';
 	elif [ "${1##*.t}" != "${1}" ]; then
-		printf "%s" "${1##*.t}";
+		eval ${_ppfet_rtype}='${1##*.t}';
 	fi;
+	return 0;
 };
 
 pkg_fetch_extract() {
-	if [ -n "${PKG_URL:-}" ]; then
-		_oldpwd="${PWD}";
+	local	_pfe_group_name="${1}" _pfe_pkg_name="${2}" _pfe_restart_at="${3}"	\
+		_pfe_type="";
+
+	if [ "${PKG_URL:+1}" = 1 ]; then
+		_pfe_oldpwd="${PWD}";
+
 		if ! rtl_fileop cd "${PKG_BASE_DIR}"\
 		|| ! rtl_fileop rm "${PKG_BASE_DIR}/${PKG_SUBDIR}"; then
-			rtl_fileop cd "${_oldpwd}"; return 1;
+			rtl_fileop cd "${_pfe_oldpwd}"; return 1;
 		else
-			case "$(pkgp_fetch_extract_type "${PKG_NAME}")" in
+			pkgp_fetch_extract_type "${PKG_NAME}" \$_pfe_type;
+
+			case "${_pfe_type}" in
 			bz2)	bunzip2 -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
 			gz)	gunzip -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
 			lz)	lzip -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
 			xz)	xz -d < "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}" | tar -C "${PKG_BASE_DIR}" -xf -; ;;
 			*)	tar -C "${PKG_BASE_DIR}" -xf "${BUILD_DLCACHEDIR}/${PKG_NAME}/${PKG_FNAME}"; ;;
 			esac;
+
 			if [ "${?}" -ne 0 ]; then
-				rtl_fileop cd "${_oldpwd}"; return 1;
+				rtl_fileop cd "${_pfe_oldpwd}"; return 1;
 			else
-				rtl_fileop cd "${_oldpwd}";
+				rtl_fileop cd "${_pfe_oldpwd}";
 			fi;
 		fi;
 	fi;
+
+	return 0;
 };
 
 # vim:filetype=sh

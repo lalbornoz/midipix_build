@@ -3,7 +3,9 @@
 #
 
 pkg_install() {
-	local _destdir="" _destdir_prefix="" _pkglist_name="";
+	local	_group_name="${1}" _pkg_name="${2}" _restart_at="${3}"	\
+		_destdir="" _destdir_prefix="" _pkglist_name="";
+
 	if ! rtl_fileop mkdir "${PKG_PREFIX}"; then
 		return 1;
 	else	for _destdir in "${PKG_DESTDIR}:${PKG_PREFIX}" "${PKG_DESTDIR_HOST}:${PREFIX}"; do

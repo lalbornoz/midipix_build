@@ -11,24 +11,28 @@ RTLP_LOG_NO_ATTR=0;
 RTLP_LOG_TAGS="";
 
 rtlp_log_printf() {
-	local _attr="${1}" _fmt_pfx="${2}" _fmt="${3#*;}" _fmt_argc="${3%%;*}"; shift 3;
-	if [ "${#}" -ne "${_fmt_argc}" ]; then
-		if [ "${_fmt_argc}" -eq 0 ]; then
+	local	_rplp_attr="${1}" _rplp_fmt_pfx="${2}"	\
+		_rplp_fmt="${3#*;}" _rplp_fmt_argc="${3%%;*}";
+	shift 3;
+
+	if [ "${#}" -ne "${_rplp_fmt_argc}" ]; then
+		if [ "${_rplp_fmt_argc}" -eq 0 ]; then
 			shift "${#}";
 		else
 			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX MESSAGE STRING ARGUMENT COUNT MISMATCH[0m\n";
 		fi;
 	fi;
-	_msg="$(printf "${_fmt_pfx}${_fmt}" "${@}")";
+	_rplp_msg="$(printf "${_rplp_fmt_pfx}${_rplp_fmt}" "${@}")";
 
-	if [ -n "${RTLP_LOG_FNAME}" ]; then
-		printf "%s\n" "${_msg}" >> "${RTLP_LOG_FNAME}";
+	if [ "${RTLP_LOG_FNAME:+1}" = 1 ]; then
+		printf "%s\n" "${_rplp_msg}" >> "${RTLP_LOG_FNAME}";
 	fi;
 	if [ "${RTLP_LOG_NO_ATTR:-0}" -eq 0 ]; then
-		printf "\033[0m\033[${_attr}m%s\033[0m\n" "${_msg}";
+		printf "\033[0m\033[${_rplp_attr}m%s\033[0m\n" "${_rplp_msg}";
 	else
-		printf "%s\n" "${_msg}";
-	fi; return 0;
+		printf "%s\n" "${_rplp_msg}";
+	fi;
+	return 0;
 };
 
 #
@@ -41,48 +45,64 @@ rtl_log_clear_tags() {
 
 rtl_log_enable_tags() {
 	local IFS=","; set -- ${*};
+
 	while [ "${#}" -gt 0 ]; do
-		if ! rtl_lmatch "${RTLP_LOG_TAGS}" "${1}" ","; then
+		if ! rtl_lmatch \$RTLP_LOG_TAGS "${1}" ","; then
 			RTLP_LOG_TAGS="${RTLP_LOG_TAGS:+${RTLP_LOG_TAGS},}${1}";
 		fi; shift;
-	done; return 0;
+	done;
+	return 0;
 };
 
 rtl_log_env_vars() {
-	local _tag="${1}" _type="${2}" _arg_len_max=0; shift 2;
+	local	_rlev_tag="${1}" _rlev_type="${2}"	\
+		_rlev_arg_len_max=0 _rlev_list="" _rlev_msg="" _rlev_msg_="";
+	shift 2;
 
-	rtl_log_msg "${_tag}" "${MSG_rtl_log_vars_header}" "${_type}";
-	_arg_len_max="$(rtl_lmax "${@}")";
+	rtl_log_msg "${_rlev_tag}" "${MSG_rtl_log_vars_header}" "${_rlev_type}";
+	_rlev_list="${@}"; rtl_lmax \$_rlev_list \$_rlev_arg_len_max;
 	while [ "${#}" -gt 0 ]; do
-		rtl_log_msg "${_tag}"					\
-			"2;%${_arg_len_max}.${_arg_len_max}s=%s"	\
-			"${1%%=*}" "$(rtl_get_var_unsafe "${1#*=}")";
+		rtl_get_var_unsafe \$_rlev_msg "${1#*=}";
+		rtl_llift2 \$_rlev_msg \$_rlev_msg_ "" " ";
+		rtl_log_msg "${_rlev_tag}"					\
+			"2;%${_rlev_arg_len_max}.${_rlev_arg_len_max}s=%s"	\
+			"${1%%=*}" "${_rlev_msg_}";
 		shift;
-	done; return 0;
+	done;
+	return 0;
 };
 
 rtl_log_msg() {
-	local _tag="${1}" _fmt="${2}" _attr="" _exitfl=0; shift 2;
+	local	_rlm3_tag="${1}" _rlm3_fmt="${2}"	\
+		_rlm3_attr="" _rlm3_date_now=0 _rlm3_exitfl=0;
+	shift 2;
 
-	[ "x${_tag}" = "xfatalexit" ] && { _tag="fatal"; _exitfl=1; };
-	if rtl_lmatch "${RTLP_LOG_TAGS}" "${_tag}" ","; then
-		eval _attr='${LOG_TAG_'"${_tag}"':-}';
-		if [ "${#_attr}" -eq 0 ]; then
-			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`${_tag}' PASSED TO rtl_log_msg()[0m\n";
+	if [ "x${_rlm3_tag}" = "xfatalexit" ]; then
+		_rlm3_tag="fatal"; _rlm3_exitfl=1;
+	fi;
+
+	if rtl_lmatch \$RTLP_LOG_TAGS "${_rlm3_tag}" ","; then
+		eval _rlm3_attr='${LOG_TAG_'"${_rlm3_tag}"':-}';
+		if [ "${#_rlm3_attr}" -eq 0 ]; then
+			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`${_rlm3_tag}' PASSED TO rtl_log_msg()[0m\n";
 		fi;
-		rtlp_log_printf "${_attr}" "==> $(rtl_date) " "${_fmt}" "${@}";
-		if [ "${_exitfl}" -eq 1 ]; then
+		rtl_date \$_rlm3_date_now;
+		rtlp_log_printf "${_rlm3_attr}" "==> ${_rlm3_date_now} " "${_rlm3_fmt}" "${@}";
+		if [ "${_rlm3_exitfl}" -eq 1 ]; then
 			exit 1;
 		fi;
-	fi; return 0;
+	fi;
+	return 0;
 };
 
 rtl_log_set_fname() {
-	RTLP_LOG_FNAME="${1}"; return 0;
+	RTLP_LOG_FNAME="${1}";
+	return 0;
 };
 
 rtl_log_set_no_attr() {
-	RTLP_LOG_NO_ATTR="${1}"; return 0;
+	RTLP_LOG_NO_ATTR="${1}";
+	return 0;
 };
 
 # vim:filetype=sh

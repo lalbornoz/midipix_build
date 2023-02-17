@@ -2,11 +2,11 @@
 # Build group native_packages (inet)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
+rtl_lconcat \$NATIVE_PACKAGES_PACKAGES "
 apk_tools bind ca_certificates curl cvs dropbear elinks fetchmail git gnupg gpgme
 gnutls httpd icecast inetutils irssi isync ldns lighttpd links lynx mailutils
 microsocks mutt nginx ngircd nullmailer openlitespeed opensmtpd openssh
-proxytunnel rsync socat thttpd w3m weechat wget wget2 whois")";
+proxytunnel rsync socat thttpd w3m weechat wget wget2 whois";
 : ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
 : ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
 : ${PKG_APK_TOOLS_VERSION:=2.6.8};

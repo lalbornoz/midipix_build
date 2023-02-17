@@ -1,0 +1,194 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+pkgp_configure_autotools() {
+	local _ppca_libtool="" _ppca_rc=0;
+
+	if ! [ -x "${PKG_CONFIGURE:-}" ]; then
+		_ppca_rc=2;
+	elif [ -d "${PKG_BASE_DIR}/${PKG_SUBDIR}/sofort" ]\
+	||   [ "${PKG_CONFIGURE_TYPE:-}" = "sofort" ];
+	then
+		_ppca_rc=2;
+	else
+		case "${PKG_LIBTOOL:-}" in
+		"")	_ppca_libtool=""; ;;
+		none)	_ppca_libtool=""; ;;
+		*)	_ppca_libtool="${PKG_LIBTOOL}"; ;;
+		esac;
+
+		rtl_export_vars						\
+			PKG_CONFIG "${PKG_PKG_CONFIG:-}"		\
+			PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}"	\
+			PYTHON "${PKG_PYTHON:-}"			\
+			${_ppca_libtool:+MAKE} ${_ppca_libtool:+"make LIBTOOL=${_ppca_libtool}"};
+
+		AR="${PKG_AR}"												\
+		CC="${PKG_CC}"												\
+		RANLIB="${PKG_RANLIB}"											\
+		CFLAGS="${PKG_CFLAGS_CONFIGURE:-}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"		\
+		CPPFLAGS="${PKG_CFLAGS_CONFIGURE:-}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}"	\
+		CXXFLAGS="${PKG_CXXFLAGS_CONFIGURE:-}${PKG_CXXFLAGS_CONFIGURE_EXTRA:+ ${PKG_CXXFLAGS_CONFIGURE_EXTRA}}"	\
+		LDFLAGS="${PKG_LDFLAGS_CONFIGURE:-}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}"	\
+		"${PKG_CONFIGURE}" ${PKG_CONFIGURE_ARGS:-} ${PKG_CONFIGURE_ARGS_EXTRA:-} ${PKG_CONFIGURE_ARGS_EXTRA_DEBUG:-};
+		_ppca_rc=$((${?} ? 1 : ${_ppca_rc}));
+
+		rtl_export_vars	-u					\
+			PKG_CONFIG "${PKG_PKG_CONFIG:-}"		\
+			PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}"	\
+			PYTHON "${PKG_PYTHON:-}"			\
+			${_ppca_libtool:+MAKE} ${_ppca_libtool:+"make LIBTOOL=${_ppca_libtool}"};
+	fi;
+
+	return "${_ppca_rc}";
+};
+
+pkgp_configure_cmake() {
+	local _ppcc_cmake_args_auto"" _ppcc_build_type="" _ppcc_IFS0="${IFS:- 	}" _ppcc_rc=0 IFS;
+
+	if [ "${PKG_CMAKE_LISTFILE:+1}" != 1 ]\
+	|| ! [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${PKG_CMAKE_LISTFILE}" ]; then
+		_ppcc_rc=2;
+	else
+		rtl_fileop rm config.cache || return 1;
+		rtl_export_vars							\
+			PKG_CONFIG		"${PKG_PKG_CONFIG:-}"		\
+			PKG_CONFIG_LIBDIR	"${PKG_PKG_CONFIG_LIBDIR:-}"	\
+			PYTHON			"${PKG_PYTHON:-}";
+
+		case "${BUILD_KIND}" in
+		debug)		_ppcc_build_type="debug"; ;;
+		release|*)	_ppcc_build_type="release"; ;;
+		esac;
+
+		_ppcc_cmake_args_auto="
+			-DCMAKE_AR=${PKG_AR}
+			-DCMAKE_BUILD_TYPE=${_ppcc_build_type}
+			-DCMAKE_C_COMPILER=${PKG_CC}
+			-DCMAKE_C_FLAGS=${PKG_CFLAGS_CONFIGURE:-}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}
+			-DCMAKE_CPP_FLAGS=${PKG_CPPFLAGS_CONFIGURE:-}${PKG_CPPFLAGS_CONFIGURE_EXTRA:+ ${PKG_CPPFLAGS_CONFIGURE_EXTRA}}
+			-DCMAKE_CXX_COMPILER=${PKG_CXX}
+			-DCMAKE_CXX_FLAGS=${PKG_CXXFLAGS_CONFIGURE:-}${PKG_CXXFLAGS_CONFIGURE_EXTRA:+ ${PKG_CXXFLAGS_CONFIGURE_EXTRA}}
+			-DCMAKE_EXE_LINKER_FLAGS=${PKG_LDFLAGS_CONFIGURE:-}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}
+			-DCMAKE_FIND_ROOT_PATH=${PKG_PREFIX}
+			-DCMAKE_INSTALL_PREFIX=
+			-DCMAKE_LINKER=$(which "ld")
+			-DCMAKE_MODULE_LINKER_FLAGS=${PKG_LDFLAGS_CONFIGURE:-}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}
+			-DCMAKE_RANLIB=${PKG_RANLIB}
+			-DCMAKE_SHARED_LINKER_FLAGS=${PKG_LDFLAGS_CONFIGURE:-}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}
+			-DPKG_CONFIG_EXECUTABLE=${PKG_PKG_CONFIG}" || return 1;
+
+		case "${PKG_BUILD_TYPE}" in
+		host|cross)
+			;;
+
+		native)
+			_ppcc_cmake_args_auto="${_ppcc_cmake_args_auto:+${_ppcc_cmake_args_auto}}
+				-DCMAKE_LINKER=$(which "${PKG_TARGET}-ld")
+				-DCMAKE_SYSROOT=${PKG_PREFIX}
+				-DCMAKE_SYSTEM_NAME=Midipix" || return 1;
+
+			case "${ARCH}" in
+			nt32)	_ppcc_cmake_args_auto="${_ppcc_cmake_args_auto:+${_ppcc_cmake_args_auto}}
+					-DCMAKE_SYSTEM_PROCESSOR=i686"; ;;
+			nt64)	_ppcc_cmake_args_auto="${_ppcc_cmake_args_auto:+${_ppcc_cmake_args_auto}}
+					-DCMAKE_SYSTEM_PROCESSOR=x86_64"; ;;
+			esac; ;;
+
+		esac;
+
+		IFS="
+	";	"${PKG_CMAKE}"				\
+			${_ppcc_cmake_args_auto}	\
+			${PKG_CMAKE_ARGS:-}		\
+			${PKG_CMAKE_ARGS_EXTRA:-}	\
+		       	"${PKG_BASE_DIR}/${PKG_SUBDIR}";
+		_ppcc_rc=$((${?} ? ${?} : ${_ppcc_rc})); IFS="${_ppcc_IFS0}";
+
+		rtl_export_vars	-u						\
+			PKG_CONFIG		"${PKG_PKG_CONFIG:-}"		\
+			PKG_CONFIG_LIBDIR	"${PKG_PKG_CONFIG_LIBDIR:-}"	\
+			PYTHON			"${PKG_PYTHON:-}";
+	fi;
+
+	return "${_ppcc_rc}";
+};
+
+pkgp_configure_sofort() {
+	local _ppcs_rc=0 _ppcs_vname="" _ppcs_vnames="" _ppcs_vval="";
+
+	if ! [ -x "${PKG_CONFIGURE:-}" ]; then
+		_ppcs_rc=2;
+	elif ! [ -d "${PKG_BASE_DIR}/${PKG_SUBDIR}/sofort" ]\
+	&&   ! [ "${PKG_CONFIGURE_TYPE:-}" = "sofort" ]; then
+		_ppcs_rc=2;
+	else
+		for _ppcs_vname in AR CC CXX LD RANLIB; do
+			if eval [ '"${PKG_'"${_ppcs_vname}"':+1}"' = 1 ]; then
+				_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }${_ppcs_vname}";
+				eval ${_ppcs_vname}='${PKG_'"${_ppcs_vname}"'}'; export ${_ppcs_vname};
+			fi;
+
+			if eval [ '"${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"':+1}"' = 1 ]; then
+				_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }NATIVE_${_ppcs_vname}";
+				eval NATIVE_${_ppcs_vname}='${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'}'; export NATIVE_${_ppcs_vname};
+			fi;
+		done;
+
+		for _ppcs_vname in CFLAGS CPPFLAGS CXXFLAGS LDFLAGS; do
+			if eval [ '"${PKG_'"${_ppcs_vname}"'_CONFIGURE:+1}"' = 1 ]; then
+				eval _ppcs_vval='${PKG_'"${_ppcs_vname}"'_CONFIGURE}';
+				if eval [ '"${PKG_'"${_ppcs_vname}"'_CONFIGURE_EXTRA:+1}"' = 1 ]; then
+					eval _ppcs_vval='${_ppcs_vval:+${_ppcs_vval} }${PKG_'"${_ppcs_vname}"'_CONFIGURE_EXTRA}';
+				fi;
+				_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }${_ppcs_vname} ${_ppcs_vname}_SHARED ${_ppcs_vname}_STATIC";
+				eval ${_ppcs_vname}='${_ppcs_vval}'\; ${_ppcs_vname}_SHARED='${_ppcs_vval}'\; ${_ppcs_vname}_STATIC='${_ppcs_vval}';
+				export ${_ppcs_vname} ${_ppcs_vname}_SHARED ${_ppcs_vname}_STATIC;
+			fi;
+
+			if eval [ '"${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"':+1}"' = 1 ]; then
+				eval _ppcs_vval='${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'}';
+				if eval [ '"${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'_EXTRA:+1}"' = 1 ]; then
+					eval _ppcs_vval='${_ppcs_vval:+${_ppcs_vval} }${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'_EXTRA}';
+				fi;
+				_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }NATIVE_${_ppcs_vname}";
+				eval NATIVE_${_ppcs_vname}='${_ppcs_vval}'; export NATIVE_${_ppcs_vname};
+			fi;
+		done;
+
+		RANLIB="${PKG_RANLIB}"				\
+			"${PKG_CONFIGURE}"			\
+				${PKG_CONFIGURE_ARGS:-}		\
+				${PKG_CONFIGURE_ARGS_EXTRA:-}	\
+				${PKG_CONFIGURE_ARGS_EXTRA_DEBUG:-};
+		_ppcs_rc=$((${?} ? 1 : ${_ppcs_rc}));
+
+		for _ppcs_vname in ${_ppcs_vnames}; do
+			unset "${_ppcs_vname}";
+		done;
+	fi;
+
+	return "${_ppcs_rc}";
+};
+
+pkg_configure() {
+	local	_pc_group_name="${1}" _pc_pkg_name="${2}" _pc_restart_at="${3}"	\
+		_pc_rc=0 _pc_type="";
+
+	for _pc_type in autotools sofort cmake; do
+		if [ "${PKG_CONFIGURE_TYPE:+1}" = 1 ]\
+		&& [ "${PKG_CONFIGURE_TYPE}" != "${_pc_type}" ]; then
+			continue;
+		else
+			pkgp_configure_${_pc_type} "${@}"; _pc_rc="${?}";
+			case "${_pc_rc}" in
+			0|1)	return "${_pc_rc}"; ;;
+			2)	_pc_rc=0; continue; ;;
+			esac;
+		fi;
+	done;
+	return "${_pc_rc}";
+};
+
+# vim:filetype=sh textwidth=0

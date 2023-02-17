@@ -25,9 +25,8 @@ into account when deploying and using Midipix distributions.
 	3.2. [Adding a package](#32-adding-a-package)  
 	3.3. [Addressing build failure](#33-addressing-build-failure)  
 	3.4. [Package archive files and Git repositories](#34-package-archive-files-and-git-repositories)  
-	3.5. [``-s``: package build shell environment](#35--s-package-build-shell-environment)  
-	3.6. [Package-package and {package,group}-group relationships](#36-package-package-and-packagegroup-group-relationships)  
-	3.7. [Patches and ``vars`` files](#37-patches-and-vars-files)  
+	3.5. [Package-package and {package,group}-group relationships](#35-package-package-and-packagegroup-group-relationships)  
+	3.6. [Patches and ``vars`` files](#36-patches-and-vars-files)  
 4. [Units reference](#4-units-reference)  
 	4.1. [Build steps](#41-build-steps)  
 	4.2. [Build variables](#42-build-variables)  
@@ -326,7 +325,7 @@ which are specified in this order.
 Pick a build group according to the criteria mentioned, add the package to the
 build group's list of contained packages in its corresponding file, and add the
 set of package variables required (see above and section [4.5](#45-package-variables).)  
-Consult section [3.7](#37-patches-and-vars-files) if the package to be added
+Consult section [3.6](#36-patches-and-vars-files) if the package to be added
 requires patches or additional code amending or replacing package build steps
 or the entire package build. Consult section [4.1](#41-build-steps) for a list
 of package build steps and how they are overriden.
@@ -344,11 +343,6 @@ output. If ``-V xtrace`` was specified, ``xtrace`` will be set during package bu
 rudimentary debugging purposes. Additionally, packages using GNU autotools will, if
 package configuration failed or appears relevant, log the configuration process in detail
 in, most usually, ``${PKG_BUILD_DIR}/config.log``.  
-
-If ``--dump-on-abort`` was specified, a subset of the variables set and environment
-variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``, which may
-subsequently be used in order to obtain a package build shell environment with the
-``pkgtool.sh`` script (see sections [4.6](#46-pkgtoolsh), [3.5](#35--s-package-build-shell-environment).)
   
 [Back to top](#table-of-contents)
 
@@ -376,37 +370,8 @@ A list of pertinent package variables and their formats follows:
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 3.5. -s: package build shell environment"
-### 3.5. -s: package build shell environment
-
-When ``build.sh`` is executed with the ``--dump-on-abort`` option, a subset of the
-variables set and environment variables exported will be written to ``${BUILD_WORKDIR}/${PKG_NAME}.dump``
-on build failure, which may subsequently be used in order to obtain a package build shell
-environment with the ``pkgtool.sh`` script, e.g.:  
-  
-```
-midipix_build@sandbox:(src/midipix_build)> $ ./pkgtool.sh -a nt64 -b debug -s mc
-==> 2020/03/11 15:46:28 Launching shell `/usr/bin/zsh' within package environment and `/home/midipix_build/midipix/nt64/debug/tmp'.
-==> 2020/03/11 15:46:28 Run $R to rebuild `mc'.
-==> 2020/03/11 15:46:28 Run $RS <step> to restart the specified build step of `mc'
-==> 2020/03/11 15:46:28 Run $D to automatically regenerate the patch for `mc'.
-midipix_build@sandbox:(mc-native-x86_64-nt64-midipix/obj)> $
-```
-  
-If a package build shell environment is desired for a package that has either not been
-built at all or built successfully, ``pkgshell.sh`` will attempt to rebuild the package
-at build steps up until, by default, ``build``, and then forcibly abort the build and
-write ``${BUILD_WORKDIR}/${PKG_NAME}.dump`` as above prior to entering the shell.  
-  
-Consult sections [3.2](#32-adding-a-package), [3.7](#37-patches-and-vars-files), [4.2](#42-build-variables),
-[4.1](#41-build-steps), and [4.5](#45-package-variables) for further information
-concerning the package build process.  
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-[//]: # "{{{ 3.6. Package-package and {package,group}-group relationships"
-### 3.6. Package-package and {package,group}-group relationships
+[//]: # "{{{ 3.5. Package-package and {package,group}-group relationships"
+### 3.5. Package-package and {package,group}-group relationships
 
 Packages, as well as groups, are interrelated through implicit as well as explicit parametrised,
 typed relationships and form namespaces correspondingly.  
@@ -433,8 +398,8 @@ A list of relationship types follows:
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 3.7. Patches and ``vars`` files"
-## 3.7. Patches and ``vars`` files
+[//]: # "{{{ 3.6. Patches and ``vars`` files"
+## 3.6. Patches and ``vars`` files
 
 Package patches are applied prior and/or subsequent to (GNU autotools or similar) package
 configuration during the ``configure_patch_pre`` and/or ``configure_patch`` build steps,
@@ -546,7 +511,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
                   [-r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]]        [-R]
 		  [-v] [-V [+]tag|pat[,..]]
 
-                  [--as-needed]  [--debug-minipix] [--dump-on-abort]  [--reset-state]
+                  [--as-needed] [--debug-minipix] [--reset-state]
                   [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64        Selects 32-bit or 64-bit architecture; defaults to nt64.
@@ -621,13 +586,11 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 
                             build_*.....: general build messages (viz.: begin, finish, finish_time, vars,)
                             group_*.....: build group messages (viz.: begin, finish,)
-                            pkg_*.......: package build messages (viz.: begin, faildump, finish, msg, skip, step, strip.)
+                            pkg_*.......: package build messages (viz.: begin, finish, msg, skip, step, strip.)
 
         --as-needed         Don't build unless the midipix_build repository has received
                             new commits.
         --debug-minipix     Don't strip(1) minipix binaries to facilitate debugging minipix.
-        --dump-on-abort     Produce package environment dump files on build failure to be
-                            used in conjuction with pkg_shell.sh script (excludes -R.)
         --reset-state       Reset package build step state on exit.
 
         <group>[ ..]        One of: dev_packages, dist, host_deps, host_deps_rpm,
@@ -857,7 +820,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | FlagLine			| String of {SP,VT}-separated flags, arguments, options, etc. pp. to a command                                                                 |
 | List(<sep>[,<sep\|type>..])	| \<sep\>-separated list, optionally recursively and/or sub-typing, e.g.: ``List(:,=,String)`` and ``"name=value:name2=value"``                |
 | PkgName			| Single name of package                                                                                                                       |
-| PkgRelation			| Single, possibly parametrised, package-package relation; see section [3.6](#36-package-package-and-packagegroup-group-relationships)         |
+| PkgRelation			| Single, possibly parametrised, package-package relation; see section [3.5](#35-package-package-and-packagegroup-group-relationships)         |
 | PkgVersion			| Single version of package                                                                                                                    |
 | Set(<type>)			| Set of alternatives of <type>, e.g. one of ``cross``, ``host``, ``native``                                                                   |
 | String			| Semantically generic string                                                                                                                  |
@@ -963,7 +926,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 ## 4.6. ``pkgtool.sh``
 
 ```
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-s|-t] [-v]
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-R|-t] [-v]
                     [<variable name>=<variable override>[ ..]] name
 
         -a nt32|nt64          Selects 32-bit or 64-bit architecture; defaults to nt64.
@@ -972,11 +935,7 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|
         -m <dname>            Setup package archives mirror in <dname> and/or
         -M <dname>            Setup Git repositories mirror in <dname>
         -r                    List reverse dependencies of single named package.
-        -s                    Enter interactive package build shell environment for single
-                              named package; requires a package dump file. If the package
-                              has not been built yet or built successfully, it will be rebuilt
-                              at build steps up until, by default, the `build' build step and
-                              forcibly aborted and dumped prior to enterting the shell.
+        -R                    List full reverse dependencies of single named package.
         -t                    Produce tarball of package build root directory and build log
                               file for the purpose of distribution given build failure.
         -v                    Increase verbosity.

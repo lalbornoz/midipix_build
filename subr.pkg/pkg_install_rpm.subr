@@ -1,0 +1,66 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+pkg_install_rpm() {
+	local	_pir_group_name="${1}" _pir_pkg_name="${2}" _pir_restart_at="${3}"	\
+		_pir_pkg_url="" _pir_pkg_version_full="" _pir_pkg_version_rpm=""	\
+		_pir_rc=0;
+
+	if rtl_lmatch \$ARG_DIST "rpm" ","\
+	&& [ "${PKG_RPM_DISABLE:-0}" -eq 0 ]\
+	&& command which rpmbuild >/dev/null 2>&1;
+	then
+		if [ "${PKG_URL:+1}" = 1 ]; then
+			_pir_pkg_url="${PKG_URL%% *}"; _pir_pkg_version_full="${PKG_VERSION}"; _pir_pkg_version_rpm="${PKG_VERSION%%-*}";
+		elif [ "${PKG_URLS_GIT:+1}" = 1 ]; then
+			_pir_pkg_version_rpm="$(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse HEAD)";
+			_pir_pkg_version_full="${_pir_pkg_version_rpm} ($(cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && git rev-parse --abbrev-ref HEAD))";
+			_pir_pkg_url="${PKG_URLS_GIT%% *}"; _pir_pkg_url="${_pir_pkg_url##*=}"; _pir_pkg_url="${_pir_pkg_url%%@*}";
+
+			if [ "${_pir_pkg_url#${DEFAULT_GITROOT_HEAD}}" != "${_pir_pkg_url}" ]; then
+				_pir_pkg_url="Unknown";
+			fi;
+		fi;
+
+		if ! rtl_fileop cp "${MIDIPIX_BUILD_PWD}/etc/package.spec"	\
+				"${PKG_BASE_DIR}/${PKG_NAME}-${_pir_pkg_version_rpm}.spec";
+		then
+			return 1;
+		else
+			while true; do
+				rpmbuild									\
+					-bb									\
+					--define="_tmppath ${BUILD_WORKDIR}"					\
+					--define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${_pir_pkg_version_rpm}"	\
+					--define="pkg_destdir ${PKG_DESTDIR}"					\
+					--define="pkg_name ${PKG_NAME}"						\
+					--define="pkg_url ${_pir_pkg_url}"					\
+					--define="pkg_version_full ${_pir_pkg_version_full}"			\
+					--define="pkg_version_rpm ${_pir_pkg_version_rpm}"			\
+					--nodeps "${PKG_BASE_DIR}/${PKG_NAME}-${_pir_pkg_version_rpm}.spec";
+				_pir_rc="${?}";
+
+				if [ "${_pir_rc}" -eq 0 ]; then
+					break;
+				elif [ "${_pir_rc}" -eq 141 ]; then
+					continue;
+				else
+					return "${_pir_rc}";
+				fi;
+			done;
+
+			if ! find "${PREFIX_RPM}/${PKG_NAME}-${_pir_pkg_version_rpm}/RPMS"	\
+				-iname \*.rpm -exec cp -pP {} "${PREFIX_RPM}/" \;		\
+			|| ! rtl_fileop rm "${PREFIX_RPM}/${PKG_NAME}-${_pir_pkg_version_rpm}"	\
+			|| ! rtl_fileop cp "${PKG_BASE_DIR}/${PKG_NAME}-${_pir_pkg_version_rpm}.spec" "${PREFIX_RPM}/";
+			then
+				return 1;
+			fi;
+		fi;
+	fi;
+
+	return 0;
+};
+
+# vim:filetype=sh

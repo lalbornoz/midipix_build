@@ -2,7 +2,7 @@
 # Build group native_packages (etc)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
+rtl_lconcat \$NATIVE_PACKAGES_PACKAGES "
 apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer icoutils imagemagick infounzip infozip
@@ -10,7 +10,7 @@ john lbreakout2 lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 php popt potrace procps_ng qemu
 qpdf qrencode rpm rw sdlquake shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
-zstd")";
+zstd";
 : ${PKG_APR_SHA256SUM:=a67ca9fcf9c4ff59bce7f428a323c8b5e18667fdea7b0ebad47d194371b0a105};
 : ${PKG_APR_VERSION:=1.6.5};
 : ${PKG_APR_URL:=http://ftp.fau.de/apache/apr/apr-${PKG_APR_VERSION}.tar.bz2};

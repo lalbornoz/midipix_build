@@ -2,11 +2,11 @@
 # Build group native_packages (cmdline)
 #
 GROUP_TARGET="native_packages";
-NATIVE_PACKAGES_PACKAGES="$(rtl_lconcat "${NATIVE_PACKAGES_PACKAGES}" "
+rtl_lconcat \$NATIVE_PACKAGES_PACKAGES "
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
 findutils gawk gcal grep html_xml_utils jush lzop mawk mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh
-the_silver_searcher toilet tree terminally_tetris ubase which zsh")";
+the_silver_searcher toilet tree terminally_tetris ubase which zsh";
 : ${PKG_BAS_DEPENDS:="ncurses"};
 : ${PKG_BAS_SHA256SUM:=ec45efa90aaa7f15647fe7898fa0789ba26dc8e10b7ecf8e049b1310f626b884};
 : ${PKG_BAS_VERSION:=2.6};

@@ -1,0 +1,178 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+#
+# exp_pkg_env_defaults() - set package variable defaults for single named package
+# @_build_steps_default:	list of default build steps
+# @_pkg_name:			single package name
+# @_workdir:			pathname to build-specific temporary directory
+#
+# Return:			zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_env_defaults() {
+	local _epped_build_steps_default="${1}" _epped_pkg_name="${2}" _epped_workdir="${3}";
+
+	: ${PKG_NAME:="${_epped_pkg_name}"};
+	: ${MIDIPIX_BUILD_PWD:="$(pwd)"};
+	: ${PKG_BASE_DIR:="${_epped_workdir}/${_epped_pkg_name}-${PKG_BUILD_TYPE}-${PKG_TARGET}"};
+
+	if [ "${PKG_BUILD_STEPS_DISABLE:+1}" = 1 ]; then
+		rtl_lfilter2 \$_epped_build_steps_default \$PKG_BUILD_STEPS "${PKG_BUILD_STEPS_DISABLE:-}";
+	else
+		: ${PKG_BUILD_STEPS:="${_epped_build_steps_default}"};
+	fi;
+
+	if [ "${PKG_URL:+1}" = 1 ]; then
+		: ${PKG_FNAME:="${PKG_URL##*/}"};
+	fi;
+
+	if [ "${PKG_SUBDIR:+1}" != 1 ]; then
+		if [ "${PKG_URLS_GIT:+1}" = 1 ]\
+		&& [ "${PKG_FNAME:+1}" = 1 ]; then
+			rtl_log_msg "fatalexit" "${MSG_pkg_fail_missing_vars}";
+		elif [ "${PKG_URLS_GIT:+1}" = 1 ]; then
+			PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
+		else case "${PKG_FNAME:-}" in
+		*.t*)	PKG_SUBDIR="${PKG_FNAME%%.t*}"; ;;
+		*)	PKG_SUBDIR="${_epped_pkg_name}"; ;;
+		esac; fi;
+	fi;
+
+	if [ "${PKG_BUILD_DIR:+1}" != 1 ]; then
+		case "${PKG_IN_TREE:-0}" in
+		0) PKG_BUILD_DIR="obj"; ;;
+		1) PKG_BUILD_DIR="${PKG_SUBDIR}"; ;;
+		esac;
+	fi;
+
+	PKG_BUILD_DIR="${PKG_BASE_DIR}/${PKG_BUILD_DIR}";
+	PKG_CONFIGURE="${PKG_BASE_DIR}/${PKG_CONFIGURE:-${PKG_SUBDIR}/configure}";
+	PKG_DESTDIR="${PKG_BASE_DIR}/${PKG_DESTDIR:-destdir}";
+	PKG_DESTDIR_HOST="${PKG_BASE_DIR}/${PKG_DESTDIR_HOST:-destdir_host}";
+
+	return 0;
+};
+
+#
+# exp_pkg_env_set() - set package variables for single named package
+# @_build_vars_default:	list of default build variables
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+#
+# Sets package variables from either defaults, defaults specific to build type,
+# build group, package to inherit from if any, or package for a single named
+# package, and exports variables optionally named in ${PKG_ENV_VARS_EXTRA}.
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_env_set() {
+	local	_eppes_build_vars_default="${1}" _eppes_group_name="${2}" _eppes_pkg_name="${3}"		\
+		_eppes_cmd_name="" _eppes_lvars="" _eppes_var_prefixes="" _eppes_vars_set=""			\
+		_eppes_vars_unset="" _eppes_vname="" _eppes_vnames="" IFS IFS0;
+
+	rtl_set_vars _eppes_vars_set BUILD_TYPE "DEFAULT ${_eppes_group_name} PKG_${_eppes_pkg_name}";
+	rtl_set_vars _eppes_vars_set INHERIT_FROM "PKG_${_eppes_pkg_name}";
+	_eppes_var_prefixes="DEFAULT DEFAULT_${PKG_BUILD_TYPE} ${_eppes_group_name}";
+	rtl_toupper \$_eppes_var_prefixes;
+	rtl_lfilter2 \$_eppes_build_vars_default \$_eppes_vnames BUILD_TYPE;
+
+	for _eppes_vname in ${_eppes_vnames}; do
+		if [ "${PKG_INHERIT_FROM:+1}" = 1 ]; then
+			_eppes_lvars="PKG_${PKG_INHERIT_FROM} PKG_${PKG_INHERIT_FROM}_${BUILD_KIND} PKG_${_eppes_pkg_name} PKG_${_eppes_pkg_name}_${BUILD_KIND}";
+			rtl_toupper \$_eppes_lvars;
+			rtl_lconcat2 \$_eppes_lvars \$_eppes_var_prefixes "${_eppes_lvars}";
+			rtl_set_vars _eppes_vars_set "${_eppes_vname}" "${_eppes_lvars}";
+		else
+			_eppes_lvars="PKG_${_eppes_pkg_name} PKG_${_eppes_pkg_name}_${BUILD_KIND}";
+			rtl_toupper \$_eppes_lvars;
+			rtl_lconcat2 \$_eppes_lvars \$_eppes_var_prefixes "${_eppes_lvars}";
+			rtl_set_vars _eppes_vars_set "${_eppes_vname}" "${_eppes_lvars}";
+		fi;
+	done;
+
+	IFS0="${IFS:- }"; IFS=":"; for _eppes_vname in ${PKG_ENV_VARS_EXTRA:-}; do
+		export "${_eppes_vname}";
+	done; IFS="${IFS0}";
+
+	for _eppes_vname in AR CC CXX PKG_CONFIG RANLIB; do
+		if eval [ '"${PKG_'"${_eppes_vname}"':+1}"' = 1 ]\
+		&& eval [ '"${PKG_'"${_eppes_vname}"'#/}"' = '"${_eppes_cmd_name:=${PKG_'"${_eppes_vname}"'}}"' ]; then
+			eval PKG_${_eppes_vname}='$(which "${_eppes_cmd_name}")';
+		fi; _eppes_cmd_name="";
+	done;
+
+	return 0;
+};
+
+#
+# ex_pkg_env() - set package variables for single named package
+# @_build_steps_default:	list of default build steps
+# @_build_vars_default:		list of default build variables
+# @_group_name:			build group name
+# @_pkg_name:			single package name
+# @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL or LAST
+# @_workdir:			pathname to build-specific temporary directory
+#
+# Return:			zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_env() {
+	local	_epe_build_steps_default="${1}" _epe_build_vars_default="${2}" _epe_group_name="${3}"	\
+		_epe_pkg_name="${4}" _epe_restart_at="${5}" _epe_workdir="${6}"				\
+		_epe_inherit_from="" _epe_vars_file="" _epe_vname="";
+
+	if rtl_get_var_unsafe \$_epe_inherit_from -u "PKG_${_epe_pkg_name}_INHERIT_FROM"\
+	&& [ "${_epe_inherit_from:+1}" = 1 ]; then
+		rtl_get_var_unsafe \$_epe_vars_file -u "PKG_${_epe_inherit_from}_VARS_FILE";
+	else
+		rtl_get_var_unsafe \$_epe_vars_file -u "PKG_${_epe_pkg_name}_VARS_FILE";
+	fi;
+	if [ "${_epe_vars_file:+1}" != 1 ]; then
+		_epe_vars_file="vars/${_epe_pkg_name}.vars";
+	fi;
+
+	rtl_fileop source_opt "${_epe_vars_file}" "${_epe_group_name}/${_epe_pkg_name}.${_epe_group_name}";
+	if ! exp_pkg_env_set "${_epe_build_vars_default}" "${_epe_group_name}" "${_epe_pkg_name}"\
+	|| ! exp_pkg_env_defaults "${_epe_build_steps_default}" "${_epe_pkg_name}" "${_epe_workdir}"; then
+		return 1;
+	fi;
+
+	return 0;
+};
+
+#
+# ex_pkg_state_set() - update build step status for single named package
+# @_pkg_name:		single package name
+# @_build_step:		build step set status of
+# [@${@}]:		optional list of build steps to invalidate status of
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_state_set() {
+	rtl_state_set "${BUILD_WORKDIR}" "${@}";
+};
+
+
+ex_pkg_state_set2() {
+	local _epss2_workdir="${1}"; shift;
+	rtl_state_set "${_epss2_workdir}" "${@}";
+};
+
+#
+# ex_pkg_state_test() - test build step status of single named package
+# @_pkg_name:		single package name
+# @_build_step:		build step to test status of
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+ex_pkg_state_test() {
+	rtl_state_test "${BUILD_WORKDIR}" "${@}";
+};
+
+ex_pkg_state_test2() {
+	local _epst2_workdir="${1}"; shift;
+	rtl_state_test "${_epst2_workdir}" "${@}";
+};
+
+# vim:filetype=sh

@@ -35,8 +35,8 @@
 #
 # Tag sets
 #
-LOG_TAGS_all="build,fileop,install,zipdist,xtrace,fatal,info,verbose,warning,build_begin,build_finish,build_finish_time,build_vars,group_begin,group_finish,pkg_begin,pkg_faildump,pkg_finish,pkg_msg,pkg_skip,pkg_step,pkg_strip";
-LOG_TAGS_normal="fatal,info,warning,build_begin,build_finish,build_finish_time,pkg_begin,pkg_faildump,pkg_finish,pkg_msg";
+LOG_TAGS_all="build,fileop,install,zipdist,xtrace,fatal,info,verbose,warning,build_begin,build_finish,build_finish_time,build_vars,group_begin,group_finish,pkg_begin,pkg_finish,pkg_msg,pkg_skip,pkg_step,pkg_strip";
+LOG_TAGS_normal="fatal,info,warning,build_begin,build_finish,build_finish_time,pkg_begin,pkg_finish,pkg_msg";
 LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}zipdist,verbose,build_vars,group_begin,group_finish,pkg_skip,pkg_step,pkg_strip";
 
 #
@@ -74,7 +74,6 @@ LOG_TAG_group_finish="4;92";		# Underline; Bright green
 # Package build tags
 #
 LOG_TAG_pkg_begin=93;			# Bright yellow
-LOG_TAG_pkg_faildump=93;		# Bright yellow
 LOG_TAG_pkg_finish=92;			# Bright green
 LOG_TAG_pkg_msg=90;			# Dark grey
 LOG_TAG_pkg_skip=36;			# Cyan

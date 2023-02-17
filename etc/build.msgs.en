@@ -18,8 +18,6 @@ MSG_group_begin="4;[%3d%%     ] [%03d/%03d] Starting \`%s' build group...";
 MSG_group_finish="4;[%3d%%     ] [%03d/%03d] Finished \`%s' build group.";
 
 MSG_pkg_begin="5;[%3d%%/%3d%%] [%03d/%03d] Starting \`%s' build...";
-MSG_pkg_faildump1="2;Logged environment dump for failed package \`%s' to \`%s'.";
-MSG_pkg_faildump2="4;Enter an interactive package build shell w/ the command line: ./pkgtool.sh -a %s -b %s \"%s\" PREFIX=\"%s\"";
 MSG_pkg_fail_missing_vars="Error: \${PKG_SUBDIR} must be specified given both \${PKG_FNAME} and \${PKG_URLS_GIT}.";
 MSG_pkg_finish="5;[%3d%%/%3d%%] [%03d/%03d] Finished \`%s' build.";
 MSG_pkg_msg="3;%s/%s: %s";

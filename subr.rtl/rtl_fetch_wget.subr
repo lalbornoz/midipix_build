@@ -1,0 +1,79 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+# N.B.	URLs ($1) may contain `?' or '&' characters.
+rtl_fetch_url_wget() {
+	local	_rfuw_urls="${1}" _rfuw_sha256sum_src="${2}" _rfuw_target_dname="${3}"		\
+		_rfuw_target_fname="${4}" _rfuw_target_name="${5}" _rfuw_mirrors="${6:-}"	\
+		_rfuw_rc=0 _rfuw_sha256sum_target="" _rfuw_target_fname_full="" _rfuw_url=""	\
+		_rfuw_url_base="" _rfuw_urls_count=0 _rfuw_urls_full="";
+
+	_rfuw_urls_full="${_rfuw_urls}";
+	for _rfuw_url_base in ${_rfuw_mirrors}; do
+		rtl_lconcat \$_rfuw_urls_full "${_rfuw_url_base%/}/${_rfuw_target_name}/${_rfuw_target_fname}";
+	done;
+	rtl_llength \$_rfuw_urls_count \$_rfuw_urls_full;
+
+	for _rfuw_url in ${_rfuw_urls_full}; do
+		if [ "${_rfuw_target_fname:+1}" != 1 ]; then
+			rtl_basename2 \$_rfuw_url \$_rfuw_target_fname;
+		fi;
+		_rfuw_target_fname_full="${_rfuw_target_dname}/${_rfuw_target_fname}";
+
+		(set +o errexit -o noglob -o nounset;
+		rtl_flock_acquire 4 || exit 1;
+		trap "_rfuw_rc=\"\${?}\"; rm -f \"${_rfuw_target_fname_full}.fetching\"; exit \"\${_rfuw_rc}\";" EXIT;
+
+		if [ "${_rfuw_sha256sum_src:+1}" != 1 ]\
+		|| ! rtl_check_digest_file "${_rfuw_target_fname_full}" "${_rfuw_sha256sum_src}" "${_rfuw_target_fname_full}.fetched"; then
+			wget ${DEFAULT_WGET_ARGS} -O "${_rfuw_target_fname_full}" "${_rfuw_url}"; _rfuw_rc="${?}";
+			if [ "${_rfuw_rc}" -ne 0 ]; then
+				exit $((${_rfuw_rc}+2));
+			elif [ "${_rfuw_sha256sum_src:+1}" = 1 ]\
+			&& ! rtl_check_digest \$_digest "${_rfuw_target_fname_full}" "${_rfuw_sha256sum_src}"; then
+				exit 2;
+			else
+				printf "%s" "${_digest}" > "${_rfuw_target_fname_full}.fetched"; exit 0;
+			fi;
+		else
+			exit 0;
+		fi;) 4<>"${_rfuw_target_fname_full}.fetching"; _rfuw_rc="${?}"; : $((_rfuw_urls_count-=1));
+
+		case "${_rfuw_rc}" in
+
+		0)	break; ;;
+
+		1)	if [ "${_rfuw_urls_count}" -ge 1 ]; then
+				rtl_log_msg "warning" "${MSG_rtl_fetch_lockfail_retryurl}" "${_rfuw_url}";
+			else
+				rtl_log_msg "fatal" "${MSG_rtl_fetch_lockfail}" "${_rfuw_url}";
+				rtl_fileop rm "${_rfuw_target_fname_full}"; break;
+			fi; ;;
+
+		2)	if [ "${_rfuw_urls_count}" -ge 1 ]; then
+				rtl_log_msg "warning" "${MSG_rtl_fetch_hashfail_retryurl}" "${_rfuw_url}" "${_rfuw_sha256sum_src}";
+			else
+				if _rfuw_sha256sum_target="$(sha256sum "${_rfuw_target_fname_full}" |\
+							awk '{print $1}' 2>/dev/null)"; then
+					rtl_log_msg "fatal" "${MSG_rtl_fetch_hashfail1}" "${_rfuw_url}" "${_rfuw_sha256sum_src}" "${_rfuw_sha256sum_target}";
+				else
+					rtl_log_msg "fatal" "${MSG_rtl_fetch_hashfail2}" "${_rfuw_url}" "${_rfuw_sha256sum_src}";
+				fi;
+				rtl_fileop rm "${_rfuw_target_fname_full}"; break;
+			fi; ;;
+
+		*)	if [ "${_rfuw_urls_count}" -ge 1 ]; then
+				rtl_log_msg "warning" "${MSG_rtl_fetch_fail_retryurl}" "${_rfuw_url}" "$((${_rfuw_rc}-2))";
+			else
+				rtl_log_msg "fatal" "${MSG_rtl_fetch_fail}" "${_rfuw_url}" "$((${_rfuw_rc}-2))";
+				rtl_fileop rm "${_rfuw_target_fname_full}"; break;
+			fi; ;;
+
+		esac;
+	done;
+
+	return "${_rfuw_rc}";
+};
+
+# vim:filetype=sh

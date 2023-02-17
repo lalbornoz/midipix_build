@@ -1,0 +1,219 @@
+#
+# set +o errexit -o noglob -o nounset is assumed.
+#
+
+#
+# exp_pkg_exec_pre() - XXX
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
+# @_workdir:		pathname to build-specific temporary directory
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_exec_pre() {
+	local _eppep_group_name="${1}" _eppep_pkg_name="${2}" _eppep_restart_at="${3}" _eppep_workdir="${4}";
+
+	if [ "${PKG_URL:+1}" != 1 ]\
+	&& [ "${PKG_URLS_GIT:+1}" != 1 ]\
+	&& [ "${PKG_VERSION:+1}" != 1 ]\
+	&& [ "${PKG_INSTALL_FILES:+1}" != 1 ]\
+	&& [ "${PKG_INSTALL_FILES_V2:+1}" != 1 ]\
+	&& ! rtl_test_cmd "pkg_${_eppep_pkg_name}_all";
+	then
+		"${_eppep_dispatch_fn}" missing_pkg "${_eppep_group_name}" "${_eppep_pkg_name}";
+		return 1;
+	elif ! ex_pkg_state_test2			\
+			"${_eppep_workdir}"		\
+			"${_eppep_pkg_name}" "start"	\
+			"${_eppep_restart_at}";
+	then
+		if [ "${PKG_NO_CLEAN_BASE_DIR:-0}" -eq 0 ]\
+		&& ! rtl_fileop rm "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"\
+		|| ! rtl_fileop mkdir "${PKG_BASE_DIR}";
+		then
+			return 1;
+		fi;
+
+		if ! rtl_fileop mkdir "${PKG_BUILD_DIR}" "${PKG_DESTDIR}"\
+		|| ! ex_pkg_state_set2 "${_eppep_workdir}" "${_eppep_pkg_name}" "start";
+		then
+			return 1;
+		fi;
+	elif ! rtl_exists_any "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"\
+	&&   ! rtl_fileop mkdir "${PKG_BASE_DIR}" "${PKG_BUILD_DIR}" "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}";
+	then
+		return 1
+	fi;
+
+	rtl_fileop cd "${PKG_BUILD_DIR}";
+	return "${?}";
+};
+
+#
+# exp_pkg_exec_step() - XXX
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
+# @_step:		build step to execute
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_exec_step() {
+	local	_eppes_group_name="${1}" _eppes_pkg_name="${2}" _eppes_restart_at="${3}"	\
+		_eppes_step="${4}"								\
+		_eppes_fn_name="" _eppes_pkg_step_fn="" _eppes_rc=0;
+
+	if rtl_test_cmd "pkg_${_eppes_pkg_name}_${_eppes_step}"; then
+		_eppes_pkg_step_fn="pkg_${_eppes_pkg_name}_${_eppes_step}";
+	else
+		_eppes_pkg_step_fn="pkg_${_eppes_step}";
+	fi;
+
+	for _eppes_fn_name in 						\
+			"pkg_${_eppes_pkg_name}_${_eppes_step}_pre"	\
+			"${_eppes_pkg_step_fn}"				\
+			"pkg_${_eppes_pkg_name}_${_eppes_step}_post";
+	do
+		if rtl_test_cmd "${_eppes_fn_name}"\
+		&& ! "${_eppes_fn_name}"					\
+				"${_eppes_group_name}" "${_eppes_pkg_name}"	\
+				"${_eppes_restart_at}";
+		then
+			_eppes_rc=1; break;
+		fi;
+	done;
+
+	return "${_eppes_rc}";
+};
+
+#
+# exp_pkg_exec() - XXX
+# @_dispatch_fn:	top-level dispatch function name
+# @_group_name:		build group name
+# @_pkg_name:		single package name
+# @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
+# @_workdir:		pathname to build-specific temporary directory
+#
+# Return:		zero (0) on success, non-zero (>0) on failure
+#
+exp_pkg_exec() {
+	local	_eppe_dispatch_fn="${1}" _eppe_group_name="${2}" _eppe_pkg_name="${3}"	\
+		_eppe_restart_at="${4}" _eppe_workdir="${5}"				\
+		_eppe_build_step_last="" _eppe_rc=0 _eppe_step="";
+
+	if ! exp_pkg_exec_pre						\
+			"${_eppe_group_name}" "${_eppe_pkg_name}"	\
+			"${_eppe_restart_at}" "${_eppe_workdir}"\
+	|| ! "${_eppe_dispatch_fn}"				\
+			start_pkg_child "${_eppe_group_name}"	\
+			"${_eppe_pkg_name}";
+	then
+		_eppe_rc=1;
+	elif rtl_test_cmd "pkg_${_eppe_pkg_name}_all"; then
+		"pkg_${_eppe_pkg_name}_all"				\
+			"${_eppe_group_name}" "${_eppe_pkg_name}"	\
+			"${_eppe_restart_at}";
+		_eppe_rc="${?}";
+	else
+		set -- ${PKG_BUILD_STEPS};
+		while [ ${#} -gt 0 ]; do
+			_eppe_step="${1}"; shift;
+
+			if [ "${#_eppe_restart_at}" -gt 0 ]\
+			&& [ "${_eppe_restart_at}" != "ALL" ]\
+			&& [ "${_eppe_restart_at}" != "LAST" ]\
+			&& ! rtl_lmatch \$_eppe_restart_at "${_eppe_step}" ","; then
+				continue;
+			fi;
+
+			if [ "${_eppe_step}" = "finish" ]; then
+				ex_pkg_state_set2 "${_eppe_workdir}" "${_eppe_pkg_name}" finish; break;
+			elif [ "${PKG_FORCE:-0}" -eq 0 ]\
+			&&   ex_pkg_state_test2 "${_eppe_workdir}" "${_eppe_pkg_name}" "${_eppe_step}" "${_eppe_restart_at}";
+			then
+				continue;
+			elif ! exp_pkg_exec_step					\
+					"${_eppe_group_name}" "${_eppe_pkg_name}"	\
+					"${_eppe_restart_at}" "${_eppe_step}";
+			then
+				_eppe_rc=1; break;
+			else	printf "step %s %s %s\n" "${_eppe_group_name}" "${_eppe_pkg_name}" "${_eppe_step}" >&3;
+				ex_pkg_state_set2 "${_eppe_workdir}" "${_eppe_pkg_name}" "${_eppe_step}" "${@}";
+			fi;
+		done;
+	fi;
+
+	return "${_eppe_rc}";
+};
+
+#
+# ex_pkg_exec() - dispatch single named packages
+# @_rdispatch_count:		reference to inout variable of dispatcher count
+# @_dispatch_count_cur:		current dispatcher count
+# @_dispatch_count_max:		maximum dispatcher count
+# @_dispatch_group_cur:		current group
+# @_dispatch_group_max:		maximum group
+# @_rdispatch_njobs:		reference to inout variable of dispatcher count
+# @_rdispatch_wait:		reference to inout variable of package names in a wait state
+# @_build_steps_default:	list of default build steps
+# @_build_vars_default:		list of default build variables
+# @_dispatch_fn:		top-level dispatch function name
+# @_group_name:			build group name
+# @_pipe_path:			pathname to parent-child process FIFO
+# @_pkg_name:			single package name
+# @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL or LAST
+# @_workdir:			pathname to build-specific temporary directory
+#
+# Return:			zero (0) on success, non-zero (>0) on failure.
+#
+ex_pkg_exec() {
+	local	_epdp_rdispatch_count="${1#\$}" _epdp_dispatch_count_cur="${2}" _epdp_dispatch_count_max="${3}"		\
+		_epdp_dispatch_group_cur="${4}" _epdp_dispatch_group_max="${5}" _epdp_rdispatch_njobs="${6#\$}"		\
+		_epdp_rdispatch_wait="${7#\$}" _epdp_build_steps_default="${8}" _epdp_build_vars_default="${9}"		\
+		_epdp_dispatch_fn="${10}" _epdp_group_name="${11}" _epdp_pipe_path="${12}" _epdp_pkg_name="${13}"	\
+		_epdp_restart_at="${14}" _epdp_workdir="${15}"								\
+		_epdp_dispatch_count_new=0 _epdp_perc_group=0 _epdp_perc_pkg=0;
+
+	rtl_percentage2 \$_epdp_dispatch_group_cur \$_epdp_dispatch_group_max \$_epdp_perc_group;
+	rtl_percentage2 \$_epdp_dispatch_count_cur \$_epdp_dispatch_count_max \$_epdp_perc_pkg;
+
+	eval _epdp_dispatch_count_new='$((${'"${_epdp_rdispatch_count}"'}+1))';
+	if "${_epdp_dispatch_fn}"				\
+			start_pkg "${_epdp_group_name}"		\
+			"${_epdp_pkg_name}"			\
+			"${_epdp_dispatch_count_new}"		\
+			"${_epdp_dispatch_count_max}"		\
+			"${_epdp_perc_group}" "${_epdp_perc_pkg}";
+	then
+		eval : '$(('${_epdp_rdispatch_njobs}'+=1))';
+		eval ${_epdp_rdispatch_count}=\"\${_epdp_dispatch_count_new}\";
+		rtl_lconcat "${_epdp_rdispatch_wait}" "${_epdp_pkg_name}";
+
+		(trap "if [ \${?} -eq 0 ]; then												\
+			printf \"done %s %s %d\n\" \"${_epdp_group_name}\" \"${_epdp_pkg_name}\" \"${_epdp_dispatch_count_new}\" >&3;	\
+		      else														\
+			printf \"fail %s %s %d\n\" \"${_epdp_group_name}\" \"${_epdp_pkg_name}\" \"${_epdp_dispatch_count_new}\" >&3;	\
+			pkill -U "${$}";												\
+		      fi;" EXIT HUP INT TERM USR1 USR2;
+		set +o errexit -o noglob -o nounset; BUILD_IS_PARENT=0; rtl_log_set_fname ""; rtl_log_set_no_attr 1;
+
+		if ex_pkg_env									\
+				"${_epdp_build_steps_default}" "${_epdp_build_vars_default}"	\
+				"${_epdp_group_name}" "${_epdp_pkg_name}"			\
+				"${_epdp_restart_at}" "${_epdp_workdir}";
+		then
+			exp_pkg_exec						\
+				"${_epdp_dispatch_fn}" "${_epdp_group_name}"	\
+				"${_epdp_pkg_name}" "${_epdp_restart_at}"	\
+				"${_epdp_workdir}";
+		else
+			return 1;
+		fi;) 1>"${_epdp_workdir}/${_epdp_pkg_name}_stderrout.log" 2>&1 3>"${_epdp_pipe_path}" &
+		return "${?}";
+	else
+		return 1;
+	fi;
+};
+
+# vim:filetype=sh

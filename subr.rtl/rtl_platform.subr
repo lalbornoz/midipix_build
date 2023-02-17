@@ -3,122 +3,164 @@
 #
 
 rtl_check_prereqs() {
-	local _cmd="" _cmds_missing="" _rc=0; _status="";
-	for _cmd in "${@}"; do
-		if ! which "${_cmd}" >/dev/null 2>&1; then
-			_cmds_missing="${_cmds_missing:+${_cmds_missing} }${_cmd}";
+	local	_rcp_rstatus="${1#\$}"	\
+		_rcp_cmd="" _rcp_cmds_missing="" _rcp_rc=0;
+	shift;
+
+	for _rcp_cmd in "${@}"; do
+		if ! which "${_rcp_cmd}" >/dev/null 2>&1; then
+			_rcp_cmds_missing="${_rcp_cmds_missing:+${_rcp_cmds_missing} }${_rcp_cmd}";
 		fi;
 	done;
-	if [ -n "${_cmds_missing}" ]; then
-		_rc=1; _status="Error: missing prerequisite package(s): ${_cmds_missing}";
+	if [ "${_rcp_cmds_missing:+1}" = 1 ]; then
+		_rcp_rc=1;
+		rtl_setrstatus "${_rcp_rstatus}" 'Error: missing prerequisite package(s): '"${_rcp_cmds_missing}";
 	fi;
-	return "${_rc}";
+	return "${_rcp_rc}";
 };
 
 rtl_clean_env() {
-	local _env_vars_except="${1}" _env_var="" _env_vars="";
-	_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
-	for _env_var in ${_env_vars}; do
-		if [ "${_env_var#DEFAULT_}" != "${_env_var}" ]\
-		|| [ "${_env_var#PKG_}" != "${_env_var}" ]; then
-			_env_vars_except="$(rtl_lconcat "${_env_vars_except}" "${_env_var}")";
+	local	_rce_env_vars_except="${1}"	\
+		_rce_env_var="" _rce_env_vars="" _rce_env_vars_unset="";
+
+	_rce_env_vars="$(export | sed -ne '/^export/{s/^export //;s/=.*$//p}')";
+
+	for _rce_env_var in ${_rce_env_vars}; do
+		if [ "${_rce_env_var#DEFAULT_}" != "${_rce_env_var}" ]\
+		|| [ "${_rce_env_var#PKG_}" != "${_rce_env_var}" ]; then
+			rtl_lconcat \$_rce_env_vars_except "${_rce_env_var}";
 		fi;
 	done;
-	rtl_unset_vars $(rtl_lfilter "${_env_vars}" "${_env_vars_except}");
+	rtl_lfilter2 \$_rce_env_vars \$_rce_env_vars_unset "${_rce_env_vars_except}";
+	rtl_unset_vars ${_rce_env_vars_unset};
+
+	return 0;
 };
 
 rtl_get_cpu_count() {
-	local _line="" _ncpus=0 _rc=0 _sname="$(uname -s 2>/dev/null)"; _status="";
-	case "${_sname}" in
+	local	_rgcc_rstatus="${1#\$}" _rgcc_rcount="${2#\$}"		\
+		_rgcc_line="" _rgcc_ncpus=0 _rgcc_rc=0 _rgcc_sname="";
+
+	_rgcc_sname="$(uname -s 2>/dev/null)" || return 1;
+	case "${_rgcc_sname}" in
+
 	Linux)	if [ ! -e "/proc/cpuinfo" ]; then
-			_rc=1; _status="Error: /proc/cpuinfo non-existent.";
-		else	while read -r _line; do
-				if rtl_match "${_line}" "processor*:"; then
-					: $((_ncpus+=1));
+			_rgcc_rc=1;
+			rtl_setrstatus "${_rgcc_rstatus}" 'Error: /proc/cpuinfo non-existent.';
+		else	while read -r _rgcc_line; do
+				if rtl_match "${_rgcc_line}" "processor*:"; then
+					: $((_rgcc_ncpus+=1));
 				fi;
-			done < /proc/cpuinfo; printf "%s" "${_ncpus}";
+			done < /proc/cpuinfo;
+			_rgcc_rc=0;
+			rtl_setrstatus "${_rgcc_rstatus}" "";
 		fi; ;;
-	*)	_rc=1; _status="Error: unknown platform \`${_sname}'."; ;;
-	esac; return "${_rc}";
+
+	*)	_rgcc_rc=1;
+		rtl_setrstatus "${_rgcc_rstatus}" 'Error: unknown platform \`'"${_rgcc_sname}"''\''.';
+		;;
+
+	esac;
+	eval ${_rgcc_rcount}='${_rgcc_ncpus}';
+	return "${_rgcc_rc}";
 };
 
 rtl_get_var_unsafe() {
-	local _vname="";
+	local	_rgvu_rvname_out="${1#\$}"	\
+		_rgvu_vname="";
+	shift;
+
 	if [ "x${1}" = "x-u" ]; then
-		shift; _vname="$(rtl_toupper "${1}")";
+		shift; _rgvu_vname="${1}"; rtl_toupper \$_rgvu_vname;
 	else
-		_vname="${1}";
+		_rgvu_vname="${1}";
 	fi;
-	eval echo \${${_vname}} 2>/dev/null;
+	eval ${_rgvu_rvname_out}="\${${_rgvu_vname}:-}";
+	return 0;
 };
 
 rtl_get_vars_fast() {
-	local _pattern="${1}";
-	set | awk -F= '/'"${_pattern}"'/{print $1}' | sort;
+	local _rgvf_pattern="${1}";
+
+	set | awk -F= '/'"${_rgvf_pattern}"'/{print $1}' | sort;
+	return 0;
 };
 
 rtl_kill_tree() {
-	local _pid="${1}" _signal="${2:-TERM}" _pid_child="" _pids="";
-	if _pids="$(pgrep -P "${_pid}")"\
-	&& [ -n "${_pids}" ]; then
-		for _pid_child in ${_pids}; do
-			rtl_kill_tree "${_pid_child}" "${_signal}";
+	local	_rkt_rpids="${1#\$}" _rkt_pid="${2}" _rkt_signal="${3:-TERM}"	\
+		_rkt_pid_child="" _rkt_pids="";
+
+	if _rkt_pids="$(pgrep -P "${_rkt_pid}")"\
+	&& [ "${_rkt_pids:+1}" = 1 ]; then
+		for _rkt_pid_child in ${_rkt_pids}; do
+			rtl_kill_tree "${_rkt_rpids}" "${_rkt_pid_child}" "${_rkt_signal}";
 		done;
 	fi;
-	if [ "${_pid:-0}" -ne "${$}" ]\
-	&& kill "-${_signal}" "${_pid}" 2>/dev/null; then
-		RTL_KILL_TREE_PIDS="$(rtl_lconcat "${RTL_KILL_TREE_PIDS}" "${_pid}")";
+	if [ "${_rkt_pid:-0}" -ne "${$}" ]\
+	&& kill "-${_rkt_signal}" "${_rkt_pid}" 2>/dev/null; then
+		rtl_lconcat "${_rkt_rpids}" "${_rkt_pid}";
 	fi;
+	return 0;
 };
 
 rtl_prompt() {
-	local _fmt="${1}" _choice=""; shift;
-	printf "${_fmt}? (y|N) " "${@}";
-	read -r _choice;
-	case "${_choice}" in
-	[yY])	_choice=1; ;;
-	*)	_choice=0; ;;
+	local rp_fmt="${1}" rp_choice=""; shift;
+
+	printf "${rp_fmt}? (y|N) " "${@}";
+	read -r rp_choice;
+	case "${rp_choice}" in
+	[yY])	rp_choice=1; ;;
+	*)	rp_choice=0; ;;
 	esac;
-	return "${_choice}";
+	return "${rp_choice}";
 };
 
 rtl_rc() {
-	local _nflag="${1}" _cmd="${2}"; shift 2;
-	case "${_nflag}" in
+	local _rr_nflag="${1}" _rr_cmd="${2}";
+	shift 2;
+
+	case "${_rr_nflag}" in
 	1)	     if [ "${#}" -gt 0 ]; then
-			rtl_log_msg "verbose" "${MSG_rtl_platform_rc1}" "${_cmd}" "${*}";
+			rtl_log_msg "verbose" "${MSG_rtl_platform_rc1}" "${_rr_cmd}" "${*}";
 		else
-			rtl_log_msg "verbose" "${MSG_rtl_platform_rc2}" "${_cmd}";
+			rtl_log_msg "verbose" "${MSG_rtl_platform_rc2}" "${_rr_cmd}";
 		fi; ;;
-	*)	"${_cmd}" "${@}";
+	*)	"${_rr_cmd}" "${@}"; ;;
 	esac;
+	return 0;
 };
 
 rtl_run_cmd_unsplit() {
-	local _cmd="${1}" _cmdline="" _rc="" IFS; shift;
+	local	_rrcu_cmd="${1}"	\
+		_rrcu_cmdline="" _rrcu_rc="" IFS;
+	shift;
+
 	while [ ${#} -gt 0 ]; do
-		[ -n "${1}" ] &&\
-			_cmdline="${_cmdline:+${_cmdline}:}${1}";
+		[ "${1:+1}" = 1 ] &&\
+			_rrcu_cmdline="${_rrcu_cmdline:+${_rrcu_cmdline}:}${1}";
 		shift;
 	done;
-	IFS=:; ${_cmd} ${_cmdline}; _rc=$?;
-	return ${_rc};
+	IFS=:; ${_rrcu_cmd} ${_rrcu_cmdline}; _rrcu_rc=$?;
+	return ${_rrcu_rc};
 };
 
 rtl_set_vars() {
-	local	_vars_set_vname="${1}" _vname_dst="${2}" _vname_src_tmpls="${3}"	\
-		_vars_set_old="" _vars_set_tmp="" _vname_src="";
+	local	_rsv_vars_set_vname="${1}" _rsv_vname_dst="${2}" _rsv_vname_src_tmpls="${3}"	\
+		_rsv_vars_set_old="" _rsv_vars_set_tmp="" _rsv_vname_src="" _rsv_vnames_src="";
 
-	for _vname_src in $(rtl_toupper "${_vname_src_tmpls}"); do
-		_vname_src="${_vname_src}_${_vname_dst}";
-		eval _vval_src='${'"${_vname_src}"':-}';
-		if [ "${_vval_src:+1}" = 1 ]; then
-			eval PKG_${_vname_dst}='${_vval_src}';
-			_vars_set_tmp="${_vars_set_tmp:+${_vars_set_tmp} }PKG_${_vname_dst}";
+	rtl_toupper2 \$_rsv_vname_src_tmpls \$_rsv_vnames_src;
+	for _rsv_vname_src in ${_rsv_vnames_src}; do
+		_rsv_vname_src="${_rsv_vname_src}_${_rsv_vname_dst}";
+		eval _rsv_vval_src="\${${_rsv_vname_src}:-}";
+		if [ "${_rsv_vval_src:+1}" = 1 ]; then
+			eval PKG_${_rsv_vname_dst}='${_rsv_vval_src}';
+			_rsv_vars_set_tmp="${_rsv_vars_set_tmp:+${_rsv_vars_set_tmp} }PKG_${_rsv_vname_dst}";
 		fi;
 	done;
-	eval _vars_set_old='${'"${_vars_set_vname}"'}';
-	rtl_set_var_unsafe "${_vars_set_vname}" "${_vars_set_old:+${_vars_set_old} }${_vars_set_tmp}";
+	eval _rsv_vars_set_old="\${${_rsv_vars_set_vname}}";
+	rtl_set_var_unsafe "${_rsv_vars_set_vname}" "${_rsv_vars_set_old:+${_rsv_vars_set_old} }${_rsv_vars_set_tmp}";
+
+	return 0;
 };
 
 # vim:filetype=sh

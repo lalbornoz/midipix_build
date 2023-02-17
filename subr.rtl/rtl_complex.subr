@@ -3,81 +3,75 @@
 #
 
 rtl_export_vars() {
-	local _unsetfl=0; [ "x${1}" = "x-u" ] && { _unsetfl=1; shift; };
+	local _rev_unsetfl=0;
+
+	if [ "x${1}" = "x-u" ]; then
+		_rev_unsetfl=1; shift;
+	fi;
 
 	while [ "${#}" -ge 2 ]; do
 		if [ "${2:+1}" = 1 ]\
-		|| [ "${_unsetfl}" -eq 1 ]; then
-			case "${_unsetfl}" in
-			0)	rtl_set_var_unsafe "${1}" "${2}"; export "${1}"; ;;
+		|| [ "${_rev_unsetfl}" -eq 1 ]; then
+			case "${_rev_unsetfl}" in
+			0)	rtl_set_var_unsafe "${1}" "${2}";
+				export "${1}"; ;;
 			1)	unset "${1}"; ;;
 			esac;
 		fi; shift 2;
 	done;
-};
 
-rtl_filter_vars() {
-	local _fn="${1}" _fnfl=0 _qchar="" _var_spec="" _vars="" _vname="" IFS;
-	rtl_set_IFS_nl;
-	for _var_spec in $(set); do
-		case "${_qchar}" in
-		"\"")	if [ "${_var_spec%\"}" != "${_var_spec}" ]; then
-				_qchar="";
-			fi;
-			if [ "${_fnfl:-0}" -eq 1 ]; then
-				_vars="$(rtl_lconcat "${_vars}" "${_var_spec}" "\n")";
-			fi;
-			continue; ;;
-		"\'")	if [ "${_var_spec%\'}" != "${_var_spec}" ]; then
-				_qchar="";
-			fi;
-			if [ "${_fnfl:-0}" -eq 1 ]; then
-				_vars="$(rtl_lconcat "${_vars}" "${_var_spec}" "\n")";
-			fi;
-			continue; ;;
-		*)	case "${_var_spec}" in
-			[!=]*=\"*\")	_qchar=""; _vname="${_var_spec%%=\"*}"; ;;
-			[!=]*=\"*)	_qchar="\""; _vname="${_var_spec%%=\"*}"; ;;
-			[!=]*=\'*\')	_qchar=""; _vname="${_var_spec%%=\'*}"; ;;
-			[!=]*=\'*)	_qchar="\'"; _vname="${_var_spec%%=\'*}"; ;;
-			[!=]*=*)	_qchar=""; _vname="${_var_spec%%=*}"; ;;
-			esac; ;;
-		esac;
-		if "${_fn}" "${_vname}"; then
-			_vars="${_vars:+${_vars}
-}${_var_spec}"; _fnfl=1;
-		else
-			_fnfl=0;
-		fi;
-	done;
-	printf "%s" "${_vars}";
+	return 0;
 };
 
 rtl_head() {
-	local _pattern="${1}" _s="${2}";
+	local _rh_pattern="${1}" _rh_s="${2}" _rh_rs_out="${3#\$}";
+
 	while true; do
-		if [ "${_s%%${_pattern}}" = "${_s}" ]; then
+		if [ "${_rh_s%%${_rh_pattern}}" = "${_rh_s}" ]; then
 			break;
 		else
-			_s="${_s%%${_pattern}}";
+			_rh_s="${_rh_s%%${_rh_pattern}}";
 		fi;
 	done;
-	printf "%s" "${_s}";
+
+	eval ${_rh_rs_out}='${_rh_s}';
+	return 0;
 };
 
 rtl_percentage() {
-	local _in="${1}" _max="${2}" _perc;
-	_perc="$((100 * ${_in} + ${_max} / 2))";
-	_perc="$((${_perc} ? ${_perc} / ${_max} : ${_perc}))";
-	printf "%d\n" "${_perc}";
+	local	_rp_in="${1}" _rp_max="${2}" _rp_rs_out="${3#\$}"	\
+		_rp_perc;
+
+	_rp_perc=$((100 * ${_rp_in} + ${_rp_max} / 2));
+	_rp_perc=$((${_rp_perc} ? ${_rp_perc} / ${_rp_max} : ${_rp_perc}));
+
+	eval ${_rp_rs_out}='${_rp_perc}';
+	return 0;
+};
+
+rtl_percentage2() {
+	local	_rp_rin="${1#\$}" _rp_rmax="${2#\$}" _rp_rs_out="${3#\$}"	\
+		_rp_in=0 _rp_max=0 _rp_perc;
+
+	eval _rp_in=\"\${${_rp_rin}}\";
+	eval _rp_max=\"\${${_rp_rmax}}\";
+
+	_rp_perc=$((100 * ${_rp_in} + ${_rp_max} / 2));
+	_rp_perc=$((${_rp_perc} ? ${_rp_perc} / ${_rp_max} : ${_rp_perc}));
+
+	eval ${_rp_rs_out}='${_rp_perc}';
+	return 0;
 };
 
 rtl_sunset() {
 	local _rs_rset="${1#\$}" _rs_kname="" IFS=" 	";
-	eval set -- '${'"${_rs_rset}"'}';
+
+	eval set -- "\${${_rs_rset}}";
 	while [ "${#}" -gt 0 ]; do
 		unset "${_rs_rset}${_rs_kname}"; shift;
 	done; unset "${_rs_rset}";
+
+	return 0;
 };
 
 # vim:filetype=sh

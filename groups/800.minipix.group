@@ -1,8 +1,8 @@
 #
 # Build group minipix
 #
-MINIPIX_CFLAGS_CONFIGURE="$(rtl_lconcat "${DEFAULT_CFLAGS}" "--sysroot=${PREFIX_NATIVE}")";
-MINIPIX_CXXFLAGS_CONFIGURE="$(rtl_lconcat "${DEFAULT_CXXFLAGS}" "--sysroot=${PREFIX_NATIVE}")";
+rtl_lconcat2 \$MINIPIX_CFLAGS_CONFIGURE \$DEFAULT_CFLAGS "--sysroot=${PREFIX_NATIVE}";
+rtl_lconcat2 \$MINIPIX_CXXFLAGS_CONFIGURE \$DEFAULT_CXXFLAGS "--sysroot=${PREFIX_NATIVE}";
 MINIPIX_CONFIG_CACHE_LOCAL="${CONFIG_CACHE_GNULIB}";
 MINIPIX_CONFIGURE_ARGS="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET}";
 MINIPIX_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools native_packages native_toolchain native_tools";
