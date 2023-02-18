@@ -285,15 +285,21 @@ pkgtoolp_mirror_fetch() {
 		rtl_log_msg "verbose" "${MSG_pkgtool_pkg_disabled}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 	else
 		if rtl_get_var_unsafe \$_ppmf_pkg_url -u "PKG_${_ppmf_pkg_name_real}_URL"\
-		&& rtl_get_var_unsafe \$_ppmf_pkg_sha256sum -u "PKG_${_ppmf_pkg_name_real}_SHA256SUM"; then
+		&& rtl_get_var_unsafe \$_ppmf_pkg_sha256sum -u "PKG_${_ppmf_pkg_name_real}_SHA256SUM"\
+		&& [ "${_ppmf_pkg_url:+1}" = 1 ]\
+		&& [ "${_ppmf_pkg_sha256sum:+1}" = 1 ];
+		then
+
 			if [ "${_ppmf_mirror_dname:+1}" != 1 ]; then
 				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_archive_mirror}" "${_ppmf_pkg_name}";
+
 			elif [ "${_ppmf_pkg_name}" != "${_ppmf_pkg_name_real}" ]; then
 				rtl_log_msg "info" "${MSG_pkgtool_pkg_archive_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_url}";
 				if ! rtl_fileop ln_symbolic "${_ppmf_pkg_name_real}" "${_ppmf_mirror_dname}/${_ppmf_pkg_name}"; then
 					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"\
 							"${_ppmf_mirror_dname}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 				fi;
+
 			else
 				if ! rtl_get_var_unsafe \$_ppmf_pkg_fname -u "PKG_${_ppmf_pkg_name_real}_FNAME"; then
 					_ppmf_pkg_fname="${_ppmf_pkg_url##*/}";
@@ -306,20 +312,27 @@ pkgtoolp_mirror_fetch() {
 					rtl_fetch_clean_dlcache "${_ppmf_mirror_dname}" "${_ppmf_pkg_name}" "${_ppmf_pkg_fname}" "${_ppmf_pkg_urls_git}";
 				fi;
 			fi;
+
 		fi;
 
-		if rtl_get_var_unsafe \$_ppmf_pkg_urls_git -u "PKG_${_ppmf_pkg_name_real}_URLS_GIT"; then
+		if rtl_get_var_unsafe \$_ppmf_pkg_urls_git -u "PKG_${_ppmf_pkg_name_real}_URLS_GIT"\
+		&& [ "${_ppmf_pkg_urls_git:+1}" = 1 ];
+		then
+
 			if [ "${_ppmf_mirror_dname_git:+1}" != 1 ]; then
 				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_git_mirror}" "${_ppmf_pkg_name}";
+
 			elif rtl_get_var_unsafe \$_ppmf_pkg_mirrors_git -u "PKG_${_ppmf_pkg_name_real}_MIRRORS_GIT"\
 			&&   [ "${_ppmf_pkg_mirrors_git}" = "skip" ]; then
 				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_pkgtool_pkg_skip_git_mirror_disabled}" "${_ppmf_pkg_name}";
+
 			elif [ "${_ppmf_pkg_name}" != "${_ppmf_pkg_name_real}" ]; then
 				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_urls_git}";
 				if ! rtl_fileop ln_symbolic "${_ppmf_pkg_name_real}" "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"; then
 					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"\
 							"${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 				fi;
+
 			else
 				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_urls_git}";
 				if ! rtl_fileop mkdir "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"\
@@ -329,6 +342,7 @@ pkgtoolp_mirror_fetch() {
 					rtl_fetch_clean_dlcache "${_ppmf_mirror_dname_git}" "${_ppmf_pkg_name}" "${_ppmf_pkg_fname}" "${_ppmf_pkg_urls_git}";
 				fi;
 			fi;
+
 		fi;
 
 		if [ "${_ppmf_pkg_url:+1}" != 1 ]\
