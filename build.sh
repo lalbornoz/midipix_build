@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2016, 2017, 2018, 2019, 2020, 2021 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
+# Copyright (c) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 #
 
 # {{{ buildp_ast($_param)

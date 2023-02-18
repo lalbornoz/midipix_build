@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2020, 2021 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
+# Copyright (c) 2020, 2021, 2022, 2023 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 #
 
 # {{{ pkgtoolp_init($_rstatus)
