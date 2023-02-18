@@ -235,7 +235,7 @@ pkgtoolp_info() {
 pkgtoolp_mirror() {
 	local	_ppm_rstatus="${1}" _ppm_mirror_dname="${2}" _ppm_mirror_dname_git="${3}"	\
 		_ppm_group_name="" _ppm_groups="" _ppm_groups_noauto="" _ppm_pkg_name=""	\
-		_ppm_pkg_names="" _ppm_pkg_parent="" _ppm_rc=0;
+		_ppm_pkg_names="" _ppm_pkg_parent="" _ppm_pkgs_failed="" _ppm_rc=0;
 
 	umask 022;
 	rtl_subst \$_ppm_mirror_dname "~" "${HOME}";
@@ -261,10 +261,11 @@ pkgtoolp_mirror() {
 				if ! pkgtoolp_mirror_fetch					\
 						"${_ppm_rstatus}" "${_ppm_mirror_dname}"	\
 						"${_ppm_mirror_dname_git}" "${_ppm_pkg_name}"	\
-						"${_ppm_pkg_parent:-${_ppm_pkg_name}}";
+						"${_ppm_pkg_parent:-${_ppm_pkg_name}}"		\
+						\$_ppm_pkgs_failed;
 				then
 					_ppm_rc=1;
-					rtl_setrstatus "${_ppm_rstatus}" 'Warning: failed to mirror one or more packages.';
+					rtl_setrstatus "${_ppm_rstatus}" 'Warning: failed to mirror one or more packages: '"${_ppm_pkgs_failed}";
 				fi;
 			done;
 		done;
@@ -273,10 +274,10 @@ pkgtoolp_mirror() {
 	return "${_ppm_rc}";
 };
 # }}}
-# {{{ pkgtoolp_mirror_fetch($_rstatus, $_mirror_dname, $_mirror_dname_git, $_pkg_name)
+# {{{ pkgtoolp_mirror_fetch($_rstatus, $_mirror_dname, $_mirror_dname_git, $_pkg_name, $_pkg_name_real, $_rpkgs_failed)
 pkgtoolp_mirror_fetch() {
 	local	_ppmf_rstatus="${1}" _ppmf_mirror_dname="${2}" _ppmf_mirror_dname_git="${3}" _ppmf_pkg_name="${4}"	\
-		_ppmf_pkg_name_real="${5}"										\
+		_ppmf_pkg_name_real="${5}" _ppmf_rpkgs_failed="${6#\$}"							\
 		_ppmf_fname="" _ppmf_pkg_disabled=0 _ppmf_pkg_fname="" _ppmf_pkg_mirrors_git="" _ppmf_pkg_sha256sum=""	\
 		_ppmf_pkg_url="" _ppmf_pkg_urls_git="" _ppmf_rc=0;
 
@@ -315,7 +316,9 @@ pkgtoolp_mirror_fetch() {
 						"${_ppmf_pkg_fname}" "${_ppmf_pkg_name_real}"	\
 						"";
 				then
-					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_ppmf_pkg_name}";
+					_ppmf_rc=1;
+					rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_ppmf_pkg_name}";
+					rtl_lconcat "${_ppmf_rpkgs_failed}" "${_ppmf_pkg_name}";
 				else
 					rtl_fetch_clean_dlcache		\
 					       "${_ppmf_mirror_dname}"	\
@@ -341,15 +344,19 @@ pkgtoolp_mirror_fetch() {
 			elif [ "${_ppmf_pkg_name}" != "${_ppmf_pkg_name_real}" ]; then
 				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_urls_git}";
 				if ! rtl_fileop ln_symbolic "${_ppmf_pkg_name_real}" "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"; then
-					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"\
-							"${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
+					_ppmf_rc=1;
+					rtl_log_msg "warning" "${MSG_pkgtool_pkg_link_fail}"	\
+						"${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
+					rtl_lconcat "${_ppmf_rpkgs_failed}" "${_ppmf_pkg_name}";
 				fi;
 
 			else
 				rtl_log_msg "info" "${MSG_pkgtool_pkg_git_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_urls_git}";
 				if ! rtl_fileop mkdir "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"\
 				|| ! rtl_fetch_mirror_urls_git "${DEFAULT_GIT_ARGS}" "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" ${_ppmf_pkg_urls_git}; then
-					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_ppmf_pkg_name}";
+					_ppmf_rc=1;
+					rtl_log_msg "warning" "${MSG_pkgtool_pkg_mirror_fail}" "${_ppmf_pkg_name}";
+					rtl_lconcat "${_ppmf_rpkgs_failed}" "${_ppmf_pkg_name}";
 				else
 					rtl_fetch_clean_dlcache "${_ppmf_mirror_dname_git}" "${_ppmf_pkg_name}" "${_ppmf_pkg_fname}" "${_ppmf_pkg_urls_git}";
 				fi;
