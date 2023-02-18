@@ -157,4 +157,4 @@ rtl_toupper2() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

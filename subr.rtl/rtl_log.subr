@@ -105,4 +105,4 @@ rtl_log_set_no_attr() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

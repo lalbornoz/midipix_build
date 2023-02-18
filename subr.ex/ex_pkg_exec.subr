@@ -216,4 +216,4 @@ ex_pkg_exec() {
 	fi;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

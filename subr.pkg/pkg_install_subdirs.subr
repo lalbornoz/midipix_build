@@ -23,4 +23,4 @@ pkg_install_subdirs() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

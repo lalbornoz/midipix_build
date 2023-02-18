@@ -328,4 +328,4 @@ ex_pkg_process_restart_spec() {
 	return "${_epprs_rc}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

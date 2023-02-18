@@ -45,4 +45,4 @@ pkg_configure_patch_pre() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

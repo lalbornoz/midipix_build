@@ -76,4 +76,4 @@ rtl_fetch_url_wget() {
 	return "${_rfuw_rc}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

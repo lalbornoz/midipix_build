@@ -51,4 +51,4 @@ rtl_fetch_dlcache_subdir() {
 	fi;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

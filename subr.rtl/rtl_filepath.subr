@@ -140,4 +140,4 @@ rtl_is_newer() {
 	fi;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

@@ -88,4 +88,4 @@ rtl_install() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

@@ -34,4 +34,4 @@ pkg_install() {
 	fi;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

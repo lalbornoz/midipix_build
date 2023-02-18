@@ -175,4 +175,4 @@ ex_pkg_state_test2() {
 	rtl_state_test "${_epst2_workdir}" "${@}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

@@ -165,4 +165,4 @@ rtl_fileop() {
 	return "${_rf_rc}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

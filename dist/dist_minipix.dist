@@ -96,4 +96,4 @@ pkg_dist_minipix_all() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

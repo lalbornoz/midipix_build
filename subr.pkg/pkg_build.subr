@@ -64,4 +64,4 @@ pkg_build() {
 	return "${_pb_rc}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

@@ -63,4 +63,4 @@ pkg_install_rpm() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

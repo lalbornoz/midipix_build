@@ -129,4 +129,4 @@ rtl_fetch_urls_git() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

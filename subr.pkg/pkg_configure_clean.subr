@@ -18,4 +18,4 @@ pkg_configure_clean() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

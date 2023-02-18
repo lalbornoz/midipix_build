@@ -10,4 +10,4 @@ pkg_dist_gitref_all() {
 	return "${?}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

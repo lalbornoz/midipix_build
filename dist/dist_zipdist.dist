@@ -65,4 +65,4 @@ pkg_dist_zipdist_all() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

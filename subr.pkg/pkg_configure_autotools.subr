@@ -111,4 +111,4 @@ pkg_configure_autotools() {
 	return 0;
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

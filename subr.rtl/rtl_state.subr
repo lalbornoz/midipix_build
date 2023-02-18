@@ -52,4 +52,4 @@ rtl_state_test() {
 	return "${_rst_rc}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0

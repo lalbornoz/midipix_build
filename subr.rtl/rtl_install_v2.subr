@@ -597,4 +597,4 @@ rtl_install_v2() {
 	return "${_ri2_rc}";
 };
 
-# vim:filetype=sh
+# vim:filetype=sh textwidth=0
