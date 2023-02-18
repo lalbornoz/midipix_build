@@ -35,6 +35,7 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_CPARSER_CONFIGURE:=bcparser/configure};
 : ${PKG_CPARSER_CONFIGURE_ARGS:="--source-dir=../../cparser --prefix="};
 : ${PKG_CPARSER_NO_CLEAN_BASE_DIR:=1};
+: ${PKG_CPARSER_VARS_FILE:="vars/libfirm.vars"}
 : ${PKG_CSSC_SHA256SUM:=d1bed0c80246ee4cd49d0aa45307c075d0876fe531057bb1c8b28f5330d651ef};
 : ${PKG_CSSC_VERSION:=1.4.1};
 : ${PKG_CSSC_URL:=https://ftp.gnu.org/gnu/cssc/CSSC-${PKG_CSSC_VERSION}.tar.gz};

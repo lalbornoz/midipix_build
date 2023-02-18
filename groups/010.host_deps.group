@@ -118,6 +118,7 @@ HOST_DEPS_TOOLS_RPM_DISABLE=1;
 : ${PKG_GLIB_HOST_CFLAGS_BUILD_EXTRA:="-Wno-missing-include-dirs -Wno-format-nonliteral -Wno-format-overflow"};
 : ${PKG_GLIB_HOST_ENV_VARS_EXTRA:="LIBFFI_CFLAGS=-I${PREFIX}/lib/libffi-3.2.1/include:LIBFFI_LIBS=-L${PREFIX}/lib -lffi"};
 : ${PKG_GLIB_HOST_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX}/lib};
+: ${PKG_GLIB_HOST_VARS_FILE:="vars/glib.vars"}
 : ${PKG_GPERF_HOST_SHA256SUM:=588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2};
 : ${PKG_GPERF_HOST_VERSION:=3.1};
 : ${PKG_GPERF_HOST_URL:=https://ftp.gnu.org/gnu/gperf/gperf-${PKG_GPERF_HOST_VERSION}.tar.gz};
@@ -231,6 +232,7 @@ HOST_DEPS_TOOLS_RPM_DISABLE=1;
 : ${PKG_RUBY_HOST_CFLAGS_CONFIGURE:="-g0 -O1 -DHAVE_RL_USERNAME_COMPLETION_FUNCTION=1"};
 : ${PKG_RUBY_HOST_CONFIGURE_ARGS_EXTRA:="--disable-install-rdoc --with-out-ext=fiddle,openssl"};
 : ${PKG_RUBY_HOST_MAKEFLAGS_VERBOSITY:="none"};
+: ${PKG_RUBY_HOST_VARS_FILE:="vars/ruby.vars"}
 : ${PKG_SBSIGNTOOLS_HOST_DEPENDS:="binutils_build libressl_host util_linux_host"};
 : ${PKG_SBSIGNTOOLS_HOST_URLS_GIT:=sbsigntools-master=https://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git@master};
 : ${PKG_SBSIGNTOOLS_HOST_SUBDIR:=sbsigntools-master};
