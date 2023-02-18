@@ -119,14 +119,19 @@ exp_pkg_env_set() {
 ex_pkg_env() {
 	local	_epe_build_steps_default="${1}" _epe_build_vars_default="${2}" _epe_group_name="${3}"	\
 		_epe_pkg_name="${4}" _epe_restart_at="${5}" _epe_workdir="${6}"				\
-		_epe_inherit_from="" _epe_vars_file="" _epe_vname="";
+		_epe_inherit_from="" _epe_vars_file="" _epe_vars_file_parent="" _epe_vname="";
 
 	if rtl_get_var_unsafe \$_epe_inherit_from -u "PKG_${_epe_pkg_name}_INHERIT_FROM"\
 	&& [ "${_epe_inherit_from:+1}" = 1 ]; then
-		rtl_get_var_unsafe \$_epe_vars_file -u "PKG_${_epe_inherit_from}_VARS_FILE";
+		rtl_get_var_unsafe \$_epe_vars_file_parent -u "PKG_${_epe_inherit_from}_VARS_FILE";
+		rtl_get_var_unsafe \$_epe_vars_file -u "PKG_${_epe_pkg_name}_VARS_FILE";
+		if [ "${_epe_vars_file:+1}" != 1 ]; then
+			_epe_vars_file="${_epe_vars_file_parent}";
+		fi;
 	else
 		rtl_get_var_unsafe \$_epe_vars_file -u "PKG_${_epe_pkg_name}_VARS_FILE";
 	fi;
+
 	if [ "${_epe_vars_file:+1}" != 1 ]; then
 		_epe_vars_file="vars/${_epe_pkg_name}.vars";
 	fi;
