@@ -63,7 +63,9 @@ exp_pkg_expand_restart_at_spec() {
 
 	\<=*|\<*|\>=*|\>*)
 		exp_pkg_expand_restart_at_spec_cmp	\
-			"${_eperas_rset}" "${_eperas_rspec_at}"; _eperas_rc="${?}"; ;;
+			"${_eperas_rstatus}"		\
+			"${_eperas_rset}" "${_eperas_rspec_at}";
+		_eperas_rc="${?}"; ;;
 
 	*)
 		if ! exp_pkg_expand_restart_at_virtual				\
