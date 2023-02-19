@@ -123,7 +123,12 @@ ex_pkg_load_vars() {
 		nt64)	DEFAULT_TARGET="x86_64-nt64-midipix"; ;;
 		esac;
 
-		if [ "${PREFIX#/}" = "${PREFIX}" ]; then
+		if [ "${PREFIX_ROOT:+1}" ]\
+		&& [ "${PREFIX_ROOT#/}" = "${PREFIX_ROOT}" ]; then
+			PREFIX_ROOT="${PWD%/}/${PREFIX_ROOT}";
+		fi;
+		if [ "${PREFIX:+1}" ]\
+		&& [ "${PREFIX#/}" = "${PREFIX}" ]; then
 			PREFIX="${PWD%/}/${PREFIX}";
 		fi;
 
