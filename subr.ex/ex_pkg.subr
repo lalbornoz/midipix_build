@@ -103,13 +103,11 @@ ex_pkg_get_packages() {
 # @_rstatus:		out reference to status string
 # @_rbuild_arch:	in reference to build architecture
 # @_rbuild_kind:	in reference to build kind
-# @_rprefix:		in reference to absolute pathname to top-level prefix
 #
 # Return:	zero (0) on success, non-zero (>0) on failure, build variables post-return on success.
 #
 ex_pkg_load_vars() {
-	local	_eplv_rstatus="${1#\$}" _eplv_rbuild_arch="${2#\$}"	\
-		_eplv_rbuild_kind="${3#\$}" _eplv_rprefix="${4#\$}"	\
+	local	_eplv_rstatus="${1#\$}" _eplv_rbuild_arch="${2#\$}" _eplv_rbuild_kind="${3#\$}"	\
 		_eplv_build_arch="" _eplv_rc=0 _eplv_fname="";
 
 	if ! rtl_lmatch "${_eplv_rbuild_arch}" "nt32 nt64"; then
@@ -125,6 +123,10 @@ ex_pkg_load_vars() {
 		nt64)	DEFAULT_TARGET="x86_64-nt64-midipix"; ;;
 		esac;
 
+		if [ "${PREFIX#/}" = "${PREFIX}" ]; then
+			PREFIX="${PWD%/}/${PREFIX}";
+		fi;
+
 		for _eplv_fname in				\
 				"${HOME}/midipix_build.vars"	\
 				"${HOME}/.midipix_build.vars"	\
@@ -135,11 +137,6 @@ ex_pkg_load_vars() {
 				rtl_fileop source "${_eplv_fname}";
 			fi;
 		done;
-
-		if eval [ \"\${${_eplv_rprefix}:+1}\" != 1 ]; then
-			_eplv_rc=1;
-			rtl_setrstatus "${_eplv_rstatus}" '\${PREFIX} empty or unset.';
-		fi;
 	fi;
 
 	return "${_eplv_rc}";

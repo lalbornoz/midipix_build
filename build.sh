@@ -75,7 +75,7 @@ buildp_init() {
 	  		"${_bi_rstatus}" "buildp_init_getopts_fn"			\
 			"${_bi_optstring}" "${@}"					\
 	  || ! ex_init_logging "${_bi_rstatus}" \$ARG_VERBOSE_TAGS "${ARG_VERBOSE}"	\
-	  || ! ex_pkg_load_vars "${_bi_rstatus}" \$ARCH \$BUILD_KIND \$PREFIX		\
+	  || ! ex_pkg_load_vars "${_bi_rstatus}" \$ARCH \$BUILD_KIND			\
 	  || ! ex_init_prereqs "${_bi_rstatus}" "${DEFAULT_PREREQS}"			\
 	  || ! buildp_init_args "${_bi_rstatus}"					\
 	  || ! ex_init_files								\

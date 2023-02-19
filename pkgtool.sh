@@ -30,7 +30,7 @@ pkgtoolp_init() {
 			"${_pi_optstring}" "${@}"			\
 	  || ! ex_init_prereqs "${_pi_rstatus}" "${_pi_prereqs}"	\
 	  || ! ex_pkg_load_vars						\
-	  		"${_pi_rstatus}" \$ARCH \$BUILD_KIND \$PREFIX	\
+	  		"${_pi_rstatus}" \$ARCH \$BUILD_KIND		\
 	  || ! pkgtoolp_init_args "${_pi_rstatus}";
 	then
 		_pi_rc=1;
