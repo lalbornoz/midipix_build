@@ -144,6 +144,22 @@ rtl_run_cmd_unsplit() {
 	return ${_rrcu_rc};
 };
 
+rtl_set_var_from_cmdline() {
+	local	_rsvfc_rstatus="${1#\$}" _rsvfc_arg="${2}"	\
+		_rsvfc_rc=0 _rsvfc_vname="" _rsvfc_vval="";
+
+	_rsvfc_vname="${_rsvfc_arg%%=*}";
+	_rsvfc_vval="${_rsvfc_arg#*=}";
+
+	if [ "${_rsvfc_vval:+1}" != 1 ]; then
+		_rsvfc_rc=1;
+		rtl_setrstatus "${_rsvfc_rstatus}" 'empty value specified for \${'"${_rsvfc_vname}"'}.';
+	else
+		rtl_set_var_unsafe "${_rsvfc_vname}" "${_rsvfc_vval}";
+	fi;
+	return "${_rsvfc_rc}";
+};
+
 rtl_set_vars() {
 	local	_rsv_vars_set_vname="${1}" _rsv_vname_dst="${2}" _rsv_vname_src_tmpls="${3}"	\
 		_rsv_vars_set_old="" _rsv_vars_set_tmp="" _rsv_vname_src="" _rsv_vnames_src="";

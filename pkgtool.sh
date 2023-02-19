@@ -29,7 +29,8 @@ pkgtoolp_init() {
 	  		"${_pi_rstatus}" "pkgtoolp_init_getopts_fn"	\
 			"${_pi_optstring}" "${@}"			\
 	  || ! ex_init_prereqs "${_pi_rstatus}" "${_pi_prereqs}"	\
-	  || ! ex_pkg_load_vars "${_pi_rstatus}"			\
+	  || ! ex_pkg_load_vars						\
+	  		"${_pi_rstatus}" \$ARCH \$BUILD_KIND \$PREFIX	\
 	  || ! pkgtoolp_init_args "${_pi_rstatus}";
 	then
 		_pi_rc=1;
@@ -112,10 +113,16 @@ pkgtoolp_init_getopts_fn() {
 		shift 2;
 
 		case "${1}" in
-		*=*)	rtl_set_var_unsafe "${1%%=*}" "${1#*=}"; ;;
+		*=*)	rtl_set_var_from_cmdline "${_ppigf_rstatus}" "${1}";
+			_ppigf_rc="${?}"; ;;
 		*)	PKGTOOL_PKG_NAME="${1}"; ;;
 		esac;
-		_ppigf_shiftfl=1;
+
+		if [ "${_ppigf_rc}" -ne 0 ]; then
+			return "${_ppigf_rc}";
+		else
+			_ppigf_shiftfl=1;
+		fi;
 		;;
 
 	done)

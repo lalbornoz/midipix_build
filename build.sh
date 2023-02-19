@@ -75,7 +75,7 @@ buildp_init() {
 	  		"${_bi_rstatus}" "buildp_init_getopts_fn"			\
 			"${_bi_optstring}" "${@}"					\
 	  || ! ex_init_logging "${_bi_rstatus}" \$ARG_VERBOSE_TAGS "${ARG_VERBOSE}"	\
-	  || ! ex_pkg_load_vars "${_bi_rstatus}"					\
+	  || ! ex_pkg_load_vars "${_bi_rstatus}" \$ARCH \$BUILD_KIND \$PREFIX		\
 	  || ! ex_init_prereqs "${_bi_rstatus}" "${DEFAULT_PREREQS}"			\
 	  || ! buildp_init_args "${_bi_rstatus}"					\
 	  || ! ex_init_files								\
@@ -266,7 +266,8 @@ buildp_init_getopts_fn() {
 		;;
 
 	nonopt)
-		local _bpigf_verb="${1}" _bpigf_rstatus="${2#\$}";
+		local	_bpigf_verb="${1}" _bpigf_rstatus="${2#\$}"	\
+			_bpigf_vname="" _bpigf_vval="";
 		shift 2;
 
 		if rtl_match "${1}" "=*"; then
@@ -276,7 +277,9 @@ buildp_init_getopts_fn() {
 		fi;
 
 		case "${_bpigf_arg}" in
-		*=*)		rtl_set_var_unsafe "${_bpigf_arg%%=*}" "${_bpigf_arg#*=}"; ;;
+		*=*)		rtl_set_var_from_cmdline "${_bpigf_rstatus}" "${_bpigf_arg}";
+				_bpigf_rc="${?}";
+				;;
 
 		[!a-zA-Z]*)	_bpigf_rc=1;
 				rtl_setrstatus "${_bpigf_rstatus}" 'build group names must start with [a-zA-Z] (in argument \`'"${_bpigf_arg}"''\''.)';
@@ -472,6 +475,7 @@ build() {
 
 	if ! buildp_init \$_status "${@}"; then
 		_rc=0;
+		_status="Error: ${_status}";
 	else
 		buildp_time_init;
 		rtl_log_msg "build_begin" "${MSG_build_begin}" "${BUILD_USER}" "${BUILD_HNAME}" "${BUILD_DATE_START}";
