@@ -34,7 +34,6 @@ ex_pkg_check_depends() {
 
 		for _epcd_pkg_name_depend in ${_epcd_depends}; do
 			if ! rtl_lmatch "${_epcd_rpkg_disabled}" "${_epcd_pkg_name_depend}"\
-			&& ! rtl_lmatch "${_epcd_rpkg_finished}" "${_epcd_pkg_name_depend}"\
 			&& ! ex_pkg_state_test2 "${_epcd_workdir}" "${_epcd_pkg_name_depend}" finish;
 			then
 				if ! rtl_lmatch "${_epcd_rpkg_names}" "${_epcd_pkg_name_depend}"; then
