@@ -63,6 +63,9 @@ pkg_dist_zipdist_all() {
 		rtl_log_msg "zipdist" "${MSG_zipdist_signed}";
 	fi;
 
+	printf "step ${_pdza_group_name} ${_pdza_pkg_name} finish\n" >&3;
+	ex_pkg_state_set "${_pdza_pkg_name}" "finish";
+
 	return 0;
 };
 

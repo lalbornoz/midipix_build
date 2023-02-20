@@ -94,6 +94,9 @@ pkg_dist_minipix_all() {
 		return 1;
 	fi;
 
+	printf "step ${_pdma_group_name} ${_pdma_pkg_name} finish\n" >&3;
+	ex_pkg_state_set "${_pdma_pkg_name}" "finish";
+
 	return 0;
 };
 
