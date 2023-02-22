@@ -128,6 +128,7 @@ ex_init_getopts() {
 			;;
 		esac;
 
+		OPTIND=0;
 		if getopts "${_eig_optstring}" _eig_opt; then
 			"${_eig_fn}" opt "${_eig_rstatus}" "${_eig_opt}" "${OPTARG:-}" "${@}";
 			_eig_fn_rc="${?}";
