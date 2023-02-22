@@ -173,7 +173,8 @@ ex_init_getopts() {
 ex_init_help() {
 	local	_eih_rstatus="${1#\$}" _eih_args_long="${2}"	\
 		_eih_name_base="${3}" _eih_optstring="${4}"	\
-		_eih_arg_long="" _eih_opt="" _eih_shiftfl=0;
+		_eih_arg_long="" _eih_opt="" _eih_shiftfl=0	\
+		OPTIND;
 	shift 4;
 
 	while [ "${#}" -gt 0 ]; do
@@ -211,6 +212,7 @@ ex_init_help() {
 			;;
 		esac;
 
+		OPTIND=0;
 		if getopts "${_eih_optstring}" _eih_opt 2>/dev/null; then
 			case "${_eih_opt}" in
 			h)
