@@ -82,7 +82,9 @@ rtl_log_msg() {
 		_rlm3_tag="fatal"; _rlm3_exitfl=1;
 	fi;
 
-	if rtl_lmatch \$RTLP_LOG_TAGS "${_rlm3_tag}" ","; then
+	if [ "${_rlm3_tag}" = "fatal" ]\
+	|| rtl_lmatch \$RTLP_LOG_TAGS "${_rlm3_tag}" ",";
+	then
 		eval _rlm3_attr='${LOG_TAG_'"${_rlm3_tag}"':-}';
 		if [ "${#_rlm3_attr}" -eq 0 ]; then
 			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`${_rlm3_tag}' PASSED TO rtl_log_msg()[0m\n";

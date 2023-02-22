@@ -4,7 +4,6 @@
 
 # {{{ buildp_ast($_param)
 buildp_ast() {
-	trap '' HUP INT TERM USR1 USR2;
 	local	_bpa_param="${1}"				\
 		_bpa_cmd="" _bpa_pids="" _bpa_pids_new=""	\
 		_bpa_pids_niter=0 _bpa_pkg_name="";
@@ -17,6 +16,8 @@ buildp_ast() {
 			return 0;
 		fi;
 	done;
+
+	trap '' HUP INT TERM USR1 USR2;
 
 	if [ "${_bpa_param}" = "abort" ]; then
 		rtl_log_msg "fatalexit" "${MSG_build_aborted}";
