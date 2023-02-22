@@ -178,7 +178,16 @@ ex_init_help() {
 
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
-		-h|--help)
+			-h)
+			if [ -t 1 ]; then
+				cat "etc/${_eih_name_base}.usage.short";
+			else
+				sed 's/\[[0-9]\+m//g' "etc/${_eih_name_base}.usage.short";
+			fi;
+			exit 0;
+			;;
+
+		--help)
 			if [ -t 1 ]; then
 				cat "etc/${_eih_name_base}.usage";
 			else
@@ -206,9 +215,9 @@ ex_init_help() {
 			case "${_eih_opt}" in
 			h)
 				if [ -t 1 ]; then
-					cat "etc/${_eih_name_base}.usage";
+					cat "etc/${_eih_name_base}.usage.short";
 				else
-					sed 's/\[[0-9]\+m//g' "etc/${_eih_name_base}.usage";
+					sed 's/\[[0-9]\+m//g' "etc/${_eih_name_base}.usage.short";
 				fi;
 				exit 0;
 				;;
