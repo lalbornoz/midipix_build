@@ -1,0 +1,14 @@
+diff -ru moe-1.13.orig/configure moe-1.13/configure
+--- moe-1.13.orig/configure	2023-02-12 02:02:08.000000000 +0100
++++ moe-1.13/configure	2023-02-27 15:49:22.285591646 +0100
+@@ -23,9 +23,8 @@
+ sysconfdir='$(prefix)/etc'
+ CXX=g++
+ CPPFLAGS=
+-CXXFLAGS='-Wall -W -O2'
+ LDFLAGS=
+-LIBS=-lncurses
++LIBS='-lncurses -ltinfo'
+ MAKEINFO=makeinfo
+ 
+ # checking whether we are using GNU C++.
