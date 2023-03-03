@@ -32,28 +32,8 @@
  	nice afl-fuzz -i ../afl_in -o ../afl_out -- ./whois
  
  ##############################################################################
--install: install-whois install-mkpasswd install-pos
-+install: install-whois install-mkpasswd
+-install: install-whois install-mkpasswd install-pos install-bashcomp
++install: install-whois install-mkpasswd install-bashcomp
  
  install-whois: whois
  	$(INSTALL) -d $(BASEDIR)$(prefix)/bin/
-@@ -137,9 +137,6 @@
- 	$(INSTALL) -m 0755 mkpasswd $(BASEDIR)$(prefix)/bin/
- 	$(INSTALL) -m 0644 mkpasswd.1 $(BASEDIR)$(prefix)/share/man/man1/
- 
--install-pos:
--	cd po && $(MAKE) install
--
- distclean: clean
- 	rm -f po/whois.pot
- 
-@@ -148,9 +145,6 @@
- 		new_gtlds.h tld_serv.h servers_charset.h *.o whois mkpasswd
- 	rm -f po/*.mo
- 
--pos:
--	cd po && $(MAKE)
--
- depend: Makefile.depend
- Makefile.depend:
- 	$(CC) $(CPPFLAGS) $(CFLAGS) -MM -MG *.c > $@
