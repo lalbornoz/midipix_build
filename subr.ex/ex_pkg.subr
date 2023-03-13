@@ -78,6 +78,73 @@ ex_pkg_find_package() {
 };
 
 #
+# ex_pkg_get_default() - get single package default value
+# @_rdefault:		reference to out variable of default value or "" on end of list
+# @_pkg_name:		single package name
+# @_pkg_version:	single package version
+# @_ldefault:		SP-separated list of default value names (any of: patches, patches_chainport, patches_pre, vars_file)
+# @_default_idx:	one-based single default value index
+#
+# Return:		zero (0) on success, non-zero (>0) on invalid default value name or unknown package.
+#
+ex_pkg_get_default() {
+	local	_epgd_rdefault="${1#\$}" _epgd_pkg_name="${2}" _epgd_pkg_version="${3}"	\
+		_epgd_ldefault="${4}" _epgd_default_idx="${5}"				\
+		_epgd_default="" _epgd_patch_fname="" _epgd_pkg_name_full=""		\
+		_epgd_pkg_patches_extra="" _epgd_rc=0;
+
+	set --;
+	_epgd_pkg_name_full="${_epgd_pkg_name}${_epgd_pkg_version:+-${_epgd_pkg_version}}";
+	_epgd_rc=0;
+
+	for _epgd_default in ${_epgd_ldefault}; do
+		case "${_epgd_default}" in
+		patches)
+			rtl_get_var_unsafe \$_epgd_pkg_patches_extra -u "${_epgd_pkg_name}_PATCHES_EXTRA";
+			set +o noglob;
+			set --												\
+				"${@}"											\
+				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}/"*.patch				\
+				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}.local.patch"			\
+				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}.local@${BUILD_HNAME}.patch"	\
+				${_epgd_pkg_patches_extra};
+			set -o noglob;
+			;;
+
+		patches_chainport)
+			if [ "${_epgd_pkg_version:+1}" = 1 ]; then
+				set --	\
+					"${@}"	\
+					"${BUILD_WORKDIR}/chainport/patches/${_epgd_pkg_name%%_*}/${_epgd_pkg_name%%_*}-${_epgd_pkg_version}.midipix.patch";
+			fi;
+			;;
+
+		patches_pre)
+			set --										\
+				"${@}"									\
+				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}_pre.local.patch"	\
+				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}_pre.local@${BUILD_HNAME}.patch";
+			;;
+
+		vars_file)
+			set --	\
+				"vars/${_epgd_pkg_name}.vars";
+			;;
+
+		*)
+			_epgd_rc=1; break;
+			;;
+		esac;
+	done;
+
+	if [ "${_epgd_rc}" = 0 ]; then
+		eval ${_epgd_rdefault}="\${${_epgd_default_idx}:-}";
+	fi;
+
+	return "${_epgd_rc}";
+};
+
+#
 # ex_pkg_get_packages() - get list of packages belonging to single named build group
 # @_rpkg_names:	reference to out variable of package names
 # @_group_name:	build group name

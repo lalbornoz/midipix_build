@@ -185,8 +185,8 @@ pkgtoolp_init_getopts_fn() {
 pkgtoolp_info() {
 	local	_ppi_rstatus="${1}" _ppi_pkg_name="${2}"				\
 		_ppi_fname="" _ppi_group_name="" _ppi_groups="" _ppi_groups_noauto=""	\
-		_ppi_pkg_disabled="" _ppi_pkg_finished="" _ppi_pkg_name_uc=""		\
-		_ppi_pkg_names="" _ppi_rc=0;
+		_ppi_patch_idx=0 _ppi_pkg_disabled="" _ppi_pkg_finished=""		\
+		_ppi_pkg_name_uc="" _ppi_pkg_names="" _ppi_rc=0;
 	rtl_toupper2 \$_ppi_pkg_name \$_ppi_pkg_name_uc;
 
 	if ! ex_pkg_load_groups \$_ppi_groups \$_ppi_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
@@ -233,22 +233,19 @@ pkgtoolp_info() {
 			fi;
 		fi;
 
-		set +o noglob;
-		for _ppi_fname in													\
-				"vars/${_ppi_pkg_name}.vars"										\
-				"patches/${_ppi_pkg_name}/"*.patch									\
-				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}.local.patch"				\
-				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}.local@${BUILD_HNAME}.patch"		\
-				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_pre.local.patch"			\
-				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_pre.local@${BUILD_HNAME}.patch"	\
-				"${BUILD_WORKDIR}/chainport/patches/${_ppi_pkg_name%%_ppi_*}/${_ppi_pkg_name%%_ppi_*}-${_ppi_pkg_version}.midipix.patch";
+		_ppi_patch_idx=1;
+		while ex_pkg_get_default					\
+			\$_ppi_fname "${_ppi_pkg_name}"				\
+			"${_ppi_pkg_version}"					\
+			"vars_file patches_chainport patches_pre patches"	\
+			"${_ppi_patch_idx}"					\
+		   && [ "${_ppi_fname:+1}" = 1 ];
 		do
+			: $((_ppi_patch_idx += 1));
 			if [ -e "${_ppi_fname}" ]; then
 				sha256sum "${_ppi_fname}";
 			fi;
 		done;
-		set -o noglob;
-
 	fi;
 
 	return "${_ppi_rc}";
