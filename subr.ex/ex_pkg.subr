@@ -104,7 +104,7 @@ ex_pkg_get_default() {
 			set +o noglob;
 			set --												\
 				"${@}"											\
-				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}/"*.patch				\
+				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name}/"*.patch				\
 				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}.local.patch"			\
 				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}.local@${BUILD_HNAME}.patch"	\
 				${_epgd_pkg_patches_extra};
