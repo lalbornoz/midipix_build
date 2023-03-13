@@ -25,8 +25,7 @@ into account when deploying and using Midipix distributions.
 	3.2. [Adding a package](#32-adding-a-package)  
 	3.3. [Addressing build failure](#33-addressing-build-failure)  
 	3.4. [Package archive files and Git repositories](#34-package-archive-files-and-git-repositories)  
-	3.5. [Package-package and {package,group}-group relationships](#35-package-package-and-packagegroup-group-relationships)  
-	3.6. [Patches and ``vars`` files](#36-patches-and-vars-files)  
+	3.5. [Patches and ``vars`` files](#35-patches-and-vars-files)  
 4. [Units reference](#4-units-reference)  
 	4.1. [Build steps](#41-build-steps)  
 	4.2. [Build variables](#42-build-variables)  
@@ -180,6 +179,8 @@ Create a directory on the target machine and extract the contents of the distrib
 ZIP archive into it, run ``bash.bat``, and then ``/install.sh`` inside the resulting
 self-contained Midipix installation shell window.  
   
+Make sure to consult the notate bene below:  
+  
 > N.B. The pathname of the target directory containing ``bash.bat`` and all other
 distribution files must not contain whitespaces.  
   
@@ -190,6 +191,8 @@ same pathname.
 > N.B. The user installing and using Midipix must have been delegated the ``SeCreateSymbolicLinkPrivilege``
 ("Create symbolic links") privilege&lbrack;[3](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-rights-assignment)&rbrack; and additionally be a non-administrator account
 owing to the UAC-related filtering policy of tokens introduced by Windows Vista&lbrack;[4](https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/bb530410%28v%3dmsdn%2e10%29)&rbrack;.  
+  
+> N.B. On Windows 10 and 11, Windows Defender as well as SmartScreen must be disabled.
   
 [Back to top](#table-of-contents)
 
@@ -325,7 +328,7 @@ which are specified in this order.
 Pick a build group according to the criteria mentioned, add the package to the
 build group's list of contained packages in its corresponding file, and add the
 set of package variables required (see above and section [4.5](#45-package-variables).)  
-Consult section [3.6](#36-patches-and-vars-files) if the package to be added
+Consult section [3.5](#35-patches-and-vars-files) if the package to be added
 requires patches or additional code amending or replacing package build steps
 or the entire package build. Consult section [4.1](#41-build-steps) for a list
 of package build steps and how they are overriden.
@@ -370,36 +373,8 @@ A list of pertinent package variables and their formats follows:
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 3.5. Package-package and {package,group}-group relationships"
-### 3.5. Package-package and {package,group}-group relationships
-
-Packages, as well as groups, are interrelated through implicit as well as explicit parametrised,
-typed relationships and form namespaces correspondingly.  
-  
-These primarily, by expressing modalities of constraining, derivation, and/or subdividision, govern
-the build and mirroring, etc. processes with regard to ordering constraints (e.g. ``depends``)
-and derivation or sharing of sets of variables and/or patches and/or ``vars/`` files (e.g.
-``group``, ``flavour``, ``inherit``) or build and/or source directories (e.g. ``module``,) etc.  
-They may, however, also be subject to enquiry for descriptive, diagnostic, or visualising purposes,
-particularly as concerns the namespaces they form.  
-  
-A list of relationship types follows:  
-
-| Type     | Mode     | Description                                                                                                                            |
-| -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| depends  | implicit | Direct and recursively evaluated package dependency                                                                                    |
-| suggests | explicit | Suggested or recommended optional package                                                                                              |
-| group    | implicit | Simple and overridable group variable inheritance (e.g. ``host_toolchain``, ``native_packages``)                                       |
-| inherit  | both     | Simple and overridable package variable inheritance                                                                                    |
-| flavour  | explicit | Exclusive package flavours set membership (e.g. ``vim_gtk``, ``vim_x11``) (conflicts w/ ``module``)                                    |
-| module   | explicit | Package modularisation with implicit source and build directory sharing (e.g. ``gcc_stage1``, ``gcc_full``) (conflicts w/ ``flavour``) |
-| target   | both     | Simple super- or subset derivation (e.g. ``host``, ``minipix``)                                                                        |
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-[//]: # "{{{ 3.6. Patches and ``vars`` files"
-## 3.6. Patches and ``vars`` files
+[//]: # "{{{ 3.5. Patches and ``vars`` files"
+## 3.5. Patches and ``vars`` files
 
 Package patches are applied prior and/or subsequent to (GNU autotools or similar) package
 configuration during the ``configure_patch_pre`` and/or ``configure_patch`` build steps,
