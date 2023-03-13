@@ -137,9 +137,10 @@ ex_pkg_env() {
 
 	if [ "${_epe_vars_file:+1}" != 1 ]; then
 		rtl_get_var_unsafe \$_epe_pkg_version -u "PKG_${_epe_pkg_name}_VERSION";
-		ex_pkg_get_default				\
-			\$_epe_vars_file "${_epe_pkg_name}"	\
-			"${_epe_pkg_version}" "vars_file" 1	\
+		ex_pkg_get_default					\
+			\$_epe_vars_file 1				\
+			"${_epe_pkg_name}" "${_epe_pkg_version}"	\
+			"vars_file"					\
 			|| return 1;
 	fi;
 

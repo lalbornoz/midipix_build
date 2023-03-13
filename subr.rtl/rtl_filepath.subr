@@ -141,4 +141,29 @@ rtl_is_newer() {
 	fi;
 };
 
+rtl_patch_files() {
+	local	_rpf_patch_cwd="${1}" _rpf_strip_count="${2}" _rpf_fn="${3}" 	\
+		_rpf_patch_fname="" _rpf_patch_idx=0;
+	shift $((3 + 2));
+
+	_rpf_patch_idx=1;
+	while "${_rpf_fn}"				\
+		\$_rpf_patch_fname "${_rpf_patch_idx}"	\
+		"${@}"					\
+	   && [ "${_rpf_patch_fname:+1}" = 1 ];
+	do
+		: $((_rpf_patch_idx += 1));
+		if [ -r "${_rpf_patch_fname}" ]\
+		&& ! patch				\
+			-b				\
+			-d "${_rpf_patch_cwd}"		\
+			"-p${_rpf_strip_count}"	\
+			< "${_rpf_patch_fname}";
+		then
+			return 1;
+		fi;
+	done;
+	return 0;
+};
+
 # vim:filetype=sh textwidth=0

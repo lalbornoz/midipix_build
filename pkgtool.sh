@@ -234,11 +234,11 @@ pkgtoolp_info() {
 		fi;
 
 		_ppi_patch_idx=1;
-		while ex_pkg_get_default					\
-			\$_ppi_fname "${_ppi_pkg_name}"				\
-			"${_ppi_pkg_version}"					\
-			"vars_file patches_chainport patches_pre patches"	\
-			"${_ppi_patch_idx}"					\
+		while ex_pkg_get_default			\
+			\$_ppi_fname "${_ppi_patch_idx}"	\
+		       	"${_ppi_pkg_name}"			\
+			"${_ppi_pkg_version}"			\
+			"vars_file patches_pre patches"		\
 		   && [ "${_ppi_fname:+1}" = 1 ];
 		do
 			: $((_ppi_patch_idx += 1));
