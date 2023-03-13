@@ -9,7 +9,7 @@ pkgp_configure_patch_pre() {
 	_ppcpp_patch_idx=1;
 	while ex_pkg_get_default					\
 		\$_ppcpp_patch_fname "${PKG_NAME}"			\
-		"${PKG_VERSION}" "patches_pre" "${_ppcpp_patch_idx}"	\
+		"${PKG_VERSION:-}" "patches_pre" "${_ppcpp_patch_idx}"	\
 	   && [ "${_pcp_patch_fname:+1}" = 1 ];
 	do
 		: $((_ppcpp_patch_idx += 1));
@@ -25,9 +25,9 @@ pkgp_configure_patch_pre() {
 pkgp_configure_patch_pre_chainport() {
 	local _ppcppc_patch_dname="" _ppcppc_patch_fname="";
 
-	ex_pkg_get_default				\
-		\$_ppcppc_patch_fname "${PKG_NAME}"	\
-		"${PKG_VERSION}" "patches_chainport" 1	\
+	ex_pkg_get_default					\
+		\$_ppcppc_patch_fname "${PKG_NAME}"		\
+		"${PKG_VERSION:-}" "patches_chainport" 1	\
 		|| return 1;
 
 	if [ "${_ppcppc_patch_fname:+1}" = 1 ]\
