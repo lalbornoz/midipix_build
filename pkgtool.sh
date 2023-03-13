@@ -204,7 +204,7 @@ pkgtoolp_info() {
 		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to set package environment for \`'"${_ppi_pkg_name}'"'.';
 	else
 		rtl_get_var_unsafe \$_ppi_pkg_version -u "PKG_${_ppi_pkg_name}_VERSION";
-		rtl_log_env_vars "verbose" "package" $(rtl_get_vars_fast "^PKG_${_ppi_pkg_name_uc}");
+		rtl_log_env_vars "info" "package" $(rtl_get_vars_fast "^PKG_${_ppi_pkg_name_uc}");
 		rtl_log_msg "info" "${MSG_pkgtool_build_group}" "${_ppi_group_name}";
 
 		if [ "${PKG_DEPENDS:+1}" != 1 ]; then
