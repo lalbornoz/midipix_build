@@ -21,10 +21,10 @@ pkgp_configure_patch_pre() {
 
 pkgp_configure_patch_pre_chainport() {
 	local _ppcppc_patch_dname="" _ppcppc_patch_fname="" _ppcppc_oldpwd="";
-	_ppcppc_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_ppcppc_*}";
+	_ppcppc_patch_dname="${PKG_BASE_DIR}/${PKG_SUBDIR}/patches/${PKG_NAME%%_*}";
 
 	if [ "${PKG_VERSION:+1}" = 1 ]; then
-		_ppcppc_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_ppcppc_*}/${PKG_NAME%%_ppcppc_*}-${PKG_VERSION}.midipix.patch";
+		_ppcppc_patch_fname="${BUILD_WORKDIR}/chainport/patches/${PKG_NAME%%_*}/${PKG_NAME%%_*}-${PKG_VERSION}.midipix.patch";
 	fi;
 	if [ -e "${_ppcppc_patch_fname}" ]; then
 		if ! rtl_fileop mkdir "${_ppcppc_patch_dname}"\
