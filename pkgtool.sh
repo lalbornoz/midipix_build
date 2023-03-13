@@ -239,8 +239,8 @@ pkgtoolp_info() {
 				"patches/${_ppi_pkg_name}/"*.patch									\
 				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}.local.patch"				\
 				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}.local@${BUILD_HNAME}.patch"		\
-				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_ppi_pre.local.patch"			\
-				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_ppi_pre.local@${BUILD_HNAME}.patch"	\
+				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_pre.local.patch"			\
+				"patches/${_ppi_pkg_name}${_ppi_pkg_version:+-${_ppi_pkg_version}}_pre.local@${BUILD_HNAME}.patch"	\
 				"${BUILD_WORKDIR}/chainport/patches/${_ppi_pkg_name%%_ppi_*}/${_ppi_pkg_name%%_ppi_*}-${_ppi_pkg_version}.midipix.patch";
 		do
 			if [ -e "${_ppi_fname}" ]; then
