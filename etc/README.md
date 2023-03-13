@@ -26,14 +26,14 @@ into account when deploying and using Midipix distributions.
 	3.3. [Addressing build failure](#33-addressing-build-failure)  
 	3.4. [Package archive files and Git repositories](#34-package-archive-files-and-git-repositories)  
 	3.5. [Patches and ``vars`` files](#35-patches-and-vars-files)  
-4. [Units reference](#4-units-reference)  
+4. [Reference](#4-reference)  
 	4.1. [Build steps](#41-build-steps)  
 	4.2. [Build variables](#42-build-variables)  
-	4.3. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#43-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
-	4.4. [File installation DSL](#44-file-installation-dsl)  
-	4.5. [Package variables](#45-package-variables)  
-		4.5.1. [Package variable types](#451-package-variable-types)  
-		4.5.2. [Package variables](#452-package-variables)  
+	4.3. [File installation DSL](#43-file-installation-dsl)  
+	4.4. [Package variables](#44-package-variables)  
+		4.4.1. [Package variable types](#441-package-variable-types)  
+		4.4.2. [Package variables](#442-package-variables)  
+	4.5. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#45-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
 	4.6. [``pkgtool.sh``](#46-pkgtoolsh)  
 5. [References](#5-references)  
 
@@ -93,7 +93,7 @@ and run the following command line:
 By default, the build will take place within ``${HOME}/midipix/nt64/release``
 and package archive files and/or Git repositores will be downloaded into
 ``${HOME}/midipix/dlcache``. Consult sections [4.2](#42-build-variables) and
-[4.5](#45-package-variables) for the list of available build/package variables
+[4.4](#44-package-variables) for the list of available build/package variables
 and how to override them.  
 Parallelisation is enabled by the above command line for both packages that can
 be built independently of each other and ``make(1)`` via ``-j``, limited to the
@@ -327,7 +327,7 @@ which are specified in this order.
   
 Pick a build group according to the criteria mentioned, add the package to the
 build group's list of contained packages in its corresponding file, and add the
-set of package variables required (see above and section [4.5](#45-package-variables).)  
+set of package variables required (see above and section [4.4](#44-package-variables).)  
 Consult section [3.5](#35-patches-and-vars-files) if the package to be added
 requires patches or additional code amending or replacing package build steps
 or the entire package build. Consult section [4.1](#41-build-steps) for a list
@@ -401,8 +401,8 @@ for a list of package build steps and how they are overriden.
 
 [//]: # "}}}"
 
-[//]: # "{{{ 4. Units reference"
-## 4. Units reference
+[//]: # "{{{ 4. Reference"
+## 4. Reference
 [//]: # "}}}"
 [//]: # "{{{ 4.1. Build steps"
 ## 4.1. Build steps
@@ -417,6 +417,14 @@ or composed in terms of prior and/or subsequent execution by a function named
 ``pkg_<package name>_<build step>_pre()`` and/or ``pkg_<package name>_<build step>_post()``,
 respectively, in the package's ``vars`` file. If a function named ``pkg_<package name>_all()``
 exists, it will override all build steps.  
+  
+Build step functions receive the following arguments in the order specified:
+  
+| Name          | Description                                              |
+| ------------- | -------------------------------------------------------- |
+| \_group\_name | Package name                                             |
+| \_pkg\_name   | Group name                                               |
+| \_restart\_at | Optional list of build steps to restart package build at |
   
 Build step status is tracked on a per-package basis by state files beneath
 ``${BUILD_WORKDIR}`` following the format ``.<package name>.<build step>``;
@@ -477,112 +485,8 @@ env ARCH=nt64 BUILD_KIND=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 4.3. Fault-tolerant & highly optimised 3D laser show-equipped usage screen"
-## 4.3. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
-
-```
-usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
-                  [-F ipv4|ipv6|offline]    [-h|--help] [-p jobs|-P]    [-r ALL|LAST]
-                  [-r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]]        [-R]
-		  [-v] [-V [+]tag|pat[,..]]
-
-                  [--as-needed] [--debug-minipix] [--reset-state]
-                  [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
-
-        -a nt32|nt64        Selects 32-bit or 64-bit architecture; defaults to nt64.
-        -b debug|release    Selects debug or release build kind; defaults to debug.
-        -C dir[,..]         Clean build directory (build,) ${PREFIX} before processing build
-                            scripts (prefix,) source directory (src,) and/or destination
-                            directory (dest) after successful package builds.
-        -D kind[,..]        Produce minimal midipix distribution directory (minipix,) RPM
-                            binary packages (rpm,) and/or deployable distribution ZIP
-                            archive (zipdist.) zipdist implies minipix.
-        -F ipv4|ipv6|offline
-                            Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package
-                            archives and/or Git repositories or don't download either at all
-                            (offline.)
-        -h|--help           Show short/full help screen, respectively.
-        -p jobs|-P          Enables parallelisation at group-level, whenever applicable.
-                            The maximum count of jobs defaults to the number of logical
-                            processors on the host system divided by two (2.)
-
-                            If -R is not specified and at least one (1) package fails to
-                            build, all remaining package builds will be forcibly aborted.
-
-        -r ALL|LAST         Restart all packages or the last failed package and resume
-                            build, resp.
-        -r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]
-                            Restart the specified comma-separated package(s) w/ inhibition
-                            of package build step state resetting completely (`ALL',) starting
-                            at the resp. last successfully executed build steps (`LAST',) or the
-                            specified comma-separated list of build steps, optionally subject
-                            concerning package name(s) and/or build step(s) to the below modifiers:
-
-                            Prepend name w/ `*' to automatically include dependencies, `**'
-                            to forcibly rebuild all dependencies, and `***' to forcibly
-                            rebuild all packages that depend on the specified package(s).
-
-                            Prepend step w/ `^' to filter build steps with, `<' or `<='
-                            to constrain build steps to below or below or equal with, resp.,
-                            `>' or `>=' to constrain build steps to above or above or equal
-                            with, resp.
-
-                            Currently defined build steps are:
-                            fetch_clean, fetch_download, fetch_extract, configure_clean,
-                            configure_patch_pre, configure_autotools, configure_patch,
-                            configure, build_clean, build, install_clean, install_subdirs,
-                            install_make, install_files, install_libs, install, install_rpm,
-                            and clean.
-
-                            Additionally, the following virtual steps are provided:
-                            @fetch, @configure, @build, @install, @clean, and finish.
-
-        -R                  Ignore build failures, skip printing package logs, and continue
-                            building (relaxed mode.)
-
-        -v                  Increase logging verbosity.
-        -V [+]tag|pat[,..]  Enable logging for messages with tag or pattern matching tags of:
-                            + (prefix)..: initialise tags with normal verbosity (implies normal) (see etc/build.theme,)
-                            all.........: log everything (see etc/build.theme,)
-                            clear|none..: log nothing,
-                            normal......: log at normal verbosity (see etc/build.theme,)
-                            verbose.....: log at increased verbosity (implies normal) (see etc/build.theme) (-v,)
-
-                            build.......: log package build logs,
-                            fileops.....: log RTL file operations,
-                            install.....: log RTL installation DSL operations,
-                            zipdist.....: log deployable distribution ZIP archive operations,
-                            xtrace......: set xtrace during package builds,
-
-                            fatal.......: fatal, unrecoverable errors,
-                            info........: informational messages,
-                            verbose.....: verbose informational messages,
-                            warning.....: warning messages possibly relating to imminent fatal, unrecoverable errors,
-
-                            build_*.....: general build messages (viz.: begin, finish, finish_time, vars,)
-                            group_*.....: build group messages (viz.: begin, finish,)
-                            pkg_*.......: package build messages (viz.: begin, finish, msg, skip, step, strip.)
-
-        --as-needed         Don't build unless the midipix_build repository has received
-                            new commits.
-        --debug-minipix     Don't strip(1) minipix binaries to facilitate debugging minipix.
-        --reset-state       Reset package build step state on exit.
-
-        <group>[ ..]        One of: dev_packages, dist, host_deps, host_deps_rpm,
-                            host_toolchain, host_tools, minipix, native_packages,
-                            native_runtime, native_toolchain, native_tools.
-
-                            Prepend w/ `=' to inhibit group-group dependency expansion.
-
-        <variable name>=<variable override>[ ..]
-                            Override build or package variable.
-```
-  
-[Back to top](#table-of-contents)
-
-[//]: # "}}}"
-[//]: # "{{{ 4.4. File installation DSL"
-## 4.4. File installation DSL
+[//]: # "{{{ 4.3. File installation DSL"
+## 4.3. File installation DSL
 
 File and directory installation, comprising e.g. copying, moving, creating
 symbolic links, setting owner and/or permission metadata, are expressed in
@@ -750,8 +654,8 @@ usage: rtl_install [-i] [-I ifs] [-n] [-p name=val] [-v] prefix spec_list
 [Back to top](#table-of-contents)
 
 [//]: # "}}}"
-[//]: # "{{{ 4.5. Package variables"
-### 4.5. Package variables
+[//]: # "{{{ 4.4. Package variables"
+### 4.4. Package variables
 
 The following variables are package-specific and receive their value from either
 top-level defaults defined in ``midipix.env``, build group-specific defaults from the
@@ -777,8 +681,8 @@ line, with each variable prefixed w/ ``PKG_``, e.g.:
 The minimum set of package variables that must be provided is ``SHA256SUM, URL,
 VERSION`` and/or ``URLS_GIT``, respectively.
 
-[//]: # "{{{ 4.5.1 Package variable types"
-## 4.5.1 Package variable types
+[//]: # "{{{ 4.4.1 Package variable types"
+## 4.4.1 Package variable types
 
 | Type definition               | Description                                                                                                                                  |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -803,8 +707,8 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | URL(Git)			| Git URL in the format ``[subdir=]URL[@branch]``; see section [3.4](#34-package-archive-files-and-git-repositories)                           |
 
 [//]: # "}}}"
-[//]: # "{{{ 4.5.2 Package variables"
-## 4.5.2 Package variables
+[//]: # "{{{ 4.4.2 Package variables"
+## 4.4.2 Package variables
 
 | Package variable name        | Type             | Description                                                                                                                                |
 | ---------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -893,6 +797,110 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | VERSION                      | PkgVersion       | Package version                                                                                                                            |
 
 [//]: # "}}}"
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 4.5. Fault-tolerant & highly optimised 3D laser show-equipped usage screen"
+## 4.5. Fault-tolerant & highly optimised 3D laser show-equipped usage screen
+
+```
+usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
+                  [-F ipv4|ipv6|offline]    [-h|--help] [-p jobs|-P]    [-r ALL|LAST]
+                  [-r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]]        [-R]
+		  [-v] [-V [+]tag|pat[,..]]
+
+                  [--as-needed] [--debug-minipix] [--reset-state]
+                  [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
+
+        -a nt32|nt64        Selects 32-bit or 64-bit architecture; defaults to nt64.
+        -b debug|release    Selects debug or release build kind; defaults to debug.
+        -C dir[,..]         Clean build directory (build,) ${PREFIX} before processing build
+                            scripts (prefix,) source directory (src,) and/or destination
+                            directory (dest) after successful package builds.
+        -D kind[,..]        Produce minimal midipix distribution directory (minipix,) RPM
+                            binary packages (rpm,) and/or deployable distribution ZIP
+                            archive (zipdist.) zipdist implies minipix.
+        -F ipv4|ipv6|offline
+                            Force IPv4 (ipv4) or IPv6 (ipv6) when downloading package
+                            archives and/or Git repositories or don't download either at all
+                            (offline.)
+        -h|--help           Show short/full help screen, respectively.
+        -p jobs|-P          Enables parallelisation at group-level, whenever applicable.
+                            The maximum count of jobs defaults to the number of logical
+                            processors on the host system divided by two (2.)
+
+                            If -R is not specified and at least one (1) package fails to
+                            build, all remaining package builds will be forcibly aborted.
+
+        -r ALL|LAST         Restart all packages or the last failed package and resume
+                            build, resp.
+        -r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]
+                            Restart the specified comma-separated package(s) w/ inhibition
+                            of package build step state resetting completely (`ALL',) starting
+                            at the resp. last successfully executed build steps (`LAST',) or the
+                            specified comma-separated list of build steps, optionally subject
+                            concerning package name(s) and/or build step(s) to the below modifiers:
+
+                            Prepend name w/ `*' to automatically include dependencies, `**'
+                            to forcibly rebuild all dependencies, and `***' to forcibly
+                            rebuild all packages that depend on the specified package(s).
+
+                            Prepend step w/ `^' to filter build steps with, `<' or `<='
+                            to constrain build steps to below or below or equal with, resp.,
+                            `>' or `>=' to constrain build steps to above or above or equal
+                            with, resp.
+
+                            Currently defined build steps are:
+                            fetch_clean, fetch_download, fetch_extract, configure_clean,
+                            configure_patch_pre, configure_autotools, configure_patch,
+                            configure, build_clean, build, install_clean, install_subdirs,
+                            install_make, install_files, install_libs, install, install_rpm,
+                            and clean.
+
+                            Additionally, the following virtual steps are provided:
+                            @fetch, @configure, @build, @install, @clean, and finish.
+
+        -R                  Ignore build failures, skip printing package logs, and continue
+                            building (relaxed mode.)
+
+        -v                  Increase logging verbosity.
+        -V [+]tag|pat[,..]  Enable logging for messages with tag or pattern matching tags of:
+                            + (prefix)..: initialise tags with normal verbosity (implies normal) (see etc/build.theme,)
+                            all.........: log everything (see etc/build.theme,)
+                            clear|none..: log nothing,
+                            normal......: log at normal verbosity (see etc/build.theme,)
+                            verbose.....: log at increased verbosity (implies normal) (see etc/build.theme) (-v,)
+
+                            build.......: log package build logs,
+                            fileops.....: log RTL file operations,
+                            install.....: log RTL installation DSL operations,
+                            zipdist.....: log deployable distribution ZIP archive operations,
+                            xtrace......: set xtrace during package builds,
+
+                            fatal.......: fatal, unrecoverable errors,
+                            info........: informational messages,
+                            verbose.....: verbose informational messages,
+                            warning.....: warning messages possibly relating to imminent fatal, unrecoverable errors,
+
+                            build_*.....: general build messages (viz.: begin, finish, finish_time, vars,)
+                            group_*.....: build group messages (viz.: begin, finish,)
+                            pkg_*.......: package build messages (viz.: begin, finish, msg, skip, step, strip.)
+
+        --as-needed         Don't build unless the midipix_build repository has received
+                            new commits.
+        --debug-minipix     Don't strip(1) minipix binaries to facilitate debugging minipix.
+        --reset-state       Reset package build step state on exit.
+
+        <group>[ ..]        One of: dev_packages, dist, host_deps, host_deps_rpm,
+                            host_toolchain, host_tools, minipix, native_packages,
+                            native_runtime, native_toolchain, native_tools.
+
+                            Prepend w/ `=' to inhibit group-group dependency expansion.
+
+        <variable name>=<variable override>[ ..]
+                            Override build or package variable.
+```
   
 [Back to top](#table-of-contents)
 
