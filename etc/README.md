@@ -35,6 +35,7 @@ into account when deploying and using Midipix distributions.
 		4.4.2. [Package variables](#442-package-variables)  
 	4.5. [Fault-tolerant & highly optimised 3D laser show-equipped usage screen](#45-fault-tolerant--highly-optimised-3d-laser-show-equipped-usage-screen)  
 	4.6. [``pkgtool.sh``](#46-pkgtoolsh)  
+	4.7. [Bourne shell coding rules](#47-bourne-shell-coding-rules)  
 5. [References](#5-references)  
 
 [//]: "}}}"
@@ -937,6 +938,14 @@ overriden on the command line or via the environment, ensure that they are inclu
 following option arguments may be set: ``-a nt32|nt64`` by setting ``ARCH=...``, ``-b debug|release``
 by setting ``BUILD_KIND=...``, ``-m <dname>`` by setting ``ARG_MIRROR_DNAME=...``, and ``-M <dname>``
 by setting ``ARG_MIRROR_DNAME_GIT=...``.  
+  
+[Back to top](#table-of-contents)
+
+[//]: # "}}}"
+[//]: # "{{{ 4.7. Bourne shell coding rules"
+## 4.7. Bourne shell coding rules
+
+XXX
   
 [Back to top](#table-of-contents)
 
