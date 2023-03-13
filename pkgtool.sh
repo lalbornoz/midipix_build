@@ -15,6 +15,10 @@ pkgtoolp_init() {
 		_pi_fname="" _pi_rc=0;
 	shift;
 
+	if [ -e "${HOME}/pkgtool.vars" ]; then
+		. "${HOME}/pkgtool.vars" || exit 1;
+	fi;
+
 	if ! . "${0%/*}/subr.ex/ex_init.subr"; then
 		_pi_rc=1;
 		_pi_status='failed to source \`'"${0%/*}/subr/ex_init.subr"\';
@@ -80,8 +84,8 @@ pkgtoolp_init_getopts_fn() {
 		: ${ARCH:="nt64"};
 		: ${BUILD_KIND:="debug"};
 
-		ARG_INFO=0; ARG_MIRROR=0; ARG_MIRROR_DNAME=""; ARG_MIRROR_DNAME_GIT="";
-		ARG_RDEPENDS=0; ARG_RDEPENDS_FULL=0; ARG_TARBALL=0; ARG_VERBOSE=0;
+		ARG_INFO=0; ARG_MIRROR=0; ARG_RDEPENDS=0;
+		ARG_RDEPENDS_FULL=0; ARG_TARBALL=0; ARG_VERBOSE=0;
 		;;
 
 	longopt)
@@ -98,8 +102,20 @@ pkgtoolp_init_getopts_fn() {
 		b)	BUILD_KIND="${OPTARG}"; _ppigf_shiftfl=2; ;;
 		h)	cat etc/pkgtool.usage; exit 0; ;;
 		i)	ARG_INFO=1; _ppigf_shiftfl=1; ;;
-		m)	ARG_MIRROR=1; ARG_MIRROR_DNAME="${OPTARG}"; _ppigf_shiftfl=2; ;;
-		M)	ARG_MIRROR=1; ARG_MIRROR_DNAME_GIT="${OPTARG}"; _ppigf_shiftfl=2; ;;
+		m)	ARG_MIRROR=1;
+			if [ "${OPTARG:+1}" = 1 ]; then
+				ARG_MIRROR_DNAME="${OPTARG}";
+			elif [ "${ARG_MIRROR_DNAME:+1}" != 1 ]; then
+				rtl_setrstatus "${_ppigf_rstatus}" 'missing -m argument and no default present.';
+			fi;
+			_ppigf_shiftfl=2; ;;
+		M)	ARG_MIRROR=1;
+			if [ "${OPTARG:+1}" = 1 ]; then
+				ARG_MIRROR_DNAME_GIT="${OPTARG}";
+			elif [ "${ARG_MIRROR_DNAME_GIT:+1}" != 1 ]; then
+				rtl_setrstatus "${_ppigf_rstatus}" 'missing -M argument and no default present.';
+			fi;
+			_ppigf_shiftfl=2; ;;
 		r)	ARG_RDEPENDS=1; _ppigf_shiftfl=1; ;;
 		R)	ARG_RDEPENDS_FULL=1; _ppigf_shiftfl=1; ;;
 		t)	ARG_TARBALL=1; _ppigf_shiftfl=1; ;;

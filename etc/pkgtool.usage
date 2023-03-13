@@ -6,6 +6,8 @@
         [33m-[93mi                [96mList package variables and dependencies of single named package.[0m
         [33m-[93mm [90m<[93mdname[90m>        [96mSetup package archives mirror in [90m<[93mdname[90m>[96m and/or[0m
         [33m-[93mM [90m<[93mdname[90m>        [96mSetup Git repositories mirror in [90m<[93mdname[90m>[0m
+                          [96mSpecify "" or '' as <dname> to default to the defaults in[0m
+                          [93m${HOME}/pkgtool.vars[96m, if present.[0m
         [33m-[93mr                [96mList reverse dependencies of single named package.[0m
         [33m-[93mR                [96mList recursive reverse dependencies of single named package.[0m
         [33m-[93mt                [96mProduce tarball of package build root directory and build log[0m

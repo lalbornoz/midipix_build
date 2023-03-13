@@ -909,6 +909,8 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|
         -i                    List package variables and dependencies of single named package.
         -m <dname>            Setup package archives mirror in <dname> and/or
         -M <dname>            Setup Git repositories mirror in <dname>
+                              Specify "" or '' as <dname> to default to the defaults in
+                              ${HOME}/pkgtool.vars, if present.
         -r                    List reverse dependencies of single named package.
         -R                    List full reverse dependencies of single named package.
         -t                    Produce tarball of package build root directory and build log
@@ -921,7 +923,12 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|
   
 > N.B. When using ``pkgtool.sh`` on a build w/ build variables (see section [4.2](#42-build-variables))
 overriden on the command line or via the environment, ensure that they are included in the
-``pkgtool.sh`` command line, preceding the package name, or exported, respectively.
+``pkgtool.sh`` command line, preceding the package name, or exported, respectively.  
+  
+> N.B. ``pkgtool.sh`` will source the ``${HOME}/pkgtool.vars`` file, if present, on startup where the
+following option arguments may be set: ``-a nt32|nt64`` by setting ``ARCH=...``, ``-b debug|release``
+by setting ``BUILD_KIND=...``, ``-m <dname>`` by setting ``ARG_MIRROR_DNAME=...``, and ``-M <dname>``
+by setting ``ARG_MIRROR_DNAME_GIT=...``.  
   
 [Back to top](#table-of-contents)
 
