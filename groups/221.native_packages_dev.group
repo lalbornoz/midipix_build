@@ -177,7 +177,6 @@ make_cv_synchronous_posix_spawn=yes"};
 : ${PKG_TK_URL:=http://kuiper.mirrorservice.org/sites/ftp.tcl.tk/pub/tcl/tcl8_7/tk${PKG_TK_VERSION}-src.tar.gz};
 : ${PKG_TK_CONFIGURE:="tk${PKG_TK_VERSION}/unix/configure"};
 : ${PKG_TK_CONFIGURE_ARGS_EXTRA:="tcl_cv_strtod_buggy=no --with-tcl=${PREFIX_NATIVE}/lib"};
-: ${PKG_TK_PATCHES_EXTRA:="${PWD}/patches/tk-8.7a1.local.patch"};
 : ${PKG_TK_SUBDIR:=tk${PKG_TK_VERSION}};
 
 # vim:filetype=sh textwidth=0
