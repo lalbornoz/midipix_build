@@ -90,6 +90,7 @@ exp_pkg_dispatch_expand_packages() {
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
 # @_checkfl:			enable (1) or inhibit (0) dependency expansion
+# @_continue_on_failfl:		continue on failed package build (1) or break (0)
 # @_dispatch_fn:		top-level dispatch function name
 # @_group_name:			build group name
 # @_njobs_max:			maximum count of simultaneous jobs
@@ -104,8 +105,9 @@ exp_pkg_dispatch_group() {
 		_epdg_dispatch_group_cur="${4#\$}" _epdg_dispatch_group_max="${5#\$}" _epdg_rdispatch_njobs="${6#\$}"	\
 		_epdg_rdispatch_wait="${7#\$}" _epdg_rpkg_disabled="${8#\$}" _epdg_rpkg_finished="${9#\$}"		\
 		_epdg_rpkg_names="${10#\$}" _epdg_build_steps_default="${11}" _epdg_build_vars_default="${12}"		\
-		_epdg_checkfl="${13}" _epdg_dispatch_fn="${14}" _epdg_group_name="${15}" _epdg_njobs_max="${16}"	\
-		_epdg_pipe_path="${17}" _epdg_restart_at="${18}" _epdg_workdir="${19}"					\
+		_epdg_checkfl="${13}" _epdg_continue_on_failfl="${14}" _epdg_dispatch_fn="${15}"			\
+		_epdg_group_name="${16}" _epdg_njobs_max="${17}" _epdg_pipe_path="${18}" _epdg_restart_at="${19}"	\
+		_epdg_workdir="${20}"											\
 		_epdg_perc_group=0 _epdg_perc_pkg=0 _epdg_pipe_msg="" _epdg_pkg_name="" _epdg_rc=0;
 
 	rtl_fileop mkfifo "${_epdg_pipe_path}";
@@ -132,9 +134,7 @@ exp_pkg_dispatch_group() {
 			rtl_lfilter "${_epdg_rpkg_names}" "${_epdg_pkg_name}";
 			rtl_lfilter "${_epdg_rdispatch_wait}" "${_epdg_pkg_name}";
 
-			if eval [ \"\${${_epdg_rpkg_names}:+1}\" = 1 ]\
-			     && [ "${_epdg_rc}" -eq 0 ];
-			then
+			if eval [ \"\${${_epdg_rpkg_names}:+1}\" = 1 ]; then
 				if eval [ \"\${${_epdg_rdispatch_njobs}:-0}\" -ne \"\${_epdg_njobs_max}\" ]; then
 					exp_pkg_dispatch_packages					\
 						"${_epdg_rdispatch_count}"				\
@@ -157,8 +157,10 @@ exp_pkg_dispatch_group() {
 			fi;
 			;;
 
-		fail)	eval : '$(('${_epdg_rdispatch_njobs}'-=1))';
+		fail)	_epdg_pkg_name="${_epdg_pipe_msg#fail * }";
+			eval : '$(('${_epdg_rdispatch_njobs}'-=1))';
 			_epdg_rc=1;
+			rtl_lfilter "${_epdg_rpkg_names}" "${_epdg_pkg_name}";
 			"${_epdg_dispatch_fn}"				\
 				fail_pkg ${_epdg_pipe_msg#fail }	\
 				"${_epdg_dispatch_count_max}";
@@ -173,9 +175,10 @@ exp_pkg_dispatch_group() {
 
 		esac; done <>"${_epdg_pipe_path}";
 
-		if eval [ \"\${${_epdg_rpkg_names}:+1}\" = 1 ]\
-		&& [ "${_epdg_rc}" -eq 0 ];
-		then
+		if [ "${_epdg_rc}" -ne 0 ]\
+		&& [ "${_epdg_continue_on_failfl}" -ne 1 ]; then
+			break;
+		elif eval [ \"\${${_epdg_rpkg_names}:+1}\" = 1 ]; then
 			if eval [ \"\${${_epdg_rdispatch_njobs}:-0}\" -ne \"\${_epdg_njobs_max}\" ]; then
 				exp_pkg_dispatch_packages					\
 					"${_epdg_rdispatch_count}"				\
@@ -273,6 +276,7 @@ exp_pkg_dispatch_packages() {
 # @_rdispatch_wait:		reference to out variable of package names in a wait state
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
+# @_continue_on_failfl:		continue on failed package build (1) or break (0)
 # @_dispatch_fn:		top-level dispatch function name
 # @_group_names:		build group name(s)
 # @_groups_inhibit_deps:	inhibit group-group dependency expansion
@@ -287,9 +291,9 @@ exp_pkg_dispatch_packages() {
 #
 ex_pkg_dispatch() {
 	local	_epd_rdispatch_wait="${1#\$}" _epd_build_steps_default="${2}" _epd_build_vars_default="${3}"		\
-		_epd_dispatch_fn="${4}" _epd_group_names="${5}" _epd_groups_inhibit_deps="${6}" _epd_njobs_max="${7}"	\
-		_epd_pipe_path="${8}" _epd_restart="${9}" _epd_restart_at="${10}" _epd_restart_recursive="${11}"	\
-		_epd_workdir="${12}"											\
+		_epd_continue_on_failfl="${4}" _epd_dispatch_fn="${5}" _epd_group_names="${6}"				\
+		_epd_groups_inhibit_deps="${7}" _epd_njobs_max="${8}" _epd_pipe_path="${9}" _epd_restart="${10}"	\
+		_epd_restart_at="${11}" _epd_restart_recursive="${12}" _epd_workdir="${13}"				\
 		_epd_checkfl=1 _epd_forcefl=0 _epd_perc_group=0								\
 		_epd_pkg_disabled="" _epd_pkg_finished="" _epd_pkg_names="" _epd_pkg_name=""				\
 		_epd_pkg_dispatch_count=0 _epd_pkg_dispatch_count_cur=0 _epd_pkg_dispatch_count_max=0			\
@@ -353,9 +357,9 @@ ex_pkg_dispatch() {
 					\$_epd_pkg_dispatch_njobs "${_epd_rdispatch_wait}"			\
 					\$_epd_pkg_disabled \$_epd_pkg_finished \$_epd_pkg_names		\
 					"${_epd_build_steps_default}" "${_epd_build_vars_default}"		\
-					"${_epd_checkfl}" "${_epd_dispatch_fn}" "${_epd_group_name}"		\
-					"${_epd_njobs_max}" "${_epd_pipe_path}" "${_epd_restart_at}"		\
-					"${_epd_workdir}";
+					"${_epd_checkfl}" "${_epd_continue_on_failfl}" "${_epd_dispatch_fn}"	\
+					"${_epd_group_name}" "${_epd_njobs_max}" "${_epd_pipe_path}"		\
+					"${_epd_restart_at}" "${_epd_workdir}";
 				_epd_rc="${?}";
 			fi;
 

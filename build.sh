@@ -385,10 +385,6 @@ buildp_dispatch_fail_pkg() {
 		rtl_log_msg "warning" "${MSG_build_failed_in}" "${_bpdfp_pkg_name}" "${BUILD_WORKDIR}/${_bpdfp_pkg_name}_stderrout.log";
 	fi;
 
-	if [ "${ARG_RELAXED:-0}" -eq 0 ]; then
-		exit 1;
-	fi;
-
 	return 0;
 };
 # }}}
@@ -484,9 +480,10 @@ build() {
 
 		ex_pkg_dispatch									\
 			\$BUILD_PKG_WAIT "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"	\
-			buildp_dispatch "${BUILD_GROUPS}" "${BUILD_GROUPS_INHIBIT_DEPS}"	\
-			"${ARG_PARALLEL}" "${BUILD_WORKDIR}/build.fifo" "${ARG_RESTART}"	\
-			"${ARG_RESTART_AT}" "${ARG_RESTART_RECURSIVE}" "${BUILD_WORKDIR}";
+			"${ARG_RELAXED}" buildp_dispatch "${BUILD_GROUPS}"			\
+			"${BUILD_GROUPS_INHIBIT_DEPS}" "${ARG_PARALLEL}"			\
+			"${BUILD_WORKDIR}/build.fifo" "${ARG_RESTART}" "${ARG_RESTART_AT}"	\
+			"${ARG_RESTART_RECURSIVE}" "${BUILD_WORKDIR}";
 
 		buildp_time_update;
 		rtl_log_msg "build_finish" "${MSG_build_finish}" "${BUILD_NFINI:-0}" "${BUILD_NSKIP:-0}" "${BUILD_NFAIL:-0}";
