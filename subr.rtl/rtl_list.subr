@@ -52,7 +52,7 @@ rtl_lfilter2() {
 	fi;
 
 	if [ "${_rlf2_filter:+1}" != 1 ]; then
-		eval ${_rlf2_rlist_new}=;
+		eval ${_rlf2_rlist_new}="\${${_rlf2_rlist}}";
 	else
 		eval _rlf2_list='${'"${_rlf2_rlist}"'}';
 		eval ${_rlf2_rlist_new}=;
