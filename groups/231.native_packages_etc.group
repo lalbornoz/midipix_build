@@ -212,8 +212,8 @@ zstd";
 am_cv_func_working_getline=yes
 gl_cv_func_getopt_gnu=yes"};
 : ${PKG_IMAGEMAGICK_DEPENDS:="bzip2 curl freetype fontconfig libpng libz libzip libxml2 tiff xz zstd"};
-: ${PKG_IMAGEMAGICK_SHA256SUM:=4b4f9437666ef1a87df69b34bc8abdf7ad05d524c00dd1d63f6699e6ab1ed94e};
-: ${PKG_IMAGEMAGICK_VERSION:=7.1.0-61};
+: ${PKG_IMAGEMAGICK_SHA256SUM:=f47e2218c0d868c1afc065fce54fe073e4fb2269aa81cf98e1b61c2a8eaf417d};
+: ${PKG_IMAGEMAGICK_VERSION:=7.1.1-3};
 : ${PKG_IMAGEMAGICK_URL:=https://imagemagick.org/download/releases/ImageMagick-${PKG_IMAGEMAGICK_VERSION}.tar.xz};
 : ${PKG_IMAGEMAGICK_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2"};
 : ${PKG_IMAGEMAGICK_CONFIGURE_ARGS_EXTRA:="--with-modules --without-x --without-pango --without-jemalloc --without-tcmalloc --without-umem"};
