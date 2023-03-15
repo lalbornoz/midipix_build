@@ -1,0 +1,18 @@
+diff -ru bind-9.13.2.orig/configure bind-9.13.2/configure
+--- bind-9.13.2.orig/configure	2018-07-03 09:51:40.000000000 +0200
++++ bind-9.13.2/configure	2023-03-15 15:10:58.726906236 +0100
+@@ -18148,14 +18148,6 @@
+ 
+ 
+ 
+-#
+-# NLS
+-#
+-ac_fn_c_check_func "$LINENO" "catgets" "ac_cv_func_catgets"
+-if test "x$ac_cv_func_catgets" = xyes; then :
+-  $as_echo "#define HAVE_CATGETS 1" >>confdefs.h
+-
+-fi
+ 
+ 
+ #
