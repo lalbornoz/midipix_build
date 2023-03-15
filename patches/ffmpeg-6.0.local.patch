@@ -1,3 +1,30 @@
+diff -ru ffmpeg-6.0.orig/libavcodec/x86/lpc_init.c ffmpeg-6.0/libavcodec/x86/lpc_init.c
+--- ffmpeg-6.0.orig/libavcodec/x86/lpc_init.c   2023-02-27 21:43:45.000000000 +0100
++++ ffmpeg-6.0/libavcodec/x86/lpc_init.c        2023-03-15 10:24:51.602248563 +0100
+@@ -45,9 +45,9 @@
+         x86_reg i = -len*sizeof(double);
+         if(j == lag-2) {
+             __asm__ volatile(
+-                "movsd    "MANGLE(pd_1)", %%xmm0    \n\t"
+-                "movsd    "MANGLE(pd_1)", %%xmm1    \n\t"
+-                "movsd    "MANGLE(pd_1)", %%xmm2    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm0    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm1    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm2    \n\t"
+                 "1:                                 \n\t"
+                 "movapd   (%2,%0), %%xmm3           \n\t"
+                 "movupd -8(%3,%0), %%xmm4           \n\t"
+@@ -76,8 +76,8 @@
+             );
+         } else {
+             __asm__ volatile(
+-                "movsd    "MANGLE(pd_1)", %%xmm0    \n\t"
+-                "movsd    "MANGLE(pd_1)", %%xmm1    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm0    \n\t"
++                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm1    \n\t"
+                 "1:                                 \n\t"
+                 "movapd   (%3,%0), %%xmm3           \n\t"
+                 "movupd -8(%4,%0), %%xmm4           \n\t"
 diff -ru ffmpeg-5.1.orig/libavcodec/x86/cabac.h ffmpeg-5.1/libavcodec/x86/cabac.h
 --- ffmpeg-5.1.orig/libavcodec/x86/cabac.h	2022-07-22 19:58:39.000000000 +0200
 +++ ffmpeg-5.1/libavcodec/x86/cabac.h	2022-08-21 12:11:42.010806805 +0200
@@ -143,44 +170,6 @@ diff -ru ffmpeg-5.1.orig/libavcodec/x86/h264_cabac.c ffmpeg-5.1/libavcodec/x86/h
  #endif
          "add %11, %6                            \n\t"
  
-diff -ru ffmpeg-5.1.orig/libavcodec/x86/lpc.c ffmpeg-5.1/libavcodec/x86/lpc.c
---- ffmpeg-5.1.orig/libavcodec/x86/lpc.c	2022-07-22 19:58:39.000000000 +0200
-+++ ffmpeg-5.1/libavcodec/x86/lpc.c	2022-08-21 12:11:41.774806812 +0200
-@@ -40,8 +40,8 @@
-     x86_reg j =  n2*sizeof(int32_t);
-     __asm__ volatile(
-         "movsd   %4,     %%xmm7                \n\t"
--        "movapd  "MANGLE(pd_1)", %%xmm6        \n\t"
--        "movapd  "MANGLE(pd_2)", %%xmm5        \n\t"
-+        "movapd  "LOCAL_MANGLE(pd_1)", %%xmm6        \n\t"
-+        "movapd  "LOCAL_MANGLE(pd_2)", %%xmm5        \n\t"
-         "movlhps %%xmm7, %%xmm7                \n\t"
-         "subpd   %%xmm5, %%xmm7                \n\t"
-         "addsd   %%xmm6, %%xmm7                \n\t"
-@@ -91,9 +91,9 @@
-         x86_reg i = -len*sizeof(double);
-         if(j == lag-2) {
-             __asm__ volatile(
--                "movsd    "MANGLE(pd_1)", %%xmm0    \n\t"
--                "movsd    "MANGLE(pd_1)", %%xmm1    \n\t"
--                "movsd    "MANGLE(pd_1)", %%xmm2    \n\t"
-+                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm0    \n\t"
-+                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm1    \n\t"
-+                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm2    \n\t"
-                 "1:                                 \n\t"
-                 "movapd   (%2,%0), %%xmm3           \n\t"
-                 "movupd -8(%3,%0), %%xmm4           \n\t"
-@@ -122,8 +122,8 @@
-             );
-         } else {
-             __asm__ volatile(
--                "movsd    "MANGLE(pd_1)", %%xmm0    \n\t"
--                "movsd    "MANGLE(pd_1)", %%xmm1    \n\t"
-+                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm0    \n\t"
-+                "movsd    "LOCAL_MANGLE(pd_1)", %%xmm1    \n\t"
-                 "1:                                 \n\t"
-                 "movapd   (%3,%0), %%xmm3           \n\t"
-                 "movupd -8(%4,%0), %%xmm4           \n\t"
 diff -ru ffmpeg-5.1.orig/libavcodec/x86/mlpdsp_init.c ffmpeg-5.1/libavcodec/x86/mlpdsp_init.c
 --- ffmpeg-5.1.orig/libavcodec/x86/mlpdsp_init.c	2022-07-22 19:58:39.000000000 +0200
 +++ ffmpeg-5.1/libavcodec/x86/mlpdsp_init.c	2022-08-21 12:11:42.286806796 +0200
@@ -395,19 +384,6 @@ diff -ru ffmpeg-5.1.orig/libpostproc/postprocess_template.c ffmpeg-5.1/libpostpr
          "psubb %%mm0, %%mm5                     \n\t" // q
          "paddsb %%mm6, %%mm5                    \n\t" // fix bad rounding
          "pcmpgtb %%mm5, %%mm7                   \n\t" // SIGN(q)
-@@ -991,10 +991,10 @@
-         "psubusw %%mm1, %%mm5                   \n\t" // ld
- 
- 
--        "movq "MANGLE(w05)", %%mm2              \n\t" // 5
-+        "movq "LOCAL_MANGLE(w05)", %%mm2        \n\t" // 5
-         "pmullw %%mm2, %%mm4                    \n\t"
-         "pmullw %%mm2, %%mm5                    \n\t"
--        "movq "MANGLE(w20)", %%mm2              \n\t" // 32
-+        "movq "LOCAL_MANGLE(w20)", %%mm2        \n\t" // 32
-         "paddw %%mm2, %%mm4                     \n\t"
-         "paddw %%mm2, %%mm5                     \n\t"
-         "psrlw $6, %%mm4                        \n\t"
 @@ -1187,7 +1187,7 @@
          "psubb %%mm7, %%mm6                     \n\t" // max - min
          "push %%"FF_REG_a"                      \n\t"
