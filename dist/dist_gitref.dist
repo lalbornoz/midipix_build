@@ -9,7 +9,7 @@ pkg_dist_gitref_all() {
 	(rtl_fileop cd "${MIDIPIX_BUILD_PWD}" &&\
 	 git rev-parse HEAD > "${PREFIX}/build.gitref");
 	if [ "${?}" -eq 0 ]; then
-		printf "step ${_pdga_group_name} ${_pdga_pkg_name} finish\n" >&3;
+		ex_pkg_dispatch_send "step" "${_pdga_group_name}" "${_pdga_pkg_name}" "finish";
 		ex_pkg_state_set "${_pdga_pkg_name}" "finish";
 		return 0;
 	else

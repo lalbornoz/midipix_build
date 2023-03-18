@@ -11,7 +11,7 @@ pkg_dist_zipdist_all() {
 		return 0;
 	fi;
 
-	echo "msg_pkg dist dist_zipdist ${MSG_zipdist_begin}" >&3;
+	ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_begin}";
 	rtl_log_msg "zipdist" "${MSG_zipdist_begin}";
 
 	for _pdza_pkg_name in $(cat "${_pdza_pkglist_fname}"); do
@@ -43,14 +43,14 @@ pkg_dist_zipdist_all() {
 		return 1;
 	fi;
 
-	echo "msg_pkg dist dist_zipdist ${MSG_zipdist_finished}" >&3;
+	ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_finished}";
 	rtl_log_msg "zipdist" "${MSG_zipdist_finished}";
 
 	if [ "${DEFAULT_ZIPDIST_SIGN_GPG_KEY:+}" = 1 ]\
 	&& command which gpg >/dev/null 2>&1\
 	&& gpg --list-keys "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" >/dev/null 2>&1;
 	then
-		echo "msg_pkg dist dist_zipdist ${MSG_zipdist_signing}" >&3;
+		ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_signing}";
 		rtl_log_msg "zipdist" "${MSG_zipdist_signing}";
 
 		if ! gpg --armor --passphrase-file /dev/null		\
@@ -59,11 +59,11 @@ pkg_dist_zipdist_all() {
 			return 1;
 		fi;
 
-		echo "msg_pkg dist dist_zipdist ${MSG_zipdist_signed}" >&3;
+		ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_signed}";
 		rtl_log_msg "zipdist" "${MSG_zipdist_signed}";
 	fi;
 
-	printf "step ${_pdza_group_name} ${_pdza_pkg_name} finish\n" >&3;
+	ex_pkg_dispatch_send "step" "${_pdza_group_name}" "${_pdza_pkg_name}" "finish";
 	ex_pkg_state_set "${_pdza_pkg_name}" "finish";
 
 	return 0;

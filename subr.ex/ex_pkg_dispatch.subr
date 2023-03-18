@@ -380,4 +380,23 @@ ex_pkg_dispatch() {
 	return "${_epd_rc}";
 };
 
+#
+# ex_pkg_dipatch_send() - send message from dispatcher child process to dispatcher parent process across FIFO
+# @_op:		message operation string
+#
+# Return:	zero (0) invariably.
+#
+ex_pkg_dispatch_send() {
+	local _epds_op="${1}";
+	shift 1;
+
+	trap '' PIPE;
+	while ! printf "%s%s\n" "${_epds_op}" "${*:+ "${*}"}" 1>&3 2>/dev/null; do
+		:;
+	done;
+	trap - PIPE;
+
+	return 0;
+};
+
 # vim:filetype=sh textwidth=0

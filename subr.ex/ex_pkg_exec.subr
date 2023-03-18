@@ -139,7 +139,7 @@ exp_pkg_exec() {
 					"${_eppe_restart_at}" "${_eppe_step}";
 			then
 				_eppe_rc=1; break;
-			else	printf "step %s %s %s\n" "${_eppe_group_name}" "${_eppe_pkg_name}" "${_eppe_step}" >&3;
+			else	ex_pkg_dispatch_send "step" "${_eppe_group_name}" "${_eppe_pkg_name}" "${_eppe_step}";
 				ex_pkg_state_set2 "${_eppe_workdir}" "${_eppe_pkg_name}" "${_eppe_step}" "${@}";
 			fi;
 		done;
@@ -192,9 +192,9 @@ ex_pkg_exec() {
 		rtl_lconcat "${_epdp_rdispatch_wait}" "${_epdp_pkg_name}";
 
 		(trap "if [ \${?} -eq 0 ]; then												\
-			printf \"done %s %s %d\n\" \"${_epdp_group_name}\" \"${_epdp_pkg_name}\" \"${_epdp_dispatch_count_new}\" >&3;	\
+			ex_pkg_dispatch_send \"done\" \"${_epdp_group_name}\" \"${_epdp_pkg_name}\" \"${_epdp_dispatch_count_new}\";	\
 		      else														\
-			printf \"fail %s %s %d\n\" \"${_epdp_group_name}\" \"${_epdp_pkg_name}\" \"${_epdp_dispatch_count_new}\" >&3;	\
+			ex_pkg_dispatch_send \"fail\" \"${_epdp_group_name}\" \"${_epdp_pkg_name}\" \"${_epdp_dispatch_count_new}\";	\
 			pkill -U "${$}";												\
 		      fi;" EXIT HUP INT TERM USR1 USR2;
 		set +o errexit -o noglob -o nounset; BUILD_IS_PARENT=0; rtl_log_set_fname ""; rtl_log_set_no_attr 1;
