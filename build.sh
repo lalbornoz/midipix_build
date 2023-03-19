@@ -6,7 +6,7 @@
 buildp_ast() {
 	local	_bpa_param="${1}"				\
 		_bpa_cmd="" _bpa_pids="" _bpa_pids_new=""	\
-		_bpa_pids_niter=0 _bpa_pkg_name="";
+		_bpa_pids_niter=0 _bpa_pkg_name="" _bpa_signal="";
 
 	for _bpa_cmd in	\
 			rtl_fileop rtl_kill_tree rtl_lconcat	\
@@ -23,15 +23,18 @@ buildp_ast() {
 		rtl_log_msg "fatalexit" "${MSG_build_aborted}";
 	fi;
 
-	while [ "${_bpa_pids_niter}" -lt 8 ]; do
-		rtl_lconcat \$_bpa_pids "${_bpa_pids_new}";
-		_bpa_pids_new="";
-		if ! rtl_kill_tree \$_bpa_pids_new "${$}" "TERM"\
-		|| [ "${_bpa_pids_new:+1}" != 1 ]; then
-			break;
-		else
-			: $((_bpa_pids_niter+=1));
-		fi;
+	for _bpa_signal in "TERM" "KILL"; do
+		_bpa_pids_niter=0;
+		while [ "${_bpa_pids_niter}" -lt 8 ]; do
+			rtl_lconcat \$_bpa_pids "${_bpa_pids_new}";
+			_bpa_pids_new="";
+			if ! rtl_kill_tree \$_bpa_pids_new "${$}" "${_bpa_signal}"\
+			|| [ "${_bpa_pids_new:+1}" != 1 ]; then
+				break;
+			else
+				: $((_bpa_pids_niter+=1));
+			fi;
+		done;
 	done;
 
 	if [ "${_bpa_pids:+1}" = 1 ]; then
