@@ -1,0 +1,11 @@
+--- sbpython3/project/config/cfgdefs.sh.orig	2023-03-20 20:14:07.834307552 +0100
++++ sbpython3/project/config/cfgdefs.sh	2023-03-20 20:13:42.911489879 +0100
+@@ -70,7 +70,7 @@
+ 		exit 2
+ 	fi
+ 
+-	"$mb_native_cc" -E -dM "$mb_source_dir/Include/patchlevel.h" \
++	$mb_native_cc -E -dM "$mb_source_dir/Include/patchlevel.h" \
+ 		> "$mb_internal_verinfo"
+ 
+ 	python_major=$(grep '#define PY_MAJOR_VERSION ' "$mb_internal_verinfo" | cut -d' ' -f3)
