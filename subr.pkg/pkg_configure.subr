@@ -46,7 +46,8 @@ pkgp_configure_autotools() {
 };
 
 pkgp_configure_cmake() {
-	local _ppcc_cmake_args_auto"" _ppcc_build_type="" _ppcc_IFS0="${IFS:- 	}" _ppcc_rc=0 IFS;
+	local	_ppcc_build_type="" _ppcc_cmake_args_auto="" _ppcc_cmd_name=""	\
+		_ppcc_rc=0 _ppcc_vname="" _ppcc_vval="" _ppcc_IFS0="${IFS:- 	}" IFS;
 
 	if [ "${PKG_CMAKE_LISTFILE:+1}" != 1 ]\
 	|| ! [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${PKG_CMAKE_LISTFILE}" ]; then
@@ -63,13 +64,28 @@ pkgp_configure_cmake() {
 		release|*)	_ppcc_build_type="release"; ;;
 		esac;
 
+		for _ppcc_vname in AR CC CXX PKG_CONFIG RANLIB; do
+			_ppcc_vname="PKG_${_ppcc_vname}";
+			if [ "${ARG_CCACHE:+1}" = 1 ]; then
+				eval ${_ppcc_vname}="\${${_ppcc_vname}#${ARG_CCACHE} }";
+			fi;
+			if eval [ '"${'"${_ppcc_vname}"':+1}"' = 1 ]\
+			&& eval [ '"${'"${_ppcc_vname}"'#/}"' = '"${'"${_ppcc_vname}"'}"' ]; then
+				eval _ppcc_cmd_name="\${${_ppcc_vname}% *}";
+				eval _ppcc_vval="\${${_ppcc_vname}#* }";
+				eval ${_ppcc_vname}='$(which "${_ppcc_cmd_name}")' || return 1;
+			fi;
+		done;
+
 		_ppcc_cmake_args_auto="
 			-DCMAKE_AR=${PKG_AR}
 			-DCMAKE_BUILD_TYPE=${_ppcc_build_type}
 			-DCMAKE_C_COMPILER=${PKG_CC}
+			${ARG_CCACHE:+-DCMAKE_C_COMPILER_LAUNCHER=${ARG_CCACHE}}
 			-DCMAKE_C_FLAGS=${PKG_CFLAGS_CONFIGURE:-}${PKG_CFLAGS_CONFIGURE_EXTRA:+ ${PKG_CFLAGS_CONFIGURE_EXTRA}}
 			-DCMAKE_CPP_FLAGS=${PKG_CPPFLAGS_CONFIGURE:-}${PKG_CPPFLAGS_CONFIGURE_EXTRA:+ ${PKG_CPPFLAGS_CONFIGURE_EXTRA}}
 			-DCMAKE_CXX_COMPILER=${PKG_CXX}
+			${ARG_CCACHE:+-DCMAKE_CXX_COMPILER_LAUNCHER=${ARG_CCACHE}}
 			-DCMAKE_CXX_FLAGS=${PKG_CXXFLAGS_CONFIGURE:-}${PKG_CXXFLAGS_CONFIGURE_EXTRA:+ ${PKG_CXXFLAGS_CONFIGURE_EXTRA}}
 			-DCMAKE_EXE_LINKER_FLAGS=${PKG_LDFLAGS_CONFIGURE:-}${PKG_LDFLAGS_CONFIGURE_EXTRA:+ ${PKG_LDFLAGS_CONFIGURE_EXTRA}}
 			-DCMAKE_FIND_ROOT_PATH=${PKG_PREFIX}

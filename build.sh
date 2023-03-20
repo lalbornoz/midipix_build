@@ -194,10 +194,10 @@ buildp_init_args_ccache() {
 	local	_bpiac_rstatus="${1#\$}"	\
 		_bpiac_target="";
 
-	if [ "${ARG_CCACHE:-0}" -eq 1 ]; then
+	if [ "${ARG_CCACHE:+1}" = 1 ]; then
 		for _bpiac_target in CROSS HOST NATIVE SOFORT_NATIVE; do
-			eval "DEFAULT_${_bpiac_target}_CC"=\"ccache \${DEFAULT_${_bpiac_target}_CC}\";
-			eval "DEFAULT_${_bpiac_target}_CXX"=\"ccache \${DEFAULT_${_bpiac_target}_CXX}\";
+			eval "DEFAULT_${_bpiac_target}_CC"=\"${ARG_CCACHE} \${DEFAULT_${_bpiac_target}_CC}\";
+			eval "DEFAULT_${_bpiac_target}_CXX"=\"${ARG_CCACHE} \${DEFAULT_${_bpiac_target}_CXX}\";
 		done;
 	fi;
 
@@ -226,7 +226,7 @@ buildp_init_getopts_fn() {
 
 		case "${_bpigf_opt}" in
 		--as-needed)	ARG_AS_NEEDED=1; _bpigf_shiftfl=1; ;;
-		--ccache)	ARG_CCACHE=1; _bpigf_shiftfl=1; ;;
+		--ccache)	ARG_CCACHE="ccache"; _bpigf_shiftfl=1; ;;
 		--debug-minipx)	ARG_DEBUG_MINIPIX=1; _bpigf_shiftfl=1; ;;
 		--help)		_bpigf_shiftfl=1; ;;
 		--reset-state)	ARG_RESET_PKG=1; _bpigf_shiftfl=1; ;;
