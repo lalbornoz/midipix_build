@@ -890,8 +890,10 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 
         --as-needed         Don't build unless the midipix_build repository has received
                             new commits.
+        --ccache            Build w/ ccache(1) in $PATH.
         --debug-minipix     Don't strip(1) minipix binaries to facilitate debugging minipix.
         --reset-state       Reset package build step state on exit.
+        --theme theme       Set theme.
 
         <group>[ ..]        One of: dev_packages, dist, host_deps, host_deps_rpm,
                             host_toolchain, host_tools, minipix, native_packages,

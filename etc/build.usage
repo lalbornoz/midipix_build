@@ -82,8 +82,10 @@
 
         [33m--[93mas-needed[0m         [96mDon't build unless the midipix_build repository has received[0m
                             [96mnew commits.[0m
+        [33m--[93mccache[0m            [96mBuild w/ ccache(1) in $PATH.[0m
         [33m--[93mdebug-minipix[0m     [96mDon't [93mstrip(1)[96m minipix binaries to facilitate debugging minipix.[0m
         [33m--[93mreset-state[0m       [96mReset package build step state on exit.[0m
+        [33m--[93mtheme theme[0m       [96mSet theme.[0m
 
         [90m<[93mgroup[90m>[ ..][96m        One of: [93mdev_packages[90m,[93m dist[90m,[93m host_deps[90m,[93m host_deps_rpm[90m,[0m
                             [93mhost_toolchain[90m,[93m host_tools[90m,[93m minipix[90m,[93m native_packages[90m,[0m
