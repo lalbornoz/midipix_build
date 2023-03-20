@@ -3,7 +3,18 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
-# N.B.	URLs ($1) may contain `?' or '&' characters.
+#
+# rtl_fetch_url_wget() - fetch archive file(s) for item
+# @_urls:		list of URLs
+# @_sha256sum_src:	SHA256SUM digest file to check authenticity of archive file(s) with
+# @_target_dname:	target directory namne
+# @_target_fname:	target filename
+# @_target_name:	target subdirectory name
+# @_mirrors:		optional list of mirror base URLs
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+# N.B.			URLs ($1) may contain `?' or '&' characters.
+#
 rtl_fetch_url_wget() {
 	local	_rfuw_urls="${1}" _rfuw_sha256sum_src="${2}" _rfuw_target_dname="${3}"		\
 		_rfuw_target_fname="${4}" _rfuw_target_name="${5}" _rfuw_mirrors="${6:-}"	\

@@ -3,6 +3,12 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+#
+# rtl_isnumber() - check if string is number
+# @_s:		string to check
+#
+# Returns:	zero (0) if string is number, non-zero (>0) if string is not number
+#
 rtl_isnumber() {
 	local	_ri_s="${1}"	\
 		_ri_rc=0;
@@ -16,6 +22,13 @@ rtl_isnumber() {
 	return "${_ri_rc}";
 };
 
+#
+# rtl_match() - match pattern against string
+# @_s:		input string
+# @_find:	pattern to match against string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_match() {
 	local _rm_s="${1}" _rm_find="${2}";
 
@@ -26,6 +39,13 @@ rtl_match() {
 	fi;
 };
 
+#
+# rtl_matchr() - match pattern against string from right-hand side
+# @_s:		input string
+# @_find:	pattern to match against string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_matchr() {
 	local _rmr_s="${1}" _rmr_find="${2}";
 
@@ -36,16 +56,63 @@ rtl_matchr() {
 	fi;
 };
 
+#
+# rtl_remove_postfix() - remove longest postfix from string w/ pattern
+# @_pattern:	pattern to match against input string
+# @_s:		input string
+# @_rs_out:	out reference to output string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+rtl_remove_postfix() {
+	local _rh_pattern="${1}" _rh_s="${2}" _rh_rs_out="${3#\$}";
+
+	while true; do
+		if [ "${_rh_s%%${_rh_pattern}}" = "${_rh_s}" ]; then
+			break;
+		else
+			_rh_s="${_rh_s%%${_rh_pattern}}";
+		fi;
+	done;
+
+	eval ${_rh_rs_out}='${_rh_s}';
+	return 0;
+};
+
+#
+# rtl_setrstatus() - set status string
+# @_rstatus:	out reference to status string
+# @_status:	new status string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_setrstatus() {
 	local _rsrs_rstatus="${1#\$}" _rsrs_status="${2}";
 	eval ${_rsrs_rstatus}=\"${_rsrs_status}\";
 	return 0;
 };
 
+#
+# rtl_subst() - substitute in string
+# @_rs:		inout reference to string
+# @_find:	pattern to match against input string
+# @_replace:	replacement string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_subst() {
 	rtl_subst2 "${1}" "${1}" "${2}" "${3}";
 };
 
+#
+# rtl_subst2() - substitute in string
+# @_rs:		in reference to string
+# @_rs_out:	out reference to new string
+# @_find:	pattern to match against input string
+# @_replace:	replacement string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_subst2() {
 	local	_rs2_rs="${1#\$}" _rs2_rs_out="${2#\$}" _rs2_find="${3}" _rs2_replace="${4}"	\
 		_rs2_prefix="" _rs2_s="" _rs2_s_new="";
@@ -61,10 +128,23 @@ rtl_subst2() {
 	return 0;
 };
 
+#
+# rtl_tolower() - convert string to lower case
+# @_rs:		in reference to string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_tolower() {
 	rtl_tolower2 "${1}" "${1}";
 };
 
+#
+# rtl_tolower2() - convert string to lower case
+# @_rs:		in reference to string
+# @_rs_out:	out reference to new string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_tolower2() {
 	local	_rtl2_rs="${1#\$}" _rtl2_rs_out="${2#\$}"	\
 		_rtl2_s="" _rtl2_s_new="";
@@ -110,12 +190,27 @@ rtl_tolower2() {
 	return 0;
 };
 
+#
+# rtl_toupper() - convert string to upper case
+# @_rs:		in reference to string
+# @_rs_out:	out reference to new string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_toupper() {
 	rtl_toupper2 "${1}" "${1}";
 };
 
+#
+# rtl_toupper2() - convert string to upper case
+# @_rs:		in reference to string
+# @_rs_out:	out reference to new string
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_toupper2() {
-	local _rtu2_rs="${1#\$}" _rtu2_rs_out="${2#\$}" _rtu2_s="" _rtu2_s_new="";
+	local	_rtu2_rs="${1#\$}" _rtu2_rs_out="${2#\$}"	\
+		_rtu2_s="" _rtu2_s_new="";
 
 	eval _rtu2_s="\${${_rtu2_rs}}";
 

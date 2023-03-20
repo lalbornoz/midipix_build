@@ -3,10 +3,23 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+#
+# rtl_basename() - obtain base name from filename
+# @_rfname:	inout reference to filename
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_basename() {
 	rtl_basename2 "${1}" "${1}";
 };
 
+#
+# rtl_basename2() - obtain base name from filename
+# @_rfname:	in reference to filename
+# @_rfname_out:	out reference to new filename
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_basename2() {
 	local	_rb2_rfname="${1#\$}" _rb2_rfname_out="${2#\$}"	\
 		_rb2_fname="";
@@ -16,6 +29,14 @@ rtl_basename2() {
 	return 0;
 };
 
+#
+# rtl_check_digest() - check digest of single file
+# @_rdigest:		out reference to digest of file
+# @_fname:		name of file to check
+# @_digest_check:	digest to check against
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
 rtl_check_digest() {
 	local	_rcd_rdigest="${1#\$}" _rcd_fname="${2}" _rcd_digest_check="${3}"	\
 		_rcd_digest="";
@@ -33,6 +54,14 @@ rtl_check_digest() {
 	fi;
 };
 
+#
+# rtl_check_digest_file() - check digest of single file w/ digest file
+# @_fname:		name of file to check
+# @_digest_check:	digest to check against
+# @_digest_fname:	name of file containing digest
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
 rtl_check_digest_file() {
 	local	_rcdf_fname="${1}" _rcdf_digest_check="${2}" _rcdf_digest_fname="${3}"	\
 		_rcdf_digest="" _rcdf_digest_file="";
@@ -51,6 +80,13 @@ rtl_check_digest_file() {
 	fi;
 };
 
+#
+# rtl_check_path_vars() - check pathname variables for validity
+# @_rstatus:	out reference to status string
+# @_vnames:	list of variable names
+#
+# Returns:	zero (0) on success, non-zero (>0) on empty or unset pathname variable or pathname variable containing whitespace characters
+#
 rtl_check_path_vars() {
 	local	_rcpv_rstatus="${1#\$}" _rcpv_vnames="${2}"	\
 		_rcpv_rc=0 _rcpv_vname="" _rcpv_vname_val="";
@@ -70,15 +106,28 @@ rtl_check_path_vars() {
 	return "${_rcpv_rc}";
 };
 
+#
+# rtl_dirname() - obtain directory name from filename
+# @_rfname:	inout reference to {file,directory} name
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_dirname() {
 	rtl_dirname2 "${1}" "${1}";
 };
 
+#
+# rtl_dirname2() - obtain directory name from filename
+# @_rfname:	in reference to filename
+# @_rfname_out:	out reference to directory name
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_dirname2() {
-	local	_rdname="${1#\$}" _rdname_out="${2#\$}"	\
+	local	_rfname="${1#\$}" _rdname_out="${2#\$}"	\
 		_rd2_dname="";
 
-	eval _rd2_dname="\${${_rdname}}";
+	eval _rd2_dname="\${${_rfname}}";
 	_rd2_dname="${_rd2_dname%/*}";
 
 	case "${_rd2_dname}" in
@@ -92,6 +141,13 @@ rtl_dirname2() {
 	return 0;
 };
 
+#
+# rtl_exists_any() - check for existence of pathnames beneath directory
+# @_subdir:	single directory name
+# @...:		list of pathnames to check
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_exists_any() {
 	local _rea_subdir="${1}"; shift;
 
@@ -105,6 +161,14 @@ rtl_exists_any() {
 	return 1;
 };
 
+#
+# rtl_flock_acquire() - acquire file lock
+# @_fd:				single file descriptor
+# @_conflict_exit_code:		exit code on conflict
+# @_wait:			wait period in seconds
+#
+# Returns:			zero (0) on success, non-zero (>0) on failure
+#
 rtl_flock_acquire() {
 	local _rfa_fd="${1}" _rfa_conflict_exit_code="${2:-253}" _rfa_wait="${3:-3600}";
 
@@ -123,6 +187,13 @@ rtl_flock_acquire() {
 	done;
 };
 
+#
+# rtl_is_newer() - check if single file is newer than other single file
+# @_new_fname:	single name of newer file
+# @_old_fname:	single name of older file
+#
+# Returns:	zero (0) if @_new_fname is newer, non-zero (>0) if @_old_fname is newer
+#
 rtl_is_newer() {
 	local	_ris_new_fname="${1}" _ris_old_fname="${2}"	\
 		_ris_new_ts="" _ris_old_ts="";
@@ -141,6 +212,15 @@ rtl_is_newer() {
 	fi;
 };
 
+#
+# rtl_patch_files() -
+# @_patch_cwd:		patch(1) -d directory
+# @_strip_count:	patch(1) strip count
+# @_fn:			name of function that produces patch filenames and takes the arguments @_rpatch_fname @_patch_idx @...
+# @...			optional arguments to pass to @_fn
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
 rtl_patch_files() {
 	local	_rpf_patch_cwd="${1}" _rpf_strip_count="${2}" _rpf_fn="${3}" 	\
 		_rpf_patch_fname="" _rpf_patch_idx=0;

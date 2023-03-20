@@ -4,9 +4,10 @@
 #
 
 #
-# rtl_export_vars() - 
-# @_unsetfl:	
-# 
+# rtl_export_vars() - export or unset list of variables
+# @[-u]:	unset instead of exporting variables
+# @...:		list of variable name-value pairs
+#
 # Returns:	zero (0) on success, non-zero (>0) on failure
 #
 rtl_export_vars() {
@@ -30,21 +31,14 @@ rtl_export_vars() {
 	return 0;
 };
 
-rtl_head() {
-	local _rh_pattern="${1}" _rh_s="${2}" _rh_rs_out="${3#\$}";
-
-	while true; do
-		if [ "${_rh_s%%${_rh_pattern}}" = "${_rh_s}" ]; then
-			break;
-		else
-			_rh_s="${_rh_s%%${_rh_pattern}}";
-		fi;
-	done;
-
-	eval ${_rh_rs_out}='${_rh_s}';
-	return 0;
-};
-
+#
+# rtl_percentage() - calculate percentage of two numbers
+# @_in:		input number
+# @_max:	input maximum
+# @_rs_out:	out reference to percentage number
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_percentage() {
 	local	_rp_in="${1}" _rp_max="${2}" _rp_rs_out="${3#\$}"	\
 		_rp_perc;
@@ -56,6 +50,14 @@ rtl_percentage() {
 	return 0;
 };
 
+#
+# rtl_percentage2() - calculate percentage of two numbers
+# @_rin:	in reference to input number
+# @_rmax:	in reference to input maximum
+# @_rs_out:	out reference to percentage number
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_percentage2() {
 	local	_rp_rin="${1#\$}" _rp_rmax="${2#\$}" _rp_rs_out="${3#\$}"	\
 		_rp_in=0 _rp_max=0 _rp_perc;
@@ -70,12 +72,19 @@ rtl_percentage2() {
 	return 0;
 };
 
+#
+# rtl_sunset() - unset variables
+# @_rset:	in reference to list of variables to unset
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_sunset() {
-	local _rs_rset="${1#\$}" _rs_kname="" IFS=" 	";
+	local	_rs_rset="${1#\$}"	\
+		IFS=" 	";
 
 	eval set -- "\${${_rs_rset}}";
 	while [ "${#}" -gt 0 ]; do
-		unset "${_rs_rset}${_rs_kname}"; shift;
+		unset "${_rs_rset}"; shift;
 	done; unset "${_rs_rset}";
 
 	return 0;

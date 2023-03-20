@@ -20,6 +20,13 @@ rtlp_fileop_log() {
 # Public subroutines
 #
 
+#
+# rtl_fileop() - clean download cache for single package
+# @_op:		file operation
+# @...:		file operation arguments
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_fileop() {
 	local	_rf_op="${1}"					\
 		_rf_dst="" _rf_group="" _rf_install_args=""	\

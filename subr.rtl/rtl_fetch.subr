@@ -3,21 +3,30 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+#
+# rtl_fetch_clean_dlcache() - clean download cache for single package
+# @_dlcachedir:		absolute pathname to download cache directory
+# @_name:		single item name
+# @_fname_base:		optional single item archive filename
+# @_urls_git:		optional list of item Git URL(s)
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
 rtl_fetch_clean_dlcache() {
-	local	_pfdcd_dlcachedir="${1}" _pfdcd_pkg_name="${2}"		\
-		_pfdcd_pkg_fname="${3}" _pfdcd_pkg_urls_git="${4}"	\
+	local	_pfdcd_dlcachedir="${1}" _pfdcd_name="${2}"		\
+		_pfdcd_fname_base="${3}" _pfdcd_urls_git="${4}"		\
 		_pfdcd_fname="" _pfdcd_skipfl=0 _pfdcd_url_spec=""	\
 		_pfdcd_url_subdir="";
 
 	for _pfdcd_fname in	\
-			$(cd "${_pfdcd_dlcachedir}/${_pfdcd_pkg_name}" 2>/dev/null &&
+			$(cd "${_pfdcd_dlcachedir}/${_pfdcd_name}" 2>/dev/null &&
 			 find -maxdepth 1 -mindepth 1				\
-			${_pfdcd_pkg_fname:+-not -name "${_pfdcd_pkg_fname}"}	\
-			${_pfdcd_pkg_fname:+-not -name "${_pfdcd_pkg_fname}.fetched"});
+			${_pfdcd_fname_base:+-not -name "${_pfdcd_fname_base}"}	\
+			${_pfdcd_fname_base:+-not -name "${_pfdcd_fname_base}.fetched"});
 	do
 		_pfdcd_fname="${_pfdcd_fname#./}"; _pfdcd_skipfl=0;
 
-		for _pfdcd_url_spec in ${_pfdcd_pkg_urls_git}; do
+		for _pfdcd_url_spec in ${_pfdcd_urls_git}; do
 			_pfdcd_url_subdir="${_pfdcd_url_spec%%=*}"; _pfdcd_url_subdir="${_pfdcd_url_subdir##*/}";
 			if [ "${_pfdcd_fname%.git}" = "${_pfdcd_url_subdir}" ]; then
 				_pfdcd_skipfl=1; break;
@@ -25,8 +34,8 @@ rtl_fetch_clean_dlcache() {
 		done;
 
 		if [ "${_pfdcd_skipfl}" -eq 0 ]; then
-			_pfdcd_fname="${_pfdcd_dlcachedir}/${_pfdcd_pkg_name}/${_pfdcd_fname}";
-			rtl_log_msg "verbose" "${MSG_rtl_fetch_rm_redundant}" "${_pfdcd_fname}" "${_pfdcd_pkg_name}";
+			_pfdcd_fname="${_pfdcd_dlcachedir}/${_pfdcd_name}/${_pfdcd_fname}";
+			rtl_log_msg "verbose" "${MSG_rtl_fetch_rm_redundant}" "${_pfdcd_fname}" "${_pfdcd_name}";
 			rtl_fileop rm "${_pfdcd_fname}";
 		fi;
 	done;
@@ -34,17 +43,25 @@ rtl_fetch_clean_dlcache() {
 	return 0;
 };
 
+#
+# rtl_fetch_dlcache_subdir() - create download cache subdirectory for single package
+# @_dlcachedir:		absolute pathname to download cache directory
+# @_name:		single item name
+# @_inherit_from:	optional name of item @_name inherits from
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
 rtl_fetch_dlcache_subdir() {
-	local	_rfds_dlcache_dir="${1}" _rfds_name="${2}" _rfds_pkg_inherit_from="${3}";
+	local	_rfds_dlcachedir="${1}" _rfds_name="${2}" _rfds_inherit_from="${3}";
 
-	if [ "${_rfds_pkg_inherit_from:+1}" = 1 ]\
-	&& ! [ -e "${_rfds_dlcache_dir}/${_rfds_name}" ]\
-	&& ! rtl_fileop ln_symbolic "${_rfds_pkg_inherit_from}" "${_rfds_dlcache_dir}/${_rfds_name}";
+	if [ "${_rfds_inherit_from:+1}" = 1 ]\
+	&& ! [ -e "${_rfds_dlcachedir}/${_rfds_name}" ]\
+	&& ! rtl_fileop ln_symbolic "${_rfds_inherit_from}" "${_rfds_dlcachedir}/${_rfds_name}";
 	then
 		return 1;
-	elif [ "${_rfds_pkg_inherit_from:+1}" != 1 ]\
-	&& ! [ -e "${_rfds_dlcache_dir}/${_rfds_name}" ]\
-	&& ! rtl_fileop mkdir "${_rfds_dlcache_dir}/${_rfds_name}";
+	elif [ "${_rfds_inherit_from:+1}" != 1 ]\
+	&& ! [ -e "${_rfds_dlcachedir}/${_rfds_name}" ]\
+	&& ! rtl_fileop mkdir "${_rfds_dlcachedir}/${_rfds_name}";
 	then
 		return 1;
 	else

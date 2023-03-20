@@ -33,7 +33,7 @@ pkgp_install_libs_shared_link() {
 };
 
 pkgp_install_libs_shared() {
-	local	_ppils_head="" _ppils_lib_dst_path="" _ppils_lib_name=""	\
+	local	_ppils_postfix="" _ppils_lib_dst_path="" _ppils_lib_name=""	\
 		_ppils_lib_src_path="" _ppils_so_dst_dir="" _ppils_so_src_path="";
 
 	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
@@ -42,8 +42,8 @@ pkgp_install_libs_shared() {
 				\(  -name "*.so" -or -name "*.so.*" \) -print);
 		do
 			if [ "$(readlink -f "${_ppils_so_src_path}")" != "/dev/null" ]\
-			&& rtl_head "[0-9.]" "${_ppils_so_src_path##*.so}" \$_ppils_head\
-			&& [ "${_ppils_head:+1}" != 1 ]; then
+			&& rtl_remove_postfix "[0-9.]" "${_ppils_so_src_path##*.so}" \$_ppils_postfix\
+			&& [ "${_ppils_postfix:+1}" != 1 ]; then
 				case "${_ppils_so_src_path}" in
 				*.so)	_ppils_lib_src_path="${_ppils_so_src_path%%.so}.lib.a"; ;;
 				*.so.*)	_ppils_lib_src_path="${_ppils_so_src_path%%.so.*}.${_ppils_so_src_path##*.so.}.lib.a"; ;;
