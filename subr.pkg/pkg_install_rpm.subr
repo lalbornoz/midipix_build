@@ -32,6 +32,9 @@ pkg_install_rpm() {
 			while true; do
 				rpmbuild									\
 					-bb									\
+														\
+					--define "_binary_payload w2T16.xzdio"					\
+														\
 					--define="_tmppath ${BUILD_WORKDIR}"					\
 					--define="_topdir ${PREFIX_RPM}/${PKG_NAME}-${_pir_pkg_version_rpm}"	\
 					--define="pkg_destdir ${PKG_DESTDIR}"					\
