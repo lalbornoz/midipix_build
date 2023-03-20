@@ -164,11 +164,9 @@ exp_pkg_expand_restart_at_virtual() {
 		_epera_at="${1}"; shift;
 		if [ "${_epera_at#@}" != "${_epera_at}" ]; then
 			_epera_at="${_epera_at#@}";
-				_epera_rc=1;
-				rtl_setrstatus "${_epera_rstatus}" 'invalid virtual build step \`'"${_epera_at}"''\''';
 			if [ "${_epera_at%[!0-9a-zA-Z_]*}" != "${_epera_at}" ]; then
 				_epera_rc=1;
-
+				rtl_setrstatus "${_epera_rstatus}" 'invalid virtual build step \`'"${_epera_at}"''\''';
 			elif eval [ '"${'"${_epera_rset}${_epera_at}"':+1}"' = 1 ]; then
 				eval _epera_at='${'"${_epera_rset}${_epera_at}"'}';
 			else
