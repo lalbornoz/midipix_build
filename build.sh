@@ -78,7 +78,9 @@ buildp_init() {
 	  || ! ex_init_getopts								\
 	  		"${_bi_rstatus}" "buildp_init_getopts_fn"			\
 			"${_bi_optstring}" "${@}"					\
-	  || ! ex_init_theme "${_bi_rstatus}" "${_bi_name_base}" "${ARG_THEME:-}"	\
+	  || ! ex_init_theme								\
+	  		"${_bi_rstatus}" "${BUILD_HNAME}"				\
+			"${_bi_name_base}" "${ARG_THEME:-}"				\
 	  || ! ex_init_logging "${_bi_rstatus}" \$ARG_VERBOSE_TAGS "${ARG_VERBOSE}"	\
 	  || ! ex_pkg_load_vars "${_bi_rstatus}" \$ARCH \$BUILD_KIND			\
 	  || ! ex_init_prereqs "${_bi_rstatus}" "${DEFAULT_PREREQS}"			\

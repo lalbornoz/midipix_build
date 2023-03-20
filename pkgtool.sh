@@ -33,8 +33,8 @@ pkgtoolp_init() {
 	  		"${_pi_rstatus}" "pkgtoolp_init_getopts_fn"	\
 			"${_pi_optstring}" "${@}"			\
 	  || ! ex_init_theme						\
-	  		"${_pi_rstatus}" "${_pi_name_base}"		\
-			"${ARG_THEME:-}"				\
+	  		"${_pi_rstatus}" "${BUILD_HNAME}"		\
+			"${_pi_name_base}" "${ARG_THEME:-}"		\
 	  || ! ex_init_prereqs "${_pi_rstatus}" "${_pi_prereqs}"	\
 	  || ! ex_pkg_load_vars						\
 	  		"${_pi_rstatus}" \$ARCH \$BUILD_KIND		\
