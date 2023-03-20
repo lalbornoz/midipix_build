@@ -1,0 +1,104 @@
+#
+# Theme file for build.sh
+#
+
+#
+# {{{ ANSI attributes reference
+#
+# Attribute	Name 					Note
+# 0 		Reset or normal 			All attributes off
+# 1 		Bold or increased intensity	 	As with faint, the color change is a PC (SCO / CGA) invention.[30][better source needed]
+# 2 		Faint, decreased intensity, or dim 	May be implemented as a light font weight like bold.[31]
+# 4 		Underline 				Style extensions exist for Kitty, VTE, mintty and iTerm2.[32][33]
+# 7 		Reverse video or invert 		Swap foreground and background colors; inconsistent emulation[34]
+#
+# FG 	BG 	Colour name
+# 30 	40 	Black
+# 31 	41 	Red
+# 32 	42 	Green
+# 33 	43 	Yellow
+# 34 	44 	Blue
+# 35 	45 	Magenta
+# 36 	46 	Cyan
+# 37 	47 	White
+# 90 	100 	Bright Black (Gray)
+# 91 	101 	Bright Red
+# 92 	102 	Bright Green
+# 93 	103 	Bright Yellow
+# 94 	104 	Bright Blue
+# 95 	105 	Bright Magenta
+# 96 	106 	Bright Cyan
+# 97 	107 	Bright White
+# }}}
+#
+
+#
+# Tag sets
+#
+LOG_TAGS_all="build,fileop,install,zipdist,xtrace,fatal,info,verbose,warning,build_begin,build_finish,build_finish_time,build_vars,group_begin,group_finish,pkg_begin,pkg_finish,pkg_msg,pkg_skip,pkg_step,pkg_strip";
+LOG_TAGS_normal="fatal,info,warning,build_begin,build_finish,build_finish_time,pkg_begin,pkg_finish,pkg_msg";
+LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}zipdist,verbose,build_vars,group_begin,group_finish,pkg_skip,pkg_step,pkg_strip";
+
+#
+# Subsystem tags
+#
+LOG_TAG_build="";				# (UNUSED)
+LOG_TAG_fileop=36;				# Cyan
+LOG_TAG_install=36;				# Cyan
+LOG_TAG_zipdist=93;				# Bright yellow
+LOG_TAG_xtrace="";				# (UNUSED)
+
+#
+# General level tags
+#
+LOG_TAG_fatal=91;				# Bright red
+LOG_TAG_info=93;				# Bright yellow
+LOG_TAG_verbose=96;				# Bright cyan
+LOG_TAG_warning=31;				# Dark red
+
+#
+# General build tags
+#
+LOG_TAG_build_begin="4;93";			# Underline; Bright yellow
+LOG_TAG_build_begin_256="4;38;5;219";		# Underline; RGB #ffafff
+LOG_TAG_build_finish="4;93";			# Underline; Bright yellow
+LOG_TAG_build_finish_256="4;38;5;51";		# Underline; RGB #00ffff
+LOG_TAG_build_finish_time="4;93";		# Underline; Bright yellow
+LOG_TAG_build_finish_time_256="4;38;5;50";	# Underline; RGB #00ffd7
+LOG_TAG_build_vars="33";			# Dark yellow
+LOG_TAG_build_vars_even_256="38;5;93";		# RGB #8700ff
+LOG_TAG_build_vars_odd_256="38;5;92";		# RGB #8700d7
+
+#
+# Build group tags
+#
+LOG_TAG_group_begin="4;93";			# Underline; Bright yellow
+LOG_TAG_group_begin_even_256="4;38;5;213";	# Underline; RGB #ff87ff
+LOG_TAG_group_begin_odd_256="4;38;5;212";	# Underline; RGB #ff87d7
+LOG_TAG_group_finish="4;92";			# Underline; Bright green
+LOG_TAG_group_finish_even_256="4;38;5;123";	# Underline; RGB #87ffff
+LOG_TAG_group_finish_odd_256="4;38;5;122";	# Underline; RGB #87ffd7
+
+#
+# Package build tags
+#
+LOG_TAG_pkg_begin_even=93;			# Bright yellow
+LOG_TAG_pkg_begin_odd=93;			# Bright yellow
+LOG_TAG_pkg_begin_even_256="38;5;201";		# RGB #ff00ff
+LOG_TAG_pkg_begin_odd_256="38;5;200";		# RGB #ff00d7
+LOG_TAG_pkg_finish_even=92;			# Bright green
+LOG_TAG_pkg_finish_odd=92;			# Bright green
+LOG_TAG_pkg_finish_even_256="38;5;117";		# RGB #87d7ff
+LOG_TAG_pkg_finish_odd_256="38;5;116";		# RGB #87d7d7
+LOG_TAG_pkg_msg=90;				# Dark grey
+LOG_TAG_pkg_skip_even=36;			# Cyan
+LOG_TAG_pkg_skip_odd=36;			# Cyan
+LOG_TAG_pkg_skip_even_256="38;5;105";		# RGB #8787ff
+LOG_TAG_pkg_skip_odd_256="38;5;104";		# RGB #8787d7
+LOG_TAG_pkg_step_even=90;			# Dark grey
+LOG_TAG_pkg_step_odd=90;			# Dark grey
+LOG_TAG_pkg_step_even_256="38;5;242";		# RGB #6c6c6c
+LOG_TAG_pkg_step_odd_256="38;5;240";		# RGB #585858
+LOG_TAG_pkg_strip=93;				# Bright yellow
+
+# vim:foldmethod=marker ft=sh
