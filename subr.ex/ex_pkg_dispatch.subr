@@ -4,7 +4,7 @@
 #
 
 #
-# exp_pkg_dispatch_complete() - XXX
+# exp_pkg_dispatch_complete() - completes all disabled and finished packages
 # @_dispatch_fn:	top-level dispatch function name
 # @_group_names:	build group name(s)
 # @_pkg_disabled:	list of disabled packages

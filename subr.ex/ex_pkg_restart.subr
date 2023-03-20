@@ -4,11 +4,10 @@
 #
 
 #
-# exp_pkg_check_restart_at() - XXX
+# exp_pkg_check_restart_at() - check restart (-r) specification for unknown build steps
 # @_rstatus:		out reference to status string
 # @_rspec_at:		in reference to restart build step list
 #
-# Calling convention:	in ref. @_rspec_at
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_check_restart_at() {
@@ -28,12 +27,11 @@ exp_pkg_check_restart_at() {
 };
 
 #
-# exp_pkg_expand_restart_at_spec() - XXX
+# exp_pkg_expand_restart_at_spec() - expand list of virtual build steps and list of build steps into list of build steps w/ operator subspecifications and virtual build steps expanded
 # @_rstatus:		out reference to status string
 # @_rset:		in reference to restart virtual build step set
 # @_rspec_at:		inout reference to restart build step list
 #
-# Calling convention:	in ref. @_rset, inout ref. @_rspec_at
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_expand_restart_at_spec() {
@@ -90,12 +88,11 @@ exp_pkg_expand_restart_at_spec() {
 };
 
 #
-# exp_pkg_expand_restart_at_spec_cmp() - XXX
+# exp_pkg_expand_restart_at_spec_cmp() - expand list of virtual build steps and list of build steps into list of build steps w/ operator subspecifications expanded
 # @_rstatus:		out reference to status string
 # @_rset:		in reference to restart virtual build step set
 # @_rspec_at:		inout reference to restart build step list
 #
-# Calling convention:	in ref. @_rset, inout ref. @_rspec_at
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_expand_restart_at_spec_cmp() {
@@ -147,13 +144,12 @@ exp_pkg_expand_restart_at_spec_cmp() {
 };
 
 #
-# exp_pkg_expand_restart_at_virtual() - XXX
+# exp_pkg_expand_restart_at_virtual() - expand list of build steps into list of build steps w/ expansion of virtual build steps
 # @_rstatus:		out reference to status string
 # @_spec_at:		restart build step list
 # @_rspec_at_new:	out reference to new restart build step list
-# @_rset:		inout reference to restart virtual build step set
+# @_rset:		in reference to restart virtual build step set
 #
-# Calling convention:	inout ref. @_rspec_recursive
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_expand_restart_at_virtual() {
@@ -187,11 +183,10 @@ exp_pkg_expand_restart_at_virtual() {
 };
 
 #
-# exp_pkg_expand_restart_recursive() - XXX
+# exp_pkg_expand_restart_recursive() - expand restart (-r) specification into recursion flag
 # @_rspec:		inout reference to restart {specification,package name list}
 # @_rrecursive:		out reference to recursion flag
 #
-# Calling convention:	inout ref. @_rspec, out ref. @_rrecursive
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_expand_restart_recursive() {
@@ -213,12 +208,11 @@ exp_pkg_expand_restart_recursive() {
 };
 
 #
-# exp_pkg_expand_restart_spec() - XXX
+# exp_pkg_expand_restart_spec() - expand restart (-r) specification into list of build steps
 # @_rstatus:		out reference to status string
 # @_rspec:		inout reference to restart {specification,package name list}
 # @_rspec_at:		out reference to restart build step list
 #
-# Calling convention:	inout ref. @_rspec, out ref. @_rspec_at, out ref. @_rrecursive
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_expand_restart_spec() {
@@ -256,10 +250,9 @@ exp_pkg_expand_restart_spec() {
 };
 
 #
-# exp_pkg_init_restart_at_virtual() - XXX
+# exp_pkg_init_restart_at_virtual() - produce list of virtual build step set in default build steps
 # @_rset:		out reference to restart virtual build step set
 #
-# Calling convention:	out ref. @_rset
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_init_restart_at_virtual() {
@@ -278,13 +271,12 @@ exp_pkg_init_restart_at_virtual() {
 };
 
 #
-# ex_pkg_process_restart_spec() - XXX
+# ex_pkg_process_restart_spec() - process restart (-r) specification into list of build steps and recursion flag
 # @_rstatus:		out reference to status string
 # @_rspec:		inout reference to restart {specification,package name list}
 # @_rspec_at:		out reference to restart build step list
 # @_rrecursive:		out reference to restart recursion flag
 #
-# Calling convention:	inout ref. @_rspec, out ref. @_rspec_at
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 ex_pkg_process_restart_spec() {

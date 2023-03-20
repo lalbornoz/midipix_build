@@ -4,7 +4,7 @@
 #
 
 #
-# exp_pkg_exec_pre() - XXX
+# exp_pkg_exec_pre() - prepare environment for single named package w/ dispatcher
 # @_group_name:		build group name
 # @_pkg_name:		single package name
 # @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
@@ -52,7 +52,7 @@ exp_pkg_exec_pre() {
 };
 
 #
-# exp_pkg_exec_step() - XXX
+# exp_pkg_exec_step() - execute single build steps & update state for single named package w/ dispatcher
 # @_group_name:		build group name
 # @_pkg_name:		single package name
 # @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
@@ -89,7 +89,7 @@ exp_pkg_exec_step() {
 };
 
 #
-# exp_pkg_exec() - XXX
+# exp_pkg_exec() - execute all pertaining build steps & update state for single named package w/ dispatcher
 # @_dispatch_fn:	top-level dispatch function name
 # @_group_name:		build group name
 # @_pkg_name:		single package name
@@ -149,7 +149,7 @@ exp_pkg_exec() {
 };
 
 #
-# ex_pkg_exec() - dispatch single named packages
+# ex_pkg_exec() - prepare environment for, execute all pertaining build steps & update state for single named package w/ dispatcher
 # @_rdispatch_count:		reference to inout variable of dispatcher count
 # @_dispatch_count_cur:		current dispatcher count
 # @_dispatch_count_max:		maximum dispatcher count
