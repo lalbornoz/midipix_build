@@ -1,13 +1,12 @@
-diff -ru sbsigntools-0.9.3.orig/configure.ac sbsigntools/configure.ac
---- sbsigntools-0.9.3.orig/configure.ac	2020-01-09 18:33:38.000000000 +0100
-+++ sbsigntools/configure.ac	2020-05-02 22:04:59.758305183 +0200
-@@ -63,32 +63,6 @@
+--- sbsigntools-master/configure.ac.orig	2023-03-20 07:11:16.967711226 +0100
++++ sbsigntools-master/configure.ac	2023-03-20 07:13:01.314687693 +0100
+@@ -66,32 +66,6 @@
      [],
      AC_MSG_ERROR([libuuid (from the uuid package) is required]))
  
 -dnl gnu-efi headers require extra include dirs
 -EFI_ARCH=$(uname -m | sed 's/i.86/ia32/;s/arm.*/arm/')
--AM_CONDITIONAL(TEST_BINARY_FORMAT, [ test "$EFI_ARCH" = "arm" -o "$EFI_ARCH" = "aarch64" ])
+-AM_CONDITIONAL(TEST_BINARY_FORMAT, [ test "$EFI_ARCH" = "arm" -o "$EFI_ARCH" = "aarch64" -o "$EFI_ARCH" = riscv64 ])
 -
 -##
 -# no consistent view of where gnu-efi should dump the efi stuff, so find it
