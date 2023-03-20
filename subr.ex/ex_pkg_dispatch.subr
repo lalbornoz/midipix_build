@@ -164,6 +164,11 @@ exp_pkg_dispatch_group() {
 			"${_epdg_dispatch_fn}"				\
 				fail_pkg ${_epdg_pipe_msg#fail }	\
 				"${_epdg_dispatch_count_max}";
+
+			if [ "${_epdg_rc}" -ne 0 ]\
+			&& [ "${_epdg_continue_on_failfl}" -ne 1 ]; then
+				break;
+			fi;
 			;;
 
 		msg_pkg)
