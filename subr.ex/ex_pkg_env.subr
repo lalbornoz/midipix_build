@@ -68,8 +68,8 @@ exp_pkg_env_defaults() {
 # Return:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_env_set() {
-	local	_eppes_build_vars_default="${1}" _eppes_group_name="${2}" _eppes_pkg_name="${3}"		\
-		_eppes_cmd_name="" _eppes_lvars="" _eppes_var_prefixes="" _eppes_vars_set=""			\
+	local	_eppes_build_vars_default="${1}" _eppes_group_name="${2}" _eppes_pkg_name="${3}"	\
+		_eppes_lvars="" _eppes_var_prefixes="" _eppes_vars_set=""				\
 		_eppes_vars_unset="" _eppes_vname="" _eppes_vnames="" IFS IFS0;
 
 	rtl_set_vars _eppes_vars_set BUILD_TYPE "DEFAULT ${_eppes_group_name} PKG_${_eppes_pkg_name}";
@@ -95,13 +95,6 @@ exp_pkg_env_set() {
 	IFS0="${IFS:- }"; IFS=":"; for _eppes_vname in ${PKG_ENV_VARS_EXTRA:-}; do
 		export "${_eppes_vname}";
 	done; IFS="${IFS0}";
-
-	for _eppes_vname in AR CC CXX PKG_CONFIG RANLIB; do
-		if eval [ '"${PKG_'"${_eppes_vname}"':+1}"' = 1 ]\
-		&& eval [ '"${PKG_'"${_eppes_vname}"'#/}"' = '"${_eppes_cmd_name:=${PKG_'"${_eppes_vname}"'}}"' ]; then
-			eval PKG_${_eppes_vname}='$(which "${_eppes_cmd_name}")';
-		fi; _eppes_cmd_name="";
-	done;
 
 	return 0;
 };

@@ -811,7 +811,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
                   [-r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]]        [-R]
                   [-v] [-V [+]tag|pat[,..]]
 
-                  [--as-needed] [--debug-minipix] [--reset-state] [--roar]
+                  [--as-needed] [--ccache]  [--debug-minipix]  [--reset-state] [--roar]
                   [--theme theme] [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64        Selects 32-bit or 64-bit architecture; defaults to nt64.

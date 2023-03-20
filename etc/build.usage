@@ -3,7 +3,7 @@
                   [90m[[33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..]]        [[33m-[93mR[90m]
                   [90m[[33m-[93mv[90m] [[33m-[93mV [90m[[93m+[90m][93mtag[90m|[93mpat[90m[[93m,[90m..][90m][0m
 
-                  [90m[[33m--[93mas-needed[90m] [90m[[33m--[93mdebug-minipix[90m] [90m[[33m--[93mreset-state[90m] [[33m--[93mroar[90m][0m
+                  [90m[[33m--[93mas-needed[90m] [[93m--ccache[90m]  [[33m--[93mdebug-minipix[90m]  [[33m--[93mreset-state[90m] [[33m--[93mroar[90m][0m
                   [90m[[33m--[93mtheme theme[90m] [[[93m=[90m][90m<[93mgroup[90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
 
         [33m-[93ma nt32[90m|[93mnt64[0m        [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
