@@ -10,7 +10,7 @@
 # @_pkg_disabled:	list of disabled packages
 # @_pkg_finished:	list of finished packages
 #
-# Return:		zero (0) on success, non-zero (>0) on failure.
+# Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 exp_pkg_dispatch_complete() {
 	local	_epdc_dispatch_fn="${1}" _epdc_group_name="${2}" _epdc_pkg_disabled="${3}"	\
@@ -39,7 +39,7 @@ exp_pkg_dispatch_complete() {
 # @_reversefl:		unfold reverse dependencies (1) or dependencies (0)
 # @_workdir:		pathname to build-specific temporary directory
 #
-# Return:		zero (0) on success, non-zero (>0) on failure.
+# Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 exp_pkg_dispatch_expand_packages() {
 	local	_epdep_rdisabled="${1#\$}" _epdep_rfinished="${2#\$}" _epdep_rnames="${3#\$}"	\
@@ -98,7 +98,7 @@ exp_pkg_dispatch_expand_packages() {
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL or LAST
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:			zero (0) on success, non-zero (>0) on failure.
+# Returns:			zero (0) on success, non-zero (>0) on failure.
 #
 exp_pkg_dispatch_group() {
 	local	_epdg_rdispatch_count="${1#\$}" _epdg_rdispatch_count_cur="${2#\$}" _epdg_dispatch_count_max="${3#\$}"	\
@@ -233,7 +233,7 @@ exp_pkg_dispatch_group() {
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL or LAST
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:			zero (0) on success, non-zero (>0) on failure.
+# Returns:			zero (0) on success, non-zero (>0) on failure.
 #
 exp_pkg_dispatch_packages() {
 	local	_epdp2_rdispatch_count="${1#\$}" _epdp2_dispatch_count_cur="${2}" _epdp2_dispatch_count_max="${3}"	\
@@ -292,7 +292,7 @@ exp_pkg_dispatch_packages() {
 # @_restart_recursive:		optional flag specifiying either no dependency expansion (0,) dependency expansion (1,) dependency expansion and forcibly rebuild (2,) forcibly rebuild reverse dependencies (3.)
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:			zero (0) on success, non-zero (>0) on failure.
+# Returns:			zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_dispatch() {
 	local	_epd_rdispatch_wait="${1#\$}" _epd_build_steps_default="${2}" _epd_build_vars_default="${3}"		\
@@ -389,7 +389,7 @@ ex_pkg_dispatch() {
 # ex_pkg_dipatch_send() - send message from dispatcher child process to dispatcher parent process across FIFO
 # @_op:		message operation string
 #
-# Return:	zero (0) invariably.
+# Returns:	zero (0) invariably.
 #
 ex_pkg_dispatch_send() {
 	local _epds_op="${1}";

@@ -16,7 +16,7 @@ exp_setrstatus() {
 # @_ruser:		reference to out variable of build user
 # @_name_base:		base name for messages and theme file(s)
 #
-# Return:		zero (0) on success, non-zero (>0) on failure
+# Returns:		zero (0) on success, non-zero (>0) on failure
 #
 ex_init_env() {
 	local	_eie_rstatus="${1#\$}" _eie_rhname="${2#\$}" _eie_ruser="${3#\$}"	\
@@ -100,7 +100,7 @@ ex_init_env() {
 # @_optstring:	getopts(1) optstring
 # @...:		command-line arguments as "${@}"
 #
-# Return:	zero (0) on success, non-zero (>0) on failure
+# Returns:	zero (0) on success, non-zero (>0) on failure
 #
 ex_init_getopts() {
 	local	_eig_rstatus="${1#\$}" _eig_fn="${2}" _eig_optstring="${3}"	\
@@ -168,7 +168,7 @@ ex_init_getopts() {
 # @_name_base:	base name for usage screen file
 # @_optstring:	getopts(1) optstring
 #
-# Return:	zero (0) on success, non-zero (>0) on failure
+# Returns:	zero (0) on success, non-zero (>0) on failure
 #
 ex_init_help() {
 	local	_eih_rstatus="${1#\$}" _eih_args_long="${2}"	\
@@ -249,7 +249,7 @@ ex_init_help() {
 # @_prefix_rpm:				absolute pathname to RPM files prefix
 # @_workdir:				absolute pathname to build-specific temporary directory
 #
-# Return:				zero (0) on success, non-zero (>0) on failure
+# Returns:				zero (0) on success, non-zero (>0) on failure
 #
 ex_init_files() {
 	local	_eif_rstatus="${1#\$}" _eif_rclean_builds="${2#\$}" _eif_rdist="${3#\$}"	\
@@ -317,7 +317,7 @@ ex_init_files() {
 # @_rverbose_tags:	reference to inout variable of -V argument value
 # @_verbose:		-[vV] argument value
 #
-# Return:		zero (0) on success, non-zero (>0) on failure
+# Returns:		zero (0) on success, non-zero (>0) on failure
 #
 ex_init_logging() {
 	local	_eil_rstatus="${1#\$}" _eil_rverbose_tags="${2#\$}" _eil_verbose="${3}"	\
@@ -386,7 +386,7 @@ ex_init_logging() {
 # @_rstatus:	reference to out variable of status string on failure
 # @_prereqs:	list of prerequisite commands
 #
-# Return:	zero (0) on success, non-zero (>0) on failure
+# Returns:	zero (0) on success, non-zero (>0) on failure
 #
 ex_init_prereqs() {
 	local	_eip_rstatus="${1#\$}" _eip_prereqs="${2}"	\
@@ -414,7 +414,7 @@ ex_init_prereqs() {
 # @_name_base:	base name for theme file(s)
 # @_theme:	theme name
 #
-# Return:	zero (0) on success, non-zero (>0) on failure
+# Returns:	zero (0) on success, non-zero (>0) on failure
 #
 ex_init_theme() {
 	local	_eit_rstatus="${1#\$}" _eit_hname="${2}" _eit_name_base="${3}" _eit_theme="${4}"	\

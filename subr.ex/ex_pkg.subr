@@ -12,7 +12,7 @@
 # @_rpkg_names:		reference to in variable of list of package names
 # @_workdir:		pathname to build-specific temporary directory
 #
-# Return:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
+# Returns:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
 # Side effects:		${PKG_${_PKG_NAME}_DEPENDS_FULL} may be mutated
 #
 ex_pkg_check_depends() {
@@ -54,7 +54,7 @@ ex_pkg_check_depends() {
 # @_group_names:	build group names
 # @_pkg_name:		single named package
 #
-# Return:		zero (0) on success, non-zero (>0) if package not found, group name on stdout if package was found.
+# Returns:		zero (0) on success, non-zero (>0) if package not found, group name on stdout if package was found.
 #
 ex_pkg_find_package() {
 	local	_epfp_rgroup_name="${1#\$}" _epfp_group_names="${2}" _epfp_pkg_name="${3}"	\
@@ -85,7 +85,7 @@ ex_pkg_find_package() {
 # @_pkg_version:	single package version
 # @_ldefault:		SP-separated list of default value names (any of: patches, patches_pre, vars_file)
 #
-# Return:		zero (0) on success, non-zero (>0) on invalid default value name or unknown package.
+# Returns:		zero (0) on success, non-zero (>0) on invalid default value name or unknown package.
 #
 ex_pkg_get_default() {
 	local	_epgd_rdefault="${1#\$}" _epgd_default_idx="${2}" _epgd_pkg_name="${3}"	\
@@ -141,7 +141,7 @@ ex_pkg_get_default() {
 # @_rpkg_names:	reference to out variable of package names
 # @_group_name:	build group name
 #
-# Return:	zero (0) on success, non-zero (>0) on failure, list of package names on stdout on success.
+# Returns:	zero (0) on success, non-zero (>0) on failure, list of package names on stdout on success.
 #
 ex_pkg_get_packages() {
 	local	_epgp_rpkg_names="${1#\$}" _epgp_group_name="${2}"	\
@@ -163,7 +163,7 @@ ex_pkg_get_packages() {
 # @_rbuild_arch:	in reference to build architecture
 # @_rbuild_kind:	in reference to build kind
 #
-# Return:	zero (0) on success, non-zero (>0) on failure, build variables post-return on success.
+# Returns:	zero (0) on success, non-zero (>0) on failure, build variables post-return on success.
 #
 ex_pkg_load_vars() {
 	local	_eplv_rstatus="${1#\$}" _eplv_rbuild_arch="${2#\$}" _eplv_rbuild_kind="${3#\$}"	\
@@ -213,7 +213,7 @@ ex_pkg_load_vars() {
 # @_rgroup_auto:	reference to in variable of flag controlling whether to build group automatically
 # @_rgroup_target:	reference to in variable of build group targets
 #
-# Return:		zero (0) on success, non-zero (>0) on failure.
+# Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_load_groups() {
 	local	_eplg_rgroups="${1#\$}" _eplg_rgroups_noauto="${2#\$}"		\
@@ -272,7 +272,7 @@ ex_pkg_load_groups() {
 # @_test_finished:	only exclude disabled packages (0,) split finished packages
 # @_workdir:		pathname to build-specific temporary directory
 #
-# Return:		zero (0) on success, non-zero (>0) on failure.
+# Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_unfold_depends() {
 	local	_epud_rdisabled="${1#\$}" _epud_rfinished="${2#\$}" _epud_rnames="${3#\$}"	\
@@ -337,7 +337,7 @@ ex_pkg_unfold_depends() {
 # @_test_finished:	only exclude disabled packages (0,) split finished packages
 # @_workdir:		pathname to build-specific temporary directory
 #
-# Return:		zero (0) on success, non-zero (>0) on failure.
+# Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_unfold_rdepends() {
 	local	_epur_rdisabled="${1#\$}" _epur_rfinished="${2#\$}" _epur_rnames="${3#\$}"	\

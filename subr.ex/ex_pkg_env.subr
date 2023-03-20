@@ -9,7 +9,7 @@
 # @_pkg_name:			single package name
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:			zero (0) on success, non-zero (>0) on failure
+# Returns:			zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_env_defaults() {
 	local _epped_build_steps_default="${1}" _epped_pkg_name="${2}" _epped_workdir="${3}";
@@ -65,7 +65,7 @@ exp_pkg_env_defaults() {
 # build group, package to inherit from if any, or package for a single named
 # package, and exports variables optionally named in ${PKG_ENV_VARS_EXTRA}.
 #
-# Return:		zero (0) on success, non-zero (>0) on failure
+# Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_env_set() {
 	local	_eppes_build_vars_default="${1}" _eppes_group_name="${2}" _eppes_pkg_name="${3}"	\
@@ -108,7 +108,7 @@ exp_pkg_env_set() {
 # @_restart_at:			optional comma-separated list of build steps at which to rebuild or ALL or LAST
 # @_workdir:			pathname to build-specific temporary directory
 #
-# Return:			zero (0) on success, non-zero (>0) on failure
+# Returns:			zero (0) on success, non-zero (>0) on failure
 #
 ex_pkg_env() {
 	local	_epe_build_steps_default="${1}" _epe_build_vars_default="${2}"		\
@@ -152,7 +152,7 @@ ex_pkg_env() {
 # @_build_step:		build step set status of
 # [@${@}]:		optional list of build steps to invalidate status of
 #
-# Return:		zero (0) on success, non-zero (>0) on failure
+# Returns:		zero (0) on success, non-zero (>0) on failure
 #
 ex_pkg_state_set() {
 	rtl_state_set "${BUILD_WORKDIR}" "${@}";
@@ -170,7 +170,7 @@ ex_pkg_state_set2() {
 # @_build_step:		build step to test status of
 # @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
 #
-# Return:		zero (0) on success, non-zero (>0) on failure
+# Returns:		zero (0) on success, non-zero (>0) on failure
 #
 ex_pkg_state_test() {
 	rtl_state_test "${BUILD_WORKDIR}" "${@}";

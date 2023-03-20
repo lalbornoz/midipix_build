@@ -3,6 +3,12 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+#
+# rtl_export_vars() - 
+# @_unsetfl:	
+# 
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_export_vars() {
 	local _rev_unsetfl=0;
 
