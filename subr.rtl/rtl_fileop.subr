@@ -22,7 +22,7 @@ rtlp_fileop_log() {
 
 #
 # rtl_fileop() - clean download cache for single package
-# @_op:		file operation
+# @_op:		file operation (one of: cd, chmod, chgrp, chown, cp_follow, cp, install, ln_symbolic, mv, touch, mkdir, mkfifo, rm, source, source_opt, test)
 # @...:		file operation arguments
 #
 # Returns:	zero (0) on success, non-zero (>0) on failure

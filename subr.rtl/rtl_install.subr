@@ -3,6 +3,14 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+#
+# rtl_install() - install files
+# @[-v]:	increase verbosity
+# @_prefix:	installation prefix pathname
+# @...:		install operation (one of: -* (remove,) !*=* (move/rename,) /=* (create directory/ies,) @*=* (create/update symbolic link,) m[0-7][0-7][0-7][0-7]=* (set mode bits,) o*=* (set user/group owner,) *=* (copy))
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_install() {
 	local	_ri_verbose="" _ri_prefix=""							\
 		_ri_chmod_mode="" _ri_dname="" _ri_file_fname_dst="" _ri_file_fname_src=""	\

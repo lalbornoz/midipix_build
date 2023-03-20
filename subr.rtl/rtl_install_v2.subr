@@ -474,6 +474,134 @@ rtlp_install_v2_splitl_subexpr() {
 };
 # }}}
 
+#
+# rtl_install_v2() - install files
+# @_rstatus:		reference to out variable of status string on failure
+# @[-i]:		continue on soft errors
+# @[-I ifs]:		process spec_list with ifs instead of NL
+# @[-n]:		perform dry run
+# @[-p name=val]:	set named parameter
+# @[-v]:		increase verbosity
+# @_prefix:		pathname prefix
+# @_spec_list:		ifs-separated list of specs
+#
+# {{{ File installation DSL
+# 
+# ```
+# (*
+# SH_GLOB_PATTERN      = any valid portable shell pattern (see sh(1)); superset of PATHNAME
+# SH_SUBSTRING_PATTERN = any valid portable substring processing shell pattern (see sh(1));
+#                        superset of PATHNAME
+# PARAMETER            = any valid portable shell variable name except that [0-9] may occur
+#                        the beginning
+# PATHNAME             = any valid filename, directory name, relative or absolute pathname
+#                        excluding the characters NUL and NL
+#  *)
+# 
+# spec                 = { op_flag, } op_unary, "=", op_spec, "\n", { spec } ;
+#                      | { op_flag, } op_binary, op_spec, "=" op_spec, "\n", { spec } ;
+#                      | "#" COMMENT ;
+# op_unary             = "-" | "/" | "t" ;
+# op_binary            = ":" | "!" | "@" | "+" | "g" | "m" | "o" | "T" ;
+# op_flag              = "?" ;
+# op_spec              = pattern_spec | PATHNAME | expr_spec | op_spec ;
+# 
+# pattern_spec         = "%<", SH_GLOB_PATTERN, ">" ;
+# 
+# expr_spec            = "%[", expr, { sexpr_spec }, "%]" ;
+# expr                 = [ "@" ], "0" .. "9" | "DNAME" | "FNAME" | "ITEM" | PARAMETER ;
+# 
+# sexpr_spec           = sexpr_op_unary, SH_SUBSTRING_PATTERN, { sexpr } ;
+# sexpr_op_unary       = "##" | "#" | "%%" | "%" ;
+# ```
+#   
+# Single ``"="`` characters in ``spec``, the ``"%<"`` and ``"%["`` character
+# sequences in ``pattern_spec`` and ``expr_spec``, resp., and the ``sexpr_op_unary``
+# as well as ``sexpr_op_binary`` characters or character sequences may be
+# escaped with a single backslash (``"\"``.) ``SH_SUBSTRING_PATTERN`` differs
+# from ``SH_GLOB_PATTERN`` solely in that any of ``sexpr_op_unary`` and
+# ``sexpr_op_binary`` occuring at the beginning of or in the former must
+# be escaped with a single backslash (``"\"``,) e.g. ``"#\#pattern"`` and
+# ``"%\%pattern"``, etc. and ``"#pat\%ern"`` and ``%patt\#ern", etc., resp.  
+#   
+# Named parameters (``PARAMETER``) are supplied via the ``-p name=value``
+# argument to ``rtl_install()``, whereas numbered parameters are for
+# internal usage only; the ``"DNAME"``, ``"FNAME"``, and ``"ITEM"`` parameters
+# lazily evaluate to the directory name, file (aka base) name, and full
+# pathname of the current item being processed relative to a specification
+# with a pattern in it.
+#   
+# The following operation flags are defined:
+# 
+# | Flag      | Description              |
+# | --------- | ------------------------ |
+# | ``?``     | Continue on soft failure |
+#   
+# The following operations are defined:
+# 
+# | Operation      | Arity  | Description                                                      |
+# | -------------- | ------ | ---------------------------------------------------------------- |
+# | ``-``          | Unary  | Remove directories and/or files                                  |
+# | ``/``          | Unary  | Create directories or trees thereof                              |
+# | ``t``          | Unary  | touch(1) files and/or directories                                |
+# | ``:``          | Binary | Copy directories and/or files                                    |
+# | ``!``          | Binary | Move/rename directories and/or files                             |
+# | ``@``          | Binary | Create/update symbolic links                                     |
+# | ``+``          | Binary | Copy directories and/or files if newer and follow symbolic links |
+# | ``g``          | Binary | Set group owner of files and/or directories                      |
+# | ``m``          | Binary | Set mode bits of files and/or directories                        |
+# | ``o``          | Binary | Set user and/or group owner of files and/or directories          |
+# | ``T``          | Binary | touch(1) files and/or directories with timestamp                 |
+#   
+# The following expression modifiers are defined:
+# 
+# | Modifier       | Description                               |
+# | -------------- | ----------------------------------------- |
+# | ``@``          | Recursively reevaluate after substituting |
+#   
+# The following subexpression operators are defined:
+# 
+# | Operation      | Arity  | Description                                                      |
+# | -------------- | ------ | ---------------------------------------------------------------- |
+# | ``##``         | Unary  | Remove largest prefix from left-hand side                        |
+# | ``#``          | Unary  | Remove prefix from left-hand side                                |
+# | ``%%``         | Unary  | Remove largest postfix from right-hand side                      |
+# | ``%``          | Unary  | Remove postfix from right-hand side                              |
+#   
+# ```shell
+# #
+# # Examples:
+# # 
+# 
+# #
+# # Create directory %[_minipix]/bin and copy all files
+# # in %[_minipix_dist]/bin/ to %[_minipix]/bin/ with
+# # identical file names.
+# /=%[_minipix]/bin
+# ?%[_minipix_dist]/bin/%<*>=%[_minipix]/bin/%[FNAME]
+# 
+# #
+# # Rename all files in share/info/ matching *.info to
+# # their filenames with the `.info' postfix removed and
+# # `-2.64.info' appended and all files in share/man/man1/
+# # matching *.1 with the `.1' postfix removed and -2.64.1
+# # appended.
+# !share/info/%<*.info>=share/info/%[FNAME%.info]-2.64.info
+# !share/man/man1/%<*.1>=share/man/man1/%[FNAME%.1]-2.64.1
+# 
+# #
+# # Create/update symbolic links named include/ffi.h and
+# # include/ffitarget.h with ../lib/libffi-3.2.1/include/ffi.h
+# # and ../lib/libffi-3.2.1/include/ffitarget.h as targets, resp.
+# @../lib/libffi-3.2.1/include/ffi.h=include/ffi.h
+# @../lib/libffi-3.2.1/include/ffitarget.h=include/ffitarget.h
+#
+# ```
+#
+# }}}
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
 rtl_install_v2() {
 	local	_ri2_rstatus="${1#\$}"										\
 		_ri2_prefix="" _ri2_spec_flag="" _ri2_spec_list="" _ri2_iflag=0 _ri2_IFS="${IFS:- 	}"	\
