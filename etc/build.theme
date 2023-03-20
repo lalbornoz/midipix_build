@@ -42,42 +42,60 @@ LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}zipdist,verbose,build_v
 #
 # Subsystem tags
 #
-LOG_TAG_build="";			# (UNUSED)
-LOG_TAG_fileop=36;			# Cyan
-LOG_TAG_install=36;			# Cyan
-LOG_TAG_zipdist=93;			# Bright yellow
-LOG_TAG_xtrace="";			# (UNUSED)
+LOG_TAG_build="";				# (UNUSED)
+LOG_TAG_fileop=36;				# Cyan
+LOG_TAG_install=36;				# Cyan
+LOG_TAG_zipdist=93;				# Bright yellow
+LOG_TAG_xtrace="";				# (UNUSED)
 
 #
 # General level tags
 #
-LOG_TAG_fatal=91;			# Bright red
-LOG_TAG_info=93;			# Bright yellow
-LOG_TAG_verbose=96;			# Bright cyan
-LOG_TAG_warning=31;			# Dark red
+LOG_TAG_fatal=91;				# Bright red
+LOG_TAG_info=93;				# Bright yellow
+LOG_TAG_verbose=96;				# Bright cyan
+LOG_TAG_warning=31;				# Dark red
 
 #
 # General build tags
 #
-LOG_TAG_build_begin="4;93";		# Underline; Bright yellow
-LOG_TAG_build_finish="4;93";		# Underline; Bright yellow
-LOG_TAG_build_finish_time="4;93";	# Underline; Bright yellow
-LOG_TAG_build_vars="33";		# Dark yellow
+LOG_TAG_build_begin="4;93";			# Underline; Bright yellow
+LOG_TAG_build_finish="4;93";			# Underline; Bright yellow
+LOG_TAG_build_finish_time="4;93";		# Underline; Bright yellow
+LOG_TAG_build_vars="33";			# Dark yellow
+LOG_TAG_build_vars_even_256="38;5;215";		# RGB #ffaf5f
+LOG_TAG_build_vars_odd_256="38;5;214";		# RGB #ffaf00
 
 #
 # Build group tags
 #
-LOG_TAG_group_begin="4;93";		# Underline; Bright yellow
-LOG_TAG_group_finish="4;92";		# Underline; Bright green
+LOG_TAG_group_begin="4;93";			# Underline; Bright yellow
+LOG_TAG_group_begin_even_256="4;38;5;228";	# Underline; RGB #ffff87
+LOG_TAG_group_begin_odd_256="4;38;5;226";	# Underline; RGB #ffff00
+LOG_TAG_group_finish="4;92";			# Underline; Bright green
+LOG_TAG_group_finish_even_256="4;38;5;121";	# Underline; RGB #87ffaf
+LOG_TAG_group_finish_odd_256="4;38;5;118";	# Underline; RGB #87ff00
 
 #
 # Package build tags
 #
-LOG_TAG_pkg_begin=93;			# Bright yellow
-LOG_TAG_pkg_finish=92;			# Bright green
-LOG_TAG_pkg_msg=90;			# Dark grey
-LOG_TAG_pkg_skip=36;			# Cyan
-LOG_TAG_pkg_step=90;			# Dark grey
-LOG_TAG_pkg_strip=93;			# Bright yellow
+LOG_TAG_pkg_begin_even=93;			# Bright yellow
+LOG_TAG_pkg_begin_odd=93;			# Bright yellow
+LOG_TAG_pkg_begin_even_256="38;5;220";		# RGB #ffd700
+LOG_TAG_pkg_begin_odd_256="38;5;214";		# RGB #ffaf00
+LOG_TAG_pkg_finish_even=92;			# Bright green
+LOG_TAG_pkg_finish_odd=92;			# Bright green
+LOG_TAG_pkg_finish_even_256="38;5;154";		# RGB #afff00
+LOG_TAG_pkg_finish_odd_256="38;5;148";		# RGB #afd700
+LOG_TAG_pkg_msg=90;				# Dark grey
+LOG_TAG_pkg_skip_even=36;			# Cyan
+LOG_TAG_pkg_skip_odd=36;			# Cyan
+LOG_TAG_pkg_skip_even_256="38;5;117";		# RGB #87d7ff
+LOG_TAG_pkg_skip_odd_256="38;5;123";		# RGB #87ffff
+LOG_TAG_pkg_step_even=90;			# Dark grey
+LOG_TAG_pkg_step_odd=90;			# Dark grey
+LOG_TAG_pkg_step_even_256="38;5;242";		# RGB #6c6c6c
+LOG_TAG_pkg_step_odd_256="38;5;240";		# RGB #585858
+LOG_TAG_pkg_strip=93;				# Bright yellow
 
 # vim:foldmethod=marker ft=sh

@@ -4,12 +4,58 @@
 #
 
 #
-# Private globals and subroutines
+# Private globals
 #
 
 RTLP_LOG_FNAME="";
 RTLP_LOG_NO_ATTR=0;
 RTLP_LOG_TAGS="";
+RTLP_LOG_TERMINAL_COLOURS="$(tput colors 2>/dev/null)";
+
+#
+# Private subroutines
+#
+
+rtlp_log_msg_get_attr() {
+	local	_rplmga_rattr="${1#\$}" _rplmga_tag="${2}"	\
+		_rplmga_attr="" _rplmga_attr_state=""		\
+		_rplmga_term_colour=0;
+
+	if [ "${RTLP_LOG_TERMINAL_COLOURS}" = 256 ]; then
+		set -- 256 "";
+	else
+		set -- "";
+	fi;
+
+	for _rplmga_term_colour in "${@}"; do
+		eval _rplmga_attr='${LOG_TAG_'"${_rplmga_tag}${_rplmga_term_colour:+_${_rplmga_term_colour}}"':-}';
+
+		if [ "${_rplmga_attr:+1}" = 1 ]; then
+			break;
+		else
+			eval _rplmga_attr_state='${RTLP_ATTR_STATE_'"${_rplmga_tag}"':-}';
+			if [ "${_rplmga_attr_state:+1}" != 1 ]; then
+				_rplmga_attr_state=0;
+			else
+				: $((_rplmga_attr_state += 1));
+			fi;
+			eval "RTLP_ATTR_STATE_${_rplmga_tag}=${_rplmga_attr_state}";
+
+			if [ "$((${_rplmga_attr_state} % 2))" -eq 0 ]; then
+				eval _rplmga_attr='${LOG_TAG_'"${_rplmga_tag}"'_even'"${_rplmga_term_colour:+_${_rplmga_term_colour}}"':-}';
+			else
+				eval _rplmga_attr='${LOG_TAG_'"${_rplmga_tag}"'_odd'"${_rplmga_term_colour:+_${_rplmga_term_colour}}"':-}';
+			fi;
+
+			if [ "${_rplmga_attr:+1}" = 1 ]; then
+				break;
+			fi;
+		fi;
+	done;
+
+	eval ${_rplmga_rattr}='${_rplmga_attr}';
+	return 0;
+};
 
 rtlp_log_printf() {
 	local	_rplp_attr="${1}" _rplp_fmt_pfx="${2}"	\
@@ -75,7 +121,7 @@ rtl_log_env_vars() {
 
 rtl_log_msg() {
 	local	_rlm3_tag="${1}" _rlm3_fmt="${2}"	\
-		_rlm3_attr="" _rlm3_date_now=0 _rlm3_exitfl=0;
+		_rlm3_attr="" _rlm3_date_now=0 _rlm3_exitfl=0
 	shift 2;
 
 	if [ "x${_rlm3_tag}" = "xfatalexit" ]; then
@@ -85,8 +131,8 @@ rtl_log_msg() {
 	if [ "${_rlm3_tag}" = "fatal" ]\
 	|| rtl_lmatch \$RTLP_LOG_TAGS "${_rlm3_tag}" ",";
 	then
-		eval _rlm3_attr='${LOG_TAG_'"${_rlm3_tag}"':-}';
-		if [ "${#_rlm3_attr}" -eq 0 ]; then
+		rtlp_log_msg_get_attr \$_rlm3_attr "${_rlm3_tag}";
+		if [ "${_rlm3_attr:+1}" != 1 ]; then
 			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`${_rlm3_tag}' PASSED TO rtl_log_msg()[0m\n";
 		fi;
 		rtl_date \$_rlm3_date_now;
