@@ -115,7 +115,7 @@ ex_init_getopts() {
 	while [ "${#}" -gt 0 ]; do
 		case "${1}" in
 		--*)
-			"${_eig_fn}" longopt "${_eig_rstatus}" "${1}";
+			"${_eig_fn}" longopt "${_eig_rstatus}" "${1}" ${2:-};
 			_eig_fn_rc="${?}";
 
 			case "${_eig_fn_rc}" in
@@ -405,6 +405,29 @@ ex_init_prereqs() {
 	fi;
 
 	return "${_eip_rc}";
+};
+
+#
+# ex_init_theme() - initialise theme
+# @_rstatus:	reference to out variable of status string on failure
+# @_name_base:	base name for theme file(s)
+# @_theme:	theme name
+#
+# Return:	zero (0) on success, non-zero (>0) on failure
+#
+ex_init_theme() {
+	local	_eit_rstatus="${1#\$}" _eit_name_base="${2}" _eit_theme="${3}"	\
+		_eit_rc=0 _eit_theme_fname="";
+
+	_eit_theme_fname="etc/${_eit_name_base}${_eit_theme:+.${_eit_theme}}.theme";
+	if ! [ -e "${_eit_theme_fname}" ]; then
+		_eit_rc=1;
+		exp_setrstatus "${_eit_rstatus}" 'failed to source \`'"${_eit_theme_fname}"''\''.';
+	else
+		. "${_eit_theme_fname}";
+	fi;
+
+	return "${_eit_rc}";
 };
 
 # vim:filetype=sh textwidth=0

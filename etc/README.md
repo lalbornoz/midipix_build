@@ -809,10 +809,10 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[,..]]
                   [-F ipv4|ipv6|offline]    [-h|--help] [-p jobs|-P]    [-r ALL|LAST]
                   [-r [*[*[*]]]name[,..][:ALL|LAST|[^|<|<=|>|>=]step,..]]        [-R]
-		  [-v] [-V [+]tag|pat[,..]]
+                  [-v] [-V [+]tag|pat[,..]]
 
-                  [--as-needed] [--debug-minipix] [--reset-state]
-                  [--roar]      [[=]<group>|<variable name>=<variable override>[ ..]]
+                  [--as-needed] [--debug-minipix] [--reset-state] [--roar]
+                  [--theme theme] [[=]<group>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64        Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release    Selects debug or release build kind; defaults to debug.
@@ -910,7 +910,8 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 ## 4.6. ``pkgtool.sh``
 
 ```
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-R|-t] [-v]
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-r|-R|-t]
+                    [--theme theme] [-v]
                     [<variable name>=<variable override>[ ..]] name
 
         -a nt32|nt64          Selects 32-bit or 64-bit architecture; defaults to nt64.

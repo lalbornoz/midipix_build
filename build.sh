@@ -78,6 +78,7 @@ buildp_init() {
 	  || ! ex_init_getopts								\
 	  		"${_bi_rstatus}" "buildp_init_getopts_fn"			\
 			"${_bi_optstring}" "${@}"					\
+	  || ! ex_init_theme "${_bi_rstatus}" "${_bi_name_base}" "${ARG_THEME:-}"	\
 	  || ! ex_init_logging "${_bi_rstatus}" \$ARG_VERBOSE_TAGS "${ARG_VERBOSE}"	\
 	  || ! ex_pkg_load_vars "${_bi_rstatus}" \$ARCH \$BUILD_KIND			\
 	  || ! ex_init_prereqs "${_bi_rstatus}" "${DEFAULT_PREREQS}"			\
@@ -210,6 +211,14 @@ buildp_init_getopts_fn() {
 		--debug-minipx)	ARG_DEBUG_MINIPIX=1; _bpigf_shiftfl=1; ;;
 		--help)		_bpigf_shiftfl=1; ;;
 		--reset-state)	ARG_RESET_PKG=1; _bpigf_shiftfl=1; ;;
+		--theme)	shift 3;
+				if [ "${#}" != 1 ]; then
+					rtl_setrstatus "${_bpigf_rstatus}" 'missing argument to --theme option';
+					return 1;
+				else
+					ARG_THEME="${1:-}"; _bpigf_shiftfl=2;
+				fi;
+				;;
 
 		# {{{ --roar
 		--roar)		printf "%s\n" '

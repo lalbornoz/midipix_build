@@ -1,10 +1,10 @@
 [97musage[90m: [33m./[93mbuild.sh [90m[[33m-[93ma nt32[90m|[93mnt64[90m]  [[33m-[93mb debug[90m|[93mrelease[90m]    [[33m-[93mC dir[90m[[93m,[90m..]]  [[33m-[93mD kind[90m[[93m,[90m..]][0m
                   [90m[[33m-[93mF ipv4[90m|[93mipv6[90m|[93moffline[90m]    [[33m-[93mh[90m|[33m--[93mhelp[90m] [[33m-[93mp jobs[90m|[33m-[93mP[90m]    [[33m-[93mr ALL[90m|[93mLAST[90m][0m
                   [90m[[33m-[93mr [90m[[93m*[90m[[93m*[90m[[93m*[90m]]][93mname[90m[[93m,[90m..][[93m:ALL[90m|[93mLAST[90m|[[93m^[90m|[93m<[90m|[93m<=[90m|[93m>[90m|[93m>=[90m][93mstep,[90m..]]        [[33m-[93mR[90m]
-		  [90m[[33m-[93mv[90m] [[33m-[93mV [90m[[93m+[90m][93mtag[90m|[93mpat[90m[[93m,[90m..][90m][0m
+                  [90m[[33m-[93mv[90m] [[33m-[93mV [90m[[93m+[90m][93mtag[90m|[93mpat[90m[[93m,[90m..][90m][0m
 
-                  [90m[[33m--[93mas-needed[90m] [90m[[33m--[93mdebug-minipix[90m] [90m[[33m--[93mreset-state[90m][0m
-                  [90m[[33m--[93mroar[90m]      [[[93m=[90m][90m<[93mgroup[90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
+                  [90m[[33m--[93mas-needed[90m] [90m[[33m--[93mdebug-minipix[90m] [90m[[33m--[93mreset-state[90m] [[33m--[93mroar[90m][0m
+                  [90m[[33m--[93mtheme theme[90m] [[[93m=[90m][90m<[93mgroup[90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
 
         [33m-[93ma nt32[90m|[93mnt64[0m        [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
         [33m-[93mb debug[90m|[93mrelease[0m    [96mSelects debug or release build kind; defaults to [93mdebug[96m.[0m

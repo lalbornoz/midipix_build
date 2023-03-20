@@ -32,6 +32,9 @@ pkgtoolp_init() {
 	  || ! ex_init_getopts						\
 	  		"${_pi_rstatus}" "pkgtoolp_init_getopts_fn"	\
 			"${_pi_optstring}" "${@}"			\
+	  || ! ex_init_theme						\
+	  		"${_pi_rstatus}" "${_pi_name_base}"		\
+			"${ARG_THEME:-}"				\
 	  || ! ex_init_prereqs "${_pi_rstatus}" "${_pi_prereqs}"	\
 	  || ! ex_pkg_load_vars						\
 	  		"${_pi_rstatus}" \$ARCH \$BUILD_KIND		\
@@ -89,7 +92,20 @@ pkgtoolp_init_getopts_fn() {
 		;;
 
 	longopt)
-		_ppigf_rc=1;
+		local	_ppigf_verb="${1}" _ppigf_rstatus="${2#\$}" _ppigf_opt="${3}";
+
+		case "${_ppigf_opt}" in
+		--theme)	shift 3;
+				if [ "${#}" != 1 ]; then
+					rtl_setrstatus "${_ppigf_rstatus}" 'missing argument to --theme option';
+					return 1;
+				else
+					ARG_THEME="${1:-}"; _ppigf_shiftfl=2;
+				fi;
+				;;
+
+		*)		_ppigf_shiftfl=0; ;;
+		esac;
 		;;
 
 	opt)
