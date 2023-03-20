@@ -35,22 +35,60 @@
 #
 # Tag sets
 #
-LOG_TAGS_all="fileop,install,fatal,info,verbose,warning";
-LOG_TAGS_normal="fatal,info,warning";
+LOG_TAGS_all="fileop,install,fatal,info,verbose,warning,package_vars,info_build_group,info_pkg_direct_deps,info_pkg_no_deps,info_pkg_disabled,info_pkg_deps_full,info_pkg_deps_full_disabled,mirror_pkg_archive_mirroring,mirror_pkg_archive_mirroring_parent,mirror_pkg_git_mirroring,mirror_pkg_git_mirroring_parent";
+LOG_TAGS_normal="fatal,info,warning,package_vars,info_build_group,info_pkg_direct_deps,info_pkg_no_deps,info_pkg_disabled,info_pkg_deps_full,info_pkg_deps_full_disabled,mirror_pkg_archive_mirroring,mirror_pkg_archive_mirroring_parent,mirror_pkg_git_mirroring,mirror_pkg_git_mirroring_parent";
 LOG_TAGS_verbose="${LOG_TAGS_normal:+${LOG_TAGS_normal},}verbose";
-
 #
 # Subsystem tags
 #
-LOG_TAG_fileop=36;		# Cyan
-LOG_TAG_install=36;		# Cyan
+LOG_TAG_fileop=36;				# Cyan
+LOG_TAG_install=36;				# Cyan
 
 #
 # General level tags
 #
-LOG_TAG_fatal=91;		# Bright red
-LOG_TAG_info=93;		# Bright yellow
-LOG_TAG_verbose=96;		# Bright cyan
-LOG_TAG_warning=31;		# Dark red
+LOG_TAG_fatal=91;				# Bright red
+LOG_TAG_info=93;				# Bright yellow
+LOG_TAG_verbose=96;				# Bright cyan
+LOG_TAG_warning=31;				# Dark red
+
+#
+# General build tags
+#
+LOG_TAG_package_vars=33;			# Dark yellow
+LOG_TAG_package_vars_even_256="38;5;228";	# RGB #ffaf5f
+LOG_TAG_package_vars_odd_256="38;5;226";	# RGB #ffaf00
+
+#
+# Package info tags
+#
+LOG_TAG_info_build_group=93;				# Bright yellow
+LOG_TAG_info_build_group_256="38;5;221";		# RGB #ffd75f
+LOG_TAG_info_pkg_direct_deps=93;			# Bright yellow
+LOG_TAG_info_pkg_direct_deps_256="38;5;215";		# RGB #ffaf5f
+LOG_TAG_info_pkg_no_deps=96;				# Bright cyan
+LOG_TAG_info_pkg_no_deps_256="38;5;205";		# RGB #ff5faf
+LOG_TAG_info_pkg_disabled=96;				# Bright cyan
+LOG_TAG_info_pkg_disabled_256="38;5;207";		# RGB #ff5fff
+LOG_TAG_info_pkg_deps_full=93;				# Bright yellow
+LOG_TAG_info_pkg_deps_full_256="38;5;208";		# RGB #ff8700
+LOG_TAG_info_pkg_deps_full_disabled=96;			# Bright cyan
+LOG_TAG_info_pkg_deps_full_disabled_256="38;5;147";	# RGB #afafff
+
+#
+# Package mirror tags
+#
+LOG_TAG_mirror_pkg_archive_mirroring=93;				# Bright yellow
+LOG_TAG_mirror_pkg_archive_mirroring_even_256="38;5;123";		# RGB #87ffff
+LOG_TAG_mirror_pkg_archive_mirroring_odd_256="38;5;122";		# RGB #87ffd7
+LOG_TAG_mirror_pkg_archive_mirroring_parent=93;				# Bright yellow
+LOG_TAG_mirror_pkg_archive_mirroring_parent_even_256="38;5;123";	# RGB #87ffff
+LOG_TAG_mirror_pkg_archive_mirroring_parent_odd_256="38;5;122";		# RGB #87ffd7
+LOG_TAG_mirror_pkg_git_mirroring=93;					# Bright yellow
+LOG_TAG_mirror_pkg_git_mirroring_even_256="38;5;117";			# RGB #87d7ff
+LOG_TAG_mirror_pkg_git_mirroring_odd_256="38;5;116";			# RGB #87d7d7
+LOG_TAG_mirror_pkg_git_mirroring_parent=93;				# Bright yellow
+LOG_TAG_mirror_pkg_git_mirroring_parent_even_256="38;5;117";		# RGB #87d7ff
+LOG_TAG_mirror_pkg_git_mirroring_parent_odd_256="38;5;116";		# RGB #87d7d7
 
 # vim:foldmethod=marker ft=sh

@@ -2,28 +2,32 @@
 # en_* locale messages file for pkgtool.sh
 #
 
-MSG_pkgtool_build_group="1;Build group: %s";
-MSG_pkgtool_pkg_archive_mirroring="2;Mirroring package \`%s', archive URL(s): \`%s'...";
-MSG_pkgtool_pkg_archive_mirroring_parent="3;Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'...";
-MSG_pkgtool_pkg_deps_fail="1;Warning: failed to unfold dependency-expanded package name list for \`%s'.";
-MSG_pkgtool_pkg_deps_full_disabled="2;Full dependencies of \`%s' (disabled packages:) %s";
-MSG_pkgtool_pkg_deps_full="2;Full dependencies of \`%s': %s";
-MSG_pkgtool_pkg_deps_rev_none="1;Package \`%s' has no reverse dependencies.";
-MSG_pkgtool_pkg_direct_deps="2;Direct dependencies of \`%s': %s";
-MSG_pkgtool_pkg_disabled="2;Package \`%s' (parent package: \`%s') disabled, skipping.";
-MSG_pkgtool_pkg_git_mirroring="2;Mirroring package \`%s', Git URL(s): \`%s'...";
-MSG_pkgtool_pkg_git_mirroring_parent="3;Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'...";
-MSG_pkgtool_pkg_link_fail="3;Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'.";
-MSG_pkgtool_pkg_mirror_fail="1;Failed to mirror package \`%s', skipping.";
-MSG_pkgtool_pkg_no_deps="1;Package \`%s' has no dependencies.";
-MSG_pkgtool_pkgs_deps_rev_disabled="2;Reverse dependencies of \`%s' (disabled packages:) %s";
-MSG_pkgtool_pkgs_deps_rev="2;Reverse dependencies of \`%s': %s";
-MSG_pkgtool_pkg_skip_archive_mirror="1;Archive URL(s) mirroring disabled, skipping \`%s'.";
-MSG_pkgtool_pkg_skip_git_mirror_disabled="1;Package \`%s' specifies to skip Git URL(s) mirroring, skipping.";
-MSG_pkgtool_pkg_skip_git_mirror="1;Git URL(s) mirroring disabled, skipping \`%s'.";
-MSG_pkgtool_pkg_skip_no_urls="1;Package \`%s' has neither archive nor Git URL(s), skipping.";
-MSG_pkgtool_tarball_created="2;Created compressed tarball of \`%s' and \`%s_stderrout.log'.";
-MSG_pkgtool_tarball_creating="2;Creating compressed tarball of \`%s' and \`%s_stderrout.log'...";
-MSG_pkgtool_updated_patches="2;Updated \`%s/patches/%s'.";
+MSG_info_build_group="1;Build group: [0m%s";
+MSG_info_pkg_deps_fail="1;Warning: failed to unfold dependency-expanded package name list for \`%s'.";
+MSG_info_pkg_direct_deps="2;Direct dependencies of \`%s': [0m%s";
+MSG_info_pkg_no_deps="1;Package \`%s' has no dependencies.";
+MSG_info_pkg_disabled="1;Package \`%s' is disabled.";
+MSG_info_pkg_deps_full="2;Full dependencies of \`%s': [0m%s";
+MSG_info_pkg_deps_full_disabled="2;Full dependencies of \`%s' (disabled packages:) [0m%s";
+
+MSG_mirror_pkg_disabled="2;Package \`%s' (parent package: \`%s') disabled, skipping.";
+MSG_mirror_pkg_skip_archive_mirror="1;Archive URL(s) mirroring disabled, skipping \`%s'.";
+MSG_mirror_pkg_archive_mirroring="2;Mirroring package \`%s', archive URL(s): \`%s'...";
+MSG_mirror_pkg_archive_mirroring_parent="3;Mirroring package \`%s' (parent package: \`%s'), archive URL(s): \`%s'...";
+MSG_mirror_pkg_mirror_fail="1;Failed to mirror package \`%s', skipping.";
+MSG_mirror_pkg_skip_git_mirror="1;Git URL(s) mirroring disabled, skipping \`%s'.";
+MSG_mirror_pkg_skip_git_mirror_disabled="1;Package \`%s' specifies to skip Git URL(s) mirroring, skipping.";
+MSG_mirror_pkg_link_fail="3;Failed to create symbolic link \`%s' for package \`%s' w/ parent package \`%s'.";
+MSG_mirror_pkg_git_mirroring="2;Mirroring package \`%s', Git URL(s): \`%s'...";
+MSG_mirror_pkg_git_mirroring_parent="3;Mirroring package \`%s' (parent package: \`%s'), Git URL(s): \`%s'...";
+MSG_mirror_pkg_skip_no_urls="1;Package \`%s' has neither archive nor Git URL(s), skipping.";
+
+MSG_rdepends_pkg_deps_rev_none="1;Package \`%s' has no reverse dependencies.";
+MSG_rdepends_pkgs_deps_rev_disabled="2;Reverse dependencies of \`%s' (disabled packages:) [0m%s";
+MSG_rdepends_pkgs_deps_rev="2;Reverse dependencies of \`%s': [0m%s";
+MSG_rdepends_pkgs_deps_rev_recurse="2;Recursive reverse dependencies of \`%s': %s";
+
+MSG_tarball_created="2;Created compressed tarball of \`%s' and \`%s_stderrout.log'.";
+MSG_tarball_creating="2;Creating compressed tarball of \`%s' and \`%s_stderrout.log'...";
 
 # vim:foldmethod=marker ft=sh
