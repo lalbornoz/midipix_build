@@ -94,7 +94,7 @@ pkg_dist_minipix_all() {
 		return 1;
 	fi;
 
-	ex_pkg_dispatch_msg "step" "${_pdma_group_name}" "${_pdma_pkg_name}" "finish";
+	ex_pkg_dispatch_send "step" "${_pdma_group_name}" "${_pdma_pkg_name}" "finish";
 	ex_pkg_state_set "${_pdma_pkg_name}" "finish";
 
 	return 0;
