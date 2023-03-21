@@ -145,7 +145,7 @@ pkgtoolp_init_getopts_fn() {
 		shift 2;
 
 		case "${1}" in
-		*=*)	rtl_set_var_from_cmdline "${_ppigf_rstatus}" "${1}";
+		*=*)	rtl_set_var_from_spec "${_ppigf_rstatus}" "${1}";
 			_ppigf_rc="${?}"; ;;
 		*)	PKGTOOL_PKG_NAME="${1}"; ;;
 		esac;
@@ -168,8 +168,8 @@ pkgtoolp_init_getopts_fn() {
 			export PKGTOOL_PKG_NAME;
 			case "${ARG_VERBOSE:-0}" in
 
-			0)	rtl_log_enable_tags "${LOG_TAGS_normal}"; ;;
-			1)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+			0)	rtl_log_enable_tagsV "${LOG_TAGS_normal}"; ;;
+			1)	rtl_log_enable_tagsV "${LOG_TAGS_verbose}"; ;;
 			*)	_ppigf_rc=1;
 				rtl_setrstatus "${_ppigf_rstatus}" 'invalid verbosity level (max. -v)';
 				;;
@@ -220,34 +220,34 @@ pkgtoolp_info() {
 		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to set package environment for \`'"${_ppi_pkg_name}'"'.';
 	else
 		rtl_get_var_unsafe \$_ppi_pkg_version -u "PKG_${_ppi_pkg_name}_VERSION";
-		rtl_log_env_vars "package_vars" "Package variables" $(rtl_get_vars_fast "^PKG_${_ppi_pkg_name_uc}");
-		rtl_log_msg "info_build_group" "${MSG_info_build_group}" "${_ppi_group_name}";
+		rtl_log_env_vars "package_vars" "Package variables" $(rtl_get_vars_unsafe_fast "^PKG_${_ppi_pkg_name_uc}");
+		rtl_log_msgV "info_build_group" "${MSG_info_build_group}" "${_ppi_group_name}";
 
 		if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
-			rtl_log_msg "info_pkg_disabled" "${MSG_info_pkg_disabled}" "${_ppi_pkg_name}";
+			rtl_log_msgV "info_pkg_disabled" "${MSG_info_pkg_disabled}" "${_ppi_pkg_name}";
 		fi;
 
 		if [ "${PKG_DEPENDS:+1}" != 1 ]; then
-			rtl_log_msg "info_pkg_no_deps" "${MSG_info_pkg_no_deps}" "${_ppi_pkg_name}";
+			rtl_log_msgV "info_pkg_no_deps" "${MSG_info_pkg_no_deps}" "${_ppi_pkg_name}";
 		else
-			rtl_log_msg "info_pkg_direct_deps" "${MSG_info_pkg_direct_deps}" "${_ppi_pkg_name}" "${PKG_DEPENDS}";
+			rtl_log_msgV "info_pkg_direct_deps" "${MSG_info_pkg_direct_deps}" "${_ppi_pkg_name}" "${PKG_DEPENDS}";
 			if ! ex_pkg_unfold_depends					\
 					\$_ppi_pkg_disabled \$_ppi_pkg_finished		\
 					\$_ppi_pkg_names 1 1 "${_ppi_group_name}"	\
 					"${_ppi_pkg_names}" "${_ppi_pkg_name}" 0	\
 					"${BUILD_WORKDIR}";
 			then
-				rtl_log_msg "warning" "${MSG_info_pkg_deps_fail}" "${_ppi_pkg_name}";
+				rtl_log_msgV "warning" "${MSG_info_pkg_deps_fail}" "${_ppi_pkg_name}";
 			else
 				rtl_lfilter \$_ppi_pkg_names "${_ppi_pkg_name}";
 
 				if [ "${_ppi_pkg_names:+1}" = 1 ]; then
-					rtl_log_msg "info_pkg_deps_full" "${MSG_info_pkg_deps_full}"\
+					rtl_log_msgV "info_pkg_deps_full" "${MSG_info_pkg_deps_full}"\
 							"${_ppi_pkg_name}" "$(rtl_lsortV "${_ppi_pkg_names}")";
 				fi;
 
 				if [ "${_ppi_pkg_disabled:+1}" = 1 ]; then
-					rtl_log_msg "info_pkg_deps_full_disabled" "${MSG_info_pkg_deps_full_disabled}"\
+					rtl_log_msgV "info_pkg_deps_full_disabled" "${MSG_info_pkg_deps_full_disabled}"\
 							"${_ppi_pkg_name}" "$(rtl_lsortV "${_ppi_pkg_disabled}")";
 				fi;
 			fi;
@@ -323,7 +323,7 @@ pkgtoolp_mirror_fetch() {
 
 	if rtl_get_var_unsafe \$_ppmf_pkg_disabled -u "PKG_${_ppmf_pkg_name_real}_DISABLED"\
 	&& [ "${_ppmf_pkg_disabled:-0}" -eq 1 ]; then
-		rtl_log_msg "verbose" "${MSG_mirror_pkg_disabled}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
+		rtl_log_msgV "verbose" "${MSG_mirror_pkg_disabled}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 	else
 		if rtl_get_var_unsafe \$_ppmf_pkg_url -u "PKG_${_ppmf_pkg_name_real}_URL"\
 		&& rtl_get_var_unsafe \$_ppmf_pkg_sha256sum -u "PKG_${_ppmf_pkg_name_real}_SHA256SUM"\
@@ -332,12 +332,12 @@ pkgtoolp_mirror_fetch() {
 		then
 
 			if [ "${_ppmf_mirror_dname:+1}" != 1 ]; then
-				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_mirror_pkg_skip_archive_mirror}" "${_ppmf_pkg_name}";
+				_ppmf_rc=0; rtl_log_msgV "verbose" "${MSG_mirror_pkg_skip_archive_mirror}" "${_ppmf_pkg_name}";
 
 			elif [ "${_ppmf_pkg_name}" != "${_ppmf_pkg_name_real}" ]; then
-				rtl_log_msg "mirror_pkg_archive_mirroring_parent" "${MSG_mirror_pkg_archive_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_url}";
+				rtl_log_msgV "mirror_pkg_archive_mirroring_parent" "${MSG_mirror_pkg_archive_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_url}";
 				if ! rtl_fileop ln_symbolic "${_ppmf_pkg_name_real}" "${_ppmf_mirror_dname}/${_ppmf_pkg_name}"; then
-					_ppmf_rc=1; rtl_log_msg "warning" "${MSG_mirror_pkg_link_fail}"\
+					_ppmf_rc=1; rtl_log_msgV "warning" "${MSG_mirror_pkg_link_fail}"\
 							"${_ppmf_mirror_dname}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 				fi;
 
@@ -346,7 +346,7 @@ pkgtoolp_mirror_fetch() {
 				&& [ "${_ppmf_pkg_fname:+1}" != 1 ]; then
 					_ppmf_pkg_fname="${_ppmf_pkg_url##*/}";
 				fi;
-				rtl_log_msg "mirror_pkg_archive_mirroring" "${MSG_mirror_pkg_archive_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_url}";
+				rtl_log_msgV "mirror_pkg_archive_mirroring" "${MSG_mirror_pkg_archive_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_url}";
 
 				if ! rtl_fileop mkdir "${_ppmf_mirror_dname}/${_ppmf_pkg_name}"\
 				|| ! rtl_fetch_url_wget						\
@@ -357,7 +357,7 @@ pkgtoolp_mirror_fetch() {
 						"";
 				then
 					_ppmf_rc=1;
-					rtl_log_msg "warning" "${MSG_mirror_pkg_mirror_fail}" "${_ppmf_pkg_name}";
+					rtl_log_msgV "warning" "${MSG_mirror_pkg_mirror_fail}" "${_ppmf_pkg_name}";
 					rtl_lconcat "${_ppmf_rpkgs_failed}" "${_ppmf_pkg_name}";
 				else
 					rtl_fetch_clean_dlcache		\
@@ -375,27 +375,27 @@ pkgtoolp_mirror_fetch() {
 		then
 
 			if [ "${_ppmf_mirror_dname_git:+1}" != 1 ]; then
-				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_mirror_pkg_skip_git_mirror}" "${_ppmf_pkg_name}";
+				_ppmf_rc=0; rtl_log_msgV "verbose" "${MSG_mirror_pkg_skip_git_mirror}" "${_ppmf_pkg_name}";
 
 			elif rtl_get_var_unsafe \$_ppmf_pkg_mirrors_git -u "PKG_${_ppmf_pkg_name_real}_MIRRORS_GIT"\
 			&&   [ "${_ppmf_pkg_mirrors_git}" = "skip" ]; then
-				_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_mirror_pkg_skip_git_mirror_disabled}" "${_ppmf_pkg_name}";
+				_ppmf_rc=0; rtl_log_msgV "verbose" "${MSG_mirror_pkg_skip_git_mirror_disabled}" "${_ppmf_pkg_name}";
 
 			elif [ "${_ppmf_pkg_name}" != "${_ppmf_pkg_name_real}" ]; then
-				rtl_log_msg "mirror_pkg_git_mirroring_parent" "${MSG_mirror_pkg_git_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_urls_git}";
+				rtl_log_msgV "mirror_pkg_git_mirroring_parent" "${MSG_mirror_pkg_git_mirroring_parent}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}" "${_ppmf_pkg_urls_git}";
 				if ! rtl_fileop ln_symbolic "${_ppmf_pkg_name_real}" "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"; then
 					_ppmf_rc=1;
-					rtl_log_msg "warning" "${MSG_mirror_pkg_link_fail}"	\
+					rtl_log_msgV "warning" "${MSG_mirror_pkg_link_fail}"	\
 						"${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" "${_ppmf_pkg_name}" "${_ppmf_pkg_name_real}";
 					rtl_lconcat "${_ppmf_rpkgs_failed}" "${_ppmf_pkg_name}";
 				fi;
 
 			else
-				rtl_log_msg "mirror_pkg_git_mirroring" "${MSG_mirror_pkg_git_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_urls_git}";
+				rtl_log_msgV "mirror_pkg_git_mirroring" "${MSG_mirror_pkg_git_mirroring}" "${_ppmf_pkg_name}" "${_ppmf_pkg_urls_git}";
 				if ! rtl_fileop mkdir "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}"\
 				|| ! rtl_fetch_mirror_urls_git "${DEFAULT_GIT_ARGS}" "${_ppmf_mirror_dname_git}/${_ppmf_pkg_name}" ${_ppmf_pkg_urls_git}; then
 					_ppmf_rc=1;
-					rtl_log_msg "warning" "${MSG_mirror_pkg_mirror_fail}" "${_ppmf_pkg_name}";
+					rtl_log_msgV "warning" "${MSG_mirror_pkg_mirror_fail}" "${_ppmf_pkg_name}";
 					rtl_lconcat "${_ppmf_rpkgs_failed}" "${_ppmf_pkg_name}";
 				else
 					rtl_fetch_clean_dlcache "${_ppmf_mirror_dname_git}" "${_ppmf_pkg_name}" "${_ppmf_pkg_fname}" "${_ppmf_pkg_urls_git}";
@@ -407,7 +407,7 @@ pkgtoolp_mirror_fetch() {
 		if [ "${_ppmf_pkg_url:+1}" != 1 ]\
 		&& [ "${_ppmf_pkg_sha256sum:+1}" != 1 ]\
 		&& [ "${_ppmf_pkg_urls_git:+1}" != 1 ]; then
-			_ppmf_rc=0; rtl_log_msg "verbose" "${MSG_mirror_pkg_skip_no_urls}" "${_ppmf_pkg_name}";
+			_ppmf_rc=0; rtl_log_msgV "verbose" "${MSG_mirror_pkg_skip_no_urls}" "${_ppmf_pkg_name}";
 		fi;
 	fi;
 
@@ -443,7 +443,7 @@ pkgtoolp_rdepends() {
 	  && [ "${_ppr_pkg_finished:+1}" != 1 ]\
 	  && [ "${_ppr_pkg_rdepends_direct:+1}" != 1 ];
 	then
-		rtl_log_msg "info" "${MSG_rdepends_pkg_deps_rev_none}" "${_ppr_pkg_name}";
+		rtl_log_msgV "info" "${MSG_rdepends_pkg_deps_rev_none}" "${_ppr_pkg_name}";
 	else
 		for _ppr_pkg_name_rdepend in $(rtl_lsortV	\
 				${_ppr_pkg_finished}		\
@@ -462,14 +462,14 @@ pkgtoolp_rdepends() {
 
 		if [ "${_ppr_pkg_rdepends:+1}" = 1 ]; then
 			if [ "${_ppr_full_rdependsfl}" -eq 1 ]; then
-				rtl_log_msg "info" "${MSG_rdepends_pkgs_deps_rev_recurse}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
+				rtl_log_msgV "info" "${MSG_rdepends_pkgs_deps_rev_recurse}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
 			else
-				rtl_log_msg "info" "${MSG_rdepends_pkgs_deps_rev}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
+				rtl_log_msgV "info" "${MSG_rdepends_pkgs_deps_rev}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
 			fi;
 		fi;
 
 		if [ "${_ppr_pkg_disabled:+1}" = 1 ]; then
-			rtl_log_msg "info" "${MSG_rdepends_pkgs_deps_rev_disabled}" "${_ppr_pkg_name}" "$(rtl_lsortV "${_ppr_pkg_disabled}")";
+			rtl_log_msgV "info" "${MSG_rdepends_pkgs_deps_rev_disabled}" "${_ppr_pkg_name}" "$(rtl_lsortV "${_ppr_pkg_disabled}")";
 		fi;
 	fi;
 
@@ -508,7 +508,7 @@ pkgtoolp_tarball() {
 		fi;
 
 		_ppt_tarball_fname="${_ppt_pkg_name_full}@${_ppt_hname}-${_ppt_date}.tbz2";
-		rtl_log_msg "info" "${MSG_tarball_creating}" "${PKG_BASE_DIR}" "${_ppt_pkg_name}";
+		rtl_log_msgV "info" "${MSG_tarball_creating}" "${PKG_BASE_DIR}" "${_ppt_pkg_name}";
 
 		if ! tar -C "${BUILD_WORKDIR}" -cpf -			\
 				"${PKG_BASE_DIR#${BUILD_WORKDIR%/}/}"	\
@@ -518,7 +518,7 @@ pkgtoolp_tarball() {
 			_ppt_rc=1;
 			rtl_setrstatus "${_ppt_rstatus}" 'Error: failed to create compressed tarball of \`'"${PKG_BASE_DIR}'"' and \`'"${_ppt_pkg_name}"'_stderrout.log'"'"'.';
 		else
-			rtl_log_msg "info" "${MSG_tarball_created}" "${PKG_BASE_DIR}" "${_ppt_pkg_name}";
+			rtl_log_msgV "info" "${MSG_tarball_created}" "${PKG_BASE_DIR}" "${_ppt_pkg_name}";
 		fi;
 	fi;
 
@@ -545,11 +545,11 @@ pkgtool() {
 	fi;
 
 	if [ "${_rc}" -ne 0 ]; then
-		rtl_log_enable_tags "${LOG_TAGS_all}";
-		rtl_log_msg "fatalexit" "0;${_status}";
+		rtl_log_enable_tagsV "${LOG_TAGS_all}";
+		rtl_log_msgV "fatalexit" "0;${_status}";
 	elif [ "${_status:+1}" = 1 ]; then
-		rtl_log_enable_tags "${LOG_TAGS_all}";
-		rtl_log_msg "info" "0;${_status}";
+		rtl_log_enable_tagsV "${LOG_TAGS_all}";
+		rtl_log_msgV "info" "0;${_status}";
 	fi;
 };
 

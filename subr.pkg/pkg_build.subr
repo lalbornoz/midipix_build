@@ -34,22 +34,24 @@ pkg_build() {
 		# N.B.	We only specify CC= here if the current package does not use GNU
 		#	autoconf as it often abuses it by appending -std={gnu99,...} to it
 		#	instead of amending CFLAGS.
-		rtl_run_cmd_unsplit "${PKG_MAKE}"							\
-			${PKG_MAKEFLAGS_BUILD:-}							\
-			${PKG_MAKEFLAGS_BUILD_EXTRA:-}							\
-			"AR=${PKG_AR}" "${_pb_no_autoconf:+CC=${PKG_CC}}" "RANLIB=${PKG_RANLIB}"	\
-			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"				\
-			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"			\
-			"${PKG_CPPFLAGS_BUILD:+CPPFLAGS=${PKG_CPPFLAGS_BUILD}}"				\
-			"${PKG_CPPFLAGS_BUILD_EXTRA:+CPPFLAGS+=${PKG_CPPFLAGS_BUILD_EXTRA}}"		\
-			"${PKG_CXXFLAGS_BUILD:+CXXFLAGS=${PKG_CXXFLAGS_BUILD}}"				\
-			"${PKG_CXXFLAGS_BUILD_EXTRA:+CXXFLAGS+=${PKG_CXXFLAGS_BUILD_EXTRA}}"		\
-			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"				\
-			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"		\
-			"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"				\
-			"${PKG_PKG_CONFIG_LIBDIR:+PKG_CONFIG_LIBDIR=${PKG_PKG_CONFIG_LIBDIR}}"		\
-			${_pb_libtool:+"LIBTOOL=${_pb_libtool}"}					\
-			${_pb_makeflags_verbosity}							\
+		rtl_run_cmdlineV ":" "${PKG_MAKE}"						\
+			${PKG_MAKEFLAGS_BUILD:-}						\
+			${PKG_MAKEFLAGS_BUILD_EXTRA:-}						\
+			"AR=${PKG_AR}"								\
+			"${_pb_no_autoconf:+CC=${PKG_CC}}"					\
+			"RANLIB=${PKG_RANLIB}"							\
+			"${PKG_CFLAGS_BUILD:+CFLAGS=${PKG_CFLAGS_BUILD}}"			\
+			"${PKG_CFLAGS_BUILD_EXTRA:+CFLAGS+=${PKG_CFLAGS_BUILD_EXTRA}}"		\
+			"${PKG_CPPFLAGS_BUILD:+CPPFLAGS=${PKG_CPPFLAGS_BUILD}}"			\
+			"${PKG_CPPFLAGS_BUILD_EXTRA:+CPPFLAGS+=${PKG_CPPFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_CXXFLAGS_BUILD:+CXXFLAGS=${PKG_CXXFLAGS_BUILD}}"			\
+			"${PKG_CXXFLAGS_BUILD_EXTRA:+CXXFLAGS+=${PKG_CXXFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_LDFLAGS_BUILD:+LDFLAGS=${PKG_LDFLAGS_BUILD}}"			\
+			"${PKG_LDFLAGS_BUILD_EXTRA:+LDFLAGS+=${PKG_LDFLAGS_BUILD_EXTRA}}"	\
+			"${PKG_PKG_CONFIG:+PKG_CONFIG=${PKG_PKG_CONFIG}}"			\
+			"${PKG_PKG_CONFIG_LIBDIR:+PKG_CONFIG_LIBDIR=${PKG_PKG_CONFIG_LIBDIR}}"	\
+			${_pb_libtool:+"LIBTOOL=${_pb_libtool}"}				\
+			${_pb_makeflags_verbosity}						\
 			${_pb_subdir:+-C "${_pb_subdir}"};
 		_pb_rc="${?}";
 

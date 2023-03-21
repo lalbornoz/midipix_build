@@ -13,7 +13,7 @@
 # @_mirrors:		optional list of mirror base URLs
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure
-# N.B.			URLs ($1) may contain `?' or '&' characters.
+# N.B.:			URLs ($1) may contain `?' or '&' characters.
 #
 rtl_fetch_url_wget() {
 	local	_rfuw_urls="${1}" _rfuw_sha256sum_src="${2}" _rfuw_target_dname="${3}"		\
@@ -57,28 +57,28 @@ rtl_fetch_url_wget() {
 		0)	break; ;;
 
 		1)	if [ "${_rfuw_urls_count}" -ge 1 ]; then
-				rtl_log_msg "warning" "${MSG_rtl_fetch_lockfail_retryurl}" "${_rfuw_url}";
+				rtl_log_msgV "warning" "${MSG_rtl_fetch_lockfail_retryurl}" "${_rfuw_url}";
 			else
-				rtl_log_msg "fatal" "${MSG_rtl_fetch_lockfail}" "${_rfuw_url}";
+				rtl_log_msgV "fatal" "${MSG_rtl_fetch_lockfail}" "${_rfuw_url}";
 				rtl_fileop rm "${_rfuw_target_fname_full}"; break;
 			fi; ;;
 
 		2)	if [ "${_rfuw_urls_count}" -ge 1 ]; then
-				rtl_log_msg "warning" "${MSG_rtl_fetch_hashfail_retryurl}" "${_rfuw_url}" "${_rfuw_sha256sum_src}";
+				rtl_log_msgV "warning" "${MSG_rtl_fetch_hashfail_retryurl}" "${_rfuw_url}" "${_rfuw_sha256sum_src}";
 			else
 				if _rfuw_sha256sum_target="$(sha256sum "${_rfuw_target_fname_full}" |\
 							awk '{print $1}' 2>/dev/null)"; then
-					rtl_log_msg "fatal" "${MSG_rtl_fetch_hashfail1}" "${_rfuw_url}" "${_rfuw_sha256sum_src}" "${_rfuw_sha256sum_target}";
+					rtl_log_msgV "fatal" "${MSG_rtl_fetch_hashfail1}" "${_rfuw_url}" "${_rfuw_sha256sum_src}" "${_rfuw_sha256sum_target}";
 				else
-					rtl_log_msg "fatal" "${MSG_rtl_fetch_hashfail2}" "${_rfuw_url}" "${_rfuw_sha256sum_src}";
+					rtl_log_msgV "fatal" "${MSG_rtl_fetch_hashfail2}" "${_rfuw_url}" "${_rfuw_sha256sum_src}";
 				fi;
 				rtl_fileop rm "${_rfuw_target_fname_full}"; break;
 			fi; ;;
 
 		*)	if [ "${_rfuw_urls_count}" -ge 1 ]; then
-				rtl_log_msg "warning" "${MSG_rtl_fetch_fail_retryurl}" "${_rfuw_url}" "$((${_rfuw_rc}-2))";
+				rtl_log_msgV "warning" "${MSG_rtl_fetch_fail_retryurl}" "${_rfuw_url}" "$((${_rfuw_rc}-2))";
 			else
-				rtl_log_msg "fatal" "${MSG_rtl_fetch_fail}" "${_rfuw_url}" "$((${_rfuw_rc}-2))";
+				rtl_log_msgV "fatal" "${MSG_rtl_fetch_fail}" "${_rfuw_url}" "$((${_rfuw_rc}-2))";
 				rtl_fileop rm "${_rfuw_target_fname_full}"; break;
 			fi; ;;
 

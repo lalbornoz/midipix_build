@@ -37,7 +37,7 @@ ex_pkg_check_depends() {
 			&& ! ex_pkg_state_test2 "${_epcd_workdir}" "${_epcd_pkg_name_depend}" finish;
 			then
 				if ! rtl_lmatch "${_epcd_rpkg_names}" "${_epcd_pkg_name_depend}"; then
-					rtl_log_msg "fatalexit" "${MSG_build_unknown_dep}" "${_epcd_pkg_name_depend}" "${_epcd_pkg_name}";
+					rtl_log_msgV "fatalexit" "${MSG_build_unknown_dep}" "${_epcd_pkg_name_depend}" "${_epcd_pkg_name}";
 				else
 					_epcd_dependfl=1; break;
 				fi;

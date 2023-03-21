@@ -35,7 +35,7 @@ rtl_fetch_clean_dlcache() {
 
 		if [ "${_pfdcd_skipfl}" -eq 0 ]; then
 			_pfdcd_fname="${_pfdcd_dlcachedir}/${_pfdcd_name}/${_pfdcd_fname}";
-			rtl_log_msg "verbose" "${MSG_rtl_fetch_rm_redundant}" "${_pfdcd_fname}" "${_pfdcd_name}";
+			rtl_log_msgV "verbose" "${MSG_rtl_fetch_rm_redundant}" "${_pfdcd_fname}" "${_pfdcd_name}";
 			rtl_fileop rm "${_pfdcd_fname}";
 		fi;
 	done;

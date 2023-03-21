@@ -1,1 +1,35 @@
-rtl.msgs.en
+#
+# en_* locale messages file for subr.rtl/*.subr
+#
+
+MSG_rtl_fetch_fail="2;Error: failed to fetch URL \`%s' (wget(1) exit status: %s)";
+MSG_rtl_fetch_fail_retryurl="2;Warning: failed to fetch URL \`%s', retrying with alternative URL... (wget(1) exit status: %s)";
+MSG_rtl_fetch_hashfail1="3;Error: hash mismatch for URL \`%s' (should be: %s vs.: %s.)";
+MSG_rtl_fetch_hashfail2="2;Error: hash mismatch for URL \`%s' (should be: %s.)";
+MSG_rtl_fetch_hashfail_retryurl="2;Warning: hash mismatch for URL \`%s', retrying with alternative URL... (from build variables: %s.)";
+MSG_rtl_fetch_lockfail="1;Error: failed to acquire fetching lock for URL \`%s'.";
+MSG_rtl_fetch_lockfail_retryurl="1;Warning: failed to acquire fetching lock for URL \`%s', retrying with alternative URL...";
+MSG_rtl_fetch_rm_redundant="2;Deleting redundant file \`%s' for package \`%s'.";
+
+MSG_rtl_fileop_invalid_dir="1;Error: Invalid or non-existent directory \`%s'.";
+MSG_rtl_fileop_invparm_chgrp="1;Error: Missing parameters (in: chgrp %s.)";
+MSG_rtl_fileop_invparm_chmod="1;Error: Missing parameters (in: chmod %s.)";
+MSG_rtl_fileop_invparm_chown="1;Error: Missing parameters (in: chown %s.)";
+MSG_rtl_fileop_invparm_cp="1;Error: Missing parameters (in: cp %s.)";
+MSG_rtl_fileop_invparm_cp_follow="1;Error: Missing parameters (in: cp_follow %s.)";
+MSG_rtl_fileop_invparm="2;Error: Missing parameters (in: %s %s.)";
+MSG_rtl_fileop_invparm_fileop="1;Error: rtl_fileop() called w/ invalid parameter(s): %s";
+MSG_rtl_fileop_invparm_install="1;Error: Missing parameters (in: install %s.)";
+MSG_rtl_fileop_invparm_ln_symbolic="1;Error: Missing parameters (in: ln_symbolic %s.)";
+MSG_rtl_fileop_invparm_mv="1;Error: Missing parameters (in: mv %s.)";
+MSG_rtl_fileop_invparm_touch="1;Error: Missing parameters (in: touch %s.)";
+
+MSG_rtl_install_v2_rc="1;%s";
+
+MSG_rtl_log_vars_header="1;Variables for this %s:";
+MSG_rtl_log_unknown_tag="1;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`%s' PASSED TO rtl_log_msgVV()[0m\n";
+
+MSG_rtl_platform_rc1="2;Command line: %s %s";
+MSG_rtl_platform_rc2="1;Command line: %s";
+
+# vim:foldmethod=marker ft=sh

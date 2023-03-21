@@ -22,15 +22,18 @@ pkg_install_make() {
 			export MAKE="make LIBTOOL=${_pim_libtool}";
 		fi;
 
-		rtl_run_cmd_unsplit "${PKG_MAKE}"				\
+		rtl_run_cmdlineV ":" "${PKG_MAKE}"				\
 			${PKG_MAKEFLAGS_INSTALL:-}				\
 			${PKG_MAKEFLAGS_INSTALL_EXTRA:-}			\
-			AR="${PKG_AR}" CC="${PKG_CC}" RANLIB="${PKG_RANLIB}"	\
-			"${PKG_RANLIB_INSTALL:+RANLIB=${PKG_RANLIB_INSTALL}}"	\
+			AR="${PKG_AR}"						\
+			CC="${PKG_CC}"						\
+			RANLIB="${PKG_RANLIB}"					\
+			${PKG_RANLIB_INSTALL:+"RANLIB=${PKG_RANLIB_INSTALL}"}	\
 			${_pim_libtool:+"LIBTOOL=${_pim_libtool}"}		\
 			"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
-			${PKG_INSTALL_TARGET:-install}				\
-			${_pim_subdir:+-C "${_pim_subdir}"}; _pim_rc="${?}";
+			"${PKG_INSTALL_TARGET:-install}"			\
+			${_pim_subdir:+-C "${_pim_subdir}"};
+		_pim_rc="${?}";
 
 		if [ "${#_pim_libtool}" -gt 0 ]; then
 			unset MAKE;

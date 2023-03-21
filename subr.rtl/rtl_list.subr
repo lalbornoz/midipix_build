@@ -34,6 +34,8 @@ rtl_lassignV() {
 # @_rlist:	inout reference to list
 # @_litem_new:	list item(s) to concatenate with
 # @[_sep]:	optional single non-zero, possibly multi-character, separator
+# N.B.:		If @_litem_new is a list of multiple items, the separator of that list
+#		must be the same as @[_sep]
 #
 # Returns:	zero (0) on success, non-zero (>0) on failure
 #
@@ -49,6 +51,8 @@ rtl_lconcat() {
 # @[_sep]:	optional single non-zero, possibly multi-character, separator
 #
 # Returns:	zero (0) on success, non-zero (>0) on failure
+# N.B.:		If @_litem_new is a list of multiple items, the separator of that list
+#		must be the same as @[_sep]
 #
 rtl_lconcat2() {
 	local	_rlc2_rlist_new="${1#\$}" _rlc2_rlist="${2#\$}" _rlc2_litem_new="${3}"	\

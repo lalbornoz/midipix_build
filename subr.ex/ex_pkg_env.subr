@@ -31,7 +31,7 @@ exp_pkg_env_defaults() {
 	if [ "${PKG_SUBDIR:+1}" != 1 ]; then
 		if [ "${PKG_URLS_GIT:+1}" = 1 ]\
 		&& [ "${PKG_FNAME:+1}" = 1 ]; then
-			rtl_log_msg "fatalexit" "${MSG_pkg_fail_missing_vars}";
+			rtl_log_msgV "fatalexit" "${MSG_pkg_fail_missing_vars}";
 		elif [ "${PKG_URLS_GIT:+1}" = 1 ]; then
 			PKG_SUBDIR="${PKG_URLS_GIT%%=*}";
 		else case "${PKG_FNAME:-}" in
@@ -72,8 +72,8 @@ exp_pkg_env_set() {
 		_eppes_lvars="" _eppes_var_prefixes="" _eppes_vars_set=""				\
 		_eppes_vars_unset="" _eppes_vname="" _eppes_vnames="" IFS IFS0;
 
-	rtl_set_vars _eppes_vars_set BUILD_TYPE "DEFAULT ${_eppes_group_name} PKG_${_eppes_pkg_name}";
-	rtl_set_vars _eppes_vars_set INHERIT_FROM "PKG_${_eppes_pkg_name}";
+	rtl_set_var _eppes_vars_set BUILD_TYPE "DEFAULT ${_eppes_group_name} PKG_${_eppes_pkg_name}";
+	rtl_set_var _eppes_vars_set INHERIT_FROM "PKG_${_eppes_pkg_name}";
 	_eppes_var_prefixes="DEFAULT DEFAULT_${PKG_BUILD_TYPE} ${_eppes_group_name}";
 	rtl_toupper \$_eppes_var_prefixes;
 	rtl_lfilter2 \$_eppes_build_vars_default \$_eppes_vnames BUILD_TYPE;
@@ -83,12 +83,12 @@ exp_pkg_env_set() {
 			_eppes_lvars="PKG_${PKG_INHERIT_FROM} PKG_${PKG_INHERIT_FROM}_${BUILD_KIND} PKG_${_eppes_pkg_name} PKG_${_eppes_pkg_name}_${BUILD_KIND}";
 			rtl_toupper \$_eppes_lvars;
 			rtl_lconcat2 \$_eppes_lvars \$_eppes_var_prefixes "${_eppes_lvars}";
-			rtl_set_vars _eppes_vars_set "${_eppes_vname}" "${_eppes_lvars}";
+			rtl_set_var _eppes_vars_set "${_eppes_vname}" "${_eppes_lvars}";
 		else
 			_eppes_lvars="PKG_${_eppes_pkg_name} PKG_${_eppes_pkg_name}_${BUILD_KIND}";
 			rtl_toupper \$_eppes_lvars;
 			rtl_lconcat2 \$_eppes_lvars \$_eppes_var_prefixes "${_eppes_lvars}";
-			rtl_set_vars _eppes_vars_set "${_eppes_vname}" "${_eppes_lvars}";
+			rtl_set_var _eppes_vars_set "${_eppes_vname}" "${_eppes_lvars}";
 		fi;
 	done;
 

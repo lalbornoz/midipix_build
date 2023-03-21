@@ -12,11 +12,11 @@ pkg_dist_zipdist_all() {
 	fi;
 
 	ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_begin}";
-	rtl_log_msg "zipdist" "${MSG_zipdist_begin}";
+	rtl_log_msgV "zipdist" "${MSG_zipdist_begin}";
 
 	for _pdza_pkg_name in $(cat "${_pdza_pkglist_fname}"); do
 		if [ ! -e "${BUILD_WORKDIR}/${_pdza_pkg_name}-native-${DEFAULT_TARGET}" ]; then
-			rtl_log_msg "fatalexit" "${MSG_zipdist_missing_pkg_build_dir}" "${_pdza_pkg_name}";
+			rtl_log_msgV "fatalexit" "${MSG_zipdist_missing_pkg_build_dir}" "${_pdza_pkg_name}";
 		fi;
 	done;
 
@@ -44,14 +44,14 @@ pkg_dist_zipdist_all() {
 	fi;
 
 	ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_finished}";
-	rtl_log_msg "zipdist" "${MSG_zipdist_finished}";
+	rtl_log_msgV "zipdist" "${MSG_zipdist_finished}";
 
 	if [ "${DEFAULT_ZIPDIST_SIGN_GPG_KEY:+}" = 1 ]\
 	&& command which gpg >/dev/null 2>&1\
 	&& gpg --list-keys "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}" >/dev/null 2>&1;
 	then
 		ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_signing}";
-		rtl_log_msg "zipdist" "${MSG_zipdist_signing}";
+		rtl_log_msgV "zipdist" "${MSG_zipdist_signing}";
 
 		if ! gpg --armor --passphrase-file /dev/null		\
 			--local-user "${DEFAULT_ZIPDIST_SIGN_GPG_KEY}"	\
@@ -60,7 +60,7 @@ pkg_dist_zipdist_all() {
 		fi;
 
 		ex_pkg_dispatch_send "msg_pkg" "dist" "dist_zipdist" "${MSG_zipdist_signed}";
-		rtl_log_msg "zipdist" "${MSG_zipdist_signed}";
+		rtl_log_msgV "zipdist" "${MSG_zipdist_signed}";
 	fi;
 
 	ex_pkg_dispatch_send "step" "${_pdza_group_name}" "${_pdza_pkg_name}" "finish";

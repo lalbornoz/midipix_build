@@ -3,52 +3,83 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+#
+# rtl_state_clear() - clear state for item
+# @_workdir:	pathname to directory containing state files
+# @_item_name:	name of item to clear state for
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_state_clear() {
-	local	_rsc_workdir="${1}" _rsc_pkg_name="${2}"	\
-		_rsc_pkg_fname="";
+	local	_rsc_workdir="${1}" _rsc_item_name="${2}"	\
+		_rsc_item_fname="";
 
-	for _rsc_pkg_fname in $(
+	for _rsc_item_fname in $(
 		find "${_rsc_workdir}"			\
 			-maxdepth 1			\
 			-mindepth 1			\
-			-name .${_rsc_pkg_name}.\*	\
+			-name .${_rsc_item_name}.\*	\
 			-type f);
 	do
-		rtl_fileop rm "${_rsc_pkg_fname}";
+		rtl_fileop rm "${_rsc_item_fname}";
 	done;
 	return 0;
 };
 
+#
+# rtl_state_set() - set state for item
+# @_workdir:	pathname to directory containing state files
+# @_item_name:	name of item to set state for
+# @_state:	state to set
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_state_set() {
-	local	_rss_workdir="${1}" _rss_pkg_fname="${2}" _rss_build_step="${3}"	\
-		_rss_done_fname_pfx="${1}/.${2}";
+	local	_rss_workdir="${1}" _rss_item_name="${2}" _rss_state="${3}"	\
+		_rss_done_name_pfx="${1}/.${2}";
 	shift 3;
 
-	rtl_fileop touch "${_rss_done_fname_pfx}.${_rss_build_step}";
+	rtl_fileop touch "${_rss_done_name_pfx}.${_rss_state}";
 	while [ ${#} -ge 1 ]; do
 		if [ "${#1}" -gt 0 ]; then
-			rtl_fileop rm "${_rss_done_fname_pfx}.${1}";
+			rtl_fileop rm "${_rss_done_name_pfx}.${1}";
 		fi; shift;
 	done;
 	return 0;
 };
 
+#
+# rtl_state_test() - test state(s) for item
+# @_workdir:	pathname to directory containing state files
+# @_item_name:	name of item to set state for
+# @_states:	state(s) to test for
+# @[_lforce]:	one of "ALL" (force all states to test as set,) "LAST" or "" (test all states,)
+#		or exclusive list of states to force to test as set
+#
+# Returns:	zero (0) if any of state(s) set, non-zero (>0) if none of state(s) set
+#
 rtl_state_test() {
-	local	_rst_workdir="${1}" _rst_pkg_name="${2}" _rst_build_steps="${3}"	\
-		_rst_restart_at="${4:-}" _rst_build_step="" _rst_done_fname=""		\
-		IFS="," _rst_rc=0;
+	local	_rst_workdir="${1}" _rst_item_name="${2}"	\
+		_rst_states="${3}" _rst_lforce="${4:-}"	\
+		_rst_state="" _rst_done_fname="" IFS="," _rst_rc=0;
 
-	for _rst_build_step in ${_rst_build_steps}; do
-		_rst_done_fname="${_rst_workdir}/.${_rst_pkg_name}.${_rst_build_step}";
-		if [ "${_rst_restart_at:+1}" != 1 ]\
-		|| [ "${_rst_restart_at}" = "LAST" ]; then
-			rtl_fileop test "${_rst_done_fname}"; _rst_rc="${?}";
-		elif [ "${_rst_restart_at}" = "ALL" ]; then
-			_rst_rc=1;
-		else
-			rtl_lmatch \$_rst_restart_at "${_rst_build_step}" ",";
+	for _rst_state in ${_rst_states}; do
+		_rst_done_fname="${_rst_workdir}/.${_rst_item_name}.${_rst_state}";
+
+		case "${_rst_lforce}" in
+		ALL)
+			_rst_rc=1; ;;
+		""|LAST)
+			rtl_fileop test "${_rst_done_fname}"; _rst_rc="${?}"; ;;
+		*)
+			rtl_lmatch \$_rst_lforce "${_rst_state}" ",";
 			_rst_rc=$((${?} ? 0 : 1));
-		fi; [ "${_rst_rc}" -eq 0 ] && break;
+			;;
+		esac;
+
+		if [ "${_rst_rc}" -eq 0 ]; then
+			break;
+		fi;
 	done;
 	return "${_rst_rc}";
 };

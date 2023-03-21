@@ -20,13 +20,14 @@ pkg_build_clean() {
 			[ "${_pbc_subdir}" = ":" ] && _pbc_subdir="";
 			[ "${#_pbc_libtool}" -gt 0 ] && export MAKE="make LIBTOOL=${_pbc_libtool}";
 
-			rtl_run_cmd_unsplit "${PKG_MAKE}"			\
+			rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
 				${PKG_MAKEFLAGS_BUILD:-}			\
 				${PKG_MAKEFLAGS_BUILD_EXTRA:-}			\
 				${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
 				${_pbc_makeflags_verbosity}			\
 				${_pbc_subdir:+-C "${_pbc_subdir}"}		\
-				clean; _pbc_rc="${?}";
+				clean;
+			_pbc_rc="${?}";
 
 			[ "${#_pbc_libtool}" -gt 0 ] && unset MAKE;
 			[ "${_pbc_rc}" -ne 0 ] && return 1;

@@ -27,7 +27,7 @@ MSG_rtl_fileop_invparm_touch="1;Error: Missing parameters (in: touch %s.)";
 MSG_rtl_install_v2_rc="1;%s";
 
 MSG_rtl_log_vars_header="1;Variables for this %s:";
-MSG_rtl_log_unknown_tag="1;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`%s' PASSED TO rtl_log_msg()[0m\n";
+MSG_rtl_log_unknown_tag="1;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`%s' PASSED TO rtl_log_msgV()[0m\n";
 
 MSG_rtl_platform_rc1="2;Command line: %s %s";
 MSG_rtl_platform_rc2="1;Command line: %s";

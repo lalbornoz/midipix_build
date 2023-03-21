@@ -3,7 +3,14 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
-rtl_check_prereqs() {
+#
+# rtl_check_prereqsV() - check for existence of list of commands
+# @_rstatus:	out reference to status string
+# @...:		commands list as positional parameters
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+rtl_check_prereqsV() {
 	local	_rcp_rstatus="${1#\$}"	\
 		_rcp_cmd="" _rcp_cmds_missing="" _rcp_rc=0;
 	shift;
@@ -20,6 +27,12 @@ rtl_check_prereqs() {
 	return "${_rcp_rc}";
 };
 
+#
+# rtl_clean_env() - unset environment variables w/ exceptions
+# @_env_vars_except:	list of environment variables to keep
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
 rtl_clean_env() {
 	local	_rce_env_vars_except="${1}"	\
 		_rce_env_var="" _rce_env_vars="" _rce_env_vars_unset="";
@@ -38,6 +51,13 @@ rtl_clean_env() {
 	return 0;
 };
 
+#
+# rtl_get_cpu_count() - obtain CPU count
+# @_rstatus:	out reference to status string
+# @_rcount:	out reference to CPU count
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_get_cpu_count() {
 	local	_rgcc_rstatus="${1#\$}" _rgcc_rcount="${2#\$}"		\
 		_rgcc_line="" _rgcc_ncpus=0 _rgcc_rc=0 _rgcc_sname="";
@@ -66,8 +86,19 @@ rtl_get_cpu_count() {
 	return "${_rgcc_rc}";
 };
 
+#
+# rtl_get_var_unsafe() - get value of variable
+# @_rvval:	out reference to variable value
+# @[-u]:	optionally convert variable name to upper case
+# @_vname:	variable name
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+# N.B.:		This function is *unsafe* and impossible to implement otherwise w/o filtering @_vname
+#		and implicitly allows for code execution and other undefined behaviour via @_vname.
+#		Do *not* pass untrusted input through @_vname.
+#
 rtl_get_var_unsafe() {
-	local	_rgvu_rvname_out="${1#\$}"	\
+	local	_rgvu_rvval="${1#\$}"	\
 		_rgvu_vname="";
 	shift;
 
@@ -76,17 +107,33 @@ rtl_get_var_unsafe() {
 	else
 		_rgvu_vname="${1}";
 	fi;
-	eval ${_rgvu_rvname_out}="\${${_rgvu_vname}:-}";
+	eval ${_rgvu_rvval}="\${${_rgvu_vname}:-}";
 	return 0;
 };
 
-rtl_get_vars_fast() {
-	local _rgvf_pattern="${1}";
+#
+# rtl_get_vars_unsafe_fast() - get values of multiple variables w/ pattern
+# @_pattern:	pattern to match against set output
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure, matching variable values on stdout
+# N.B.:		This function is *unsafe* and impossible to implement otherwise w/o parsing set
+#		output properly and may produce spurious data.
+#
+rtl_get_vars_unsafe_fast() {
+	local _rgvuf_pattern="${1}";
 
-	set | awk -F= '/'"${_rgvf_pattern}"'/{print $1}' | sort;
+	set | awk -F= '/'"${_rgvuf_pattern}"'/{print $1}' | sort;
 	return 0;
 };
 
+#
+# rtl_kill_tree() - kill tree of processes
+# @_rpids:	inout reference to list of PIDs
+# @_pid:	top-level PID
+# @_signal:	signal(7) to kill with
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_kill_tree() {
 	local	_rkt_rpids="${1#\$}" _rkt_pid="${2}" _rkt_signal="${3:-TERM}"	\
 		_rkt_pid_child="" _rkt_pids="";
@@ -104,64 +151,64 @@ rtl_kill_tree() {
 	return 0;
 };
 
-rtl_prompt() {
-	local rp_fmt="${1}" rp_choice=""; shift;
-
-	printf "${rp_fmt}? (y|N) " "${@}";
-	read -r rp_choice;
-	case "${rp_choice}" in
-	[yY])	rp_choice=1; ;;
-	*)	rp_choice=0; ;;
-	esac;
-	return "${rp_choice}";
-};
-
-rtl_rc() {
-	local _rr_nflag="${1}" _rr_cmd="${2}";
+#
+# rtl_run_cmdlineV() - run command line w/ field splitting applied
+# @_sep:	single non-zero, possibly multi-character, separator
+# @_cmd:	command name
+# @...:		command arguments as positional parameters
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+# N.B.:		This is required in situations where any of the command arguments 1) are passed from
+#		and as a single, expanded parameter (e.g. "${MAKEFLAGS:-}") 2) the value of the parameter
+#		contains multiple parameters separated by @_sep that must be passed as separate arguments
+#		to @_cmd.
+#
+rtl_run_cmdlineV() {
+	local	_rrc_sep="${1}" _rrc_cmd="${2}"	\
+		_rrc_cmdline="" _rrc_rc="" IFS;
 	shift 2;
-
-	case "${_rr_nflag}" in
-	1)	     if [ "${#}" -gt 0 ]; then
-			rtl_log_msg "verbose" "${MSG_rtl_platform_rc1}" "${_rr_cmd}" "${*}";
-		else
-			rtl_log_msg "verbose" "${MSG_rtl_platform_rc2}" "${_rr_cmd}";
-		fi; ;;
-	*)	"${_rr_cmd}" "${@}"; ;;
-	esac;
-	return 0;
-};
-
-rtl_run_cmd_unsplit() {
-	local	_rrcu_cmd="${1}"	\
-		_rrcu_cmdline="" _rrcu_rc="" IFS;
-	shift;
 
 	while [ ${#} -gt 0 ]; do
 		[ "${1:+1}" = 1 ] &&\
-			_rrcu_cmdline="${_rrcu_cmdline:+${_rrcu_cmdline}:}${1}";
+			_rrc_cmdline="${_rrc_cmdline:+${_rrc_cmdline}${_rrc_sep}}${1}";
 		shift;
 	done;
-	IFS=:; ${_rrcu_cmd} ${_rrcu_cmdline}; _rrcu_rc=$?;
-	return ${_rrcu_rc};
+	IFS="${_rrc_sep}"; ${_rrc_cmd} ${_rrc_cmdline}; _rrc_rc=$?;
+	return ${_rrc_rc};
 };
 
-rtl_set_var_from_cmdline() {
-	local	_rsvfc_rstatus="${1#\$}" _rsvfc_arg="${2}"	\
-		_rsvfc_rc=0 _rsvfc_vname="" _rsvfc_vval="";
+#
+# rtl_set_var_from_spec() - set variable from name-value specification
+# @_rstatus:	out reference to status string
+# @_arg:	variable name-value specification separated by single "=" (e.g. name=value)
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+rtl_set_var_from_spec() {
+	local	_rsvfs_rstatus="${1#\$}" _rsvfs_arg="${2}"	\
+		_rsvfs_rc=0 _rsvfs_vname="" _rsvfs_vval="";
 
-	_rsvfc_vname="${_rsvfc_arg%%=*}";
-	_rsvfc_vval="${_rsvfc_arg#*=}";
+	_rsvfs_vname="${_rsvfs_arg%%=*}";
+	_rsvfs_vval="${_rsvfs_arg#*=}";
 
-	if [ "${_rsvfc_vval:+1}" != 1 ]; then
-		_rsvfc_rc=1;
-		rtl_setrstatus "${_rsvfc_rstatus}" 'empty value specified for \${'"${_rsvfc_vname}"'}.';
+	if [ "${_rsvfs_vval:+1}" != 1 ]; then
+		_rsvfs_rc=1;
+		rtl_setrstatus "${_rsvfs_rstatus}" 'empty value specified for \${'"${_rsvfs_vname}"'}.';
 	else
-		rtl_set_var_unsafe "${_rsvfc_vname}" "${_rsvfc_vval}";
+		rtl_set_var_unsafe "${_rsvfs_vname}" "${_rsvfs_vval}";
 	fi;
-	return "${_rsvfc_rc}";
+	return "${_rsvfs_rc}";
 };
 
-rtl_set_vars() {
+#
+# rtl_set_var() - set variable from variables w/ template
+# @_vars_set_vname:	list of variable names
+# @_vname_dst:		variable name to set
+# @_vname_src_tmpls:	variable name template (e.g. "DEFAULT PKG_")
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+rtl_set_var() {
 	local	_rsv_vars_set_vname="${1}" _rsv_vname_dst="${2}" _rsv_vname_src_tmpls="${3}"	\
 		_rsv_vars_set_old="" _rsv_vars_set_tmp="" _rsv_vname_src="" _rsv_vnames_src="";
 

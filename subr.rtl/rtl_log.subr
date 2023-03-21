@@ -16,6 +16,13 @@ RTLP_LOG_TERMINAL_COLOURS="$(tput colors 2>/dev/null)";
 # Private subroutines
 #
 
+#
+# rtlp_log_msg_get_attr() - get attributes e.g. ANSI escape sequences for single log tag
+# @_rattr:	out reference to attributes e.g. ANSI escape sequences
+# @_tag:	tag to log message at
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtlp_log_msg_get_attr() {
 	local	_rplmga_rattr="${1#\$}" _rplmga_tag="${2}"	\
 		_rplmga_attr="" _rplmga_attr_state=""		\
@@ -57,7 +64,16 @@ rtlp_log_msg_get_attr() {
 	return 0;
 };
 
-rtlp_log_printf() {
+#
+# rtlp_log_printfV() - print single message to log file
+# @_attr:	attributes e.g. ANSI escape sequences to log message with
+# @_fmt_pfx:	printf(1) format string prefix
+# @_fmt:	printf(1) format string
+# @...:		parameters to printf(1) w/ @_fmt
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+rtlp_log_printfV() {
 	local	_rplp_attr="${1}" _rplp_fmt_pfx="${2}"	\
 		_rplp_fmt="${3#*;}" _rplp_fmt_argc="${3%%;*}";
 	shift 3;
@@ -66,7 +82,7 @@ rtlp_log_printf() {
 		if [ "${_rplp_fmt_argc}" -eq 0 ]; then
 			shift "${#}";
 		else
-			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX MESSAGE STRING ARGUMENT COUNT MISMATCH[0m\n";
+			rtlp_log_printfV "" "" "0;==> [4;41;97mFIXME TODO XXX MESSAGE STRING ARGUMENT COUNT MISMATCH[0m\n";
 		fi;
 	fi;
 	_rplp_msg="$(printf "${_rplp_fmt_pfx}${_rplp_fmt}" "${@}")";
@@ -86,11 +102,23 @@ rtlp_log_printf() {
 # Public subroutines
 #
 
+#
+# rtl_log_clear_tags() - clear all log tags
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_log_clear_tags() {
-	RTLP_LOG_TAGS=""; return 0;
+	RTLP_LOG_TAGS="";
+	return 0;
 };
 
-rtl_log_enable_tags() {
+#
+# rtl_log_enable_tagsV() - enable log tags
+# @...:		list of tags to enable as positional parameters
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+rtl_log_enable_tagsV() {
 	local IFS=","; set -- ${*};
 
 	while [ "${#}" -gt 0 ]; do
@@ -101,17 +129,24 @@ rtl_log_enable_tags() {
 	return 0;
 };
 
+#
+# rtl_log_env_vars() - log all environment variables to log file
+# @_tag:	tag to log environment variables at
+# @_type:	type string printed in log message header
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_log_env_vars() {
 	local	_rlev_tag="${1}" _rlev_type="${2}"	\
 		_rlev_arg_len_max=0 _rlev_list="" _rlev_msg="" _rlev_msg_="";
 	shift 2;
 
-	rtl_log_msg "${_rlev_tag}" "${MSG_rtl_log_vars_header}" "${_rlev_type}";
+	rtl_log_msgV "${_rlev_tag}" "${MSG_rtl_log_vars_header}" "${_rlev_type}";
 	_rlev_list="${@}"; rtl_lmax \$_rlev_list \$_rlev_arg_len_max;
 	while [ "${#}" -gt 0 ]; do
 		rtl_get_var_unsafe \$_rlev_msg "${1#*=}";
 		rtl_llift2 \$_rlev_msg \$_rlev_msg_ "" " ";
-		rtl_log_msg "${_rlev_tag}"					\
+		rtl_log_msgV "${_rlev_tag}"					\
 			"2;%${_rlev_arg_len_max}.${_rlev_arg_len_max}s=%s"	\
 			"${1%%=*}" "${_rlev_msg_}";
 		shift;
@@ -119,7 +154,20 @@ rtl_log_env_vars() {
 	return 0;
 };
 
-rtl_log_msg() {
+#
+# rtl_log_msgV() - log message to log file
+# @_tag:	tag to log message at
+# @_fmt:	printf(1) format string
+# @...:		parameters to printf(1) w/ @_fmt
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+# N.B.:		Optional attributes e.g. ANSI escape sequences w/ which the the log message is to
+#		be printed are taken from the variable corresponding to @_tag named "LOG_TAG_<@_tag>",
+#		if present/set.
+#
+#		@_tag must have previously been enabled w/ rtl_log_enable_tagsV() to be logged at all.
+#
+rtl_log_msgV() {
 	local	_rlm3_tag="${1}" _rlm3_fmt="${2}"	\
 		_rlm3_attr="" _rlm3_date_now=0 _rlm3_exitfl=0
 	shift 2;
@@ -132,11 +180,8 @@ rtl_log_msg() {
 	|| rtl_lmatch \$RTLP_LOG_TAGS "${_rlm3_tag}" ",";
 	then
 		rtlp_log_msg_get_attr \$_rlm3_attr "${_rlm3_tag}";
-		if [ "${_rlm3_attr:+1}" != 1 ]; then
-			rtlp_log_printf "" "" "0;==> [4;41;97mFIXME TODO XXX UNKNOWN TAG \`${_rlm3_tag}' PASSED TO rtl_log_msg()[0m\n";
-		fi;
 		rtl_date \$_rlm3_date_now;
-		rtlp_log_printf "${_rlm3_attr}" "==> ${_rlm3_date_now} " "${_rlm3_fmt}" "${@}";
+		rtlp_log_printfV "${_rlm3_attr}" "==> ${_rlm3_date_now} " "${_rlm3_fmt}" "${@}";
 		if [ "${_rlm3_exitfl}" -eq 1 ]; then
 			exit 1;
 		fi;
@@ -144,11 +189,23 @@ rtl_log_msg() {
 	return 0;
 };
 
+#
+# rtl_log_set_fname() - set log file pathname
+# @_fname:	pathname to new log file
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_log_set_fname() {
 	RTLP_LOG_FNAME="${1}";
 	return 0;
 };
 
+#
+# rtl_log_set_no_attr() - set or clear no ANSI escape sequences in log file flag
+# @_flag:	either 0 to set or 1 to clear no ANSI escape sequences in log file flag
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
 rtl_log_set_no_attr() {
 	RTLP_LOG_NO_ATTR="${1}";
 	return 0;

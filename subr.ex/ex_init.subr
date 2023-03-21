@@ -291,8 +291,8 @@ ex_init_files() {
 		if rtl_lmatch "${_eif_rclean_builds}" $"prefix" ","; then
 			trap "rm -f \"${_eif_build_status_in_progress_fname}\" 2>/dev/null;
 
-			rtl_log_msg \"fatalexit\" \"${MSG_build_aborted}\"" HUP INT TERM USR1 USR2;
-			rtl_log_msg "info" "${MSG_build_clean_prefix}";
+			rtl_log_msgV \"fatalexit\" \"${MSG_build_aborted}\"" HUP INT TERM USR1 USR2;
+			rtl_log_msgV "info" "${MSG_build_clean_prefix}";
 
 			for _eif_pname in ${_eif_clear_prefix_paths}; do
 				if ! rtl_fileop rm "${_eif_prefix}/${_eif_pname}"; then
@@ -327,11 +327,11 @@ ex_init_logging() {
 	case "${_eil_verbose}" in
 
 	0)	if eval [ \"\${#${_eil_rverbose_tags}}\" -eq 0 ]; then
-			rtl_log_enable_tags "${LOG_TAGS_normal}";
+			rtl_log_enable_tagsV "${LOG_TAGS_normal}";
 		fi;
 		;;
 
-	1)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+	1)	rtl_log_enable_tagsV "${LOG_TAGS_verbose}"; ;;
 
 	*)	_eil_rc=1;
 		rtl_setrstatus "${_eil_rstatus}" 'invalid verbosity level (max. -v)';
@@ -343,7 +343,7 @@ ex_init_logging() {
 		eval _eil_tags="\${${_eil_rverbose_tags}}";
 		case "${_eil_tags}" in
 
-		+*)	rtl_log_enable_tags "${LOG_TAGS_normal}";
+		+*)	rtl_log_enable_tagsV "${LOG_TAGS_normal}";
 			eval ${_eil_rverbose_tags}="\${${_eil_rverbose_tags}#+}";
 			;;
 
@@ -356,17 +356,17 @@ ex_init_logging() {
 		for _eil_tag in ${_eil_tags}; do
 			case "${_eil_tag}" in
 
-			all)		rtl_log_enable_tags "${LOG_TAGS_all}"; ;;
+			all)		rtl_log_enable_tagsV "${LOG_TAGS_all}"; ;;
 
 			clear|none)	rtl_log_clear_tags; ;;
 
-			normal)		rtl_log_enable_tags "${LOG_TAGS_normal}"; ;;
+			normal)		rtl_log_enable_tagsV "${LOG_TAGS_normal}"; ;;
 
-			verbose)	rtl_log_enable_tags "${LOG_TAGS_verbose}"; ;;
+			verbose)	rtl_log_enable_tagsV "${LOG_TAGS_verbose}"; ;;
 
 			*)		rtl_lsearch_patternl2 \$LOG_TAGS_all \$_eil_tags_enable "${_eil_tag}" ",";
 					if [ "${#_eil_tags_enable}" -gt 0 ]; then
-						rtl_log_enable_tags "${_eil_tags_enable}";
+						rtl_log_enable_tagsV "${_eil_tags_enable}";
 					else
 						_eil_rc=1;
 						rtl_setrstatus "${_eil_rstatus}" 'invalid log tag or tag pattern \`'"${_eil_tag}"''\''.';
@@ -392,7 +392,7 @@ ex_init_prereqs() {
 	local	_eip_rstatus="${1#\$}" _eip_prereqs="${2}"	\
 		_eip_rc=0;
 
-	if ! rtl_check_prereqs "${_eip_rstatus}" ${_eip_prereqs}; then
+	if ! rtl_check_prereqsV "${_eip_rstatus}" ${_eip_prereqs}; then
 		_eip_rc=1;
 	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
 		_eip_rc=1;

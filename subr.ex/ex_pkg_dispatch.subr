@@ -341,7 +341,7 @@ ex_pkg_dispatch() {
 				"${_epd_perc_group}";
 		then
 			if rtl_fileop mkdir "${_epd_workdir}"\
-			&& rtl_log_msg "verbose" "${MSG_build_resolving_deps}" "${_epd_group_name}"\
+			&& rtl_log_msgV "verbose" "${MSG_build_resolving_deps}" "${_epd_group_name}"\
 			&& exp_pkg_dispatch_expand_packages			\
 					\$_epd_pkg_disabled \$_epd_pkg_finished	\
 					\$_epd_pkg_names "${_epd_checkfl}"	\
@@ -351,7 +351,7 @@ ex_pkg_dispatch() {
 			&& exp_pkg_dispatch_complete					\
 					"${_epd_dispatch_fn}" "${_epd_group_name}"	\
 					"${_epd_pkg_disabled}" "${_epd_pkg_finished}"	\
-			&& rtl_log_msg "verbose" "${MSG_build_resolved_deps}" "${_epd_group_name}"\
+			&& rtl_log_msgV "verbose" "${MSG_build_resolved_deps}" "${_epd_group_name}"\
 			&& rtl_llength \$_epd_pkg_dispatch_count_max \$_epd_pkg_names\
 			&& [ "${_epd_pkg_dispatch_count_max}" -gt 0 ];
 			then

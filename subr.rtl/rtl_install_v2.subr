@@ -303,7 +303,7 @@ rtlp_install_v2_rc() {
 
 	if [ "${_ri2r_nflag}" -eq 1 ]\
 	|| [ "${_ri2r_vflag}" -gt 0 ]; then
-		rtl_log_msg "install" "${MSG_rtl_install_v2_rc}" "${_ri2r_fn}${_ri2r_fn:+ ${*}}";
+		rtl_log_msgV "install" "${MSG_rtl_install_v2_rc}" "${_ri2r_fn}${_ri2r_fn:+ ${*}}";
 	fi;
 	if [ "${_ri2r_nflag}" -eq 0 ]; then
 		"${_ri2r_fn}" "${@}"; _ri2r_rc="${?}";

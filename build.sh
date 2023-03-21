@@ -10,7 +10,7 @@ buildp_ast() {
 
 	for _bpa_cmd in	\
 			rtl_fileop rtl_kill_tree rtl_lconcat	\
-			rtl_log_msg rtl_uniq rtl_state_clear;
+			rtl_log_msgV rtl_uniq rtl_state_clear;
 	do
 		if ! command -v "${_bpa_cmd}" >/dev/null 2>&1; then
 			return 0;
@@ -20,7 +20,7 @@ buildp_ast() {
 	trap '' HUP INT TERM USR1 USR2;
 
 	if [ "${_bpa_param}" = "abort" ]; then
-		rtl_log_msg "fatalexit" "${MSG_build_aborted}";
+		rtl_log_msgV "fatalexit" "${MSG_build_aborted}";
 	fi;
 
 	for _bpa_signal in "TERM" "KILL"; do
@@ -38,7 +38,7 @@ buildp_ast() {
 	done;
 
 	if [ "${_bpa_pids:+1}" = 1 ]; then
-		rtl_log_msg "verbose" "${MSG_build_killed_pids}" "$(rtl_uniq ${_bpa_pids})";
+		rtl_log_msgV "verbose" "${MSG_build_killed_pids}" "$(rtl_uniq ${_bpa_pids})";
 	fi;
 
 	if [ "${BUILD_PKG_WAIT:+1}" = 1 ]\
@@ -46,7 +46,7 @@ buildp_ast() {
 		for _bpa_pkg_name in ${BUILD_PKG_WAIT}; do
 			rtl_state_clear "${BUILD_WORKDIR}" "${_bpa_pkg_name}";
 		done;
-		rtl_log_msg "verbose" "${MSG_build_reset_pkg_state}" "${BUILD_PKG_WAIT}";
+		rtl_log_msgV "verbose" "${MSG_build_reset_pkg_state}" "${BUILD_PKG_WAIT}";
 	fi;
 
 	if [ "${DEFAULT_BUILD_STATUS_IN_PROGRESS_FNAME:+1}" = 1 ]; then
@@ -309,7 +309,7 @@ buildp_init_getopts_fn() {
 		fi;
 
 		case "${_bpigf_arg}" in
-		*=*)		rtl_set_var_from_cmdline "${_bpigf_rstatus}" "${_bpigf_arg}";
+		*=*)		rtl_set_var_from_spec "${_bpigf_rstatus}" "${_bpigf_arg}";
 				_bpigf_rc="${?}";
 				;;
 
@@ -404,16 +404,16 @@ buildp_dispatch_fail_pkg() {
        	rtl_lconcat \$BUILD_PKGS_FAILED "${_bpdfp_pkg_name}";
 
 	if [ "${ARG_RELAXED:-0}" -eq 0 ]; then
-		rtl_log_msg "fatal" "${MSG_pkg_stderrout_log}" "${BUILD_WORKDIR}" "${_bpdfp_pkg_name}";
+		rtl_log_msgV "fatal" "${MSG_pkg_stderrout_log}" "${BUILD_WORKDIR}" "${_bpdfp_pkg_name}";
 		cat "${BUILD_WORKDIR}/${_bpdfp_pkg_name}_stderrout.log";
 
 		if [ "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME:+1}" = 1 ]; then
 			printf "%s\n" "${_bpdfp_pkg_name}" > "${DEFAULT_BUILD_LAST_FAILED_PKG_FNAME}";
 		fi;
 
-		rtl_log_msg "fatal" "${MSG_build_failed_in}" "${_bpdfp_pkg_name}" "${BUILD_WORKDIR}/${_bpdfp_pkg_name}_stderrout.log";
+		rtl_log_msgV "fatal" "${MSG_build_failed_in}" "${_bpdfp_pkg_name}" "${BUILD_WORKDIR}/${_bpdfp_pkg_name}_stderrout.log";
 	else
-		rtl_log_msg "warning" "${MSG_build_failed_in}" "${_bpdfp_pkg_name}" "${BUILD_WORKDIR}/${_bpdfp_pkg_name}_stderrout.log";
+		rtl_log_msgV "warning" "${MSG_build_failed_in}" "${_bpdfp_pkg_name}" "${BUILD_WORKDIR}/${_bpdfp_pkg_name}_stderrout.log";
 	fi;
 
 	return 0;
@@ -424,8 +424,8 @@ buildp_dispatch_group_state() {
 	local _bpdgs_msg="${1}" _bpdgs_group_name="${2}";
 
 	case "${_bpdgs_msg}" in
-	finish_group)	rtl_log_msg "group_finish" "${MSG_group_finish}" "${6}" "${4}" "${5}" "${_bpdgs_group_name}"; ;;
-	start_group)	rtl_log_msg "group_begin" "${MSG_group_begin}" "${6}" "${4}" "${5}" "${_bpdgs_group_name}"; ;;
+	finish_group)	rtl_log_msgV "group_finish" "${MSG_group_finish}" "${6}" "${4}" "${5}" "${_bpdgs_group_name}"; ;;
+	start_group)	rtl_log_msgV "group_begin" "${MSG_group_begin}" "${6}" "${4}" "${5}" "${_bpdgs_group_name}"; ;;
 	esac;
 
 	return 0;
@@ -437,19 +437,19 @@ buildp_dispatch_pkg_state() {
 		_bpdps_var="" _bpdps_vars="";
 
 	case "${_bpdps_msg}" in
-	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg "pkg_skip" "${MSG_pkg_skip_disabled}" "${_bpdps_pkg_name}"; ;;
-	missing_pkg)	rtl_log_msg "fatalexit" "${MSG_pkg_skip_unknown}" "${_bpdps_pkg_name}"; ;;
-	msg_pkg)	shift 3; rtl_log_msg "${MSG_pkg_msg}" "${_bpdps_group_name}" "${_bpdps_pkg_name}" "${*}"; ;;
-	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msg "pkg_skip" "${MSG_pkg_skip_finished}" "${_bpdps_pkg_name}"; ;;
-	start_pkg)	rtl_log_msg "pkg_begin" "${MSG_pkg_begin}" "${7}" "${6}" "${4}" "${5}" "${_bpdps_pkg_name}"; ;;
-	step_pkg)	rtl_log_msg "pkg_step" "${MSG_pkg_step}" "${4}" "${_bpdps_pkg_name}"; ;;
+	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msgV "pkg_skip" "${MSG_pkg_skip_disabled}" "${_bpdps_pkg_name}"; ;;
+	missing_pkg)	rtl_log_msgV "fatalexit" "${MSG_pkg_skip_unknown}" "${_bpdps_pkg_name}"; ;;
+	msg_pkg)	shift 3; rtl_log_msgV "${MSG_pkg_msg}" "${_bpdps_group_name}" "${_bpdps_pkg_name}" "${*}"; ;;
+	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msgV "pkg_skip" "${MSG_pkg_skip_finished}" "${_bpdps_pkg_name}"; ;;
+	start_pkg)	rtl_log_msgV "pkg_begin" "${MSG_pkg_begin}" "${7}" "${6}" "${4}" "${5}" "${_bpdps_pkg_name}"; ;;
+	step_pkg)	rtl_log_msgV "pkg_step" "${MSG_pkg_step}" "${4}" "${_bpdps_pkg_name}"; ;;
 
 	finish_pkg)
 		: $((BUILD_NFINI+=1));
 		if rtl_lmatch \$ARG_VERBOSE_TAGS "build" ","; then
 			cat "${BUILD_WORKDIR}/${_bpdps_pkg_name}_stderrout.log";
 		fi;
-		rtl_log_msg "pkg_finish" "${MSG_pkg_finish}" "${7}" "${6}" "${4}" "${5}" "${_bpdps_pkg_name}"; ;;
+		rtl_log_msgV "pkg_finish" "${MSG_pkg_finish}" "${7}" "${6}" "${4}" "${5}" "${_bpdps_pkg_name}"; ;;
 
 	start_pkg_child)
 		if [ "${PKG_NO_LOG_VARS:-0}" -eq 0 ]; then
@@ -506,7 +506,7 @@ build() {
 		_status="Error: ${_status}";
 	else
 		buildp_time_init;
-		rtl_log_msg "build_begin" "${MSG_build_begin}" "${BUILD_USER}" "${BUILD_HNAME}" "${BUILD_DATE_START}";
+		rtl_log_msgV "build_begin" "${MSG_build_begin}" "${BUILD_USER}" "${BUILD_HNAME}" "${BUILD_DATE_START}";
 		rtl_log_env_vars "build_vars" "build (global)" ${DEFAULT_LOG_ENV_VARS};
 
 		ex_pkg_dispatch									\
@@ -517,8 +517,8 @@ build() {
 			"${ARG_RESTART_RECURSIVE}" "${BUILD_WORKDIR}";
 
 		buildp_time_update;
-		rtl_log_msg "build_finish" "${MSG_build_finish}" "${BUILD_NFINI:-0}" "${BUILD_NSKIP:-0}" "${BUILD_NFAIL:-0}";
-		rtl_log_msg "build_finish_time" "${MSG_build_finish_time}" "${_build_time_hours:-0}" "${_build_time_minutes:-0}" "${_build_time_secs:-0}";
+		rtl_log_msgV "build_finish" "${MSG_build_finish}" "${BUILD_NFINI:-0}" "${BUILD_NSKIP:-0}" "${BUILD_NFAIL:-0}";
+		rtl_log_msgV "build_finish_time" "${MSG_build_finish_time}" "${_build_time_hours:-0}" "${_build_time_minutes:-0}" "${_build_time_secs:-0}";
 
 		if [ "${BUILD_PKGS_FAILED:+1}" = 1 ]; then
 			_rc=1;
@@ -527,11 +527,11 @@ build() {
 	fi;
 
 	if [ "${_rc}" -ne 0 ]; then
-		rtl_log_enable_tags "${LOG_TAGS_all}";
-		rtl_log_msg "fatalexit" "0;${_status}";
+		rtl_log_enable_tagsV "${LOG_TAGS_all}";
+		rtl_log_msgV "fatalexit" "0;${_status}";
 	elif [ "${_status:+1}" = 1 ]; then
-		rtl_log_enable_tags "${LOG_TAGS_all}";
-		rtl_log_msg "info" "0;${_status}";
+		rtl_log_enable_tagsV "${LOG_TAGS_all}";
+		rtl_log_msgV "info" "0;${_status}";
 	fi;
 };
 

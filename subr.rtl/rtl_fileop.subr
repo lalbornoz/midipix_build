@@ -13,7 +13,7 @@ rtlp_fileop_check() {
 };
 
 rtlp_fileop_log() {
-	rtl_log_msg "fileop" "0;${1}";
+	rtl_log_msgV "fileop" "0;${1}";
 };
 
 #
@@ -35,14 +35,14 @@ rtl_fileop() {
 	case "${_rf_op}" in
 
 	cd)	if [ \( "${1:+1}" != 1 \) -o ! \( -L "${1}" -o -e "${1}" \) ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invalid_dir}" "${1}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invalid_dir}" "${1}";
 		elif rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 			rtlp_fileop_log "Changing working directory to \`${1}'.";
 			cd -- "${1}"; _rf_rc="${?}";
 		fi; ;;
 
 	chmod)	if [ "${#}" -lt 2 ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_chmod}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_chmod}" "${*}";
 		elif _rf_mode="${1}" && shift\
 		&&   rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			rtlp_fileop_log "Changing file mode bits of \`${*}' to \`${_rf_mode}'.";
@@ -50,7 +50,7 @@ rtl_fileop() {
 		fi; ;;
 
 	chgrp)	if [ "${#}" -lt 2 ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_chgrp}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_chgrp}" "${*}";
 		elif _rf_group="${1}" && shift\
 		&&   rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			rtlp_fileop_log "Changing file group of \`${*}' to \`${_rf_group}'.";
@@ -58,7 +58,7 @@ rtl_fileop() {
 		fi; ;;
 
 	chown)	if [ "${#}" -lt 2 ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_chown}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_chown}" "${*}";
 		elif _rf_owner="${1}" && shift\
 		&&   rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			rtlp_fileop_log "Changing file owner of \`${*}' to \`${_rf_owner}'.";
@@ -67,7 +67,7 @@ rtl_fileop() {
 
 	cp_follow)
 		if [ "${#}" -lt 2 ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_cp_follow}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_cp_follow}" "${*}";
 		elif rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			_rf_src="${*}"; _rf_src="${_rf_src% *}";
 			_rf_dst="${*}"; _rf_dst="${_rf_dst##* }";
@@ -76,7 +76,7 @@ rtl_fileop() {
 		fi; ;;
 
 	cp)	if [ "${#}" -lt 2 ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_cp}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_cp}" "${*}";
 		elif rtlp_fileop_check "${PREFIX:-}" "${*}"; then
 			_rf_src="${*}"; _rf_src="${_rf_src% *}";
 			_rf_dst="${*}"; _rf_dst="${_rf_dst##* }";
@@ -86,7 +86,7 @@ rtl_fileop() {
 
 	install)
 		if [ "${#}" -lt 2 ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_install}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_install}" "${*}";
 		else
 			rtl_lindexV \$_rf_dst -1 "${@}";
 			rtl_lrangeV \$_rf_install_args 0 1 "${@}";
@@ -100,7 +100,7 @@ rtl_fileop() {
 
 	ln_symbolic)
 		if [ \( "${1:+1}" != 1 \) -o \( "${2:+1}" != 1 \) ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_ln_symbolic}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_ln_symbolic}" "${*}";
 		elif rtlp_fileop_check "${PREFIX:-}" "${2}"; then
 			if rtl_fileop test "${2}"; then
 				rtl_fileop rm "${2}";
@@ -112,14 +112,14 @@ rtl_fileop() {
 		fi; ;;
 
 	mv)	if [ \( "${1:+1}" != 1 \) -o \( "${2:+1}" != 1 \) ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_mv}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_mv}" "${*}";
 		elif rtlp_fileop_check "${PREFIX:-}" "${1}" "${2}"; then
 			rtlp_fileop_log "Moving \`${1}' to \`${2}' w/ -fs";
 			mv -f -- "${1}" "${2}"; _rf_rc="${?}";
 		fi; ;;
 
 	touch)	if [ "${1:+1}" != 1 ]; then
-			rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_touch}" "${*}";
+			rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_touch}" "${*}";
 		elif rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 			rtlp_fileop_log "Touching file \`${1}'${2:+ w/ timestamp \`${2}\'}.";
 			touch ${2:+-t "${2}"} -- "${1}"; _rf_rc="${?}";
@@ -128,7 +128,7 @@ rtl_fileop() {
 	mkdir|mkfifo|rm|source|source_opt|test)
 		while [ \( "${?}" -eq 0 \) -a \( ""${#}"" -gt 0 \) ]; do
 			if [ "${1:+1}" != 1 ]; then
-				rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm}" "${_rf_op}" "${*}";
+				rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm}" "${_rf_op}" "${*}";
 			elif [ "${_rf_op}" = mkdir ]\
 			&& [ ! -d "${1}" ]\
 			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
@@ -166,7 +166,7 @@ rtl_fileop() {
 			fi; shift;
 		done; ;;
 
-	*)	rtl_log_msg "fatalexit" "${MSG_rtl_fileop_invparm_fileop}" "${*}"; ;;
+	*)	rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm_fileop}" "${*}"; ;;
 
 	esac;
 

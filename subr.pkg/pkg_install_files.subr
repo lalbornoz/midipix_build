@@ -106,7 +106,7 @@ pkgp_install_files_strip() {
 		if [ "${_ppifs_stripfl:-0}" -eq 1 ]; then
 			for _ppifs_bin_path in $(find "${_ppifs_tree_root}" -perm /a=x -type f); do
 				if objdump -sj .debug_frame -j .debug_info "${_ppifs_bin_path}" >/dev/null 2>&1; then
-					rtl_log_msg "pkg_strip" "${MSG_pkg_strip}" "${_ppifs_bin_path}";
+					rtl_log_msgV "pkg_strip" "${MSG_pkg_strip}" "${_ppifs_bin_path}";
 					if ! "${PKG_TARGET}-strip" "${_ppifs_bin_path}"; then
 						return 1;
 					fi;
