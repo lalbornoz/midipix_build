@@ -33,7 +33,7 @@ rtlp_fetch_url_git() {
 		 git pull --rebase ${_rpfug_git_args} origin "${_rpfug_git_branch:-main}";
 		 exit "${?}";) || return 1;
 		(rtl_fileop cd "${_rpfug_dlcachedir_full}" &&\
-			git submodule update --remote) || return 1;
+			git submodule update) || return 1;
 	else	
 		if git clone				\
 			${_rpfug_git_args}		\
