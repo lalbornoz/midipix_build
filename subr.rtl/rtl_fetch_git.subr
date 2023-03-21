@@ -21,47 +21,42 @@ rtlp_fetch_url_git() {
 		_rpfug_mirrors="${4}" _rpfug_name="${5}" _rpfug_target_subdir="${6}"		\
 		_rpfug_target_dname="${7}" _rpfug_url="${8}"					\
 		_rpfug_dlcachedir_full="" _rpfug_clonefl=0 _rpfug_dname=""			\
-		_rpfug_git_pull_log_fname="" _rpfug_oldpwd="" _rpfug_url_base="";
+		_rpfug_oldpwd="" _rpfug_url_base="";
 
 	_rpfug_dlcachedir_full="${_rpfug_dlcachedir}/${_rpfug_target_subdir##*/}";
 	(set -o errexit -o noglob -o nounset;
 	rtl_flock_acquire 4 || exit "${?}";
 	trap "rm -f \"${_rpfug_dlcachedir_full%%[/]}.fetching\"" EXIT;
+
 	if [ -e "${_rpfug_dlcachedir_full}" ]; then
 		(rtl_fileop cd "${_rpfug_dlcachedir_full}" || exit 1;
-		 _rpfug_git_pull_log_fname="$(mktemp)" || exit 1;
-		 trap 'rm -f "${_rpfug_git_pull_log_fname}" 2>/dev/null' EXIT HUP INT TERM USR1 USR2;
-		 if ! git pull ${_rpfug_git_args} origin "${_rpfug_git_branch:-main}" >"${_rpfug_git_pull_log_fname}" 2>&1; then
-			if grep -q '^fatal: refusing to merge unrelated histories$' "${_rpfug_git_pull_log_fname}"; then
-				cat "${_rpfug_git_pull_log_fname}"; printf "Detected forced push(es).\n";
-			elif grep -q '^Automatic merge failed; fix conflicts and then commit the result.$' "${_rpfug_git_pull_log_fname}"; then
-				cat "${_rpfug_git_pull_log_fname}"; printf "Detected forced push(es).\n"; git merge --abort;
-			else
-				cat "${_rpfug_git_pull_log_fname}"; exit 1;
-			fi;
-			while true; do
-				printf "Attempting git-reset(1) --hard HEAD^ and git-pull(1)...\n";
-				if ! git reset --hard "HEAD^"; then
-					exit 1;
-				elif git pull ${_rpfug_git_args} origin "${_rpfug_git_branch:-main}"; then
-					exit 0;
-				fi;
-			done;
-		 else
-			cat "${_rpfug_git_pull_log_fname}"; exit 0;
-		 fi;) || return 1;
+		 git pull --rebase ${_rpfug_git_args} origin "${_rpfug_git_branch:-main}";
+		 exit "${?}";) || return 1;
 		(rtl_fileop cd "${_rpfug_dlcachedir_full}" &&\
-			git submodule update) || return 1;
-	else	if git clone ${_rpfug_git_args} -b "${_rpfug_git_branch:-main}" "${_rpfug_url}" "${_rpfug_dlcachedir_full}"; then
+			git submodule update --remote) || return 1;
+	else	
+		if git clone				\
+			${_rpfug_git_args}		\
+			-b "${_rpfug_git_branch:-main}"	\
+			"${_rpfug_url}"			\
+			"${_rpfug_dlcachedir_full}";
+		then
 			_rpfug_clonefl=1;
 		elif [ "${_rpfug_mirrors}" = "skip" ]; then
 			return 1;
-		else	for _rpfug_url_base in ${_rpfug_mirrors}; do
-				if git clone ${_rpfug_git_args} -b "${_rpfug_git_branch:-main}" "${_rpfug_url_base}/${_rpfug_name}/${_rpfug_target_subdir}" "${_rpfug_dlcachedir_full}"; then
+		else	
+			for _rpfug_url_base in ${_rpfug_mirrors}; do
+				if git clone								\
+					${_rpfug_git_args}						\
+					-b "${_rpfug_git_branch:-main}"					\
+					"${_rpfug_url_base}/${_rpfug_name}/${_rpfug_target_subdir}"	\
+					"${_rpfug_dlcachedir_full}";
+				then
 					_rpfug_clonefl=1; break;
 				fi;
 			done;
 		fi;
+
 		if [ "${_rpfug_clonefl}" -eq 0 ]; then
 			return 1;
 		else	if [ "${_rpfug_git_branch:+1}" = 1 ]; then
@@ -72,13 +67,16 @@ rtlp_fetch_url_git() {
 				git submodule update --init) || return 1;
 		fi;
 	fi;
+
 	if [ "${_rpfug_dlcachedir}" != "${_rpfug_target_dname}" ]; then
 		_rpfug_oldpwd="${PWD}"; rtl_fileop cd "${_rpfug_target_dname}" || return 1;
 		rtl_fileop rm "${_rpfug_target_dname}/${_rpfug_target_subdir}" || return 1;
 		_rpfug_dname="${_rpfug_target_dname}/${_rpfug_target_subdir}"; rtl_dirname \$_rpfug_dname;
+
 		if ! [ -e "${_rpfug_dname}" ]; then
 			rtl_fileop mkdir "${_rpfug_dname}";
 		fi;
+
 		rtl_fileop cp "${_rpfug_dlcachedir_full}" "${_rpfug_target_dname}/${_rpfug_target_subdir}" || return 1;
 		rtl_fileop cd "${_rpfug_oldpwd}" || return 1;
 	fi) 4<>"${_rpfug_dlcachedir_full%%[/]}.fetching";
@@ -104,20 +102,35 @@ rtl_fetch_mirror_urls_git() {
 		_rfmug_url="" _rfmug_url_spec=""; shift 2;
 
 	for _rfmug_url_spec in "${@}"; do
-		_rfmug_target_subdir="${_rfmug_url_spec%=*}"; _rfmug_target_subdir="${_rfmug_target_subdir##*/}"; _rfmug_url="${_rfmug_url_spec#*=}"; _rfmug_url="${_rfmug_url%@*}";
-		_rfmug_repo_dname="${_rfmug_target_subdir}"; [ "${_rfmug_repo_dname%.git}" = "${_rfmug_repo_dname}" ] && _rfmug_repo_dname="${_rfmug_repo_dname}.git";
+		_rfmug_target_subdir="${_rfmug_url_spec%=*}";
+		_rfmug_target_subdir="${_rfmug_target_subdir##*/}";
+		_rfmug_url="${_rfmug_url_spec#*=}";
+		_rfmug_url="${_rfmug_url%@*}";
+		_rfmug_repo_dname="${_rfmug_target_subdir}";
+
+		if [ "${_rfmug_repo_dname%.git}" = "${_rfmug_repo_dname}" ]; then
+			_rfmug_repo_dname="${_rfmug_repo_dname}.git";
+		fi;
 
 		_rfmug_dname="${_rfmug_target_dname}"; rtl_dirname \$_rfmug_dname;
 		if ! [ -e "${_rfmug_dname}" ]; then
 			rtl_fileop mkdir "${_rfmug_dname}";
 		fi;
+
 		(set -o errexit -o noglob -o nounset;
 		rtl_flock_acquire 4 || exit "${?}";
 		trap "rm -f \"${_rfmug_target_dname}/.fetching\"" EXIT;
+
 		if [ -e "${_rfmug_target_dname}/${_rfmug_repo_dname}" ]; then
-			(rtl_fileop cd "${_rfmug_target_dname}/${_rfmug_repo_dname}" && git fetch ${_rfmug_git_args} --all) || return 1;
-		else	(rtl_fileop cd "${_rfmug_target_dname}" && git clone ${_rfmug_git_args} --mirror "${_rfmug_url}" "${_rfmug_repo_dname}") || return 1;
+			(rtl_fileop cd "${_rfmug_target_dname}/${_rfmug_repo_dname}" &&\
+			 git fetch ${_rfmug_git_args} --all) ||\
+			 return 1;
+		else	
+			(rtl_fileop cd "${_rfmug_target_dname}" &&\
+			 git clone ${_rfmug_git_args} --mirror "${_rfmug_url}" "${_rfmug_repo_dname}") ||\
+			 return 1;
 		fi) 4<>"${_rfmug_target_dname}/.fetching";
+
 		if [ "${?}" -ne 0 ]; then
 			_rfmug_rc=1;
 		fi;
