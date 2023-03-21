@@ -759,10 +759,10 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | LDFLAGS_CONFIGURE            | FlagLine         | Linker flags during package (GNU autotools in implementation and/or interface) configuration                                               |
 | LIBTOOL                      | CmdName          | ``libtool(1)`` implementation (defaults to ``slibtool``)                                                                                   |
 | MAKE                         | CmdLine          | Command line of ``make(1)``                                                                                                                |
-| MAKEFLAGS_BUILD_EXTRA        | FlagLine         | Additional ``make(1)`` flags during package ``make(1)``  build                                                                             |
-| MAKEFLAGS_BUILD              | FlagLine         | ``make(1)`` flags during package ``make(1)``  build                                                                                        |
-| MAKEFLAGS_INSTALL_EXTRA      | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation                                                                                 |
-| MAKEFLAGS_INSTALL            | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation                                                                                 |
+| MAKEFLAGS_BUILD_EXTRA        | FlagLine         | Additional ``make(1)`` flags during package ``make(1)``  build; subject to field splitting w/ ``:``                                        |
+| MAKEFLAGS_BUILD              | FlagLine         | ``make(1)`` flags during package ``make(1)``  build; subject to field splitting w/ ``:``                                                   |
+| MAKEFLAGS_INSTALL_EXTRA      | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
+| MAKEFLAGS_INSTALL            | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
 | MAKEFLAGS_VERBOSITY          | String           | Variable-value pair to pass to ``make(1)`` in order to force echo-back of command lines prior to execution                                 |
 | MAKE_INSTALL_VNAME           | String           | Variable name of ``make(1)`` installation destination directory variable during package ``make(1)``  installation                          |
 | MAKE_SUBDIRS                 | List( )          | ``make(1)`` subdirectories to exclusively build                                                                                            |
