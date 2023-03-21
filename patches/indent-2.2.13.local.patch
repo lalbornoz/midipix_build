@@ -1,0 +1,12 @@
+diff -ru indent-2.2.13.orig/Makefile.in indent-2.2.13/Makefile.in
+--- indent-2.2.13.orig/Makefile.in	2023-01-26 10:52:31.000000000 +0100
++++ indent-2.2.13/Makefile.in	2023-03-21 18:19:33.457352230 +0100
+@@ -336,7 +336,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = no-texinfo.tex
+-SUBDIRS = src doc po man regression
++SUBDIRS = src doc po man
+ BUILT_SOURCES = 
+ DISTFILES = $(DIST_COMMON:README=README.md) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ EXTRA_DIST = README.md \
