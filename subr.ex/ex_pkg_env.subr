@@ -150,7 +150,7 @@ ex_pkg_env() {
 # ex_pkg_state_set() - update build step status for single named package
 # @_pkg_name:		single package name
 # @_build_step:		build step set status of
-# [@${@}]:		optional list of build steps to invalidate status of
+# @...:			optional list of build steps to invalidate status of
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #

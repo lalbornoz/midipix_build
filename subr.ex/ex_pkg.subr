@@ -288,7 +288,7 @@ ex_pkg_unfold_depends() {
 	fi;
 	if [ "${_epud_restart:+1}" = 1 ]\
 	&& [ "${_epud_checkfl:-0}" -eq 1 ]; then
-		rtl_lunfold_depends 'PKG_${_rld_name}_DEPENDS' \$_epud_pkg_names ${_epud_pkg_names};
+		rtl_lunfold_dependsV 'PKG_${_rld_name}_DEPENDS' \$_epud_pkg_names ${_epud_pkg_names};
 		_epud_pkg_names="$(rtl_uniq ${_epud_pkg_names})";
 	fi;
 
@@ -353,7 +353,7 @@ ex_pkg_unfold_rdepends() {
 				continue;
 
 			elif rtl_get_var_unsafe \$_epur_depends -u "PKG_"${_epur_pkg_name}"_DEPENDS"\
-			  && rtl_lunfold_depends 'PKG_${_rld_name}_DEPENDS' \$_epur_pkg_depends ${_epur_depends}\
+			  && rtl_lunfold_dependsV 'PKG_${_rld_name}_DEPENDS' \$_epur_pkg_depends ${_epur_depends}\
 			  && [ "${_epur_pkg_depends:+1}" = 1 ]\
 			  && rtl_lmatch \$_epur_pkg_depends "${_epur_pkg_name_depend}";
 			then

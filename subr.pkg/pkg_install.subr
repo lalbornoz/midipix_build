@@ -10,7 +10,7 @@ pkg_install() {
 	if ! rtl_fileop mkdir "${PKG_PREFIX}"; then
 		return 1;
 	else	for _destdir in "${PKG_DESTDIR}:${PKG_PREFIX}" "${PKG_DESTDIR_HOST}:${PREFIX}"; do
-			rtl_lassign "_destdir _destdir_prefix" ":" "${_destdir}";
+			rtl_lassignV "_destdir _destdir_prefix" ":" "${_destdir}";
 			if [ -e "${_destdir}" ]; then
 				(set +o errexit -o noglob; rtl_flock_acquire 4 || exit "${?}";
 				trap "rm -f \"${BUILD_WORKDIR}/install.lock\"" EXIT;

@@ -243,12 +243,12 @@ pkgtoolp_info() {
 
 				if [ "${_ppi_pkg_names:+1}" = 1 ]; then
 					rtl_log_msg "info_pkg_deps_full" "${MSG_info_pkg_deps_full}"\
-							"${_ppi_pkg_name}" "$(rtl_lsort "${_ppi_pkg_names}")";
+							"${_ppi_pkg_name}" "$(rtl_lsortV "${_ppi_pkg_names}")";
 				fi;
 
 				if [ "${_ppi_pkg_disabled:+1}" = 1 ]; then
 					rtl_log_msg "info_pkg_deps_full_disabled" "${MSG_info_pkg_deps_full_disabled}"\
-							"${_ppi_pkg_name}" "$(rtl_lsort "${_ppi_pkg_disabled}")";
+							"${_ppi_pkg_name}" "$(rtl_lsortV "${_ppi_pkg_disabled}")";
 				fi;
 			fi;
 		fi;
@@ -445,7 +445,7 @@ pkgtoolp_rdepends() {
 	then
 		rtl_log_msg "info" "${MSG_rdepends_pkg_deps_rev_none}" "${_ppr_pkg_name}";
 	else
-		for _ppr_pkg_name_rdepend in $(rtl_lsort	\
+		for _ppr_pkg_name_rdepend in $(rtl_lsortV	\
 				${_ppr_pkg_finished}		\
 				${_ppr_pkg_rdepends_direct});
 		do
@@ -453,7 +453,7 @@ pkgtoolp_rdepends() {
 
 			if [ "${_ppr_full_rdependsfl}" -eq 1 ]; then
 				rtl_get_var_unsafe \$_ppr_depends -u "PKG_"${_ppr_pkg_name}"_DEPENDS";
-				if rtl_lunfold_depends 'PKG_${_rld_name}_DEPENDS' \$_ppr_pkg_depends ${_ppr_depends}\
+				if rtl_lunfold_dependsV 'PKG_${_rld_name}_DEPENDS' \$_ppr_pkg_depends ${_ppr_depends}\
 				&& [ "${_ppr_pkg_depends:+1}" = 1 ]; then
 					rtl_lconcat \$_ppr_pkg_rdepends "[33m${_ppr_pkg_depends}[93m";
 				fi;
@@ -469,7 +469,7 @@ pkgtoolp_rdepends() {
 		fi;
 
 		if [ "${_ppr_pkg_disabled:+1}" = 1 ]; then
-			rtl_log_msg "info" "${MSG_rdepends_pkgs_deps_rev_disabled}" "${_ppr_pkg_name}" "$(rtl_lsort "${_ppr_pkg_disabled}")";
+			rtl_log_msg "info" "${MSG_rdepends_pkgs_deps_rev_disabled}" "${_ppr_pkg_name}" "$(rtl_lsortV "${_ppr_pkg_disabled}")";
 		fi;
 	fi;
 

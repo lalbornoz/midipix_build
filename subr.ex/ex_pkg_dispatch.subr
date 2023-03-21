@@ -307,7 +307,7 @@ ex_pkg_dispatch() {
 		_epd_rc=0 _epd_reversefl=0;
 
 	case "${_epd_groups_inhibit_deps:-0}" in
-	0)	rtl_lunfold_depends '${_rld_name}_GROUP_DEPENDS' \$_epd_group_names ${_epd_group_names};
+	0)	rtl_lunfold_dependsV '${_rld_name}_GROUP_DEPENDS' \$_epd_group_names ${_epd_group_names};
 		_epd_group_names="$(rtl_uniq2 \$_epd_group_names)";
 	esac;
 
