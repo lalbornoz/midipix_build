@@ -7,7 +7,7 @@ pkgtoolp_init() {
 	local	_pi_rstatus="${1#\$}"						\
 		_pi_args_long=""						\
 		_pi_name_base="pkgtool"						\
-		_pi_optstring="a:b:him:M:rRtv"					\
+		_pi_optstring="a:b:him:M:p:rRtv"				\
 		_pi_prereqs="
 			awk bzip2 cat chmod cp date find grep hostname mkdir
 			mktemp mv paste printf readlink rm sed sort tar test
@@ -52,22 +52,24 @@ pkgtoolp_init_args() {
 
 	if [ "$((${ARG_INFO:-0}
 	   + ${ARG_MIRROR:-0}
+	   + ${ARG_PROFILE:-0}
 	   + ${ARG_RDEPENDS:-0}
 	   + ${ARG_RDEPENDS_FULL:-0}
 	   + ${ARG_TARBALL:-0}))" -gt 1 ];
 	then
 		cat etc/pkgtool.usage;
 		_ppia_rc=1;
-		rtl_setrstatus "${_ppia_rstatus}" 'only one of -i, -m and/or -M, -r, -R, -s, or -t must be specified.';
+		rtl_setrstatus "${_ppia_rstatus}" 'only one of -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
 	elif [ "$((${ARG_INFO:-0}
 	     + ${ARG_MIRROR:-0}
+	     + ${ARG_PROFILE:-0}
 	     + ${ARG_RDEPENDS:-0}
 	     + ${ARG_RDEPENDS_FULL:-0}
 	     + ${ARG_TARBALL:-0}))" -eq 0 ];
 	then
 		cat etc/pkgtool.usage;
 		_ppia_rc=1;
-		rtl_setrstatus "${_ppia_rstatus}" 'one of -i, -m and/or -M, -r, -R, -s, or -t must be specified.';
+		rtl_setrstatus "${_ppia_rstatus}" 'one of -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
 	else
 		_ppia_rc=0;
 		export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
@@ -132,6 +134,13 @@ pkgtoolp_init_getopts_fn() {
 				rtl_setrstatus "${_ppigf_rstatus}" 'missing -M argument and no default present.';
 			fi;
 			_ppigf_shiftfl=2; ;;
+		p)	ARG_PROFILE=1;
+			if [ "${OPTARG:+1}" = 1 ]; then
+				ARG_PROFILE_LOG_FNAME="${OPTARG}";
+			else
+				rtl_setrstatus "${_ppigf_rstatus}" 'missing -p argument.';
+			fi;
+			_ppigf_shiftfl=2; ;;
 		r)	ARG_RDEPENDS=1; _ppigf_shiftfl=1; ;;
 		R)	ARG_RDEPENDS_FULL=1; _ppigf_shiftfl=1; ;;
 		t)	ARG_TARBALL=1; _ppigf_shiftfl=1; ;;
@@ -161,7 +170,8 @@ pkgtoolp_init_getopts_fn() {
 		local _ppigf_verb="${1}" _ppigf_rstatus="${2#\$}";
 
 		if [ "${PKGTOOL_PKG_NAME:+1}" != 1 ]\
-		&& [ "${ARG_MIRROR:-0}" -eq 0 ]; then
+		&& [ "${ARG_MIRROR:-0}" -eq 0 ]\
+		&& [ "${ARG_PROFILE:-0}" -eq 0 ]; then
 			_ppigf_rc=1;
 			rtl_setrstatus "${_ppigf_rstatus}" 'missing package name.';
 		else
@@ -414,6 +424,75 @@ pkgtoolp_mirror_fetch() {
 	return "${_ppmf_rc}";
 };
 # }}}
+# {{{ pkgtoolp_profile($_rstatus)
+pkgtoolp_profile() {
+	local	_ppp_rstatus="${1}" _ppp_log_fname="${2}"		\
+		_ppp_line=""						\
+		_ppp_ts=0 _ppp_ts_delta=0 _ppp_ts_last=0 _ppp_ts_max=0	\
+		_ppp_pkg_name="" _ppp_pkg_step_max="" _ppp_rc=0		\
+		IFS0="${IFS}" IFS;
+
+	_ppp_log_fname="profile.log";
+
+	for _ppp_pkg_name in $(find		\
+			"${BUILD_WORKDIR}"	\
+			-maxdepth 1		\
+			-mindepth 1		\
+			-name ".*.start"	\
+			-printf "%P\n");
+	do
+		_ppp_pkg_name="${_ppp_pkg_name%.start}";
+		_ppp_pkg_name="${_ppp_pkg_name##.}";
+		_ppp_ts_last=0; _ppp_ts_max=0; _ppp_pkg_step_max="";
+
+		rtl_set_IFS_nl;
+		for _ppp_line in $(				\
+			find					\
+				"${BUILD_WORKDIR}"		\
+				-maxdepth 1			\
+				-mindepth 1			\
+				-name ".${_ppp_pkg_name}.*"	\
+				-printf "%T@ %P\n" |		\
+			sort -nk1);
+		do
+			IFS=" "; set -- ${_ppp_line}; rtl_set_IFS_nl;
+			_ppp_ts="${1}"; _ppp_pkg_step="${2}";
+			_ppp_ts="${_ppp_ts%%.*}";
+			if [ "${_ppp_ts_last}" -eq 0 ]; then
+				_ppp_ts_last="${_ppp_ts}";
+			fi;
+
+			_ppp_ts_delta="$((${_ppp_ts}-${_ppp_ts_last}))";
+			_ppp_ts_last="${_ppp_ts}";
+
+			if [ "${_ppp_ts_delta}" -gt "${_ppp_ts_max}" ]; then
+				_ppp_ts_max="${_ppp_ts_delta}";
+				_ppp_pkg_step_max="${_ppp_pkg_step#.${_ppp_pkg_name}.}";
+			fi;
+		done;
+		printf	"%20s %5u %s\n"		\
+			"${_ppp_pkg_step_max}"	\
+			"${_ppp_ts_max}"	\
+			"${_ppp_pkg_name}";
+	done | sort -nk2 >"${_ppp_log_fname}";
+	IFS="${IFS0}";
+
+	printf	"%5u items written to \`%s'; tail -n25 follows:\n"	\
+		"$(wc -l < "${_ppp_log_fname}")"			\
+		"${_ppp_log_fname}";
+	tail -n15 "${_ppp_log_fname}";
+
+	printf "\n";
+	printf "By build step:\n";
+	for _ppp_step in ${DEFAULT_BUILD_STEPS}; do
+		printf "%20s %d\n"	\
+			"${_ppp_step}"	\
+			"$(grep " ${_ppp_step} " "${_ppp_log_fname}" | wc -l)";
+	done | grep -v " [01]$" | sort -nk2;
+
+	return "${_ppp_rc}";
+};
+# }}}
 # {{{ pkgtoolp_rdepends($_rstatus, $_pkg_name, $_full_rdependsfl)
 pkgtoolp_rdepends() {
 	local	_ppr_rstatus="${1}" _ppr_pkg_name="${2}" _ppr_full_rdependsfl="${3}"	\
@@ -538,6 +617,7 @@ pkgtool() {
 		case "1" in
 		"${ARG_INFO:-0}")		pkgtoolp_info \$_status "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_MIRROR:-0}")		pkgtoolp_mirror \$_status "${ARG_MIRROR_DNAME}" "${ARG_MIRROR_DNAME_GIT}"; ;;
+		"${ARG_PROFILE:-0}")		pkgtoolp_profile \$_status "${ARG_PROFILE_LOG_FNAME}"; ;;
 		"${ARG_RDEPENDS:-0}")		pkgtoolp_rdepends \$_status "${PKGTOOL_PKG_NAME}" 0; ;;
 		"${ARG_RDEPENDS_FULL:-0}")	pkgtoolp_rdepends \$_status "${PKGTOOL_PKG_NAME}" 1; ;;
 		"${ARG_TARBALL:-0}")		pkgtoolp_tarball \$_status "${PKGTOOL_PKG_NAME}"; ;;
