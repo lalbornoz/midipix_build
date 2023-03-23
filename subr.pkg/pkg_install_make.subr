@@ -22,18 +22,49 @@ pkg_install_make() {
 			export MAKE="make LIBTOOL=${_pim_libtool}";
 		fi;
 
-		rtl_run_cmdlineV ":" "${PKG_MAKE}"				\
-			${PKG_MAKEFLAGS_INSTALL:-}				\
-			${PKG_MAKEFLAGS_INSTALL_EXTRA:-}			\
-			AR="${PKG_AR}"						\
-			CC="${PKG_CC}"						\
-			RANLIB="${PKG_RANLIB}"					\
-			${PKG_RANLIB_INSTALL:+"RANLIB=${PKG_RANLIB_INSTALL}"}	\
-			${_pim_libtool:+"LIBTOOL=${_pim_libtool}"}		\
-			"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
-			"${PKG_INSTALL_TARGET:-install}"			\
-			${_pim_subdir:+-C "${_pim_subdir}"};
-		_pim_rc="${?}";
+		if [ "${PKG_MAKEFLAGS_INSTALL_LIST:+1}" = 1 ]; then
+			rtl_run_cmdlineV ":" "${PKG_MAKE}"				\
+				"${PKG_MAKEFLAGS_INSTALL_LIST}"				\
+				"${PKG_MAKEFLAGS_INSTALL_EXTRA_LIST:-}"			\
+				${PKG_MAKEFLAGS_PARALLELISE:-}				\
+				AR="${PKG_AR}"						\
+				CC="${PKG_CC}"						\
+				RANLIB="${PKG_RANLIB}"					\
+				${PKG_RANLIB_INSTALL:+"RANLIB=${PKG_RANLIB_INSTALL}"}	\
+				${_pim_libtool:+"LIBTOOL=${_pim_libtool}"}		\
+				"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
+				"${PKG_INSTALL_TARGET:-install}"			\
+				${_pim_subdir:+-C "${_pim_subdir}"};
+			_pim_rc="${?}";
+		elif [ "${PKG_MAKEFLAGS_INSTALL_EXTRA_LIST:+1}" = 1 ]; then
+			rtl_run_cmdlineV ":" "${PKG_MAKE}"				\
+				${PKG_MAKEFLAGS_INSTALL:-}				\
+				"${PKG_MAKEFLAGS_INSTALL_EXTRA_LIST}"			\
+				${PKG_MAKEFLAGS_PARALLELISE:-}				\
+				AR="${PKG_AR}"						\
+				CC="${PKG_CC}"						\
+				RANLIB="${PKG_RANLIB}"					\
+				${PKG_RANLIB_INSTALL:+"RANLIB=${PKG_RANLIB_INSTALL}"}	\
+				${_pim_libtool:+"LIBTOOL=${_pim_libtool}"}		\
+				"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
+				"${PKG_INSTALL_TARGET:-install}"			\
+				${_pim_subdir:+-C "${_pim_subdir}"};
+			_pim_rc="${?}";
+		else
+			rtl_run_cmdlineV ":" "${PKG_MAKE}"				\
+				${PKG_MAKEFLAGS_INSTALL:-}				\
+				${PKG_MAKEFLAGS_INSTALL_EXTRA:-}			\
+				${PKG_MAKEFLAGS_PARALLELISE:-}				\
+				AR="${PKG_AR}"						\
+				CC="${PKG_CC}"						\
+				RANLIB="${PKG_RANLIB}"					\
+				${PKG_RANLIB_INSTALL:+"RANLIB=${PKG_RANLIB_INSTALL}"}	\
+				${_pim_libtool:+"LIBTOOL=${_pim_libtool}"}		\
+				"${PKG_MAKE_INSTALL_VNAME:-DESTDIR}=${PKG_DESTDIR}/"	\
+				"${PKG_INSTALL_TARGET:-install}"			\
+				${_pim_subdir:+-C "${_pim_subdir}"};
+			_pim_rc="${?}";
+		fi;
 
 		if [ "${#_pim_libtool}" -gt 0 ]; then
 			unset MAKE;

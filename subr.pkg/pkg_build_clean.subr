@@ -20,14 +20,37 @@ pkg_build_clean() {
 			[ "${_pbc_subdir}" = ":" ] && _pbc_subdir="";
 			[ "${#_pbc_libtool}" -gt 0 ] && export MAKE="make LIBTOOL=${_pbc_libtool}";
 
-			rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
-				${PKG_MAKEFLAGS_BUILD:-}			\
-				${PKG_MAKEFLAGS_BUILD_EXTRA:-}			\
-				${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
-				${_pbc_makeflags_verbosity}			\
-				${_pbc_subdir:+-C "${_pbc_subdir}"}		\
-				clean;
-			_pbc_rc="${?}";
+			if [ "${PKG_MAKEFLAGS_BUILD_LIST:+1}" = 1 ]; then
+				rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
+					"${PKG_MAKEFLAGS_BUILD_LIST}"			\
+					"${PKG_MAKEFLAGS_BUILD_EXTRA_LIST:-}"		\
+					${PKG_MAKEFLAGS_PARALLELISE:-}			\
+					${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
+					${_pbc_makeflags_verbosity}			\
+					${_pbc_subdir:+-C "${_pbc_subdir}"}		\
+					clean;
+				_pbc_rc="${?}";
+			elif [ "${PKG_MAKEFLAGS_BUILD_EXTRA_LIST:+1}" = 1 ]; then
+				rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
+					${PKG_MAKEFLAGS_BUILD:-}			\
+					"${PKG_MAKEFLAGS_BUILD_EXTRA_LIST}"		\
+					${PKG_MAKEFLAGS_PARALLELISE:-}			\
+					${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
+					${_pbc_makeflags_verbosity}			\
+					${_pbc_subdir:+-C "${_pbc_subdir}"}		\
+					clean;
+				_pbc_rc="${?}";
+			else
+				rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
+					${PKG_MAKEFLAGS_BUILD:-}			\
+					${PKG_MAKEFLAGS_BUILD_EXTRA:-}			\
+					${PKG_MAKEFLAGS_PARALLELISE:-}			\
+					${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
+					${_pbc_makeflags_verbosity}			\
+					${_pbc_subdir:+-C "${_pbc_subdir}"}		\
+					clean;
+				_pbc_rc="${?}";
+			fi;
 
 			[ "${#_pbc_libtool}" -gt 0 ] && unset MAKE;
 			[ "${_pbc_rc}" -ne 0 ] && return 1;

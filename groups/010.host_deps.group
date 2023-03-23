@@ -37,7 +37,7 @@ HOST_DEPS_TOOLS_RPM_DISABLE=1;
 : ${PKG_BISON_HOST_URL:=https://ftp.gnu.org/gnu/bison/bison-${PKG_BISON_HOST_VERSION}.tar.xz};
 : ${PKG_BISON_HOST_ENV_VARS_EXTRA:="M4=${PREFIX}/bin/m4"};
 : ${PKG_BMAKE_HOST_URLS_GIT:="bmake=https://github.com/arichardson/bmake@master"};
-: ${PKG_BMAKE_HOST_MAKEFLAGS_BUILD:=-j1};
+: ${PKG_BMAKE_HOST_MAKEFLAGS_PARALLELISE:="-j1"};
 : ${PKG_BMAKE_HOST_CONFIGURE_ARGS:=--with-default-sys-path=${PREFIX}/share/mk};
 : ${PKG_BMAKE_HOST_CFLAGS_BUILD_EXTRA:="-fcommon"};
 : ${PKG_BMAKE_HOST_LDFLAGS_BUILD_EXTRA:="-fcommon"};

@@ -731,8 +731,10 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | CONFIG_CACHE_EXTRA           | List(\n)         | Additional GNU autotools configuration cache variables                                                                                     |
 | CONFIG_CACHE                 | List(\n)         | GNU autotools configuration cache variables                                                                                                |
 | CONFIG_CACHE_LOCAL           | List(\n)         | Additional GNU autotools configuration cache variables                                                                                     |
-| CONFIGURE_ARGS_EXTRA         | FlagLine         | Additional arguments to package (GNU autotools in implementation and/or interface) configuration script                                    |
 | CONFIGURE_ARGS               | FlagLine         | Arguments to package (GNU autotools in implementation and/or interface) configuration script                                               |
+| CONFIGURE_ARGS_EXTRA         | FlagLine         | Additional arguments to package (GNU autotools in implementation and/or interface) configuration script                                    |
+| CONFIGURE_ARGS_LIST          | List(:)          | Arguments to package (GNU autotools in implementation and/or interface) configuration script                                               |
+| CONFIGURE_ARGS_EXTRA_LIST    | List(:)          | Additional arguments to package (GNU autotools in implementation and/or interface) configuration script                                    |
 | CONFIGURE                    | CmdName          | Package's (GNU autotools in implementation and/or interface) configuration script                                                          |
 | CONFIGURE_TYPE               | String           | Either of ``autotools`` (GNU autotools or similar) or ``sofort`` or ``cmake`` (CMake)                                                      |
 | CXX                          | CmdName          | Toolchain C++ compiler ``c++(1)``                                                                                                          |
@@ -759,10 +761,15 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | LDFLAGS_CONFIGURE            | FlagLine         | Linker flags during package (GNU autotools in implementation and/or interface) configuration                                               |
 | LIBTOOL                      | CmdName          | ``libtool(1)`` implementation (defaults to ``slibtool``)                                                                                   |
 | MAKE                         | CmdLine          | Command line of ``make(1)``                                                                                                                |
-| MAKEFLAGS_BUILD_EXTRA        | FlagLine         | Additional ``make(1)`` flags during package ``make(1)``  build; subject to field splitting w/ ``:``                                        |
 | MAKEFLAGS_BUILD              | FlagLine         | ``make(1)`` flags during package ``make(1)``  build; subject to field splitting w/ ``:``                                                   |
-| MAKEFLAGS_INSTALL_EXTRA      | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
+| MAKEFLAGS_BUILD_EXTRA        | FlagLine         | Additional ``make(1)`` flags during package ``make(1)``  build; subject to field splitting w/ ``:``                                        |
+| MAKEFLAGS_BUILD_LIST         | List(:)          | ``make(1)`` flags during package ``make(1)``  build; subject to field splitting w/ ``:``                                                   |
+| MAKEFLAGS_BUILD_EXTRA_LIST   | List(:)          | Additional ``make(1)`` flags during package ``make(1)``  build; subject to field splitting w/ ``:``                                        |
 | MAKEFLAGS_INSTALL            | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
+| MAKEFLAGS_INSTALL_EXTRA      | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
+| MAKEFLAGS_INSTALL_LIST       | List(:)          | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
+| MAKEFLAGS_INSTALL_EXTRA_LIST | List(:)          | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
+| MAKEFLAGS_PARALLELISE        | FlagLine         | ``make(1)`` parallelisation (e.g. -l, -j) flags                                                                                            |
 | MAKEFLAGS_VERBOSITY          | String           | Variable-value pair to pass to ``make(1)`` in order to force echo-back of command lines prior to execution                                 |
 | MAKE_INSTALL_VNAME           | String           | Variable name of ``make(1)`` installation destination directory variable during package ``make(1)``  installation                          |
 | MAKE_SUBDIRS                 | List( )          | ``make(1)`` subdirectories to exclusively build                                                                                            |
