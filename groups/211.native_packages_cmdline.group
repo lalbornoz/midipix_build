@@ -86,7 +86,7 @@ the_silver_searcher toilet tree terminally_tetris ubase which zsh";
 : ${PKG_FIGLET_VERSION:=2.2.5};
 : ${PKG_FIGLET_URL:=ftp://ftp.figlet.org/pub/figlet/program/unix/figlet-${PKG_FIGLET_VERSION}.tar.gz};
 : ${PKG_FIGLET_IN_TREE:=1};
-: ${PKG_FIGLET_MAKEFLAGS_BUILD_LIST:=CC=${DEFAULT_NATIVE_CC}:LD=${DEFAULT_NATIVE_CC}};
+: ${PKG_FIGLET_MAKEFLAGS_BUILD_LIST:=CC=${DEFAULT_NATIVE_CC}:LD=${DEFAULT_NATIVE_CCLD}};
 : ${PKG_FINDUTILS_SHA256SUM:=a2bfb8c09d436770edc59f50fa483e785b161a3b7b9d547573cb08065fd462fe};
 : ${PKG_FINDUTILS_VERSION:=4.9.0};
 : ${PKG_FINDUTILS_URL:=https://ftp.gnu.org/gnu/findutils/findutils-${PKG_FINDUTILS_VERSION}.tar.xz};

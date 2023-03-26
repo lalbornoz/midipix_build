@@ -720,6 +720,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | BUILD_STAGES_DISABLE         | List( )          | Build stages to disable during package build                                                                                               |
 | BUILD_TYPE                   | Set(String)      | ``cross``: Cross-compiled toolchain, ``host``: host, ``native``: cross-compiled package                                                    |
 | CC                           | FileName         | Toolchain C compiler ``cc(1)``                                                                                                             |
+| CCLD                         | FileName         | Toolchain C compiler-qua-linker ``cc(1)``                                                                                                  |
 | CFLAGS_BUILD_EXTRA           | FlagLine         | Additional C compiler flags during package ``make(1)`` build                                                                               |
 | CFLAGS_BUILD                 | FlagLine         | C compiler flags during package ``make(1)``  build                                                                                         |
 | CFLAGS_CONFIGURE_EXTRA       | FlagLine         | Additional C compiler flags during package (GNU autotools in implementation and/or interface) configuration                                |
@@ -769,7 +770,8 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | MAKEFLAGS_INSTALL_EXTRA      | FlagLine         | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
 | MAKEFLAGS_INSTALL_LIST       | List(:)          | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
 | MAKEFLAGS_INSTALL_EXTRA_LIST | List(:)          | ``make(1)`` flags during package ``make(1)``  installation; subject to field splitting w/ ``:``                                            |
-| MAKEFLAGS_PARALLELISE        | FlagLine         | ``make(1)`` parallelisation (e.g. -l, -j) flags                                                                                            |
+| MAKEFLAGS_LOADAVG            | FlagLine         | ``make(1)`` load average limit (e.g. -l load) flag                                                                                         |
+| MAKEFLAGS_PARALLELISE        | FlagLine         | ``make(1)`` parallelisation (e.g. -j jobs) flag                                                                                            |
 | MAKEFLAGS_VERBOSITY          | String           | Variable-value pair to pass to ``make(1)`` in order to force echo-back of command lines prior to execution                                 |
 | MAKE_INSTALL_VNAME           | String           | Variable name of ``make(1)`` installation destination directory variable during package ``make(1)``  installation                          |
 | MAKE_SUBDIRS                 | List( )          | ``make(1)`` subdirectories to exclusively build                                                                                            |

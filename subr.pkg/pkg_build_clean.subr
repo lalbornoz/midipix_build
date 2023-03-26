@@ -5,57 +5,45 @@
 
 pkg_build_clean() {
 	local	_pbc_group_name="${1}" _pbc_pkg_name="${2}" _pbc_restart_at="${3}"	\
-		_pbc_libtool="" _pbc_makeflags_verbosity="${PKG_MAKEFLAGS_VERBOSITY:-}"	\
 		_pbc_no_autoconf="" _pbc_rc=0 _pbc_subdir="";
 
+	if ! [ -x "${PKG_CONFIGURE:-}" ]; then
+		_pbc_no_autoconf=1;
+	fi;
+
 	if ex_pkg_state_test "${PKG_NAME}" "build" "${_pbc_restart_at}"; then
-		case "${PKG_LIBTOOL:-}" in
-		"")	_pbc_libtool=""; ;;
-		none)	_pbc_libtool=""; ;;
-		*)	_pbc_libtool="${PKG_LIBTOOL}"; ;;
-		esac;
-		[ ! -x "${PKG_CONFIGURE:-}" ] && _pbc_no_autoconf=1;
-
 		for _pbc_subdir in ${PKG_MAKE_SUBDIRS:-:}; do
-			[ "${_pbc_subdir}" = ":" ] && _pbc_subdir="";
-			[ "${#_pbc_libtool}" -gt 0 ] && export MAKE="make LIBTOOL=${_pbc_libtool}";
-
-			if [ "${PKG_MAKEFLAGS_BUILD_LIST:+1}" = 1 ]; then
-				rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
-					"${PKG_MAKEFLAGS_BUILD_LIST}"			\
-					"${PKG_MAKEFLAGS_BUILD_EXTRA_LIST:-}"		\
-					${PKG_MAKEFLAGS_PARALLELISE:-}			\
-					${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
-					${_pbc_makeflags_verbosity}			\
-					${_pbc_subdir:+-C "${_pbc_subdir}"}		\
-					clean;
-				_pbc_rc="${?}";
-			elif [ "${PKG_MAKEFLAGS_BUILD_EXTRA_LIST:+1}" = 1 ]; then
-				rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
-					${PKG_MAKEFLAGS_BUILD:-}			\
-					"${PKG_MAKEFLAGS_BUILD_EXTRA_LIST}"		\
-					${PKG_MAKEFLAGS_PARALLELISE:-}			\
-					${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
-					${_pbc_makeflags_verbosity}			\
-					${_pbc_subdir:+-C "${_pbc_subdir}"}		\
-					clean;
-				_pbc_rc="${?}";
-			else
-				rtl_run_cmdlineV ":" "${PKG_MAKE}"			\
-					${PKG_MAKEFLAGS_BUILD:-}			\
-					${PKG_MAKEFLAGS_BUILD_EXTRA:-}			\
-					${PKG_MAKEFLAGS_PARALLELISE:-}			\
-					${_pbc_libtool:+"LIBTOOL=${_pbc_libtool}"}	\
-					${_pbc_makeflags_verbosity}			\
-					${_pbc_subdir:+-C "${_pbc_subdir}"}		\
-					clean;
-				_pbc_rc="${?}";
+			if [ "${_pbc_subdir}" = ":" ]; then
+				_pbc_subdir="";
 			fi;
 
-			[ "${#_pbc_libtool}" -gt 0 ] && unset MAKE;
-			[ "${_pbc_rc}" -ne 0 ] && return 1;
+			ex_pkg_run_make									\
+				"${PKG_AR}" "${PKG_CC}" "${PKG_CXX}" "${PKG_CCLD}" "${PKG_LIBTOOL}"	\
+				"${PKG_MAKE}" "${PKG_PKG_CONFIG}" "${PKG_RANLIB}"			\
+				--									\
+				"${_pbc_no_autoconf}" "${_pbc_subdir}"					\
+				--									\
+				"${PKG_MAKEFLAGS_BUILD:-}" "${PKG_MAKEFLAGS_BUILD_EXTRA:-}"		\
+				"${PKG_MAKEFLAGS_BUILD_LIST:-}" "${PKG_MAKEFLAGS_BUILD_EXTRA_LIST:-}"	\
+				"${PKG_MAKEFLAGS_LOADAVG:-}" "${PKG_MAKEFLAGS_PARALLELISE:-}"		\
+				"${PKG_MAKEFLAGS_VERBOSITY:-}"						\
+				--									\
+				"${PKG_CFLAGS_BUILD:-}" "${PKG_CFLAGS_BUILD_EXTRA:-}"			\
+				"${PKG_CPPFLAGS_BUILD:-}" "${PKG_CPPFLAGS_BUILD_EXTRA:-}"		\
+				"${PKG_CXXFLAGS_BUILD:-}" "${PKG_CXXFLAGS_BUILD_EXTRA:-}"		\
+				"${PKG_LDFLAGS_BUILD:-}" "${PKG_LDFLAGS_BUILD_EXTRA:-}"			\
+				"${PKG_PKG_CONFIG_LIBDIR:-}"						\
+				--									\
+				"" "clean"								\
+				;
+			_pbc_rc="${?}";
+
+			if [ "${_pbc_rc}" -ne 0 ]; then
+				break;
+			fi;
 		done;
 	fi;
+
 	return 0;
 };
 
