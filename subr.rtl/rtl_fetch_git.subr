@@ -34,7 +34,7 @@ rtlp_fetch_url_git() {
 		 exit "${?}";) || return 1;
 		(rtl_fileop cd "${_rpfug_dlcachedir_full}" &&\
 			git submodule update) || return 1;
-	else	
+	else
 		if git clone				\
 			${_rpfug_git_args}		\
 			-b "${_rpfug_git_branch:-main}"	\
@@ -44,7 +44,7 @@ rtlp_fetch_url_git() {
 			_rpfug_clonefl=1;
 		elif [ "${_rpfug_mirrors}" = "skip" ]; then
 			return 1;
-		else	
+		else
 			for _rpfug_url_base in ${_rpfug_mirrors}; do
 				if git clone								\
 					${_rpfug_git_args}						\
@@ -125,7 +125,7 @@ rtl_fetch_mirror_urls_git() {
 			(rtl_fileop cd "${_rfmug_target_dname}/${_rfmug_repo_dname}" &&\
 			 git fetch ${_rfmug_git_args} --all) ||\
 			 return 1;
-		else	
+		else
 			(rtl_fileop cd "${_rfmug_target_dname}" &&\
 			 git clone ${_rfmug_git_args} --mirror "${_rfmug_url}" "${_rfmug_repo_dname}") ||\
 			 return 1;

@@ -2,6 +2,9 @@
 # Copyright (c) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
 # set +o errexit -o noglob -o nounset is assumed.
 #
+# Package variable and environment variable preparation
+# Package build (step) state setting and testing
+#
 
 #
 # exp_pkg_env_defaults() - set package variable defaults for single named package
