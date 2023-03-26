@@ -921,11 +921,11 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 ```
 usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-p|-r|-R|-t]
                     [--theme theme] [-v]
-                    [<variable name>=<variable override>[ ..]] name
+                    [<variable name>=<variable override>[ ..]] name[,name..]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build kind; defaults to debug.
-        -i                List package variables and dependencies of single named package.
+        -i                List package variables and dependencies of named package(s).
         -m <dname>        Setup package archives mirror in <dname> and/or
         -M <dname>        Setup Git repositories mirror in <dname>
                           Specify "" or '' as <dname> to default to the defaults in

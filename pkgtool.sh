@@ -209,77 +209,104 @@ pkgtoolp_init_getopts_fn() {
 
 # {{{ pkgtoolp_info($_rstatus, $_pkg_name)
 pkgtoolp_info() {
-	local	_ppi_rstatus="${1}" _ppi_pkg_name="${2}"				\
-		_ppi_fname="" _ppi_group_fname="" _ppi_group_name="" _ppi_groups=""	\
-		_ppi_groups_noauto="" _ppi_patch_idx=0 _ppi_pkg_disabled=""		\
-		_ppi_pkg_finished="" _ppi_pkg_name_uc="" _ppi_pkg_names="" _ppi_rc=0;
-	rtl_toupper2 \$_ppi_pkg_name \$_ppi_pkg_name_uc;
+	local	_ppi_rstatus="${1}" _ppi_pkg_name_list="${2}"	\
+		_ppi_groups="" _ppi_groups_noauto=""		\
+		_ppi_pkg_name="" _ppi_rc=0 _ppi_rc_single=0	\
+		_ppi_status="";
+	rtl_llift \$_ppi_pkg_name_list "," " ";
 
 	if ! ex_pkg_load_groups \$_ppi_groups \$_ppi_groups_noauto; then
 		_ppi_rc=1;
 		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to load build groups.';
-	elif ! ex_pkg_find_package \$_ppi_group_name "${_ppi_groups}" "${_ppi_pkg_name}"; then
-		_ppi_rc=1;
-		rtl_setrstatus "${_ppi_rstatus}" 'Error: unknown package \`'"${_ppi_pkg_name}'"'.';
-	elif ! ex_pkg_get_packages \$_ppi_pkg_names "${_ppi_group_name}"; then
-		_ppi_rc=1;
-		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to expand package list of build group \`'"${_ppi_group_name}'"'.';
-	elif ! ex_pkg_env "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"\
-			"${_ppi_group_name}" "${_ppi_pkg_name}" "" "${BUILD_WORKDIR}"; then
-		_ppi_rc=1;
-		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to set package environment for \`'"${_ppi_pkg_name}'"'.';
 	else
-		rtl_get_var_unsafe \$_ppi_group_fname -u "PKG_${_ppi_pkg_name}_GROUP_FNAME";
-		rtl_get_var_unsafe \$_ppi_pkg_version -u "PKG_${_ppi_pkg_name}_VERSION";
-		rtl_log_env_vars "package_vars" "Package variables" $(rtl_get_vars_unsafe_fast "^PKG_${_ppi_pkg_name_uc}");
-		rtl_log_msgV "info_build_group" "${MSG_info_build_group}" "${_ppi_group_name}" "${_ppi_group_fname}";
-
-		if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
-			rtl_log_msgV "info_pkg_disabled" "${MSG_info_pkg_disabled}" "${_ppi_pkg_name}";
-		fi;
-
-		if [ "${PKG_DEPENDS:+1}" != 1 ]; then
-			rtl_log_msgV "info_pkg_no_deps" "${MSG_info_pkg_no_deps}" "${_ppi_pkg_name}";
-		else
-			rtl_log_msgV "info_pkg_direct_deps" "${MSG_info_pkg_direct_deps}" "${_ppi_pkg_name}" "${PKG_DEPENDS}";
-			if ! ex_pkg_unfold_depends					\
-					\$_ppi_pkg_disabled \$_ppi_pkg_finished		\
-					\$_ppi_pkg_names 1 1 "${_ppi_group_name}"	\
-					"${_ppi_pkg_names}" "${_ppi_pkg_name}" 0	\
-					"${BUILD_WORKDIR}";
-			then
-				rtl_log_msgV "warning" "${MSG_info_pkg_deps_fail}" "${_ppi_pkg_name}";
-			else
-				rtl_lfilter \$_ppi_pkg_names "${_ppi_pkg_name}";
-
-				if [ "${_ppi_pkg_names:+1}" = 1 ]; then
-					rtl_log_msgV "info_pkg_deps_full" "${MSG_info_pkg_deps_full}"\
-							"${_ppi_pkg_name}" "$(rtl_lsortV "${_ppi_pkg_names}")";
-				fi;
-
-				if [ "${_ppi_pkg_disabled:+1}" = 1 ]; then
-					rtl_log_msgV "info_pkg_deps_full_disabled" "${MSG_info_pkg_deps_full_disabled}"\
-							"${_ppi_pkg_name}" "$(rtl_lsortV "${_ppi_pkg_disabled}")";
-				fi;
-			fi;
-		fi;
-
-		_ppi_patch_idx=1;
-		while ex_pkg_get_default			\
-			\$_ppi_fname "${_ppi_patch_idx}"	\
-		       	"${_ppi_pkg_name}"			\
-			"${_ppi_pkg_version}"			\
-			"vars_file patches_pre patches"		\
-		   && [ "${_ppi_fname:+1}" = 1 ];
-		do
-			: $((_ppi_patch_idx += 1));
-			if [ -e "${_ppi_fname}" ]; then
-				sha256sum "${_ppi_fname}";
+		for _ppi_pkg_name in ${_ppi_pkg_name_list}; do
+			pkgtoolp_info_single				\
+				"${_ppi_rstatus}" "${_ppi_pkg_name}"	\
+				"${_ppi_groups}" "${_ppi_groups_noauto}";
+			_ppi_rc_single="${?}";
+			if [ "${_ppi_rc_single}" -ne 0 ]; then
+				_ppi_rc="${_ppi_rc_single}";
+				eval _ppi_status="\${${_ppi_rstatus#\$}}";
+				rtl_log_msgV "fatal" "0;${_ppi_status}";
 			fi;
 		done;
 	fi;
 
+	if [ "${_ppi_rc}" -ne 0 ]; then
+		rtl_setrstatus "${_ppi_rstatus}" 'Failure in one or more package(s).';
+	fi;
 	return "${_ppi_rc}";
+};
+# }}}
+# {{{ pkgtoolp_info_single($_rstatus, $_pkg_name)
+pkgtoolp_info_single() {
+	local	_ppis_rstatus="${1}" _ppis_pkg_name="${2}" _ppis_groups="${3}" _ppis_groups_noauto="${4}"	\
+		_ppis_fname="" _ppis_group_fname="" _ppis_group_name="" _ppis_patch_idx=0 _ppis_pkg_disabled=""	\
+		_ppis_pkg_finished="" _ppis_pkg_name_uc="" _ppis_pkg_names="" _ppis_rc=0;
+	rtl_toupper2 \$_ppis_pkg_name \$_ppis_pkg_name_uc;
+
+	if ! ex_pkg_find_package \$_ppis_group_name "${_ppis_groups}" "${_ppis_pkg_name}"; then
+		_ppis_rc=1;
+		rtl_setrstatus "${_ppis_rstatus}" 'Error: unknown package \`'"${_ppis_pkg_name}'"'.';
+	elif ! ex_pkg_get_packages \$_ppis_pkg_names "${_ppis_group_name}"; then
+		_ppis_rc=1;
+		rtl_setrstatus "${_ppis_rstatus}" 'Error: failed to expand package list of build group \`'"${_ppis_group_name}'"'.';
+	elif ! ex_pkg_env "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"\
+			"${_ppis_group_name}" "${_ppis_pkg_name}" "" "${BUILD_WORKDIR}"; then
+		_ppis_rc=1;
+		rtl_setrstatus "${_ppis_rstatus}" 'Error: failed to set package environment for \`'"${_ppis_pkg_name}'"'.';
+	else
+		rtl_get_var_unsafe \$_ppis_group_fname -u "PKG_${_ppis_pkg_name}_GROUP_FNAME";
+		rtl_get_var_unsafe \$_ppis_pkg_version -u "PKG_${_ppis_pkg_name}_VERSION";
+		rtl_log_env_vars "package_vars" "Package variables" $(rtl_get_vars_unsafe_fast "^PKG_${_ppis_pkg_name_uc}");
+		rtl_log_msgV "info_build_group" "${MSG_info_build_group}" "${_ppis_group_name}" "${_ppis_group_fname}";
+
+		if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
+			rtl_log_msgV "info_pkg_disabled" "${MSG_info_pkg_disabled}" "${_ppis_pkg_name}";
+		fi;
+
+		if [ "${PKG_DEPENDS:+1}" != 1 ]; then
+			rtl_log_msgV "info_pkg_no_deps" "${MSG_info_pkg_no_deps}" "${_ppis_pkg_name}";
+		else
+			rtl_log_msgV "info_pkg_direct_deps" "${MSG_info_pkg_direct_deps}" "${_ppis_pkg_name}" "${PKG_DEPENDS}";
+			if ! ex_pkg_unfold_depends					\
+					\$_ppis_pkg_disabled \$_ppis_pkg_finished		\
+					\$_ppis_pkg_names 1 1 "${_ppis_group_name}"	\
+					"${_ppis_pkg_names}" "${_ppis_pkg_name}" 0	\
+					"${BUILD_WORKDIR}";
+			then
+				rtl_log_msgV "warning" "${MSG_info_pkg_deps_fail}" "${_ppis_pkg_name}";
+			else
+				rtl_lfilter \$_ppis_pkg_names "${_ppis_pkg_name}";
+
+				if [ "${_ppis_pkg_names:+1}" = 1 ]; then
+					rtl_log_msgV "info_pkg_deps_full" "${MSG_info_pkg_deps_full}"\
+							"${_ppis_pkg_name}" "$(rtl_lsortV "${_ppis_pkg_names}")";
+				fi;
+
+				if [ "${_ppis_pkg_disabled:+1}" = 1 ]; then
+					rtl_log_msgV "info_pkg_deps_full_disabled" "${MSG_info_pkg_deps_full_disabled}"\
+							"${_ppis_pkg_name}" "$(rtl_lsortV "${_ppis_pkg_disabled}")";
+				fi;
+			fi;
+		fi;
+
+		_ppis_patch_idx=1;
+		while ex_pkg_get_default			\
+			\$_ppis_fname "${_ppis_patch_idx}"	\
+		       	"${_ppis_pkg_name}"			\
+			"${_ppis_pkg_version}"			\
+			"vars_file patches_pre patches"		\
+		   && [ "${_ppis_fname:+1}" = 1 ];
+		do
+			: $((_ppis_patch_idx += 1));
+			if [ -e "${_ppis_fname}" ]; then
+				sha256sum "${_ppis_fname}";
+			fi;
+		done;
+	fi;
+
+	return "${_ppis_rc}";
 };
 # }}}
 # {{{ pkgtoolp_mirror($_rstatus, $_mirror_dname, $_mirror_dname_git)

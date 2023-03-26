@@ -1,10 +1,10 @@
 [97musage[90m: [33m./[93mpkgtool.sh [90m[[33m-[93ma nt32[90m|[93mnt64[90m] [[33m-[93mb [93mdebug[90m|[93mrelease[90m] [[33m-[93mi[90m|[33m-[93mm [90m<[93mdname[90m> [33m-[93mM [90m<[93mdname[90m>|[33m-[93mp[90m|[33m-[93mr[90m|[33m-[93mR[90m|[33m-[93mt[90m][0m
                     [90m[[93m--theme theme[90m] [90m[[33m-[93mv[90m][0m
-                    [90m[<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]] [93mname[90m
+                    [90m[<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]] [93mname[90m[,[93mname[90m..][0m
 
         [33m-[93ma nt32[90m|[93mnt64[0m      [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
         [33m-[93mb debug[90m|[93mrelease[0m  [96mSelects debug or release build kind; defaults to [93mdebug[96m.[0m
-        [33m-[93mi                [96mList package variables and dependencies of single named package.[0m
+        [33m-[93mi                [96mList package variables and dependencies of named package(s).[0m
         [33m-[93mm [90m<[93mdname[90m>        [96mSetup package archives mirror in [90m<[93mdname[90m>[96m and/or[0m
         [33m-[93mM [90m<[93mdname[90m>        [96mSetup Git repositories mirror in [90m<[93mdname[90m>[0m
                           [96mSpecify "" or '' as <dname> to default to the defaults in[0m
