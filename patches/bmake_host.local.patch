@@ -5,3 +5,13 @@
  :
  # NAME:
  #	install.sh - portable version of install(1)
+--- bmake/makefile.in.orig	2022-12-26 19:16:39.881930779 +0100
++++ bmake/makefile.in	2023-03-23 18:09:58.883692945 +0100
+@@ -9,6 +9,6 @@
+ all: build
+ 
+ build clean install test:
+-	${srcdir}/boot-strap --prefix=${prefix} -o . op=$@
++	MAKEFLAGS="${MAKEFLAGS%*--jobserver-auth=[0-9],[0=9]*}" ${srcdir}/boot-strap --prefix=${prefix} -o . op=$@
+ 
+ 		

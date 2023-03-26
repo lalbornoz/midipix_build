@@ -31,7 +31,7 @@ zstd";
 : ${PKG_BMAKE_URLS_GIT:="bmake=https://github.com/arichardson/bmake@master"};
 : ${PKG_BMAKE_CONFIGURE_ARGS="-C --host=${DEFAULT_TARGET} --prefix=/usr --target=${DEFAULT_TARGET}"};
 : ${PKG_BMAKE_ENV_VARS_EXTRA:="BMAKE=${PREFIX}/bin/bmake"};
-: ${PKG_BMAKE_MAKEFLAGS_PARALLELISE:="-j1"};
+: ${PKG_BMAKE_MAKEFLAGS_LOADAVG:="none"};
 : ${PKG_BOCHS_DEPENDS:="curl ncurses sdl1"};
 : ${PKG_BOCHS_SHA256SUM:=a010ab1bfdc72ac5a08d2e2412cd471c0febd66af1d9349bc0d796879de5b17a};
 : ${PKG_BOCHS_VERSION:=2.7};
