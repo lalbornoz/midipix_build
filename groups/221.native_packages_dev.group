@@ -166,7 +166,7 @@ make_cv_synchronous_posix_spawn=yes"};
 : ${PKG_RUBY_URL:=https://cache.ruby-lang.org/pub/ruby/${PKG_RUBY_VERSION%.*}/ruby-${PKG_RUBY_VERSION}.tar.gz};
 : ${PKG_RUBY_CONFIGURE_ARGS_EXTRA:="--disable-install-rdoc --with-baseruby=${PREFIX}/bin/ruby --with-out-ext=fiddle,openssl"};
 : ${PKG_RUBY_MAKEFLAGS_PARALLELISE:="-j1"};
-: ${PKG_RUBY_MAKEFLAGS_VERBOSITY:="none"};
+: ${PKG_RUBY_MAKEFLAGS_VERBOSITY:="V=1"};
 : ${PKG_SBSIGNTOOLS_DEPENDS:="libressl"};
 : ${PKG_SBSIGNTOOLS_URLS_GIT:=sbsigntools-master=https://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git@master};
 : ${PKG_SBSIGNTOOLS_SUBDIR:=sbsigntools-master};
