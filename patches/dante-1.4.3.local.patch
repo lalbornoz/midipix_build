@@ -1,7 +1,15 @@
-diff -ru dante-1.4.2.orig/configure dante-1.4.2/configure
---- dante-1.4.2.orig/configure	2017-02-03 15:17:15.000000000 +0100
-+++ dante-1.4.2/configure	2018-08-04 19:01:29.524396348 +0200
-@@ -15341,10 +15341,8 @@
+--- dante-1.4.3/configure.orig	2021-04-30 21:29:06.000000000 +0200
++++ dante-1.4.3/configure	2023-03-26 13:09:30.014985107 +0200
+@@ -3314,8 +3314,6 @@
+ #NOTE: save CFLAGS; wish to compile without -O2 when debugging
+ oCFLAGS="$CFLAGS"
+ oLDFLAGS="$LDFLAGS"
+-unset CFLAGS
+-unset LDFLAGS
+ case `pwd` in
+   *\ * | *\	*)
+     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
+@@ -15347,10 +15345,8 @@
  $as_echo_n "checking whether realloc with a NULL pointer calls malloc... " >&6; }
  if test "$cross_compiling" = yes; then :
  
@@ -14,7 +22,7 @@ diff -ru dante-1.4.2.orig/configure dante-1.4.2/configure
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
-@@ -16923,8 +16921,9 @@
+@@ -16929,8 +16925,9 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking read/send-side pipe system" >&5
  $as_echo_n "checking read/send-side pipe system... " >&6; }
  if test "$cross_compiling" = yes; then :
@@ -26,7 +34,7 @@ diff -ru dante-1.4.2.orig/configure dante-1.4.2/configure
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
-@@ -17226,13 +17225,10 @@
+@@ -17232,13 +17229,10 @@
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for errorless select behavior with high timeouts" >&5
  $as_echo_n "checking for errorless select behavior with high timeouts... " >&6; }
   if test "$cross_compiling" = yes; then :
@@ -43,7 +51,7 @@ diff -ru dante-1.4.2.orig/configure dante-1.4.2/configure
  _ACEOF
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-@@ -23228,12 +23224,13 @@
+@@ -23234,12 +23228,13 @@
  
  #AC_CHECK_FUNCS will add HAVE_foo define as long as function exists,
  #check overselves as we only want define set if function is also working.
@@ -60,7 +68,7 @@ diff -ru dante-1.4.2.orig/configure dante-1.4.2/configure
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
-@@ -23286,8 +23283,9 @@
+@@ -23292,8 +23287,9 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working sockatmark" >&5
  $as_echo_n "checking for working sockatmark... " >&6; }
  if test "$cross_compiling" = yes; then :
@@ -72,7 +80,7 @@ diff -ru dante-1.4.2.orig/configure dante-1.4.2/configure
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
-@@ -23888,8 +23886,9 @@
+@@ -23894,8 +23890,9 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CLOCK_MONOTONIC clock_gettime() support" >&5
  $as_echo_n "checking for CLOCK_MONOTONIC clock_gettime() support... " >&6; }
  if test "$cross_compiling" = yes; then :
