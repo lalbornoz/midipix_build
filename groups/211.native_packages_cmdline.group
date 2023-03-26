@@ -1,8 +1,8 @@
 #
 # Build group native_packages (cmdline)
 #
-GROUP_TARGET="native_packages";
-rtl_lconcat \$NATIVE_PACKAGES_PACKAGES "
+GROUP_TARGET_APPEND="native_packages";
+NATIVE_PACKAGES_CMDLINE_PACKAGES="
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
 findutils gawk gcal grep html_xml_utils jush lzop mawk mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh

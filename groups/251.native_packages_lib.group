@@ -1,8 +1,8 @@
 #
 # Build group native_packages (libs)
 #
-GROUP_TARGET="native_packages";
-rtl_lconcat \$NATIVE_PACKAGES_PACKAGES "
+GROUP_TARGET_APPEND="native_packages";
+NATIVE_PACKAGES_LIB_PACKAGES="
 aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libao libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
 libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpng libpsl

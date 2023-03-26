@@ -210,12 +210,12 @@ pkgtoolp_init_getopts_fn() {
 # {{{ pkgtoolp_info($_rstatus, $_pkg_name)
 pkgtoolp_info() {
 	local	_ppi_rstatus="${1}" _ppi_pkg_name="${2}"				\
-		_ppi_fname="" _ppi_group_name="" _ppi_groups="" _ppi_groups_noauto=""	\
-		_ppi_patch_idx=0 _ppi_pkg_disabled="" _ppi_pkg_finished=""		\
-		_ppi_pkg_name_uc="" _ppi_pkg_names="" _ppi_rc=0;
+		_ppi_fname="" _ppi_group_fname="" _ppi_group_name="" _ppi_groups=""	\
+		_ppi_groups_noauto="" _ppi_patch_idx=0 _ppi_pkg_disabled=""		\
+		_ppi_pkg_finished="" _ppi_pkg_name_uc="" _ppi_pkg_names="" _ppi_rc=0;
 	rtl_toupper2 \$_ppi_pkg_name \$_ppi_pkg_name_uc;
 
-	if ! ex_pkg_load_groups \$_ppi_groups \$_ppi_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+	if ! ex_pkg_load_groups \$_ppi_groups \$_ppi_groups_noauto; then
 		_ppi_rc=1;
 		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to load build groups.';
 	elif ! ex_pkg_find_package \$_ppi_group_name "${_ppi_groups}" "${_ppi_pkg_name}"; then
@@ -229,9 +229,10 @@ pkgtoolp_info() {
 		_ppi_rc=1;
 		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to set package environment for \`'"${_ppi_pkg_name}'"'.';
 	else
+		rtl_get_var_unsafe \$_ppi_group_fname -u "PKG_${_ppi_pkg_name}_GROUP_FNAME";
 		rtl_get_var_unsafe \$_ppi_pkg_version -u "PKG_${_ppi_pkg_name}_VERSION";
 		rtl_log_env_vars "package_vars" "Package variables" $(rtl_get_vars_unsafe_fast "^PKG_${_ppi_pkg_name_uc}");
-		rtl_log_msgV "info_build_group" "${MSG_info_build_group}" "${_ppi_group_name}";
+		rtl_log_msgV "info_build_group" "${MSG_info_build_group}" "${_ppi_group_name}" "${_ppi_group_fname}";
 
 		if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
 			rtl_log_msgV "info_pkg_disabled" "${MSG_info_pkg_disabled}" "${_ppi_pkg_name}";
@@ -291,7 +292,7 @@ pkgtoolp_mirror() {
 	rtl_subst \$_ppm_mirror_dname "~" "${HOME}";
 	rtl_subst \$_ppm_mirror_dname_git "~" "${HOME}";
 
-	if ! ex_pkg_load_groups \$_ppm_groups \$_ppm_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+	if ! ex_pkg_load_groups \$_ppm_groups \$_ppm_groups_noauto; then
 		_ppm_rc=1;
 		rtl_setrstatus "${_ppm_rstatus}" 'Error: failed to load build groups.';
 	elif [ "${_ppm_mirror_dname:+1}" = 1 ]\
@@ -501,7 +502,7 @@ pkgtoolp_rdepends() {
 		_ppr_pkg_name_rdepend="" _ppr_pkg_names="" _ppr_pkg_rdepends=""		\
 		_ppr_pkg_rdepends_direct="" _ppr_rc=0;
 
-	if ! ex_pkg_load_groups \$_ppr_groups \$_ppr_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+	if ! ex_pkg_load_groups \$_ppr_groups \$_ppr_groups_noauto; then
 		_ppr_rc=1;
 		rtl_setrstatus "${_ppr_rstatus}" 'Error: failed to load build groups.';
 	elif ! ex_pkg_find_package \$_ppr_group_name "${_ppr_groups}" "${_ppr_pkg_name}"; then
@@ -562,7 +563,7 @@ pkgtoolp_tarball() {
 		_ppt_hname="" _ppt_pkg_name_full="" _ppt_pkg_version="" _ppt_rc=0	\
 		_ppt_tarball_fname="";
 
-	if ! ex_pkg_load_groups \$_ppt_groups \$_ppt_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+	if ! ex_pkg_load_groups \$_ppt_groups \$_ppt_groups_noauto; then
 		_ppt_rc=1;
 		rtl_setrstatus "${_ppt_rstatus}" 'Error: failed to load build groups.';
 	elif ! ex_pkg_find_package \$_ppt_group_name "${_ppt_groups}" "${_ppt_pkg_name}"; then

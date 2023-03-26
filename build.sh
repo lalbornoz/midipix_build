@@ -125,7 +125,7 @@ buildp_init_args() {
 	elif ! ex_pkg_process_restart_spec "${_bpia_rstatus}" \$ARG_RESTART \$ARG_RESTART_AT \$ARG_RESTART_RECURSIVE; then
 		_bpia_rc=1;
 		rtl_setrstatus "${_bpia_rstatus}" 'failed to process -r specification: ${'"${_bpia_rstatus}"'}.';
-	elif ! ex_pkg_load_groups \$_bpia_groups \$_bpia_groups_noauto \$GROUP_AUTO \$GROUP_TARGET; then
+	elif ! ex_pkg_load_groups \$_bpia_groups \$_bpia_groups_noauto; then
 		_bpia_rc=1;
 		rtl_setrstatus "${_bpia_rstatus}" 'failed to load build groups.';
 	else

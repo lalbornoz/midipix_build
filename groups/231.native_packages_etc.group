@@ -1,8 +1,8 @@
 #
 # Build group native_packages (etc)
 #
-GROUP_TARGET="native_packages";
-rtl_lconcat \$NATIVE_PACKAGES_PACKAGES "
+GROUP_TARGET_APPEND="native_packages";
+NATIVE_PACKAGES_ETC_PACKAGES="
 apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer icoutils imagemagick infounzip infozip

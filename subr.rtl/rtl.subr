@@ -13,7 +13,6 @@ RTL_NL="
 
 rtl_date() { local _rdate="${1#\$}"; shift; eval ${_rdate}=\"\$\(command date \"+\${1:-\${DEFAULT_TIMESTAMP_FMT:-\"%Y/%m/%d %H:%M:%S\"}}\"\)\"; };
 rtl_set_IFS_nl() { IFS="${RTL_NL}"; };
-rtl_set_var_unsafe() { [ "${2:+1}" = 1 ] && eval ${1}=\"${2}\" || return 0; };
 rtl_test_cmd() { command -v "${1}" >/dev/null; };
 rtl_uniq() { if [ "${#}" -gt 0 ]; then printf "%s" "${*}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; fi; };
 rtl_uniq2() { eval set -- \${${1#\$}}; if [ "${#}" -gt 0 ]; then printf "%s" "${*}" | sed 's/ /\n/g' | awk '!x[$0]++' | paste -s -d" "; fi; };

@@ -227,4 +227,25 @@ rtl_set_var() {
 	return 0;
 };
 
+#
+# rtl_set_var_unsafe() - set value of variable
+# @[-u]:	optionally convert variable name to upper case
+# @_vname:	variable name
+# @_vval:	variable value
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+# N.B.:		This function is *unsafe* and impossible to implement otherwise w/o filtering @_vname
+#		and implicitly allows for code execution and other undefined behaviour via @_vname.
+#		Do *not* pass untrusted input through @_vname.
+rtl_set_var_unsafe() {
+	local _rsvu_vname="" _rsvu_vval="";
+	if [ "x${1}" = "x-u" ]; then
+		shift; _rsvu_vname="${1}"; _rsvu_vval="${2}"; rtl_toupper \$_rsvu_vname;
+	else
+		_rsvu_vname="${1}"; _rsvu_vval="${2}";
+	fi;
+	eval ${_rsvu_vname}='${_rsvu_vval}';
+	return 0;
+};
+
 # vim:filetype=sh textwidth=0

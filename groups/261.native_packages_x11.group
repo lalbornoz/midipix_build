@@ -1,8 +1,8 @@
 #
 # Build group native_packages (x11)
 #
-GROUP_TARGET="native_packages";
-rtl_lconcat \$NATIVE_PACKAGES_PACKAGES "
+GROUP_TARGET_APPEND="native_packages";
+NATIVE_PACKAGES_X11_PACKAGES="
 cairo fontconfig freetype freetype_pre gxemul harfbuzz imlib2
 libcaca libfontenc libICE libpthread_stubs libSM libX11 libXau
 libXaw libXdamage libXdmcp libXext libXfixes libXfont2 libXft libXi libxkbfile

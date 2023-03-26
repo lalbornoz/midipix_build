@@ -2,7 +2,7 @@
 # en_* locale messages file for pkgtool.sh
 #
 
-MSG_info_build_group="1;Build group: [0m%s";
+MSG_info_build_group="2;Build group: [0m%s ([4m%s[0m)";
 MSG_info_pkg_deps_fail="1;Warning: failed to unfold dependency-expanded package name list for \`%s'.";
 MSG_info_pkg_direct_deps="2;Direct dependencies of \`%s': [0m%s";
 MSG_info_pkg_no_deps="1;Package \`%s' has no dependencies.";
