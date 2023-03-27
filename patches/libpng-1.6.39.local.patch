@@ -1,0 +1,11 @@
+--- libpng-1.6.39/Makefile.in.orig	2022-11-20 22:53:23.000000000 +0100
++++ libpng-1.6.39/Makefile.in	2023-03-27 07:06:20.935851632 +0200
+@@ -2317,7 +2317,7 @@
+ 	rm -f $@ $*.tf[12]
+ 	test -d scripts || mkdir scripts || test -d scripts
+ 	$(DFNCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES)\
+-	    $(CPPFLAGS) $(SYMBOL_CFLAGS) $< > $*.tf1
++	    $(CFLAGS) $(CPPFLAGS) $(SYMBOL_CFLAGS) $< > $*.tf1
+ 	$(AWK) -f "${srcdir}/scripts/dfn.awk" out="$*.tf2" $*.tf1 1>&2
+ 	rm -f $*.tf1
+ 	mv $*.tf2 $@
