@@ -237,6 +237,7 @@ rtl_set_var() {
 # N.B.:		This function is *unsafe* and impossible to implement otherwise w/o filtering @_vname
 #		and implicitly allows for code execution and other undefined behaviour via @_vname.
 #		Do *not* pass untrusted input through @_vname.
+#
 rtl_set_var_unsafe() {
 	local _rsvu_vname="" _rsvu_vval="";
 	if [ "x${1}" = "x-u" ]; then

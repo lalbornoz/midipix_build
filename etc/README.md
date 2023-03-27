@@ -447,7 +447,7 @@ package build completion corresponds to the pseudo-build step ``finish``.
 | install_subdirs     | Create default directory hierarchy in ``${PKG_DESTDIR}``, optionally amended w/ ``${PKG_INSTALL_FILES_DESTDIR_EXTRA}``                                                                                                                                   |
 | install_make        | Call ``make(1)`` w/ ``${PKG_INSTALL_TARGET}`` (defaults to ``install``) and installation-time set of make variables                                                                                                                                      |
 | install_files       | Install ``${PKG_INSTALL_FILES}`` and/or ``${PKG_INSTALL_FILES_V2}``, fix directory and file mode bits within ``${PKG_DESTDIR}`` and optionally ``${PKG_DESTDIR_HOST}``, ``pkgconf(1)`` package files, and/or stripped binaries within ``${PKG_DESTDIR}`` |
-| install_libs        | Purge libtool ``.la`` files and install shared objects within ``${PKG_DESTDIR}`` w/ ``perk`` and corresponding symbolic links                                                                                                                            |
+|                     | Purge libtool ``.la`` files and install shared objects within ``${PKG_DESTDIR}`` w/ ``perk`` and corresponding symbolic links                                                                                                                            |
 | install             | Install into ``${PKG_PREFIX}``, and optionally ``${PKG_DESTDIR_HOST}`` into ``${PREFIX}``, under mutex, and add package to ``${PREFIX}/pkglist.${PKG_BUILD_TYPE}`` (unless inhibited)                                                                    |
 | install_rpm         | Build package RPM w/ auto-generated specifiation file based on ``etc/package.spec`` beneath ``${PREFIX_RPM}``                                                                                                                                            |
 | clean               | Clean ``${PKG_BUILD_DIR}`` and/or ``${PKG_DESTDIR}`` and/or ``${PKG_DESTDIR_HOST}`` and/or ``${PKG_BASE_DIR}/${PKG_SUBDIR}`` as per ``-C build,dest,src``, resp., if any                                                                                 |
@@ -865,8 +865,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
                             fetch_clean, fetch_download, fetch_extract, configure_clean,
                             configure_patch_pre, configure_autotools, configure_patch,
                             configure, build_clean, build, install_clean, install_subdirs,
-                            install_make, install_files, install_libs, install, install_rpm,
-                            and clean.
+                            install_make, install_files, install, install_rpm, and clean.
 
                             Additionally, the following virtual steps are provided:
                             @fetch, @configure, @build, @install, @clean, and finish.

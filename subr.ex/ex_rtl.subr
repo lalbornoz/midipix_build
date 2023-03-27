@@ -1,0 +1,204 @@
+#
+# Copyright (c) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
+# set +o errexit -o noglob -o nounset is assumed.
+#
+#
+
+#
+# ex_rtl_build_rpm() - build RPM package
+# @_destdir:		package destination directory
+# @_name:		package name
+# @_rpms_dname:		RPMs directory pathname
+# @_spec_fname:		RPM .spec file pathname
+# @_spec_fname_tgt:	target package RPM .spec file pathname
+# @_tmp_dname:		temporary files directory pathname
+# @_topdir:		package top directory
+# @_url:		package URL
+# @_version:		package version
+# @_version_rpm:	package RPM version
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_build_rpm() {
+	local	_erbr_destdir="${1}" _erbr_name="${2}" _erbr_rpms_dname="${3}" _erbr_spec_fname="${4}"		\
+		_erbr_spec_fname_tgt="${5}" _erbr_tmp_dname="${6}" _erbr_topdir="${7}" _erbr_url="${8}"		\
+		_erbr_version="${9}" _erbr_version_rpm="${10}"							\
+		_erbr_rc=0;
+
+	if ! rtl_fileop cp "${_erbr_spec_fname}" "${_erbr_spec_fname_tgt}"; then
+		return 1;
+	else
+		while true; do
+			rpmbuild						\
+				-bb						\
+										\
+				--define "_binary_payload w2T16.xzdio"		\
+										\
+				--define="_tmppath ${_erbr_tmp_dname=}"		\
+				--define="_topdir ${_erbr_topdir}"		\
+				--define="pkg_destdir ${_erbr_destdir}"		\
+				--define="pkg_name ${_erbr_name}"		\
+				--define="pkg_url ${_erbr_url}"			\
+				--define="pkg_version_full ${_erbr_version}"	\
+				--define="pkg_version_rpm ${_erbr_version_rpm}"	\
+				--nodeps "${_erbr_spec_fname_tgt}";
+			_erbr_rc="${?}";
+
+			if [ "${_erbr_rc}" -eq 0 ]; then
+				break;
+			elif [ "${_erbr_rc}" -eq 141 ]; then
+				continue;
+			else
+				return "${_erbr_rc}";
+			fi;
+		done;
+
+		if ! find "${_erbr_rpms_dname}/${_erbr_name}-${_erbr_version_rpm}/RPMS"		\
+			-iname \*.rpm -exec cp -pP {} "${_erbr_rpms_dname}/" \;			\
+		|| ! rtl_fileop rm "${_erbr_rpms_dname}/${_erbr_name}-${_erbr_version_rpm}"	\
+		|| ! rtl_fileop cp "${_erbr_spec_fname_tgt}" "${_erbr_rpms_dname}/";
+		then
+			return 1;
+		fi;
+	fi;
+
+	return 0;
+};
+
+#
+# ex_rtl_expand_rpm_version() - expand RPM version strings
+# @_rurl:		out reference to package URL
+# @_rversion:		out reference to package version
+# @_rversion_rpm:	out reference to RPM version string
+# @_subdir:		package subdirectory
+# @_url:		package URL
+# @_url_censor:		package URL filter
+# @_urls_git:		package Git URL(s)
+# @_version:		package version
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_expand_rpm_version() {
+	local	_ererv_rurl="${1#\$}" _ererv_rversion="${2#\$}" _ererv_rversion_rpm="${3#\$}"	\
+		_ererv_subdir="${4}" _ererv_url="${5}" _ererv_url_censor="${6}"			\
+		_ererv_urls_git="${7}" _ererv_version="${8}"					\
+		_ererv_version_full="" _ererv_version_rpm=""
+
+	if [ "${_ererv_url:+1}" = 1 ]; then
+		_ererv_url="${_ererv_url%% *}";
+		_ererv_version_full="${_ererv_version}";
+		_ererv_version_rpm="${_ererv_version%%-*}";
+
+	elif [ "${_ererv_urls_git:+1}" = 1 ]; then
+		_ererv_url="${_ererv_urls_git%% *}";
+		_ererv_url="${_ererv_url##*=}";
+		_ererv_url="${_ererv_url%%@*}";
+
+		_ererv_version_rpm="$(cd "${_ererv_subdir}" && git rev-parse HEAD)" || return 1;
+		_ererv_version_full="${_ererv_version_rpm} ($(cd "${_ererv_subdir}" && git rev-parse --abbrev-ref HEAD))" || return 1;
+	fi;
+
+	if [ "${_ererv_url#${_ererv_url_censor}}" != "${_ererv_url}" ]; then
+		_ererv_url="Unknown";
+	fi;
+
+	eval ${_ererv_rurl}='${_ererv_url}';
+	eval ${_ererv_rversion}='${_ererv_version_full}';
+	eval ${_ererv_rversion_rpm}='${_ererv_version_rpm}';
+
+	return 0;
+};
+
+#
+# ex_rtl_fixup_pkgconfig_paths() - fixup pathname prefixes in pkg-config(1) files
+# @_dname_base:		base directory pathname
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_fixup_pkgconfig_paths() {
+	local	_erfpp_dname_base="${1}"	\
+		_erfpp_pc_path="";
+
+	for _erfpp_pc_path in $(find "${_erfpp_dname_base=}" -name \*.pc); do
+		if [ -n "$(sed -ne '/^libdir=[^$]*$/p' "${_erfpp_pc_path}")" ]			\
+		&& ! sed -i""	-e '/^libdir=[^$]*$/s/^libdir=\(.*\)$/libdir=${exec_prefix}\1/'	\
+				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'		\
+				"${_erfpp_pc_path}";
+		then
+			return 1;
+		fi;
+
+		if [ -n "$(sed -ne '/^includedir=[^$]*$/p' "${_erfpp_pc_path}")" ]			\
+		&& ! sed -i""	-e '/^includedir=[^$]*$/s/^includedir=\(.*\)$/includedir=${prefix}\1/'	\
+				"${_erfpp_pc_path}";
+		then
+			return 1;
+		fi;
+	done;
+
+	return 0;
+};
+
+#
+# ex_rtl_purge_la_files() - purge .la files in tree
+# @_dname_base:		base directory pathname
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_purge_la_files() {
+	local	_erplf_dname_base="${1}"	\
+		_erplf_la_path="";
+
+	for _erplf_la_path in $(find		\
+			"${_erplf_dname_base}"	\
+			-type f			\
+			-name \*.la);
+	do
+		if ! rtl_fileop rm "${_erplf_la_path}"; then
+			return 1;
+		fi;
+	done;
+	return 0;
+};
+
+#
+# ex_rtl_strip_files() - strip files of debugging information
+# @_strip_cmd:		strip(1) command name
+# @_tree_root:		pathname to tree root
+# @--:			(ignored)
+# @_log_fn:		logging function name; called with @... and pathname of each file stripped
+# @...:			@_fn initial arguments list as positional parameters
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_strip_files() {
+	local	_ersf_strip_cmd="${1}" _ersf_tree_root="${2}"	\
+		_ersf_ignored="${3}" _ersf_log_fn="${4}"	\
+		_ersf_bin_path="";
+	shift 4;
+
+	if [ -e "${_ersf_tree_root}" ]; then
+		for _ersf_bin_path in $(find		\
+				"${_ersf_tree_root}"	\
+				-perm /a=x		\
+				-type f);
+		do
+			if objdump				\
+					-sj .debug_frame	\
+					-j .debug_info		\
+					"${_ersf_bin_path}"	\
+					>/dev/null 2>&1;
+			then
+				if ! "${_ersf_strip_cmd}" "${_ersf_bin_path}"; then
+					return 1;
+				else
+					"${_ersf_log_fn}" "${@}" "${_ersf_bin_path}";
+				fi;
+			fi;
+		done;
+	fi;
+
+	return 0;
+};
+
+# vim:filetype=sh textwidth=0

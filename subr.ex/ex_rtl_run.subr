@@ -1,0 +1,400 @@
+#
+# Copyright (c) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
+# set +o errexit -o noglob -o nounset is assumed.
+#
+# Package {configure,make} command execution
+#
+
+#
+# ex_rtl_run_configure() - run configure script
+# @_ar:				ar(1) command name or pathname
+# @_cc:				C compiler command name or pathname
+# @_configure:			configure script command name or pathname
+# @_cxx:			C++ compiler command name or pathname
+# @_ld:				ld(1) command name or pathname
+# @_libtool:			libtool(1) command name or pathname or "none"
+# @_pkg_config:			pkg-config(1) command name or pathname
+# @_python:			python command name or pathname
+# @_ranlib:			ranlib(1) command name or pathname
+# @--:				(ignored)
+# @_flags:			configure script flags as a whitespace-separated list
+# @_flags_extra:		extra configure script flags as a whitespace-separated likst
+# @_flags_list:			configure script flags as a :-separated list
+# @_flags_extra_list:		extra configure script flags as a :-separated list
+# @--:				(ignored)
+# @_cflags:			$CFLAGS
+# @_cflags_extra:		extra $CFLAGS
+# @_cppflags:			$CPPFLAGS
+# @_cppflags_extra:		extra $CPPFLAGS
+# @_cxxflags:			$CXXFLAGS
+# @_cxxflags_extra:		extra $CXXFLAGS
+# @_ldflags:			$LDFLAGS
+# @_ldflags_extra:		extra $LDFLAGS
+# @_pkg_config_libdir:		pkg-config(1) search directory
+#
+# Returns:			zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_run_configure() {
+	local	_errc_ar="${1}" _errc_cc="${2}" _errc_configure="${3}" _errc_cxx="${4}" _errc_ld="${5}"	\
+		_errc_libtool="${6}" _errc_pkg_config="${7}" _errc_python="${8}" _errc_ranlib="${9}"	\
+		_errc_ignored="${10}"									\
+		_errc_flags="${11}" _errc_flags_extra="${12}"						\
+		_errc_flags_list="${13}" _errc_flags_extra_list="${14}"					\
+		_errc_ignored="${15}"									\
+		_errc_cflags="${16}" _errc_cflags_extra="${17}" _errc_cppflags="${18}"			\
+		_errc_cppflags_extra="${19}" _errc_cxxflags="${20}" _errc_cxxflags_extra="${21}"	\
+		_errc_ldflags="${22}" _errc_ldflags_extra="${23}" _errc_pkg_config_libdir="${24}"	\
+		_errc_rc=0;
+
+	case "${_errc_libtool:-}" in
+	none) _errc_libtool=""; ;;
+	esac;
+
+	[ "${_errc_cflags_extra:+1}" = 1 ] && _errc_cflags="${_errc_cflags:+${_errc_cflags} }${_errc_cflags_extra}";
+	[ "${_errc_cppflags_extra:+1}" = 1 ] && _errc_cppflags="${_errc_cppflags:+${_errc_cppflags} }${_errc_cppflags_extra}";
+	[ "${_errc_cxxflags_extra:+1}" = 1 ] && _errc_cxxflags="${_errc_cxxflags:+${_errc_cxxflags} }${_errc_cxxflags_extra}";
+	[ "${_errc_ldflags_extra:+1}" = 1 ] && _errc_ldflags="${_errc_ldflags:+${_errc_ldflags} }${_errc_ldflags_extra}";
+
+(
+	if [ "${_errc_libtool:+1}" = 1 ]; then
+		export MAKE="make LIBTOOL=${_errc_libtool}";
+	fi;
+
+	[ "${_errc_ar:+1}" = 1 ] && export AR="${_errc_ar}";
+	[ "${_errc_cc:+1}" = 1 ] && export CC="${_errc_cc}";
+	[ "${_errc_cxx:+1}" = 1 ] && export CXX="${_errc_cxx}";
+	[ "${_errc_ld:+1}" = 1 ] && export LD="${_errc_ld}";
+	[ "${_errc_libtool:+1}" = 1 ] && export LIBTOOL="${_errc_libtool}";
+	[ "${_errc_pkg_config:+1}" = 1 ] && export PKG_CONFIG="${_errc_pkg_config}";
+	[ "${_errc_python:+1}" = 1 ] && export PYTHON="${_errc_python}";
+	[ "${_errc_ranlib:+1}" = 1 ] && export RANLIB="${_errc_ranlib}";
+
+	[ "${_errc_cflags:+1}" = 1 ] && export CFLAGS="${_errc_cflags}";
+	[ "${_errc_cppflags:+1}" = 1 ] && export CPPFLAGS="${_errc_cppflags}";
+	[ "${_errc_cxxflags:+1}" = 1 ] && export CXXFLAGS="${_errc_cxxflags}";
+	[ "${_errc_ldflags:+1}" = 1 ] && export LDFLAGS="${_errc_ldflags}";
+	[ "${_errc_pkg_config_libdir:+1}" = 1 ] && export PKG_CONFIG_LIBDIR="${_errc_pkg_config_libdir}";
+
+	if [ "${_errc_flags_list:+1}" = 1 ]; then
+		rtl_run_cmdlineV ":" "${_errc_configure}"	\
+			"${_errc_flags_list}"			\
+			"${_errc_flags_extra_list:-}"		\
+			;
+		exit "${?}";
+	elif [ "${_errc_flags_extra_list:+1}" = 1 ]; then
+		rtl_run_cmdlineV ":" "${_errc_configure}"	\
+			${_errc_flags:-}			\
+			"${_errc_flags_extra_list:-}"		\
+			;
+		exit "${?}";
+	else
+		rtl_run_cmdlineV ":" "${_errc_configure}"	\
+			${_errc_flags:-}			\
+			${_errc_flags_extra:-}			\
+			;
+		exit "${?}";
+	fi;
+);
+	_errc_rc="${?}";
+
+	return "${_errc_rc}";
+};
+
+#
+# ex_rtl_run_configure_cmake() - run configure script
+# @_ar:				ar(1) command name or pathname
+# @_cc:				C compiler command name or pathname
+# @_ccache:			ccache(1) command name or pathname or ""
+# @_cmake:			CMake command name or pathname
+# @_cxx:			C++ compiler command name or pathname
+# @_ld:				ld(1) command name or pathname
+# @_pkg_config:			pkg-config(1) command name or pathname
+# @_python:			python command name or pathname
+# @_ranlib:			ranlib(1) command name or pathname
+# @--:				(ignored)
+# @_build_type:			CMake build type (host, cross, native)
+# @_cmake_args:			additional CMake arguments as a whitespace-separated list
+# @_cmake_args_extra:		additional CMake extra arguments as a whitespace-separated likst
+# @_prefix:			build prefix pathname
+# @_subdir:			CMake build directory pathname
+# @_system_name:		CMake system name
+# @_system_processor:		CMake system processor
+# @--:				(ignored)
+# @_cflags:			$CFLAGS
+# @_cflags_extra:		extra $CFLAGS
+# @_cppflags:			$CPPFLAGS
+# @_cppflags_extra:		extra $CPPFLAGS
+# @_cxxflags:			$CXXFLAGS
+# @_cxxflags_extra:		extra $CXXFLAGS
+# @_ldflags:			$LDFLAGS
+# @_ldflags_extra:		extra $LDFLAGS
+# @_pkg_config_libdir:		pkg-config(1) search directory
+#
+# Returns:			zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_run_configure_cmake() {
+	local	_errcc_ar="${1}" _errcc_cc="${2}" _errcc_ccache="${3}" _errcc_cmake="${4}"		\
+		_errcc_cxx="${5}" _errcc_ld="${6}" _errcc_pkg_config="${7}" _errcc_python="${8}"	\
+		_errcc_ranlib="${9}"									\
+		_errcc_ignored="${10}"									\
+		_errcc_build_type="${11}"								\
+		_errcc_cmake_args="${12}" _errcc_cmake_args_extra="${13}"				\
+		_errcc_prefix="${14}" _errcc_subdir="${15}"						\
+		_errcc_system_name="${16}" _errcc_system_processor="${17}"				\
+		_errcc_ignored="${18}"									\
+		_errcc_cflags="${19}" _errcc_cflags_extra="${20}" _errcc_cppflags="${21}"		\
+		_errcc_cppflags_extra="${22}" _errcc_cxxflags="${23}" _errcc_cxxflags_extra="${24}"	\
+		_errcc_ldflags="${25}" _errcc_ldflags_extra="${26}" _errcc_pkg_config_libdir="${27}"	\
+		_errcc_cmd_name="" _errcc_cmake_args_auto="" _errcc_rc=0 _errcc_vname="" _errcc_vval=""
+
+	[ "${_errcc_cflags_extra:+1}" = 1 ] && _errcc_cflags="${_errcc_cflags:+${_errcc_cflags} }${_errcc_cflags_extra}";
+	[ "${_errcc_cppflags_extra:+1}" = 1 ] && _errcc_cppflags="${_errcc_cppflags:+${_errcc_cppflags} }${_errcc_cppflags_extra}";
+	[ "${_errcc_cxxflags_extra:+1}" = 1 ] && _errcc_cxxflags="${_errcc_cxxflags:+${_errcc_cxxflags} }${_errcc_cxxflags_extra}";
+	[ "${_errcc_ldflags_extra:+1}" = 1 ] && _errcc_ldflags="${_errcc_ldflags:+${_errcc_ldflags} }${_errcc_ldflags_extra}";
+
+(
+	[ "${_errcc_pkg_config:+1}" = 1 ] && export PKG_CONFIG="${_errcc_pkg_config}";
+	[ "${_errcc_pkg_config_libdir:+1}" = 1 ] && export PKG_CONFIG_LIBDIR="${_errcc_pkg_config_libdir}";
+	[ "${_errcc_python:+1}" = 1 ] && export PYTHON="${_errcc_python}";
+
+	for _errcc_vname in ar cc cxx ld pkg_config ranlib; do
+		case "${_errcc_vname}" in
+		cc|cxx)
+			_errcc_vname="_errcc_${_errcc_vname}";
+			if [ "${_errcc_ccache:+1}" = 1 ]; then
+				eval ${_errcc_vname}="\${${_errcc_vname}#${_errcc_ccache} }";
+			fi;
+			;;
+
+		*)
+			_errcc_vname="_errcc_${_errcc_vname}";
+			;;
+		esac;
+
+		if eval [ '"${'"${_errcc_vname}"':+1}"' = 1 ]\
+		&& eval [ '"${'"${_errcc_vname}"'#/}"' = '"${'"${_errcc_vname}"'}"' ]; then
+			eval _errcc_cmd_name="\${${_errcc_vname}% *}";
+			eval _errcc_vval="\${${_errcc_vname}#* }";
+			eval ${_errcc_vname}='$(which "${_errcc_cmd_name}")' || return 1;
+		fi;
+	done;
+
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_AR=${_errcc_ar}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_BUILD_TYPE=${_errcc_build_type}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_C_COMPILER=${_errcc_cc}" ":";
+	if [ "${_errcc_ccache:+1}" = 1 ]; then
+		rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_C_COMPILER_LAUNCHER=${_errcc_ccache}" ":";
+	fi;
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_C_FLAGS=${_errcc_cflags}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_CPP_FLAGS=${_errcc_cppflags}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_CXX_COMPILER=${_errcc_cxx}" ":";
+	if [ "${_errcc_ccache:+1}" = 1 ]; then
+		rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_CXX_COMPILER_LAUNCHER=${_errcc_ccache}" ":";
+	fi;
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_CXX_FLAGS=${_errcc_cxxflags}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_EXE_LINKER_FLAGS=${_errcc_ldflags}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_FIND_ROOT_PATH=${_errcc_prefix}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_INSTALL_PREFIX=" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_LINKER=${_errcc_ld}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_MODULE_LINKER_FLAGS=${_errcc_ldflags}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_RANLIB=${_errcc_ranlib}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_SHARED_LINKER_FLAGS=${_errcc_ldflags}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_SYSTEM_PROCESSOR=${_errcc_system_processor}" ":";
+	rtl_lconcat \$_errcc_cmake_args_auto "-DPKG_CONFIG_EXECUTABLE=${_errcc_pkg_config}" ":";
+
+	case "${_errcc_build_type}" in
+	native)
+		rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_SYSROOT=${_errcc_prefix}" ":";
+		rtl_lconcat \$_errcc_cmake_args_auto "-DCMAKE_SYSTEM_NAME=${_errcc_system_name}" ":";
+		;;
+	esac;
+
+	rtl_run_cmdlineV ":" "${_errcc_cmake}"	\
+		"${_errcc_cmake_args_auto}"	\
+		${_errcc_cmake_args:-}		\
+		${_errcc_cmake_args_extra:-}	\
+		"${_errcc_subdir}";
+	exit "${?}";
+);
+	_errcc_rc="${?}";
+
+	return "${_errcc_rc}";
+};
+
+#
+# ex_rtl_run_make() - run make(1)
+# @_ar:				ar(1) command name or pathname
+# @_cc:				C compiler command name or pathname
+# @_cxx:			C++ compiler command name or pathname
+# @_ld:				ld(1) command name or pathname
+# @_libtool:			libtool(1) command name or pathname or "none"
+# @_make:			make(1) command name or pathname
+# @_pkg_config:			pkg-config(1) command name or pathname
+# @_ranlib:			ranlib(1) command name or pathname
+# @--:				(ignored)
+# @_set_ccfl:			1 if CC=... is to be passed to make(1), 0 if CC=... is not to be passed to make(1)
+# @_subdir:			make(1) -C argument
+# @--:				(ignored)
+# @_makeflags:			make(1) flags as a whitespace-separated list
+# @_makeflags_extra:		extra make(1) flags as a whitespace-separated likst
+# @_makeflags_list:		make(1) flags as a :-separated list
+# @_makeflags_extra_list:	extra make(1) flags as a :-separated list
+# @_makeflags_loadavg:		make(1) -l load argument
+# @_makeflags_parallelise:	make(1) -j jobs argument
+# @_makeflags_verbosity:	make(1) Makefile verbosity arguments or "none"
+# @--:				(ignored)
+# @_cflags:			$CFLAGS
+# @_cflags_extra:		extra $CFLAGS
+# @_cppflags:			$CPPFLAGS
+# @_cppflags_extra:		extra $CPPFLAGS
+# @_cxxflags:			$CXXFLAGS
+# @_cxxflags_extra:		extra $CXXFLAGS
+# @_ldflags:			$LDFLAGS
+# @_ldflags_extra:		extra $LDFLAGS
+# @_pkg_config_libdir:		pkg-config(1) search directory
+# @--:				(ignored)
+# @_destdir_spec:		DESTDIR=... specification
+# @_target:			make(1) target
+#
+# Returns:			zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_run_make() {
+	local	_errm_ar="${1}" _errm_cc="${2}" _errm_cxx="${3}" _errm_ld="${4}"			\
+		_errm_libtool="${5}" _errm_make="${6}" _errm_pkg_config="${7}" _errm_ranlib="${8}"	\
+		_errm_ignored="${9}"									\
+		_errm_set_ccfl="${10}" _errm_subdir="${11}"						\
+		_errm_ignored="${12}"									\
+		_errm_makeflags="${13}" _errm_makeflags_extra="${14}" _errm_makeflags_list="${15}"	\
+		_errm_makeflags_extra_list="${16}" _errm_makeflags_loadavg="${17}"			\
+		_errm_makeflags_parallelise="${18}" _errm_makeflags_verbosity="${19}"			\
+		_errm_ignored="${20}"									\
+		_errm_cflags="${21}" _errm_cflags_extra="${22}" _errm_cppflags="${23}"			\
+		_errm_cppflags_extra="${24}" _errm_cxxflags="${25}" _errm_cxxflags_extra="${26}"	\
+		_errm_ldflags="${27}" _errm_ldflags_extra="${28}" _errm_pkg_config_libdir="${29}"	\
+		_errm_ignored="${30}"									\
+		_errm_destdir_spec="${31}" _errm_target="${32}"						\
+		_errm_rc=0;
+
+	case "${_errm_makeflags_loadavg:-}" in
+	none) _errm_makeflags_loadavg=""; ;;
+	esac;
+
+	case "${_errm_libtool:-}" in
+	none) _errm_libtool=""; ;;
+	esac;
+
+	case "${_errm_makeflags_verbosity}" in
+	none) _errm_makeflags_verbosity=""; ;;
+	esac;
+
+	case "${_errm_set_ccfl}" in
+	1) _errm_set_ccfl="1"; ;;
+	*) _errm_set_ccfl=""; ;;
+	esac;
+
+(
+	if [ "${_errm_libtool:+1}" = 1 ]; then
+		export MAKE="make LIBTOOL=${_errm_libtool}";
+	fi;
+
+	if [ "${_errm_makeflags_list:+1}" = 1 ]; then
+		rtl_run_cmdlineV ":" "${_errm_make}"							\
+			AR="${_errm_ar}"								\
+			${_errm_set_ccfl:+CC="${_errm_cc}"}						\
+			${_errm_set_ccfl:+CXX="${_errm_cxx}"}						\
+			LD="${_errm_ld}"								\
+			${_errm_libtool:+LIBTOOL="${_errm_libtool}"}					\
+			${_errm_pkg_config:+PKG_CONFIG="${_errm_pkg_config}"}				\
+			RANLIB="${_errm_ranlib}"							\
+													\
+			"${_errm_makeflags_list}"							\
+			"${_errm_makeflags_extra_list:-}"						\
+			${_errm_makeflags_loadavg:-}							\
+			${_errm_makeflags_parallelise:-}						\
+			${_errm_makeflags_verbosity}							\
+													\
+			${_errm_cflags:+CFLAGS="${_errm_cflags}"}					\
+			${_errm_cflags_extra:+CFLAGS+="${_errm_cflags_extra}"}				\
+			${_errm_cppflags:+CPPFLAGS="${_errm_cppflags}"}					\
+			${_errm_cppflags_extra:+CPPFLAGS+="${_errm_cppflags_extra}"}			\
+			${_errm_cxxflags:+CXXFLAGS="${_errm_cxxflags}"}					\
+			${_errm_cxxflags_extra:+CXXFLAGS+="${_errm_cxxflags_extra}"}			\
+			${_errm_ldflags:+LDFLAGS="${_errm_ldflags}"}					\
+			${_errm_ldflags_extra:+LDFLAGS+="${_errm_ldflags_extra}"}			\
+			${_errm_pkg_config_libdir:+PKG_CONFIG_LIBDIR="${_errm_pkg_config_libdir}"}	\
+													\
+			${_errm_subdir:+-C "${_errm_subdir}"}						\
+			${_errm_destdir_spec:+"${_errm_destdir_spec}"}					\
+			${_errm_target:+"${_errm_target}"}						\
+			;
+		exit "${?}";
+	elif [ "${_errm_makeflags_extra_list:+1}" = 1 ]; then
+		rtl_run_cmdlineV ":" "${_errm_make}"							\
+			AR="${_errm_ar}"								\
+			${_errm_set_ccfl:+CC="${_errm_cc}"}						\
+			${_errm_set_ccfl:+CXX="${_errm_cxx}"}						\
+			LD="${_errm_ld}"								\
+			${_errm_libtool:+LIBTOOL="${_errm_libtool}"}					\
+			${_errm_pkg_config:+PKG_CONFIG="${_errm_pkg_config}"}				\
+			RANLIB="${_errm_ranlib}"							\
+													\
+			${_errm_makeflags:-}								\
+			"${_errm_makeflags_extra_list}"							\
+			${_errm_makeflags_loadavg:-}							\
+			${_errm_makeflags_parallelise:-}						\
+			${_errm_makeflags_verbosity}							\
+													\
+			${_errm_cflags:+CFLAGS="${_errm_cflags}"}					\
+			${_errm_cflags_extra:+CFLAGS+="${_errm_cflags_extra}"}				\
+			${_errm_cppflags:+CPPFLAGS="${_errm_cppflags}"}					\
+			${_errm_cppflags_extra:+CPPFLAGS+="${_errm_cppflags_extra}"}			\
+			${_errm_cxxflags:+CXXFLAGS="${_errm_cxxflags}"}					\
+			${_errm_cxxflags_extra:+CXXFLAGS+="${_errm_cxxflags_extra}"}			\
+			${_errm_ldflags:+LDFLAGS="${_errm_ldflags}"}					\
+			${_errm_ldflags_extra:+LDFLAGS+="${_errm_ldflags_extra}"}			\
+			${_errm_pkg_config_libdir:+PKG_CONFIG_LIBDIR="${_errm_pkg_config_libdir}"}	\
+													\
+			${_errm_subdir:+-C "${_errm_subdir}"}						\
+			${_errm_destdir_spec:+"${_errm_destdir_spec}"}					\
+			${_errm_target:+"${_errm_target}"}						\
+			;
+		exit "${?}";
+	else
+		rtl_run_cmdlineV ":" "${_errm_make}"							\
+			AR="${_errm_ar}"								\
+			${_errm_set_ccfl:+CC="${_errm_cc}"}						\
+			${_errm_set_ccfl:+CXX="${_errm_cxx}"}						\
+			LD="${_errm_ld}"								\
+			${_errm_libtool:+LIBTOOL="${_errm_libtool}"}					\
+			${_errm_pkg_config:+PKG_CONFIG="${_errm_pkg_config}"}				\
+			RANLIB="${_errm_ranlib}"							\
+													\
+			${_errm_makeflags:-}								\
+			${_errm_makeflags_extra:-}							\
+			${_errm_makeflags_loadavg:-}							\
+			${_errm_makeflags_parallelise:-}						\
+			${_errm_makeflags_verbosity}							\
+													\
+			${_errm_cflags:+CFLAGS="${_errm_cflags}"}					\
+			${_errm_cflags_extra:+CFLAGS+="${_errm_cflags_extra}"}				\
+			${_errm_cppflags:+CPPFLAGS="${_errm_cppflags}"}					\
+			${_errm_cppflags_extra:+CPPFLAGS+="${_errm_cppflags_extra}"}			\
+			${_errm_cxxflags:+CXXFLAGS="${_errm_cxxflags}"}					\
+			${_errm_cxxflags_extra:+CXXFLAGS+="${_errm_cxxflags_extra}"}			\
+			${_errm_ldflags:+LDFLAGS="${_errm_ldflags}"}					\
+			${_errm_ldflags_extra:+LDFLAGS+="${_errm_ldflags_extra}"}			\
+			${_errm_pkg_config_libdir:+PKG_CONFIG_LIBDIR="${_errm_pkg_config_libdir}"}	\
+													\
+			${_errm_subdir:+-C "${_errm_subdir}"}						\
+			${_errm_destdir_spec:+"${_errm_destdir_spec}"}					\
+			${_errm_target:+"${_errm_target}"}						\
+			;
+		exit "${?}";
+	fi;
+);
+	_errm_rc="${?}";
+
+	return "${_errm_rc}";
+};
+
+# vim:filetype=sh textwidth=0

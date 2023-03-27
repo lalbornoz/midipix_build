@@ -48,7 +48,7 @@
                             [93mfetch_clean[90m,[93m fetch_download[90m,[93m fetch_extract[90m,[93m configure_clean[90m,[0m
                             [93mconfigure_patch_pre[90m,[93m configure_autotools[90m,[93m configure_patch[90m,[0m
                             [93mconfigure[90m,[93m build_clean[90m,[93m build[90m,[93m install_clean[90m,[93m install_subdirs[90m,[0m
-                            [93minstall_make[90m,[93m install_files[90m,[93m install_libs[90m,[93m install[90m,[93m install_rpm[90m,[0m
+                            [93minstall_make[90m,[93m install_files[90m,[93m install[90m,[93m install_rpm[90m,[0m
                             [96mand [93mclean[90m.[0m
 
                             [96mAdditionally, the following virtual steps are provided:[0m

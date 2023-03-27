@@ -213,7 +213,7 @@ rtl_is_newer() {
 };
 
 #
-# rtl_patch_files() -
+# rtl_patch_files() - patch files
 # @_patch_cwd:		patch(1) -d directory
 # @_strip_count:	patch(1) strip count
 # @_fn:			name of function that produces patch filenames and takes the arguments @_rpatch_fname @_patch_idx @...
@@ -241,6 +241,63 @@ rtl_patch_files() {
 			< "${_rpf_patch_fname}";
 		then
 			return 1;
+		fi;
+	done;
+	return 0;
+};
+
+#
+# rtl_set_perms_treeV() - set mode bits of directories and files
+# @_mode_dir:		mode bits for directories
+# @_mode_file_exec:	mode bits for executable files
+# @_mode_file_nonexec:	mode bits for non-executable files
+# @...:			list of base directory pathnames as positional parameters; empty strings are ignored
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+rtl_set_perms_treeV() {
+	local	_rspt_mode_dir="${1}" _rspt_mode_file_exec="${2}" _rspt_mode_file_nonexec="${3}"	\
+		_rspt_destdir="" _rspt_fname=""								\
+		IFS IFS0="${IFS}";
+	shift 3;
+
+	for _rspt_destdir in "${@}"; do
+		if [ -e "${_rspt_destdir}" ]; then
+			rtl_set_IFS_nl;
+
+			for _rspt_fname in $(find "${_rspt_destdir}" -type d); do
+				if ! rtl_fileop chmod "${_rspt_mode_dir}"	\
+						"${_rspt_fname}";
+				then
+					return 1;
+				fi;
+			done;
+
+			for _rspt_fname in $(find		\
+					"${_rspt_destdir}"	\
+					\( -not -perm /0111 \)	\
+					-type f);
+			do
+				if ! rtl_fileop chmod "${_rspt_mode_file_nonexec}"	\
+						"${_rspt_fname}";
+				then
+					return 1;
+				fi;
+			done;
+
+			for _rspt_fname in $(find		\
+					"${_rspt_destdir}"	\
+					-perm /0111		\
+					-type f);
+			do
+				if ! rtl_fileop chmod "${_rspt_mode_file_exec}"	\
+						"${_rspt_fname}";
+				then
+					return 1;
+				fi;
+			done;
+
+			IFS="${IFS0}";
 		fi;
 	done;
 	return 0;

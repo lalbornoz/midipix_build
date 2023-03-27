@@ -41,80 +41,38 @@ pkgp_install_files_v2() {
 	fi;
 };
 
-pkgp_install_files_perms() {
-	local _ppifp_destdir="" _ppifp_fname="" IFS;
-
-	for _ppifp_destdir in "${PKG_DESTDIR}" "${PKG_DESTDIR_HOST}"; do
-		if [ -e "${_ppifp_destdir}" ]; then
-			rtl_set_IFS_nl;
-
-			for _ppifp_fname in $(find "${_ppifp_destdir}" -type d); do
-				if ! rtl_fileop chmod 0755 "${_ppifp_fname}"; then
-					return 1;
-				fi;
-			done;
-
-			for _ppifp_fname in $(find "${_ppifp_destdir}" \( -not -perm /0111 \) -type f); do
-				if ! rtl_fileop chmod 0644 "${_ppifp_fname}"; then
-					return 1;
-				fi;
-			done;
-
-			for _ppifp_fname in $(find "${_ppifp_destdir}" -perm /0111 -type f); do
-				if ! rtl_fileop chmod 0755 "${_ppifp_fname}"; then
-					return 1;
-				fi;
-			done;
-		fi;
-	done;
+pkgp_install_files_libraries() {
+	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
+		ex_rtl_install_library_archives "${PKG_DESTDIR}" "${PKG_TARGET}-mdso" || return 1;
+	fi;
+	ex_rtl_purge_la_files "${PKG_DESTDIR}" || return 1;
 	return 0;
 };
 
-pkgp_install_files_pkgconfig() {
-	local _ppifp2_pc_path="";
-
-	for _ppifp2_pc_path in $(find "${PKG_DESTDIR}" -name \*.pc); do
-		if [ -n "$(sed -ne '/^libdir=[^$]*$/p' "${_ppifp2_pc_path}")" ]			\
-		&& ! sed -i""	-e '/^libdir=[^$]*$/s/^libdir=\(.*\)$/libdir=${exec_prefix}\1/'	\
-				-e '/^exec_prefix=$/s/^.*$/exec_prefix=${prefix}/'		\
-				"${_ppifp2_pc_path}"; then
-			return 1;
-		fi;
-
-		if [ -n "$(sed -ne '/^includedir=[^$]*$/p' "${_ppifp2_pc_path}")" ]			\
-		&& ! sed -i""	-e '/^includedir=[^$]*$/s/^includedir=\(.*\)$/includedir=${prefix}\1/'	\
-				"${_ppifp2_pc_path}"; then
-			return 1;
-		fi;
-	done;
+pkgp_install_files_perms() {
+	rtl_set_perms_treeV		\
+		0755 0755 0644		\
+		"${PKG_DESTDIR}"	\
+		"${PKG_DESTDIR_HOST}";
+	return "${?}";
 };
 
 pkgp_install_files_strip() {
-	local _ppifs_bin_path="" _ppifs_stripfl=0 _ppifs_tree_root="${PKG_DESTDIR}";
+	local _ppifs_files_stripped="" _ppifs_pkg_minipixfl=0 _ppifs_rc=0;
 
-	if [ -e "${_ppifs_tree_root}" ]; then
-		if rtl_match "${PKG_NAME}" "*_ppifs_minipix"; then
-			: $((_ppifs_stripfl=(${ARG_DEBUG_MINIPIX:-0} ? 0 : 1)));
-		elif [ "${BUILD_KIND}" = release ]\
-		&&   [ "${PKG_BUILD_TYPE}" = native ];
-		then
-			_ppifs_stripfl=1;
-		else
-			_ppifs_stripfl=0;
-		fi;
-
-		if [ "${_ppifs_stripfl:-0}" -eq 1 ]; then
-			for _ppifs_bin_path in $(find "${_ppifs_tree_root}" -perm /a=x -type f); do
-				if objdump -sj .debug_frame -j .debug_info "${_ppifs_bin_path}" >/dev/null 2>&1; then
-					rtl_log_msgV "pkg_strip" "${MSG_pkg_strip}" "${_ppifs_bin_path}";
-					if ! "${PKG_TARGET}-strip" "${_ppifs_bin_path}"; then
-						return 1;
-					fi;
-				fi;
-			done;
-		fi;
+	rtl_match "${PKG_NAME}" "*_minipix"; _ppifs_pkg_minipixfl="${?}";
+	if [ \( "${_ppifs_pkg_minipixfl}" -eq 0 \) -a \( "${ARG_DEBUG_MINIPIX:-0}" -eq 0 \) ]\
+	|| [ \( "${BUILD_KIND}" = release \) -a \( "${PKG_BUILD_TYPE}" = native \) ]; then
+		ex_rtl_strip_files		\
+			\$_ppifs_files_stripped	\
+			"${PKG_TARGET}-strip"	\
+			"${PKG_DESTDIR}"	\
+			--			\
+			rtl_log_msgV "pkg_strip" "${MSG_pkg_strip}";
+		_ppifs_rc="${?}";
 	fi;
-	return 0;
+
+	return "${_ppifs_rc}";
 };
 
 pkg_install_files() {
@@ -123,8 +81,9 @@ pkg_install_files() {
 	if ! pkgp_install_files\
 	|| ! pkgp_install_files_v2\
 	|| ! pkgp_install_files_perms\
-	|| ! pkgp_install_files_pkgconfig\
-	|| ! pkgp_install_files_strip;
+	|| ! ex_rtl_fixup_pkgconfig_paths "${PKG_DESTDIR}"\
+	|| ! pkgp_install_files_strip\
+	|| ! pkgp_install_files_libraries;
 	then
 		return 1;
 	fi;

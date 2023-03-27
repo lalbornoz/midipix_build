@@ -1,0 +1,92 @@
+#
+# Copyright (c) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
+# set +o errexit -o noglob -o nounset is assumed.
+#
+#
+
+#
+# ex_rtl_install_library_archives() - install library archives and library links (.lib.a) for all libraries (.so) in tree
+# @_dname_base:		base directory pathname
+# @_mdso_cmd:		mdso command name
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_install_library_archives() {
+	local	_erila_dname_base="${1}" _erila_mdso_cmd="${2}"			\
+		_erila_postfix="" _erila_lib_dst_path="" _erila_lib_name=""	\
+		_erila_lib_src_path="" _erila_so_dst_dir="" _erila_so_src_path="";
+
+	for _erila_so_src_path in 				\
+		$(find	"${_erila_dname_base=}"			\
+			\(  -name "*.so" -or -name "*.so.*" \)	\
+			-print);
+	do
+		if [ "$(readlink -f "${_erila_so_src_path}")" != "/dev/null" ]\
+		&& rtl_remove_postfix "[0-9.]" "${_erila_so_src_path##*.so}" \$_erila_postfix\
+		&& [ "${_erila_postfix:+1}" != 1 ]; then
+
+			case "${_erila_so_src_path}" in
+			*.so)	_erila_lib_src_path="${_erila_so_src_path%%.so}.lib.a"; ;;
+			*.so.*)	_erila_lib_src_path="${_erila_so_src_path%%.so.*}.${_erila_so_src_path##*.so.}.lib.a"; ;;
+			esac;
+
+			_erila_so_dst_dir="${_erila_so_src_path%/*}";
+			rtl_basename2 \$_erila_lib_src_path \$_erila_lib_name;
+			_erila_lib_dst_path="${_erila_so_dst_dir}/${_erila_lib_name}";
+
+			if [ ! -L "${_erila_lib_src_path}" ]\
+			&& [ ! -e "${_erila_lib_dst_path}" ]; then
+				if ! (rtl_basename2 \$_erila_so_src_path \$_erila_fname;		\
+				      rtl_basename2 \$_erila_lib_dst_path \$_erila_fname_dst;	\
+				      rtl_dirname2 \$_erila_so_src_path \$_erila_dname;		\
+				      rtl_fileop cd "${_erila_dname}" &&			\
+						perk -e "${_erila_fname}"			|\
+							"${_erila_mdso_cmd}"			\
+								-i "${_erila_fname_dst}"		\
+								-n "${_erila_fname}" -);
+				then
+					return 1;
+				fi;
+			fi;
+
+			if ! ex_rtl_install_library_link				\
+					"${_erila_lib_name}" "${_erila_so_dst_dir}"	\
+					"${_erila_so_src_path}";
+			then
+				return 1;
+			fi;
+		fi;
+	done;
+
+	return 0;
+};
+
+#
+# ex_rtl_install_library_link() - install library archive (.lib.a) link for library (.so)
+# @_lib_name:	library name
+# @_so_dir:	library directory pathname
+# @_so_path:	library file pathname
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_install_library_link() {
+	local	_erill_lib_name="${1}" _erill_so_dir="${2}" _erill_so_path="${3}"	\
+		_erill_lib_link_path="${3%.so*}.lib.a" _erill_fname="" _erill_lib_link_tgt="";
+
+	if _erill_lib_link_tgt="$(find "${_erill_so_dir}"	\
+			-name "${_erill_lib_name%%.*}.*.lib.a"	|\
+			sort | tail -1)"\
+	&& [ "${_erill_lib_link_tgt:+1}" = 1 ]\
+	&& [ "${_erill_lib_link_tgt}" != "${_erill_lib_link_path}" ];
+	then
+		rtl_basename2 \$_erill_lib_link_tgt \$_erill_fname;
+
+		if ! rtl_fileop rm "${_erill_lib_link_path}"\
+		|| ! rtl_fileop ln_symbolic "${_erill_fname}" "${_erill_lib_link_path}"; then
+			return 1;
+		fi;
+	fi;
+	return 0;
+};
+
+# vim:filetype=sh textwidth=0
