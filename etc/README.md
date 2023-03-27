@@ -714,7 +714,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | Package variable name        | Type             | Description                                                                                                                                |
 | ---------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | AR                           | CmdName          | Toolchain library archive editor ``ar(1)``                                                                                                 |
-| AUTOCONF_CONFIG_GUESS        | String           | Either of ``midipix`` (copy Midipix ``config.guess`` from ``etc/config.guess``) or ``keep``; defaults to ``midipix``                       |
+| AUTOCONF_CONFIG_GUESS        | String           | Either of ``copy`` (copy ``config.guess`` from ``etc/config.guess``) or ``keep``; defaults to ``copy``                                     |
 | BASE_DIR                     | DirName(Abs)     | Package build root directory beneath ``${BUILD_WORKDIR}``                                                                                  |
 | BUILD_DIR                    | DirName(Unit)    | Package build directory beneath ``${PKG_BASE_DIR}``                                                                                        |
 | BUILD_STAGES_DISABLE         | List( )          | Build stages to disable during package build                                                                                               |

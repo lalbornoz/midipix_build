@@ -1,0 +1,184 @@
+#
+# Copyright (c) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Lucía Andrea Illanes Albornoz <lucia@luciaillanes.de>
+# set +o errexit -o noglob -o nounset is assumed.
+#
+# Package make command execution
+#
+
+#
+# ex_rtl_make() - run make(1)
+# @_ar:				ar(1) command name or pathname
+# @_cc:				C compiler command name or pathname
+# @_cxx:			C++ compiler command name or pathname
+# @_ld:				ld(1) command name or pathname
+# @_libtool:			libtool(1) command name or pathname or "none"
+# @_make:			make(1) command name or pathname
+# @_pkg_config:			pkg-config(1) command name or pathname
+# @_ranlib:			ranlib(1) command name or pathname
+# @--:				(ignored)
+# @_set_ccfl:			1 if CC=... is to be passed to make(1), 0 if CC=... is not to be passed to make(1)
+# @_subdir:			make(1) -C argument
+# @--:				(ignored)
+# @_makeflags:			make(1) flags as a whitespace-separated list
+# @_makeflags_extra:		extra make(1) flags as a whitespace-separated likst
+# @_makeflags_list:		make(1) flags as a :-separated list
+# @_makeflags_extra_list:	extra make(1) flags as a :-separated list
+# @_makeflags_loadavg:		make(1) -l load argument
+# @_makeflags_parallelise:	make(1) -j jobs argument
+# @_makeflags_verbosity:	make(1) Makefile verbosity arguments or "none"
+# @--:				(ignored)
+# @_cflags:			$CFLAGS
+# @_cflags_extra:		extra $CFLAGS
+# @_cppflags:			$CPPFLAGS
+# @_cppflags_extra:		extra $CPPFLAGS
+# @_cxxflags:			$CXXFLAGS
+# @_cxxflags_extra:		extra $CXXFLAGS
+# @_ldflags:			$LDFLAGS
+# @_ldflags_extra:		extra $LDFLAGS
+# @_pkg_config_libdir:		pkg-config(1) search directory
+# @--:				(ignored)
+# @_destdir_spec:		DESTDIR=... specification
+# @_target:			make(1) target
+#
+# Returns:			zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_make() {
+	local	_erm_ar="${1}" _erm_cc="${2}" _erm_cxx="${3}" _erm_ld="${4}"			\
+		_erm_libtool="${5}" _erm_make="${6}" _erm_pkg_config="${7}" _erm_ranlib="${8}"	\
+		_erm_ignored="${9}"								\
+		_erm_set_ccfl="${10}" _erm_subdir="${11}"					\
+		_erm_ignored="${12}"								\
+		_erm_makeflags="${13}" _erm_makeflags_extra="${14}" _erm_makeflags_list="${15}"	\
+		_erm_makeflags_extra_list="${16}" _erm_makeflags_loadavg="${17}"		\
+		_erm_makeflags_parallelise="${18}" _erm_makeflags_verbosity="${19}"		\
+		_erm_ignored="${20}"								\
+		_erm_cflags="${21}" _erm_cflags_extra="${22}" _erm_cppflags="${23}"		\
+		_erm_cppflags_extra="${24}" _erm_cxxflags="${25}" _erm_cxxflags_extra="${26}"	\
+		_erm_ldflags="${27}" _erm_ldflags_extra="${28}" _erm_pkg_config_libdir="${29}"	\
+		_erm_ignored="${30}"								\
+		_erm_destdir_spec="${31}" _erm_target="${32}"					\
+		_erm_rc=0;
+
+	case "${_erm_makeflags_loadavg:-}" in
+	none) _erm_makeflags_loadavg=""; ;;
+	esac;
+
+	case "${_erm_libtool:-}" in
+	none) _erm_libtool=""; ;;
+	esac;
+
+	case "${_erm_makeflags_verbosity}" in
+	none) _erm_makeflags_verbosity=""; ;;
+	esac;
+
+	case "${_erm_set_ccfl}" in
+	1) _erm_set_ccfl="1"; ;;
+	*) _erm_set_ccfl=""; ;;
+	esac;
+
+(
+	if [ "${_erm_libtool:+1}" = 1 ]; then
+		export MAKE="make LIBTOOL=${_erm_libtool}";
+	fi;
+
+	if [ "${_erm_makeflags_list:+1}" = 1 ]; then
+		rtl_run_cmdlineV ":" "${_erm_make}"							\
+			AR="${_erm_ar}"									\
+			${_erm_set_ccfl:+CC="${_erm_cc}"}						\
+			${_erm_set_ccfl:+CXX="${_erm_cxx}"}						\
+			LD="${_erm_ld}"									\
+			${_erm_libtool:+LIBTOOL="${_erm_libtool}"}					\
+			${_erm_pkg_config:+PKG_CONFIG="${_erm_pkg_config}"}				\
+			RANLIB="${_erm_ranlib}"								\
+													\
+			"${_erm_makeflags_list}"							\
+			"${_erm_makeflags_extra_list:-}"						\
+			${_erm_makeflags_loadavg:-}							\
+			${_erm_makeflags_parallelise:-}							\
+			${_erm_makeflags_verbosity}							\
+													\
+			${_erm_cflags:+CFLAGS="${_erm_cflags}"}						\
+			${_erm_cflags_extra:+CFLAGS+="${_erm_cflags_extra}"}				\
+			${_erm_cppflags:+CPPFLAGS="${_erm_cppflags}"}					\
+			${_erm_cppflags_extra:+CPPFLAGS+="${_erm_cppflags_extra}"}			\
+			${_erm_cxxflags:+CXXFLAGS="${_erm_cxxflags}"}					\
+			${_erm_cxxflags_extra:+CXXFLAGS+="${_erm_cxxflags_extra}"}			\
+			${_erm_ldflags:+LDFLAGS="${_erm_ldflags}"}					\
+			${_erm_ldflags_extra:+LDFLAGS+="${_erm_ldflags_extra}"}				\
+			${_erm_pkg_config_libdir:+PKG_CONFIG_LIBDIR="${_erm_pkg_config_libdir}"}	\
+													\
+			${_erm_subdir:+-C "${_erm_subdir}"}						\
+			${_erm_destdir_spec:+"${_erm_destdir_spec}"}					\
+			${_erm_target:+"${_erm_target}"}						\
+			;
+		exit "${?}";
+	elif [ "${_erm_makeflags_extra_list:+1}" = 1 ]; then
+		rtl_run_cmdlineV ":" "${_erm_make}"							\
+			AR="${_erm_ar}"									\
+			${_erm_set_ccfl:+CC="${_erm_cc}"}						\
+			${_erm_set_ccfl:+CXX="${_erm_cxx}"}						\
+			LD="${_erm_ld}"									\
+			${_erm_libtool:+LIBTOOL="${_erm_libtool}"}					\
+			${_erm_pkg_config:+PKG_CONFIG="${_erm_pkg_config}"}				\
+			RANLIB="${_erm_ranlib}"								\
+													\
+			${_erm_makeflags:-}								\
+			"${_erm_makeflags_extra_list}"							\
+			${_erm_makeflags_loadavg:-}							\
+			${_erm_makeflags_parallelise:-}							\
+			${_erm_makeflags_verbosity}							\
+													\
+			${_erm_cflags:+CFLAGS="${_erm_cflags}"}						\
+			${_erm_cflags_extra:+CFLAGS+="${_erm_cflags_extra}"}				\
+			${_erm_cppflags:+CPPFLAGS="${_erm_cppflags}"}					\
+			${_erm_cppflags_extra:+CPPFLAGS+="${_erm_cppflags_extra}"}			\
+			${_erm_cxxflags:+CXXFLAGS="${_erm_cxxflags}"}					\
+			${_erm_cxxflags_extra:+CXXFLAGS+="${_erm_cxxflags_extra}"}			\
+			${_erm_ldflags:+LDFLAGS="${_erm_ldflags}"}					\
+			${_erm_ldflags_extra:+LDFLAGS+="${_erm_ldflags_extra}"}				\
+			${_erm_pkg_config_libdir:+PKG_CONFIG_LIBDIR="${_erm_pkg_config_libdir}"}	\
+													\
+			${_erm_subdir:+-C "${_erm_subdir}"}						\
+			${_erm_destdir_spec:+"${_erm_destdir_spec}"}					\
+			${_erm_target:+"${_erm_target}"}						\
+			;
+		exit "${?}";
+	else
+		rtl_run_cmdlineV ":" "${_erm_make}"							\
+			AR="${_erm_ar}"									\
+			${_erm_set_ccfl:+CC="${_erm_cc}"}						\
+			${_erm_set_ccfl:+CXX="${_erm_cxx}"}						\
+			LD="${_erm_ld}"									\
+			${_erm_libtool:+LIBTOOL="${_erm_libtool}"}					\
+			${_erm_pkg_config:+PKG_CONFIG="${_erm_pkg_config}"}				\
+			RANLIB="${_erm_ranlib}"								\
+													\
+			${_erm_makeflags:-}								\
+			${_erm_makeflags_extra:-}							\
+			${_erm_makeflags_loadavg:-}							\
+			${_erm_makeflags_parallelise:-}							\
+			${_erm_makeflags_verbosity}							\
+													\
+			${_erm_cflags:+CFLAGS="${_erm_cflags}"}						\
+			${_erm_cflags_extra:+CFLAGS+="${_erm_cflags_extra}"}				\
+			${_erm_cppflags:+CPPFLAGS="${_erm_cppflags}"}					\
+			${_erm_cppflags_extra:+CPPFLAGS+="${_erm_cppflags_extra}"}			\
+			${_erm_cxxflags:+CXXFLAGS="${_erm_cxxflags}"}					\
+			${_erm_cxxflags_extra:+CXXFLAGS+="${_erm_cxxflags_extra}"}			\
+			${_erm_ldflags:+LDFLAGS="${_erm_ldflags}"}					\
+			${_erm_ldflags_extra:+LDFLAGS+="${_erm_ldflags_extra}"}				\
+			${_erm_pkg_config_libdir:+PKG_CONFIG_LIBDIR="${_erm_pkg_config_libdir}"}	\
+													\
+			${_erm_subdir:+-C "${_erm_subdir}"}						\
+			${_erm_destdir_spec:+"${_erm_destdir_spec}"}					\
+			${_erm_target:+"${_erm_target}"}						\
+			;
+		exit "${?}";
+	fi;
+);
+	_erm_rc="${?}";
+
+	return "${_erm_rc}";
+};
+
+# vim:filetype=sh textwidth=0

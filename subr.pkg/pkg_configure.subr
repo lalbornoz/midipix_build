@@ -13,7 +13,7 @@ pkgp_configure_autotools() {
 	then
 		_ppca_rc=2;
 	else
-		ex_rtl_run_configure								\
+		ex_rtl_configure								\
 			"${PKG_AR}" "${PKG_CC}" "${PKG_CONFIGURE}" "${PKG_CXX}" "${PKG_LD}"	\
 			"${PKG_LIBTOOL}" "${PKG_PKG_CONFIG}" "${PKG_PYTHON:-}" "${PKG_RANLIB}"	\
 			--									\
@@ -53,7 +53,7 @@ pkgp_configure_cmake() {
 			esac;
 		esac;
 
-		ex_rtl_run_configure_cmake							\
+		ex_rtl_configure_cmake								\
 			"${PKG_AR}" "${PKG_CC}" "${ARG_CCACHE}" "${PKG_CMAKE}" "${PKG_CXX}"	\
 			"${PKG_LD}" "${PKG_PKG_CONFIG}" "${PKG_PYTHON:-}" "${PKG_RANLIB}"	\
 			--									\

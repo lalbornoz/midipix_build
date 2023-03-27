@@ -5,111 +5,30 @@
 
 pkg_configure_autotools() {
 	local	_pca_group_name="${1}" _pca_pkg_name="${2}" _pca_restart_at="${3}"	\
-		_pca_config_cache="" _pca_config_guest_fname="" _pca_fname=""		\
-		_pca_subdir_tgt="";
+		_pca_rc=0;
 
 	if [ "${PKG_CONFIGURE_TYPE:+1}" = 1 ]\
 	&& [ "${PKG_CONFIGURE_TYPE}" != "autotools" ]; then
-		return 0;
-	fi;
-
-	if [ "${PKG_AUTOCONF_CONFIG_GUESS:-midipix}" = "midipix" ]; then
-		_pca_config_guest_fname="config.guess";
+		_pca_rc=0;
 	else
-		_pca_config_guest_fname="";
+		ex_rtl_configure_prepare			\
+			"${PKG_BUILD_TYPE}"			\
+			"${PKG_BUILD_DIR}"			\
+			"${PKG_CONFIG_CACHE:-}"			\
+			"${PKG_CONFIG_CACHE_LOCAL:-}"		\
+			"${PKG_CONFIG_CACHE_EXTRA:-}"		\
+			"${MIDIPIX_BUILD_PWD}/etc/config.guess"	\
+			"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
+			"${PKG_AUTOCONF_CONFIG_GUESS:-copy}"	\
+			"${PKG_FORCE_AUTORECONF:-0}"		\
+			"${PKG_BASE_DIR}/${PKG_SUBDIR}"		\
+			"${PKG_PKG_CONFIG:-}"			\
+			"${PKG_PKG_CONFIG_LIBDIRG:-}"		\
+			"${PKG_PREFIX}";
+		_pca_rc="${?}";
 	fi;
 
-	if rtl_exists_any "${PKG_BASE_DIR}/${PKG_SUBDIR}"				\
-			${_pca_config_guest_fname:+"${_pca_config_guest_fname}"}	\
-			"configure.ac" "configure.in" "configure";
-	then
-		rtl_export_vars PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}";
-
-		if [ "${PKG_FORCE_AUTORECONF:-0}" -eq 1 ]\
-		&& ! (cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoreconf -fiv); then
-			return 1;
-		fi;
-
-		if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure.ac" ]\
-		&& [ ! -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/configure" ]; then
-			for _pca_fname in bootstrap bootstrap.sh autogen.sh; do
-				if [ -e "${PKG_BASE_DIR}/${PKG_SUBDIR}/${_pca_fname}" ]; then
-					for _pca_subdir_tgt in \
-							"${PKG_BASE_DIR}/${PKG_SUBDIR}/build-aux"		\
-							"${PKG_BASE_DIR}/${PKG_SUBDIR}";
-					do	if [ -e "${_pca_subdir_tgt}" ]; then
-							if ! rtl_fileop install -m 0700				\
-									"${MIDIPIX_BUILD_PWD}/etc/config.sub"	\
-									"${_pca_subdir_tgt}/config.sub"; then
-								return 1;
-							fi;
-
-							if [ "${PKG_AUTOCONF_CONFIG_GUESS:-midipix}" = "midipix" ]; then
-								if ! rtl_fileop install -m 0700			\
-										"${MIDIPIX_BUILD_PWD}/etc/config.guess"\
-										"${_pca_subdir_tgt}/config.guess"; then
-									return 1;
-								else
-									break;
-								fi;
-							fi;
-						fi;
-					done;
-
-					if ! (rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" &&			\
-							/bin/sh "${_pca_fname}"); then
-						return 1;
-					else
-						break;
-					fi;
-				fi;
-			done;
-
-			if ! (rtl_fileop cd "${PKG_BASE_DIR}/${PKG_SUBDIR}" && autoconf); then
-				return 1;
-			fi;
-		fi;
-
-		for _pca_fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.sub); do
-			if ! rtl_fileop mv "${_pca_fname}" "${_pca_fname}.orig"\
-			|| ! rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.sub" "${_pca_fname}"; then
-				return 1;
-			fi;
-		done;
-
-		if [ "${PKG_AUTOCONF_CONFIG_GUESS:-midipix}" = "midipix" ]; then
-			for _pca_fname in $(find "${PKG_BASE_DIR}/${PKG_SUBDIR}" -name config.guess); do
-				if ! rtl_fileop mv "${_pca_fname}" "${_pca_fname}.orig"\
-				|| ! rtl_fileop install -m 0700 "${MIDIPIX_BUILD_PWD}/etc/config.guess" "${_pca_fname}"; then
-					return 1;
-				fi;
-			done;
-		fi;
-
-		if [ "${PKG_BUILD_TYPE}" != host ]; then
-			if ! rtl_fileop touch "${PKG_BUILD_DIR}/config.cache"; then
-				return 1;
-			else
-				for _pca_config_cache in \
-						"${PKG_CONFIG_CACHE:-}"						\
-						"${PKG_CONFIG_CACHE_LOCAL:-}"					\
-						"${PKG_CONFIG_CACHE_EXTRA:-}";
-				do	if [ "${_pca_config_cache:+1}" = 1 ]\
-					&& ! printf "%s\n" "${_pca_config_cache}"					|\
-							tr " " "\n" >> "${PKG_BUILD_DIR}/config.cache"; then
-						return 1;
-					fi;
-				done;
-
-				if ! sed -i"" "s,%PREFIX%,${PKG_PREFIX},g" "${PKG_BUILD_DIR}/config.cache"; then
-					return 1;
-				fi;
-			fi;
-		fi;
-		rtl_export_vars -u PKG_CONFIG "${PKG_PKG_CONFIG:-}" PKG_CONFIG_LIBDIR "${PKG_PKG_CONFIG_LIBDIR:-}";
-	fi;
-
-	return 0;
+	return "${_pca_rc}";
 };
 
 # vim:filetype=sh textwidth=0

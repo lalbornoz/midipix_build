@@ -17,7 +17,7 @@ pkg_install_make() {
 			_pim_subdir="";
 		fi;
 
-		ex_rtl_run_make										\
+		ex_rtl_make										\
 			"${PKG_AR}" "${PKG_CC}" "${PKG_CXX}" "${PKG_CCLD}" "${PKG_LIBTOOL}"		\
 			"${PKG_MAKE}" "${PKG_PKG_CONFIG}" "${_pim_ranlib}"				\
 			--										\
