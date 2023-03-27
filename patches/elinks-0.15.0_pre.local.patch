@@ -1,7 +1,26 @@
-diff -ru elinks-0.15.0.orig/configure elinks-0.15.0/configure
---- elinks-0.15.0.orig/configure	2021-12-24 20:57:15.000000000 +0100
-+++ elinks-0.15.0/configure	2022-01-01 15:57:15.992481385 +0100
-@@ -13347,59 +13347,9 @@
+--- elinks-0.15.0/configure.orig	2021-12-24 20:57:15.000000000 +0100
++++ elinks-0.15.0/configure	2023-03-27 08:37:42.627732227 +0200
+@@ -10345,18 +10345,10 @@
+ 			fi
+ 		fi
+ 
+-		       for ac_header in term.h
+-do :
+-  ac_fn_cxx_check_header_compile "$LINENO" "term.h" "ac_cv_header_term_h" "$ac_includes_default"
+-if test "x$ac_cv_header_term_h" = xyes
+-then :
++ac_cv_header_term_h=yes
+   printf "%s\n" "#define HAVE_TERM_H 1" >>confdefs.h
+  CONFIG_TERMINFO=yes
+-else $as_nop
+-  CONFIG_TERMINFO=no; break;
+-fi
+ 
+-done
+ 		if test "$CONFIG_TERMINFO" = yes; then
+ 			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for setupterm in -ltinfo" >&5
+ printf %s "checking for setupterm in -ltinfo... " >&6; }
+@@ -13347,59 +13339,9 @@
  
  		chosen_ssl_library="GNUTLS"
  
