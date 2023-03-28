@@ -242,7 +242,7 @@ pkgtoolp_info() {
 pkgtoolp_info_single() {
 	local	_ppis_rstatus="${1}" _ppis_pkg_name="${2}" _ppis_groups="${3}" _ppis_groups_noauto="${4}"	\
 		_ppis_fname="" _ppis_group_fname="" _ppis_group_name="" _ppis_patch_idx=0 _ppis_pkg_disabled=""	\
-		_ppis_pkg_finished="" _ppis_pkg_name_uc="" _ppis_pkg_names="" _ppis_rc=0;
+		_ppis_pkg_finished="" _ppis_pkg_name_uc="" _ppis_pkg_names="" _ppis_pkg_vars="" _ppis_rc=0;
 	rtl_toupper2 \$_ppis_pkg_name \$_ppis_pkg_name_uc;
 
 	if ! ex_pkg_find_package \$_ppis_group_name "${_ppis_groups}" "${_ppis_pkg_name}"; then
@@ -258,7 +258,18 @@ pkgtoolp_info_single() {
 	else
 		rtl_get_var_unsafe \$_ppis_group_fname -u "PKG_${_ppis_pkg_name}_GROUP_FNAME";
 		rtl_get_var_unsafe \$_ppis_pkg_version -u "PKG_${_ppis_pkg_name}_VERSION";
-		rtl_log_env_vars "package_vars" "Package variables" $(rtl_get_vars_unsafe_fast "^PKG_${_ppis_pkg_name_uc}");
+		case "${_ppis_pkg_name}" in
+		*_host)
+			_ppis_pkg_vars="$(rtl_get_vars_unsafe_fast "^PKG_${_ppis_pkg_name_uc}" | grep -Ev "_(MINIPIX)")";
+			;;
+		*_minipix)
+			_ppis_pkg_vars="$(rtl_get_vars_unsafe_fast "^PKG_${_ppis_pkg_name_uc}" | grep -Ev "_(HOST)")";
+			;;
+		*)
+			_ppis_pkg_vars="$(rtl_get_vars_unsafe_fast "^PKG_${_ppis_pkg_name_uc}" | grep -Ev "_(HOST|MINIPIX)")";
+			;;
+		esac;
+		rtl_log_env_vars "package_vars" "Package variables" ${_ppis_pkg_vars};
 		rtl_log_msgV "info_build_group" "${MSG_info_build_group}" "${_ppis_group_name}" "${_ppis_group_fname}";
 
 		if [ "${PKG_DISABLED:-0}" -eq 1 ]; then
