@@ -54,7 +54,7 @@ pkgp_configure_cmake() {
 		esac;
 
 		ex_rtl_configure_cmake								\
-			"${PKG_AR}" "${PKG_CC}" "${ARG_CCACHE}" "${PKG_CMAKE}" "${PKG_CXX}"	\
+			"${PKG_AR}" "${PKG_CC}" "${ARG_CCACHE:-}" "${PKG_CMAKE}" "${PKG_CXX}"	\
 			"${PKG_LD}" "${PKG_PKG_CONFIG}" "${PKG_PYTHON:-}" "${PKG_RANLIB}"	\
 			--									\
 			"${_ppcc_build_type}" "${PKG_CMAKE_ARGS:-}" "${PKG_CMAKE_ARGS_EXTRA:-}"	\
