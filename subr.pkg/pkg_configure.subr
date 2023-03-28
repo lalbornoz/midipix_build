@@ -58,7 +58,7 @@ pkgp_configure_cmake() {
 			"${PKG_AR}" "${PKG_CC}" "${ARG_CCACHE:-}" "${PKG_CMAKE}" "${PKG_CXX}"	\
 			"${PKG_LD}" "${PKG_PKG_CONFIG}" "${PKG_PYTHON:-}" "${PKG_RANLIB}"	\
 			--									\
-			"${_ppc_build_type}" "${PKG_BUILD_TYPE}" "${PKG_CMAKE_ARGS:-}"		\
+			"${_ppcc_build_type}" "${PKG_BUILD_TYPE}" "${PKG_CMAKE_ARGS:-}"		\
 			"${PKG_CMAKE_ARGS_EXTRA:-}" "${PKG_PREFIX}"				\
 			"${PKG_BASE_DIR}/${PKG_SUBDIR}" "${_ppcc_system_name}"			\
 			"${_ppcc_system_processor}"						\
