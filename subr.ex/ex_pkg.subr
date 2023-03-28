@@ -216,9 +216,10 @@ ex_pkg_load_vars() {
 ex_pkg_load_groups() {
 	local	_eplg_rgroups="${1#\$}" _eplg_rgroups_noauto="${2#\$}"		\
 		_eplg_build_groups="" _eplg_build_groups_noauto=""		\
-		_eplg_fname="" _eplg_group="" _eplg_group_target=""		\
-		_eplg_group_target_uc="" _eplg_group_target_appendfl=0		\
-		_eplg_groups="" _eplg_pkg_name="" _eplg_pkg_names="";
+		_eplg_fname="" _eplg_group="" _eplg_group_noautofl=0		\
+		_eplg_group_target="" _eplg_group_target_uc=""			\
+		_eplg_group_target_appendfl=0 _eplg_groups="" _eplg_pkg_name=""	\
+		_eplg_pkg_names="";
 
 	for _eplg_fname in $(find ./groups -name *.group | sort); do
 		rtl_fileop source_opt "${_eplg_fname}";
@@ -236,12 +237,15 @@ ex_pkg_load_groups() {
 			_eplg_group_target_appendfl=0;
 		fi;
 
+		_eplg_group_noautofl=0;
 		if ! rtl_lmatch \$_eplg_groups "${_eplg_group_target}"; then
 			rtl_lconcat \$_eplg_groups "${_eplg_group_target}";
 			if eval [ \"\${GROUP_AUTO:+1}\" = 1 ]; then
 				if eval [ \"\${GROUP_AUTO:-0}\" -ne 0 ]; then
+					_eplg_group_noautofl=0;
 					rtl_lconcat \$_eplg_build_groups "${_eplg_group_target}";
 				else
+					_eplg_group_noautofl=1;
 					rtl_lconcat \$_eplg_build_groups_noauto "${_eplg_group_target}";
 				fi;
 				unset GROUP_AUTO;
@@ -257,9 +261,11 @@ ex_pkg_load_groups() {
 				rtl_lconcat "\$${_eplg_group_target_uc}_PACKAGES" "${_eplg_pkg_names}";
 			fi;
 
-			for _eplg_pkg_name in ${_eplg_pkg_names}; do
-				rtl_set_var_unsafe -u "PKG_${_eplg_pkg_name}_GROUP_FNAME" "${_eplg_fname}";
-			done;
+			if [ "${_eplg_group_noautofl}" -eq 0 ]; then
+				for _eplg_pkg_name in ${_eplg_pkg_names}; do
+					rtl_set_var_unsafe -u "PKG_${_eplg_pkg_name}_GROUP_FNAME" "${_eplg_fname}";
+				done;
+			fi;
 		fi;
 	done;
 
