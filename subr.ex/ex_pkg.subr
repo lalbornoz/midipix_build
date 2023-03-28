@@ -158,6 +158,29 @@ ex_pkg_get_packages() {
 };
 
 #
+# ex_pkg_get_package_vars() - get package variable names
+# @_rpkg_vnames:		out reference to package variable names variable
+# @_build_vars_default:		list of default build variables
+# @_pkg_name:			single package name
+#
+# Returns:			zero (0) on success, non-zero (>0) on failure, list of package names on stdout on success.
+#
+ex_pkg_get_package_vars() {
+	local	_epgpv_rpkg_vnames="${1#\$}" _epgpv_build_vars_default="${2}" _epgpv_pkg_name="${3}"	\
+		_epgpv_pkg_name_uc="" _epgpv_vname="" _epgpv_vnames="";
+	rtl_toupper2 \$_epgpv_pkg_name \$_epgpv_pkg_name_uc;
+
+	for _epgpv_vname in ${_epgpv_build_vars_default}; do
+		if eval [ \"\${PKG_${_epgpv_pkg_name_uc}_${_epgpv_vname}:+1}\" = 1 ]; then
+			rtl_lconcat \$_epgpv_vnames "PKG_${_epgpv_pkg_name_uc}_${_epgpv_vname}";
+		fi;
+	done;
+
+	eval ${_epgpv_rpkg_vnames}='${_epgpv_vnames}';
+	return 0;
+}
+
+#
 # ex_pkg_load_vars() - load build variables
 # @_rstatus:		out reference to status string
 # @_rbuild_arch:	in reference to build architecture

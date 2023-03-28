@@ -112,21 +112,6 @@ rtl_get_var_unsafe() {
 };
 
 #
-# rtl_get_vars_unsafe_fast() - get values of multiple variables w/ pattern
-# @_pattern:	pattern to match against set output
-#
-# Returns:	zero (0) on success, non-zero (>0) on failure, matching variable values on stdout
-# N.B.:		This function is *unsafe* and impossible to implement otherwise w/o parsing set
-#		output properly and may produce spurious data.
-#
-rtl_get_vars_unsafe_fast() {
-	local _rgvuf_pattern="${1}";
-
-	set | awk -F= '/'"${_rgvuf_pattern}"'/{print $1}' | sort;
-	return 0;
-};
-
-#
 # rtl_kill_tree() - kill tree of processes
 # @_rpids:	inout reference to list of PIDs
 # @_pid:	top-level PID
