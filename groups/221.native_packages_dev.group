@@ -83,6 +83,7 @@ ac_cv_prog_gnu_m4_gnu=yes"};
 : ${PKG_LUA_INSTALL_FILES_V2:="
     +%[_files]/lua.pc=lib/pkgconfig/lua.pc
     m0644=lib/pkgconfig/lua.pc"};
+: ${PKG_LUA_MAKEFLAGS_VERBOSITY:="none"};
 : ${PKG_INDENT_SHA256SUM:=1b81ba4e9a006ca8e6eb5cbbe4cf4f75dfc1fc9301b459aa0d40393e85590a0b};
 : ${PKG_INDENT_VERSION:=2.2.13};
 : ${PKG_INDENT_URL:=https://ftp.gnu.org/gnu/indent/indent-${PKG_INDENT_VERSION}.tar.xz};
