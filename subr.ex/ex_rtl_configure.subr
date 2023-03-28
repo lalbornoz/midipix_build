@@ -112,6 +112,7 @@ ex_rtl_configure() {
 # @_python:			python command name or pathname
 # @_ranlib:			ranlib(1) command name or pathname
 # @--:				(ignored)
+# @_build_kind:			build kind (Debug, Release)
 # @_build_type:			CMake build type (host, cross, native)
 # @_cmake_args:			additional CMake arguments as a whitespace-separated list
 # @_cmake_args_extra:		additional CMake extra arguments as a whitespace-separated likst
@@ -137,14 +138,14 @@ ex_rtl_configure_cmake() {
 		_ercc_cxx="${5}" _ercc_ld="${6}" _ercc_pkg_config="${7}" _ercc_python="${8}"		\
 		_ercc_ranlib="${9}"									\
 		_ercc_ignored="${10}"									\
-		_ercc_build_type="${11}"								\
-		_ercc_cmake_args="${12}" _ercc_cmake_args_extra="${13}"					\
-		_ercc_prefix="${14}" _ercc_subdir="${15}"						\
-		_ercc_system_name="${16}" _ercc_system_processor="${17}"				\
-		_ercc_ignored="${18}"									\
-		_ercc_cflags="${19}" _ercc_cflags_extra="${20}" _ercc_cppflags="${21}"			\
-		_ercc_cppflags_extra="${22}" _ercc_cxxflags="${23}" _ercc_cxxflags_extra="${24}"	\
-		_ercc_ldflags="${25}" _ercc_ldflags_extra="${26}" _ercc_pkg_config_libdir="${27}"	\
+		_ercc_build_kind="${11}" _ercc_build_type="${12}"					\
+		_ercc_cmake_args="${13}" _ercc_cmake_args_extra="${14}"					\
+		_ercc_prefix="${15}" _ercc_subdir="${16}"						\
+		_ercc_system_name="${17}" _ercc_system_processor="${18}"				\
+		_ercc_ignored="${19}"									\
+		_ercc_cflags="${20}" _ercc_cflags_extra="${21}" _ercc_cppflags="${22}"			\
+		_ercc_cppflags_extra="${23}" _ercc_cxxflags="${24}" _ercc_cxxflags_extra="${25}"	\
+		_ercc_ldflags="${26}" _ercc_ldflags_extra="${27}" _ercc_pkg_config_libdir="${28}"	\
 		_ercc_cmd_name="" _ercc_cmake_args_auto="" _ercc_rc=0 _ercc_vname="" _ercc_vval=""
 
 	[ "${_ercc_cflags_extra:+1}" = 1 ] && _ercc_cflags="${_ercc_cflags:+${_ercc_cflags} }${_ercc_cflags_extra}";
@@ -180,12 +181,13 @@ ex_rtl_configure_cmake() {
 	done;
 
 	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_AR=${_ercc_ar}" "|";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_BUILD_TYPE=${_ercc_build_type}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_BUILD_TYPE=${_ercc_build_kind}" "|";
 	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_COMPILER=${_ercc_cc}" "|";
 	if [ "${_ercc_ccache:+1}" = 1 ]; then
 		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_COMPILER_LAUNCHER=${_ercc_ccache}" "|";
 	fi;
 	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_FLAGS=${_ercc_cflags}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_COMMAND=${_ercc_cmake}" "|";
 	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CPP_FLAGS=${_ercc_cppflags}" "|";
 	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CXX_COMPILER=${_ercc_cxx}" "|";
 	if [ "${_ercc_ccache:+1}" = 1 ]; then
@@ -208,6 +210,11 @@ ex_rtl_configure_cmake() {
 		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SYSTEM_NAME=${_ercc_system_name}" "|";
 		;;
 	esac;
+
+	rtl_llift \$_ercc_cmake_args " 
+" "|";
+	rtl_llift \$_ercc_cmake_args_extra " 
+" "|";
 
 	rtl_run_cmdlineV "|" "${_ercc_cmake}"	\
 		"${_ercc_cmake_args_auto}"	\
