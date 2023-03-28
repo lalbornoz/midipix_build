@@ -79,3 +79,25 @@
  	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) $(filter %.a,$^) $(LIBS)
  
  check-sha1:: t/helper/test-tool$X
+--- git-2.35.6/git-compat-util.h.orig	2022-12-13 13:17:26.000000000 +0100
++++ git-2.35.6/git-compat-util.h	2023-03-28 08:13:34.179644083 +0200
+@@ -221,7 +221,7 @@
+ #include <time.h>
+ #include <signal.h>
+ #include <assert.h>
+-#include <regex.h>
++#include <pcreposix.h>
+ #include <utime.h>
+ #include <syslog.h>
+ #if !defined(NO_POLL_H)
+--- git-2.35.6/compat/regex/regex.c.orig	2022-12-13 13:17:26.000000000 +0100
++++ git-2.35.6/compat/regex/regex.c	2023-03-28 08:18:00.186635875 +0200
+@@ -66,7 +66,7 @@
+ #undef alloca
+ #define alloca alloca_is_bad_you_should_never_use_it
+ #endif
+-#include <regex.h>
++#include "compat/regex/regex.h"
+ #include "regex_internal.h"
+ 
+ #include "regex_internal.c"
