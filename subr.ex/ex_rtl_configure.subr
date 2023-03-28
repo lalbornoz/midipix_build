@@ -179,37 +179,37 @@ ex_rtl_configure_cmake() {
 		fi;
 	done;
 
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_AR=${_ercc_ar}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_BUILD_TYPE=${_ercc_build_type}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_COMPILER=${_ercc_cc}" ":";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_AR=${_ercc_ar}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_BUILD_TYPE=${_ercc_build_type}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_COMPILER=${_ercc_cc}" "|";
 	if [ "${_ercc_ccache:+1}" = 1 ]; then
-		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_COMPILER_LAUNCHER=${_ercc_ccache}" ":";
+		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_COMPILER_LAUNCHER=${_ercc_ccache}" "|";
 	fi;
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_FLAGS=${_ercc_cflags}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CPP_FLAGS=${_ercc_cppflags}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CXX_COMPILER=${_ercc_cxx}" ":";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_C_FLAGS=${_ercc_cflags}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CPP_FLAGS=${_ercc_cppflags}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CXX_COMPILER=${_ercc_cxx}" "|";
 	if [ "${_ercc_ccache:+1}" = 1 ]; then
-		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CXX_COMPILER_LAUNCHER=${_ercc_ccache}" ":";
+		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CXX_COMPILER_LAUNCHER=${_ercc_ccache}" "|";
 	fi;
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CXX_FLAGS=${_ercc_cxxflags}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_EXE_LINKER_FLAGS=${_ercc_ldflags}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_FIND_ROOT_PATH=${_ercc_prefix}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_INSTALL_PREFIX=" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_LINKER=${_ercc_ld}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_MODULE_LINKER_FLAGS=${_ercc_ldflags}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_RANLIB=${_ercc_ranlib}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SHARED_LINKER_FLAGS=${_ercc_ldflags}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SYSTEM_PROCESSOR=${_ercc_system_processor}" ":";
-	rtl_lconcat \$_ercc_cmake_args_auto "-DPKG_CONFIG_EXECUTABLE=${_ercc_pkg_config}" ":";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_CXX_FLAGS=${_ercc_cxxflags}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_EXE_LINKER_FLAGS=${_ercc_ldflags}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_FIND_ROOT_PATH=${_ercc_prefix}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_INSTALL_PREFIX=" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_LINKER=${_ercc_ld}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_MODULE_LINKER_FLAGS=${_ercc_ldflags}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_RANLIB=${_ercc_ranlib}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SHARED_LINKER_FLAGS=${_ercc_ldflags}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SYSTEM_PROCESSOR=${_ercc_system_processor}" "|";
+	rtl_lconcat \$_ercc_cmake_args_auto "-DPKG_CONFIG_EXECUTABLE=${_ercc_pkg_config}" "|";
 
 	case "${_ercc_build_type}" in
 	native)
-		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SYSROOT=${_ercc_prefix}" ":";
-		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SYSTEM_NAME=${_ercc_system_name}" ":";
+		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SYSROOT=${_ercc_prefix}" "|";
+		rtl_lconcat \$_ercc_cmake_args_auto "-DCMAKE_SYSTEM_NAME=${_ercc_system_name}" "|";
 		;;
 	esac;
 
-	rtl_run_cmdlineV ":" "${_ercc_cmake}"	\
+	rtl_run_cmdlineV "|" "${_ercc_cmake}"	\
 		"${_ercc_cmake_args_auto}"	\
 		${_ercc_cmake_args:-}		\
 		${_ercc_cmake_args_extra:-}	\
