@@ -738,6 +738,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | CONFIGURE_ARGS_EXTRA_LIST    | List(:)          | Additional arguments to package (GNU autotools in implementation and/or interface) configuration script                                    |
 | CONFIGURE                    | CmdName          | Package's (GNU autotools in implementation and/or interface) configuration script                                                          |
 | CONFIGURE_TYPE               | String           | Either of ``autotools`` (GNU autotools or similar) or ``sofort`` or ``cmake`` (CMake)                                                      |
+| CPPFLAGS_CONFIGURE_EXTRA     | FlagLine         | Additional C preprocessor flags during package (GNU autotools in implementation and/or interface) configuration                            |
 | CXX                          | CmdName          | Toolchain C++ compiler ``c++(1)``                                                                                                          |
 | CXXFLAGS_CONFIGURE_EXTRA     | FlagLine         | Additional C++ compiler flags during package (GNU autotools in implementation and/or interface) configuration                              |
 | CXXFLAGS_CONFIGURE           | FlagLine         | C++ compiler flags during package (GNU autotools in implementation and/or interface) configuration                                         |
