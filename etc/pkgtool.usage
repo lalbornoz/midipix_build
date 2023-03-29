@@ -4,6 +4,7 @@
 
         [33m-[93ma nt32[90m|[93mnt64[0m      [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
         [33m-[93mb debug[90m|[93mrelease[0m  [96mSelects debug or release build kind; defaults to [93mdebug[96m.[0m
+        [33m-[93me                [96mEdit package group file of single named package with ${EDITOR}.[0m
         [33m-[93mi                [96mList package variables and dependencies of named package(s).[0m
         [33m-[93mm [90m<[93mdname[90m>        [96mSetup package archives mirror in [90m<[93mdname[90m>[96m and/or[0m
         [33m-[93mM [90m<[93mdname[90m>        [96mSetup Git repositories mirror in [90m<[93mdname[90m>[0m

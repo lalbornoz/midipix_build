@@ -926,6 +926,7 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build kind; defaults to debug.
+        -e                Edit package group file of single named package with ${EDITOR}.
         -i                List package variables and dependencies of named package(s).
         -m <dname>        Setup package archives mirror in <dname> and/or
         -M <dname>        Setup Git repositories mirror in <dname>
