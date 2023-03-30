@@ -29,9 +29,9 @@ exp_pkg_dispatch_complete() {
 
 #
 # exp_pkg_dispatch_expand_packages() - expand build group name to list of packages ordered and filtered according to dependency and restart constraints
-# @_rdisabled:		reference to out variable of disabled packages
-# @_rfinished:		reference to out variable of finished packages
-# @_rnames:		reference to out variable of package names
+# @_rdisabled:		out reference to variable of disabled packages
+# @_rfinished:		out reference to variable of finished packages
+# @_rnames:		out reference to variable of package names
 # @_checkfl:		enable (1) or inhibit (0) dependency expansion
 # @_forcefl:		enable (1) or inhibit (0) forcibly rebuilding finished packages
 # @_group_name:		build group name
@@ -77,16 +77,16 @@ exp_pkg_dispatch_expand_packages() {
 
 #
 # exp_pkg_dispatch_group() - dispatch a single build group
-# @_rdispatch_count:		reference to inout variable of dispatcher count
-# @_rdispatch_count_cur:	reference to inout variable of current dispatcher count
+# @_rdispatch_count:		in reference toout variable of dispatcher count
+# @_rdispatch_count_cur:	in reference toout variable of current dispatcher count
 # @_dispatch_count_max:		maximum dispatcher count
 # @_dispatch_group_cur:		current group
 # @_dispatch_group_max:		maximum group
-# @_rdispatch_njobs:		reference to inout variable of dispatcher count
-# @_rdispatch_wait:		reference to inout variable of package names in a wait state
-# @_rpkg_disabled:		reference to in variable of list of disabled packages
-# @_rpkg_finished:		reference to inout variable of list of finished packages
-# @_rpkg_names:			reference to inout variable of list of package names
+# @_rdispatch_njobs:		in reference toout variable of dispatcher count
+# @_rdispatch_wait:		in reference toout variable of package names in a wait state
+# @_rpkg_disabled:		in reference to variable of list of disabled packages
+# @_rpkg_finished:		in reference toout variable of list of finished packages
+# @_rpkg_names:			in reference toout variable of list of package names
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
 # @_checkfl:			enable (1) or inhibit (0) dependency expansion
@@ -213,16 +213,16 @@ exp_pkg_dispatch_group() {
 
 #
 # exp_pkg_dispatch_packages() - dispatch set of packages
-# @_rdispatch_count:		reference to inout variable of dispatcher count
+# @_rdispatch_count:		in reference toout variable of dispatcher count
 # @_dispatch_count_cur:		current dispatcher count
 # @_dispatch_count_max:		maximum dispatcher count
 # @_dispatch_group_cur:		current group
 # @_dispatch_group_max:		maximum group
-# @_rdispatch_njobs:		reference to inout variable of dispatcher count
-# @_rdispatch_wait:		reference to inout variable of package names in a wait state
-# @_rpkg_disabled:		reference to in variable of list of disabled packages
-# @_rpkg_finished:		reference to inout variable of list of finished packages
-# @_rpkg_names:			reference to inout variable of list of package names
+# @_rdispatch_njobs:		in reference toout variable of dispatcher count
+# @_rdispatch_wait:		in reference toout variable of package names in a wait state
+# @_rpkg_disabled:		in reference to variable of list of disabled packages
+# @_rpkg_finished:		in reference toout variable of list of finished packages
+# @_rpkg_names:			in reference toout variable of list of package names
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
 # @_checkfl:			enable (1) or inhibit (0) dependency expansion
@@ -278,7 +278,7 @@ exp_pkg_dispatch_packages() {
 
 #
 # ex_pkg_dispatch() - dispatch a set of build group
-# @_rdispatch_wait:		reference to out variable of package names in a wait state
+# @_rdispatch_wait:		out reference to variable of package names in a wait state
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
 # @_continue_on_failfl:		continue on failed package build (1) or break (0)

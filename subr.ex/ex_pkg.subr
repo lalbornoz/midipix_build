@@ -6,10 +6,10 @@
 #
 # ex_pkg_check_depends() - check single named package for unsatisfied dependencies
 # @_checkfl:		enable (1) or inhibit (0) dependency expansion
-# @_rpkg_disabled:	reference to in variable of list of disabled packages
-# @_rpkg_finished:	reference to in variable of list of finished packages
+# @_rpkg_disabled:	in reference to variable of list of disabled packages
+# @_rpkg_finished:	in reference to variable of list of finished packages
 # @_pkg_name:		single package name
-# @_rpkg_names:		reference to in variable of list of package names
+# @_rpkg_names:		in reference to variable of list of package names
 # @_workdir:		pathname to build-specific temporary directory
 #
 # Returns:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
@@ -50,7 +50,7 @@ ex_pkg_check_depends() {
 
 #
 # ex_pkg_find_package() - find build group a single named package belongs to
-# @_rgroup_name:	reference to out variable of build group name
+# @_rgroup_name:	out reference to variable of build group name
 # @_group_names:	build group names
 # @_pkg_name:		single named package
 #
@@ -79,7 +79,7 @@ ex_pkg_find_package() {
 
 #
 # ex_pkg_get_default() - get single package default value
-# @_rdefault:		reference to out variable of default value or "" on end of list
+# @_rdefault:		out reference to variable of default value or "" on end of list
 # @_default_idx:	one-based single default value index
 # @_pkg_name:		single package name
 # @_pkg_version:	single package version
@@ -138,7 +138,7 @@ ex_pkg_get_default() {
 
 #
 # ex_pkg_get_packages() - get list of packages belonging to single named build group
-# @_rpkg_names:	reference to out variable of package names
+# @_rpkg_names:	out reference to variable of package names
 # @_group_name:	build group name
 #
 # Returns:	zero (0) on success, non-zero (>0) on failure, list of package names on stdout on success.
@@ -231,8 +231,8 @@ ex_pkg_load_vars() {
 
 #
 # ex_pkg_load_groups() - load all available build groups
-# @_rgroups:		reference to out variable of build groups
-# @_rgroups_noauoto:	optional reference to out variable of build groups not built automatically
+# @_rgroups:		out reference to variable of build groups
+# @_rgroups_noauoto:	optional out reference to variable of build groups not built automatically
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure.
 #
@@ -305,9 +305,9 @@ ex_pkg_load_groups() {
 
 #
 # ex_pkg_unfold_depends() - unfold list of package names into dependency-expanded set of complete, disabled, finished, and outstanding package names
-# @_rdisabled:		reference to inout variable of disabled packages
-# @_rfinished:		reference to inout variable of finished packages
-# @_rnames:		reference to out variable of package names
+# @_rdisabled:		in reference toout variable of disabled packages
+# @_rfinished:		in reference toout variable of finished packages
+# @_rnames:		out reference to variable of package names
 # @_checkfl:		enable (1) or inhibit (0) dependency expansion
 # @_forcefl:		enable (1) or inhibit (0) forcibly rebuilding finished packages
 # @_group_name:		build group name
@@ -372,9 +372,9 @@ ex_pkg_unfold_depends() {
 
 #
 # ex_pkg_unfold_rdepends() - unfold list of package names into reverse dependency-expanded set of complete, disabled, finished, and outstanding package names
-# @_rdisabled:		reference to inout variable of disabled packages
-# @_rfinished:		reference to inout variable of finished packages
-# @_rnames:		reference to out variable of package names
+# @_rdisabled:		in reference toout variable of disabled packages
+# @_rfinished:		in reference toout variable of finished packages
+# @_rnames:		out reference to variable of package names
 # @_group_name:		build group name
 # @_pkg_names:		list of package names
 # @_restart:		optional whitespace-separated list of package names to rebuild

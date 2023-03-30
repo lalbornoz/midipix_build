@@ -11,9 +11,9 @@ exp_setrstatus() {
 
 #
 # ex_init_env() - initialise build environment
-# @_rstatus:		reference to out variable of status string on failure
-# @_rhname:		reference to out variable of build hostname
-# @_ruser:		reference to out variable of build user
+# @_rstatus:		out reference to variable of status string on failure
+# @_rhname:		out reference to variable of build hostname
+# @_ruser:		out reference to variable of build user
 # @_name_base:		base name for messages and theme file(s)
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure
@@ -95,7 +95,7 @@ ex_init_env() {
 
 #
 # ex_init_getopts() - process command-line arguments
-# @_rstatus:	reference to out variable of status string on failure
+# @_rstatus:	out reference to variable of status string on failure
 # @_fn:		reference to function called to process command-line argument
 # @_optstring:	getopts(1) optstring
 # @...:		command-line arguments as "${@}"
@@ -163,7 +163,7 @@ ex_init_getopts() {
 
 #
 # ex_init_help() - display usage screen and exit if requested in command-line arguments
-# @_rstatus:	reference to out variable of status string on failure
+# @_rstatus:	out reference to variable of status string on failure
 # @_args_long:	optional list of long (prefixed with `--') arguments
 # @_name_base:	base name for usage screen file
 # @_optstring:	getopts(1) optstring
@@ -235,9 +235,9 @@ ex_init_help() {
 
 #
 # ex_init_files() - initialise build files
-# @_rstatus:				reference to out variable of status string on failure
-# @_rclean_builds:			reference to in variable of -C argument value
-# @_rdist:				reference to in variable of -D argument value
+# @_rstatus:				out reference to variable of status string on failure
+# @_rclean_builds:			in reference to variable of -C argument value
+# @_rdist:				in reference to variable of -D argument value
 # @_build_log_fname:			absolute pathname to build log file
 # @_build_log_last_fname:		absolute pathname to last build log file
 # @_build_status_in_progress_fname:	absolute pathname to build-in-progress status file
@@ -318,8 +318,8 @@ ex_init_files() {
 
 #
 # ex_init_logging() - initialise build logging
-# @_rstatus:		reference to out variable of status string on failure
-# @_rverbose_tags:	reference to inout variable of -V argument value
+# @_rstatus:		out reference to variable of status string on failure
+# @_rverbose_tags:	in reference toout variable of -V argument value
 # @_verbose:		-[vV] argument value
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure
@@ -388,7 +388,7 @@ ex_init_logging() {
 
 #
 # ex_init_prereqs() - initialise build prerequisite commands
-# @_rstatus:	reference to out variable of status string on failure
+# @_rstatus:	out reference to variable of status string on failure
 # @_prereqs:	list of prerequisite commands
 #
 # Returns:	zero (0) on success, non-zero (>0) on failure
@@ -414,7 +414,7 @@ ex_init_prereqs() {
 
 #
 # ex_init_theme() - initialise theme
-# @_rstatus:	reference to out variable of status string on failure
+# @_rstatus:	out reference to variable of status string on failure
 # @_hname:	build hostname
 # @_name_base:	base name for theme file(s)
 # @_theme:	theme name
