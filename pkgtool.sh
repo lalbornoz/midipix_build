@@ -212,9 +212,10 @@ pkgtoolp_init_getopts_fn() {
 
 # {{{ pkgtoolp_edit($_rstatus, $_pkg_name)
 pkgtoolp_edit() {
-	local	_ppe_rstatus="${1}" _ppe_pkg_name="${2}"	\
-		_ppe_fname="" _ppe_group_fname="" _ppe_group_name="" _ppe_patch_idx=0 _ppe_pkg_disabled=""	\
-		_ppe_pkg_finished="" _ppe_pkg_name_uc="" _ppe_pkg_names="" _ppe_pkg_vars="" _ppe_rc=0;
+	local	_ppe_rstatus="${1}" _ppe_pkg_name="${2}"					\
+		_ppe_fname="" _ppe_group_fname="" _ppe_group_fname_nline="" _ppe_group_name=""	\
+		_ppe_patch_idx=0 _ppe_pkg_disabled="" _ppe_pkg_finished="" _ppe_pkg_name_uc=""	\
+		_ppe_pkg_names="" _ppe_pkg_vars="" _ppe_rc=0;
 	rtl_toupper2 \$_ppe_pkg_name \$_ppe_pkg_name_uc;
  
 	if ! ex_pkg_load_groups \$_ppe_groups \$_ppe_groups_noauto; then
@@ -236,6 +237,16 @@ pkgtoolp_edit() {
 		case "${EDITOR}" in
 		"")
 			rtl_setrstatus "${_ppe_rstatus}" 'Error: \${EDITOR} unset.';
+			;;
+
+		nano)
+			_ppe_group_fname_nline="$(						\
+				grep -n "PKG_${_ppe_pkg_name_uc}_" "${_ppe_group_fname}"	|\
+				awk -F: 'NR == 1 { print $1 }')";
+			"${EDITOR}"							\
+				${_ppe_group_fname_nline:+"+${_ppe_group_fname_nline}"}	\
+				"${_ppe_group_fname}"
+			_ppe_rc="${?}";
 			;;
 
 		vi|vim|nvi|nvim)
