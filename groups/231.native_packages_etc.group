@@ -400,7 +400,7 @@ have_shm_mmap_posix=yes"};
 : ${PKG_QEMU_VERSION:=3.1.0};
 : ${PKG_QEMU_URL:=https://download.qemu.org/qemu-${PKG_QEMU_VERSION}.tar.xz};
 : ${PKG_QEMU_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports"};
-: ${PKG_QEMU_CONFIGURE_ARGS_LIST:="--host=${DEFAULT_TARGET}:--prefix=:--cc=${DEFAULT_NATIVE_CC}:--disable-strip:--disable-sdl"};
+: ${PKG_QEMU_CONFIGURE_ARGS_LIST:="--host=${DEFAULT_TARGET}:--prefix=:--cc=${DEFAULT_NATIVE_CC}:--cxx=:--disable-strip:--disable-sdl"};
 : ${PKG_QPDF_DEPENDS:="libz pcre"};
 : ${PKG_QPDF_SHA256SUM:=a9fdc7e94d38fcd3831f37b6e0fe36492bf79aa6d54f8f66062cf7f9c4155233};
 : ${PKG_QPDF_VERSION:=6.0.0};
