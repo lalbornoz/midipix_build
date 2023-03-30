@@ -160,6 +160,7 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin";
 : ${PKG_RDESKTOP_SHA256SUM:=473c2f312391379960efe41caad37852c59312bc8f100f9b5f26609ab5704288};
 : ${PKG_RDESKTOP_VERSION:=1.9.0};
 : ${PKG_RDESKTOP_URL:=https://github.com/rdesktop/rdesktop/releases/download/v${PKG_RDESKTOP_VERSION}/rdesktop-${PKG_RDESKTOP_VERSION}.tar.gz};
+: ${PKG_RDESKTOP_CPPFLAGS_CONFIGURE:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
 : ${PKG_RDESKTOP_IN_TREE:=1};
 : ${PKG_RDESKTOP_CONFIGURE_ARGS_EXTRA:="--disable-credssp --disable-smartcard --without-sound --with-openssl=${PREFIX_NATIVE}"};
 : ${PKG_RXVT_UNICODE_DEPENDS:="libX11"};
