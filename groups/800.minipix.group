@@ -2,6 +2,7 @@
 # Build group minipix
 #
 rtl_lconcat2 \$MINIPIX_CFLAGS_CONFIGURE \$DEFAULT_CFLAGS "--sysroot=${PREFIX_NATIVE}";
+rtl_lconcat2 \$MINIPIX_CPPFLAGS_CONFIGURE \$DEFAULT_CPPFLAGS "--sysroot=${PREFIX_NATIVE}";
 rtl_lconcat2 \$MINIPIX_CXXFLAGS_CONFIGURE \$DEFAULT_CXXFLAGS "--sysroot=${PREFIX_NATIVE}";
 MINIPIX_CONFIG_CACHE_LOCAL="${CONFIG_CACHE_GNULIB}";
 MINIPIX_CONFIGURE_ARGS="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET}";
