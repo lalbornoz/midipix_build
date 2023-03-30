@@ -1,0 +1,14 @@
+diff -ru rxvt-unicode-9.22.orig/src/Makefile.in rxvt-unicode-9.22/src/Makefile.in
+--- rxvt-unicode-9.22.orig/src/Makefile.in	2016-01-23 21:09:22.000000000 +0100
++++ rxvt-unicode-9.22/src/Makefile.in	2023-03-30 18:57:07.555416723 +0200
+@@ -21,8 +21,8 @@
+ LDFLAGS = @LDFLAGS@
+ DEFS = @DEFS@
+ LIBS = @LIBS@
+-XINC = @X_CFLAGS@ @PIXBUF_CFLAGS@ @STARTUP_NOTIFICATION_CFLAGS@
+-XLIB = @X_LIBS@ -lX11 @X_EXTRA_LIBS@ @PIXBUF_LIBS@ @STARTUP_NOTIFICATION_LIBS@
++XINC = @PIXBUF_CFLAGS@ @STARTUP_NOTIFICATION_CFLAGS@
++XLIB = -lX11 -lXmu @X_EXTRA_LIBS@ @PIXBUF_LIBS@ @STARTUP_NOTIFICATION_LIBS@
+ COMPILE = $(CXX) -I.. -I$(srcdir) -I. -I$(srcdir)/../libev -I$(srcdir)/../libptytty/src $(DEFS) $(CPPFLAGS) $(CXXFLAGS) $(XINC)
+ LINK = @LINKER@ $(LDFLAGS)
+ EXEEXT = @EXEEXT@
