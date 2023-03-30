@@ -58,13 +58,12 @@ pkgp_install_files_perms() {
 };
 
 pkgp_install_files_strip() {
-	local _ppifs_files_stripped="" _ppifs_pkg_minipixfl=0 _ppifs_rc=0;
+	local _ppifs_pkg_minipixfl=0 _ppifs_rc=0;
 
 	rtl_match "${PKG_NAME}" "*_minipix"; _ppifs_pkg_minipixfl="${?}";
 	if [ \( "${_ppifs_pkg_minipixfl}" -eq 0 \) -a \( "${ARG_DEBUG_MINIPIX:-0}" -eq 0 \) ]\
 	|| [ \( "${BUILD_KIND}" = release \) -a \( "${PKG_BUILD_TYPE}" = native \) ]; then
 		ex_rtl_strip_files		\
-			\$_ppifs_files_stripped	\
 			"${PKG_TARGET}-strip"	\
 			"${PKG_DESTDIR}"	\
 			--			\

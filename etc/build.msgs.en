@@ -26,7 +26,7 @@ MSG_pkg_skip_finished="1;Skipping finished package \`%s'.";
 MSG_pkg_skip_unknown="1;Error: unknown package \`%s'.";
 MSG_pkg_stderrout_log="2;%s/%s_stderrout.log:";
 MSG_pkg_step="2;Finished build step %s of package \`%s'.";
-MSG_pkg_strip="1;Stripping %s...";
+MSG_pkg_strip="1;Stripped %s";
 
 MSG_zipdist_begin="0;Building deployable distribution ZIP archive...";
 MSG_zipdist_finished="0;Finished building deployable distribution ZIP archive.";
