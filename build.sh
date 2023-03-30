@@ -95,6 +95,7 @@ buildp_init() {
 			"${DEFAULT_CHECK_PATH_VARS}"					\
 			"${DEFAULT_CLEAR_ENV_VARS_EXCEPT}"				\
 			"${DEFAULT_CLEAR_PREFIX_PATHS}"					\
+			"${DEFAULT_RPM_JOBS_SEMAPHORE}"					\
 			"${BUILD_DLCACHEDIR}" "${PREFIX}"				\
 			"${PREFIX_RPM}" "${BUILD_WORKDIR}";
 	then

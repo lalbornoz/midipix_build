@@ -244,6 +244,7 @@ ex_init_help() {
 # @_check_path_vars:			list of pathname variables to check
 # @_clear_env_vars_except:		list of environment variables to not unset when clearing the environment
 # @_clear_prefix_paths:			list of directory pathnames to clear in the top-level prefix
+# @_rpm_semaphore:			absolute pathname to rpmbuild(1) parallel jobs count semaphore
 # @_dlcachedir:				absolute pathname to download cache directory
 # @_prefix:				absolute pathname to top-level prefix
 # @_prefix_rpm:				absolute pathname to RPM files prefix
@@ -256,8 +257,8 @@ ex_init_files() {
 		_eif_build_log_fname="${4}" _eif_build_log_last_fname="${5}"			\
 		_eif_build_status_in_progress_fname="${6}" _eif_check_path_vars="${7}"		\
 		_eif_clear_env_vars_except="${8}" _eif_clear_prefix_paths="${9}"		\
-		_eif_dlcachedir="${10}" _eif_prefix="${11}" _eif_prefix_rpm="${12}"		\
-		_eif_workdir="${13}"								\
+		_eif_rpm_semaphore="${10}" _eif_dlcachedir="${11}" _eif_prefix="${12}"		\
+		_eif_prefix_rpm="${13}" _eif_workdir="${14}"					\
 		_eif_log_last_fname="" _eif_log_last_num=1 _eif_rc=0;
 
 	if ! rtl_fileop mkdir "${_eif_dlcachedir}" "${_eif_workdir}"\
@@ -287,7 +288,11 @@ ex_init_files() {
 			rtl_fileop ln_symbolic "${_eif_log_last_fname}" "${_eif_build_log_last_fname}";
 		fi;
 
-		rtl_fileop touch "${_eif_build_log_fname}"; rtl_log_set_fname "${_eif_build_log_fname}";
+		rtl_fileop touch "${_eif_build_log_fname}";
+		rtl_log_set_fname "${_eif_build_log_fname}";
+
+		rtl_fileop rm "${_eif_rpm_semaphore}";
+
 		if rtl_lmatch "${_eif_rclean_builds}" $"prefix" ","; then
 			trap "rm -f \"${_eif_build_status_in_progress_fname}\" 2>/dev/null;
 

@@ -18,7 +18,8 @@ pkg_install_rpm() {
 			"${PKG_VERSION:-}" || return 1;
 		ex_rtl_build_rpm							\
 			"${PKG_DESTDIR}"						\
-			1 "${BUILD_WORKDIR}/rpm.jobs" 8 				\
+			"${DEFAULT_RPM_JOBS_MAX}" "${DEFAULT_RPM_JOBS_SEMAPHORE}"	\
+			"${DEFAULT_RPM_JOBS_WAIT}"					\
 			"${PKG_NAME}"							\
 			"${PREFIX_RPM}"							\
 			"${MIDIPIX_BUILD_PWD}/etc/package.spec"				\
