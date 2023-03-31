@@ -217,13 +217,23 @@ ex_pkg_load_vars() {
 		for _eplv_fname in				\
 				"${HOME}/midipix_build.vars"	\
 				"${HOME}/.midipix_build.vars"	\
-				../midipix_build.vars		\
-				./midipix.env;
+				../midipix_build.vars;
 		do
 			if [ -r "${_eplv_fname}" ]; then
 				rtl_fileop source "${_eplv_fname}";
 			fi;
 		done;
+
+		set +o noglob;
+		for _eplv_fname in				\
+				./env.d/*.env;
+		do
+			set -o noglob;
+			if [ -r "${_eplv_fname}" ]; then
+				rtl_fileop source "${_eplv_fname}";
+			fi;
+		done;
+		set -o noglob;
 	fi;
 
 	return "${_eplv_rc}";
