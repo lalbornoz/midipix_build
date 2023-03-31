@@ -101,7 +101,7 @@ ex_rtl_configure() {
 };
 
 #
-# ex_rtl_configure_cmake() - run configure script
+# ex_rtl_configure_cmake() - configure CMake build
 # @_ar:				ar(1) command name or pathname
 # @_cc:				C compiler command name or pathname
 # @_ccache:			ccache(1) command name or pathname or ""
@@ -352,6 +352,104 @@ ex_rtl_configure_prepare() {
 	fi;
 
 	return 0;
+};
+
+#
+# ex_rtl_configure_sofort() - configure sofort build
+# @_ar:				ar(1) command name or pathname
+# @_cc:				C compiler command name or pathname
+# @_configure:			configure script command name or pathname
+# @_cxx:			C++ compiler command name or pathname
+# @_ld:				ld(1) command name or pathname
+# @_ranlib:			ranlib(1) command name or pathname
+# @--:				(ignored)
+# @_native_ar:			native ar(1) command name or pathname
+# @_native_cc:			native C compiler command name or pathname
+# @_native_cxx:			native C++ compiler command name or pathname
+# @_native_ld:			native ld(1) command name or pathname
+# @_native_ranlib:		native ranlib(1) command name or pathname
+# @--:				(ignored)
+# @_flags:			configure script flags as a whitespace-separated list
+# @_flags_extra:		extra configure script flags as a whitespace-separated likst
+# @--:				(ignored)
+# @_cflags:			$CFLAGS
+# @_cflags_extra:		extra $CFLAGS
+# @_cppflags:			$CPPFLAGS
+# @_cppflags_extra:		extra $CPPFLAGS
+# @_cxxflags:			$CXXFLAGS
+# @_cxxflags_extra:		extra $CXXFLAGS
+# @_ldflags:			$LDFLAGS
+# @_ldflags_extra:		extra $LDFLAGS
+# @--:				(ignored)
+# @_native_cflags:		native $CFLAGS
+# @_native_cflags_extra:	native extra $CFLAGS
+# @_native_cppflags:		native $CPPFLAGS
+# @_native_cppflags_extra:	native extra $CPPFLAGS
+# @_native_cxxflags:		native $CXXFLAGS
+# @_native_cxxflags_extra:	native extra $CXXFLAGS
+# @_native_ldflags:		native $LDFLAGS
+# @_native_ldflags_extra:	native extra $LDFLAGS
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure
+#
+ex_rtl_configure_sofort() {
+	local	_ercs_ar="${1}" _ercs_cc="${2}" _ercs_configure="${3}" _ercs_cxx="${4}" _ercs_ld="${5}" _ercs_ranlib="${6}"	\
+		_ercs_ignored="${7}"												\
+		_ercs_native_ar="${8}" _ercs_native_cc="${9}" _ercs_native_cxx="${10}" _ercs_native_ld="${11}"			\
+		_ercs_native_ranlib="${12}"											\
+		_ercs_ignored="${13}"												\
+		_ercs_flags="${14}" _ercs_flags_extra="${15}"									\
+		_ercs_ignored="${16}"												\
+		_ercs_cflags="${17}" _ercs_cflags_extra="${18}" _ercs_cppflags="${19}"						\
+		_ercs_cppflags_extra="${20}" _ercs_cxxflags="${21}" _ercs_cxxflags_extra="${22}"				\
+		_ercs_ldflags="${23}" _ercs_ldflags_extra="${24}"								\
+		_ercs_ignored="${25}"												\
+		_ercs_native_cflags="${26}" _ercs_native_cflags_extra="${27}" _ercs_native_cppflags="${28}"			\
+		_ercs_native_cppflags_extra="${29}" _ercs_native_cxxflags="${30}" _ercs_native_cxxflags_extra="${31}"		\
+		_ercs_native_ldflags="${32}" _ercs_native_ldflags_extra="${33}"							\
+		_ercs_vname="" _ercs_rc=0;
+
+	[ "${_ercs_cflags_extra:+1}" = 1 ] && _ercs_cflags="${_ercs_cflags:+${_ercs_cflags} }${_ercs_cflags_extra}";
+	[ "${_ercs_cppflags_extra:+1}" = 1 ] && _ercs_cppflags="${_ercs_cppflags:+${_ercs_cppflags} }${_ercs_cppflags_extra}";
+	[ "${_ercs_cxxflags_extra:+1}" = 1 ] && _ercs_cxxflags="${_ercs_cxxflags:+${_ercs_cxxflags} }${_ercs_cxxflags_extra}";
+	[ "${_ercs_ldflags_extra:+1}" = 1 ] && _ercs_ldflags="${_ercs_ldflags:+${_ercs_ldflags} }${_ercs_ldflags_extra}";
+
+	[ "${_ercs_native_cflags_extra:+1}" = 1 ] && _ercs_native_cflags="${_ercs_native_cflags:+${_ercs_native_cflags} }${_ercs_native_cflags_extra}";
+	[ "${_ercs_native_cppflags_extra:+1}" = 1 ] && _ercs_native_cppflags="${_ercs_native_cppflags:+${_ercs_native_cppflags} }${_ercs_native_cppflags_extra}";
+	[ "${_ercs_native_cxxflags_extra:+1}" = 1 ] && _ercs_native_cxxflags="${_ercs_native_cxxflags:+${_ercs_native_cxxflags} }${_ercs_native_cxxflags_extra}";
+	[ "${_ercs_native_ldflags_extra:+1}" = 1 ] && _ercs_native_ldflags="${_ercs_native_ldflags:+${_ercs_native_ldflags} }${_ercs_native_ldflags_extra}";
+
+(
+	[ "${_ercs_ar:+1}" = 1 ] && export AR="${_ercs_ar}";
+	[ "${_ercs_cc:+1}" = 1 ] && export CC="${_ercs_cc}";
+	[ "${_ercs_cxx:+1}" = 1 ] && export CXX="${_ercs_cxx}";
+	[ "${_ercs_ld:+1}" = 1 ] && export LD="${_ercs_ld}";
+	[ "${_ercs_ranlib:+1}" = 1 ] && export RANLIB="${_ercs_ranlib}";
+
+	[ "${_ercs_native_ar:+1}" = 1 ] && export NATIVE_AR="${_ercs_native_ar}";
+	[ "${_ercs_native_cc:+1}" = 1 ] && export NATIVE_CC="${_ercs_native_cc}";
+	[ "${_ercs_native_cxx:+1}" = 1 ] && export NATIVE_CXX="${_ercs_native_cxx}";
+	[ "${_ercs_native_ld:+1}" = 1 ] && export NATIVE_LD="${_ercs_native_ld}";
+	[ "${_ercs_native_ranlib:+1}" = 1 ] && export NATIVE_RANLIB="${_ercs_native_ranlib}";
+
+	[ "${_ercs_cflags:+1}" = 1 ] && export CFLAGS="${_ercs_cflags}" CFLAGS_SHARED="${_ercs_cflags}" CFLAGS_STATIC="${_ercs_cflags}";
+	[ "${_ercs_cppflags:+1}" = 1 ] && export CPPFLAGS="${_ercs_cppflags}" CPPFLAGS_SHARED="${_ercs_cppflags}" CPPFLAGS_STATIC="${_ercs_cppflags}";
+	[ "${_ercs_cxxflags:+1}" = 1 ] && export CXXFLAGS="${_ercs_cxxflags}" CXXFLAGS_SHARED="${_ercs_cxxflags}" CXXFLAGS_STATIC="${_ercs_cxxflags}";
+	[ "${_ercs_ldflags:+1}" = 1 ] && export LDFLAGS="${_ercs_ldflags}" LDFLAGS_SHARED="${_ercs_ldflags}" LDFLAGS_STATIC="${_ercs_ldflags}";
+
+	[ "${_ercs_native_cflags:+1}" = 1 ] && export NATIVE_CFLAGS="${_ercs_native_cflags}";
+	[ "${_ercs_native_cppflags:+1}" = 1 ] && export NATIVE_CPPFLAGS="${_ercs_native_cppflags}";
+	[ "${_ercs_native_cxxflags:+1}" = 1 ] && export NATIVE_CXXFLAGS="${_ercs_native_cxxflags}";
+	[ "${_ercs_native_ldflags:+1}" = 1 ] && export NATIVE_LDFLAGS="${_ercs_native_ldflags}";
+
+	"${_ercs_configure}"		\
+		${_ercs_flags:-}	\
+		${_ercs_flags_extra:-};
+	exit $((${?} ? 1 : ${_ercs_rc}));
+);
+	_ercs_rc="${?}";
+
+	return "${_ercs_rc}";
 };
 
 # vim:filetype=sh textwidth=0

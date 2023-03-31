@@ -76,7 +76,7 @@ pkgp_configure_cmake() {
 };
 
 pkgp_configure_sofort() {
-	local _ppcs_rc=0 _ppcs_vname="" _ppcs_vnames="" _ppcs_vval="";
+	local _ppcs_rc=0;
 
 	if ! [ -x "${PKG_CONFIGURE:-}" ]; then
 		_ppcs_rc=2;
@@ -84,53 +84,26 @@ pkgp_configure_sofort() {
 	&&   ! [ "${PKG_CONFIGURE_TYPE:-}" = "sofort" ]; then
 		_ppcs_rc=2;
 	else
-		for _ppcs_vname in AR CC CCLD CXX RANLIB; do
-			if eval [ '"${PKG_'"${_ppcs_vname}"':+1}"' = 1 ]; then
-				if [ "${_ppcs_vname}" = CCLD ]; then
-					_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }LD";
-					eval LD='${PKG_'"${_ppcs_vname}"'}'; export LD;
-				else
-					_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }${_ppcs_vname}";
-					eval ${_ppcs_vname}='${PKG_'"${_ppcs_vname}"'}'; export ${_ppcs_vname};
-				fi;
-			fi;
-
-			if eval [ '"${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"':+1}"' = 1 ]; then
-				_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }NATIVE_${_ppcs_vname}";
-				eval NATIVE_${_ppcs_vname}='${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'}'; export NATIVE_${_ppcs_vname};
-			fi;
-		done;
-
-		for _ppcs_vname in CFLAGS CPPFLAGS CXXFLAGS LDFLAGS; do
-			if eval [ '"${PKG_'"${_ppcs_vname}"'_CONFIGURE:+1}"' = 1 ]; then
-				eval _ppcs_vval='${PKG_'"${_ppcs_vname}"'_CONFIGURE}';
-				if eval [ '"${PKG_'"${_ppcs_vname}"'_CONFIGURE_EXTRA:+1}"' = 1 ]; then
-					eval _ppcs_vval='${_ppcs_vval:+${_ppcs_vval} }${PKG_'"${_ppcs_vname}"'_CONFIGURE_EXTRA}';
-				fi;
-				_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }${_ppcs_vname} ${_ppcs_vname}_SHARED ${_ppcs_vname}_STATIC";
-				eval ${_ppcs_vname}='${_ppcs_vval}'\; ${_ppcs_vname}_SHARED='${_ppcs_vval}'\; ${_ppcs_vname}_STATIC='${_ppcs_vval}';
-				export ${_ppcs_vname} ${_ppcs_vname}_SHARED ${_ppcs_vname}_STATIC;
-			fi;
-
-			if eval [ '"${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"':+1}"' = 1 ]; then
-				eval _ppcs_vval='${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'}';
-				if eval [ '"${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'_EXTRA:+1}"' = 1 ]; then
-					eval _ppcs_vval='${_ppcs_vval:+${_ppcs_vval} }${PKG_SOFORT_NATIVE_'"${_ppcs_vname}"'_EXTRA}';
-				fi;
-				_ppcs_vnames="${_ppcs_vnames:+${_ppcs_vnames} }NATIVE_${_ppcs_vname}";
-				eval NATIVE_${_ppcs_vname}='${_ppcs_vval}'; export NATIVE_${_ppcs_vname};
-			fi;
-		done;
-
-		RANLIB="${PKG_RANLIB}"				\
-			"${PKG_CONFIGURE}"			\
-				${PKG_CONFIGURE_ARGS:-}		\
-				${PKG_CONFIGURE_ARGS_EXTRA:-};
+		ex_rtl_configure_sofort									\
+			"${PKG_AR}" "${PKG_CC}" "${PKG_CONFIGURE}" "${PKG_CXX}"				\
+			"${PKG_LD}" "${PKG_RANLIB}"							\
+			--										\
+			"${PKG_NATIVE_AR:-}" "${PKG_NATIVE_CC:-}" "${PKG_NATIVE_CXX:-}"			\
+			"${PKG_NATIVE_LD:-}" "${PKG_NATIVE_RANLIB:-}"					\
+			--										\
+			"${PKG_CONFIGURE_ARGS:-}" "${PKG_CONFIGURE_ARGS_EXTRA:-}"			\
+			--										\
+			"${PKG_CFLAGS_CONFIGURE:-}" "${PKG_CFLAGS_CONFIGURE_EXTRA:-}"			\
+			"${PKG_CPPFLAGS_CONFIGURE:-}" "${PKG_CPPFLAGS_CONFIGURE_EXTRA:-}"		\
+			"${PKG_CXXFLAGS_CONFIGURE:-}" "${PKG_CXXFLAGS_CONFIGURE_EXTRA:-}"		\
+			"${PKG_LDFLAGS_CONFIGURE:-}" "${PKG_LDFLAGS_CONFIGURE_EXTRA:-}"			\
+			--										\
+			"${PKG_SOFORT_NATIVE_CFLAGS:-}" "${PKG_SOFORT_NATIVE_CFLAGS_EXTRA:-}"		\
+			"${PKG_SOFORT_NATIVE_CPPFLAGS:-}" "${PKG_SOFORT_NATIVE_CPPFLAGS_EXTRA:-}"	\
+			"${PKG_SOFORT_NATIVE_CXXFLAGS:-}" "${PKG_SOFORT_NATIVE_CXXFLAGS_EXTRA:-}"	\
+			"${PKG_SOFORT_NATIVE_LDFLAGS:-}" "${PKG_SOFORT_NATIVE_LDFLAGS_EXTRA:-}"		\
+			;
 		_ppcs_rc=$((${?} ? 1 : ${_ppcs_rc}));
-
-		for _ppcs_vname in ${_ppcs_vnames}; do
-			unset "${_ppcs_vname}";
-		done;
 	fi;
 
 	return "${_ppcs_rc}";
@@ -140,7 +113,7 @@ pkg_configure() {
 	local	_pc_group_name="${1}" _pc_pkg_name="${2}" _pc_restart_at="${3}"	\
 		_pc_rc=0 _pc_type="";
 
-	for _pc_type in autotools sofort cmake; do
+	for _pc_type in autotools cmake sofort; do
 		if [ "${PKG_CONFIGURE_TYPE:+1}" = 1 ]\
 		&& [ "${PKG_CONFIGURE_TYPE}" != "${_pc_type}" ]; then
 			continue;
