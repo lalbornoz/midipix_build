@@ -395,8 +395,9 @@ respectively (see section [4.1](#41-build-steps).) Patch files are searched for 
 If the default set of package build steps does not suffice, such as if additional commands
 must be executed after package configuration or prior to building, or if an entire or all
 build step must be replaced, overrides may be specified in the form of functions in the
-package's ``vars/${PKG_NAME}.vars`` ``vars`` file. Consult section [4.1](#41-build-steps)
-for a list of package build steps and how they are overriden.
+package's ``vars/${PKG_NAME}.vars`` as well as ``vars.<group name>/${PKG_NAME}.vars``
+``vars`` file(s). Consult section [4.1](#41-build-steps) for a list of package build steps
+and how they are overriden.
   
 [Back to top](#table-of-contents)
 
@@ -433,17 +434,17 @@ package build completion corresponds to the pseudo-build step ``finish``.
 
 | Name                | Description                                                                                                                                                                                                                                              |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fetch_clean         | Delete and create ``${PKG_SUBDIR}''                                                                                                                                                                                                                      |
+| fetch_clean         | Delete and create ``${PKG_SUBDIR}``                                                                                                                                                                                                                      |
 | fetch_download      | Download package archive & verify w/ SHA-256 message digest and/or clone Git repository/ies                                                                                                                                                              |
 | fetch_extract       | Extract package archive, if any                                                                                                                                                                                                                          |
-| configure_clean     | Delete and create ``${PKG_BUILD_DIR}''                                                                                                                                                                                                                   |
+| configure_clean     | Delete and create ``${PKG_BUILD_DIR}``                                                                                                                                                                                                                   |
 | configure_patch_pre | Apply ``chainport`` patches and/or patches beneath ``patches/`` prior to (GNU autotools or similar) configuration                                                                                                                                        |
 | configure_autotools | Bootstrap (GNU autools or similar) environment, and install ``config.sub`` and ``config.cache``                                                                                                                                                          |
 | configure_patch     | Apply patches beneath ``patches/`` and/or set in ``${PKG_PATCHES_EXTRA}`` after (GNU autotools or similar) configuration                                                                                                                                 |
 | configure           | Perform package (GNU autools or similar or CMake) configuration w/ configuration-time set of environment variables                                                                                                                                       |
-| build_clean         | Clean ``${PKG_BUILD_DIR}'' w/ ``make clean'' invocation                                                                                                                                                                                                  |
+| build_clean         | Clean ``${PKG_BUILD_DIR}`` w/ ``make clean`` invocation                                                                                                                                                                                                  |
 | build               | Call ``make(1)`` w/ build-time set of make variables                                                                                                                                                                                                     |
-| install_clean       | Delete and create ``${PKG_DESTDIR}''                                                                                                                                                                                                                     |
+| install_clean       | Delete and create ``${PKG_DESTDIR}``                                                                                                                                                                                                                     |
 | install_subdirs     | Create default directory hierarchy in ``${PKG_DESTDIR}``, optionally amended w/ ``${PKG_INSTALL_FILES_DESTDIR_EXTRA}``                                                                                                                                   |
 | install_make        | Call ``make(1)`` w/ ``${PKG_INSTALL_TARGET}`` (defaults to ``install``) and installation-time set of make variables                                                                                                                                      |
 | install_files       | Install ``${PKG_INSTALL_FILES}`` and/or ``${PKG_INSTALL_FILES_V2}``, fix directory and file mode bits within ``${PKG_DESTDIR}`` and optionally ``${PKG_DESTDIR_HOST}``, ``pkgconf(1)`` package files, and/or stripped binaries within ``${PKG_DESTDIR}`` |
