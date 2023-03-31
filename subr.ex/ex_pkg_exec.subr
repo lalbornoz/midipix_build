@@ -5,6 +5,7 @@
 
 #
 # exp_pkg_exec_pre() - prepare environment for single named package w/ dispatcher
+# @_dispatch_fn:	top-level dispatch function name
 # @_group_name:		build group name
 # @_pkg_name:		single package name
 # @_restart_at:		optional comma-separated list of build steps at which to rebuild or ALL or LAST
@@ -13,7 +14,8 @@
 # Returns:		zero (0) on success, non-zero (>0) on failure
 #
 exp_pkg_exec_pre() {
-	local _eppep_group_name="${1}" _eppep_pkg_name="${2}" _eppep_restart_at="${3}" _eppep_workdir="${4}";
+	local	_eppep_dispatch_fn="${1}" _eppep_group_name="${2}" _eppep_pkg_name="${3}"	\
+		_eppep_restart_at="${4}" _eppep_workdir="${5}";
 
 	if [ "${PKG_URL:+1}" != 1 ]\
 	&& [ "${PKG_URLS_GIT:+1}" != 1 ]\
@@ -104,10 +106,11 @@ exp_pkg_exec() {
 		_eppe_build_step_last="" _eppe_rc=0 _eppe_step="";
 
 	if ! exp_pkg_exec_pre						\
+			"${_eppe_dispatch_fn}"				\
 			"${_eppe_group_name}" "${_eppe_pkg_name}"	\
-			"${_eppe_restart_at}" "${_eppe_workdir}"\
-	|| ! "${_eppe_dispatch_fn}"				\
-			start_pkg_child "${_eppe_group_name}"	\
+			"${_eppe_restart_at}" "${_eppe_workdir}"	\
+	|| ! "${_eppe_dispatch_fn}"					\
+			start_pkg_child "${_eppe_group_name}"		\
 			"${_eppe_pkg_name}";
 	then
 		_eppe_rc=1;
