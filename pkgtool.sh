@@ -353,7 +353,7 @@ pkgtoolp_info_single() {
 			\$_ppis_fname "${_ppis_patch_idx}"	\
 		       	"${_ppis_pkg_name}"			\
 			"${_ppis_pkg_version}"			\
-			"vars_file patches_pre patches"		\
+			"vars_files patches_pre patches"	\
 		   && [ "${_ppis_fname:+1}" = 1 ];
 		do
 			: $((_ppis_patch_idx += 1));

@@ -117,8 +117,8 @@ ex_pkg_env() {
 	local	_epe_build_steps_default="${1}" _epe_build_vars_default="${2}"		\
 		_epe_group_name="${3}" _epe_pkg_name="${4}" _epe_restart_at="${5}"	\
 		_epe_workdir="${6}"							\
-		_epe_inherit_from="" _epe_pkg_version="" _epe_vars_file=""		\
-		_epe_vars_file_parent="" _epe_vname="";
+		_epe_file_idx=0 _epe_inherit_from="" _epe_pkg_version=""		\
+		_epe_vars_file="" _epe_vars_file_parent="" _epe_vname="";
 
 	if rtl_get_var_unsafe \$_epe_inherit_from -u "PKG_${_epe_pkg_name}_INHERIT_FROM"\
 	&& [ "${_epe_inherit_from:+1}" = 1 ]; then
@@ -133,14 +133,22 @@ ex_pkg_env() {
 
 	if [ "${_epe_vars_file:+1}" != 1 ]; then
 		rtl_get_var_unsafe \$_epe_pkg_version -u "PKG_${_epe_pkg_name}_VERSION";
-		ex_pkg_get_default					\
-			\$_epe_vars_file 1				\
-			"${_epe_pkg_name}" "${_epe_pkg_version}"	\
-			"vars_file"					\
-			|| return 1;
+		_epe_file_idx=1;
+		while ex_pkg_get_default			\
+			\$_epe_vars_file "${_epe_file_idx}"	\
+		       	"${_epe_pkg_name}"			\
+			"${_epe_pkg_version}"			\
+			"vars_files"				\
+		   && [ "${_epe_vars_file:+1}" = 1 ];
+		do
+			: $((_epe_file_idx += 1));
+			rtl_fileop source_opt "${_epe_vars_file}";
+		done;
+	else
+		rtl_fileop source_opt		\
+			"${_epe_vars_file}";
 	fi;
 
-	rtl_fileop source_opt "${_epe_vars_file}" "${_epe_group_name}/${_epe_pkg_name}.${_epe_group_name}";
 	if ! exp_pkg_env_set "${_epe_build_vars_default}" "${_epe_group_name}" "${_epe_pkg_name}"\
 	|| ! exp_pkg_env_defaults "${_epe_build_steps_default}" "${_epe_pkg_name}" "${_epe_workdir}"; then
 		return 1;

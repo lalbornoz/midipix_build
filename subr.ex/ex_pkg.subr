@@ -83,15 +83,15 @@ ex_pkg_find_package() {
 # @_default_idx:	one-based single default value index
 # @_pkg_name:		single package name
 # @_pkg_version:	single package version
-# @_ldefault:		SP-separated list of default value names (any of: patches, patches_pre, vars_file)
+# @_ldefault:		SP-separated list of default value names (any of: patches, patches_pre, vars_files)
 #
 # Returns:		zero (0) on success, non-zero (>0) on invalid default value name or unknown package.
 #
 ex_pkg_get_default() {
 	local	_epgd_rdefault="${1#\$}" _epgd_default_idx="${2}" _epgd_pkg_name="${3}"	\
 		_epgd_pkg_version="${4}" _epgd_ldefault="${5}"				\
-		_epgd_default="" _epgd_patch_fname="" _epgd_pkg_name_full=""		\
-		_epgd_pkg_patches_extra="" _epgd_rc=0;
+		_epgd_default="" _epgd_group_name="" _epgd_patch_fname=""		\
+		_epgd_pkg_name_full="" _epgd_pkg_patches_extra="" _epgd_rc=0;
 
 	set --;
 	_epgd_pkg_name_full="${_epgd_pkg_name}${_epgd_pkg_version:+-${_epgd_pkg_version}}";
@@ -118,9 +118,11 @@ ex_pkg_get_default() {
 				"${MIDIPIX_BUILD_PWD}/patches/${_epgd_pkg_name_full}_pre.local@${BUILD_HNAME}.patch";
 			;;
 
-		vars_file)
-			set --	\
-				"vars/${_epgd_pkg_name}.vars";
+		vars_files)
+			rtl_get_var_unsafe \$_epgd_group_name -u "PKG_${_epgd_pkg_name}_GROUP";
+			set --					\
+				"vars/${_epgd_pkg_name}.vars"	\
+				"vars.${_epgd_group_name}/${_epgd_pkg_name}.vars";
 			;;
 
 		*)
@@ -296,6 +298,7 @@ ex_pkg_load_groups() {
 
 			if [ "${_eplg_group_noautofl}" -eq 0 ]; then
 				for _eplg_pkg_name in ${_eplg_pkg_names}; do
+					rtl_set_var_unsafe -u "PKG_${_eplg_pkg_name}_GROUP" "${_eplg_group}";
 					rtl_set_var_unsafe -u "PKG_${_eplg_pkg_name}_GROUP_FNAME" "${_eplg_fname}";
 				done;
 			fi;
