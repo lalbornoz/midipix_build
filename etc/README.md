@@ -458,7 +458,7 @@ package build completion corresponds to the pseudo-build step ``finish``.
 [//]: # "{{{ 4.2. Build variables"
 ## 4.2. Build variables
 
-The following variables are primarily defined in ``midipix.env`` and may be
+The following variables are primarily defined in ``env.d/*.env`` and may be
 overriden on a per-build basis on the command-line, the environment, and/or
 ``${HOME}/midipix_build.vars``, ``${HOME}/.midipix_build.vars``, and/or
 ``../midipix_build.vars``, e.g.:
@@ -659,7 +659,7 @@ usage: rtl_install [-i] [-I ifs] [-n] [-p name=val] [-v] prefix spec_list
 ### 4.4. Package variables
 
 The following variables are package-specific and receive their value from either
-top-level defaults defined in ``midipix.env``, build group-specific defaults from the
+top-level defaults defined in ``env.d/*.env``, build group-specific defaults from the
 build group the package pertains to and defined in its corresponding file beneath
 ``groups/``, or package-specific overrides defined either in the latter and/or in its
 corresponding file beneath ``vars/``, with one of the following prefixes:
