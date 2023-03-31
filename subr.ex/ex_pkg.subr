@@ -256,7 +256,7 @@ ex_pkg_load_groups() {
 		_eplg_group_target_appendfl=0 _eplg_groups="" _eplg_pkg_name=""	\
 		_eplg_pkg_names="";
 
-	for _eplg_fname in $(find ./groups -name *.group | sort); do
+	for _eplg_fname in $(find ./groups.d -name *.group | sort); do
 		rtl_fileop source_opt "${_eplg_fname}";
 
 		_eplg_group="${_eplg_fname##*/}";

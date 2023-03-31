@@ -319,7 +319,7 @@ Packages may belong to more than one build group such as when subsumed by a shor
 build group e.g. the ``dev_packages`` build group, as long as the default set of build
 groups or as overriden on the command line does not entail group membership conflicts.  
   
-Build groups files beneath ``groups/`` named ``[0-9][0-9][0-9].<group name>.group``
+Build groups files beneath ``groups.d/`` named ``[0-9][0-9][0-9].<group name>.group``
 contain package variable defaults, the alphabetically sorted list of contained
 packages in ``<upper case group name>_PACKAGES``, and their package variables
 sorted alphabetically with the exception of ``${PKG_DEPENDS}`` (if present,)
@@ -661,7 +661,7 @@ usage: rtl_install [-i] [-I ifs] [-n] [-p name=val] [-v] prefix spec_list
 The following variables are package-specific and receive their value from either
 top-level defaults defined in ``env.d/*.env``, build group-specific defaults from the
 build group the package pertains to and defined in its corresponding file beneath
-``groups/``, or package-specific overrides defined either in the latter and/or in its
+``groups.d/``, or package-specific overrides defined either in the latter and/or in its
 corresponding file beneath ``vars/``, with one of the following prefixes:
 
 | Variable name prefix					|
