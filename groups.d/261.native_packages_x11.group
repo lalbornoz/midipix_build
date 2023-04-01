@@ -163,7 +163,7 @@ xeyes xorgproto Xrender xterm xtrans xwd xwin";
 : ${PKG_RDESKTOP_CPPFLAGS_CONFIGURE:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
 : ${PKG_RDESKTOP_IN_TREE:=1};
 : ${PKG_RDESKTOP_CONFIGURE_ARGS_EXTRA:="--disable-credssp --disable-smartcard --without-sound --with-openssl=${PREFIX_NATIVE}"};
-: ${PKG_RXVT_UNICODE_DEPENDS:="libX11"};
+: ${PKG_RXVT_UNICODE_DEPENDS:="libX11 libXmu"};
 : ${PKG_RXVT_UNICODE_SHA256SUM:=e94628e9bcfa0adb1115d83649f898d6edb4baced44f5d5b769c2eeb8b95addd};
 : ${PKG_RXVT_UNICODE_VERSION:=9.22};
 : ${PKG_RXVT_UNICODE_URL:=http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PKG_RXVT_UNICODE_VERSION}.tar.bz2};
