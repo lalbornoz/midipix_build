@@ -1,0 +1,39 @@
+diff -ru rxvt-unicode-9.22.orig/src/rxvtperl.xs rxvt-unicode-9.22/src/rxvtperl.xs
+--- rxvt-unicode-9.22.orig/src/rxvtperl.xs      2015-06-04 18:38:04.000000000 +0200
++++ rxvt-unicode-9.22/src/rxvtperl.xs   2023-04-02 03:42:14.101495245 +0200
+@@ -940,7 +940,7 @@
+     const_iv (XIMVisibleToForward),
+     const_iv (XIMVisibleToBackword),
+     const_iv (XIMVisibleToCenter),
+-#if XRENDER
++#if 0
+     const_iv (PictStandardARGB32),
+     const_iv (PictStandardRGB24),
+     const_iv (PictStandardA8),
+diff -ru rxvt-unicode-9.22.orig/src/rxvttoolkit.C rxvt-unicode-9.22/src/rxvttoolkit.C
+--- rxvt-unicode-9.22.orig/src/rxvttoolkit.C    2015-10-11 18:23:17.000000000 +0200
++++ rxvt-unicode-9.22/src/rxvttoolkit.C 2023-04-02 03:41:59.813495158 +0200
+@@ -491,7 +491,7 @@
+ #endif
+
+   flags = 0;
+-#if XRENDER
++#if 0
+   int major, minor;
+   if (XRenderQueryVersion (dpy, &major, &minor))
+     if (major > 0 || (major == 0 && minor >= 11))
+diff -ru rxvt-unicode-9.22.orig/src/rxvt.h rxvt-unicode-9.22/src/rxvt.h
+--- rxvt-unicode-9.22.orig/src/rxvt.h	2015-06-17 13:57:42.000000000 +0200
++++ rxvt-unicode-9.22/src/rxvt.h	2023-04-02 03:33:44.070672503 +0200
+@@ -76,11 +76,6 @@
+ # include <gdk-pixbuf/gdk-pixbuf.h>
+ #endif
+ 
+-#if XRENDER && (HAVE_PIXBUF || ENABLE_TRANSPARENCY)
+-# define HAVE_BG_PIXMAP 1
+-# define HAVE_IMG 1
+-#endif
+-
+ #if HAVE_BG_PIXMAP
+ # if HAVE_PIXBUF
+ #  define BG_IMAGE_FROM_FILE 1
