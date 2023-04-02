@@ -20,7 +20,7 @@ into account when deploying and using Midipix distributions.
 	2.2. [Deployment](#22-deployment)  
 	2.3. [System requirements](#23-system-requirements)  
 	2.4. [Troubleshooting](#24-troubleshooting)  
-3. [Common concepts and tasks](#3-common-concepts-and-tasks)  
+3. [Common concepts and tasks / FAQ](#3-common-concepts-and-tasks-faq)  
 	3.1. [Common tasks](#31-common-tasks)  
 	3.2. [Adding a package](#32-adding-a-package)  
 	3.3. [Addressing build failure](#33-addressing-build-failure)  
