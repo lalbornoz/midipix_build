@@ -5,7 +5,7 @@
 #
 
 #
-# ex_rtl_install_library_archives() - install library archives and library links (.lib.a) for all libraries (.so) in tree
+# ex_rtl_install_library_archives() - install library archives and library links (.lib.a) for all libraries (.so) in tree matching lib*
 # @_dname_base:		base directory pathname
 # @_mdso_cmd:		mdso command name
 #
@@ -17,8 +17,9 @@ ex_rtl_install_library_archives() {
 		_erila_lib_src_path="" _erila_so_dst_dir="" _erila_so_src_path="";
 
 	for _erila_so_src_path in 				\
-		$(find	"${_erila_dname_base=}"			\
-			\(  -name "*.so" -or -name "*.so.*" \)	\
+		$(find	"${_erila_dname_base}"			\
+			\( -name "*.so" -or -name "*.so.*" \)	\
+			\( -name "lib*" \)			\
 			-print);
 	do
 		if [ "$(readlink -f "${_erila_so_src_path}")" != "/dev/null" ]\
