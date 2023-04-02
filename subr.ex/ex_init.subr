@@ -275,6 +275,7 @@ ex_init_files() {
 	elif ! rtl_check_path_vars "${_eif_rstatus}" "${_eif_check_path_vars}"; then
 		_eif_rc=1;
 	else
+		export LC_ALL="${LC_ALL:-C}";
 		export TMP="${_eif_workdir}" TMPDIR="${_eif_workdir}";
 		touch "${_eif_build_status_in_progress_fname}";
 
