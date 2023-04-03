@@ -83,7 +83,6 @@ buildp_init() {
 			"${_bi_name_base}" "${ARG_THEME:-}"				\
 	  || ! ex_init_logging "${_bi_rstatus}" \$ARG_VERBOSE_TAGS "${ARG_VERBOSE}"	\
 	  || ! ex_pkg_load_vars "${_bi_rstatus}" \$ARCH \$BUILD_KIND			\
-	  || ! buildp_init_args_ccache "${_bi_rstatus}"					\
 	  || ! ex_init_prereqs "${_bi_rstatus}" "${DEFAULT_PREREQS}"			\
 	  || ! buildp_init_args "${_bi_rstatus}"					\
 	  || ! ex_init_files								\
@@ -190,21 +189,6 @@ buildp_init_args() {
 	return "${_bpia_rc}";
 };
 # }}}
-# {{{ buildp_init_args_ccache($_rstatus)
-buildp_init_args_ccache() {
-	local	_bpiac_rstatus="${1#\$}"	\
-		_bpiac_target="";
-
-	if [ "${ARG_CCACHE:+1}" = 1 ]; then
-		for _bpiac_target in CROSS HOST NATIVE SOFORT_NATIVE; do
-			eval "DEFAULT_${_bpiac_target}_CC"=\"${ARG_CCACHE} \${DEFAULT_${_bpiac_target}_CC}\";
-			eval "DEFAULT_${_bpiac_target}_CXX"=\"${ARG_CCACHE} \${DEFAULT_${_bpiac_target}_CXX}\";
-		done;
-	fi;
-
-	return 0;
-};
-# }}}
 # {{{ buildp_init_getopts_fn(...)
 buildp_init_getopts_fn() {
 	local _bpigf_rc=0 _bpigf_shiftfl=0;
@@ -227,7 +211,6 @@ buildp_init_getopts_fn() {
 
 		case "${_bpigf_opt}" in
 		--as-needed)	ARG_AS_NEEDED=1; _bpigf_shiftfl=1; ;;
-		--ccache)	ARG_CCACHE="ccache"; _bpigf_shiftfl=1; ;;
 		--debug-minipx)	ARG_DEBUG_MINIPIX=1; _bpigf_shiftfl=1; ;;
 		--help)		_bpigf_shiftfl=1; ;;
 		--reset-state)	ARG_RESET_PKG=1; _bpigf_shiftfl=1; ;;
