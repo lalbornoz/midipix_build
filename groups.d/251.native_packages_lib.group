@@ -4,7 +4,7 @@
 GROUP_TARGET_APPEND="native_packages";
 NATIVE_PACKAGES_LIB_PACKAGES="
 aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libao libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
-libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libiconv libidn2 libite
+libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libgsasl libiconv libidn2 libite
 libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
@@ -153,6 +153,11 @@ gcry_cv_visibility_attribute=yes"};
 : ${PKG_LIBGPG_ERROR_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${PKG_LIBGPG_ERROR_VERSION}.tar.bz2};
 : ${PKG_LIBGPG_ERROR_FORCE_AUTORECONF:=1};
 : ${PKG_LIBGPG_ERROR_IN_TREE:=1};
+: ${PKG_LIBGSASL_DEPENDS:="libgcrypt"};
+: ${PKG_LIBGSASL_SHA256SUM:=f1b553384dedbd87478449775546a358d6f5140c15cccc8fb574136fdc77329f};
+: ${PKG_LIBGSASL_VERSION:=1.10.0};
+: ${PKG_LIBGSASL_URL:=https://ftp.gnu.org/gnu/gsasl/libgsasl-${PKG_LIBGSASL_VERSION}.tar.gz};
+: ${PKG_LIBGSASL_CONFIGURE_ARGS_EXTRA:="--disable-ntlm --disable-gssapi --disable-gs2 --disable-kerberos_v5 --disable-obsolete --with-libgcrypt --with-libgcrypt-prefix=${PREFIX_NATIVE}"};
 : ${PKG_LIBICONV_SHA256SUM:=8f74213b56238c85a50a5329f77e06198771e70dd9a739779f4c02f65d971313};
 : ${PKG_LIBICONV_VERSION:=1.17};
 : ${PKG_LIBICONV_URL:=https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_LIBICONV_VERSION}.tar.gz};
