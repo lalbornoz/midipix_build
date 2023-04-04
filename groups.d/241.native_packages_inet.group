@@ -28,7 +28,7 @@ proxytunnel rsync socat thttpd w3m weechat wget wget2 whois";
 : ${PKG_CA_CERTIFICATES_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_CA_CERTIFICATES_ENV_VARS_EXTRA:="HOST_CC=gcc"};
 : ${PKG_CA_CERTIFICATES_VARS_FILE:="vars/ca_certificates.vars"};
-: ${PKG_CURL_DEPENDS:="gnutls libpsl"};
+: ${PKG_CURL_DEPENDS:="gnutls libpsl libidn2 libz zstd"};
 : ${PKG_CURL_SHA256SUM:=fd17432cf28714a4cf39d89e26b8ace0d8901199fe5d01d75eb0ae3bbfcc731f};
 : ${PKG_CURL_VERSION:=7.88.0};
 : ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
