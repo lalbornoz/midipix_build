@@ -7,7 +7,7 @@ pkgtoolp_init() {
 	local	_pi_rstatus="${1#\$}"						\
 		_pi_args_long=""						\
 		_pi_name_base="pkgtool"						\
-		_pi_optstring="a:b:ehim:M:p:rRtv"				\
+		_pi_optstring="a:b:efhim:M:p:rRtv"				\
 		_pi_prereqs="
 			awk bzip2 cat chmod cp date find grep hostname mkdir
 			mktemp mv paste printf readlink rm sed sort tar test
@@ -52,6 +52,7 @@ pkgtoolp_init_args() {
 
 	if [ "$((${ARG_INFO:-0}
 	   + ${ARG_EDIT:-0}
+	   + ${ARG_FILES:-0}
 	   + ${ARG_MIRROR:-0}
 	   + ${ARG_PROFILE:-0}
 	   + ${ARG_RDEPENDS:-0}
@@ -60,9 +61,10 @@ pkgtoolp_init_args() {
 	then
 		cat etc/pkgtool.usage;
 		_ppia_rc=1;
-		rtl_setrstatus "${_ppia_rstatus}" 'only one of -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
+		rtl_setrstatus "${_ppia_rstatus}" 'only one of -e, -f, -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
 	elif [ "$((${ARG_INFO:-0}
 	     + ${ARG_EDIT:-0}
+	   + ${ARG_FILES:-0}
 	     + ${ARG_MIRROR:-0}
 	     + ${ARG_PROFILE:-0}
 	     + ${ARG_RDEPENDS:-0}
@@ -71,7 +73,7 @@ pkgtoolp_init_args() {
 	then
 		cat etc/pkgtool.usage;
 		_ppia_rc=1;
-		rtl_setrstatus "${_ppia_rstatus}" 'one of -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
+		rtl_setrstatus "${_ppia_rstatus}" 'one of -e, -f, -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
 	else
 		_ppia_rc=0;
 		export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
@@ -122,6 +124,7 @@ pkgtoolp_init_getopts_fn() {
 		b)	BUILD_KIND="${OPTARG}"; _ppigf_shiftfl=2; ;;
 		h)	cat etc/pkgtool.usage; exit 0; ;;
 		e)	ARG_EDIT=1; _ppigf_shiftfl=1; ;;
+		f)	ARG_FILES=1; _ppigf_shiftfl=1; ;;
 		i)	ARG_INFO=1; _ppigf_shiftfl=1; ;;
 		m)	ARG_MIRROR=1;
 			if [ "${OPTARG:+1}" = 1 ]; then
@@ -217,7 +220,7 @@ pkgtoolp_edit() {
 		_ppe_patch_idx=0 _ppe_pkg_disabled="" _ppe_pkg_finished="" _ppe_pkg_name_uc=""	\
 		_ppe_pkg_names="" _ppe_pkg_vars="" _ppe_rc=0;
 	rtl_toupper2 \$_ppe_pkg_name \$_ppe_pkg_name_uc;
- 
+
 	if ! ex_pkg_load_groups \$_ppe_groups \$_ppe_groups_noauto; then
 		_ppi_rc=1;
 		rtl_setrstatus "${_ppi_rstatus}" 'Error: failed to load build groups.';
@@ -261,6 +264,44 @@ pkgtoolp_edit() {
 	fi;
 
 	return "${_ppe_rc}";
+};
+# }}}
+# {{{ pkgtoolp_files($_rstatus, $_pkg_name)
+pkgtoolp_files() {
+	local	_ppf_rstatus="${1}" _ppf_pkg_name="${2}"			\
+		_ppf_destdir="" _ppf_group_name="" _ppf_groups=""		\
+		_ppf_groups_noauto="" _ppf_pkg_name_uc="" _ppf_pkg_vars=""	\
+		_ppf_rc=0;
+	rtl_toupper2 \$_ppf_pkg_name \$_ppf_pkg_name_uc;
+
+	if ! ex_pkg_load_groups \$_ppf_groups \$_ppf_groups_noauto; then
+		_ppf_rc=1;
+		rtl_setrstatus "${_ppf_rstatus}" 'Error: failed to load build groups.';
+	elif ! ex_pkg_find_package \$_ppf_group_name "${_ppf_groups}" "${_ppf_pkg_name}"; then
+		_ppf_rc=1;
+		rtl_setrstatus "${_ppf_rstatus}" 'Error: unknown package \`'"${_ppf_pkg_name}'"'.';
+	elif ! ex_pkg_get_packages \$_ppf_pkg_names "${_ppf_group_name}"; then
+		_ppf_rc=1;
+		rtl_setrstatus "${_ppf_rstatus}" 'Error: failed to expand package list of build group \`'"${_ppf_group_name}'"'.';
+	elif ! ex_pkg_env "${DEFAULT_BUILD_STEPS}" "${DEFAULT_BUILD_VARS}"\
+			"${_ppf_group_name}" "${_ppf_pkg_name}" "" "${BUILD_WORKDIR}"; then
+		_ppf_rc=1;
+		rtl_setrstatus "${_ppf_rstatus}" 'Error: failed to set package environment for \`'"${_ppf_pkg_name}'"'.';
+	else
+		ex_pkg_get_package_vars \$_ppf_pkg_vars "${DEFAULT_BUILD_VARS}" "${_ppf_pkg_name}";
+		rtl_get_var_unsafe \$_ppf_destdir -u "PKG_DESTDIR";
+
+		if [ "${_ppf_destdir:+1}" != 1 ]; then
+			_ppf_rc=1;
+			rtl_setrstatus "${_ppf_rstatus}" 'Error: empty or unset \$PKG_DESTDIR.';
+		else
+			printf "%s/:\n" "${_ppf_destdir%/}";
+			(cd "${_ppf_destdir}" && find . -ls);
+			_ppf_rc="${?}";
+		fi;
+	fi;
+
+	return "${_ppf_rc}";
 };
 # }}}
 # {{{ pkgtoolp_info($_rstatus, $_pkg_name)
@@ -701,6 +742,7 @@ pkgtool() {
 	else
 		case "1" in
 		"${ARG_EDIT:-0}")		pkgtoolp_edit \$_status "${PKGTOOL_PKG_NAME}"; ;;
+		"${ARG_FILES:-0}")		pkgtoolp_files \$_status "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_INFO:-0}")		pkgtoolp_info \$_status "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_MIRROR:-0}")		pkgtoolp_mirror \$_status "${ARG_MIRROR_DNAME}" "${ARG_MIRROR_DNAME_GIT}"; ;;
 		"${ARG_PROFILE:-0}")		pkgtoolp_profile \$_status "${ARG_PROFILE_LOG_FNAME}"; ;;

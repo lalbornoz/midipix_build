@@ -921,13 +921,14 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 ## 4.6. ``pkgtool.sh``
 
 ```
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-i|-m <dname> -M <dname>|-p|-r|-R|-t]
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-e|-f|-i|-m <dname> -M <dname>|-p|-r|-R|-t]
                     [--theme theme] [-v]
                     [<variable name>=<variable override>[ ..]] name[,name..]
 
         -a nt32|nt64      Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release  Selects debug or release build kind; defaults to debug.
         -e                Edit package group file of single named package with ${EDITOR}.
+        -f                List files installed by single package.
         -i                List package variables and dependencies of named package(s).
         -m <dname>        Setup package archives mirror in <dname> and/or
         -M <dname>        Setup Git repositories mirror in <dname>
