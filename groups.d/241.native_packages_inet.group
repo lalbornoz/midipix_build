@@ -60,8 +60,8 @@ ac_cv_path_PS2PDF=false"};
 : ${PKG_FETCHMAIL_URL:=http://krusty.dt.e-technik.tu-dortmund.de/~ma/fetchmail/fetchmail-${PKG_FETCHMAIL_VERSION}.tar.xz};
 : ${PKG_FETCHMAIL_CONFIGURE_ARGS_EXTRA:="--with-kerberos5=no --with-kerberos=no --with-ssl=${PREFIX_NATIVE}"};
 : ${PKG_GIT_DEPENDS:="curl libz"};
-: ${PKG_GIT_SHA256SUM:=4299fcbe57b02e024f62eb1368c4e68fdc47d4b72baff822ed78d3a5cc3c94bd};
-: ${PKG_GIT_VERSION:=2.35.6};
+: ${PKG_GIT_SHA256SUM:=e419c8f6c4d0f7843fc9657e1844974caabb5333feb2abbf0434c98a9ce52f3c};
+: ${PKG_GIT_VERSION:=2.35.8};
 : ${PKG_GIT_URL:=https://github.com/git/git/archive/v${PKG_GIT_VERSION}.tar.gz};
 : ${PKG_GIT_CFLAGS_BUILD_EXTRA:="-std=gnu99"};
 : ${PKG_GIT_CONFIG_CACHE_EXTRA:="
