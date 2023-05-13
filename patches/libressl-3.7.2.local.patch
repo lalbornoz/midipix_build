@@ -1,0 +1,19 @@
+diff -ru libressl-3.7.1.orig/crypto/compat/arc4random_linux.h libressl-3.7.1/crypto/compat/arc4random_linux.h
+--- libressl-3.7.1.orig/crypto/compat/arc4random_linux.h	2023-05-14 00:44:53.716886970 +0200
++++ libressl-3.7.1/crypto/compat/arc4random_linux.h	2023-05-14 00:44:32.052886839 +0200
+@@ -27,6 +27,7 @@
+ 
+ #include <pthread.h>
+ #include <signal.h>
++#include <stdio.h>
+ 
+ static pthread_mutex_t arc4random_mtx = PTHREAD_MUTEX_INITIALIZER;
+ #define _ARC4_LOCK()   pthread_mutex_lock(&arc4random_mtx)
+@@ -43,6 +44,7 @@
+ static inline void
+ _getentropy_fail(void)
+ {
++	fprintf(stderr, "Couldn't obtain randomness from getentropy\n");
+ 	raise(SIGKILL);
+ }
+ 
