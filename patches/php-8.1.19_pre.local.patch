@@ -540,15 +540,15 @@ diff -ru php-8.1.10.orig/configure php-8.1.10/configure
  esac
  
  EXTRA_LIBS="$EXTRA_LIBS $DLIBS $LIBS"
-@@ -87006,6 +87013,8 @@
+@@ -88221,6 +88221,8 @@
      fiber_os="mac" ;; #(
    aix*|os400*) :
      fiber_os="aix" ;; #(
 +  midipix*) :
 +    fiber_os="midipix" ;; #(
+   freebsd*) :
+     fiber_os="freebsd" ;; #(
    *) :
-     fiber_os="other"
-  ;;
 @@ -87039,6 +87048,8 @@
  
  if test "$fiber_os" = 'mac'; then
