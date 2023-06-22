@@ -22,12 +22,12 @@ diff -ru bdwgc.orig/include/private/gcconfig.h bdwgc/include/private/gcconfig.h
  /* And one for NetBSD: */
  # if defined(__NetBSD__)
  #   define NETBSD
-@@ -527,7 +541,7 @@
- #   define mach_type_known
+@@ -551,7 +551,7 @@
  # elif (defined(__i386__) || defined(i386) || defined(__X86__)) \
-        && (defined(DARWIN) || defined(LINUX) || defined(FREEBSD) \
--            || defined(NETBSD) || defined(OPENBSD) || defined(QNX))
-+            || defined(NETBSD) || defined(OPENBSD) || defined(QNX) || defined(MIDIPIX))
+        && (defined(DARWIN) || defined(LINUX) \
+            || defined(FREEBSD) || defined(NETBSD) || defined(OPENBSD) \
+-           || defined(EMBOX) || defined(QNX))
++           || defined(EMBOX) || defined(QNX) || defined(MIDIPIX))
  #   define I386
  #   define mach_type_known
  # elif (defined(__ia64) || defined(__ia64__)) && defined(LINUX)
