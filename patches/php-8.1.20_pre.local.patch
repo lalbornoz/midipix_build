@@ -650,24 +650,6 @@ diff -ru php-8.1.10.orig/ext/phar/Makefile.frag php-8.1.10/ext/phar/Makefile.fra
  
  $(builddir)/phar/phar.inc: $(srcdir)/phar/phar.inc
  	-@test -d $(builddir)/phar || mkdir $(builddir)/phar
-@@ -41,10 +41,10 @@
- 	-@chmod +x $(builddir)/phar.phar
- 
- install-pharcmd: pharcmd
--	-@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
--	$(INSTALL) $(builddir)/phar.phar $(INSTALL_ROOT)$(bindir)/$(program_prefix)phar$(program_suffix).phar
--	-@rm -f $(INSTALL_ROOT)$(bindir)/$(program_prefix)phar$(program_suffix)
--	$(LN_S) -f $(program_prefix)phar$(program_suffix).phar $(INSTALL_ROOT)$(bindir)/$(program_prefix)phar$(program_suffix)
--	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
--	@$(INSTALL_DATA) $(builddir)/phar.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)phar$(program_suffix).1
--	@$(INSTALL_DATA) $(builddir)/phar.phar.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)phar$(program_suffix).phar.1
-+	-@$(mkinstalldirs) $(DESTDIR)$(bindir)
-+	$(INSTALL) $(builddir)/phar.phar $(DESTDIR)$(bindir)/$(program_prefix)phar$(program_suffix).phar
-+	-@rm -f $(DESTDIR)$(bindir)/$(program_prefix)phar$(program_suffix)
-+	$(LN_S) -f $(program_prefix)phar$(program_suffix).phar $(DESTDIR)$(bindir)/$(program_prefix)phar$(program_suffix)
-+	@$(mkinstalldirs) $(DESTDIR)$(mandir)/man1
-+	@$(INSTALL_DATA) $(builddir)/phar.1 $(DESTDIR)$(mandir)/man1/$(program_prefix)phar$(program_suffix).1
-+	@$(INSTALL_DATA) $(builddir)/phar.phar.1 $(DESTDIR)$(mandir)/man1/$(program_prefix)phar$(program_suffix).phar.1
 diff -ru php-8.1.10.orig/pear/Makefile.frag php-8.1.10/pear/Makefile.frag
 --- php-8.1.10.orig/pear/Makefile.frag	2022-08-30 18:09:36.000000000 +0200
 +++ php-8.1.10/pear/Makefile.frag	2023-04-02 14:01:35.683117189 +0200
