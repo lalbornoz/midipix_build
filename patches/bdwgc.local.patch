@@ -22,21 +22,21 @@ diff -ru bdwgc.orig/include/private/gcconfig.h bdwgc/include/private/gcconfig.h
  /* And one for NetBSD: */
  # if defined(__NetBSD__)
  #   define NETBSD
-@@ -551,7 +551,7 @@
+@@ -554,7 +554,7 @@
+ #   define mach_type_known
  # elif (defined(__i386__) || defined(i386) || defined(__X86__)) \
-        && (defined(DARWIN) || defined(LINUX) \
-            || defined(FREEBSD) || defined(NETBSD) || defined(OPENBSD) \
--           || defined(EMBOX) || defined(QNX))
-+           || defined(EMBOX) || defined(QNX) || defined(MIDIPIX))
+        && (defined(ANY_BSD) || defined(DARWIN) || defined(EMBOX) \
+-           || defined(LINUX) || defined(QNX))
++           || defined(LINUX) || defined(QNX) || defined(MIDIPIX))
  #   define I386
  #   define mach_type_known
  # elif (defined(__ia64) || defined(__ia64__)) && defined(LINUX)
-@@ -584,7 +598,7 @@
+@@ -607,7 +607,7 @@
  # elif (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__) \
          || defined(__X86_64__)) \
-        && (defined(DARWIN) || defined(LINUX) || defined(FREEBSD) \
--            || defined(NETBSD) || defined(OPENBSD) || defined(QNX))
-+            || defined(NETBSD) || defined(OPENBSD) || defined(QNX) || defined(MIDIPIX))
+        && (defined(ANY_BSD) || defined(DARWIN) || defined(LINUX) \
+-           || defined(QNX))
++           || defined(QNX) || defined(MIDIPIX))
  #   define X86_64
  #   define mach_type_known
  # endif
@@ -68,12 +68,12 @@ diff -ru bdwgc.orig/include/private/gcconfig.h bdwgc/include/private/gcconfig.h
  #   ifdef DARWIN
  #     define DARWIN_DONT_PARSE_STACK 1
  #     define STACKBOTTOM ((ptr_t)0x7fff5fc00000)
-@@ -2581,7 +2609,7 @@
- #if defined(SVR4) || defined(LINUX) || defined(IRIX5) || defined(HPUX) \
-     || defined(OPENBSD) || defined(NETBSD) || defined(FREEBSD) \
-     || defined(DGUX) || defined(BSD) || defined(HAIKU) || defined(HURD) \
--    || defined(AIX) || defined(DARWIN) || defined(OSF1) || defined(QNX)
-+    || defined(AIX) || defined(DARWIN) || defined(OSF1) || defined(QNX) || defined(MIDIPIX)
+@@ -2676,7 +2676,7 @@
+ #if defined(AIX) || defined(ANY_BSD) || defined(BSD) || defined(DARWIN) \
+     || defined(DGUX) || defined(HAIKU) || defined(HPUX) || defined(HURD) \
+     || defined(IRIX5) || defined(LINUX) || defined(OSF1) || defined(QNX) \
+-    || defined(SVR4)
++    || defined(SVR4) || defined(MIDIPIX)
  # define UNIX_LIKE      /* Basic Unix-like system calls work.   */
  #endif
  
