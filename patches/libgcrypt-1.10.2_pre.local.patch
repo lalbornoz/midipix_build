@@ -1,0 +1,12 @@
+diff -ru libgcrypt-1.10.2.orig/configure libgcrypt-1.10.2/configure
+--- libgcrypt-1.10.2.orig/configure	2023-04-06 21:07:18.000000000 +0200
++++ libgcrypt-1.10.2/configure	2023-08-24 17:01:02.087595041 +0200
+@@ -15552,7 +15552,7 @@
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GPG Error - version >= $min_gpg_error_version" >&5
+ $as_echo_n "checking for GPG Error - version >= $min_gpg_error_version... " >&6; }
+   if test $ok = yes; then
+-    GPG_ERROR_CFLAGS=`$GPG_ERROR_CONFIG --cflags`
++    GPG_ERROR_CFLAGS=``
+     GPG_ERROR_LIBS=`$GPG_ERROR_CONFIG --libs`
+     if test -z "$GPGRT_CONFIG"; then
+       GPG_ERROR_MT_CFLAGS=`$GPG_ERROR_CONFIG --mt --cflags 2>/dev/null`

@@ -142,8 +142,8 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net twolame wolfssl";
 : ${PKG_LIBGLOB_URLS_GIT:=libglob=https://github.com/void-linux/libglob.git@master};
 : ${PKG_LIBGLOB_BUILD_DIR:=libglob};
 : ${PKG_LIBGCRYPT_DEPENDS:="libgpg_error"};
-: ${PKG_LIBGCRYPT_SHA256SUM:=ef14ae546b0084cd84259f61a55e07a38c3b53afc0f546bffcef2f01baffe9de};
-: ${PKG_LIBGCRYPT_VERSION:=1.10.1};
+: ${PKG_LIBGCRYPT_SHA256SUM:=3b9c02a004b68c256add99701de00b383accccf37177e0d6c58289664cce0c03};
+: ${PKG_LIBGCRYPT_VERSION:=1.10.2};
 : ${PKG_LIBGCRYPT_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${PKG_LIBGCRYPT_VERSION}.tar.bz2};
 : ${PKG_LIBGCRYPT_CONFIG_CACHE_EXTRA:="
 gcry_cv_broken_visibility_attribute=no
