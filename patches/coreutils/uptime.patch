@@ -1,0 +1,42 @@
+diff -ru coreutils-9.1.orig/src/uptime.c coreutils-9.1/src/uptime.c
+--- coreutils-9.1.orig/src/uptime.c	2022-04-08 13:22:18.000000000 +0200
++++ coreutils-9.1/src/uptime.c	2023-09-06 12:26:22.909930119 +0200
+@@ -30,6 +30,11 @@
+ # include <OS.h>
+ #endif
+ 
++#ifdef __midipix__
++#undef sa_handler
++#include <ntapi/ntapi.h>
++#endif
++
+ #include "c-strtod.h"
+ #include "die.h"
+ #include "error.h"
+@@ -59,6 +64,26 @@
+   struct tm *tmn;
+   double avg[3];
+   int loads;
++#ifdef __midipix__
++  ntapi_vtbl *__ntapi;
++  nt_system_time_of_day_information stodi;
++
++  if((ntapi_init(&__ntapi)) == 0)
++    {
++      char buf[BUFSIZ];
++      long long nt_time;
++      __ntapi->zw_query_system_information(NT_SYSTEM_TIME_OF_DAY_INFORMATION, &stodi, sizeof(stodi), NULL);
++      nt_time = (stodi.current_time.quad - stodi.boot_time.quad) / 100000ULL;
++      sprintf(buf, "%u.%02u", nt_time / 100, nt_time % 100);
++      {
++         char *end_ptr;
++         double upsecs = c_strtod (buf, &end_ptr);
++         if (buf != end_ptr)
++           uptime = (0 <= upsecs && upsecs < TYPE_MAXIMUM (time_t)
++                     ? upsecs : -1);
++      }
++    }
++#endif
+ #ifdef HAVE_PROC_UPTIME
+   FILE *fp;
+ 
