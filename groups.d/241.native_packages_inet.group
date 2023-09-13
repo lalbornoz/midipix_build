@@ -110,7 +110,7 @@ gl_cv_ld_output_def=no"};
 : ${PKG_INETUTILS_SHA256SUM:=1789d6b1b1a57dfe2a7ab7b533ee9f5dfd9cbf5b59bb1bb3c2612ed08d0f68b2};
 : ${PKG_INETUTILS_VERSION:=2.4};
 : ${PKG_INETUTILS_URL:=https://ftp.gnu.org/gnu/inetutils/inetutils-${PKG_INETUTILS_VERSION}.tar.xz};
-: ${PKG_INETUTILS_CONFIGURE_ARGS_EXTRA:="--disable-ftpd --enable-inetd --disable-rexecd --disable-rlogind --disable-rshd --disable-syslogd --enable-talkd --enable-telnetd --disable-tftpd --disable-uucpd --disable-dnsdomainname --disable-ping --disable-ping6 --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-logger --enable-hostname --enable-talk --enable-telnet --disable-tftp --disable-whois --disable-ifconfig --disable-traceroute"};
+: ${PKG_INETUTILS_CONFIGURE_ARGS_EXTRA:="--disable-ftpd --enable-inetd --disable-rexecd --disable-rlogind --disable-rshd --disable-talkd --enable-telnetd --disable-tftpd --disable-uucpd --disable-dnsdomainname --disable-ping --disable-ping6 --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-logger --enable-hostname --disable-talk --enable-telnet --disable-tftp --disable-whois --disable-ifconfig --disable-traceroute --with-ncurses-include-dir=${PREFIX_NATIVE}/include/ncurses"};
 : ${PKG_IRSSI_DEPENDS:="glib libressl ncurses"};
 : ${PKG_IRSSI_SHA256SUM:=29cbb746d7e57591d8fcf799406fb28cb7c2d734bc4288cbb8b4c4e05cf99c25};
 : ${PKG_IRSSI_VERSION:=1.2.3};
