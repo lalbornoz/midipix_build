@@ -1,7 +1,18 @@
 diff -ru bind-9.13.2.orig/configure bind-9.13.2/configure
 --- bind-9.13.2.orig/configure	2018-07-03 09:51:40.000000000 +0200
-+++ bind-9.13.2/configure	2023-03-15 15:10:58.726906236 +0100
-@@ -18148,14 +18148,6 @@
++++ bind-9.13.2/configure	2023-09-15 14:41:57.738821487 +0200
+@@ -16616,10 +16616,6 @@
+ $as_echo "yes" >&6; }
+ 		DST_OPENSSL_LIBS="$DST_OPENSSL_LIBS -ldl"
+ 
+-else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: unknown" >&5
+-$as_echo "unknown" >&6; }
+-		 as_fn_error $? "OpenSSL has unsupported dynamic loading" "$LINENO" 5
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+@@ -18148,14 +18144,6 @@
  
  
  
