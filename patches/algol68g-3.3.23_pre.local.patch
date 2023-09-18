@@ -1,0 +1,449 @@
+diff -ru algol68g-3.3.23.orig/configure algol68g-3.3.23/configure
+--- algol68g-3.3.23.orig/configure	2023-09-16 22:21:31.000000000 +0200
++++ algol68g-3.3.23/configure	2023-09-18 15:18:17.972370415 +0200
+@@ -2889,6 +2889,20 @@
+ printf "%s\n" "linux" >&6; }
+   ;;
+ #
++# Midipix.
++#
++*-*-midipix*)
++
++printf "%s\n" "#define BUILD_MIDIPIX 1" >>confdefs.h
++
++
++printf "%s\n" "#define HAVE_IEEE_754 1" >>confdefs.h
++
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: midipix" >&5
++printf "%s\n" "midipix" >&6; }
++  ;;
++
++#
+ # Cygwin.
+ #
+ *86-*-cygwin* | *86_64-*-cygwin*)
+@@ -5001,43 +5015,6 @@
+ #
+ # Test on gcc capabilities.
+ #
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking __attribute__((aligned())) supported" >&5
+-printf %s "checking __attribute__((aligned())) supported... " >&6; }
+-
+-if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-typedef int aint __attribute__((aligned(8)));
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "stop -- C compiler does not support __attribute__aligned directive
+-See \`config.log' for more details" "$LINENO" 5; }
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for inline" >&5
+ printf %s "checking for inline... " >&6; }
+ if test ${ac_cv_c_inline+y}
+@@ -5552,49 +5529,6 @@
+ fi
+ rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+ 
+-#
+-# Test on glibc
+-#
+-
+-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking GNU C library" >&5
+-printf %s "checking GNU C library... " >&6; }
+-if test "$cross_compiling" = yes
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: assuming no" >&5
+-printf "%s\n" "assuming no" >&6; }
+-   enable_generic=yes
+-
+-
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-(void) gnu_get_libc_version();
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-
+-printf "%s\n" "#define HAVE_GNU_C_LIB 1" >>confdefs.h
+-
+-
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-   enable_generic=yes
+-
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+ 
+ #
+ # We know about the platform now.
+@@ -5605,11 +5539,6 @@
+   enable_core=yes
+ fi
+ 
+-if test "x$enable_generic" = "xyes"; then
+-  enable_standard_types=yes
+-  enable_long_types=no
+-fi
+-
+ if test "x$enable_core" = "xyes"; then
+   enable_compiler=no
+   enable_curl=no
+@@ -6648,318 +6577,6 @@
+ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: optional headers and libraries..." >&5
+ printf "%s\n" "$as_me: optional headers and libraries..." >&6;}
+ 
+-if test "x$enable_standard_types" = "xyes"; then
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking int is 32 bit" >&5
+-printf %s "checking int is 32 bit... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-return sizeof (int) != 4;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-   enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking unsigned is 32 bit" >&5
+-printf %s "checking unsigned is 32 bit... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-return sizeof (unsigned) != 4;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-     enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking uint64_t is 64 bit" >&5
+-printf %s "checking uint64_t is 64 bit... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-#include <stdint.h>
+-int
+-main (void)
+-{
+-return sizeof (uint64_t) != 8;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-     enable_standard_types=no
+-     enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking double is 64 bit" >&5
+-printf %s "checking double is 64 bit... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-return sizeof (double) != 8;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-     enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking long double has 64-bit mantissa" >&5
+-printf %s "checking long double has 64-bit mantissa... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-#include <float.h>
+-int
+-main (void)
+-{
+-return LDBL_MANT_DIG != 64;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-
+-printf "%s\n" "#define HAVE_FLT80 1" >>confdefs.h
+-
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-fi
+-
+-if test "x$enable_standard_types" = "xno"; then
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "stop -- unexpected lengths for int and/or double and/or uint64_t
+-See \`config.log' for more details" "$LINENO" 5; }
+-fi
+-
+-if test "x$enable_long_types" = "xyes"; then
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking 64-bit long long int is available" >&5
+-printf %s "checking 64-bit long long int is available... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-return sizeof (long long) != 8;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-   enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking 64-bit long long unsigned is available" >&5
+-printf %s "checking 64-bit long long unsigned is available... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-return sizeof (long long unsigned) != 8;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-     enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking __float128 is available" >&5
+-printf %s "checking __float128 is available... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-return sizeof (__float128) != 16;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-     enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking __complex128 is available" >&5
+-printf %s "checking __complex128 is available... " >&6; }
+-  if test "$cross_compiling" = yes
+-then :
+-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error $? "cannot run test program while cross compiling
+-See \`config.log' for more details" "$LINENO" 5; }
+-else $as_nop
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-typedef _Complex float __attribute__((mode(TC))) __complex128;
+-int
+-main (void)
+-{
+-return sizeof (__complex128) != 32;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_run "$LINENO"
+-then :
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-printf "%s\n" "yes" >&6; }
+-else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-printf "%s\n" "no" >&6; }
+-     enable_long_types=no
+-fi
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
+-fi
+-
+-fi
+ 
+ if test "x$enable_long_types" = "xyes"; then
+   if test "x$enable_quadmath" = "xyes"; then
