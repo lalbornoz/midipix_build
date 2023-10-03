@@ -10,6 +10,7 @@ readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
 libuv libvorbis libxml2 libxslt libz libzip lzlib lzo nettle onig opus sdl1 sdl1_net sdl1_mixer
 sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net twolame wolfssl";
+: ${PKG_ASPELL_DEPENDS:=ncursesw};
 : ${PKG_ASPELL_SHA256SUM:=f9b77e515334a751b2e60daab5db23499e26c9209f5e7b7443b05235ad0226f2};
 : ${PKG_ASPELL_VERSION:=0.60.8};
 : ${PKG_ASPELL_URL:=https://ftp.gnu.org/gnu/aspell/aspell-${PKG_ASPELL_VERSION}.tar.gz};
