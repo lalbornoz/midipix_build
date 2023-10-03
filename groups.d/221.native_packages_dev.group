@@ -5,8 +5,8 @@ GROUP_TARGET_APPEND="native_packages";
 NATIVE_PACKAGES_DEV_PACKAGES="
 algol68g bison cdecl chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
 patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk";
-: ${PKG_ALGOL68G_SHA256SUM:=3574889be565eff353f24b346cda960086256edcc6bf4ab4733c611a8945d5bb};
-: ${PKG_ALGOL68G_VERSION:=3.3.23};
+: ${PKG_ALGOL68G_SHA256SUM:=bd26e3dd89720ace1b003a43ab10247120b556ca106768fe8c829ee7bed6b435};
+: ${PKG_ALGOL68G_VERSION:=3.3.24};
 : ${PKG_ALGOL68G_URL:=https://jmvdveer.home.xs4all.nl/algol68g-${PKG_ALGOL68G_VERSION}.tar.gz}
 : ${PKG_ALGOL68G_CONFIGURE_ARGS_EXTRA:="--disable-mathlib --disable-plotutils --disable-postgresql --disable-gsl --disable-curl"};
 : ${PKG_ALGOL68G_CFLAGS_CONFIGURE_EXTRA:="--sysroot=${PREFIX_NATIVE} -DHAVE_FLT80=1 -DBUILD_UNIX=1"};
