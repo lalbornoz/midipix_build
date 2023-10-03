@@ -373,6 +373,7 @@ ac_cv_write_stdout=yes
 have_shm_mmap_posix=yes"};
 : ${PKG_PHP_CONFIGURE_ARGS_EXTRA:="--with-layout=GNU --with-external-pcre --with-gmp --disable-gd --disable-phar --enable-pdo=static --enable-dom=static --enable-embed=shared --enable-all=shared --without-enchant --without-imap --disable-intl --without-ldap --without-oci8 --without-adabas --disable-pcntl --without-pdo-dblib --without-pdo-firebird --without-pdo-mysql --without-pdo-oci --without-pdo-odbc --without-pdo-pgsql --without-pdo-sqlite --without-pgsql --without-pspell --without-libedit --without-sapdb --without-snmp --without-sodium --without-password-argon2 --without-tidy --without-ffi --without-mysqli --without-unixODBC --without-dbmaker --without-solid --with-pdo-odbc=no --without-ibm-db2 --without-empress --without-empress-bcs --without-iodbc --without-esoob --without-custom-odbc --without-pear --with-bz2=${PREFIX_NATIVE} --disable-opcache-jit --disable-dl-test"};
 : ${PKG_PHP_ENV_VARS_EXTRA:="HOST_CC=gcc:READLINE_DIR=${PREFIX_NATIVE}/include/readline"};
+: ${PKG_PHP_MAKEFLAGS_PARALLELISE:="-j1"};
 : ${PKG_PHP_LIBTOOL:=rdlibtool};
 : ${PKG_PHP_INSTALL_FILES_V2:="+../obj/libs/libphp.so=lib/%[FNAME]"};
 : ${PKG_POPT_DEPENDS:="libiconv"};
