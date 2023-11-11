@@ -332,6 +332,7 @@ gl_cv_func_getopt_gnu=yes"};
 : ${PKG_OPENJAZZ_URLS_GIT:=openjazz=https://github.com/AlisterT/openjazz.git@master};
 : ${PKG_OPENJAZZ_CONFIG_CACHE_EXTRA:="ac_cv_prog_POD2MAN="};
 : ${PKG_OPENJAZZ_FORCE_AUTORECONF:=1};
+: ${PKG_OPENJAZZ_DISABLED:=1};
 : ${PKG_OPENJPEG_DEPENDS:="lcms2 libpng libz tiff"};
 : ${PKG_OPENJPEG_SHA256SUM:=0333806d6adecc6f7a91243b2b839ff4d2053823634d4f6ed7a59bc87409122a};
 : ${PKG_OPENJPEG_VERSION:=2.5.0};
