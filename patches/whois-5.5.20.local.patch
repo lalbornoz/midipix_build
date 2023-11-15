@@ -1,3 +1,15 @@
+diff -ru whois-5.5.20.orig/utils.h whois-5.5.20/utils.h
+--- whois-5.5.20.orig/utils.h   2023-11-10 15:26:16.000000000 +0100
++++ whois-5.5.20/utils.h        2023-11-15 21:34:41.481060178 +0100
+@@ -64,7 +64,7 @@
+ #endif
+
+ /* Prototypes */
+-void *MALLOC_FREE NONNULL do_nofail(void *ptr, const char *file, const int line)
++void * NONNULL do_nofail(void *ptr, const char *file, const int line)
+ ;
+ char **merge_args(char *args, char *argv[], int *argc);
+
 --- whois-5.5.7/Makefile.orig	2020-10-03 16:43:15.000000000 +0100
 +++ whois-5.5.7/Makefile	2021-01-23 07:55:24.889153830 +0000
 @@ -42,12 +42,12 @@
