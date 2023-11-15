@@ -173,12 +173,10 @@ gcry_cv_visibility_attribute=yes"};
 : ${PKG_LIBIDN2_URL:=https://ftp.gnu.org/gnu/libidn/libidn2-${PKG_LIBIDN2_VERSION}.tar.gz};
 : ${PKG_LIBITE_URLS_GIT:=libite=https://github.com/troglobit/libite.git@master};
 : ${PKG_LIBITE_SUBDIR:=libite};
-: ${PKG_LIBJPEG_TURBO_SHA256SUM:=2fdc3feb6e9deb17adec9bafa3321419aa19f8f4e5dea7bf8486844ca22207bf};
-: ${PKG_LIBJPEG_TURBO_VERSION:=2.1.5.1};
+: ${PKG_LIBJPEG_TURBO_SHA256SUM:=22429507714ae147b3acacd299e82099fce5d9f456882fc28e252e4579ba2a75};
+: ${PKG_LIBJPEG_TURBO_VERSION:=3.0.1};
 : ${PKG_LIBJPEG_TURBO_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libjpeg-turbo/libjpeg-turbo-${PKG_LIBJPEG_TURBO_VERSION}.tar.gz};
 : ${PKG_LIBJPEG_TURBO_CMAKE_ARGS_EXTRA:="
-	-DCMAKE_ASM_NASM_COMPILER=${PREFIX}/bin/${DEFAULT_TARGET}-nasm
-	-DCMAKE_ASM_NASM_OBJECT_FORMAT=win64
 	-DWITH_SIMD=OFF
 	-DWITH_JPEG8=ON"};
 : ${PKG_LIBKSBA_DEPENDS:="libgpg_error"};
