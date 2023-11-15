@@ -456,13 +456,12 @@ bash_cv_func_sigsetjmp=yes"};
 : ${PKG_TWOLAME_VERSION:=0.4.0};
 : ${PKG_TWOLAME_URL:=https://github.com/njh/twolame/releases/download/${PKG_TWOLAME_VERSION}/twolame-${PKG_TWOLAME_VERSION}.tar.gz};
 : ${PKG_WOLFSSL_DEPENDS:="libz"};
-: ${PKG_WOLFSSL_SHA256SUM:=2e74a397fa797c2902d7467d500de904907666afb4ff80f6464f6efd5afb114a};
-: ${PKG_WOLFSSL_VERSION:=5.6.3};
+: ${PKG_WOLFSSL_SHA256SUM:=031691906794ff45e1e792561cf31759f5d29ac74936bc8dffb8b14f16d820b4};
+: ${PKG_WOLFSSL_VERSION:=5.6.4};
 : ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
 : ${PKG_WOLFSSL_CONFIGURE_ARGS_EXTRA:="--enable-distro --disable-examples --enable-reproducible-build --enable-ed25519 --enable-ed25519-stream --with-libz=${PREFIX_NATIVE}"};
 : ${PKG_WOLFSSL_SUBDIR:=wolfssl-${PKG_WOLFSSL_VERSION}-stable};
 : ${PKG_WOLFSSL_INSTALL_FILES_V2:="
-	+../obj/cyassl/options.h=include/cyassl/%[FNAME]
 	+../obj/wolfssl/options.h=include/wolfssl/%[FNAME]"};
 
 # vim:filetype=sh textwidth=0
