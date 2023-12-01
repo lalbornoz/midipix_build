@@ -21,6 +21,12 @@
 # @_version_rpm:	package RPM version
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure
+# N.B.:			The following variables are substituted prior to running rpmbuild(1):
+#			%{pkg_destdir}
+#			%{pkg_name}
+#			%{pkg_url}
+#			%{pkg_version_full}
+#			%{pkg_version_rpm}
 #
 ex_rtl_build_rpm() {
 	local	_erbr_destdir="${1}" _erbr_jobs_max="${2}" _erbr_jobs_semaphore="${3}" _erbr_jobs_wait="${4}"	\
@@ -72,21 +78,32 @@ ex_rtl_build_rpm() {
 
 	if ! rtl_fileop cp "${_erbr_spec_fname}" "${_erbr_spec_fname_tgt}"; then
 		_erbr_rc=1;
+	elif ! sed	-i""							\
+			-ne '/^#REMOVEDBYSED#/!p'				\
+			"${_erbr_spec_fname_tgt}";				\
+	then
+		_erbr_rc=1;
+	#
+	# N.B.	Keep list in sync w/ list in function documentation comment block at top.
+	#
+	elif ! sed	-i""							\
+			-e 's#%{pkg_destdir}#'"${_erbr_destdir}"'#g'		\
+			-e 's#%{pkg_name}#'"${_erbr_name}"'#g'			\
+			-e 's#%{pkg_url}#'"${_erbr_url}"'#g'			\
+			-e 's#%{pkg_version_full}#'"${_erbr_version}"'#g'	\
+			-e 's#%{pkg_version_rpm}#'"${_erbr_version_rpm}"'#g'	\
+			"${_erbr_spec_fname_tgt}";				\
+	then
+		_erbr_rc=1;
 	else
 		while true; do
 			rpmbuild						\
 				-bb						\
-										\
 				--define "_binary_payload w2T16.xzdio"		\
-										\
 				--define="_tmppath ${_erbr_tmp_dname=}"		\
 				--define="_topdir ${_erbr_topdir}"		\
-				--define="pkg_destdir ${_erbr_destdir}"		\
-				--define="pkg_name ${_erbr_name}"		\
-				--define="pkg_url ${_erbr_url}"			\
-				--define="pkg_version_full ${_erbr_version}"	\
-				--define="pkg_version_rpm ${_erbr_version_rpm}"	\
-				--nodeps "${_erbr_spec_fname_tgt}";
+				--nodeps					\
+				"${_erbr_spec_fname_tgt}";
 			_erbr_rc="${?}";
 
 			if [ "${_erbr_rc}" -eq 141 ]; then

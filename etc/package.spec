@@ -1,3 +1,7 @@
+#REMOVEDBYSED#
+#REMOVEDBYSED# Refer to subr.ex/ex_rtl_rpm.subr:ex_rtl_build_rpm() for the list of
+#REMOVEDBYSED# %{}-enclosed variables substituted prior to running rpmbuild(1).
+#REMOVEDBYSED#
 Name:           %{pkg_name}
 Version:        %{pkg_version_rpm}
 Release:        1
