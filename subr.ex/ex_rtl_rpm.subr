@@ -23,6 +23,7 @@
 # Returns:		zero (0) on success, non-zero (>0) on failure
 # N.B.:			The following variables are substituted prior to running rpmbuild(1):
 #			%{pkg_destdir}
+#			%{pkg_files_list}
 #			%{pkg_name}
 #			%{pkg_url}
 #			%{pkg_version_full}
@@ -33,7 +34,7 @@ ex_rtl_build_rpm() {
 		_erbr_name="${5}" _erbr_rpms_dname="${6}" _erbr_spec_fname="${7}" _erbr_spec_fname_tgt="${8}"	\
 		_erbr_tmp_dname="${9}" _erbr_topdir="${10}" _erbr_url="${11}" _erbr_version="${12}"		\
 		_erbr_version_rpm="${13}"									\
-		_erbr_job_count=0 _erbr_rc=0 _erbr_rc_jobs=0;
+		_erbr_files_list="" _erbr_job_count=0 _erbr_rc=0 _erbr_rc_jobs=0;
 
 (
 	while true; do
@@ -78,6 +79,12 @@ ex_rtl_build_rpm() {
 
 	if ! rtl_fileop cp "${_erbr_spec_fname}" "${_erbr_spec_fname_tgt}"; then
 		_erbr_rc=1;
+	elif ! _erbr_files_list="$(						\
+			cd "${_erbr_destdir}";					\
+			find -mindepth 1 \( -type f -or -type l \)  |		\
+			sed -e 's,^./,'"/"',' -e '$!s/$/\\/')";					\
+	then
+		_erbr_rc=1;
 	elif ! sed	-i""							\
 			-ne '/^#REMOVEDBYSED#/!p'				\
 			"${_erbr_spec_fname_tgt}";				\
@@ -88,6 +95,7 @@ ex_rtl_build_rpm() {
 	#
 	elif ! sed	-i""							\
 			-e 's#%{pkg_destdir}#'"${_erbr_destdir}"'#g'		\
+			-e 's#%{pkg_files_list}#'"${_erbr_files_list}"'#g'	\
 			-e 's#%{pkg_name}#'"${_erbr_name}"'#g'			\
 			-e 's#%{pkg_url}#'"${_erbr_url}"'#g'			\
 			-e 's#%{pkg_version_full}#'"${_erbr_version}"'#g'	\
