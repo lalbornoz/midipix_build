@@ -23,7 +23,6 @@ cp -pPr "%{pkg_destdir}/." "${RPM_BUILD_ROOT}"
 %post
 %postun
 %files
-%{pkg_files_list}
 
 %changelog
 
