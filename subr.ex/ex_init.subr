@@ -403,7 +403,7 @@ ex_init_prereqs() {
 	elif ! awk -V 2>/dev/null | grep -q "^GNU Awk "; then
 		_eip_rc=1;
 		rtl_setrstatus "${_eip_rstatus}" 'awk(1) in \$PATH must be GNU Awk.';
-	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT;	\
+	elif ! (FNAME="$(mktemp)" && { trap "rm -f \"\${FNAME}\"" EXIT HUP INT TERM USR1 USR2;	\
 			sed -i'' -e '' "${FNAME}" >/dev/null 2>&1; });
 	then
 		_eip_rc=1;
