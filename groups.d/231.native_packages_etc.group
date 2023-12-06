@@ -6,7 +6,7 @@ NATIVE_PACKAGES_ETC_PACKAGES="
 apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
 giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer icoutils imagemagick infounzip infozip
-john lbreakout2 lcms2 less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
+john lbreakout2 lcms less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 php popt potrace procps_ng qemu
 qpdf qrencode rpm rw sdlquake shared_mime_info slang sqlite3 tcl tdnf texinfo
 tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
@@ -176,7 +176,7 @@ zstd";
 : ${PKG_GNUCHESS_SHA256SUM:=ddfcc20bdd756900a9ab6c42c7daf90a2893bf7f19ce347420ce36baebc41890};
 : ${PKG_GNUCHESS_VERSION:=6.2.9};
 : ${PKG_GNUCHESS_URL:=https://ftp.gnu.org/gnu/chess/gnuchess-${PKG_GNUCHESS_VERSION}.tar.gz};
-: ${PKG_GRAPHICSMAGICK_DEPENDS:="libz libpng freetype lcms2 libxml2 tiff libjpeg_turbo bzip2 zstd"};
+: ${PKG_GRAPHICSMAGICK_DEPENDS:="libz libpng freetype lcms libxml2 tiff libjpeg_turbo bzip2 zstd"};
 : ${PKG_GRAPHICSMAGICK_SHA256SUM:=484fccfd2b2faf6c2ba9151469ece5072bcb91ba4ed73e75ed3d8e46c759d557};
 : ${PKG_GRAPHICSMAGICK_VERSION:=1.3.42};
 : ${PKG_GRAPHICSMAGICK_URL:=https://mirror.midipix.org/graphicsmagick/GraphicsMagick-${PKG_GRAPHICSMAGICK_VERSION}.tar.xz};
@@ -252,10 +252,10 @@ gl_cv_func_getopt_gnu=yes"};
 : ${PKG_LBREAKOUT2_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib/w32lib};
 : ${PKG_LBREAKOUT2_ENV_VARS_EXTRA:="SDL_CONFIG=${PREFIX_NATIVE}/bin/sdl-config --prefix=${PREFIX_NATIVE}"};
 : ${PKG_LBREAKOUT2_IN_TREE:=1};
-: ${PKG_LCMS2_DEPENDS:="libz libjpeg_turbo tiff"};
-: ${PKG_LCMS2_SHA256SUM:=b20cbcbd0f503433be2a4e81462106fa61050a35074dc24a4e356792d971ab39};
-: ${PKG_LCMS2_VERSION:=2.15};
-: ${PKG_LCMS2_URL:=https://github.com/mm2/Little-CMS/releases/download/lcms${PKG_LCMS2_VERSION}/lcms2-${PKG_LCMS2_VERSION}.tar.gz};
+: ${PKG_LCMS_DEPENDS:="libz libjpeg_turbo tiff"};
+: ${PKG_LCMS_SHA256SUM:=d873d34ad8b9b4cea010631f1a6228d2087475e4dc5e763eb81acc23d9d45a51};
+: ${PKG_LCMS_VERSION:=2.16};
+: ${PKG_LCMS_URL:=https://github.com/mm2/Little-CMS/releases/download/lcms${PKG_LCMS_VERSION}/lcms2-${PKG_LCMS_VERSION}.tar.gz};
 : ${PKG_LESS_DEPENDS:="ncurses ncursesw"};
 : ${PKG_LESS_SHA256SUM:=2911b5432c836fa084c8a2e68f6cd6312372c026a58faaa98862731c8b6052e8};
 : ${PKG_LESS_VERSION:=643};
@@ -333,7 +333,7 @@ gl_cv_func_getopt_gnu=yes"};
 : ${PKG_OPENJAZZ_CONFIG_CACHE_EXTRA:="ac_cv_prog_POD2MAN="};
 : ${PKG_OPENJAZZ_FORCE_AUTORECONF:=1};
 : ${PKG_OPENJAZZ_DISABLED:=1};
-: ${PKG_OPENJPEG_DEPENDS:="lcms2 libpng libz tiff"};
+: ${PKG_OPENJPEG_DEPENDS:="lcms libpng libz tiff"};
 : ${PKG_OPENJPEG_SHA256SUM:=0333806d6adecc6f7a91243b2b839ff4d2053823634d4f6ed7a59bc87409122a};
 : ${PKG_OPENJPEG_VERSION:=2.5.0};
 : ${PKG_OPENJPEG_URL:=https://github.com/uclouvain/openjpeg/archive/v${PKG_OPENJPEG_VERSION}.tar.gz};
