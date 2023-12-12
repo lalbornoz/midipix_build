@@ -8,7 +8,7 @@ libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt l
 libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
-libuv libvorbis libxml2 libxslt libz libzip lzlib lzo nettle onig opus sdl1 sdl1_net sdl1_mixer
+libuv libvorbis libwebp libxml2 libxslt libz libzip lzlib lzo nettle onig opus sdl1 sdl1_net sdl1_mixer
 sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net twolame wolfssl";
 : ${PKG_ASPELL_DEPENDS:=ncursesw};
 : ${PKG_ASPELL_SHA256SUM:=f9b77e515334a751b2e60daab5db23499e26c9209f5e7b7443b05235ad0226f2};
@@ -318,6 +318,11 @@ gl_cv_ld_output_def=no"};
 : ${PKG_LIBVORBIS_SHA256SUM:=b33cc4934322bcbf6efcbacf49e3ca01aadbea4114ec9589d1b1e9d20f72954b};
 : ${PKG_LIBVORBIS_VERSION:=1.3.7};
 : ${PKG_LIBVORBIS_URL:=https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-${PKG_LIBVORBIS_VERSION}.tar.xz};
+: ${PKG_LIBWEBP_DEPENDS:="tiff giflib libpng"};
+: ${PKG_LIBWEBP_SHA256SUM:=2a499607df669e40258e53d0ade8035ba4ec0175244869d1025d460562aa09b4};
+: ${PKG_LIBWEBP_VERSION:=1.3.2};
+: ${PKG_LIBWEBP_URL:=https://sources.voidlinux.org/libwebp-${PKG_LIBWEBP_VERSION}/libwebp-${PKG_LIBWEBP_VERSION}.tar.gz};
+: ${PKG_LIBWEBP_CONFIGURE_ARGS_EXTRA:="--disable-gl --disable-sdl --disable-sse4.1 --enable-libwebpdecoder --enable-libwebpextras --with-pnglibdir=${PREFIX_NATIVE} --with-pngincludedir=${PREFIX_NATIVE}"};
 : ${PKG_LIBXML2_DEPENDS:="libz xz"};
 : ${PKG_LIBXML2_SHA256SUM:=0d676b10cfd13ab966907a3917bd86b17a1c22befdf42144cdc1ad5bb9e65c45};
 : ${PKG_LIBXML2_VERSION:=2.9.13};
