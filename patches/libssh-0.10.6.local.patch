@@ -1,0 +1,10 @@
+diff -ru libssh-0.10.6.orig/libssh.pc.cmake libssh-0.10.6/libssh.pc.cmake
+--- libssh-0.10.6.orig/libssh.pc.cmake	2022-11-18 16:16:47.000000000 +0100
++++ libssh-0.10.6/libssh.pc.cmake	2023-12-19 14:32:21.461084477 +0100
+@@ -6,5 +6,5 @@
+ Name: @PROJECT_NAME@
+ Description: The SSH Library
+ Version: @PROJECT_VERSION@
+-Libs: -L${libdir} -lssh
++Libs: -lssh
+ Cflags: -I${includedir}
