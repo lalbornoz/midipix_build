@@ -101,7 +101,9 @@ ex_rtl_build_rpm() {
 			> "${_erbr_spec_fname_tgt}"				\
 	&& (cd "${_erbr_destdir}";						\
 	    find -mindepth 1 \( -type f -or -type l \) |			\
-	    sed -e 's,^./,'"/"',')						\
+	    sed	-e 's,^./,'"/"','						\
+	    	-e 's/^/"/'							\
+		-e 's/$/"/')							\
 	    		>> "${_erbr_spec_fname_tgt}"				\
 	&& sed	-n -e '/^%files$/,${/^%files$/d;p}'				\
 			"${_erbr_spec_fname_tgt_tmp}"				\
