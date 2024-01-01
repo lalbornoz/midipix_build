@@ -228,7 +228,7 @@ ex_pkg_load_vars() {
 
 		set +o noglob;
 		for _eplv_fname in				\
-				./env.d/*.env;
+				./vars.env.d/*.env;
 		do
 			set -o noglob;
 			if [ -r "${_eplv_fname}" ]; then
