@@ -1,0 +1,19 @@
+diff -ru patch-2.7.6.orig/src/util.c patch-2.7.6/src/util.c
+--- patch-2.7.6.orig/src/util.c	2018-02-03 13:41:49.000000000 +0100
++++ patch-2.7.6/src/util.c	2024-01-01 18:44:53.339218111 +0100
+@@ -269,6 +269,7 @@
+       uid = (euid == st->st_uid) ? -1 : st->st_uid;
+       gid = (egid == st->st_gid) ? -1 : st->st_gid;
+ 
++#ifndef __midipix__
+       /* May fail if we are not privileged to set the file owner, or we are
+          not in group instat.st_gid.  Ignore those errors.  */
+       if ((uid != -1 || gid != -1)
+@@ -281,6 +282,7 @@
+ 		(uid == -1) ? "owner" : "owning group",
+ 		S_ISLNK (mode) ? "symbolic link" : "file",
+ 		quotearg (to));
++#endif
+     }
+   if (attr & FA_XATTRS)
+     if (copy_attr (from, to) != 0
