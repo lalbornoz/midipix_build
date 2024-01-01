@@ -1,6 +1,8 @@
---- nasm-2.14.02/output/outcoff.c.orig	2018-12-26 13:44:06.000000000 +0000
-+++ nasm-2.14.02/output/outcoff.c	2019-01-20 13:18:06.240000000 +0000
-@@ -701,6 +701,7 @@
+diff --git nasm-2.16.01/output/outcoff.c.orig nasm-2.16.01/output/outcoff.c
+index c2b4eb6..fc57c1e 100644
+--- nasm-2.16.01/output/outcoff.c.orig
++++ nasm-2.16.01/output/outcoff.c
+@@ -820,6 +820,7 @@ static void coff_sect_write(struct coff_Section *sect,
      sect->len += len;
  }
  
@@ -8,7 +10,7 @@
  typedef struct tagString {
      struct tagString *next;
      int len;
-@@ -765,6 +766,98 @@
+@@ -884,6 +885,98 @@ static void BuildExportTable(STRING **rvp)
  
      *rvp = NULL;
  }
@@ -105,10 +107,10 @@
 +}
 +#endif
  
- static enum directive_result
- coff_directives(enum directive directive, char *value, int pass)
-@@ -793,7 +886,9 @@
-             nasm_error(ERR_NONFATAL, "unrecognized export qualifier `%s'", q);
+ static void coff_defcomdatname(char *name, int32_t segment)
+ {
+@@ -924,7 +1017,9 @@ coff_directives(enum directive directive, char *value)
+             nasm_nonfatal("unrecognized export qualifier `%s'", q);
              return DIRR_ERROR;
          }
 +#ifndef COFF_MIDIPIX
@@ -117,7 +119,7 @@
          return DIRR_OK;
      }
      case D_SAFESEH:
-@@ -888,8 +983,12 @@
+@@ -1039,8 +1134,12 @@ static void coff_write(void)
      int32_t pos, sympos, vsize;
      int i;
  
@@ -130,7 +132,7 @@
  
      if (win32) {
          /* add default value for @feat.00, this allows to 'link /safeseh' */
-@@ -1086,7 +1185,10 @@
+@@ -1278,7 +1377,10 @@ static void coff_write_symbols(void)
      memset(filename, 0, 18);    /* useful zeroed buffer */
  
      for (i = 0; i < (uint32_t) coff_nsects; i++) {
@@ -141,4 +143,4 @@
 +            coff_symbol(NULL, coff_sects[i]->namepos, 0L, i + 1, 0, 3, 1);
          fwriteint32_t(coff_sects[i]->len,    ofile);
          fwriteint16_t(coff_sects[i]->nrelocs,ofile);
-         nasm_write(filename, 12, ofile);
+         if (coff_sects[i]->flags & IMAGE_SCN_LNK_COMDAT) {
