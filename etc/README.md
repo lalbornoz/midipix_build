@@ -107,15 +107,15 @@ amount of logical processors on the build host divided by two (2).
 ### 2.1.1. Build-time dependencies
 
 * **Alpine Linux**:
-  binutils bison bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip libc-dev linux-headers lzip m4 make musl-dev net-tools patch perl perl-xml-parser procps sed tar util-linux wget xz zip
+  binutils bison bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip libc-dev linux-headers lzip m4 make musl-dev net-tools patch perl perl-xml-parser procps sed tar util-linux util-linux-dev wget xz zip
 * **Arch Linux**:
-  binutils bison bzip2 cmake coreutils curl findutils gawk gcc git grep gzip lzip m4 make net-tools patch perl perl-xml-parser procps-ng sed tar util-linux wget xz zip
+  binutils bison bzip2 cmake coreutils curl findutils gawk gcc git grep gzip lzip m4 make net-tools patch perl perl-xml-parser procps-ng sed tar util-linux util-linux-libs wget xz zip
 * **Debian/-derived Linux**:
-  binutils bison bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip hostname libc6-dev libxml-parser-perl lzip m4 make patch perl procps sed tar util-linux wget xz-utils zip
+  binutils bison bzip2 cmake coreutils curl findutils g++ gawk gcc git grep gzip hostname libc6-dev libxml-parser-perl lzip m4 make patch perl procps sed tar util-linux uuid-dev wget xz-utils zip
 * **Gentoo Linux**:
-  binutils bison bzip2 cmake coreutils curl findutils gawk =gcc-7.5.0-r1 dev-vcs/git grep gzip lzip m4 make patch perl dev-perl/XML-Parser procps sed tar util-linux wget xz-utils zip
+  binutils bison bzip2 cmake coreutils curl findutils gawk =gcc-7.5.0-r1 dev-vcs/git grep gzip lzip m4 make patch perl dev-perl/XML-Parser procps sed tar util-linux libuuid wget xz-utils zip
 * **OpenSUSE Linux**:
-  binutils bison bzip2 cmake coreutils curl findutils gawk gcc gcc-c++ git grep gzip hostname linux-glibc-devel lzip m4 make patch perl perl-XML-Parser procps sed tar util-linux wget xz zip
+  binutils bison bzip2 cmake coreutils curl findutils gawk gcc gcc-c++ git grep gzip hostname linux-glibc-devel lzip m4 make patch perl perl-XML-Parser procps sed tar util-linux libuuid1 wget xz zip
   
 #### The distro matrix:
 
@@ -149,6 +149,7 @@ amount of logical processors on the build host divided by two (2).
 | sed             | sed                | sed                        | sed                 | sed               |
 | tar             | tar                | tar                        | tar                 | tar               |
 | util-linux      | util-linux         | util-linux                 | util-linux          | util-linux        |
+| util-linux-dev  | util-linux-libs    | uuid-dev                   | libuuid             | libuuid1          |
 | -               | vi                 | -                          | -                   | -                 |
 | wget            | wget               | wget                       | wget                | wget              |
 | xz              | xz                 | xz-utils                   | xz-utils            | xz                |
