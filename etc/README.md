@@ -1062,4 +1062,4 @@ hard to debug or even diagnose bugs.
 
 [//]: # "}}}"
   
-[modeline]: # ( vim: set ff=dos tw=0: )
+[modeline]: # ( vim: set tw=0: )
