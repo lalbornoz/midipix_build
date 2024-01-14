@@ -83,6 +83,8 @@ ac_cv_snprintf_returns_bogus=0"};
 : ${PKG_GPGME_URL:=https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-${PKG_GPGME_VERSION}.tar.bz2};
 : ${PKG_GPGME_CONFIGURE_ARGS_EXTRA:="--disable-g13-test --disable-gpgconf-test --disable-gpgsm-test --disable-gpg-test --with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE} --enable-languages=cl"};
 : ${PKG_GPGME_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
+: ${PKG_GPGME_CONFIG_CACHE_EXTRA:="
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_GNUTLS_DEPENDS:="libunistring libtasn1 nettle"};
 : ${PKG_GNUTLS_SHA256SUM:=e765e5016ffa9b9dd243e363a0460d577074444ee2491267db2e96c9c2adef77};
 : ${PKG_GNUTLS_VERSION:=3.8.2};
