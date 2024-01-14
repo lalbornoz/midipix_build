@@ -77,6 +77,8 @@ ac_cv_snprintf_returns_bogus=0"};
 : ${PKG_GNUPG_VERSION:=2.3.8};
 : ${PKG_GNUPG_URL:=https://www.gnupg.org/ftp/gcrypt/gnupg/gnupg-${PKG_GNUPG_VERSION}.tar.bz2};
 : ${PKG_GNUPG_CONFIGURE_ARGS_EXTRA:="--with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libgcrypt-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE} --with-ksba-prefix=${PREFIX_NATIVE} --with-npth-prefix=${PREFIX_NATIVE}"};
+: ${PKG_GNUPG_CONFIG_CACHE_EXTRA:="
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_GPGME_DEPENDS:="libassuan libgpg_error"};
 : ${PKG_GPGME_SHA256SUM:=361d4eae47ce925dba0ea569af40e7b52c645c4ae2e65e5621bf1b6cdd8b0e9e};
 : ${PKG_GPGME_VERSION:=1.18.0};
