@@ -186,7 +186,8 @@ ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_LIBKSBA_URL:=https://www.gnupg.org/ftp/gcrypt/libksba/libksba-${PKG_LIBKSBA_VERSION}.tar.bz2};
 : ${PKG_LIBKSBA_CONFIG_CACHE_EXTRA:="
 ksba_cv_broken_visibility_attribute=no
-ksba_cv_visibility_attribute=yes"};
+ksba_cv_visibility_attribute=yes
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_LIBKSBA_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE}};
 : ${PKG_LIBMAD_SHA256SUM:=bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690};
 : ${PKG_LIBMAD_VERSION:=0.15.1b};
