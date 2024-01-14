@@ -148,7 +148,8 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net twolame wolfssl";
 : ${PKG_LIBGCRYPT_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${PKG_LIBGCRYPT_VERSION}.tar.bz2};
 : ${PKG_LIBGCRYPT_CONFIG_CACHE_EXTRA:="
 gcry_cv_broken_visibility_attribute=no
-gcry_cv_visibility_attribute=yes"};
+gcry_cv_visibility_attribute=yes
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_LIBGCRYPT_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE} --disable-asm --disable-padlock-support --disable-aesni-support --disable-pclmul-support --disable-sse41-support --disable-drng-support --disable-avx-support --disable-avx2-support --disable-amd64-as-feature-detection};
 : ${PKG_LIBGPG_ERROR_SHA256SUM:=64b078b45ac3c3003d7e352a5e05318880a5778c42331ce1ef33d1a0d9922742};
 : ${PKG_LIBGPG_ERROR_VERSION:=1.41};
