@@ -1,0 +1,11 @@
+diff -ru cyrus-sasl-2.1.28.orig/include/Makefile.in cyrus-sasl-2.1.28/include/Makefile.in
+--- cyrus-sasl-2.1.28.orig/include/Makefile.in	2022-02-18 22:53:55.000000000 +0100
++++ cyrus-sasl-2.1.28/include/Makefile.in	2024-01-14 22:34:08.569689272 +0100
+@@ -802,6 +802,7 @@
+ 
+ makemd5$(BUILD_EXEEXT) $(makemd5_OBJECTS): CC=$(CC_FOR_BUILD)
+ makemd5$(BUILD_EXEEXT) $(makemd5_OBJECTS): CFLAGS=$(CFLAGS_FOR_BUILD)
++makemd5$(BUILD_EXEEXT) $(makemd5_OBJECTS): CPPFLAGS=$(CPPFLAGS_FOR_BUILD)
+ makemd5$(BUILD_EXEEXT): LDFLAGS=$(LDFLAGS_FOR_BUILD)
+ 
+ md5global.h: makemd5$(BUILD_EXEEXT) Makefile
