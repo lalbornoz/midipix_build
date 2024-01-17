@@ -113,6 +113,8 @@ gl_cv_have_proc_uptime=yes"};
 : ${PKG_HTML_XML_UTILS_SHA256SUM:=5e84729ef36ccd3924d2872ed4ee6954c63332dca5400ba8eb4eaef1f2db4fb2};
 : ${PKG_HTML_XML_UTILS_VERSION:=8.6};
 : ${PKG_HTML_XML_UTILS_URL:=https://www.w3.org/Tools/HTML-XML-utils/html-xml-utils-${PKG_HTML_XML_UTILS_VERSION}.tar.gz};
+: ${PKG_HTML_XML_UTILS_CONFIG_CACHE_EXTRA:="
+ac_cv_path__libcurl_config=${PREFIX_NATIVE}/bin/curl-config"};
 : ${PKG_JUSH_DEPENDS:="libeditline"};
 : ${PKG_JUSH_URLS_GIT:="jush-master=https://github.com/troglobit/jush.git@master"};
 : ${PKG_JUSH_SUBDIR:="jush-master"};
