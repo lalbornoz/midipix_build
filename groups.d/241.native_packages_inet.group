@@ -110,7 +110,7 @@ gl_cv_ld_output_def=no"};
 : ${PKG_ICECAST_URL:=http://downloads.xiph.org/releases/icecast/icecast-${PKG_ICECAST_VERSION}.tar.gz};
 : ${PKG_ICECAST_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/libxml2"};
 : ${PKG_ICECAST_LDFLAGS_CONFIGURE_EXTRA:="-lwolfssl"};
-: ${PKG_ICECAST_CONFIGURE_ARGS_EXTRA:="--with-curl=${PREFIX_NATIVE} --with-ogg=${PREFIX_NATIVE} --with-theora=${PREFIX_NATIVE} --with-vorbis=${PREFIX_NATIVE} --with-xslt-config=${PREFIX}/bin/xslt-config --without-speex"};
+: ${PKG_ICECAST_CONFIGURE_ARGS_EXTRA:="--with-curl=${PREFIX_NATIVE} --with-ogg=${PREFIX_NATIVE} --with-theora=${PREFIX_NATIVE} --with-vorbis=${PREFIX_NATIVE} --with-xslt-config=${PREFIX}/bin/xslt-config --with-curl-config=${PREFIX_NATIVE}/bin/curl-config --without-speex"};
 : ${PKG_INETUTILS_DEPENDS:="ncurses"};
 : ${PKG_INETUTILS_SHA256SUM:=1789d6b1b1a57dfe2a7ab7b533ee9f5dfd9cbf5b59bb1bb3c2612ed08d0f68b2};
 : ${PKG_INETUTILS_VERSION:=2.4};
