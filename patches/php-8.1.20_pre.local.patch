@@ -158,6 +158,17 @@ diff -ru php-8.1.10.orig/configure php-8.1.10/configure
        *)
          BUILD_CGI="\$(LIBTOOL) --mode=link \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \$(PHP_GLOBAL_OBJS:.lo=.o) \$(PHP_BINARY_OBJS:.lo=.o) \$(PHP_FASTCGI_OBJS:.lo=.o) \$(PHP_CGI_OBJS:.lo=.o) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CGI_PATH)"
        ;;
+@@ -12008,10 +12008,6 @@
+   fi
+
+
+-if test -d /usr/pkg/include -a -d /usr/pkg/lib ; then
+-   CPPFLAGS="$CPPFLAGS -I/usr/pkg/include"
+-   LDFLAGS="$LDFLAGS -L/usr/pkg/lib"
+-fi
+ test -d /usr/ucblib &&
+   if test "/usr/ucblib" != "/usr/$PHP_LIBDIR" && test "/usr/ucblib" != "/usr/lib"; then
+
 @@ -21314,7 +21318,7 @@
  	\$(LIBTOOL) --mode=install cp $ext_builddir/libxml.$suffix \$(phplibdir)
  
