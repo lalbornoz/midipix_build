@@ -4,7 +4,7 @@
 GROUP_TARGET_APPEND="native_packages";
 NATIVE_PACKAGES_LIB_PACKAGES="
 aspell bearssl enchant fribidi glib hunspell ivykis jansson kvazaar lame libao libarchive libass libassuan libatomic_ops libdmtx libedit libeditline libelf libestr
-libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libgsasl libiconv libidn2 libite
+libevent libexif libfastjson libfetch libffi libfirm libflac libglob libgcrypt libgpg_error libgsasl libiconv libidn libidn2 libite
 libjpeg_turbo libksba libmad libmd libmspack libmp3splt libogg libpcap libpng libpsl
 readline libredwg libressl libsasl2 libshine libsndfile libsolv libssh
 libstrophe libtasn1 libtelnet libtheora libtirpc libudns libunistring
@@ -168,6 +168,11 @@ ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_LIBICONV_INSTALL_FILES_V2:="
 	@../../native/include/iconv.h=%[_prefix]/../x86_64-nt64-midipix/include/iconv.v
 	+%[_files]/lib/pkgconfig/iconv.pc=lib/pkgconfig/iconv.pc"};
+: ${PKG_LIBIDN_DEPENDS:="libiconv"};
+: ${PKG_LIBIDN_SHA256SUM:=d6c199dcd806e4fe279360cb4b08349a0d39560ed548ffd1ccadda8cdecb4723};
+: ${PKG_LIBIDN_VERSION:=1.42};
+: ${PKG_LIBIDN_URL:=https://ftp.gnu.org/gnu/libidn/libidn-${PKG_LIBIDN_VERSION}.tar.gz};
+: ${PKG_LIBIDN_CONFIGURE_ARGS_EXTRA:="--disable-java --disable-csharp --disable-gtk-doc --disable-gtk-doc-html --disable-gtk-doc-pdf"};
 : ${PKG_LIBIDN2_DEPENDS:="libunistring libiconv"};
 : ${PKG_LIBIDN2_SHA256SUM:=93caba72b4e051d1f8d4f5a076ab63c99b77faee019b72b9783b267986dbb45f};
 : ${PKG_LIBIDN2_VERSION:=2.3.4};
