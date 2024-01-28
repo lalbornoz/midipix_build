@@ -78,8 +78,8 @@ gl_cv_have_proc_uptime=yes"};
 	+../dos2unix-${PKG_DOS2UNIX_VERSION}/unix2dos=bin/%[FNAME]
 	@dos2unix=bin/mac2unix
 	@unix2dos=bin/unix2mac"};
-: ${PKG_ED_SHA256SUM:=ce2f2e5c424790aa96d09dacb93d9bbfdc0b7eb6249c9cb7538452e8ec77cd48};
-: ${PKG_ED_VERSION:=1.19};
+: ${PKG_ED_SHA256SUM:=c6030defe6ae172f1687906d7354054c75a6a9130af319d4e73c50a91959c5a6};
+: ${PKG_ED_VERSION:=1.20};
 : ${PKG_ED_URL:=https://ftp.gnu.org/gnu/ed/ed-${PKG_ED_VERSION}.tar.lz};
 : ${PKG_ED_CONFIGURE_ARGS_LIST:="--prefix=:CC=${DEFAULT_NATIVE_CC}"};
 : ${PKG_EXIF_DEPENDS:="libexif popt"};
