@@ -1,7 +1,7 @@
-diff -ru weechat-2.9.orig/configure.ac weechat-2.9/configure.ac
---- weechat-2.9.orig/configure.ac	2020-07-18 13:59:02.000000000 +0200
-+++ weechat-2.9/configure.ac	2020-10-06 22:27:28.776471083 +0200
-@@ -192,18 +192,6 @@
+diff -ru weechat-3.8.orig/configure.ac weechat-3.8/configure.ac
+--- weechat-3.8.orig/configure.ac	2023-01-08 10:07:07.000000000 +0100
++++ weechat-3.8/configure.ac	2024-02-17 14:04:48.583831305 +0100
+@@ -184,18 +184,6 @@
  fi
  
  # ------------------------------------------------------------------------------
@@ -20,10 +20,19 @@ diff -ru weechat-2.9.orig/configure.ac weechat-2.9/configure.ac
  #                                dynamic loader
  # ------------------------------------------------------------------------------
  
-@@ -398,52 +398,6 @@
-
+@@ -231,7 +219,7 @@
+             NCURSES_LFLAGS="-lncurses"
+         fi
+     else
+-        NCURSES_LFLAGS="-lncursesw"
++        NCURSES_LFLAGS="-lncursesw -ltinfow"
+     fi
+     AC_CHECK_HEADERS([ncurses.h ncursesw/curses.h])
+     AC_SUBST(NCURSES_LFLAGS)
+@@ -409,52 +397,6 @@
+ 
  # ---------------------------------- perl --------------------------------------
-
+ 
 -PERL_VERSION=
 -
 -if test "x$enable_perl" = "xyes" ; then
@@ -73,7 +82,7 @@ diff -ru weechat-2.9.orig/configure.ac weechat-2.9/configure.ac
  if test "x$enable_perl" = "xyes" ; then
      AC_SUBST(PERL_CFLAGS)
      AC_SUBST(PERL_LFLAGS)
-@@ -1049,8 +1037,8 @@
+@@ -1053,8 +995,8 @@
  *** or try to install it with your software package manager.])
  else
      AC_MSG_RESULT(yes)
@@ -84,7 +93,7 @@ diff -ru weechat-2.9.orig/configure.ac weechat-2.9/configure.ac
      AC_SUBST(GCRYPT_CFLAGS)
      AC_SUBST(GCRYPT_LFLAGS)
  fi
-@@ -1070,8 +1058,8 @@
+@@ -1074,8 +1016,8 @@
  *** or try to install it with your software package manager.])
  else
      AC_MSG_RESULT(yes)
@@ -95,7 +104,7 @@ diff -ru weechat-2.9.orig/configure.ac weechat-2.9/configure.ac
      AC_SUBST(GNUTLS_CFLAGS)
      AC_SUBST(GNUTLS_LFLAGS)
  fi
-@@ -1160,8 +1148,8 @@
+@@ -1164,8 +1106,8 @@
  *** or try to install it with your software package manager.])
  else
      AC_MSG_RESULT(yes)

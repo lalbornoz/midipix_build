@@ -258,7 +258,6 @@ mutt_cv_regex_broken=no"};
 : ${PKG_WEECHAT_CONFIGURE_ARGS_EXTRA:="--disable-guile --disable-javascript --disable-python --disable-ruby --disable-tcl --enable-perl PERL_CFLAGS=-I${PREFIX_NATIVE}/lib/perl5/5.36.0/${DEFAULT_TARGET}/CORE PERL_LFLAGS=-lperl"};
 : ${PKG_WEECHAT_ENV_VARS_EXTRA:="CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config:LIBGCRYPT_CONFIG=${PREFIX_NATIVE}/bin/libgcrypt-config:PKGCONFIG=${DEFAULT_TARGET}-pkg-config"};
 : ${PKG_WEECHAT_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/lua5.4 -I${PREFIX_NATIVE}/include/php -I${PREFIX_NATIVE}/include/php/main -I${PREFIX_NATIVE}/include/php/Zend -I${PREFIX_NATIVE}/include/php/TSRM"};
-: ${PKG_WEECHAT_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfow -Wl,--no-as-needed"};
 : ${PKG_WGET_DEPENDS:="gnutls gpgme libz libidn2 libpsl libiconv"};
 : ${PKG_WGET_SHA256SUM:=81542f5cefb8faacc39bbbc6c82ded80e3e4a88505ae72ea51df27525bcde04c};
 : ${PKG_WGET_VERSION:=1.21.4};
