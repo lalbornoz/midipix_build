@@ -1,6 +1,39 @@
+diff -ru mailutils-3.15.orig/mda/lmtpd/Makefile.in mailutils-3.15/mda/lmtpd/Makefile.in
+--- mailutils-3.15.orig/mda/lmtpd/Makefile.in   2022-04-17 20:20:45.000000000 +0200
++++ mailutils-3.15/mda/lmtpd/Makefile.in        2024-02-17 13:45:54.067803997 +0100
+@@ -1013,6 +1013,7 @@
+ lmtpd_LDADD = \
+  ../lib/libmda.a\
+  $(top_builddir)/lib/libmuscript.a\
++ $(MU_TCPWRAP_LIBRARIES)\
+  $(MU_APP_LIBRARIES)\
+  $(MU_LIB_SIEVE)\
+  $(MU_LIB_MAILBOX)\
+@@ -1027,7 +1028,6 @@
+  @GUILE_LIBS@\
+  @PYTHON_LIBS@\
+  @DBMLIBS@\
+- $(MU_TCPWRAP_LIBRARIES)\
+  $(MU_COMMON_LIBRARIES)
+
+ all: all-recursive
+diff -ru mailutils-3.15.orig/imap4d/Makefile.in mailutils-3.15/imap4d/Makefile.in
+--- mailutils-3.15.orig/imap4d/Makefile.in	2022-04-17 20:20:36.000000000 +0200
++++ mailutils-3.15/imap4d/Makefile.in	2024-02-17 13:07:06.986978253 +0100
+@@ -1059,8 +1059,8 @@
+  util.c
+ 
+ imap4d_LDADD = $(MU_APP_LIBRARIES) $(MU_LIB_LOCAL_MAILBOX) \
+-	$(MU_LIB_AUTH) $(MU_AUTHLIBS) $(MU_LIB_MAILUTILS) \
+-	@SERV_AUTHLIBS@ $(MU_COMMON_LIBRARIES) $(MU_TCPWRAP_LIBRARIES) \
++	$(MU_TCPWRAP_LIBRARIES) $(MU_LIB_AUTH) $(MU_AUTHLIBS) \
++	@SERV_AUTHLIBS@ $(MU_COMMON_LIBRARIES) $(MU_LIB_MAILUTILS) \
+ 	$(am__append_1)
+ all: all-recursive
+ 
 diff -ru mailutils-3.15.orig/lib/Makefile.in mailutils-3.15/lib/Makefile.in
 --- mailutils-3.15.orig/lib/Makefile.in	2022-04-17 20:20:37.000000000 +0200
-+++ mailutils-3.15/lib/Makefile.in	2022-09-23 01:00:08.964321598 +0200
++++ mailutils-3.15/lib/Makefile.in	2024-02-17 13:08:38.956977595 +0100
 @@ -1031,7 +1031,7 @@
  noinst_LIBRARIES = libmuscript.a libmutcpwrap.a
  libmuaux_la_SOURCES = mailcap.c manlock.c mdecode.c signal.c strexit.c \
@@ -10,3 +43,32 @@ diff -ru mailutils-3.15.orig/lib/Makefile.in mailutils-3.15/lib/Makefile.in
  libmuaux_la_LDFLAGS = -version-info @VI_CURRENT@:@VI_REVISION@:@VI_AGE@
  libmutcpwrap_a_SOURCES = tcpwrap.c
  noinst_HEADERS = \
+diff -ru mailutils-3.15.orig/mu/libexec/Makefile.in mailutils-3.15/mu/libexec/Makefile.in
+--- mailutils-3.15.orig/mu/libexec/Makefile.in	2022-04-17 20:20:48.000000000 +0200
++++ mailutils-3.15/mu/libexec/Makefile.in	2024-02-17 13:07:57.013644547 +0100
+@@ -1195,7 +1195,7 @@
+  $(MU_APP_LIBRARIES)\
+  $(MU_LIB_MAILUTILS)\
+  @READLINE_LIBS@\
+- $(MU_COMMON_LIBRARIES)
++ $(MU_COMMON_LIBRARIES) ../../libmailutils/libmailutils.la
+ 
+ LDADD = $(MU_APP_LIBRARIES) $(MUTOOL_LIBRARIES_TAIL)
+ AM_CPPFLAGS = \
+diff -ru mailutils-3.15.orig/pop3d/Makefile.in mailutils-3.15/pop3d/Makefile.in
+--- mailutils-3.15.orig/pop3d/Makefile.in	2022-04-17 20:20:48.000000000 +0200
++++ mailutils-3.15/pop3d/Makefile.in	2024-02-17 13:07:39.963644684 +0100
+@@ -1033,11 +1033,11 @@
+  $(MU_LIB_LOCAL_MAILBOX)\
+  $(MU_LIB_AUTH)\
+  $(MU_AUTHLIBS) \
+- $(MU_LIB_MAILUTILS)\
+  $(MU_COMMON_LIBRARIES)\
+  $(LIBMU_DBM)\
+  @DBMLIBS@\
+- $(MU_TCPWRAP_LIBRARIES)
++ $(MU_TCPWRAP_LIBRARIES)\
++ $(MU_LIB_MAILUTILS)
+ 
+ popauth_SOURCES = popauth.c
+ popauth_LDADD = \
