@@ -1,5 +1,6 @@
---- dante-1.4.3/configure.orig	2021-04-30 21:29:06.000000000 +0200
-+++ dante-1.4.3/configure	2023-03-26 13:09:30.014985107 +0200
+diff -ru dante-1.4.3.orig/configure dante-1.4.3/configure
+--- dante-1.4.3.orig/configure	2021-04-30 21:29:06.000000000 +0200
++++ dante-1.4.3/configure	2024-02-22 00:14:19.279836011 +0100
 @@ -3314,8 +3314,6 @@
  #NOTE: save CFLAGS; wish to compile without -O2 when debugging
  oCFLAGS="$CFLAGS"
@@ -92,9 +93,10 @@
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
-diff -ru dante-1.4.2.orig/dlib/Makefile.in dante-1.4.2/dlib/Makefile.in
---- dante-1.4.2.orig/dlib/Makefile.in	2017-02-03 15:17:27.000000000 +0100
-+++ dante-1.4.2/dlib/Makefile.in	2018-08-05 01:50:52.803073351 +0200
+Only in dante-1.4.3: configure.orig
+diff -ru dante-1.4.3.orig/dlib/Makefile.in dante-1.4.3/dlib/Makefile.in
+--- dante-1.4.3.orig/dlib/Makefile.in	2021-04-30 21:30:18.000000000 +0200
++++ dante-1.4.3/dlib/Makefile.in	2024-02-22 00:14:19.283169345 +0100
 @@ -409,7 +409,7 @@
  	../libscompat/pselect.c ../libscompat/setproctitle.c \
  	../libscompat/strlcpy.c ../libscompat/strvis.c \
@@ -104,3 +106,27 @@ diff -ru dante-1.4.2.orig/dlib/Makefile.in dante-1.4.2/dlib/Makefile.in
  libdsocks_la_LIBADD = @LIBDSCSRC@ @DLIBDEPS@ @LIBSCOMPAT@
  libdsocks_la_DEPENDENCIES = Makefile.am _reconf @LIBDSCSRC@ \
  	$(am__append_1)
+Only in dante-1.4.3/dlib: Makefile.in.orig
+diff -ru dante-1.4.3.orig/include/symbols_preload.txt dante-1.4.3/include/symbols_preload.txt
+--- dante-1.4.3.orig/include/symbols_preload.txt	2024-02-22 00:37:06.753086184 +0100
++++ dante-1.4.3/include/symbols_preload.txt	2024-02-22 00:37:21.979752748 +0100
+@@ -2,11 +2,9 @@
+ bind
+ bindresvport
+ connect
+-freehostent
+ getaddrinfo
+ gethostbyname
+ gethostbyname2
+-getipnodebyname
+ getpeername
+ getsockname
+ getsockopt
+@@ -16,7 +14,6 @@
+ recv
+ recvfrom
+ recvmsg
+-rresvport
+ send
+ sendmsg
+ sendto
