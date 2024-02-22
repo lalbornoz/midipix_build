@@ -1,0 +1,12 @@
+diff -ru opensmtpd-7.3.0p2.orig/configure opensmtpd-7.3.0p2/configure
+--- opensmtpd-7.3.0p2.orig/configure	2023-09-16 20:13:41.000000000 +0200
++++ opensmtpd-7.3.0p2/configure	2024-02-22 11:56:12.905668537 +0100
+@@ -21333,7 +21333,7 @@
+ fi
+ 
+ 
+- if test "x$ac_cv_func_arc4random" != "xyes" -a "x$ac_cv_have_decl_LIBRESSL_VERSION_NUMBER" != "xyes"; then
++ if test "x$ac_cv_func_arc4random" != "xyes"; then
+   NEED_ARC4RANDOM_TRUE=
+   NEED_ARC4RANDOM_FALSE='#'
+ else
