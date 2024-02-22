@@ -60,6 +60,7 @@ zstd";
 : ${PKG_CHEROKEE_URLS_GIT:=cherokee=https://github.com/cherokee/webserver.git@master};
 : ${PKG_CHEROKEE_CONFIGURE_ARGS_EXTRA:="--with-python=${PREFIX}/bin/python2 --without-epoll --without-php --without-ffmpeg --without-libssl"};
 : ${PKG_CHEROKEE_IN_TREE:=1};
+: ${PKG_CHEROKEE_DISABLED:=1};
 : ${PKG_CLZIP_SHA256SUM:=7ac9fbf5036bf50fb0b6a20e84d2293cb0d24d4044eaf33cbe9760bb9e7fea7a};
 : ${PKG_CLZIP_VERSION:=1.13};
 : ${PKG_CLZIP_URL:=https://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_VERSION}.tar.gz};
