@@ -88,7 +88,7 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_LDSO_HOST_DEPENDS:="gcc_stage1_host musl_full_host psxtypes_host"};
 : ${PKG_LDSO_HOST_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
 : ${PKG_LDSO_HOST_BUILD_TYPE:=cross};
-: ${PKG_LDSO_HOST_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO -I${PREFIX_CROSS}/include"};
+: ${PKG_LDSO_HOST_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO"};
 : ${PKG_LDSO_HOST_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET} --disable-shared"};
 : ${PKG_LDSO_HOST_INSTALL_FILES_V2:="@../%[_target]/lib/libldso.a=%[_prefix]/lib/libldso.a"};
 : ${PKG_LDSO_HOST_MAKEFLAGS_BUILD_EXTRA:=STATIC_LIB_NAME=libldso.a};
