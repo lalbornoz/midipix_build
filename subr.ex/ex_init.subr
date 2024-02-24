@@ -311,6 +311,7 @@ ex_init_files() {
 			trap - HUP INT TERM USR1 USR2;
 		fi;
 
+		export PATH="${_eif_prefix}/localcross/bin${PATH:+:${PATH}}";
 		export PATH="${_eif_prefix}/bin${PATH:+:${PATH}}";
 	fi;
 

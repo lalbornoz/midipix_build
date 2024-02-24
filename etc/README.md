@@ -476,6 +476,7 @@ env ARCH=nt64 BUILD_KIND=release PREFIX_ROOT="${HOME}/midipix_tmp" ./build.sh -D
 | BUILD_DLCACHEDIR | ${PREFIX_ROOT}/dlcache               | Absolute pathname to package downloads cache root directory                   |
 | BUILD_HNAME      | $(hostname)                          | Build system hostname                                                         |
 | BUILD_KIND       | debug                                | Build w/ debugging (debug) or release compiler flags                          |
+| PREFIX_LOCAL     | ${PREFIX}/localcross                 | Absolute pathname to local cross-toolchain root directory                     |
 | BUILD_WORKDIR    | ${PREFIX}/tmp                        | Absolute pathname to temporary package build root directory                   |
 | PREFIX           | ${PREFIX_ROOT}/${ARCH}/${BUILD_KIND} | Absolute pathname to architecture- & build type-specific build root directory |
 | PREFIX_CROSS     | ${PREFIX}/${DEFAULT_TARGET}          | Absolute pathname to toolchain root directory                                 |
@@ -905,9 +906,11 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
         --reset-state       Reset package build step state on exit.
         --theme theme       Set theme.
 
-        <group>[ ..]        One of: dev_packages, dist, host_deps, host_deps_rpm,
-                            host_toolchain, host_tools, minipix, native_packages,
-                            native_runtime, native_toolchain, native_tools.
+        <group>[ ..]        One of:
+                            host_tools, host_deps, host_deps_rpm,
+                            cross_toolchain, host_toolchain,
+                            native_packages, native_runtime, native_toolchain, native_tools,
+                            minipix, dist, dev_packages
 
                             Prepend w/ `=' to inhibit group-group dependency expansion.
 

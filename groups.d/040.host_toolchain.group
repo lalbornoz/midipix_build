@@ -3,11 +3,11 @@
 #
 HOST_TOOLCHAIN_BUILD_TYPE="host";
 HOST_TOOLCHAIN_CONFIGURE_ARGS="--disable-nls --prefix= --target=${DEFAULT_TARGET}";
-HOST_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm host_tools";
+HOST_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm host_tools cross_toolchain";
 HOST_TOOLCHAIN_MAKEFLAGS_INSTALL_EXTRA="prefix= PREFIX=";
 HOST_TOOLCHAIN_PACKAGES="
 binutils_host binutils_host_mingw32 gcc_full_host gcc_libstdcpp_v3_host
-gcc_runtime_host gcc_stage1_cross_mingw32 gcc_stage1_host gmp_host
+gcc_runtime_host gcc_stage1_host_mingw32 gcc_stage1_host gmp_host
 ldso_host mpc_host mpfr_host musl_full_host musl_no_complex_host nasm_host
 psxstub_host psxtypes_host";
 HOST_TOOLCHAIN_PKG_CONFIG="${PREFIX}/bin/pkgconf";
@@ -19,7 +19,7 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_BINUTILS_HOST_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_HOST_VERSION}.tar.bz2};
 : ${PKG_BINUTILS_HOST_AUTOCONF_CONFIG_GUESS:="keep"};
 : ${PKG_BINUTILS_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -g2 -O0"};
-: ${PKG_BINUTILS_HOST_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --prefix=${PREFIX} --target=${DEFAULT_TARGET} --with-sysroot=${PREFIX_CROSS}"};
+: ${PKG_BINUTILS_HOST_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --prefix=${PREFIX} --target=${DEFAULT_TARGET} --with-sysroot=${PREFIX_NATIVE}"};
 : ${PKG_BINUTILS_HOST_INSTALL_FILES_V2:="
 	@%[_target]-windmc=bin/windmc
 	@%[_target]-windres=bin/windres"};
@@ -43,7 +43,7 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_GCC_FULL_HOST_DEPENDS:="gcc_stage1_host gcc_libstdcpp_v3_host ldso_host musl_full_host"};
 : ${PKG_GCC_FULL_HOST_VERSION:=4.6.4};
 : ${PKG_GCC_FULL_HOST_BASE_DIR:=${BUILD_WORKDIR}/gcc-host-${DEFAULT_TARGET}};
-: ${PKG_GCC_FULL_HOST_BUILD_DIR:="cbb-gcc-4.6.4-cross-x86_64-nt64-midipix"};
+: ${PKG_GCC_FULL_HOST_BUILD_DIR:="cbb-gcc-4.6.4-host-x86_64-nt64-midipix"};
 : ${PKG_GCC_FULL_HOST_GITROOT:=${DEFAULT_GITROOT}};
 : ${PKG_GCC_FULL_HOST_NO_CLEAN_BASE_DIR:=1};
 : ${PKG_GCC_FULL_HOST_PREFIX:=${PREFIX}};
@@ -62,15 +62,18 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_GCC_RUNTIME_HOST_NO_CLEAN_BASE_DIR:=1};
 : ${PKG_GCC_RUNTIME_HOST_PREFIX:=${PREFIX}};
 : ${PKG_GCC_RUNTIME_HOST_VARS_FILE:="vars/gcc.vars"};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_DEPENDS:="binutils_host_mingw32 gmp_host mpc_host mpfr_host"};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_VERSION:=4.6.4};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_BASE_DIR:=${BUILD_WORKDIR}/gcc-host-x86_64-w64-mingw32};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_CONFIGURE_ARGS:="--disable-nls --prefix=${PREFIX} --target=x86_64-w64-mingw32"};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_GITROOT:=${DEFAULT_GITROOT}};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_PREFIX:=${PREFIX}};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_TARGET:="x86_64-w64-mingw32"};
-: ${PKG_GCC_STAGE1_CROSS_MINGW32_VARS_FILE:="vars/gcc.vars"};
+
+: ${PKG_GCC_STAGE1_HOST_MINGW32_DEPENDS:="binutils_host_mingw32 gmp_host mpc_host mpfr_host"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_VERSION:=4.6.4};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_BASE_DIR:=${BUILD_WORKDIR}/gcc-host-x86_64-w64-mingw32};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_CONFIGURE_ARGS:="--disable-nls --prefix=${PREFIX} --target=x86_64-w64-mingw32"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_GITROOT:=${DEFAULT_GITROOT}};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_PREFIX:=${PREFIX}};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_TARGET:="x86_64-w64-mingw32"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_VARS_FILE:="vars/gcc.vars"};
+
 : ${PKG_GCC_STAGE1_HOST_DEPENDS:="binutils_host gmp_host mpc_host mpfr_host"};
 : ${PKG_GCC_STAGE1_HOST_VERSION:=4.6.4};
 : ${PKG_GCC_STAGE1_HOST_BASE_DIR:=${BUILD_WORKDIR}/gcc-host-${DEFAULT_TARGET}};
@@ -85,6 +88,7 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_GMP_HOST_CONFIGURE_ARGS:="--disable-assembly --disable-nls --prefix="};
 : ${PKG_GMP_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gmp/gmp-${PKG_GMP_HOST_VERSION}.midipix.patch"};
 : ${PKG_GMP_HOST_PREFIX:=${PREFIX}};
+: ${PKG_LDSO_HOST_PREFIX="${PREFIX_NATIVE}"};
 : ${PKG_LDSO_HOST_DEPENDS:="gcc_stage1_host musl_full_host psxtypes_host"};
 : ${PKG_LDSO_HOST_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
 : ${PKG_LDSO_HOST_BUILD_TYPE:=cross};
@@ -114,10 +118,11 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_MUSL_FULL_HOST_BUILD_DIR:=build/musl};
 : ${PKG_MUSL_FULL_HOST_BUILD_TYPE:=cross};
 : ${PKG_MUSL_FULL_HOST_CONFIGURE:=build/mmglue/configure};
-: ${PKG_MUSL_FULL_HOST_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_FULL_HOST_VERSION} --prefix= --target=${DEFAULT_TARGET} --sysroot=${PREFIX_CROSS}"};
+: ${PKG_MUSL_FULL_HOST_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_FULL_HOST_VERSION} --prefix= --target=${DEFAULT_TARGET}"};
 : ${PKG_MUSL_FULL_HOST_INSTALL_FILES_V2:="-=include/iconv.h"};
 : ${PKG_MUSL_FULL_HOST_SUBDIR:=musl-${PKG_MUSL_FULL_HOST_VERSION}};
 : ${PKG_MUSL_FULL_HOST_VARS_FILE:="vars/musl.vars"};
+: ${PKG_MUSL_NO_COMPLEX_HOST_PREFIX:="${PREFIX_NATIVE}"};
 : ${PKG_MUSL_NO_COMPLEX_HOST_DEPENDS:="gcc_stage1_host"};
 : ${PKG_MUSL_NO_COMPLEX_HOST_SHA256SUM:=${PKG_MUSL_FULL_HOST_SHA256SUM}};
 : ${PKG_MUSL_NO_COMPLEX_HOST_VERSION:=${PKG_MUSL_FULL_HOST_VERSION}};
@@ -127,7 +132,7 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_MUSL_NO_COMPLEX_HOST_BUILD_DIR:=build/musl};
 : ${PKG_MUSL_NO_COMPLEX_HOST_BUILD_TYPE:=cross};
 : ${PKG_MUSL_NO_COMPLEX_HOST_CONFIGURE:=build/mmglue/configure};
-: ${PKG_MUSL_NO_COMPLEX_HOST_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_NO_COMPLEX_HOST_VERSION} --no-complex --prefix= --target=${DEFAULT_TARGET} --sysroot=${PREFIX_CROSS}"};
+: ${PKG_MUSL_NO_COMPLEX_HOST_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_NO_COMPLEX_HOST_VERSION} --no-complex --prefix= --target=${DEFAULT_TARGET}"};
 : ${PKG_MUSL_NO_COMPLEX_HOST_INSTALL_FILES_V2:="-=include/iconv.h"};
 : ${PKG_MUSL_NO_COMPLEX_HOST_SUBDIR:=musl-${PKG_MUSL_NO_COMPLEX_HOST_VERSION}};
 : ${PKG_MUSL_NO_COMPLEX_HOST_VARS_FILE:="vars/musl.vars"};
@@ -137,11 +142,13 @@ HOST_TOOLCHAIN_RPM_DISABLE=1;
 : ${PKG_NASM_HOST_CFLAGS_CONFIGURE_EXTRA:=-DCOFF_MIDIPIX};
 : ${PKG_NASM_HOST_INSTALL_FILES_V2:="!bin/%<*>=bin/%[_target]-%[FNAME]"};
 : ${PKG_NASM_HOST_PREFIX:=${PREFIX}};
+: ${PKG_PSXSTUB_HOST_PREFIX:="${PREFIX_NATIVE}"};
 : ${PKG_PSXSTUB_HOST_DEPENDS:="gcc_stage1_host"};
 : ${PKG_PSXSTUB_HOST_URLS_GIT:="psxstub=${DEFAULT_GITROOT}/psxstub"};
 : ${PKG_PSXSTUB_HOST_BUILD_STEPS_DISABLE:=build};
 : ${PKG_PSXSTUB_HOST_ENV_VARS_EXTRA:=TARGET=${DEFAULT_TARGET}};
 : ${PKG_PSXSTUB_HOST_IN_TREE:=1};
+: ${PKG_PSXTYPES_HOST_PREFIX:="${PREFIX_NATIVE}"};
 : ${PKG_PSXTYPES_HOST_DEPENDS:="gcc_stage1_host"};
 : ${PKG_PSXTYPES_HOST_URLS_GIT:=psxtypes=${DEFAULT_GITROOT}/psxtypes};
 : ${PKG_PSXTYPES_HOST_BUILD_STEPS_DISABLE:=build};

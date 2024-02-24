@@ -6,7 +6,7 @@ rtl_lconcat2 \$DEV_PACKAGES_CFLAGS_CONFIGURE \$DEFAULT_CFLAGS "--sysroot=${PREFI
 rtl_lconcat2 \$DEV_PACKAGES_CXXFLAGS_CONFIGURE \$DEFAULT_CXXFLAGS "--sysroot=${PREFIX_NATIVE}";
 DEV_PACKAGES_CONFIG_CACHE_LOCAL="${CONFIG_CACHE_GNULIB}";
 DEV_PACKAGES_CONFIGURE_ARGS="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET}";
-DEV_PACKAGES_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools native_toolchain native_tools";
+DEV_PACKAGES_GROUP_DEPENDS="host_deps host_deps_rpm cross_toolchain host_toolchain host_tools native_toolchain native_tools";
 DEV_PACKAGES_LDFLAGS_CONFIGURE="--sysroot=${PREFIX_NATIVE}";
 DEV_PACKAGES_MAKEFLAGS_INSTALL="PREFIX= prefix=";
 DEV_PACKAGES_PACKAGES="

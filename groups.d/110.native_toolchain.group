@@ -2,7 +2,7 @@
 # Build group native_toolchain
 #
 NATIVE_TOOLCHAIN_CONFIGURE_ARGS="--disable-nls --host=${DEFAULT_TARGET} --program-prefix= --prefix=/ --target=${DEFAULT_TARGET}";
-NATIVE_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm host_toolchain host_tools native_tools";
+NATIVE_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm cross_toolchain host_toolchain host_tools native_tools";
 NATIVE_TOOLCHAIN_PACKAGES="
 binutils binutils_mingw32 gcc_full gcc_stage1_native_mingw32 gmp mpc mpfr musl_full ";
 NATIVE_TOOLCHAIN_PREFIX="${PREFIX_NATIVE}";
@@ -67,7 +67,7 @@ NATIVE_TOOLCHAIN_PREFIX="${PREFIX_NATIVE}";
 : ${PKG_MUSL_FULL_BASE_DIR:=${BUILD_WORKDIR}/musl_full-native-${DEFAULT_TARGET}};
 : ${PKG_MUSL_FULL_BUILD_DIR:=build/musl};
 : ${PKG_MUSL_FULL_CONFIGURE:=build/mmglue/configure};
-: ${PKG_MUSL_FULL_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_FULL_VERSION} --prefix= --target=${DEFAULT_TARGET} --sysroot=${PREFIX_CROSS}"};
+: ${PKG_MUSL_FULL_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_FULL_VERSION} --prefix= --target=${DEFAULT_TARGET}"};
 : ${PKG_MUSL_FULL_INSTALL_FILES_V2:="-=include/iconv.h"};
 : ${PKG_MUSL_FULL_SUBDIR:=musl-${PKG_MUSL_FULL_VERSION}};
 : ${PKG_MUSL_FULL_VARS_FILE:="vars/musl.vars"};
