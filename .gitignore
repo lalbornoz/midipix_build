@@ -1,3 +1,5 @@
+patches/psxscl.local.patch
+
 etc/*.theme.host.*
 etc/*.theme.local
 .gdbhistory
