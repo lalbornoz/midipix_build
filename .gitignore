@@ -4,3 +4,6 @@ etc/*.theme.host.*
 etc/*.theme.local
 .gdbhistory
 *.sw[op]
+
+tmp
+buildall.sh
