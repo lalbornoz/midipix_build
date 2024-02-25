@@ -1,13 +1,1 @@
-diff --git a/src/math/sqrtl.c b/src/math/sqrtl.c
-index 1b9f19c7..0a8efb9f 100644
---- musl-1.2.2.orig/src/math/sqrtl.c
-+++ musl-1.2.2/src/math/sqrtl.c
-@@ -227,7 +227,7 @@ long double sqrtl(long double x)
- 	r = mul64(u, r) << 1;
- 	/* |r sqrt(m) - 1| < 0x1.c001p-59, switch to 128bit */
- 
--	static const u128 threel = {.hi=three<<32, .lo=0};
-+	static const u128 threel = {.hi=(uint64_t)0xc0000000<<32, .lo=0};
- 	u128 rl, sl, dl, ul;
- 	rl.hi = r;
- 	rl.lo = 0;
+musl_sqrtl_const_expression.patch
