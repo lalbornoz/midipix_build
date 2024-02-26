@@ -267,10 +267,13 @@ libopts_cv_run_fopen_binary=yes"};
 : ${PKG_TCSH_SHA256SUM:=13475c0fbeb74139d33ed793bf00ffbbb2ac2dc9fb1d44467a410760aba36664};
 : ${PKG_TCSH_VERSION:=6.24.10};
 : ${PKG_TCSH_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/tcsh/tcsh-${PKG_TCSH_VERSION}.tar.gz};
+
 : ${PKG_THE_SILVER_SEARCHER_DEPENDS:="libz pcre xz"};
 : ${PKG_THE_SILVER_SEARCHER_SHA256SUM:=d9621a878542f3733b5c6e71c849b9d1a830ed77cb1a1f6c2ea441d4b0643170};
 : ${PKG_THE_SILVER_SEARCHER_VERSION:=2.2.0};
 : ${PKG_THE_SILVER_SEARCHER_URL:=https://geoff.greer.fm/ag/releases/the_silver_searcher-${PKG_THE_SILVER_SEARCHER_VERSION}.tar.gz};
+: ${PKG_THE_SILVER_SEARCHER_CFLAGS_CONFIGURE_EXTRA:="-D_LARGEFILE64_SOURCE"};
+
 : ${PKG_TOILET_DEPENDS:="libcaca"};
 : ${PKG_TOILET_URLS_GIT:=toilet=https://github.com/cacalabs/toilet@master};
 : ${PKG_TOILET_ENV_VARS_EXTRA:="CACA_CFLAGS=-I${PREFIX_NATIVE}/include:CACA_LIBS=-L${PREFIX_NATIVE} -lcaca"};
