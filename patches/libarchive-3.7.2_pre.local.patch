@@ -1,7 +1,7 @@
-diff -ru libarchive-3.4.2.orig/configure libarchive-3.4.2/configure
---- libarchive-3.4.2.orig/configure	2020-02-11 23:58:01.000000000 +0100
-+++ libarchive-3.4.2/configure	2020-04-11 15:58:45.493648584 +0200
-@@ -12062,6 +12062,16 @@
+diff -ru libarchive-3.7.2.orig/configure libarchive-3.7.2/configure
+--- libarchive-3.7.2.orig/configure	2023-09-12 00:05:34.000000000 +0200
++++ libarchive-3.7.2/configure	2024-02-26 13:44:22.491965148 +0100
+@@ -12906,6 +12906,16 @@
    dynamic_linker='NetBSD ld.elf_so'
    ;;
  
@@ -18,3 +18,12 @@ diff -ru libarchive-3.4.2.orig/configure libarchive-3.4.2/configure
  netbsd*)
    version_type=sunos
    need_lib_prefix=no
+@@ -16925,7 +16935,7 @@
+   ac_status=$?
+   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+   test $ac_status = 0; }; then
+-  pkg_cv_LIBXML2_PC_LIBS=`$PKG_CONFIG --libs "libxml-2.0" 2>/dev/null`
++  pkg_cv_LIBXML2_PC_LIBS=`$PKG_CONFIG --libs-only-l "libxml-2.0" 2>/dev/null`
+ 		      test "x$?" != "x0" && pkg_failed=yes
+ else
+   pkg_failed=yes

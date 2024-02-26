@@ -66,7 +66,6 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net twolame wolfssl";
 : ${PKG_LIBARCHIVE_VERSION:=3.7.2};
 : ${PKG_LIBARCHIVE_URL:=https://www.libarchive.de/downloads/libarchive-${PKG_LIBARCHIVE_VERSION}.tar.xz};
 : ${PKG_LIBARCHIVE_CONFIGURE_ARGS_EXTRA:="--without-zstd"};
-: ${PKG_LIBARCHIVE_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib};
 : ${PKG_LIBARCHIVE_CONFIG_CACHE_LOCAL:="ac_cv_func_lstat_dereferences_slashed_symlink=yes"};
 : ${PKG_LIBARCHIVE_LIBTOOL:=rlibtool};
 : ${PKG_LIBASS_DEPENDS:="freetype fontconfig harfbuzz fribidi libiconv"};
