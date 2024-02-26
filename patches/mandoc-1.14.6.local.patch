@@ -1,0 +1,109 @@
+diff -ru mandoc-1.14.6.orig/Makefile mandoc-1.14.6/Makefile
+--- mandoc-1.14.6.orig/Makefile 2021-09-23 20:03:23.000000000 +0200
++++ mandoc-1.14.6/Makefile      2024-02-26 15:20:48.758788836 +0100
+@@ -369,11 +369,40 @@
+
+ # === USER CONFIGURATION ===============================================
+
+-include Makefile.local
++MANDOC_COBJS    =  compat_fts.o compat_ohash.o compat_progname.o compat_recallocarray.o compat_strtonum.o
++SOELIM_COBJS    =  compat_progname.o compat_stringlist.o
++PREFIX      = 
++BINDIR      = /bin
++SBINDIR     = /sbin
++BIN_FROM_SBIN   = ../bin
++INCLUDEDIR  = /include/mandoc
++LIBDIR      = /lib/mandoc
++MANDIR      = /man
++WWWPREFIX   = /var/www
++HTDOCDIR    = /var/www/htdocs
++CGIBINDIR   = /var/www/cgi-bin
++BINM_APROPOS    = apropos
++BINM_CATMAN = catman
++BINM_MAKEWHATIS = makewhatis
++BINM_MAN    = man
++BINM_SOELIM = soelim
++BINM_WHATIS = whatis
++MANM_MAN    = man
++MANM_MANCONF    = man.conf
++MANM_MDOC   = mdoc
++MANM_ROFF   = roff
++MANM_EQN    = eqn
++MANM_TBL    = tbl
++INSTALL     = install
++INSTALL_PROGRAM = install -m 0555
++INSTALL_LIB = install -m 0444
++INSTALL_MAN = install -m 0444
++INSTALL_DATA    = install -m 0444
++LN = ln -f
+
+ # === DEPENDENCY HANDLING ==============================================
+
+-all: mandoc man demandoc soelim $(BUILD_TARGETS) Makefile.local
++all: mandoc man demandoc soelim $(BUILD_TARGETS)
+
+ install: base-install $(INSTALL_TARGETS)
+
+diff -ruN mandoc-1.14.6.orig/config.h mandoc-1.14.6/config.h
+--- mandoc-1.14.6.orig/config.h	1970-01-01 01:00:00.000000000 +0100
++++ mandoc-1.14.6/config.h	2024-02-26 14:41:39.744045181 +0100
+@@ -0,0 +1,59 @@
++#ifdef __cplusplus
++#error "Do not use C++.  See the INSTALL file."
++#endif
++
++#include <sys/types.h>
++
++#define MAN_CONF_FILE "/etc/man.conf"
++#define MANPATH_BASE "/usr/share/man:/usr/X11R6/man"
++#define MANPATH_DEFAULT "/share/man"
++#define OSENUM MANDOC_OS_OTHER
++#define OSNAME "Midipix"
++#define UTF8_LOCALE "en_US.UTF-8"
++#define EFTYPE EINVAL
++
++#define HAVE_DIRENT_NAMLEN 0
++#define HAVE_ENDIAN 1
++#define HAVE_ERR 1
++#define HAVE_FTS 1
++#define HAVE_FTS_COMPARE_CONST 0
++#define HAVE_GETLINE 1
++#define HAVE_GETSUBOPT 1
++#define HAVE_ISBLANK 1
++#define HAVE_LESS_T 0
++#define HAVE_MKDTEMP 1
++#define HAVE_MKSTEMPS 1
++#define HAVE_NTOHL 1
++#define HAVE_PLEDGE 0
++#define HAVE_PROGNAME 0
++#define HAVE_REALLOCARRAY 1
++#define HAVE_RECALLOCARRAY 0
++#define HAVE_REWB_BSD 0
++#define HAVE_REWB_SYSV 1
++#define HAVE_SANDBOX_INIT 0
++#define HAVE_STRCASESTR 1
++#define HAVE_STRINGLIST 0
++#define HAVE_STRLCAT 1
++#define HAVE_STRLCPY 1
++#define HAVE_STRNDUP 1
++#define HAVE_STRPTIME 1
++#define HAVE_STRSEP 1
++#define HAVE_STRTONUM 0
++#define HAVE_SYS_ENDIAN 0
++#define HAVE_VASPRINTF 1
++#define HAVE_WCHAR 1
++#define HAVE_OHASH 0
++#define NEED_XPG4_2 0
++
++#define BINM_APROPOS "apropos"
++#define BINM_CATMAN "catman"
++#define BINM_MAKEWHATIS "makewhatis"
++#define BINM_MAN "man"
++#define BINM_SOELIM "soelim"
++#define BINM_WHATIS "whatis"
++#define BINM_PAGER "less"
++
++extern	const char *getprogname(void);
++extern	void	  setprogname(const char *);
++extern	void	 *recallocarray(void *, size_t, size_t, size_t);
++extern	long long strtonum(const char *, long long, long long, const char **);
