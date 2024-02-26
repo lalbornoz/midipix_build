@@ -33,7 +33,6 @@ HOST_DEPS_RPM_RPM_DISABLE=1;
 	+%[_files]/lib/rpm/elfdeps=lib/rpm/elfdeps
 	m0755=lib/rpm/elfdeps
 	-=var/%<*>"};
-: ${PKG_RPM_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib"};
 : ${PKG_RPM_HOST_FORCE_AUTORECONF:=1};
 
 # vim:filetype=sh textwidth=0
