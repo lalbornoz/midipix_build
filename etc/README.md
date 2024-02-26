@@ -720,7 +720,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | AUTOCONF_CONFIG_GUESS        | String           | Either of ``copy`` (copy ``config.guess`` from ``etc/config.guess``) or ``keep``; defaults to ``copy``                                     |
 | BASE_DIR                     | DirName(Abs)     | Package build root directory beneath ``${BUILD_WORKDIR}``                                                                                  |
 | BUILD_DIR                    | DirName(Unit)    | Package build directory beneath ``${PKG_BASE_DIR}``                                                                                        |
-| BUILD_STAGES_DISABLE         | List( )          | Build stages to disable during package build                                                                                               |
+| BUILD_STEPS_DISABLE          | List( )          | Build steps to disable during package build                                                                                                |
 | BUILD_TYPE                   | Set(String)      | ``cross``: Cross-compiled toolchain, ``host``: host, ``native``: cross-compiled package                                                    |
 | CC                           | FileName         | Toolchain C compiler ``cc(1)``                                                                                                             |
 | CCLD                         | FileName         | Toolchain C compiler-qua-linker ``cc(1)``                                                                                                  |
