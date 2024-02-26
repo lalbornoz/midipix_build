@@ -184,7 +184,7 @@ ac_cv_path__libcurl_config=${PREFIX_NATIVE}/bin/curl-config"};
 : ${PKG_NINVADERS_CFLAGS_BUILD_EXTRA:="-g3 -O0 -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncurses"};
 : ${PKG_NINVADERS_INSTALL_FILES_V2:="+../ninvaders-${PKG_NINVADERS_VERSION}/nInvaders=bin/%[FNAME]"};
 : ${PKG_NINVADERS_IN_TREE:=1};
-: ${PKG_NINVADERS_MAKEFLAGS_BUILD:="-lncurses,-ltinfo"};
+: ${PKG_NINVADERS_MAKEFLAGS_BUILD:="CC=${DEFAULT_TARGET}-gcc LIBS=-Wl,-lncurses,-ltinfo"};
 : ${PKG_NINVADERS_SUBDIR:=ninvaders-${PKG_NINVADERS_VERSION}};
 : ${PKG_OPENBSD_BASEUTILS_DEPENDS:="musl_compat"};
 : ${PKG_OPENBSD_BASEUTILS_URLS_GIT:="baseutils=https://github.com/ibara/baseutils.git@master"};
