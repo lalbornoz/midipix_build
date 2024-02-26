@@ -27,6 +27,7 @@ HOST_DEPS_RPM_RPM_DISABLE=1;
 : ${PKG_RPM_HOST_SHA256SUM:=ca5974e9da2939afb422598818ef187385061889ba766166c4a3829c5ef8d411};
 : ${PKG_RPM_HOST_VERSION:=4.16.0};
 : ${PKG_RPM_HOST_URL:=http://ftp.rpm.org/releases/rpm-${PKG_RPM_HOST_VERSION%.*}.x/rpm-${PKG_RPM_HOST_VERSION}.tar.bz2};
+: ${PKG_RPM_HOST_LIBTOOL:=rdlibtool};
 : ${PKG_RPM_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -I${PREFIX}/include/dbus-1.0 -I${PREFIX}/lib/dbus-1.0/include"};
 : ${PKG_RPM_HOST_CONFIGURE_ARGS_EXTRA:="--enable-bdb=no --enable-ndb --with-crypto=openssl --with-vendor=midipix --without-lua --disable-libelf"};
 : ${PKG_RPM_HOST_INSTALL_FILES_V2:="
