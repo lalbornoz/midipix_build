@@ -157,7 +157,7 @@ gl_cv_ld_output_def=no"};
 : ${PKG_MAILUTILS_VERSION:=3.15};
 : ${PKG_MAILUTILS_URL:=https://ftp.gnu.org/gnu/mailutils/mailutils-${PKG_MAILUTILS_VERSION}.tar.xz};
 : ${PKG_MAILUTILS_CONFIGURE_ARGS_EXTRA:="mu_cv_lib_gnutls=yes --disable-python --with-gnutls --without-fribidi --without-gssapi"};
-: ${PKG_MAILUTILS_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib -lgnutls -lunistring"};
+: ${PKG_MAILUTILS_LDFLAGS_BUILD_EXTRA:="-lgnutls -lunistring"};
 : ${PKG_MAILUTILS_IN_TREE=1};
 : ${PKG_MICROSOCKS_URLS_GIT:=microsocks=https://github.com/rofl0r/microsocks.git@master};
 : ${PKG_MICROSOCKS_BUILD_DIR:=microsocks};
