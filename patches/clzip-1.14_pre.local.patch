@@ -1,0 +1,11 @@
+diff -ru clzip-1.14.orig/configure clzip-1.14/configure
+--- clzip-1.14.orig/configure	2024-01-22 13:59:34.000000000 +0100
++++ clzip-1.14/configure	2024-02-27 11:25:03.061274706 +0100
+@@ -22,7 +22,6 @@
+ mandir='$(datarootdir)/man'
+ CC=gcc
+ CPPFLAGS=
+-CFLAGS='-Wall -W -O2'
+ LDFLAGS=
+ MAKEINFO=makeinfo
+ 
