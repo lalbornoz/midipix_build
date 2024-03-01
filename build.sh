@@ -421,7 +421,7 @@ buildp_dispatch_pkg_state() {
 		_bpdps_var="" _bpdps_vars="";
 
 	case "${_bpdps_msg}" in
-	disabled_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msgV "pkg_skip" "${MSG_pkg_skip_disabled}" "${_bpdps_pkg_name}"; ;;
+	disabled_pkg)	: $((BUILD_NDISABLED+=1)); rtl_log_msgV "pkg_skip" "${MSG_pkg_skip_disabled}" "${_bpdps_pkg_name}"; ;;
 	missing_pkg)	rtl_log_msgV "fatalexit" "${MSG_pkg_skip_unknown}" "${_bpdps_pkg_name}"; ;;
 	msg_pkg)	shift 3; rtl_log_msgV "${MSG_pkg_msg}" "${_bpdps_group_name}" "${_bpdps_pkg_name}" "${*}"; ;;
 	skipped_pkg)	: $((BUILD_NSKIP+=1)); rtl_log_msgV "pkg_skip" "${MSG_pkg_skip_finished}" "${_bpdps_pkg_name}"; ;;
@@ -474,8 +474,8 @@ buildp_time_update() {
 build() {
 	local	_build_time_hours=0 _build_time_mins=0 _build_time_secs=0 _pkg_name="" _rc=0 _status=""			\
 		BUILD_DATE_START="" BUILD_GROUPS="" BUILD_GROUPS_INHIBIT_DEPS=0 BUILD_HNAME BUILD_IS_PARENT=1		\
-		BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0 BUILD_PKGS_FAILED="" BUILD_TARGET="" BUILD_USER=""		\
-		DEFAULT_BUILD_CPUS=1 DEFAULT_BUILD_LAST_FAILED_PKG_FNAME="" DEFAULT_BUILD_LOG_FNAME=""			\
+		BUILD_NDISABLED=0 BUILD_NFAIL=0 BUILD_NFINI=0 BUILD_NSKIP=0 BUILD_PKGS_FAILED="" BUILD_TARGET=""	\
+		BUILD_USER="" DEFAULT_BUILD_CPUS=1 DEFAULT_BUILD_LAST_FAILED_PKG_FNAME="" DEFAULT_BUILD_LOG_FNAME=""	\
 		DEFAULT_BUILD_STEPS="" DEFAULT_BUILD_VARS="" DEFAULT_CLEAR_PREFIX_PATHS="" DEFAULT_GIT_ARGS=""		\
 		DEFAULT_GITROOT_HEAD="${DEFAULT_GITROOT_HEAD:-}" DEFAULT_LOG_ENV_VARS="" DEFAULT_MIRRORS=""		\
 		DEFAULT_TARGET="" DEFAULT_WGET_ARGS="" MIDIPIX_BUILD_PWD="";
@@ -501,7 +501,7 @@ build() {
 			"${ARG_RESTART_RECURSIVE}" "${BUILD_WORKDIR}";
 
 		buildp_time_update;
-		rtl_log_msgV "build_finish" "${MSG_build_finish}" "${BUILD_NFINI:-0}" "${BUILD_NSKIP:-0}" "${BUILD_NFAIL:-0}";
+		rtl_log_msgV "build_finish" "${MSG_build_finish}" "${BUILD_NFINI:-0}" "${BUILD_NSKIP:-0}" "${BUILD_NDISABLED:-0}" "${BUILD_NFAIL:-0}";
 		rtl_log_msgV "build_finish_time" "${MSG_build_finish_time}" "${_build_time_hours:-0}" "${_build_time_minutes:-0}" "${_build_time_secs:-0}";
 
 		if [ "${BUILD_PKGS_FAILED:+1}" = 1 ]; then
