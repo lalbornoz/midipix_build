@@ -1,0 +1,12 @@
+diff -ru wget-1.21.4.orig/src/ptimer.c wget-1.21.4/src/ptimer.c
+--- wget-1.21.4.orig/src/ptimer.c	2023-05-11 00:18:48.000000000 +0200
++++ wget-1.21.4/src/ptimer.c	2024-03-05 20:15:46.700140687 +0100
+@@ -80,8 +80,6 @@
+ 
+ #if defined(WINDOWS) || defined(__CYGWIN__)
+ # define PTIMER_WINDOWS         /* use Windows timers */
+-#elif _POSIX_TIMERS - 0 > 0
+-# define PTIMER_POSIX           /* use POSIX timers (clock_gettime) */
+ #else
+ # define PTIMER_GETTIMEOFDAY    /* use gettimeofday */
+ #endif
