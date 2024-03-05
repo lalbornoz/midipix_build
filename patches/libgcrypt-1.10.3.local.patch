@@ -1,0 +1,12 @@
+diff -ru libgcrypt-1.10.3.orig/src/secmem.c libgcrypt-1.10.3/src/secmem.c
+--- libgcrypt-1.10.3.orig/src/secmem.c	2023-10-19 09:53:31.000000000 +0200
++++ libgcrypt-1.10.3/src/secmem.c	2024-03-05 19:49:33.587573245 +0100
+@@ -279,8 +279,6 @@
+ static void
+ print_warn (void)
+ {
+-  if (!no_warning)
+-    log_info (_("Warning: using insecure memory!\n"));
+ }
+ 
+ 
