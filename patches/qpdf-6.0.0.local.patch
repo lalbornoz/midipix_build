@@ -819,3 +819,14 @@
  done # for ac_tag
  
  
+--- qpdf-6.0.0/libqpdf/build.mk.orig	2024-03-07 05:05:23.245504473 +0000
++++ qpdf-6.0.0/libqpdf/build.mk	2024-03-07 05:05:49.293514684 +0000
+@@ -2,7 +2,7 @@
+ 
+ INCLUDES_libqpdf = include libqpdf
+ LDFLAGS_libqpdf = -Llibqpdf/$(OUTPUT_DIR)
+-LIBS_libqpdf = -lqpdf
++LIBS_libqpdf = libqpdf/$(OUTPUT_DIR)/libqpdf.la
+ 
+ SRCS_libqpdf = \
+ 	libqpdf/BitStream.cc \
