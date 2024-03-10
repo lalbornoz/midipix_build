@@ -1,3 +1,26 @@
+diff -ru CSSC-1.4.1.orig/src/Makefile.in CSSC-1.4.1/src/Makefile.in
+--- CSSC-1.4.1.orig/src/Makefile.in     2019-05-07 13:44:57.000000000 +0200
++++ CSSC-1.4.1/src/Makefile.in  2024-03-10 17:07:33.463901630 +0100
+@@ -1199,8 +1199,8 @@
+ generic_CPPFLAGS = -I ../gl/lib -I $(srcdir)/../gl/lib
+ AM_CPPFLAGS = $(generic_CPPFLAGS)
+ AM_CFLAGS = "-DPREFIX=\"$(csscutildir)/\"" $(generic_CPPFLAGS)
+-AM_LDFLAGS = -L../gl/lib
+-LDADD = -lgnulib
++AM_LDFLAGS =
++LDADD = ../gl/lib/libgnulib.la
+ AM_CXXFLAGS = $(WARN_CFLAGS)
+ noinst_LIBRARIES = libcssc.a
+ csscutil_SCRIPTS = sccsdiff
+@@ -1271,7 +1271,7 @@
+ rmdel_LDADD = libcssc.a $(LIBOBJS)
+ prt_LDADD = libcssc.a $(LIBOBJS)
+ val_LDADD = libcssc.a $(LIBOBJS)
+-sccs_LDADD = libcssc.a $(LIBOBJS) -lgnulib
++sccs_LDADD = libcssc.a $(LIBOBJS) ../gl/lib/libgnulib.la
+ all: $(BUILT_SOURCES)
+        $(MAKE) $(AM_MAKEFLAGS) all-am
+
 diff -ru CSSC-1.4.1.orig/configure CSSC-1.4.1/configure
 --- CSSC-1.4.1.orig/configure	2019-05-07 13:44:57.000000000 +0200
 +++ CSSC-1.4.1/configure	2021-04-08 14:11:56.935465623 +0200
