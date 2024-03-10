@@ -1,3 +1,14 @@
+diff -ru Python-3.7.10.orig/Modules/_ssl.c Python-3.7.10/Modules/_ssl.c
+--- Python-3.7.10.orig/Modules/_ssl.c   2021-02-16 02:29:22.000000000 +0100
++++ Python-3.7.10/Modules/_ssl.c        2024-03-10 14:05:44.867860819 +0100
+@@ -921,7 +921,6 @@
+     self->err = err;
+
+     /* Make sure the SSL error state is initialized */
+-    (void) ERR_get_state();
+     ERR_clear_error();
+
+     PySSL_BEGIN_ALLOW_THREADS
 diff -ru Python-3.7.10.orig/Modules/_hashopenssl.c Python-3.7.10/Modules/_hashopenssl.c
 --- Python-3.7.10.orig/Modules/_hashopenssl.c	2021-02-16 02:29:22.000000000 +0100
 +++ Python-3.7.10/Modules/_hashopenssl.c	2022-02-24 22:45:05.056189097 +0100
