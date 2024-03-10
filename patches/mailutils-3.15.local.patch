@@ -1,3 +1,51 @@
+diff -ru mailutils-3.15.orig/libproto/dotmail/tests/Makefile.in mailutils-3.15/libproto/dotmail/tests/Makefile.in
+--- mailutils-3.15.orig/libproto/dotmail/tests/Makefile.in      2022-04-17 20:20:43.000000000 +0200
++++ mailutils-3.15/libproto/dotmail/tests/Makefile.in   2024-03-10 22:14:03.620481168 +0100
+@@ -997,7 +997,7 @@
+  -I$(top_srcdir)\
+  -I$(top_srcdir)/libmailutils/tests
+
+-LDADD = -L$(top_builddir)/libmailutils/tests -lmu_tesh $(MU_LIB_DOTMAIL) $(MU_LIB_MAILUTILS)
++LDADD = $(top_builddir)/libmailutils/tests/libmu_tesh.la $(MU_LIB_DOTMAIL) $(MU_LIB_MAILUTILS)
+ all: all-am
+
+ .SUFFIXES:
+diff -ru mailutils-3.15.orig/libproto/maildir/tests/Makefile.in mailutils-3.15/libproto/maildir/tests/Makefile.in
+--- mailutils-3.15.orig/libproto/maildir/tests/Makefile.in      2022-04-17 20:20:43.000000000 +0200
++++ mailutils-3.15/libproto/maildir/tests/Makefile.in   2024-03-10 22:14:47.727147523 +0100
+@@ -997,7 +997,7 @@
+  -I$(top_srcdir)\
+  -I$(top_srcdir)/libmailutils/tests
+
+-LDADD = -L$(top_builddir)/libmailutils/tests -lmu_tesh $(MU_LIB_MAILDIR) $(MU_LIB_MAILUTILS)
++LDADD = $(top_builddir)/libmailutils/tests/libmu_tesh.la $(MU_LIB_MAILDIR) $(MU_LIB_MAILUTILS)
+ all: all-am
+
+ .SUFFIXES:
+diff -ru mailutils-3.15.orig/libproto/mbox/tests/Makefile.in mailutils-3.15/libproto/mbox/tests/Makefile.in
+--- mailutils-3.15.orig/libproto/mbox/tests/Makefile.in 2022-04-17 20:20:44.000000000 +0200
++++ mailutils-3.15/libproto/mbox/tests/Makefile.in      2024-03-10 22:15:24.401533471 +0100
+@@ -996,7 +996,7 @@
+  -I$(top_srcdir)\
+  -I$(top_srcdir)/libmailutils/tests
+
+-LDADD = -L$(top_builddir)/libmailutils/tests -lmu_tesh $(MU_LIB_MBOX) $(MU_LIB_MAILUTILS)
++LDADD = $(top_builddir)/libmailutils/tests/libmu_tesh.la $(MU_LIB_MBOX) $(MU_LIB_MAILUTILS)
+ all: all-am
+
+ .SUFFIXES:
+diff -ru mailutils-3.15.orig/libproto/mh/tests/Makefile.in mailutils-3.15/libproto/mh/tests/Makefile.in
+--- mailutils-3.15.orig/libproto/mh/tests/Makefile.in   2022-04-17 20:20:44.000000000 +0200
++++ mailutils-3.15/libproto/mh/tests/Makefile.in        2024-03-10 22:13:10.660481552 +0100
+@@ -996,7 +996,7 @@
+  -I$(top_srcdir)\
+  -I$(top_srcdir)/libmailutils/tests
+
+-LDADD = -L$(top_builddir)/libmailutils/tests -lmu_tesh $(MU_LIB_MH) $(MU_LIB_MAILUTILS)
++LDADD = $(top_builddir)/libmailutils/tests/libmu_tesh.la $(MU_LIB_MH) $(MU_LIB_MAILUTILS)
+ all: all-am
+
+ .SUFFIXES:
 diff -ru mailutils-3.15.orig/mda/lmtpd/Makefile.in mailutils-3.15/mda/lmtpd/Makefile.in
 --- mailutils-3.15.orig/mda/lmtpd/Makefile.in   2022-04-17 20:20:45.000000000 +0200
 +++ mailutils-3.15/mda/lmtpd/Makefile.in        2024-02-17 13:45:54.067803997 +0100
