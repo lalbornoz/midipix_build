@@ -1,3 +1,14 @@
+diff -ru Python-2.7.18.orig/Modules/_ssl.c Python-2.7.18/Modules/_ssl.c
+--- Python-2.7.18.orig/Modules/_ssl.c   2020-04-19 23:13:39.000000000 +0200
++++ Python-2.7.18/Modules/_ssl.c        2024-03-10 13:58:48.445497909 +0100
+@@ -592,7 +592,6 @@
+     Py_INCREF(sslctx);
+
+     /* Make sure the SSL error state is initialized */
+-    (void) ERR_get_state();
+     ERR_clear_error();
+
+     PySSL_BEGIN_ALLOW_THREADS
 diff -ru Python-2.7.18.orig/Modules/_hashopenssl.c Python-2.7.18/Modules/_hashopenssl.c
 --- Python-2.7.18.orig/Modules/_hashopenssl.c	2020-04-19 23:13:39.000000000 +0200
 +++ Python-2.7.18/Modules/_hashopenssl.c	2022-02-24 22:29:09.497683912 +0100
