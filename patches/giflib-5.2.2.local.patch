@@ -1,0 +1,20 @@
+diff -ru giflib-5.2.2.orig/Makefile giflib-5.2.2/Makefile
+--- giflib-5.2.2.orig/Makefile	2024-02-19 02:01:50.000000000 +0100
++++ giflib-5.2.2/Makefile	2024-03-11 10:30:17.730765319 +0100
+@@ -8,7 +8,6 @@
+ #
+ OFLAGS = -O0 -g
+ OFLAGS  = -O2
+-CFLAGS  = -std=gnu99 -fPIC -Wall -Wno-format-truncation $(OFLAGS)
+ 
+ SHELL = /bin/sh
+ TAR = tar
+@@ -87,7 +86,7 @@
+ LIBUTILSOMAJOR	= libutil.$(LIBMAJOR).$(SOEXTENSION)
+ endif
+ 
+-all: $(LIBGIFSO) libgif.a $(LIBUTILSO) libutil.a $(UTILS)
++all: $(LIBGIFSO) libgif.a libutil.a $(UTILS)
+ ifeq ($(UNAME), Darwin)
+ else
+ 	$(MAKE) -C doc
