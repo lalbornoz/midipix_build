@@ -1,3 +1,15 @@
+diff -ru giflib-5.2.2.orig/doc/Makefile giflib-5.2.2/doc/Makefile
+--- giflib-5.2.2.orig/doc/Makefile      2024-02-18 19:15:05.000000000 +0100
++++ giflib-5.2.2/doc/Makefile   2024-03-11 15:46:56.522195535 +0100
+@@ -15,7 +15,7 @@
+ .adoc.html:
+        asciidoc $<
+
+-all: allhtml manpages
++all: manpages
+
+ # The distinction between XMLMAN and XMLINTERNAL is because
+ # some pages shouldn't be installed as part of a binary package;
 diff -ru giflib-5.2.2.orig/Makefile giflib-5.2.2/Makefile
 --- giflib-5.2.2.orig/Makefile	2024-02-19 02:01:50.000000000 +0100
 +++ giflib-5.2.2/Makefile	2024-03-11 10:30:17.730765319 +0100
