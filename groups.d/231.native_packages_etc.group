@@ -185,7 +185,7 @@ zstd";
 : ${PKG_GRAPHICSMAGICK_CONFIGURE_ARGS_EXTRA:="--enable-shared --with-modules --without-x --without-gs --without-trio --without-wmf --without-gdi32 --without-dps --without-fpx --without-jbig --without-jp2 --without-jxl"};
 : ${PKG_GRAPHICSMAGICK_CFLAGS_CONFIGURE_EXTRA:="-fopenmp -I${PREFIX_NATIVE}/include/freetype2"};
 : ${PKG_GRAPHICSMAGICK_LDFLAGS_CONFIGURE_EXTRA:=-fopenmp};
-: ${PKG_GRAPHICSMAGICK_LIBTOOL=rlibtool};
+: ${PKG_GRAPHICSMAGICK_LIBTOOL=clibtool};
 : ${PKG_GRAPHICSMAGICK_IN_TREE:=1};
 : ${PKG_GRAPHICSMAGICK_NO_PURGE_LA_FILES=1};
 : ${PKG_GZIP_SHA256SUM:=7454eb6935db17c6655576c2e1b0fabefd38b4d0936e0f87f48cd062ce91a057};
