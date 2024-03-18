@@ -329,15 +329,14 @@ gl_cv_ld_output_def=no"};
 : ${PKG_LIBWEBP_VERSION:=1.3.2};
 : ${PKG_LIBWEBP_URL:=https://sources.voidlinux.org/libwebp-${PKG_LIBWEBP_VERSION}/libwebp-${PKG_LIBWEBP_VERSION}.tar.gz};
 : ${PKG_LIBWEBP_CONFIGURE_ARGS_EXTRA:="--disable-gl --disable-sdl --disable-sse4.1 --enable-libwebpdecoder --enable-libwebpextras --with-pnglibdir=${PREFIX_NATIVE} --with-pngincludedir=${PREFIX_NATIVE}"};
-: ${PKG_LIBXML2_DEPENDS:="libz xz"};
-: ${PKG_LIBXML2_SHA256SUM:=0d676b10cfd13ab966907a3917bd86b17a1c22befdf42144cdc1ad5bb9e65c45};
-: ${PKG_LIBXML2_VERSION:=2.9.13};
-: ${PKG_LIBXML2_URL:=https://gitlab.gnome.org/GNOME/libxml2/-/archive/v${PKG_LIBXML2_VERSION}/libxml2-v${PKG_LIBXML2_VERSION}.tar.gz};
+: ${PKG_LIBXML2_DEPENDS:="libz xz libiconv"};
+: ${PKG_LIBXML2_SHA256SUM:=889c593a881a3db5fdd96cc9318c87df34eb648edfc458272ad46fd607353fbb};
+: ${PKG_LIBXML2_VERSION:=2.12.6};
+: ${PKG_LIBXML2_URL:=https://download.gnome.org/sources/libxml2/${PKG_LIBXML2_VERSION%.*}/libxml2-${PKG_LIBXML2_VERSION}.tar.xz};
 : ${PKG_LIBXML2_CONFIGURE_ARGS_EXTRA:="--with-python=no"};
 : ${PKG_LIBXML2_INSTALL_FILES_V2:="
 	+%[_files]/bin/\%[_target]-xml2-config=bin/%[_target]-xml2-config
 	m0755=bin/%[_target]-xml2-config"};
-: ${PKG_LIBXML2_IN_TREE:=1};
 : ${PKG_LIBXSLT_DEPENDS:="libxml2 libgcrypt"};
 : ${PKG_LIBXSLT_SHA256SUM:=3a4b27dc8027ccd6146725950336f1ec520928f320f144eb5fa7990ae6123ab4};
 : ${PKG_LIBXSLT_VERSION:=1.1.37};
