@@ -784,6 +784,7 @@ VERSION`` and/or ``URLS_GIT``, respectively.
 | NO_CLEAN_BASE_DIR            | Flag(UInt,0)     | Inhibit cleaning of package build root directory beneath ``${BUILD_WORKDIR}``                                                              |
 | NO_CLEAN                     | Flag(UInt,0)     | Inhibit cleaning of package build directory beneath ``${PKG_BASE_DIR}`` pre-finish                                                         |
 | NO_LOG_VARS                  | Flag(UInt,0)     | Inhibit logging of build & package variables pre-package build                                                                             |
+| NO_PURGE_LA_FILES            | Flag(UInt,0)     | Inhibit purging of .la files                                                                                                               |
 | PATCHES_EXTRA                | List( )          | Additional patches to apply                                                                                                                |
 | PKG_CONFIG                   | CmdName          | ``pkg-config(1)`` implementation                                                                                                           |
 | PKG_CONFIG_LIBDIR            | DirName          | ``pkg-config(1)`` search directory                                                                                                         |

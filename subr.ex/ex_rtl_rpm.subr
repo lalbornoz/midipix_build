@@ -228,28 +228,6 @@ ex_rtl_fixup_pkgconfig_paths() {
 };
 
 #
-# ex_rtl_purge_la_files() - purge .la files in tree
-# @_dname_base:		base directory pathname
-#
-# Returns:		zero (0) on success, non-zero (>0) on failure
-#
-ex_rtl_purge_la_files() {
-	local	_erplf_dname_base="${1}"	\
-		_erplf_la_path="";
-
-	for _erplf_la_path in $(find		\
-			"${_erplf_dname_base}"	\
-			-type f			\
-			-name \*.la);
-	do
-		if ! rtl_fileop rm "${_erplf_la_path}"; then
-			return 1;
-		fi;
-	done;
-	return 0;
-};
-
-#
 # ex_rtl_strip_files() - strip files of debugging information
 # @_strip_cmd:		strip(1) command name
 # @_tree_root:		pathname to tree root

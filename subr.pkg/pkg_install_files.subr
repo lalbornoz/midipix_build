@@ -45,7 +45,9 @@ pkgp_install_files_libraries() {
 	if [ "${PKG_BUILD_TYPE}" != "host" ]; then
 		ex_rtl_install_library_archives "${PKG_DESTDIR}" "${PKG_TARGET}-mdso" || return 1;
 	fi;
-	ex_rtl_purge_la_files "${PKG_DESTDIR}" || return 1;
+	if [ "${PKG_NO_PURGE_LA_FILES:-0}" -eq 0 ]; then
+		ex_rtl_purge_la_files "${PKG_DESTDIR}" || return 1;
+	fi;
 	return 0;
 };
 
