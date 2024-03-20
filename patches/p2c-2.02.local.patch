@@ -1,0 +1,203 @@
+diff -ru p2c-2.02.orig/Makefile p2c-2.02/Makefile
+--- p2c-2.02.orig/Makefile	1993-12-08 06:37:05.000000000 +0100
++++ p2c-2.02/Makefile	2024-03-20 10:32:36.899062261 +0100
+@@ -24,25 +24,7 @@
+ # and src/Makefile.
+ 
+ test:
+-	@echo "Compiling p2c, installing in `pwd`/home..."
+-	cd src; make install
+-	@echo ""
+-	@echo "Translating and compiling example files..."
+-	cd examples; make comp
+-	@echo ""
+-	@echo "Running the factorial example..."
+-	examples/fact
+-	@echo ""
+-	@echo "Running the 'e' computation example..."
+-	examples/e
+-	@echo ""
+-	@echo "Running the self-printing Pascal example..."
+-	examples/self >examples/self.out
+-	cat examples/self.out
+-	diff examples/self.p examples/self.out
+-	@echo ""
+-	@echo "Also try 'cref' and 'basic' in the examples directory."
+-
++	cd src; make
+ 
+ install:
+ 	cd src; make install
+diff -ru p2c-2.02.orig/src/Makefile p2c-2.02/src/Makefile
+--- p2c-2.02.orig/src/Makefile	2015-11-18 21:12:06.000000000 +0100
++++ p2c-2.02/src/Makefile	2024-03-20 10:32:36.899062261 +0100
+@@ -19,25 +19,21 @@
+ SHELL = /bin/sh
+ 
+ # Directories (private version)
+-HOMEDIR = ../home
+-INCDIR = ../home/p2c
+-BINDIR = ..
+-LIBDIR = ../home
+-MANDIR = ../home
+-MANFILE = p2c.cat          # human-readable manual (for cat.1)
+ #MANFILE = p2c.man.inst    # uncompressed nroff source (for man.1)
+ #MANFILE = p2c.man.Z       # compressed nroff source (for man.1.Z)
+ 
+ # Directories (public version)
+-#HOMEDIR = /usr/lib/p2c
+-#INCDIR = /usr/include/p2c
+-#BINDIR = /usr/bin
+-#LIBDIR = /usr/lib
+-#MANDIR = /usr/man/man1
+-#MANFILE = p2c.man.inst
++HOMEDIR = /usr/lib/p2c
++INCDIR = /usr/include/p2c
++BINDIR = /usr/bin
++LIBDIR = /usr/lib
++MANDIR = /usr/man/man1
++MANFILE = p2c.man.inst
++DESTDIR ?=
+ 
+ # Compiler options
+ CC = cc                    # you may wish to use gcc here instead
++AR = ar
+ OPT = # -O		   # uncomment this for optimization
+ DEB = # -g		   # uncomment this for debugging
+ DEFS =	-DTEST_MALLOC      # place other -D types of things here # TDS 2015nov18
+@@ -74,7 +70,7 @@
+ 
+ 
+ # Top-level targets
+-all: proto p2c libp2c.a p2c.cat
++all: proto p2c libp2c.a p2c.cat proto
+ proto: $(PROTOS)
+ 
+ 
+@@ -86,7 +82,7 @@
+ 	$(CC) -c $(CFLAGS) $(CUSTDEFS) dir.c
+ 
+ trans.o: trans.c trans.h
+-	$(CC) -c $(CFLAGS) -DHASDUMPS -DP2C_HOME=\"$(ABSHOMEDIR)\" trans.c
++	$(CC) -c $(CFLAGS) -DHASDUMPS -DP2C_HOME=\"/usr/lib/p2c\" trans.c
+ 
+ 
+ # Making and using makeproto
+@@ -97,12 +93,12 @@
+ 	./makeproto -n -m -h -t16 -a35 -s1 -i $(SRCS) -o p2c.proto
+ 
+ makeproto: makeproto.c
+-	$(CC) $(CFLAGS) $(LFLAGS) makeproto.c -o makeproto
++	$(HOST_CC) $(CFLAGS) $(LFLAGS) makeproto.c -o makeproto
+ 
+ 
+ # Making the p2c runtime library
+ libp2c.a: $(LIBOBJS)
+-	ar r libp2c.a $(LIBOBJS) $(OTHERLIBOBJS)
++	$(AR) r libp2c.a $(LIBOBJS) $(OTHERLIBOBJS)
+ 
+ p2clib.o: p2clib.c
+ 	$(CC) -c $(CFLAGS) p2clib.c
+@@ -145,61 +141,23 @@
+ newhome:
+ 	rm -f trans.o     # force trans.c to be recompiled (if HOMEDIR changes)
+ 
+-install: proto \
+-	makedirs \
+-	$(BINDIR)/p2c         \
+-	$(BINDIR)/p2cc        \
+-	$(LIBDIR)/libp2c.a    \
+-	$(MANDIR)/p2c.1	      \
+-	$(INCDIR)/p2c.h	      \
+-	$(HOMEDIR)/p2crc      \
+-	$(HOMEDIR)/loc.p2crc  \
+-	$(HOMEDIR)/system.imp \
+-	$(HOMEDIR)/system.m2  \
+-	$(HOMEDIR)/turbo.imp  \
+-	$(HOMEDIR)/string.pas
+-
+-SHELL=/bin/sh
+-makedirs:
+-	if [ ! -d $(HOMEDIR) ]; then mkdir $(HOMEDIR); else true; fi
+-	if [ ! -d $(BINDIR) ]; then mkdir $(BINDIR); else true; fi
+-	if [ ! -d $(LIBDIR) ]; then mkdir $(LIBDIR); else true; fi
+-	if [ ! -d $(MANDIR) ]; then mkdir $(MANDIR); else true; fi
+-	if [ ! -d $(INCDIR) ]; then mkdir $(INCDIR); else true; fi
+-
+-$(BINDIR)/p2c: p2c
+-	$(COPY)  p2c          $(BINDIR)/p2c
+-
+-$(BINDIR)/p2cc: p2cc
+-	$(COPY)  p2cc         $(BINDIR)/p2cc
+-
+-$(LIBDIR)/libp2c.a: libp2c.a
+-	$(COPY)  libp2c.a     $(LIBDIR)/libp2c.a
+-	if [ -f /usr/bin/ranlib -o -f /bin/ranlib ]; then ranlib $(LIBDIR)/libp2c.a; fi
+-
+-$(MANDIR)/p2c.1: $(MANFILE)
+-	$(COPY)  $(MANFILE)   $(MANDIR)/p2c.1
+-
+-$(INCDIR)/p2c.h: p2c.h
+-	$(COPY)  p2c.h        $(INCDIR)/p2c.h
+-
+-$(HOMEDIR)/p2crc: sys.p2crc
+-	$(COPY)  sys.p2crc    $(HOMEDIR)/p2crc
+-
+-$(HOMEDIR)/loc.p2crc: loc.p2crc
+-	$(COPY)  loc.p2crc    $(HOMEDIR)/loc.p2crc
+-
+-$(HOMEDIR)/system.imp: system.imp
+-	$(COPY)  system.imp   $(HOMEDIR)/system.imp
+-
+-$(HOMEDIR)/system.m2: system.m2
+-	$(COPY)  system.m2    $(HOMEDIR)/system.m2
+-
+-$(HOMEDIR)/turbo.imp: turbo.imp
+-	$(COPY)  turbo.imp    $(HOMEDIR)/turbo.imp
+-
+-$(HOMEDIR)/string.pas: string.pas
+-	$(COPY)  string.pas   $(HOMEDIR)/string.pas
++install:
++	if [ ! -d $(DESTDIR)$(HOMEDIR) ]; then mkdir $(DESTDIR)$(HOMEDIR); else true; fi
++	if [ ! -d $(DESTDIR)$(BINDIR) ]; then mkdir $(DESTDIR)$(BINDIR); else true; fi
++	if [ ! -d $(DESTDIR)$(LIBDIR) ]; then mkdir $(DESTDIR)$(LIBDIR); else true; fi
++	if [ ! -d $(DESTDIR)$(MANDIR) ]; then mkdir $(DESTDIR)$(MANDIR); else true; fi
++	if [ ! -d $(DESTDIR)$(INCDIR) ]; then mkdir $(DESTDIR)$(INCDIR); else true; fi
++	$(COPY)  p2c          $(DESTDIR)$(BINDIR)/p2c
++	$(COPY)  libp2c.a     $(DESTDIR)$(LIBDIR)/libp2c.a
++	$(AR) -s $(DESTDIR)$(LIBDIR)/libp2c.a
++	$(COPY)  $(MANFILE)   $(DESTDIR)$(MANDIR)/p2c.1
++	$(COPY)  p2c.h        $(DESTDIR)$(INCDIR)/p2c.h
++	$(COPY)  sys.p2crc    $(DESTDIR)$(HOMEDIR)/p2crc
++	$(COPY)  loc.p2crc    $(DESTDIR)$(HOMEDIR)/loc.p2crc
++	$(COPY)  system.imp   $(DESTDIR)$(HOMEDIR)/system.imp
++	$(COPY)  system.m2    $(DESTDIR)$(HOMEDIR)/system.m2
++	$(COPY)  turbo.imp    $(DESTDIR)$(HOMEDIR)/turbo.imp
++	$(COPY)  string.pas   $(DESTDIR)$(HOMEDIR)/string.pas
+ 
+ 
+ 
+diff -ru p2c-2.02.orig/src/stuff.c p2c-2.02/src/stuff.c
+--- p2c-2.02.orig/src/stuff.c	1993-12-08 06:36:48.000000000 +0100
++++ p2c-2.02/src/stuff.c	2024-03-20 10:43:13.059760161 +0100
+@@ -316,7 +316,7 @@
+     cp = my_strrchr(fn, '.');
+     if (!cp)
+         return;
+-#if defined(unix) || defined(__unix)
++#if defined(unix) || defined(__unix) || defined(__midipix__)
+     cp2 = my_strrchr(fn, '/');
+     if (cp2 && cp < cp2)
+         return;
+diff -ru p2c-2.02.orig/src/trans.c p2c-2.02/src/trans.c
+--- p2c-2.02.orig/src/trans.c	2015-10-02 19:52:53.000000000 +0200
++++ p2c-2.02/src/trans.c	2024-03-20 10:45:31.173956389 +0100
+@@ -558,7 +558,7 @@
+ void saveoldfile(fname)
+ char *fname;
+ {
+-#if defined(unix) || defined(__unix) || defined(CAN_LINK)
++#if defined(unix) || defined(__unix) || defined(CAN_LINK) || defined(__midipix__)
+     (void) unlink(format_s("%s~", fname));
+     if (link(fname, format_s("%s~", fname)) == 0)
+         (void) unlink(fname);

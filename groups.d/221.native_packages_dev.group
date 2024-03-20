@@ -4,7 +4,7 @@
 GROUP_TARGET_APPEND="native_packages";
 NATIVE_PACKAGES_DEV_PACKAGES="
 algol68g bison cdecl chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
-patch patchutils perl posix_cc python2 python3 ruby sbsigntools tk";
+patch patchutils perl posix_cc python2 python3 p2c ruby sbsigntools tk";
 : ${PKG_ALGOL68G_SHA256SUM:=bd26e3dd89720ace1b003a43ab10247120b556ca106768fe8c829ee7bed6b435};
 : ${PKG_ALGOL68G_VERSION:=3.3.24};
 : ${PKG_ALGOL68G_URL:=https://jmvdveer.home.xs4all.nl/algol68g-${PKG_ALGOL68G_VERSION}.tar.gz}
@@ -170,6 +170,11 @@ make_cv_synchronous_posix_spawn=yes"};
 : ${PKG_PYTHON3_SOFORT_NATIVE_CFLAGS_EXTRA:="-std=c99 -D_XOPEN_SOURCE=700"};
 : ${PKG_PYTHON3_INSTALL_FILES_V2:="@python3=bin/python"};
 : ${PKG_PYTHON3_SUBDIR:=Python-${PKG_PYTHON3_VERSION}};
+: ${PKG_P2C_SHA256SUM:=8c806babe964f34ebc686fdd945b1bf14f98d88020acabe434fa8764284af282};
+: ${PKG_P2C_VERSION:=2.02};
+: ${PKG_P2C_URL:=https://mirror.midipix.org/p2c/p2c-${PKG_P2C_VERSION}.tar.xz};
+: ${PKG_P2C_ENV_VARS_EXTRA:="HOST_CC=gcc"};
+: ${PKG_P2C_BUILD_DIR:=p2c-${PKG_P2C_VERSION}};
 : ${PKG_RUBY_SHA256SUM:=ba5ba60e5f1aa21b4ef8e9bf35b9ddb57286cb546aac4b5a28c71f459467e507};
 : ${PKG_RUBY_VERSION:=2.3.0};
 : ${PKG_RUBY_URL:=https://cache.ruby-lang.org/pub/ruby/${PKG_RUBY_VERSION%.*}/ruby-${PKG_RUBY_VERSION}.tar.gz};
