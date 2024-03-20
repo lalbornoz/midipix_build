@@ -5,7 +5,7 @@ GROUP_TARGET_APPEND="native_packages";
 NATIVE_PACKAGES_ETC_PACKAGES="
 apr apr_util bdwgc bmake bochs bzip2 cherokee clzip cmake cron dante
 dosbox doomgeneric emacs enscript expat ffmpeg file gdbm geoip gettext_tiny ghostpdl
-giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer icoutils imagemagick infounzip infozip
+giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer htop icoutils imagemagick infounzip infozip
 john lbreakout2 lcms less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 php popt potrace procps_ng qemu
 qpdf qrencode rpm rw sdlquake shared_mime_info slang sqlite3 tcl tdnf texinfo
@@ -208,6 +208,11 @@ zstd";
 : ${PKG_HEXER_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib"};
 : ${PKG_HEXER_ENV_VARS_EXTRA:="CC_FOR_BUILD=gcc"};
 : ${PKG_HEXER_IN_TREE:=1};
+: ${PKG_HTOP_DEPENDS:="ncursesw"};
+: ${PKG_HTOP_SHA256SUM:=a69acf9b42ff592c4861010fce7d8006805f0d6ef0e8ee647a6ee6e59b743d5c};
+: ${PKG_HTOP_VERSION:=3.3.0};
+: ${PKG_HTOP_URL:=https://github.com/htop-dev/htop/releases/download/${PKG_HTOP_VERSION}/htop-${PKG_HTOP_VERSION}.tar.xz};
+: ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-unicode"};
 : ${PKG_ICOUTILS_DEPENDS:="libpng"};
 : ${PKG_ICOUTILS_SHA256SUM:=17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0};
 : ${PKG_ICOUTILS_VERSION:=0.32.3};

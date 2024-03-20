@@ -1,0 +1,26 @@
+diff -ru htop-3.3.0.orig/unsupported/UnsupportedProcessTable.c htop-3.3.0/unsupported/UnsupportedProcessTable.c
+--- htop-3.3.0.orig/unsupported/UnsupportedProcessTable.c       2024-01-01 02:08:46.000000000 +0100
++++ htop-3.3.0/unsupported/UnsupportedProcessTable.c    2024-03-20 14:02:08.294139220 +0100
+@@ -48,11 +48,6 @@
+    Process_updateCmdline(proc, "<unsupported architecture>", 0, 0);
+    Process_updateExe(proc, "/path/to/executable");
+
+-   const Settings* settings = proc->host->settings;
+-   if (settings->ss->flags & PROCESS_FLAG_CWD) {
+-      free_and_xStrdup(&proc->procCwd, "/current/working/directory");
+-   }
+-
+    proc->super.updated = true;
+
+    proc->state = RUNNING;
+diff -ru htop-3.3.0.orig/unsupported/UnsupportedProcess.h htop-3.3.0/unsupported/UnsupportedProcess.h
+--- htop-3.3.0.orig/unsupported/UnsupportedProcess.h	2023-05-16 18:41:42.000000000 +0200
++++ htop-3.3.0/unsupported/UnsupportedProcess.h	2024-03-20 13:53:11.556451796 +0100
+@@ -8,6 +8,7 @@
+ */
+ 
+ #include "Machine.h"
++#include "Process.h"
+ 
+ 
+ typedef struct UnsupportedProcess_ {
