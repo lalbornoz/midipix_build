@@ -303,8 +303,11 @@ Rebuild entire build groups including or excluding group dependencies, respectiv
   
 Forcibly (re)download all archive files and/or Git repositories associated with all packages:
 ```shell
-./build.sh [ ... ] -r ALL:@fetch
+./build.sh [ ... ] -r ALL:@fetch,finish
 ```
+> N.B. the "finish" (pseudo-)build step must be included here and in similar use cases so that all
+affected packages are marked as having finished building in order to correctly satisfy package-package
+dependencies.
   
 [Back to top](#table-of-contents)
 
