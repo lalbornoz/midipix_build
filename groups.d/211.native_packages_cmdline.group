@@ -4,7 +4,7 @@
 GROUP_TARGET_APPEND="native_packages";
 NATIVE_PACKAGES_CMDLINE_PACKAGES="
 bas bash bc busybox cabextract calcurse clipboard_utils coreutils cpio dash datamash dos2unix ed exif figlet
-findutils gawk gcal grep html_xml_utils jush lzop mawk mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
+findutils gawk gcal grep html_xml_utils jush lcab lzop mawk mc mksh moe moon_buggy mpg123 mp3splt nano ninvaders
 openbsd_baseutils profanity pixz pv rc sash sbase screen sed sharutils sloccount tar tcsh
 the_silver_searcher toilet tree terminally_tetris ubase which zsh";
 : ${PKG_BAS_DEPENDS:="ncurses"};
@@ -117,6 +117,10 @@ ac_cv_path__libcurl_config=${PREFIX_NATIVE}/bin/curl-config"};
 : ${PKG_JUSH_DEPENDS:="libeditline"};
 : ${PKG_JUSH_URLS_GIT:="jush-master=https://github.com/troglobit/jush.git@master"};
 : ${PKG_JUSH_SUBDIR:="jush-master"};
+: ${PKG_LCAB_SHA256SUM:=065f2c1793b65f28471c0f71b7cf120a7064f28d1c44b07cabf49ec0e97f1fc8};
+: ${PKG_LCAB_VERSION:=1.0b12};
+: ${PKG_LCAB_URL:=http://deb.debian.org/debian/pool/main/l/lcab/lcab_${PKG_LCAB_VERSION}.orig.tar.gz};
+: ${PKG_LCAB_SUBDIR:=lcab-${PKG_LCAB_VERSION}};
 : ${PKG_LZOP_DEPENDS:="lzo"};
 : ${PKG_LZOP_SHA256SUM:=7e72b62a8a60aff5200a047eea0773a8fb205caf7acbe1774d95147f305a2f41};
 : ${PKG_LZOP_VERSION:=1.04};
