@@ -43,6 +43,10 @@ pkg_fetch_extract() {
 		fi;
 	fi;
 
+	if [ -x "${PKG_BASE_DIR}/${PKG_SUBDIR}/srcprep.sh" ]; then
+		"${PKG_BASE_DIR}/${PKG_SUBDIR}/srcprep.sh";
+	fi;
+
 	return 0;
 };
 
