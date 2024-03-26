@@ -12,6 +12,10 @@ pkg_configure_patch() {
 		_pcp_restart_at="${3}" _pcp_type="${4:-patches}"	\
 		_pcp_patch_cwd="" _pcp_strip_count=0;
 
+	if [ -x "${PKG_BASE_DIR}/${PKG_SUBDIR}/srcprep.sh" ]; then
+		return 0;
+	fi;
+
 	if [ "${PKG_FNAME:+1}" = 1 ]\
 	&& [ "${PKG_URLS_GIT:+1}" = 1 ];
 	then
