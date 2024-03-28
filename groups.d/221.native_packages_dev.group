@@ -3,7 +3,7 @@
 #
 GROUP_TARGET_APPEND="native_packages";
 NATIVE_PACKAGES_DEV_PACKAGES="
-algol68g autoconf bison cdecl chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
+algol68g autoconf automake bison cdecl chicken cparser cssc diffutils flex gdb gengetopt gnucobol indent lua lunix m4 make mandoc nasm
 patch patchutils perl posix_cc python2 python3 p2c ruby sbsigntools tk";
 : ${PKG_ALGOL68G_SHA256SUM:=bd26e3dd89720ace1b003a43ab10247120b556ca106768fe8c829ee7bed6b435};
 : ${PKG_ALGOL68G_VERSION:=3.3.24};
@@ -13,6 +13,9 @@ patch patchutils perl posix_cc python2 python3 p2c ruby sbsigntools tk";
 : ${PKG_AUTOCONF_SHA256SUM:=f14c83cfebcc9427f2c3cea7258bd90df972d92eb26752da4ddad81c87a0faa4};
 : ${PKG_AUTOCONF_VERSION:=2.71};
 : ${PKG_AUTOCONF_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_VERSION}.tar.xz};
+: ${PKG_AUTOMAKE_SHA256SUM:=f01d58cd6d9d77fbdca9eb4bbd5ead1988228fdb73d6f7a201f5f8d6b118b469};
+: ${PKG_AUTOMAKE_VERSION:=1.16.5};
+: ${PKG_AUTOMAKE_URL:=https://ftp.gnu.org/gnu/automake/automake-${PKG_AUTOMAKE_VERSION}.tar.xz};
 : ${PKG_BISON_DEPENDS:="readline libiconv"};
 : ${PKG_BISON_SHA256SUM:=9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2};
 : ${PKG_BISON_VERSION:=3.8.2};
