@@ -88,14 +88,14 @@ ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_GPGME_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
 : ${PKG_GPGME_CONFIG_CACHE_EXTRA:="
 ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
-: ${PKG_GNUTLS_DEPENDS:="libunistring libtasn1 nettle"};
-: ${PKG_GNUTLS_SHA256SUM:=f74fc5954b27d4ec6dfbb11dea987888b5b124289a3703afcada0ee520f4173e};
-: ${PKG_GNUTLS_VERSION:=3.8.3};
+: ${PKG_GNUTLS_DEPENDS:="libunistring libtasn1 nettle zstd"};
+: ${PKG_GNUTLS_SHA256SUM:=2bea4e154794f3f00180fa2a5c51fe8b005ac7a31cd58bd44cdfa7f36ebc3a9b};
+: ${PKG_GNUTLS_VERSION:=3.8.4};
 : ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
 : ${PKG_GNUTLS_CONFIG_CACHE_EXTRA:="
 gl_cv_func_working_getdelim=yes
 gl_cv_ld_output_def=no"};
-: ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="PYTHON=python3 --disable-static --disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --without-p11-kit --disable-hardware-acceleration --enable-guile=no --with-default-trust-store-dir=/etc/ssl/certs --without-zstd"};
+: ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="PYTHON=python3 --disable-static --disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --without-p11-kit --disable-hardware-acceleration --enable-guile=no --with-default-trust-store-dir=/etc/ssl/certs"};
 : ${PKG_GNUTLS_LIBTOOL:=rlibtool};
 : ${PKG_HTTPD_SHA256SUM:=0127f7dc497e9983e9c51474bed75e45607f2f870a7675a86dc90af6d572f5c9};
 : ${PKG_HTTPD_VERSION:=2.4.52};
