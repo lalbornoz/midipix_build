@@ -264,8 +264,8 @@ HOST_DEPS_TOOLS_RPM_DISABLE=1;
 : ${PKG_UTIL_LINUX_HOST_VERSION:=2.36.1};
 : ${PKG_UTIL_LINUX_HOST_URL:=https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${PKG_UTIL_LINUX_HOST_VERSION%.*}/util-linux-${PKG_UTIL_LINUX_HOST_VERSION}.tar.gz};
 : ${PKG_UTIL_LINUX_HOST_CONFIGURE_ARGS_EXTRA:="--disable-all-programs --enable-libuuid"};
-: ${PKG_XZ_HOST_SHA256SUM:=b92d4e3a438affcf13362a1305cd9d94ed47ddda22e456a42791e630a5644f5c};
-: ${PKG_XZ_HOST_VERSION:=5.4.6};
-: ${PKG_XZ_HOST_URL:=https://github.com/tukaani-project/xz/releases/download/v${PKG_XZ_HOST_VERSION}/xz-${PKG_XZ_HOST_VERSION}.tar.xz};
+: ${PKG_XZ_HOST_SHA256SUM:=3e1e518ffc912f86608a8cb35e4bd41ad1aec210df2a47aaa1f95e7f5576ef56};
+: ${PKG_XZ_HOST_VERSION:=5.2.5};
+: ${PKG_XZ_HOST_URL:=https://mirror.midipix.org/xz/xz-${PKG_XZ_HOST_VERSION}.tar.xz};
 
 # vim:filetype=sh textwidth=0
