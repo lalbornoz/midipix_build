@@ -1,0 +1,11 @@
+diff -ru zstd-1.5.5.orig/lib/libzstd.pc.in zstd-1.5.5/lib/libzstd.pc.in
+--- zstd-1.5.5.orig/lib/libzstd.pc.in	2023-04-04 22:13:52.000000000 +0200
++++ zstd-1.5.5/lib/libzstd.pc.in	2024-03-30 16:49:30.898203602 +0100
+@@ -11,6 +11,6 @@
+ Description: fast lossless compression algorithm library
+ URL: https://facebook.github.io/zstd/
+ Version: @VERSION@
+-Libs: -L${libdir} -lzstd
++Libs: -lzstd
+ Libs.private: @LIBS_PRIVATE@
+ Cflags: -I${includedir}
