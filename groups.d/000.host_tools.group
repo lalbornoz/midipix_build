@@ -5,16 +5,36 @@ HOST_TOOLS_BUILD_TYPE="host";
 HOST_TOOLS_CONFIGURE_ARGS="--disable-nls --prefix=${PREFIX}";
 HOST_TOOLS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_TOOLS_PACKAGES="
-autoconf_host autoconf_2_64_host automake_host automake_1_11_6_host
+autoconf_host autoconf_2_69_host autoconf_2_64_host automake_host automake_1_11_6_host
 gettext_tiny_host install_strip_host libtool_host m4_host pkgconf_host
 slibtool_host tpax_host";
 HOST_TOOLS_PREFIX="${PREFIX}";
 HOST_TOOLS_RPM_DISABLE=1;
 
 : ${PKG_AUTOCONF_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
-: ${PKG_AUTOCONF_HOST_SHA256SUM:=64ebcec9f8ac5b2487125a86a7760d2591ac9e1d3dbd59489633f9de62a57684};
-: ${PKG_AUTOCONF_HOST_VERSION:=2.69};
+: ${PKG_AUTOCONF_HOST_SHA256SUM:=f14c83cfebcc9427f2c3cea7258bd90df972d92eb26752da4ddad81c87a0faa4};
+: ${PKG_AUTOCONF_HOST_VERSION:=2.71};
 : ${PKG_AUTOCONF_HOST_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_HOST_VERSION}.tar.xz};
+: ${PKG_AUTOCONF_2_69_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOCONF_2_69_HOST_SHA256SUM:=64ebcec9f8ac5b2487125a86a7760d2591ac9e1d3dbd59489633f9de62a57684};
+: ${PKG_AUTOCONF_2_69_HOST_VERSION:=2.69};
+: ${PKG_AUTOCONF_2_69_HOST_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_2_69_HOST_VERSION}.tar.xz};
+: ${PKG_AUTOCONF_2_69_HOST_INSTALL_FILES_V2:="
+	/=libexec/autoconf-2.69
+	!bin/%<*>=libexec/autoconf-2.69/%[FNAME]
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoconf-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoheader-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autom4te-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoreconf-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoscan-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoupdate-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/ifnames-2.69
+	!share/autoconf-2.69/autom4te.cfg=share/autoconf/autom4te.cfg
+	-=share/autoconf-2.69/
+	!share/autoconf=share/autoconf-2.69/
+	-=share/info/dir
+	!share/info/%<*.info>=share/info/%[FNAME%.info]-2.69.info
+	!share/man/man1/%<*.1>=share/man/man1/%[FNAME%.1]-2.69.1"}
 : ${PKG_AUTOCONF_2_64_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
 : ${PKG_AUTOCONF_2_64_HOST_SHA256SUM:=32d977213320b8ae76c71175305301197f2b0e04e72d70694bc3d3e2ae6c7248};
 : ${PKG_AUTOCONF_2_64_HOST_VERSION:=2.64};

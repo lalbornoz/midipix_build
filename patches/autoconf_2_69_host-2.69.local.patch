@@ -1,0 +1,84 @@
+--- autoconf-2.64/bin/Makefile.in.orig	2009-07-27 04:28:43.000000000 +0100
++++ autoconf-2.64/bin/Makefile.in	2021-05-06 23:48:43.296357404 +0100
+@@ -53,10 +53,10 @@
+ # 02110-1301, USA.
+ 
+ VPATH = @srcdir@
+-pkgdatadir = $(datadir)/@PACKAGE@
+-pkgincludedir = $(includedir)/@PACKAGE@
+-pkglibdir = $(libdir)/@PACKAGE@
+-pkglibexecdir = $(libexecdir)/@PACKAGE@
++pkgdatadir = $(datadir)/@PACKAGE@-2.69
++pkgincludedir = $(includedir)/@PACKAGE@-2.69
++pkglibdir = $(libdir)/@PACKAGE@-2.69
++pkglibexecdir = $(libexecdir)/@PACKAGE@-2.69
+ am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
+ install_sh_DATA = $(install_sh) -c -m 644
+ install_sh_PROGRAM = $(install_sh) -c
+@@ -283,9 +283,9 @@
+ 	-e 's|@bindir[@]|$(bindir)|g' \
+ 	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+ 	-e 's|@prefix[@]|$(prefix)|g' \
+-	-e 's|@autoconf-name[@]|'`echo autoconf | sed '$(transform)'`'|g' \
+-	-e 's|@autoheader-name[@]|'`echo autoheader | sed '$(transform)'`'|g' \
+-	-e 's|@autom4te-name[@]|'`echo autom4te | sed '$(transform)'`'|g' \
++	-e 's|@autoconf-name[@]|'`echo autoconf-2.69 | sed '$(transform)'`'|g' \
++	-e 's|@autoheader-name[@]|'`echo autoheader-2.69 | sed '$(transform)'`'|g' \
++	-e 's|@autom4te-name[@]|'`echo autom4te-2.69 | sed '$(transform)'`'|g' \
+ 	-e 's|@M4[@]|$(M4)|g' \
+ 	-e 's|@M4_DEBUGFILE[@]|$(M4_DEBUGFILE)|g' \
+ 	-e 's|@M4_GNU[@]|$(M4_GNU)|g' \
+--- autoconf-2.64/lib/Makefile.in.orig	2009-07-27 04:28:44.000000000 +0100
++++ autoconf-2.64/lib/Makefile.in	2021-05-07 00:21:50.717431704 +0100
+@@ -34,10 +34,10 @@
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ VPATH = @srcdir@
+-pkgdatadir = $(datadir)/@PACKAGE@
+-pkgincludedir = $(includedir)/@PACKAGE@
+-pkglibdir = $(libdir)/@PACKAGE@
+-pkglibexecdir = $(libexecdir)/@PACKAGE@
++pkgdatadir = $(datadir)/@PACKAGE@-2.69
++pkgincludedir = $(includedir)/@PACKAGE@-2.69
++pkglibdir = $(libdir)/@PACKAGE@-2.69
++pkglibexecdir = $(libexecdir)/@PACKAGE@-2.69
+ am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
+ install_sh_DATA = $(install_sh) -c -m 644
+ install_sh_PROGRAM = $(install_sh) -c
+@@ -223,9 +223,9 @@
+ 	-e 's|@bindir[@]|$(bindir)|g' \
+ 	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+ 	-e 's|@prefix[@]|$(prefix)|g' \
+-	-e 's|@autoconf-name[@]|'`echo autoconf | sed '$(transform)'`'|g' \
+-	-e 's|@autoheader-name[@]|'`echo autoheader | sed '$(transform)'`'|g' \
+-	-e 's|@autom4te-name[@]|'`echo autom4te | sed '$(transform)'`'|g' \
++	-e 's|@autoconf-name[@]|'`echo autoconf-2.69 | sed '$(transform)'`'|g' \
++	-e 's|@autoheader-name[@]|'`echo autoheader-2.69 | sed '$(transform)'`'|g' \
++	-e 's|@autom4te-name[@]|'`echo autom4te-2.69 | sed '$(transform)'`'|g' \
+ 	-e 's|@M4[@]|$(M4)|g' \
+ 	-e 's|@AWK[@]|$(AWK)|g' \
+ 	-e 's|@VERSION[@]|$(VERSION)|g' \
+--- autoconf-2.69/man/Makefile.am	2022-12-27 15:22:52.186142107 +0800
++++ autoconf-2.69/man/Makefile.am.orig	2012-01-21 21:46:39.000000000 +0800
+@@ -58,7 +58,8 @@
+ 	    --include=$*.x \
+ 	    --include=$(srcdir)/common.x \
+ 	    --source='$(PACKAGE_STRING)' \
+-	    --output=$@.t `echo '$*' | sed 's,.*/,,'`
++	    --output=$@.t \
++	    --no-discard-stderr `echo '$*' | sed 's,.*/,,'`
+ 	if sed $(remove_time_stamp) $@ >$@a.t 2>/dev/null && \
+ 	   sed $(remove_time_stamp) $@.t | cmp $@a.t - >/dev/null 2>&1; then \
+ 		touch $@; \
+--- autoconf-2.69/man/Makefile.in	2022-12-27 15:23:19.743692892 +0800
++++ autoconf-2.69/man/Makefile.in.orig	2012-04-25 10:40:26.000000000 +0800
+@@ -464,7 +464,8 @@
+ 	    --include=$*.x \
+ 	    --include=$(srcdir)/common.x \
+ 	    --source='$(PACKAGE_STRING)' \
+-	    --output=$@.t `echo '$*' | sed 's,.*/,,'`
++	    --output=$@.t \
++	    --no-discard-stderr `echo '$*' | sed 's,.*/,,'`
+ 	if sed $(remove_time_stamp) $@ >$@a.t 2>/dev/null && \
+ 	   sed $(remove_time_stamp) $@.t | cmp $@a.t - >/dev/null 2>&1; then \
+ 		touch $@; \
