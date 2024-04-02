@@ -28,10 +28,14 @@ zstd";
 : ${PKG_BDWGC_DEPENDS:="libatomic_ops"};
 : ${PKG_BDWGC_URLS_GIT:="bdwgc=https://github.com/ivmai/bdwgc@master"};
 : ${PKG_BDWGC_CONFIGURE_ARGS_EXTRA:="--enable-threads=posix --enable-parallel-mark --enable-handle-fork"};
-: ${PKG_BMAKE_URLS_GIT:="bmake=https://github.com/arichardson/bmake@master"};
-: ${PKG_BMAKE_CONFIGURE_ARGS="-C --host=${DEFAULT_TARGET} --prefix=/usr --target=${DEFAULT_TARGET}"};
-: ${PKG_BMAKE_ENV_VARS_EXTRA:="BMAKE=${PREFIX}/bin/bmake"};
-: ${PKG_BMAKE_MAKEFLAGS_LOADAVG:="none"};
+
+: ${PKG_BMAKE_VERSION:=20240401};
+: ${PKG_BMAKE_URL:=https://srcbase.foss21.org/bmake/srcbase.bmake-${PKG_BMAKE_HOST_VERSION}.tar.xz};
+: ${PKG_BMAKE_SHA256SUM:=38c81760e9021f5b8e00025a159e4819203cadb0d55d0597842ac0dc38709561};
+: ${PKG_BMAKE_SUBDIR:=bmake-20240401};
+: ${PKG_BMAKE_CONFIGURE_TYPE:="sofort"};
+: ${PKG_BMAKE_CONFIGURE_ARGS:=--prefix=};
+
 : ${PKG_BOCHS_DEPENDS:="curl ncurses sdl1"};
 : ${PKG_BOCHS_SHA256SUM:=a010ab1bfdc72ac5a08d2e2412cd471c0febd66af1d9349bc0d796879de5b17a};
 : ${PKG_BOCHS_VERSION:=2.7};
