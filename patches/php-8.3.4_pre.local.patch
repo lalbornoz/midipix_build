@@ -1,0 +1,1146 @@
+diff -ru php-8.3.4.orig/build/Makefile.global php-8.3.4/build/Makefile.global
+--- php-8.3.4.orig/build/Makefile.global	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/build/Makefile.global	2024-04-05 18:32:27.722533671 +0200
+@@ -11,9 +11,9 @@
+ 	@echo "Don't forget to run 'make test'."
+ 	@echo
+ 
+-build-modules: $(PHP_MODULES) $(PHP_ZEND_EX)
++build-modules: $(PHP_MODULES) $(PHP_ZEND_EX) libphp.la
+ 
+-build-binaries: $(PHP_BINARIES)
++build-binaries: $(PHP_BINARIES) libphp.la
+ 
+ libphp.la: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
+ 	$(LIBTOOL) --tag=CC --mode=link $(CC) $(LIBPHP_CFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -rpath $(phptempdir) $(EXTRA_LDFLAGS) $(LDFLAGS) $(PHP_RPATHS) $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@
+@@ -26,7 +26,7 @@
+ 
+ install-sapi: $(OVERALL_TARGET)
+ 	@echo "Installing PHP SAPI module:       $(PHP_SAPI)"
+-	-@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
++	-@$(mkinstalldirs) $(DESTDIR)$(bindir)
+ 	-@if test ! -r $(phptempdir)/libphp.$(SHLIB_DL_SUFFIX_NAME); then \
+ 		for i in 0.0.0 0.0 0; do \
+ 			if test -r $(phptempdir)/libphp.$(SHLIB_DL_SUFFIX_NAME).$$i; then \
+@@ -41,19 +41,19 @@
+ 
+ install-modules: build-modules
+ 	@test -d modules && \
+-	$(mkinstalldirs) $(INSTALL_ROOT)$(EXTENSION_DIR)
+-	@echo "Installing shared extensions:     $(INSTALL_ROOT)$(EXTENSION_DIR)/"
++	$(mkinstalldirs) $(DESTDIR)$(EXTENSION_DIR)
++	@echo "Installing shared extensions:     $(DESTDIR)$(EXTENSION_DIR)/"
+ 	@rm -f modules/*.la >/dev/null 2>&1
+-	@$(INSTALL) modules/* $(INSTALL_ROOT)$(EXTENSION_DIR)
++	@$(INSTALL) modules/* $(DESTDIR)$(EXTENSION_DIR)
+ 
+ install-headers:
+ 	-@if test "$(INSTALL_HEADERS)"; then \
+ 		for i in `echo $(INSTALL_HEADERS)`; do \
+ 			i=`$(top_srcdir)/build/shtool path -d $$i`; \
+-			paths="$$paths $(INSTALL_ROOT)$(phpincludedir)/$$i"; \
++			paths="$$paths $(DESTDIR)$(phpincludedir)/$$i"; \
+ 		done; \
+ 		$(mkinstalldirs) $$paths && \
+-		echo "Installing header files:          $(INSTALL_ROOT)$(phpincludedir)/" && \
++		echo "Installing header files:          $(DESTDIR)$(phpincludedir)/" && \
+ 		for i in `echo $(INSTALL_HEADERS)`; do \
+ 			if test "$(PHP_PECL_EXTENSION)"; then \
+ 				src=`echo $$i | $(SED) -e "s#ext/$(PHP_PECL_EXTENSION)/##g"`; \
+@@ -61,12 +61,12 @@
+ 				src=$$i; \
+ 			fi; \
+ 			if test -f "$(top_srcdir)/$$src"; then \
+-				$(INSTALL_DATA) $(top_srcdir)/$$src $(INSTALL_ROOT)$(phpincludedir)/$$i; \
++				$(INSTALL_DATA) $(top_srcdir)/$$src $(DESTDIR)$(phpincludedir)/$$i; \
+ 			elif test -f "$(top_builddir)/$$src"; then \
+-				$(INSTALL_DATA) $(top_builddir)/$$src $(INSTALL_ROOT)$(phpincludedir)/$$i; \
++				$(INSTALL_DATA) $(top_builddir)/$$src $(DESTDIR)$(phpincludedir)/$$i; \
+ 			else \
+-				(cd $(top_srcdir)/$$src && $(INSTALL_DATA) *.h $(INSTALL_ROOT)$(phpincludedir)/$$i; \
+-				cd $(top_builddir)/$$src && $(INSTALL_DATA) *.h $(INSTALL_ROOT)$(phpincludedir)/$$i) 2>/dev/null || true; \
++				(cd $(top_srcdir)/$$src && $(INSTALL_DATA) *.h $(DESTDIR)$(phpincludedir)/$$i; \
++				cd $(top_builddir)/$$src && $(INSTALL_DATA) *.h $(DESTDIR)$(phpincludedir)/$$i) 2>/dev/null || true; \
+ 			fi \
+ 		done; \
+ 	fi
+diff -ru php-8.3.4.orig/configure php-8.3.4/configure
+--- php-8.3.4.orig/configure	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/configure	2024-04-05 18:54:20.076691855 +0200
+@@ -6487,13 +6487,13 @@
+     as_fn_error $? "Please note that Apache version >= 2.0.44 is required" "$LINENO" 5
+   fi
+ 
+-  APXS_LIBEXECDIR='$(INSTALL_ROOT)'`$APXS -q LIBEXECDIR`
++  APXS_LIBEXECDIR='$(DESTDIR)'`$APXS -q LIBEXECDIR`
+   if test -z `$APXS -q SYSCONFDIR`; then
+     INSTALL_IT="\$(mkinstalldirs) '$APXS_LIBEXECDIR' && \
+                  $APXS -S LIBEXECDIR='$APXS_LIBEXECDIR' \
+                        -i -n php"
+   else
+-    APXS_SYSCONFDIR='$(INSTALL_ROOT)'`$APXS -q SYSCONFDIR`
++    APXS_SYSCONFDIR='$(DESTDIR)'`$APXS -q SYSCONFDIR`
+     INSTALL_IT="\$(mkinstalldirs) '$APXS_LIBEXECDIR' && \
+                 \$(mkinstalldirs) '$APXS_SYSCONFDIR' && \
+                  $APXS -S LIBEXECDIR='$APXS_LIBEXECDIR' \
+@@ -6622,7 +6622,7 @@
+   php_sapi_module=static
+ ;;
+     esac
+-    install_sapi="install-sapi"
++    install_sapi=""
+ 
+ 
+   case sapi/apache2handler in
+@@ -7253,6 +7253,9 @@
+   *darwin*)
+     BUILD_CLI="\$(CC) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(NATIVE_RPATHS) \$(PHP_GLOBAL_OBJS:.lo=.o) \$(PHP_BINARY_OBJS:.lo=.o) \$(PHP_CLI_OBJS:.lo=.o) \$(PHP_FRAMEWORKS) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CLI_PATH)"
+     ;;
++  *midipix*)
++    BUILD_CLI="\$(LIBTOOL) --mode=link \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \$(PHP_CLI_OBJS:.lo=.o) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CLI_PATH) \$(top_builddir)/libs/libphp.so"
++    ;;
+   *)
+     BUILD_CLI="\$(LIBTOOL) --tag=CC --mode=link \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \$(PHP_GLOBAL_OBJS:.lo=.o) \$(PHP_BINARY_OBJS:.lo=.o) \$(PHP_CLI_OBJS:.lo=.o) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CLI_PATH)"
+     ;;
+@@ -7328,12 +7331,12 @@
+     yes|shared)
+       LIBPHP_CFLAGS="-shared"
+       PHP_EMBED_TYPE=shared
+-      INSTALL_IT="\$(mkinstalldirs) \$(INSTALL_ROOT)\$(prefix)/lib; \$(INSTALL) -m 0755 $SAPI_SHARED \$(INSTALL_ROOT)\$(prefix)/lib"
++      INSTALL_IT="\$(mkinstalldirs) \$(DESTDIR)\$(prefix)/lib; \$(INSTALL) -m 0755 $SAPI_SHARED \$(DESTDIR)\$(prefix)/lib"
+       ;;
+     static)
+       LIBPHP_CFLAGS="-static"
+       PHP_EMBED_TYPE=static
+-      INSTALL_IT="\$(mkinstalldirs) \$(INSTALL_ROOT)\$(prefix)/lib; \$(INSTALL) -m 0644 $SAPI_STATIC \$(INSTALL_ROOT)\$(prefix)/lib"
++      INSTALL_IT="\$(mkinstalldirs) \$(DESTDIR)\$(prefix)/lib; \$(INSTALL) -m 0644 $SAPI_STATIC \$(DESTDIR)\$(prefix)/lib"
+       ;;
+     *)
+       PHP_EMBED_TYPE=no
+@@ -7456,7 +7459,7 @@
+   php_sapi_module=static
+ ;;
+     esac
+-    install_sapi="install-sapi"
++    install_sapi=""
+ 
+ 
+   case sapi/embed in
+@@ -11213,14 +11216,12 @@
+ 
+   BUILD_PHPDBG="\$(LIBTOOL) --tag=CC --mode=link \
+         \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \
+-                \$(PHP_GLOBAL_OBJS:.lo=.o) \
+-                \$(PHP_BINARY_OBJS:.lo=.o) \
+                 \$(PHP_PHPDBG_OBJS:.lo=.o) \
+                 \$(EXTRA_LIBS) \
+                 \$(PHPDBG_EXTRA_LIBS) \
+                 \$(ZEND_EXTRA_LIBS) \
+                 \$(PHP_FRAMEWORKS) \
+-         -o \$(BUILD_BINARY)"
++         -o \$(BUILD_BINARY) \$(top_builddir)/libs/libphp.so"
+ 
+   BUILD_PHPDBG_SHARED="\$(LIBTOOL) --tag=CC --mode=link \
+         \$(CC) -shared -Wl,-soname,libphpdbg.so -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \
+@@ -11444,6 +11445,9 @@
+       *darwin*)
+         BUILD_CGI="\$(CC) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(NATIVE_RPATHS) \$(PHP_GLOBAL_OBJS:.lo=.o) \$(PHP_BINARY_OBJS:.lo=.o) \$(PHP_FASTCGI_OBJS:.lo=.o) \$(PHP_CGI_OBJS:.lo=.o) \$(PHP_FRAMEWORKS) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CGI_PATH)"
+       ;;
++      *midipix*)
++        BUILD_CGI="\$(LIBTOOL) --mode=link \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \$(PHP_FASTCGI_OBJS:.lo=.o) \$(PHP_CGI_OBJS:.lo=.o) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CGI_PATH) \$(top_builddir)/libs/libphp.so"
++      ;;
+       *)
+         BUILD_CGI="\$(LIBTOOL) --tag=CC --mode=link \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \$(PHP_GLOBAL_OBJS:.lo=.o) \$(PHP_BINARY_OBJS:.lo=.o) \$(PHP_FASTCGI_OBJS:.lo=.o) \$(PHP_CGI_OBJS:.lo=.o) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CGI_PATH)"
+       ;;
+@@ -11728,10 +11732,6 @@
+   fi
+ 
+ 
+-if test -d /usr/pkg/include -a -d /usr/pkg/lib ; then
+-   CPPFLAGS="$CPPFLAGS -I/usr/pkg/include"
+-   LDFLAGS="$LDFLAGS -L/usr/pkg/lib"
+-fi
+ test -d /usr/ucblib &&
+   if test "/usr/ucblib" != "/usr/$PHP_LIBDIR" && test "/usr/ucblib" != "/usr/lib"; then
+ 
+@@ -19311,7 +19311,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/date.$suffix \$(phplibdir)
+ 
+ $ext_builddir/date.$suffix: \$(shared_objects_date) \$(DATE_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_date) \$(DATE_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_date) \$(DATE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -19973,7 +19973,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/libxml.$suffix \$(phplibdir)
+ 
+ $ext_builddir/libxml.$suffix: \$(shared_objects_libxml) \$(LIBXML_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_libxml) \$(LIBXML_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_libxml) \$(LIBXML_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -20349,7 +20349,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/openssl.$suffix \$(phplibdir)
+ 
+ $ext_builddir/openssl.$suffix: \$(shared_objects_openssl) \$(OPENSSL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_openssl) \$(OPENSSL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_openssl) \$(OPENSSL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -21431,7 +21431,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pcre.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pcre.$suffix: \$(shared_objects_pcre) \$(PCRE_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pcre) \$(PCRE_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pcre) \$(PCRE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -21775,7 +21775,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pcre.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pcre.$suffix: \$(shared_objects_pcre) \$(PCRE_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pcre) \$(PCRE_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pcre) \$(PCRE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -22833,7 +22833,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/sqlite3.$suffix \$(phplibdir)
+ 
+ $ext_builddir/sqlite3.$suffix: \$(shared_objects_sqlite3) \$(SQLITE3_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sqlite3) \$(SQLITE3_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sqlite3) \$(SQLITE3_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -23380,7 +23380,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/zlib.$suffix \$(phplibdir)
+ 
+ $ext_builddir/zlib.$suffix: \$(shared_objects_zlib) \$(ZLIB_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_zlib) \$(ZLIB_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_zlib) \$(ZLIB_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -23698,7 +23698,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/bcmath.$suffix \$(phplibdir)
+ 
+ $ext_builddir/bcmath.$suffix: \$(shared_objects_bcmath) \$(BCMATH_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_bcmath) \$(BCMATH_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_bcmath) \$(BCMATH_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -24336,7 +24336,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/bz2.$suffix \$(phplibdir)
+ 
+ $ext_builddir/bz2.$suffix: \$(shared_objects_bz2) \$(BZ2_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_bz2) \$(BZ2_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_bz2) \$(BZ2_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -24649,7 +24649,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/calendar.$suffix \$(phplibdir)
+ 
+ $ext_builddir/calendar.$suffix: \$(shared_objects_calendar) \$(CALENDAR_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_calendar) \$(CALENDAR_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_calendar) \$(CALENDAR_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -24959,7 +24959,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/ctype.$suffix \$(phplibdir)
+ 
+ $ext_builddir/ctype.$suffix: \$(shared_objects_ctype) \$(CTYPE_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ctype) \$(CTYPE_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ctype) \$(CTYPE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -26012,7 +26012,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/curl.$suffix \$(phplibdir)
+ 
+ $ext_builddir/curl.$suffix: \$(shared_objects_curl) \$(CURL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_curl) \$(CURL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_curl) \$(CURL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -30370,7 +30370,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/dba.$suffix \$(phplibdir)
+ 
+ $ext_builddir/dba.$suffix: \$(shared_objects_dba) \$(DBA_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_dba) \$(DBA_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_dba) \$(DBA_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -30698,7 +30698,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/dl_test.$suffix \$(phplibdir)
+ 
+ $ext_builddir/dl_test.$suffix: \$(shared_objects_dl_test) \$(DL_TEST_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_dl_test) \$(DL_TEST_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_dl_test) \$(DL_TEST_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -31269,7 +31269,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/dom.$suffix \$(phplibdir)
+ 
+ $ext_builddir/dom.$suffix: \$(shared_objects_dom) \$(DOM_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_dom) \$(DOM_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_dom) \$(DOM_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -32421,7 +32421,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/enchant.$suffix \$(phplibdir)
+ 
+ $ext_builddir/enchant.$suffix: \$(shared_objects_enchant) \$(ENCHANT_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_enchant) \$(ENCHANT_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_enchant) \$(ENCHANT_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -32734,7 +32734,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/exif.$suffix \$(phplibdir)
+ 
+ $ext_builddir/exif.$suffix: \$(shared_objects_exif) \$(EXIF_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_exif) \$(EXIF_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_exif) \$(EXIF_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -33534,7 +33534,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/ffi.$suffix \$(phplibdir)
+ 
+ $ext_builddir/ffi.$suffix: \$(shared_objects_ffi) \$(FFI_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ffi) \$(FFI_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ffi) \$(FFI_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -33907,7 +33907,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/fileinfo.$suffix \$(phplibdir)
+ 
+ $ext_builddir/fileinfo.$suffix: \$(shared_objects_fileinfo) \$(FILEINFO_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_fileinfo) \$(FILEINFO_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_fileinfo) \$(FILEINFO_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -lpcre2-8
+ 
+ EOF
+ 
+@@ -34239,7 +34239,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/filter.$suffix \$(phplibdir)
+ 
+ $ext_builddir/filter.$suffix: \$(shared_objects_filter) \$(FILTER_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_filter) \$(FILTER_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_filter) \$(FILTER_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -lpcre2-8
+ 
+ EOF
+ 
+@@ -34614,7 +34614,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/ftp.$suffix \$(phplibdir)
+ 
+ $ext_builddir/ftp.$suffix: \$(shared_objects_ftp) \$(FTP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ftp) \$(FTP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ftp) \$(FTP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -37083,7 +37083,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/gd.$suffix \$(phplibdir)
+ 
+ $ext_builddir/gd.$suffix: \$(shared_objects_gd) \$(GD_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gd) \$(GD_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gd) \$(GD_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -38539,7 +38539,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/gd.$suffix \$(phplibdir)
+ 
+ $ext_builddir/gd.$suffix: \$(shared_objects_gd) \$(GD_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gd) \$(GD_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gd) \$(GD_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -39149,7 +39149,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/gettext.$suffix \$(phplibdir)
+ 
+ $ext_builddir/gettext.$suffix: \$(shared_objects_gettext) \$(GETTEXT_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gettext) \$(GETTEXT_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gettext) \$(GETTEXT_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -40268,7 +40268,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/gmp.$suffix \$(phplibdir)
+ 
+ $ext_builddir/gmp.$suffix: \$(shared_objects_gmp) \$(GMP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gmp) \$(GMP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_gmp) \$(GMP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -40672,7 +40672,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/hash.$suffix \$(phplibdir)
+ 
+ $ext_builddir/hash.$suffix: \$(shared_objects_hash) \$(HASH_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_hash) \$(HASH_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_hash) \$(HASH_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -41805,7 +41805,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/iconv.$suffix \$(phplibdir)
+ 
+ $ext_builddir/iconv.$suffix: \$(shared_objects_iconv) \$(ICONV_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_iconv) \$(ICONV_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_iconv) \$(ICONV_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -liconv
+ 
+ EOF
+ 
+@@ -42198,7 +42198,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/imap.$suffix \$(phplibdir)
+ 
+ $ext_builddir/imap.$suffix: \$(shared_objects_imap) \$(IMAP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_imap) \$(IMAP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_imap) \$(IMAP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -45653,7 +45653,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/json.$suffix \$(phplibdir)
+ 
+ $ext_builddir/json.$suffix: \$(shared_objects_json) \$(JSON_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_json) \$(JSON_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_json) \$(JSON_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -46019,7 +46019,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/ldap.$suffix \$(phplibdir)
+ 
+ $ext_builddir/ldap.$suffix: \$(shared_objects_ldap) \$(LDAP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ldap) \$(LDAP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_ldap) \$(LDAP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -47933,7 +47933,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/mbstring.$suffix \$(phplibdir)
+ 
+ $ext_builddir/mbstring.$suffix: \$(shared_objects_mbstring) \$(MBSTRING_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_mbstring) \$(MBSTRING_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_mbstring) \$(MBSTRING_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -lpcre2-8
+ 
+ EOF
+ 
+@@ -48436,7 +48436,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/mysqli.$suffix \$(phplibdir)
+ 
+ $ext_builddir/mysqli.$suffix: \$(shared_objects_mysqli) \$(MYSQLI_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_mysqli) \$(MYSQLI_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_mysqli) \$(MYSQLI_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -49531,7 +49531,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/oci8.$suffix \$(phplibdir)
+ 
+ $ext_builddir/oci8.$suffix: \$(shared_objects_oci8) \$(OCI8_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_oci8) \$(OCI8_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_oci8) \$(OCI8_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -50147,7 +50147,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/oci8.$suffix \$(phplibdir)
+ 
+ $ext_builddir/oci8.$suffix: \$(shared_objects_oci8) \$(OCI8_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_oci8) \$(OCI8_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_oci8) \$(OCI8_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -52121,7 +52121,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/odbc.$suffix \$(phplibdir)
+ 
+ $ext_builddir/odbc.$suffix: \$(shared_objects_odbc) \$(ODBC_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_odbc) \$(ODBC_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_odbc) \$(ODBC_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -52677,7 +52677,7 @@
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sysvipc shared memory support" >&5
+ $as_echo_n "checking for sysvipc shared memory support... " >&6; }
+   if test "$cross_compiling" = yes; then :
+-  have_shm_ipc=no
++  have_shm_ipc=yes
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -53544,7 +53544,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/opcache.$suffix \$(phplibdir)
+ 
+ $ext_builddir/opcache.$suffix: \$(shared_objects_opcache) \$(OPCACHE_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_opcache) \$(OPCACHE_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_opcache) \$(OPCACHE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -lpcre2-8
+ 
+ EOF
+ 
+@@ -54004,7 +54004,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pcntl.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pcntl.$suffix: \$(shared_objects_pcntl) \$(PCNTL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pcntl) \$(PCNTL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pcntl) \$(PCNTL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -54314,7 +54314,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo.$suffix: \$(shared_objects_pdo) \$(PDO_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo) \$(PDO_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo) \$(PDO_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -55031,7 +55031,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo_dblib.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo_dblib.$suffix: \$(shared_objects_pdo_dblib) \$(PDO_DBLIB_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_dblib) \$(PDO_DBLIB_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_dblib) \$(PDO_DBLIB_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -56351,7 +56351,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo_firebird.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo_firebird.$suffix: \$(shared_objects_pdo_firebird) \$(PDO_FIREBIRD_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_firebird) \$(PDO_FIREBIRD_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_firebird) \$(PDO_FIREBIRD_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -57070,7 +57070,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo_mysql.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo_mysql.$suffix: \$(shared_objects_pdo_mysql) \$(PDO_MYSQL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_mysql) \$(PDO_MYSQL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_mysql) \$(PDO_MYSQL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -58854,7 +58854,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo_oci.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo_oci.$suffix: \$(shared_objects_pdo_oci) \$(PDO_OCI_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_oci) \$(PDO_OCI_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_oci) \$(PDO_OCI_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -60019,7 +60019,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo_odbc.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo_odbc.$suffix: \$(shared_objects_pdo_odbc) \$(PDO_ODBC_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_odbc) \$(PDO_ODBC_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_odbc) \$(PDO_ODBC_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -60634,7 +60634,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo_pgsql.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo_pgsql.$suffix: \$(shared_objects_pdo_pgsql) \$(PDO_PGSQL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_pgsql) \$(PDO_PGSQL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_pgsql) \$(PDO_PGSQL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -61551,7 +61551,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pdo_sqlite.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pdo_sqlite.$suffix: \$(shared_objects_pdo_sqlite) \$(PDO_SQLITE_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_sqlite) \$(PDO_SQLITE_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pdo_sqlite) \$(PDO_SQLITE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -62258,7 +62258,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pgsql.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pgsql.$suffix: \$(shared_objects_pgsql) \$(PGSQL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pgsql) \$(PGSQL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pgsql) \$(PGSQL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -62565,7 +62565,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/phar.$suffix \$(phplibdir)
+ 
+ $ext_builddir/phar.$suffix: \$(shared_objects_phar) \$(PHAR_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_phar) \$(PHAR_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_phar) \$(PHAR_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -62961,7 +62961,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/posix.$suffix \$(phplibdir)
+ 
+ $ext_builddir/posix.$suffix: \$(shared_objects_posix) \$(POSIX_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_posix) \$(POSIX_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_posix) \$(POSIX_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -63395,7 +63395,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/pspell.$suffix \$(phplibdir)
+ 
+ $ext_builddir/pspell.$suffix: \$(shared_objects_pspell) \$(PSPELL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pspell) \$(PSPELL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_pspell) \$(PSPELL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -64118,7 +64118,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/random.$suffix \$(phplibdir)
+ 
+ $ext_builddir/random.$suffix: \$(shared_objects_random) \$(RANDOM_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_random) \$(RANDOM_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_random) \$(RANDOM_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -66792,7 +66792,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/readline.$suffix \$(phplibdir)
+ 
+ $ext_builddir/readline.$suffix: \$(shared_objects_readline) \$(READLINE_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_readline) \$(READLINE_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_readline) \$(READLINE_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -67057,7 +67057,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/reflection.$suffix \$(phplibdir)
+ 
+ $ext_builddir/reflection.$suffix: \$(shared_objects_reflection) \$(REFLECTION_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_reflection) \$(REFLECTION_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_reflection) \$(REFLECTION_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -67613,7 +67613,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/session.$suffix \$(phplibdir)
+ 
+ $ext_builddir/session.$suffix: \$(shared_objects_session) \$(SESSION_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_session) \$(SESSION_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_session) \$(SESSION_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -68151,7 +68151,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/shmop.$suffix \$(phplibdir)
+ 
+ $ext_builddir/shmop.$suffix: \$(shared_objects_shmop) \$(SHMOP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_shmop) \$(SHMOP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_shmop) \$(SHMOP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -68704,7 +68704,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/simplexml.$suffix \$(phplibdir)
+ 
+ $ext_builddir/simplexml.$suffix: \$(shared_objects_simplexml) \$(SIMPLEXML_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_simplexml) \$(SIMPLEXML_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_simplexml) \$(SIMPLEXML_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -69935,7 +69935,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/snmp.$suffix \$(phplibdir)
+ 
+ $ext_builddir/snmp.$suffix: \$(shared_objects_snmp) \$(SNMP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_snmp) \$(SNMP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_snmp) \$(SNMP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -70491,7 +70491,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/soap.$suffix \$(phplibdir)
+ 
+ $ext_builddir/soap.$suffix: \$(shared_objects_soap) \$(SOAP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_soap) \$(SOAP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_soap) \$(SOAP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -71069,7 +71069,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/sockets.$suffix \$(phplibdir)
+ 
+ $ext_builddir/sockets.$suffix: \$(shared_objects_sockets) \$(SOCKETS_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sockets) \$(SOCKETS_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sockets) \$(SOCKETS_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -71669,7 +71669,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/sodium.$suffix \$(phplibdir)
+ 
+ $ext_builddir/sodium.$suffix: \$(shared_objects_sodium) \$(SODIUM_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sodium) \$(SODIUM_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sodium) \$(SODIUM_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -71934,7 +71934,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/spl.$suffix \$(phplibdir)
+ 
+ $ext_builddir/spl.$suffix: \$(shared_objects_spl) \$(SPL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_spl) \$(SPL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_spl) \$(SPL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -76512,7 +76512,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/standard.$suffix \$(phplibdir)
+ 
+ $ext_builddir/standard.$suffix: \$(shared_objects_standard) \$(STANDARD_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_standard) \$(STANDARD_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_standard) \$(STANDARD_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -76884,7 +76884,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/sysvmsg.$suffix \$(phplibdir)
+ 
+ $ext_builddir/sysvmsg.$suffix: \$(shared_objects_sysvmsg) \$(SYSVMSG_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sysvmsg) \$(SYSVMSG_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sysvmsg) \$(SYSVMSG_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -77191,7 +77191,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/sysvsem.$suffix \$(phplibdir)
+ 
+ $ext_builddir/sysvsem.$suffix: \$(shared_objects_sysvsem) \$(SYSVSEM_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sysvsem) \$(SYSVSEM_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sysvsem) \$(SYSVSEM_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -77547,7 +77547,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/sysvshm.$suffix \$(phplibdir)
+ 
+ $ext_builddir/sysvshm.$suffix: \$(shared_objects_sysvshm) \$(SYSVSHM_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sysvshm) \$(SYSVSHM_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_sysvshm) \$(SYSVSHM_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -78518,7 +78518,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/tidy.$suffix \$(phplibdir)
+ 
+ $ext_builddir/tidy.$suffix: \$(shared_objects_tidy) \$(TIDY_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_tidy) \$(TIDY_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_tidy) \$(TIDY_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -78831,7 +78831,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/tokenizer.$suffix \$(phplibdir)
+ 
+ $ext_builddir/tokenizer.$suffix: \$(shared_objects_tokenizer) \$(TOKENIZER_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_tokenizer) \$(TOKENIZER_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_tokenizer) \$(TOKENIZER_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -79675,7 +79675,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/xml.$suffix \$(phplibdir)
+ 
+ $ext_builddir/xml.$suffix: \$(shared_objects_xml) \$(XML_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xml) \$(XML_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xml) \$(XML_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -80252,7 +80252,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/xmlreader.$suffix \$(phplibdir)
+ 
+ $ext_builddir/xmlreader.$suffix: \$(shared_objects_xmlreader) \$(XMLREADER_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xmlreader) \$(XMLREADER_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xmlreader) \$(XMLREADER_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -80829,7 +80829,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/xmlwriter.$suffix \$(phplibdir)
+ 
+ $ext_builddir/xmlwriter.$suffix: \$(shared_objects_xmlwriter) \$(XMLWRITER_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xmlwriter) \$(XMLWRITER_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xmlwriter) \$(XMLWRITER_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -81601,7 +81601,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/xsl.$suffix \$(phplibdir)
+ 
+ $ext_builddir/xsl.$suffix: \$(shared_objects_xsl) \$(XSL_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xsl) \$(XSL_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xsl) \$(XSL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
+ 
+ EOF
+ 
+@@ -81930,7 +81930,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/zend_test.$suffix \$(phplibdir)
+ 
+ $ext_builddir/zend_test.$suffix: \$(shared_objects_zend_test) \$(ZEND_TEST_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_zend_test) \$(ZEND_TEST_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_zend_test) \$(ZEND_TEST_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -lxml2
+ 
+ EOF
+ 
+@@ -83463,7 +83463,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/zip.$suffix \$(phplibdir)
+ 
+ $ext_builddir/zip.$suffix: \$(shared_objects_zip) \$(ZIP_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_zip) \$(ZIP_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_zip) \$(ZIP_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -lpcre2-8
+ 
+ EOF
+ 
+@@ -84292,7 +84292,7 @@
+ 	\$(LIBTOOL) --tag=CC --mode=install cp $ext_builddir/mysqlnd.$suffix \$(phplibdir)
+ 
+ $ext_builddir/mysqlnd.$suffix: \$(shared_objects_mysqlnd) \$(MYSQLND_SHARED_DEPENDENCIES)
+-	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_mysqlnd) \$(MYSQLND_SHARED_LIBADD)
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_mysqlnd) \$(MYSQLND_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so -lz -lcrypto
+ 
+ EOF
+ 
+@@ -84523,7 +84523,7 @@
+ enable_static=yes
+ 
+ case $php_sapi_module in
+-  shared)
++  *)
+     if test "$PHP_CGI" = "no" && test "$PHP_CLI" = "no" && test "$PHP_FPM" = "no" && test "$PHP_LITESPEED" = "no" && test "$PHP_PHPDBG" = "no"; then
+       enable_static=no
+     fi
+@@ -84537,12 +84537,6 @@
+     esac
+     EXTRA_LDFLAGS="$EXTRA_LDFLAGS -avoid-version -module"
+     ;;
+-  *)
+-    standard_libtool_flag='-prefer-non-pic -static'
+-    if test -z "$PHP_MODULES" && test -z "$PHP_ZEND_EX"; then
+-      enable_shared=no
+-    fi
+-    ;;
+ esac
+ 
+ EXTRA_LIBS="$EXTRA_LIBS $DLIBS $LIBS"
+@@ -84707,6 +84701,8 @@
+     fiber_os="mac" ;; #(
+   aix*|os400*) :
+     fiber_os="aix" ;; #(
++  midipix) :
++    fiber_os="midipix" ;; #(
+   freebsd*) :
+     fiber_os="freebsd" ;; #(
+   *) :
+@@ -84742,6 +84738,8 @@
+ 
+ if test "$fiber_os" = 'mac'; then
+   fiber_asm_file="combined_sysv_macho_gas"
++elif test "$fiber_os" = 'midipix'; then
++  fiber_asm_file="x86_64_ms_pe_gas"
+ elif test "$fiber_os" = 'aix'; then
+   # AIX uses a different calling convention (shared with non-_CALL_ELF Linux).
+   # The AIX assembler isn't GNU, but the file is compatible.
+@@ -89077,7 +89075,7 @@
+       lt_prog_compiler_static='-Bstatic'
+       ;;
+ 
+-    linux* | k*bsd*-gnu)
++    linux* | k*bsd*-gnu | midipix*)
+       case $cc_basename in
+       # old Intel for x86_64 which still supported -KPIC.
+       ecc*)
+@@ -90794,6 +90792,17 @@
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++midipix*)
++  version_type=linux # correct to gnu/linux during the next big refactor
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
++  soname_spec='$libname$release$shared_ext$major'
++  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
++  shlibpath_var=LD_LIBRARY_PATH
++  dynamic_linker='GNU/Linux ld.so'
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
+@@ -92854,7 +92863,7 @@
+     hardcode_libdir_flag_spec_CXX='${wl}-rpath ${wl}$libdir'
+     hardcode_libdir_separator_CXX=:
+     ;;
+-  linux* | k*bsd*-gnu)
++  linux* | k*bsd*-gnu | midipix*)
+     case $cc_basename in
+       KCC*)
+ 	# Kuck and Associates, Inc. (KAI) C++ Compiler
+@@ -95134,9 +95143,6 @@
+ # This can be used to rebuild libtool when needed
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+ 
+-# Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+-
+ # Prevent multiple expansion
+ 
+ 
+diff -ru php-8.3.4.orig/ext/pdo/Makefile.frag php-8.3.4/ext/pdo/Makefile.frag
+--- php-8.3.4.orig/ext/pdo/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/ext/pdo/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -15,17 +15,17 @@
+ 	fi)
+ 
+ install-pdo-headers:
+-	@echo "Installing PDO headers:           $(INSTALL_ROOT)$(phpincludedir)/ext/pdo/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(phpincludedir)/ext/pdo
++	@echo "Installing PDO headers:           $(DESTDIR)$(phpincludedir)/ext/pdo/"
++	@$(mkinstalldirs) $(DESTDIR)$(phpincludedir)/ext/pdo
+ 	@for f in $(PDO_HEADER_FILES); do \
+ 		if test -f "$(top_srcdir)/$$f"; then \
+-			$(INSTALL_DATA) $(top_srcdir)/$$f $(INSTALL_ROOT)$(phpincludedir)/ext/pdo; \
++			$(INSTALL_DATA) $(top_srcdir)/$$f $(DESTDIR)$(phpincludedir)/ext/pdo; \
+ 		elif test -f "$(top_builddir)/$$f"; then \
+-			$(INSTALL_DATA) $(top_builddir)/$$f $(INSTALL_ROOT)$(phpincludedir)/ext/pdo; \
++			$(INSTALL_DATA) $(top_builddir)/$$f $(DESTDIR)$(phpincludedir)/ext/pdo; \
+ 		elif test -f "$(top_srcdir)/ext/pdo/$$f"; then \
+-			$(INSTALL_DATA) $(top_srcdir)/ext/pdo/$$f $(INSTALL_ROOT)$(phpincludedir)/ext/pdo; \
++			$(INSTALL_DATA) $(top_srcdir)/ext/pdo/$$f $(DESTDIR)$(phpincludedir)/ext/pdo; \
+ 		elif test -f "$(top_builddir)/ext/pdo/$$f"; then \
+-			$(INSTALL_DATA) $(top_builddir)/ext/pdo/$$f $(INSTALL_ROOT)$(phpincludedir)/ext/pdo; \
++			$(INSTALL_DATA) $(top_builddir)/ext/pdo/$$f $(DESTDIR)$(phpincludedir)/ext/pdo; \
+ 		else \
+ 			echo "hmmm"; \
+ 		fi \
+diff -ru php-8.3.4.orig/ext/phar/Makefile.frag php-8.3.4/ext/phar/Makefile.frag
+--- php-8.3.4.orig/ext/phar/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/ext/phar/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -23,7 +23,7 @@
+ 	else \
+ 		$(top_srcdir)/build/shtool echo -n -- "$(PHP_EXECUTABLE)"; \
+ 	fi;`
+-PHP_PHARCMD_BANG = `$(top_srcdir)/build/shtool echo -n -- "$(INSTALL_ROOT)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)";`
++PHP_PHARCMD_BANG = `$(top_srcdir)/build/shtool echo -n -- "$(DESTDIR)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)";`
+ 
+ $(builddir)/phar/phar.inc: $(srcdir)/phar/phar.inc
+ 	-@test -d $(builddir)/phar || mkdir $(builddir)/phar
+diff -ru php-8.3.4.orig/pear/Makefile.frag php-8.3.4/pear/Makefile.frag
+--- php-8.3.4.orig/pear/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/pear/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -13,7 +13,7 @@
+ 	@$(top_builddir)/sapi/cli/php $(PEAR_INSTALL_FLAGS) pear/install-pear-nozlib.phar -d "$(peardir)" -b "$(bindir)" ${PEAR_PREFIX} ${PEAR_SUFFIX}
+ 
+ install-pear:
+-	@echo "Installing PEAR environment:      $(INSTALL_ROOT)$(peardir)/"
++	@echo "Installing PEAR environment:      $(DESTDIR)$(peardir)/"
+ 	@if test ! -f $(builddir)/install-pear-nozlib.phar; then \
+ 		if test -f $(srcdir)/install-pear-nozlib.phar; then \
+ 			cp $(srcdir)/install-pear-nozlib.phar $(builddir)/install-pear-nozlib.phar; \
+@@ -27,7 +27,7 @@
+ 			fi \
+ 		fi \
+ 	fi
+-	@if test -f $(builddir)/install-pear-nozlib.phar && $(mkinstalldirs) $(INSTALL_ROOT)$(peardir); then \
++	@if test -f $(builddir)/install-pear-nozlib.phar && $(mkinstalldirs) $(DESTDIR)$(peardir); then \
+ 		$(MAKE) -s install-pear-installer; \
+ 	else \
+ 		cat $(srcdir)/install-pear.txt; \
+diff -ru php-8.3.4.orig/sapi/cgi/Makefile.frag php-8.3.4/sapi/cgi/Makefile.frag
+--- php-8.3.4.orig/sapi/cgi/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/sapi/cgi/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -4,9 +4,9 @@
+ 	$(BUILD_CGI)
+ 
+ install-cgi: $(SAPI_CGI_PATH)
+-	@echo "Installing PHP CGI binary:        $(INSTALL_ROOT)$(bindir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+-	@$(INSTALL) -m 0755 $(SAPI_CGI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php-cgi$(program_suffix)$(EXEEXT)
+-	@echo "Installing PHP CGI man page:      $(INSTALL_ROOT)$(mandir)/man1/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
+-	@$(INSTALL_DATA) sapi/cgi/php-cgi.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)php-cgi$(program_suffix).1
++	@echo "Installing PHP CGI binary:        $(DESTDIR)$(bindir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(bindir)
++	@$(LIBTOOL) --mode=install cp $(SAPI_CGI_PATH) $(DESTDIR)$(bindir)/$(program_prefix)php-cgi$(program_suffix)$(EXEEXT)
++	@echo "Installing PHP CGI man page:      $(DESTDIR)$(mandir)/man1/"
++	@$(mkinstalldirs) $(DESTDIR)$(mandir)/man1
++	@$(INSTALL_DATA) sapi/cgi/php-cgi.1 $(DESTDIR)$(mandir)/man1/$(program_prefix)php-cgi$(program_suffix).1
+diff -ru php-8.3.4.orig/sapi/cli/Makefile.frag php-8.3.4/sapi/cli/Makefile.frag
+--- php-8.3.4.orig/sapi/cli/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/sapi/cli/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -4,9 +4,9 @@
+ 	$(BUILD_CLI)
+ 
+ install-cli: $(SAPI_CLI_PATH)
+-	@echo "Installing PHP CLI binary:        $(INSTALL_ROOT)$(bindir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+-	@$(INSTALL) -m 0755 $(SAPI_CLI_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
+-	@echo "Installing PHP CLI man page:      $(INSTALL_ROOT)$(mandir)/man1/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
+-	@$(INSTALL_DATA) sapi/cli/php.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)php$(program_suffix).1
++	@echo "Installing PHP CLI binary:        $(DESTDIR)$(bindir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(bindir)
++	@$(LIBTOOL) --mode=install cp $(SAPI_CLI_PATH) $(DESTDIR)$(bindir)/$(program_prefix)php$(program_suffix)$(EXEEXT)
++	@echo "Installing PHP CLI man page:      $(DESTDIR)$(mandir)/man1/"
++	@$(mkinstalldirs) $(DESTDIR)$(mandir)/man1
++	@$(INSTALL_DATA) sapi/cli/php.1 $(DESTDIR)$(mandir)/man1/$(program_prefix)php$(program_suffix).1
+diff -ru php-8.3.4.orig/sapi/fpm/Makefile.frag php-8.3.4/sapi/fpm/Makefile.frag
+--- php-8.3.4.orig/sapi/fpm/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/sapi/fpm/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -4,25 +4,25 @@
+ 	$(BUILD_FPM)
+ 
+ install-fpm: $(SAPI_FPM_PATH)
+-	@echo "Installing PHP FPM binary:        $(INSTALL_ROOT)$(sbindir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(sbindir)
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(localstatedir)/log
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(localstatedir)/run
+-	@$(INSTALL) -m 0755 $(SAPI_FPM_PATH) $(INSTALL_ROOT)$(sbindir)/$(program_prefix)php-fpm$(program_suffix)$(EXEEXT)
++	@echo "Installing PHP FPM binary:        $(DESTDIR)$(sbindir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(sbindir)
++	@$(mkinstalldirs) $(DESTDIR)$(localstatedir)/log
++	@$(mkinstalldirs) $(DESTDIR)$(localstatedir)/run
++	@$(INSTALL) -m 0755 $(SAPI_FPM_PATH) $(DESTDIR)$(sbindir)/$(program_prefix)php-fpm$(program_suffix)$(EXEEXT)
+ 
+-	@if test -f "$(INSTALL_ROOT)$(sysconfdir)/php-fpm.conf"; then \
++	@if test -f "$(DESTDIR)$(sysconfdir)/php-fpm.conf"; then \
+ 		echo "Installing PHP FPM defconfig:     skipping"; \
+ 	else \
+-		echo "Installing PHP FPM defconfig:     $(INSTALL_ROOT)$(sysconfdir)/" && \
+-		$(mkinstalldirs) $(INSTALL_ROOT)$(sysconfdir)/php-fpm.d; \
+-		$(INSTALL_DATA) sapi/fpm/php-fpm.conf $(INSTALL_ROOT)$(sysconfdir)/php-fpm.conf.default; \
+-		$(INSTALL_DATA) sapi/fpm/www.conf $(INSTALL_ROOT)$(sysconfdir)/php-fpm.d/www.conf.default; \
++		echo "Installing PHP FPM defconfig:     $(DESTDIR)$(sysconfdir)/" && \
++		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/php-fpm.d; \
++		$(INSTALL_DATA) sapi/fpm/php-fpm.conf $(DESTDIR)$(sysconfdir)/php-fpm.conf.default; \
++		$(INSTALL_DATA) sapi/fpm/www.conf $(DESTDIR)$(sysconfdir)/php-fpm.d/www.conf.default; \
+ 	fi
+ 
+-	@echo "Installing PHP FPM man page:      $(INSTALL_ROOT)$(mandir)/man8/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man8
+-	@$(INSTALL_DATA) sapi/fpm/php-fpm.8 $(INSTALL_ROOT)$(mandir)/man8/php-fpm$(program_suffix).8
++	@echo "Installing PHP FPM man page:      $(DESTDIR)$(mandir)/man8/"
++	@$(mkinstalldirs) $(DESTDIR)$(mandir)/man8
++	@$(INSTALL_DATA) sapi/fpm/php-fpm.8 $(DESTDIR)$(mandir)/man8/php-fpm$(program_suffix).8
+ 
+-	@echo "Installing PHP FPM status page:   $(INSTALL_ROOT)$(datadir)/fpm/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(datadir)/fpm
+-	@$(INSTALL_DATA) sapi/fpm/status.html $(INSTALL_ROOT)$(datadir)/fpm/status.html
++	@echo "Installing PHP FPM status page:   $(DESTDIR)$(datadir)/fpm/"
++	@$(mkinstalldirs) $(DESTDIR)$(datadir)/fpm
++	@$(INSTALL_DATA) sapi/fpm/status.html $(DESTDIR)$(datadir)/fpm/status.html
+diff -ru php-8.3.4.orig/sapi/litespeed/Makefile.frag php-8.3.4/sapi/litespeed/Makefile.frag
+--- php-8.3.4.orig/sapi/litespeed/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/sapi/litespeed/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -4,6 +4,6 @@
+ 	$(BUILD_LITESPEED)
+ 
+ install-litespeed: $(SAPI_LITESPEED_PATH)
+-	@echo "Installing PHP LiteSpeed binary:  $(INSTALL_ROOT)$(bindir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+-	@$(INSTALL) -m 0755 $(SAPI_LITESPEED_PATH) $(INSTALL_ROOT)$(bindir)/$(program_prefix)lsphp$(program_suffix)
++	@echo "Installing PHP LiteSpeed binary:  $(DESTDIR)$(bindir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(bindir)
++	@$(INSTALL) -m 0755 $(SAPI_LITESPEED_PATH) $(DESTDIR)$(bindir)/$(program_prefix)lsphp$(program_suffix)
+diff -ru php-8.3.4.orig/sapi/phpdbg/Makefile.frag php-8.3.4/sapi/phpdbg/Makefile.frag
+--- php-8.3.4.orig/sapi/phpdbg/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/sapi/phpdbg/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -21,11 +21,11 @@
+ 	@$(YACC) $(YFLAGS) -v -d $(srcdir)/phpdbg_parser.y -o $@
+ 
+ install-phpdbg: $(BUILD_BINARY)
+-	@echo "Installing phpdbg binary:         $(INSTALL_ROOT)$(bindir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(localstatedir)/log
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(localstatedir)/run
+-	@$(INSTALL) -m 0755 $(BUILD_BINARY) $(INSTALL_ROOT)$(bindir)/$(program_prefix)phpdbg$(program_suffix)$(EXEEXT)
+-	@echo "Installing phpdbg man page:       $(INSTALL_ROOT)$(mandir)/man1/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
+-	@$(INSTALL_DATA) sapi/phpdbg/phpdbg.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)phpdbg$(program_suffix).1
++	@echo "Installing phpdbg binary:         $(DESTDIR)$(bindir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(bindir)
++	@$(mkinstalldirs) $(DESTDIR)$(localstatedir)/log
++	@$(mkinstalldirs) $(DESTDIR)$(localstatedir)/run
++	@$(LIBTOOL) --mode=install cp $(BUILD_BINARY) $(DESTDIR)$(bindir)/$(program_prefix)phpdbg$(program_suffix)$(EXEEXT)
++	@echo "Installing phpdbg man page:       $(DESTDIR)$(mandir)/man1/"
++	@$(mkinstalldirs) $(DESTDIR)$(mandir)/man1
++	@$(INSTALL_DATA) sapi/phpdbg/phpdbg.1 $(DESTDIR)$(mandir)/man1/$(program_prefix)phpdbg$(program_suffix).1
+diff -ru php-8.3.4.orig/scripts/Makefile.frag php-8.3.4/scripts/Makefile.frag
+--- php-8.3.4.orig/scripts/Makefile.frag	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/scripts/Makefile.frag	2024-04-05 18:32:27.849200335 +0200
+@@ -27,24 +27,24 @@
+ man_PAGES = phpize php-config
+ 
+ install-build:
+-	@echo "Installing build environment:     $(INSTALL_ROOT)$(phpbuilddir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(phpbuilddir) $(INSTALL_ROOT)$(bindir) && \
++	@echo "Installing build environment:     $(DESTDIR)$(phpbuilddir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(phpbuilddir) $(DESTDIR)$(bindir) && \
+ 	(cd $(top_srcdir) && \
+-	$(INSTALL) $(BUILD_FILES_EXEC) $(INSTALL_ROOT)$(phpbuilddir) && \
+-	$(INSTALL_DATA) $(BUILD_FILES) $(INSTALL_ROOT)$(phpbuilddir))
++	$(INSTALL) $(BUILD_FILES_EXEC) $(DESTDIR)$(phpbuilddir) && \
++	$(INSTALL_DATA) $(BUILD_FILES) $(DESTDIR)$(phpbuilddir))
+ 
+ install-programs: $(builddir)/phpize $(builddir)/php-config
+-	@echo "Installing helper programs:       $(INSTALL_ROOT)$(bindir)/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
++	@echo "Installing helper programs:       $(DESTDIR)$(bindir)/"
++	@$(mkinstalldirs) $(DESTDIR)$(bindir)
+ 	@for prog in $(bin_SCRIPTS); do \
+ 		echo "  program: $(program_prefix)$${prog}$(program_suffix)"; \
+-		$(INSTALL) -m 755 $(builddir)/$${prog} $(INSTALL_ROOT)$(bindir)/$(program_prefix)$${prog}$(program_suffix); \
++		$(INSTALL) -m 755 $(builddir)/$${prog} $(DESTDIR)$(bindir)/$(program_prefix)$${prog}$(program_suffix); \
+ 	done
+-	@echo "Installing man pages:             $(INSTALL_ROOT)$(mandir)/man1/"
+-	@$(mkinstalldirs) $(INSTALL_ROOT)$(mandir)/man1
++	@echo "Installing man pages:             $(DESTDIR)$(mandir)/man1/"
++	@$(mkinstalldirs) $(DESTDIR)$(mandir)/man1
+ 	@for page in $(man_PAGES); do \
+ 		echo "  page: $(program_prefix)$${page}$(program_suffix).1"; \
+-		$(INSTALL_DATA) $(builddir)/man1/$${page}.1 $(INSTALL_ROOT)$(mandir)/man1/$(program_prefix)$${page}$(program_suffix).1; \
++		$(INSTALL_DATA) $(builddir)/man1/$${page}.1 $(DESTDIR)$(mandir)/man1/$(program_prefix)$${page}$(program_suffix).1; \
+ 	done
+ 
+ $(builddir)/phpize: $(srcdir)/phpize.in $(top_builddir)/config.status
+diff -ru php-8.3.4.orig/TSRM/TSRM.h php-8.3.4/TSRM/TSRM.h
+--- php-8.3.4.orig/TSRM/TSRM.h	2024-03-13 00:42:26.000000000 +0100
++++ php-8.3.4/TSRM/TSRM.h	2024-04-05 18:32:27.849200335 +0200
+@@ -149,7 +149,7 @@
+ # define __has_attribute(x) 0
+ #endif
+ 
+-#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__) || defined(__HAIKU__)
++#if !__has_attribute(tls_model) || defined(__FreeBSD__) || defined(__MUSL__) || defined(__HAIKU__) || defined(__midipix__)
+ # define TSRM_TLS_MODEL_ATTR
+ #elif __PIC__
+ # define TSRM_TLS_MODEL_ATTR __attribute__((tls_model("initial-exec")))
