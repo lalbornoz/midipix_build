@@ -1,7 +1,7 @@
 diff -ru libarchive-3.7.2.orig/configure libarchive-3.7.2/configure
 --- libarchive-3.7.2.orig/configure	2023-09-12 00:05:34.000000000 +0200
 +++ libarchive-3.7.2/configure	2024-02-26 13:44:22.491965148 +0100
-@@ -12906,6 +12906,16 @@
+@@ -12906,6 +12906,15 @@
    dynamic_linker='NetBSD ld.elf_so'
    ;;
  
@@ -11,7 +11,6 @@ diff -ru libarchive-3.7.2.orig/configure libarchive-3.7.2/configure
 +  need_version=no
 +  library_names_spec='$libname$release$shared_ext$versuffix $libname$release$shared_ext$major $libname$shared_ext'
 +  soname_spec='$libname$release$shared_ext$major'
-+  finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
 +  shlibpath_var=LD_LIBRARY_PATH
 +  ;;
 +
