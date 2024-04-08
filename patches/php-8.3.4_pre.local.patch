@@ -780,7 +780,7 @@ diff -ru php-8.3.4.orig/configure php-8.3.4/configure
  
  $ext_builddir/xmlreader.$suffix: \$(shared_objects_xmlreader) \$(XMLREADER_SHARED_DEPENDENCIES)
 -	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xmlreader) \$(XMLREADER_SHARED_LIBADD)
-+	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xmlreader) \$(XMLREADER_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xmlreader) \$(XMLREADER_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so \$(top_builddir)/ext/dom/dom.la
  
  EOF
  
@@ -798,7 +798,7 @@ diff -ru php-8.3.4.orig/configure php-8.3.4/configure
  
  $ext_builddir/xsl.$suffix: \$(shared_objects_xsl) \$(XSL_SHARED_DEPENDENCIES)
 -	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xsl) \$(XSL_SHARED_LIBADD)
-+	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xsl) \$(XSL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so
++	\$(LIBTOOL) --tag=CC --mode=link \$(CC) -shared \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_xsl) \$(XSL_SHARED_LIBADD) \$(top_builddir)/libs/libphp.so \$(top_builddir)/ext/dom/dom.la
  
  EOF
  
