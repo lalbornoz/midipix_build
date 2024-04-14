@@ -17,12 +17,4 @@ diff -ru libarchive-3.7.2.orig/configure libarchive-3.7.2/configure
  netbsd*)
    version_type=sunos
    need_lib_prefix=no
-@@ -16925,7 +16935,7 @@
-   ac_status=$?
-   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-   test $ac_status = 0; }; then
--  pkg_cv_LIBXML2_PC_LIBS=`$PKG_CONFIG --libs "libxml-2.0" 2>/dev/null`
-+  pkg_cv_LIBXML2_PC_LIBS=`$PKG_CONFIG --libs-only-l "libxml-2.0" 2>/dev/null`
- 		      test "x$?" != "x0" && pkg_failed=yes
- else
-   pkg_failed=yes
+
