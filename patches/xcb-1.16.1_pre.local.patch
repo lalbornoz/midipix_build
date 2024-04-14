@@ -1,0 +1,19 @@
+diff -ru libxcb-1.16.1.orig/configure libxcb-1.16.1/configure
+--- libxcb-1.16.1.orig/configure	2024-03-02 20:38:27.000000000 +0100
++++ libxcb-1.16.1/configure	2024-04-14 20:26:41.346651860 +0200
+@@ -21716,7 +21716,6 @@
+ # Find the xcb-proto protocol descriptions
+ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking XCBPROTO_XCBINCLUDEDIR" >&5
+ printf %s "checking XCBPROTO_XCBINCLUDEDIR... " >&6; }
+-XCBPROTO_XCBINCLUDEDIR=`$PKG_CONFIG --variable=xcbincludedir xcb-proto`
+ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $XCBPROTO_XCBINCLUDEDIR" >&5
+ printf "%s\n" "$XCBPROTO_XCBINCLUDEDIR" >&6; }
+ 
+@@ -21728,7 +21727,6 @@
+ # Find the xcbgen Python package
+ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking XCBPROTO_XCBPYTHONDIR" >&5
+ printf %s "checking XCBPROTO_XCBPYTHONDIR... " >&6; }
+-XCBPROTO_XCBPYTHONDIR=`$PKG_CONFIG --variable=pythondir xcb-proto`
+ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $XCBPROTO_XCBPYTHONDIR" >&5
+ printf "%s\n" "$XCBPROTO_XCBPYTHONDIR" >&6; }
+ 
