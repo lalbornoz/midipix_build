@@ -129,7 +129,6 @@ sdl1_image sdl1_ttf sdl2 sdl2_image sdl2_ttf sdl2_net twolame wolfssl";
 	+lib/libffi-${PKG_LIBFFI_VERSION}/include/ffitarget.h=include/%[FNAME]"};
 : ${PKG_LIBFFI_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/libffi/libffi-${PKG_LIBFFI_VERSION}.midipix.patch"};
 : ${PKG_LIBFIRM_URLS_GIT:="libfirm=https://github.com/Lucía Andrea Illanes Albornoz/libfirm@main bfirm=${DEFAULT_GITROOT}/compilers/bfirm@main"};
-: ${PKG_LIBFIRM_BASE_DIR:=${BUILD_WORKDIR}/cparser+libfirm-native-${DEFAULT_TARGET}};
 : ${PKG_LIBFIRM_BUILD_DIR:=build/libfirm};
 : ${PKG_LIBFIRM_CONFIGURE:=bfirm/configure};
 : ${PKG_LIBFIRM_CONFIGURE_ARGS:="--source-dir=../../libfirm --prefix="};
