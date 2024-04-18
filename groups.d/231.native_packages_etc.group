@@ -9,8 +9,7 @@ giflib gnuchess graphicsmagick gzip hastyhex hexcurse hexer htop icoutils imagem
 john lbreakout2 lcms less libmetalink lolcode ltris minizip mintty mlogin musl_compat musl_fts ncdu
 ncurses ncursestw ncursesw npth openjazz openjpeg p7zip pcre pcre2 php popt potrace procps_ng qemu
 qpdf qrencode rpm rw sdlquake shared_mime_info slang sqlite3 tcl tdnf texinfo
-tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz yabasic
-zstd";
+tiff tmux tzdb utf8proc util_linux vim vorbis_tools w32api w32lib xorriso xpdf xz zstd";
 : ${PKG_APR_SHA256SUM:=a67ca9fcf9c4ff59bce7f428a323c8b5e18667fdea7b0ebad47d194371b0a105};
 : ${PKG_APR_VERSION:=1.6.5};
 : ${PKG_APR_URL:=http://ftp.fau.de/apache/apr/apr-${PKG_APR_VERSION}.tar.bz2};
@@ -550,12 +549,6 @@ vim_cv_timer_create=yes"};
 : ${PKG_XZ_VERSION:=5.2.5};
 : ${PKG_XZ_URL:=https://mirror.midipix.org/xz/xz-${PKG_XZ_HOST_VERSION}.tar.xz};
 : ${PKG_XZ_CFLAGS_BUILD_EXTRA:="-DLZMA_RANGE_DECODER_CONFIG=3"};
-
-: ${PKG_YABASIC_SHA256SUM:=24eaca1a520817ec266d132d89b4a657d5adf3e6bad54f13b103991afdca6d40};
-: ${PKG_YABASIC_VERSION:=2.83.0};
-: ${PKG_YABASIC_URL:=http://www.yabasic.de/download/yabasic-${PKG_YABASIC_VERSION}.tar.gz};
-: ${PKG_YABASIC_CONFIG_CACHE_EXTRA:="ac_cv_func_strtod=yes"};
-: ${PKG_YABASIC_DISABLED:=1};
 : ${PKG_ZSTD_SHA256SUM:=98e9c3d949d1b924e28e01eccb7deed865eefebf25c2f21c702e5cd5b63b85e1};
 : ${PKG_ZSTD_VERSION:=1.5.5};
 : ${PKG_ZSTD_URL:=https://github.com/facebook/zstd/archive/v${PKG_ZSTD_VERSION}.tar.gz};
