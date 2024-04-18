@@ -1,15 +1,3 @@
-diff -ru bochs-2.6.11.orig/cpu/icache.h bochs-2.6.11/cpu/icache.h
---- bochs-2.6.11.orig/cpu/icache.h      2019-12-09 17:44:36.435957000 +0100
-+++ bochs-2.6.11/cpu/icache.h   2021-07-18 13:10:35.350797475 +0200
-@@ -28,7 +28,7 @@
-
- class bxPageWriteStampTable
- {
--  const Bit32u PHY_MEM_PAGES = 1024*1024;
-+  #define PHY_MEM_PAGES (1024*1024)
-   Bit32u *fineGranularityMapping;
-
- public:
 diff -ru bochs-2.6.9.orig/main.cc bochs-2.6.9/main.cc
 --- bochs-2.6.9.orig/main.cc    2017-02-18 17:28:04.318635000 +0100
 +++ bochs-2.6.9/main.cc 2021-07-18 01:15:37.859411673 +0200
