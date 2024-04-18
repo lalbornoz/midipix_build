@@ -215,8 +215,8 @@ ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
 : ${PKG_LIBPCAP_CONFIG_CACHE_EXTRA:="ac_cv_lbl_unaligned_fail=no"};
 : ${PKG_LIBPCAP_SUBDIR:="libpcap-libpcap-${PKG_LIBPCAP_VERSION}"};
 : ${PKG_LIBPNG_DEPENDS:="libz"};
-: ${PKG_LIBPNG_SHA256SUM:=535b479b2467ff231a3ec6d92a525906fb8ef27978be4f66dbe05d3f3a01b3a1};
-: ${PKG_LIBPNG_VERSION:=1.6.40};
+: ${PKG_LIBPNG_SHA256SUM:=6a5ca0652392a2d7c9db2ae5b40210843c0bbc081cbd410825ab00cc59f14a6c};
+: ${PKG_LIBPNG_VERSION:=1.6.43};
 : ${PKG_LIBPNG_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libpng/libpng-${PKG_LIBPNG_VERSION}.tar.xz};
 : ${PKG_LIBPSL_DEPENDS:="libidn2 libunistring libiconv"}
 : ${PKG_LIBPSL_SHA256SUM:=e35991b6e17001afa2c0ca3b10c357650602b92596209b7492802f3768a6285f};
