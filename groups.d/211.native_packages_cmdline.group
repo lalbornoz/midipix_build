@@ -266,8 +266,8 @@ libopts_cv_run_fopen_binary=yes"};
 : ${PKG_TAR_VERSION:=1.33};
 : ${PKG_TAR_URL:=https://ftp.gnu.org/gnu/tar/tar-${PKG_TAR_VERSION}.tar.xz};
 : ${PKG_TCSH_DEPENDS:="ncurses libiconv"};
-: ${PKG_TCSH_SHA256SUM:=13475c0fbeb74139d33ed793bf00ffbbb2ac2dc9fb1d44467a410760aba36664};
-: ${PKG_TCSH_VERSION:=6.24.10};
+: ${PKG_TCSH_SHA256SUM:=e3270ce9667fd5bd2a046687659fcf5fd6a6781326f806ebd724f1e1c9cd4185};
+: ${PKG_TCSH_VERSION:=6.24.12};
 : ${PKG_TCSH_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/tcsh/tcsh-${PKG_TCSH_VERSION}.tar.gz};
 
 : ${PKG_THE_SILVER_SEARCHER_DEPENDS:="libz pcre xz"};
