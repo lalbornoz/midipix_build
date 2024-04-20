@@ -968,6 +968,14 @@ by setting ``ARG_MIRROR_DNAME_GIT=...``.
 [//]: # "{{{ 4.7. Bourne shell coding rules"
 ## 4.7. Bourne shell coding rules
 
+> N.B. Input sanitisation is mandatory whenever input may form part of a parameter name, most usually
+when indexing with input as a key into a (pseudo-)hash, e.g. PKG_ZSH_<...input...>; failing to do so
+may introduce security vulnerabilities (e.g.: $(arbitrary_command) and ${arbitrary_variable} facilitating
+code execution and information disclosure, resp.)  
+Do not use this code and these coding rules if this is not possible or impractical.
+
+*(reproduced from &lbrack;[shrtl](https://github.com/Lucía Andrea Illanes Albornoz/shrtl/blob/master/README.md)&rbrack;)*
+
 If no rationale is specified for any specific point, the rationale is avoidance of undefined behaviour
 and/or implicit behaviour contingent on often subtle special cases, both of which are prone to cause
 hard to debug or even diagnose bugs.
