@@ -324,16 +324,38 @@ build group e.g. the ``dev_packages`` build group, as long as the default set of
 groups or as overriden on the command line does not entail group membership conflicts.  
   
 Build groups files beneath ``groups.d/`` named ``[0-9][0-9][0-9].<group name>.group``
-contain package variable defaults, the alphabetically sorted list of contained
-packages in ``<upper case group name>_PACKAGES``, and their package variables
+contain package variable defaults, optionally the alphabetically sorted list of contained
+packages, if any, in ``<upper case group name>_PACKAGES``, and their package variables
 sorted alphabetically with the exception of ``${PKG_DEPENDS}`` (if present,)
 ``${PKG_SHA256SUM}``, ``${PKG_URL}``, and ``${PKG_VERSION}``, and/or ``${PKG_URLS_GIT}``,
 which are specified in this order.  
   
-Pick a build group according to the criteria mentioned, add the package to the
-build group's list of contained packages in its corresponding file, and add the
-set of package variables required (see above and section [4.4](#44-package-variables).)  
-Consult section [3.5](#35-patches-and-vars-files) if the package to be added
+Additionally, single package files may be added beneath ``groups.d/[0-9][0-9][0-9].<group name>.d/``,
+named ``<package name>.package`` containing the package's variables, with one of the two following
+epilogues:
+
+```shell
+
+ex_pkg_register "<package_name>" "${RTL_FILEOP_SOURCE_FNAME}";
+
+# vim:filetype=sh textwidth=0
+```
+
+or, if the group name should not be inferred automatically and explicitly set:
+
+```shell
+
+ex_pkg_register "<package_name>" "${RTL_FILEOP_SOURCE_FNAME}" "<group name>";
+
+# vim:filetype=sh textwidth=0
+```
+  
+1. Pick a build group according to the criteria mentioned and specifiy the set of package
+variables required (see above and section [4.4](#44-package-variables)) in either the
+corresponding group file or a single package file; in the former case, do also add the
+package to the build group's list of contained packages.
+  
+2. Consult section [3.5](#35-patches-and-vars-files) if the package to be added
 requires patches or additional code amending or replacing package build steps
 or the entire package build. Consult section [4.1](#41-build-steps) for a list
 of package build steps and how they are overriden.
@@ -667,8 +689,9 @@ usage: rtl_install [-i] [-I ifs] [-n] [-p name=val] [-v] prefix spec_list
 The following variables are package-specific and receive their value from either
 top-level defaults defined in ``vars.env.d/*.env``, build group-specific defaults from the
 build group the package pertains to and defined in its corresponding file beneath
-``groups.d/``, or package-specific overrides defined either in the latter and/or in its
-corresponding file beneath ``vars/``, with one of the following prefixes:
+``groups.d/`` or ``groups.d/[0-9][0-9][0-9].<group name>.d/``, or package-specific overrides
+defined either in the latter and/or in its corresponding file beneath ``vars/``, with one of
+the following prefixes:
 
 | Variable name prefix                              |
 | ------------------------------------------------- |
