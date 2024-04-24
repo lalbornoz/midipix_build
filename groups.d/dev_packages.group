@@ -9,8 +9,8 @@ DEV_PACKAGES_GROUP_DEPENDS="host_deps host_deps_rpm cross_toolchain host_toolcha
 DEV_PACKAGES_LDFLAGS_CONFIGURE="--sysroot=${PREFIX_NATIVE}";
 DEV_PACKAGES_MAKEFLAGS_INSTALL="PREFIX= prefix=";
 DEV_PACKAGES_PACKAGES="
-ncurses ncursesw coreutils bash libz git make sed grep findutils m4 flex bison
-diffutils patch patchutils gzip tar dos2unix nano vim";
+ncurses ncursesw libiconv coreutils bash libz git make sed grep findutils
+m4 flex bison diffutils patch patchutils gzip tar dos2unix nano vim";
 DEV_PACKAGES_PKG_CONFIG_LIBDIR="${PREFIX_NATIVE}/lib/pkgconfig";
 DEV_PACKAGES_PREFIX="${PREFIX_NATIVE}";
 DEV_PACKAGES_PYTHON="${PREFIX}/bin/python2";
