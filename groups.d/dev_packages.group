@@ -15,6 +15,6 @@ DEV_PACKAGES_PKG_CONFIG_LIBDIR="${PREFIX_NATIVE}/lib/pkgconfig";
 DEV_PACKAGES_PREFIX="${PREFIX_NATIVE}";
 DEV_PACKAGES_PYTHON="${PREFIX}/bin/python2";
 
-ex_pkg_register_group "dev_packages" "${RTL_FILEOP_SOURCE_FNAME}" "noauto";
+ex_pkg_register_group "dev_packages" "${RTL_FILEOP_SOURCE_FNAME}" "copy" "noauto";
 
 # vim:filetype=sh textwidth=0

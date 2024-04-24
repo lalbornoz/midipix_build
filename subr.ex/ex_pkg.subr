@@ -299,6 +299,7 @@ ex_pkg_register() {
 # ex_pkg_register_group() - register single group
 # @_group_name:					single group name
 # @_fname:					pathname to file group is defined in, relative to midipix_build root
+# @[_ownerfl]:					"owner" for groups that own their packages, "copy" for shorthand groups referring to packages from other groups
 # @[_autofl]:					"auto" for groups to build by default, "noauto" for optional groups only built when requested
 # ${EXP_PKG_REGISTER_GROUP_RGROUPS}:		inout reference to variable of build groups
 # ${EXP_PKG_REGISTER_GROUP_RGROUPS_NOAUTO}:	inout reference to variable of build groups only built when requested
@@ -306,7 +307,8 @@ ex_pkg_register() {
 # Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_register_group() {
-	local	_eprg_group_name="${1}" _eprg_fname="${2}" _eprg_autofl="${3:-auto}"	\
+	local	_eprg_group_name="${1}" _eprg_fname="${2}"		\
+		_eprg_ownerfl="${3:-owner}" _eprg_autofl="${4:-auto}"	\
 		_eprg_pkg_name="" _eprg_pkg_names="" _eprg_rgroups="";
 
 	case "${_eprg_autofl}" in
@@ -318,17 +320,19 @@ ex_pkg_register_group() {
 		rtl_lconcat "${_eprg_rgroups}" "${_eprg_group_name}";
 	fi;
 
-	if rtl_get_var_unsafe \$_eprg_pkg_names -u "${_eprg_group_name}_PACKAGES"\
-	&& [ "${_eprg_pkg_names:+1}" = 1 ]; then
-		case "${_eprg_autofl}" in
-		auto)
+	case "${_eprg_ownerfl}" in
+	owner)
+		if rtl_get_var_unsafe \$_eprg_pkg_names -u "${_eprg_group_name}_PACKAGES"\
+		&& [ "${_eprg_pkg_names:+1}" = 1 ]; then
 			for _eprg_pkg_name in ${_eprg_pkg_names}; do
 				rtl_set_var_unsafe -u "PKG_${_eprg_pkg_name}_GROUP" "${_eprg_group_name}";
 				rtl_set_var_unsafe -u "PKG_${_eprg_pkg_name}_GROUP_FNAME" "${_eprg_fname}";
 			done;
-			;;
-		esac;
-	fi;
+		fi;
+		;;
+	copy)	;;
+	*)	;;
+	esac;
 
 	return 0;
 };

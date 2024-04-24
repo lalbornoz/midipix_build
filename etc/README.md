@@ -328,28 +328,31 @@ contain package variable defaults, optionally the alphabetically sorted list of 
 packages, if any, in ``<upper case group name>_PACKAGES``, and their package variables
 sorted alphabetically with the exception of ``${PKG_DEPENDS}`` (if present,)
 ``${PKG_SHA256SUM}``, ``${PKG_URL}``, and ``${PKG_VERSION}``, and/or ``${PKG_URLS_GIT}``,
-which are specified in this order.  
-  
+which are specified in this order. Build group files require the following epilogue, the
+parameters enclosed in square brackets being optional:
+
+```shell
+ex_pkg_register_group "<group name>" "${RTL_FILEOP_SOURCE_FNAME}" [["owner|copy"] ["auto|noauto"]];
+
+# vim:filetype=sh textwidth=0
+```
+
+If ``copy`` is specified, the build group will copy all of its packages from their respective
+build groups without taking ownership thereof, if ``owner`` is specified, the default, the build
+group owns all of its packages. If ``noauto`` is specified, the build group will not be added to
+the list of build groups to build by default, if ``auto`` is specified, the build group will be
+added to the list of build groups to build by default.  
+ 
 Additionally, single package files may be added beneath ``groups.d/[0-9][0-9][0-9].<group name>.d/``,
-named ``<package name>.package`` containing the package's variables, with one of the two following
-epilogues:
+named ``<package name>.package`` containing the package's variables, with the following epilogue,
+the parameters enclosed in square brackets being optional:
 
 ```shell
-
-ex_pkg_register "<package_name>" "${RTL_FILEOP_SOURCE_FNAME}";
+ex_pkg_register "<package_name>" "${RTL_FILEOP_SOURCE_FNAME}" ["<group name>"];
 
 # vim:filetype=sh textwidth=0
 ```
 
-or, if the group name should not be inferred automatically and explicitly set:
-
-```shell
-
-ex_pkg_register "<package_name>" "${RTL_FILEOP_SOURCE_FNAME}" "<group name>";
-
-# vim:filetype=sh textwidth=0
-```
-  
 1. Pick a build group according to the criteria mentioned and specifiy the set of package
 variables required (see above and section [4.4](#44-package-variables)) in either the
 corresponding group file or a single package file; in the former case, do also add the
