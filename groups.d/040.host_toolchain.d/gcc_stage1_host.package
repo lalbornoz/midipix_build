@@ -1,0 +1,12 @@
+: ${PKG_GCC_STAGE1_HOST_DEPENDS:="binutils_host gmp_host mpc_host mpfr_host"};
+: ${PKG_GCC_STAGE1_HOST_VERSION:=4.6.4};
+: ${PKG_GCC_STAGE1_HOST_BASE_DIR:=${BUILD_WORKDIR}/gcc-host-${DEFAULT_TARGET}};
+: ${PKG_GCC_STAGE1_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
+: ${PKG_GCC_STAGE1_HOST_GITROOT:=${DEFAULT_GITROOT}};
+: ${PKG_GCC_STAGE1_HOST_LDFLAGS_CONFIGURE:="-Wl,-rpath,${PREFIX}/lib"};
+: ${PKG_GCC_STAGE1_HOST_PREFIX:=${PREFIX}};
+: ${PKG_GCC_STAGE1_HOST_VARS_FILE:="vars/gcc.vars"};
+
+ex_pkg_register "gcc_stage1_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_toolchain";
+
+# vim:filetype=sh textwidth=0

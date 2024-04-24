@@ -1,0 +1,14 @@
+: ${PKG_GCC_STAGE1_HOST_MINGW32_DEPENDS:="binutils_host_mingw32 gmp_host mpc_host mpfr_host"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_VERSION:=4.6.4};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_BASE_DIR:=${BUILD_WORKDIR}/gcc-host-x86_64-w64-mingw32};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_CONFIGURE_ARGS:="--disable-nls --prefix=${PREFIX} --target=x86_64-w64-mingw32"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_GITROOT:=${DEFAULT_GITROOT}};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_PREFIX:=${PREFIX}};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_TARGET:="x86_64-w64-mingw32"};
+: ${PKG_GCC_STAGE1_HOST_MINGW32_VARS_FILE:="vars/gcc.vars"};
+
+ex_pkg_register "gcc_stage1_host_mingw32" "${RTL_FILEOP_SOURCE_FNAME}" "host_toolchain";
+
+# vim:filetype=sh textwidth=0
