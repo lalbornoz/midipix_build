@@ -283,31 +283,34 @@ buildp_init_getopts_fn() {
 
 	nonopt)
 		local	_bpigf_verb="${1}" _bpigf_rstatus="${2#\$}"	\
-			_bpigf_vname="" _bpigf_vval="";
+			_bpigf_args="" _bpigf_vname="" _bpigf_vval="";
 		shift 2;
 
 		if rtl_match "${1}" "=*"; then
-			BUILD_GROUPS_INHIBIT_DEPS=1; _bpigf_arg="${1#=}";
+			BUILD_GROUPS_INHIBIT_DEPS=1; _bpigf_args="${1#=}";
 		else
-			_bpigf_arg="${1}";
+			_bpigf_args="${1}";
 		fi;
 
-		case "${_bpigf_arg}" in
-		*=*)		rtl_set_var_from_spec "${_bpigf_rstatus}" "${_bpigf_arg}";
-				_bpigf_rc="${?}";
-				;;
+		rtl_llift \$_bpigf_args "," " ";
+		for _bpigf_arg in ${_bpigf_args}; do
+			case "${_bpigf_arg}" in
+			*=*)		rtl_set_var_from_spec "${_bpigf_rstatus}" "${_bpigf_arg}";
+					_bpigf_rc="${?}";
+					;;
 
-		[!a-zA-Z]*)	_bpigf_rc=1;
-				rtl_setrstatus "${_bpigf_rstatus}" 'build group names must start with [a-zA-Z] (in argument \`'"${_bpigf_arg}"''\''.)';
-				;;
+			[!a-zA-Z]*)	_bpigf_rc=1;
+					rtl_setrstatus "${_bpigf_rstatus}" 'build group names must start with [a-zA-Z] (in argument \`'"${_bpigf_arg}"''\''.)';
+					;;
 
-		*[!_bpigf_a-zA-Z]*)
-				_bpigf_rc=1;
-				rtl_setrstatus "${_bpigf_rstatus}" 'build group names must not contain [!_a-zA-Z] (in argument \`'"${_bpigf_arg}"''\''.)';
-				;;
+			*[!_bpigf_a-zA-Z]*)
+					_bpigf_rc=1;
+					rtl_setrstatus "${_bpigf_rstatus}" 'build group names must not contain [!_a-zA-Z] (in argument \`'"${_bpigf_arg}"''\''.)';
+					;;
 
-		*)		rtl_lconcat \$BUILD_GROUPS "${_bpigf_arg}"; ;;
-		esac;
+			*)		rtl_lconcat \$BUILD_GROUPS "${_bpigf_arg}"; ;;
+			esac;
+		done;
 
 		if [ "${_bpigf_rc}" -ne 0 ]; then
 			return "${_bpigf_rc}";
