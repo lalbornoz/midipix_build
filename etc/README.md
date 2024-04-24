@@ -852,7 +852,8 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
                   [-v] [-V [+]tag|pat[,..]]
 
                   [--as-needed] [--debug-minipix]  [--reset-state] [--roar]
-                  [--theme theme] [[=]<group>|<variable name>=<variable override>[ ..]]
+                  [--theme theme]
+                  [[=]<group[,..][ ..]>|<variable name>=<variable override>[ ..]]
 
         -a nt32|nt64        Selects 32-bit or 64-bit architecture; defaults to nt64.
         -b debug|release    Selects debug or release build kind; defaults to debug.
@@ -896,7 +897,8 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
                             fetch_clean, fetch_download, fetch_extract, configure_clean,
                             configure_patch_pre, configure_autotools, configure_patch,
                             configure, build_clean, build, install_clean, install_subdirs,
-                            install_make, install_files, install, install_rpm, and clean.
+                            install_make, install_files, install, install_rpm,
+                            and clean.
 
                             Additionally, the following virtual steps are provided:
                             @fetch, @configure, @build, @install, @clean, and finish.
@@ -933,11 +935,9 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
         --reset-state       Reset package build step state on exit.
         --theme theme       Set theme.
 
-        <group>[ ..]        One of:
-                            host_tools, host_deps, host_deps_rpm,
-                            cross_toolchain, host_toolchain,
-                            native_packages, native_runtime, native_toolchain, native_tools,
-                            minipix, dist, dev_packages
+        <group>[,..][ ..]   One of: dev_packages, dist, host_deps, host_deps_rpm,
+                            host_toolchain, host_tools, minipix, native_packages,
+                            native_runtime, native_toolchain, native_tools.
 
                             Prepend w/ `=' to inhibit group-group dependency expansion.
 

@@ -4,7 +4,8 @@
                   [90m[[33m-[93mv[90m] [[33m-[93mV [90m[[93m+[90m][93mtag[90m|[93mpat[90m[[93m,[90m..][90m][0m
 
                   [90m[[33m--[93mas-needed[90m] [[33m--[93mdebug-minipix[90m]  [[33m--[93mreset-state[90m] [[33m--[93mroar[90m][0m
-                  [90m[[33m--[93mtheme theme[90m] [[[93m=[90m][90m<[93mgroup[90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
+                  [90m[[33m--[93mtheme theme[90m]
+                  [[[93m=[90m][90m<[93mgroup[90m[[93m,[90m..][ ..][90m>|<[93mvariable name[90m>[93m=[90m<[93mvariable override[90m>[ ..]][0m
 
         [33m-[93ma nt32[90m|[93mnt64[0m        [96mSelects 32-bit or 64-bit architecture; defaults to [93mnt64[96m.[0m
         [33m-[93mb debug[90m|[93mrelease[0m    [96mSelects debug or release build kind; defaults to [93mdebug[96m.[0m
@@ -86,7 +87,7 @@
         [33m--[93mreset-state[0m       [96mReset package build step state on exit.[0m
         [33m--[93mtheme theme[0m       [96mSet theme.[0m
 
-        [90m<[93mgroup[90m>[ ..][96m        One of: [93mdev_packages[90m,[93m dist[90m,[93m host_deps[90m,[93m host_deps_rpm[90m,[0m
+        [90m<[93mgroup[90m>[[93m,[90m..][ ..][96m   One of: [93mdev_packages[90m,[93m dist[90m,[93m host_deps[90m,[93m host_deps_rpm[90m,[0m
                             [93mhost_toolchain[90m,[93m host_tools[90m,[93m minipix[90m,[93m native_packages[90m,[0m
                             [93mnative_runtime[90m,[93m native_toolchain[90m,[93m native_tools[90m.[0m
 
