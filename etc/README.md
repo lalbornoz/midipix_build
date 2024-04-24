@@ -342,7 +342,14 @@ build groups without taking ownership thereof, if ``owner`` is specified, the de
 group owns all of its packages. If ``noauto`` is specified, the build group will not be added to
 the list of build groups to build by default, if ``auto`` is specified, the build group will be
 added to the list of build groups to build by default.  
- 
+  
+If a build group that specifies ``copy`` should copy all of its build group variables from another
+build group, use the following code:
+
+```shell
+ex_pkg_copy_group_vars "<source group name>" "<destination group name>";
+```
+
 Additionally, single package files may be added beneath ``groups.d/[0-9][0-9][0-9].<group name>.d/``,
 named ``<package name>.package`` containing the package's variables, with the following epilogue,
 the parameters enclosed in square brackets being optional:

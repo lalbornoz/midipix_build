@@ -50,6 +50,32 @@ ex_pkg_check_depends() {
 };
 
 #
+# ex_pkg_copy_group_vars() - copy build group variables into build group
+# @_group_name_src:		single source build group name
+# @_group_name_dst:		single destination build group name
+# @[_build_vars_default]:	optional list of default build variables, defaults to ${DEFAULT_BUILD_VARS}
+#
+# Returns:			zero (0) on success, non-zero (>0) on failure.
+#
+ex_pkg_copy_group_vars() {
+	local	_epcgv_group_name_src="${1#\$}" _epcgv_group_name_dst="${2#\$}"	\
+		_epcgv_build_vars_default="${3:-${DEFAULT_BUILD_VARS}}"		\
+		_epcgv_group_name_dst_uc="" _epcgv_group_name_src_uc=""		\
+		_epcgv_vname="" _epcgv_vval="";
+	rtl_toupper2 \$_epcgv_group_name_dst \$_epcgv_group_name_dst_uc;
+	rtl_toupper2 \$_epcgv_group_name_src \$_epcgv_group_name_src_uc;
+
+	for _epcgv_vname in ${_epcgv_build_vars_default}; do
+		if rtl_get_var_unsafe \$_epcgv_vval "${_epcgv_group_name_src_uc}_${_epcgv_vname}"\
+		&& [ "${_epcgv_vval:+1}" = 1 ]; then
+			rtl_set_var_unsafe "${_epcgv_group_name_dst_uc}_${_epcgv_vname}" "${_epcgv_vval}";
+		fi;
+	done;
+
+	return 0;
+};
+
+#
 # ex_pkg_find_package() - find build group a single named package belongs to
 # @_rgroup_name:	out reference to variable of build group name
 # @_group_names:	build group names
@@ -181,7 +207,7 @@ ex_pkg_get_package_vars() {
 
 	eval ${_epgpv_rpkg_vnames}='${_epgpv_vnames}';
 	return 0;
-}
+};
 
 #
 # ex_pkg_load_vars() - load build variables
@@ -304,7 +330,7 @@ ex_pkg_register() {
 # ${EXP_PKG_REGISTER_GROUP_RGROUPS}:		inout reference to variable of build groups
 # ${EXP_PKG_REGISTER_GROUP_RGROUPS_NOAUTO}:	inout reference to variable of build groups only built when requested
 #
-# Returns:		zero (0) on success, non-zero (>0) on failure.
+# Returns:					zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_register_group() {
 	local	_eprg_group_name="${1}" _eprg_fname="${2}"		\
