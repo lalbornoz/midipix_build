@@ -4,12 +4,6 @@
 : ${PKG_BAS_URL:=www.moria.de/~michael/bas/bas-${PKG_BAS_VERSION}.tar.gz};
 : ${PKG_BAS_IN_TREE:=1};
 : ${PKG_BAS_FORCE_AUTORECONF:=1};
-: ${PKG_BASH_DEPENDS:="ncurses"};
-: ${PKG_BASH_SHA256SUM:=c8e31bdc59b69aaffc5b36509905ba3e5cbb12747091d27b4b977f078560d5b8};
-: ${PKG_BASH_VERSION:=5.2.21};
-: ${PKG_BASH_URL:=https://ftp.gnu.org/gnu/bash/bash-${PKG_BASH_VERSION}.tar.gz};
-: ${PKG_BASH_CONFIGURE_ARGS_EXTRA:="--without-bash-malloc --with-curses"};
-: ${PKG_BASH_MAKEFLAGS_PARALLELISE:="-j1"};
 
 ex_pkg_register "bas" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
