@@ -1,0 +1,12 @@
+: ${PKG_IMLIB2_DEPENDS:="freetype libX11 libXext"};
+: ${PKG_IMLIB2_SHA256SUM:=4d393a77e13da883c8ee2da3b029da3570210fe37d000c9ac33d9fce751b166d};
+: ${PKG_IMLIB2_VERSION:=1.6.1};
+: ${PKG_IMLIB2_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/imlib/imlib2-${PKG_IMLIB2_VERSION}.tar.bz2};
+: ${PKG_IMLIB2_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
+: ${PKG_IMLIB2_CPPFLAGS_CONFIGURE:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
+: ${PKG_IMLIB2_CONFIGURE_ARGS_EXTRA:="--disable-static --disable-mmx --disable-amd64"};
+: ${PKG_IMLIB2_LIBTOOL=rdlibtool};
+
+ex_pkg_register "imlib2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

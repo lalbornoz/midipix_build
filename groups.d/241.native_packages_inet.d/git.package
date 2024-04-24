@@ -1,0 +1,18 @@
+: ${PKG_GIT_DEPENDS:="curl libz"};
+: ${PKG_GIT_SHA256SUM:=2deab68747c9ee4e456482c9e7a9a12b05aa5d5f7fab8a35535d0dfab9d10529};
+: ${PKG_GIT_VERSION:=2.35.5};
+: ${PKG_GIT_URL:=https://mirrors.edge.kernel.org/pub/software/scm/git/git-${PKG_GIT_VERSION}.tar.xz};
+: ${PKG_GIT_CFLAGS_BUILD_EXTRA:="-std=gnu99"};
+: ${PKG_GIT_CONFIG_CACHE_EXTRA:="
+ac_cv_fread_reads_directories=1
+ac_cv_snprintf_returns_bogus=0
+ac_cv_prog_CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config"};
+: ${PKG_GIT_CONFIG_CACHE_LOCAL:="ac_cv_iconv_omits_bom=false"};
+: ${PKG_GIT_IN_TREE:=1};
+: ${PKG_GIT_MAKEFLAGS_BUILD:="CFLAGS=-std=gnu99 CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config CURLDIR=${PREFIX_NATIVE} HAVE_DEV_TTY=yes NO_GETTEXT=yes NO_REGEX=yes NO_PERL=yes NO_PYTHON=yes NO_TCLTK=yes"};
+: ${PKG_GIT_MAKEFLAGS_INSTALL:="CFLAGS=-std=gnu99 CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config CURLDIR=${PREFIX_NATIVE} HAVE_DEV_TTY=yes NO_GETTEXT=yes NO_REGEX=yes NO_PERL=yes NO_PYTHON=yes NO_TCLTK=yes"};
+: ${PKG_GIT_SUBDIR:=git-${PKG_GIT_VERSION}};
+
+ex_pkg_register "git" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

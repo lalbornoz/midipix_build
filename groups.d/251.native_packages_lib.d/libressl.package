@@ -1,0 +1,8 @@
+: ${PKG_LIBRESSL_SHA256SUM:=6da0b954695f7ee62b03f64200a8a4f02af93717b60cce04ab6c8df262c07a51};
+: ${PKG_LIBRESSL_VERSION:=3.9.1};
+: ${PKG_LIBRESSL_URL:=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${PKG_LIBRESSL_VERSION}.tar.gz};
+: ${PKG_LIBRESSL_CONFIGURE_ARGS_EXTRA:=--disable-asm --enable-nc};
+
+ex_pkg_register "libressl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

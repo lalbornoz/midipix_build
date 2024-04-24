@@ -1,0 +1,7 @@
+: ${PKG_JUSH_DEPENDS:="libeditline"};
+: ${PKG_JUSH_URLS_GIT:="jush-master=https://github.com/troglobit/jush.git@master"};
+: ${PKG_JUSH_SUBDIR:="jush-master"};
+
+ex_pkg_register "jush" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

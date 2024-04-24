@@ -1,0 +1,8 @@
+: ${PKG_RW_SHA256SUM:=50009730e36991dfe579716f91f4f616f5ba05ffb7bf69c03d41bf305ed93b6d};
+: ${PKG_RW_VERSION:=1.0};
+: ${PKG_RW_URL:=https://sortix.org/rw/release/rw-portable-${PKG_RW_VERSION}.tar.gz}
+: ${PKG_RW_BUILD_DIR:=rw-portable-${PKG_RW_VERSION}};
+
+ex_pkg_register "rw" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

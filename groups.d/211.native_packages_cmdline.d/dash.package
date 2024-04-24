@@ -1,0 +1,9 @@
+: ${PKG_DASH_SHA256SUM:=0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154};
+: ${PKG_DASH_VERSION:=0.5.12};
+: ${PKG_DASH_URL:=https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-${PKG_DASH_VERSION}.tar.gz};
+: ${PKG_DASH_CONFIGURE_ARGS_EXTRA:="--disable-glob --enable-fnmatch"};
+: ${PKG_DASH_INSTALL_FILES_V2:="@dash=bin/sh"};
+
+ex_pkg_register "dash" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

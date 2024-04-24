@@ -1,0 +1,11 @@
+: ${PKG_SBASE_URLS_GIT:="sbase=http://git.suckless.org/sbase@master"};
+: ${PKG_SBASE_DESTDIR:=destdir/suckless};
+: ${PKG_SBASE_CFLAGS_BUILD_EXTRA:="-std=c99 --include=sys/sysmacros.h"};
+: ${PKG_SBASE_IN_TREE:=1};
+: ${PKG_SBASE_MAKE_INSTALL_VNAME:=PREFIX};
+: ${PKG_SBASE_PREFIX:=${PREFIX_NATIVE}/suckless};
+: ${PKG_SBASE_DISABLED:=1};
+
+ex_pkg_register "sbase" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

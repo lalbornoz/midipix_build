@@ -1,0 +1,10 @@
+: ${PKG_LUNIX_DEPENDS:="lua"};
+: ${PKG_LUNIX_URLS_GIT:=lunix=https://github.com/Redfoxmoon3/lunix.git@master};
+: ${PKG_LUNIX_IN_TREE:=1};
+: ${PKG_LUNIX_MAKEFLAGS_BUILD:="all5.3 libdir=${PREFIX_NATIVE}/lib"};
+: ${PKG_LUNIX_MAKEFLAGS_INSTALL_EXTRA:="libdir=lib"};
+: ${PKG_LUNIX_DISABLED:=1};
+
+ex_pkg_register "lunix" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

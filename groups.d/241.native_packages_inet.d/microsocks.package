@@ -1,0 +1,6 @@
+: ${PKG_MICROSOCKS_URLS_GIT:=microsocks=https://github.com/rofl0r/microsocks.git@master};
+: ${PKG_MICROSOCKS_BUILD_DIR:=microsocks};
+
+ex_pkg_register "microsocks" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

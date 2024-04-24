@@ -1,0 +1,9 @@
+: ${PKG_PV_SHA256SUM:=e831951eff0718fba9b1ef286128773b9d0e723e1fbfae88d5a3188814fdc603};
+: ${PKG_PV_VERSION:=1.6.20};
+: ${PKG_PV_URL:=http://www.ivarch.com/programs/sources/pv-${PKG_PV_VERSION}.tar.bz2};
+: ${PKG_PV_DEBUG_CONFIGURE_ARGS_EXTRA:=--enable-debugging};
+: ${PKG_PV_MAKEFLAGS_BUILD_LIST:="LD=${DEFAULT_NATIVE_LD}"};
+
+ex_pkg_register "pv" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

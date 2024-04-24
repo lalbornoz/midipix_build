@@ -1,0 +1,8 @@
+: ${PKG_LIBZ_HOST_SHA256SUM:=abcc2831b7a0e891d0875fa852e9b9510b420d843d3d20aad010f65493fe4f7b};
+: ${PKG_LIBZ_HOST_VERSION:=1.2.8.2015.12.26};
+: ${PKG_LIBZ_HOST_URL:=https://sortix.org/libz/release/libz-${PKG_LIBZ_HOST_VERSION}.tar.gz};
+: ${PKG_LIBZ_HOST_CONFIGURE_ARGS:="--enable-shared --prefix="};
+
+ex_pkg_register "libz_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

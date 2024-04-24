@@ -1,0 +1,10 @@
+: ${PKG_GCC_FULL_DEPENDS:="binutils gmp mpc mpfr musl_full"};
+: ${PKG_GCC_FULL_VERSION:=4.6.4};
+: ${PKG_GCC_FULL_BASE_DIR:=${BUILD_WORKDIR}/gcc-native-${DEFAULT_TARGET}};
+: ${PKG_GCC_FULL_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
+: ${PKG_GCC_FULL_GITROOT:=${DEFAULT_GITROOT}};
+: ${PKG_GCC_FULL_VARS_FILE:="vars/gcc.vars"};
+
+ex_pkg_register "gcc_full" "${RTL_FILEOP_SOURCE_FNAME}" "native_toolchain";
+
+# vim:filetype=sh textwidth=0

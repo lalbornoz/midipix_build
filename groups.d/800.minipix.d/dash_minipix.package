@@ -1,0 +1,6 @@
+: ${PKG_DASH_MINIPIX_INHERIT_FROM:=dash};
+: ${PKG_DASH_MINIPIX_INSTALL_FILES_V2:="+bin/dash=bin/sh"};
+
+ex_pkg_register "dash_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

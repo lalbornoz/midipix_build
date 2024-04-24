@@ -1,0 +1,13 @@
+: ${PKG_LTRIS_DEPENDS:="sdl1"};
+: ${PKG_LTRIS_SHA256SUM:=0ec4ad053e066a296529e923c2f626fa0a19c094c5ae03e44359f9c9e50955a8};
+: ${PKG_LTRIS_VERSION:=1.2.3};
+: ${PKG_LTRIS_URL:=https://sources.voidlinux-ppc.org/ltris-${PKG_LTRIS_VERSION}/ltris-${PKG_LTRIS_VERSION}.tar.gz};
+: ${PKG_LTRIS_CONFIGURE_ARGS_EXTRA:="--with-sdl-prefix=${PREFIX_NATIVE} SDL_LIBS=-L${PREFIX_NATIVE}/lib SDL_CFLAGS=-I${PREFIX_NATIVE}/include"};
+: ${PKG_LTRIS_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/SDL -std=gnu99"};
+: ${PKG_LTRIS_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib -L${PREFIX_NATIVE}/lib/w32lib"};
+: ${PKG_LTRIS_ENV_VARS_EXTRA:="LIBS=-lSDL"};
+: ${PKG_LTRIS_IN_TREE:=1};
+
+ex_pkg_register "ltris" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

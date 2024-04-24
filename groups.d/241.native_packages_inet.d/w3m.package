@@ -1,0 +1,14 @@
+: ${PKG_W3M_DEPENDS:="bdwgc imlib2 libressl ncurses"};
+: ${PKG_W3M_SHA256SUM:=0467bb5429b75749205a3f57b9f5e8abba49929272aeab6fce94ff17953f0784};
+: ${PKG_W3M_VERSION:=0.5.3+git20190105};
+: ${PKG_W3M_URL:=https://github.com/tats/w3m/archive/v${PKG_W3M_VERSION}.tar.gz};
+: ${PKG_W3M_CONFIG_CACHE_EXTRA:="ac_cv_func_setpgrp_void=yes"};
+: ${PKG_W3M_CONFIGURE_ARGS_EXTRA:="--with-ssl --with-imagelib=imlib2 --with-termlib=ncurses --disable-w3mmailer"};
+: ${PKG_W3M_ENV_VARS_EXTRA:="LIBS=-ltinfo"};
+: ${PKG_W3M_IN_TREE:=1};
+: ${PKG_W3M_MAKEFLAGS_PARALLELISE:="-j1"};
+: ${PKG_W3M_SUBDIR:=w3m-0.5.3-git20190105};
+
+ex_pkg_register "w3m" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

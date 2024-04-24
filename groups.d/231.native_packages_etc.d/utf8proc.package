@@ -1,0 +1,5 @@
+: ${PKG_UTF8PROC_URLS_GIT:="utf8proc=https://github.com/JuliaStrings/utf8proc@master"};
+
+ex_pkg_register "utf8proc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

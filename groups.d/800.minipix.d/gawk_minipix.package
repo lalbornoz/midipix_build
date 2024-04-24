@@ -1,0 +1,5 @@
+: ${PKG_GAWK_MINIPIX_INHERIT_FROM:=gawk};
+
+ex_pkg_register "gawk_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,10 @@
+: ${PKG_GDBM_HOST_DEPENDS:="readline_host ncurses_host"};
+: ${PKG_GDBM_HOST_SHA256SUM:=86e613527e5dba544e73208f42b78b7c022d4fa5a6d5498bf18c8d6f745b91dc};
+: ${PKG_GDBM_HOST_VERSION:=1.18.1};
+: ${PKG_GDBM_HOST_URL:=ftp://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_GDBM_HOST_VERSION}.tar.gz};
+: ${PKG_GDBM_HOST_CONFIGURE_ARGS_EXTRA:=--enable-libgdbm-compat};
+: ${PKG_GDBM_HOST_CFLAGS_CONFIGURE_EXTRA:="-fcommon"};
+
+ex_pkg_register "gdbm_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

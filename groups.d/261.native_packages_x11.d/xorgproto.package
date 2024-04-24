@@ -1,0 +1,8 @@
+: ${PKG_XORGPROTO_SHA256SUM:=5d13dbf2be08f95323985de53352c4f352713860457b95ccaf894a647ac06b9e};
+: ${PKG_XORGPROTO_VERSION:=2022.2};
+: ${PKG_XORGPROTO_URL:=https://www.x.org/releases/individual/proto/xorgproto-${PKG_XORGPROTO_VERSION}.tar.xz};
+: ${PKG_XORGPROTO_CONFIGURE_ARGS_EXTRA:="--without-fop --disable-specs --enable-legacy PYTHON=${PREFIX}/bin/python3"};
+
+ex_pkg_register "xorgproto" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,12 @@
+: ${PKG_NGINX_DEPENDS:="libz pcre"};
+: ${PKG_NGINX_SHA256SUM:=958876757782190a1653e14dc26dfc7ba263de310e04c113e11e97d1bef45a42};
+: ${PKG_NGINX_VERSION:=1.20.2};
+: ${PKG_NGINX_URL:=http://nginx.org/download/nginx-${PKG_NGINX_VERSION}.tar.gz};
+: ${PKG_NGINX_CFLAGS_BUILD_EXTRA:="-Wno-sign-compare"};
+: ${PKG_NGINX_CONFIGURE_ARGS:="--prefix="};
+: ${PKG_NGINX_ENV_VARS_EXTRA:=CC=${DEFAULT_NATIVE_CC}};
+: ${PKG_NGINX_IN_TREE:=1};
+
+ex_pkg_register "nginx" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

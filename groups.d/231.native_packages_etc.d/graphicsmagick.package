@@ -1,0 +1,14 @@
+: ${PKG_GRAPHICSMAGICK_DEPENDS:="libz libpng freetype lcms libxml2 tiff libjpeg_turbo bzip2 zstd"};
+: ${PKG_GRAPHICSMAGICK_SHA256SUM:=484fccfd2b2faf6c2ba9151469ece5072bcb91ba4ed73e75ed3d8e46c759d557};
+: ${PKG_GRAPHICSMAGICK_VERSION:=1.3.42};
+: ${PKG_GRAPHICSMAGICK_URL:=https://mirror.midipix.org/graphicsmagick/GraphicsMagick-${PKG_GRAPHICSMAGICK_VERSION}.tar.xz};
+: ${PKG_GRAPHICSMAGICK_CONFIGURE_ARGS_EXTRA:="--enable-shared --with-modules --without-x --without-gs --without-trio --without-wmf --without-gdi32 --without-dps --without-fpx --without-jbig --without-jp2 --without-jxl"};
+: ${PKG_GRAPHICSMAGICK_CFLAGS_CONFIGURE_EXTRA:="-fopenmp -I${PREFIX_NATIVE}/include/freetype2"};
+: ${PKG_GRAPHICSMAGICK_LDFLAGS_CONFIGURE_EXTRA:=-fopenmp};
+: ${PKG_GRAPHICSMAGICK_LIBTOOL=clibtool};
+: ${PKG_GRAPHICSMAGICK_IN_TREE:=1};
+: ${PKG_GRAPHICSMAGICK_NO_PURGE_LA_FILES=1};
+
+ex_pkg_register "graphicsmagick" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

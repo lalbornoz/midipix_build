@@ -1,0 +1,9 @@
+: ${PKG_PROFANITY_DEPENDS:="libffi libstrophe libgcrypt libz glib gpgme ncursesw curl readline sqlite3"};
+: ${PKG_PROFANITY_SHA256SUM:=23f7b2e5c6cf85913b9e7a228802bca9ecb1d1cf3bf8f8f285e9676176a24902};
+: ${PKG_PROFANITY_VERSION:=0.9.5};
+: ${PKG_PROFANITY_URL:=https://profanity-im.github.io/profanity-${PKG_PROFANITY_VERSION}.tar.gz};
+: ${PKG_PROFANITY_CONFIGURE_ARGS_EXTRA:="--disable-python-plugins --disable-icons-and-clipboard --disable-notifications --disable-pgp"};
+
+ex_pkg_register "profanity" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

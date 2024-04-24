@@ -1,0 +1,8 @@
+: ${PKG_LIBSTROPHE_DEPENDS:="libressl expat"};
+: ${PKG_LIBSTROPHE_SHA256SUM:=b3c79b6deeafafc0f622ba3ee3ca67e9a8e7d75edb102588c6b6f52b38c9fa4b};
+: ${PKG_LIBSTROPHE_VERSION=0.12.2};
+: ${PKG_LIBSTROPHE_URL:=https://github.com/strophe/libstrophe/releases/download/${PKG_LIBSTROPHE_VERSION}/libstrophe-${PKG_LIBSTROPHE_VERSION}.tar.xz};
+
+ex_pkg_register "libstrophe" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

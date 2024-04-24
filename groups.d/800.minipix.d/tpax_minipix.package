@@ -1,0 +1,6 @@
+: ${PKG_TPAX_MINIPIX_INHERIT_FROM:=tpax};
+: ${PKG_TPAX_MINIPIX_INHERIT_CONFIGURE_ARGS:="--prefix --strict --host=${DEFAULT_TARGET}"};
+
+ex_pkg_register "tpax_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

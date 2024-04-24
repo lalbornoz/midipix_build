@@ -1,0 +1,13 @@
+: ${PKG_LIBFFI_SHA256SUM:=d06ebb8e1d9a22d19e38d63fdb83954253f39bedc5d46232a05645685722ca37};
+: ${PKG_LIBFFI_VERSION:=3.2.1};
+: ${PKG_LIBFFI_URL:=ftp://sourceware.org/pub/libffi/libffi-${PKG_LIBFFI_VERSION}.tar.gz};
+: ${PKG_LIBFFI_CFLAGS_CONFIGURE_EXTRA:=-D_WIN64};
+: ${PKG_LIBFFI_ENV_VARS_EXTRA:="MAKE=make LIBTOOL=slibtool"};
+: ${PKG_LIBFFI_INSTALL_FILES_V2:="
+	+lib/libffi-${PKG_LIBFFI_VERSION}/include/ffi.h=include/%[FNAME]
+	+lib/libffi-${PKG_LIBFFI_VERSION}/include/ffitarget.h=include/%[FNAME]"};
+: ${PKG_LIBFFI_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/libffi/libffi-${PKG_LIBFFI_VERSION}.midipix.patch"};
+
+ex_pkg_register "libffi" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

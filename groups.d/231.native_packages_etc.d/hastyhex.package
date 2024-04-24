@@ -1,0 +1,9 @@
+: ${PKG_HASTYHEX_URLS_GIT:="hastyhex=https://github.com/skeeto/hastyhex.git@master"};
+: ${PKG_HASTYHEX_IN_TREE:=1};
+: ${PKG_HASTYHEX_CFLAGS_BUILD_EXTRA:="-g3 -O0 -ansi -pedantic -funroll-loops"};
+: ${PKG_HASTYHEX_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_HASTYHEX_INSTALL_FILES_V2:="+../hastyhex/hastyhex=bin/%[FNAME]"};
+
+ex_pkg_register "hastyhex" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

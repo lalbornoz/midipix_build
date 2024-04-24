@@ -1,0 +1,7 @@
+: ${PKG_LIBATOMIC_OPS_SHA256SUM:=587edf60817f56daf1e1ab38a4b3c729b8e846ff67b4f62a6157183708f099af};
+: ${PKG_LIBATOMIC_OPS_VERSION:=7.6.10};
+: ${PKG_LIBATOMIC_OPS_URL:=https://github.com/ivmai/libatomic_ops/releases/download/v${PKG_LIBATOMIC_OPS_VERSION}/libatomic_ops-${PKG_LIBATOMIC_OPS_VERSION}.tar.gz};
+
+ex_pkg_register "libatomic_ops" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

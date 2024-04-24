@@ -1,0 +1,17 @@
+: ${PKG_WGET_DEPENDS:="gnutls gpgme libz libidn2 libpsl libiconv libunistring"};
+: ${PKG_WGET_SHA256SUM:=fa2dc35bab5184ecbc46a9ef83def2aaaa3f4c9f3c97d4bd19dcb07d4da637de};
+: ${PKG_WGET_VERSION:=1.24.5};
+: ${PKG_WGET_URL:=https://ftp.gnu.org/gnu/wget/wget-${PKG_WGET_VERSION}.tar.gz};
+: ${PKG_WGET_CONFIGURE_ARGS_EXTRA:="--with-ssl=gnutls --with-gpgme-prefix=${PREFIX_NATIVE}"};
+: ${PKG_WGET_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
+: ${PKG_WGET_PYTHON:=${PREFIX}/bin/python3};
+: ${PKG_WGET_CONFIG_CACHE_EXTRA:="
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
+: ${PKG_WGET2_DEPENDS:="gnutls gpgme libz libidn2 libpsl bzip2 pcre2 xz zstd"};
+: ${PKG_WGET2_SHA256SUM:=0bb7fa03697bb5b8d05e1b5e15b863440826eb845874c4ffb5e32330f9845db1};
+: ${PKG_WGET2_VERSION:=2.0.1};
+: ${PKG_WGET2_URL:=https://ftp.gnu.org/gnu/wget/wget2-${PKG_WGET2_VERSION}.tar.gz};
+
+ex_pkg_register "wget" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

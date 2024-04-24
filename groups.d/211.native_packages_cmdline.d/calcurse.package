@@ -1,0 +1,10 @@
+: ${PKG_CALCURSE_DEPENDS:="ncursesw"};
+: ${PKG_CALCURSE_SHA256SUM:=d86bb37014fd69b8d83ccb904ac979c6b8ddf59ee3dbc80f5a274525e4d5830a};
+: ${PKG_CALCURSE_VERSION:=4.8.1};
+: ${PKG_CALCURSE_URL:=https://www.calcurse.org/files/calcurse-${PKG_CALCURSE_VERSION}.tar.gz};
+: ${PKG_CALCURSE_CONFIGURE_ARGS_EXTRA:="--without-asciidoc"};
+: ${PKG_CALCURSE_ENV_VARS_EXTRA:="LIBS=-ltinfow"};
+
+ex_pkg_register "calcurse" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

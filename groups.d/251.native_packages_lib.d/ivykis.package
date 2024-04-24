@@ -1,0 +1,8 @@
+: ${PKG_IVYKIS_SHA256SUM:=6ef8ed255814e5068473356877da55d67493eeafd978884cdecc5a3e58067129};
+: ${PKG_IVYKIS_VERSION:=0.42.4};
+: ${PKG_IVYKIS_URL:=https://mirrors.dotsrc.org/debian/pool/main/i/ivykis/ivykis_${PKG_IVYKIS_VERSION}.orig.tar.gz};
+: ${PKG_IVYKIS_SUBDIR=ivykis-${PKG_IVYKIS_VERSION}};
+
+ex_pkg_register "ivykis" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

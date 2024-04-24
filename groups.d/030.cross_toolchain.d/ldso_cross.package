@@ -1,0 +1,13 @@
+: ${PKG_LDSO_CROSS_PREFIX="${PREFIX_CROSS}"};
+: ${PKG_LDSO_CROSS_DEPENDS:="gcc_stage1_cross musl_full_cross psxtypes_cross"};
+: ${PKG_LDSO_CROSS_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
+: ${PKG_LDSO_CROSS_BUILD_TYPE:=cross};
+: ${PKG_LDSO_CROSS_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO"};
+: ${PKG_LDSO_CROSS_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET} --disable-shared"};
+: ${PKG_LDSO_CROSS_INSTALL_FILES_V2:="@../%[_target]/lib/libldso.a=%[_prefix]/lib/libldso.a"};
+: ${PKG_LDSO_CROSS_MAKEFLAGS_BUILD_EXTRA:=STATIC_LIB_NAME=libldso.a};
+: ${PKG_LDSO_CROSS_MAKEFLAGS_INSTALL_EXTRA:=STATIC_LIB_NAME=libldso.a};
+
+ex_pkg_register "ldso_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

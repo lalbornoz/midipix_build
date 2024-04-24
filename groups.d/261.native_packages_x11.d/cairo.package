@@ -1,0 +1,9 @@
+: ${PKG_CAIRO_DEPENDS:="fontconfig freetype ghostpdl glib libXext libpng pixman"};
+: ${PKG_CAIRO_VERSION:=1.15.6};
+: ${PKG_CAIRO_URL:=http://cairographics.org/snapshots/cairo-${PKG_CAIRO_VERSION}.tar.xz};
+: ${PKG_CAIRO_SHA256SUM:=5228e0a1f8fd14317f30f08f3dd72971bca432f8cdd2281d421fdcc2279de58c};
+: ${PKG_CAIRO_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
+
+ex_pkg_register "cairo" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

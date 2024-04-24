@@ -1,0 +1,9 @@
+: ${PKG_HUNSPELL_DEPENDS:="readline"};
+: ${PKG_HUNSPELL_SHA256SUM:=b2d9c5369c2cc7f321cb5983fda2dbf007dce3d9e17519746840a6f0c4bf7444};
+: ${PKG_HUNSPELL_VERSION:=1.7.1};
+: ${PKG_HUNSPELL_URL:=https://github.com/hunspell/hunspell/releases/download/v${PKG_HUNSPELL_VERSION}/hunspell-${PKG_HUNSPELL_VERSION}.tar.gz};
+: ${PKG_HUNSPELL_CONFIGURE_ARGS_EXTRA:="--with-ui --with-readline"};
+
+ex_pkg_register "hunspell" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,8 @@
+: ${PKG_DIFFUTILS_DEPENDS:="libiconv"};
+: ${PKG_DIFFUTILS_SHA256SUM:=90e5e93cc724e4ebe12ede80df1634063c7a855692685919bfe60b556c9bd09e};
+: ${PKG_DIFFUTILS_VERSION:=3.10};
+: ${PKG_DIFFUTILS_URL:=https://ftp.gnu.org/gnu/diffutils/diffutils-${PKG_DIFFUTILS_VERSION}.tar.xz};
+
+ex_pkg_register "diffutils" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

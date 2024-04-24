@@ -1,0 +1,9 @@
+: ${PKG_PANGO_DEPENDS:="cairo fontconfig harfbuzz"};
+: ${PKG_PANGO_VERSION:=1.40.11};
+: ${PKG_PANGO_SHA256SUM:=5b11140590e632739e4151cae06b8116160d59e22bf36a3ccd5df76d1cf0383e};
+: ${PKG_PANGO_URL:=http://ftp.gnome.org/pub/GNOME/sources/pango/${PKG_PANGO_VERSION%.*}/pango-${PKG_PANGO_VERSION}.tar.xz};
+: ${PKG_PANGO_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2 -I${PREFIX_NATIVE}/include/harfbuzz};
+
+ex_pkg_register "pango" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

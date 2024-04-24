@@ -1,0 +1,8 @@
+: ${PKG_RE2C_HOST_DEPENDS:="python3_host"};
+: ${PKG_RE2C_HOST_SHA256SUM:=0ac299ad359e3f512b06a99397d025cfff81d3be34464ded0656f8a96676c029};
+: ${PKG_RE2C_HOST_VERSION:=3.1};
+: ${PKG_RE2C_HOST_URL:=https://github.com/skvadrik/re2c/releases/download/${PKG_RE2C_HOST_VERSION}/re2c-${PKG_RE2C_HOST_VERSION}.tar.xz};
+
+ex_pkg_register "re2c_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

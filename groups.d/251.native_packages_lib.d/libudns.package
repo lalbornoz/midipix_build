@@ -1,0 +1,5 @@
+: ${PKG_LIBUDNS_URLS_GIT:=libudns=https://github.com/shadowsocks/libudns.git@master};
+
+ex_pkg_register "libudns" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

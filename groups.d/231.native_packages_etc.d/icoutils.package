@@ -1,0 +1,11 @@
+: ${PKG_ICOUTILS_DEPENDS:="libpng"};
+: ${PKG_ICOUTILS_SHA256SUM:=17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0};
+: ${PKG_ICOUTILS_VERSION:=0.32.3};
+: ${PKG_ICOUTILS_URL:=http://savannah.nongnu.org/download/icoutils/icoutils-${PKG_ICOUTILS_VERSION}.tar.bz2};
+: ${PKG_ICOUTILS_CONFIG_CACHE_EXTRA:="
+am_cv_func_working_getline=yes
+gl_cv_func_getopt_gnu=yes"};
+
+ex_pkg_register "icoutils" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

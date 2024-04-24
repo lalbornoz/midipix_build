@@ -1,0 +1,9 @@
+: ${PKG_ASPELL_DEPENDS:=ncursesw};
+: ${PKG_ASPELL_SHA256SUM:=f9b77e515334a751b2e60daab5db23499e26c9209f5e7b7443b05235ad0226f2};
+: ${PKG_ASPELL_VERSION:=0.60.8};
+: ${PKG_ASPELL_URL:=https://ftp.gnu.org/gnu/aspell/aspell-${PKG_ASPELL_VERSION}.tar.gz};
+: ${PKG_ASPELL_LDFLAGS_CONFIGURE_EXTRA:="-ltinfow"};
+
+ex_pkg_register "aspell" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

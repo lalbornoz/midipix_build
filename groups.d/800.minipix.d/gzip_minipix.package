@@ -1,0 +1,7 @@
+: ${PKG_GZIP_MINIPIX_INHERIT_FROM:=gzip};
+: ${PKG_GZIP_MINIPIX_INSTALL_TARGET:=install-binPROGRAMS};
+: ${PKG_GZIP_MINIPIX_MAKEFLAGS_INSTALL_EXTRA:="OBJA="};
+
+ex_pkg_register "gzip_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

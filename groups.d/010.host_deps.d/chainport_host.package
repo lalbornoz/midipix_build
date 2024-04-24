@@ -1,0 +1,10 @@
+: ${PKG_CHAINPORT_HOST_URLS_GIT:="chainport=${DEFAULT_GITROOT}/ports/chainport"};
+: ${PKG_CHAINPORT_HOST_BUILD_STEPS_DISABLE:="build install_make install_rpm"};
+: ${PKG_CHAINPORT_HOST_NO_LOG_VARS:=1};
+: ${PKG_CHAINPORT_HOST_INSTALL_FILES_V2:="
+	-=%[_workdir]/chainport
+	+../chainport=%[_workdir]/chainport"};
+
+ex_pkg_register "chainport_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

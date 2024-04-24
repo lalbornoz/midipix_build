@@ -1,0 +1,9 @@
+: ${PKG_PERK_DEPENDS:="mdso"};
+: ${PKG_PERK_URLS_GIT:="perk=${DEFAULT_GITROOT}/perk"};
+: ${PKG_PERK_CFLAGS_CONFIGURE:="-I${PREFIX_NATIVE}/include"};
+: ${PKG_PERK_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET}"};
+: ${PKG_PERK_INSTALL_FILES_V2:="@perk=bin/${DEFAULT_TARGET}-perk"};
+
+ex_pkg_register "perk" "${RTL_FILEOP_SOURCE_FNAME}" "native_tools";
+
+# vim:filetype=sh textwidth=0

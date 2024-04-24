@@ -1,0 +1,10 @@
+: ${PKG_MPC_HOST_DEPENDS:="gmp_host mpfr_host"};
+: ${PKG_MPC_HOST_SHA256SUM:=ed5a815cfea525dc778df0cb37468b9c1b554aaf30d9328b1431ca705b7400ff};
+: ${PKG_MPC_HOST_VERSION:=1.0.1};
+: ${PKG_MPC_HOST_URL:=ftp://ftp.gnu.org/gnu/mpc/mpc-${PKG_MPC_HOST_VERSION}.tar.gz};
+: ${PKG_MPC_HOST_CONFIGURE_ARGS:="--disable-assembly --disable-nls --prefix= --with-gmp=${PREFIX} --with-mpfr=${PREFIX}"};
+: ${PKG_MPC_HOST_PREFIX:=${PREFIX}};
+
+ex_pkg_register "mpc_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_toolchain";
+
+# vim:filetype=sh textwidth=0

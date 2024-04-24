@@ -1,0 +1,9 @@
+: ${PKG_LIBSM_DEPENDS:="libICE xtrans"};
+: ${PKG_LIBSM_SHA256SUM:=fdcbe51e4d1276b1183da77a8a4e74a137ca203e0bcfb20972dd5f3347e97b84};
+: ${PKG_LIBSM_VERSION:=1.2.4};
+: ${PKG_LIBSM_URL:=https://www.x.org/releases/individual/lib/libSM-${PKG_LIBSM_VERSION}.tar.xz};
+: ${PKG_LIBSM_CONFIGURE_ARGS_EXTRA:="--disable-unix-transport"};
+
+ex_pkg_register "libsm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

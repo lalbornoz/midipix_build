@@ -1,0 +1,7 @@
+: ${PKG_SOCAT_SHA256SUM:=d9ed2075abed7b3ec9730ed729b4c8e287c502181c806d4487020418a6e2fc36};
+: ${PKG_SOCAT_VERSION:=1.7.3.4};
+: ${PKG_SOCAT_URL:=http://www.dest-unreach.org/socat/download/socat-${PKG_SOCAT_VERSION}.tar.gz};
+
+ex_pkg_register "socat" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

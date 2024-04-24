@@ -1,0 +1,9 @@
+: ${PKG_VORBIS_TOOLS_DEPENDS:="curl libflac libogg libvorbis"};
+: ${PKG_VORBIS_TOOLS_SHA256SUM:=db7774ec2bf2c939b139452183669be84fda5774d6400fc57fde37f77624f0b0};
+: ${PKG_VORBIS_TOOLS_VERSION:=1.4.2};
+: ${PKG_VORBIS_TOOLS_URL:=https://ftp.osuosl.org/pub/xiph/releases/vorbis/vorbis-tools-${PKG_VORBIS_TOOLS_VERSION}.tar.gz};
+: ${PKG_VORBIS_TOOLS_CONFIGURE_ARGS_EXTRA:="--disable-ogg123 --without-speex --without-kate"};
+
+ex_pkg_register "vorbis_tools" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

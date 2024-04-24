@@ -1,0 +1,9 @@
+: ${PKG_GDBM_DEPENDS:="ncurses"};
+: ${PKG_GDBM_SHA256SUM:=74b1081d21fff13ae4bd7c16e5d6e504a4c26f7cde1dca0d963a484174bbcacd};
+: ${PKG_GDBM_VERSION:=1.23};
+: ${PKG_GDBM_URL:=https://ftp.gnu.org/gnu/gdbm/gdbm-${PKG_GDBM_VERSION}.tar.gz};
+: ${PKG_GDBM_CONFIGURE_ARGS_EXTRA:=--enable-libgdbm-compat};
+
+ex_pkg_register "gdbm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,9 @@
+: ${PKG_NTUX_MINIPIX_INHERIT_FROM:=ntux};
+: ${PKG_NTUX_MINIPIX_CFLAGS_CONFIGURE:="${DEFAULT_CFLAGS_RUNTIME} --sysroot=${PREFIX_NATIVE} -O0 -DNTUX_STANDALONE"};
+: ${PKG_NTUX_MINIPIX_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET} --bindir=/bin"};
+: ${PKG_NTUX_MINIPIX_LDFLAGS_BUILD:="--sysroot=${PREFIX_NATIVE}"};
+: ${PKG_NTUX_MINIPIX_LDFLAGS_CONFIGURE:="--sysroot=${PREFIX_NATIVE}"};
+
+ex_pkg_register "ntux_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

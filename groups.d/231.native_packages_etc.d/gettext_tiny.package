@@ -1,0 +1,11 @@
+: ${PKG_GETTEXT_TINY_DEPENDS:="libiconv"};
+: ${PKG_GETTEXT_TINY_SHA256SUM:=29cc165e27e83d2bb3760118c2368eadab550830d962d758e51bd36eb860f383};
+: ${PKG_GETTEXT_TINY_VERSION:=0.3.2};
+: ${PKG_GETTEXT_TINY_URL:=https://toolchains.bootlin.com/downloads/releases/sources/gettext-tiny-${PKG_GETTEXT_TINY_VERSION}/gettext-tiny-${PKG_GETTEXT_TINY_VERSION}.tar.gz};
+: ${PKG_GETTEXT_TINY_BUILD_DIR:=gettext-tiny-${PKG_GETTEXT_TINY_VERSION}};
+: ${PKG_GETTEXT_TINY_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
+: ${PKG_GETTEXT_TINY_LDFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE:+${NATIVE_PACKAGES_CFLAGS_CONFIGURE} }-liconv"};
+
+ex_pkg_register "gettext_tiny" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

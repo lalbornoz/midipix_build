@@ -1,0 +1,12 @@
+: ${PKG_GCC_FULL_CROSS_DEPENDS:="gcc_stage1_cross gcc_libstdcpp_v3_cross ldso_cross musl_full_cross"};
+: ${PKG_GCC_FULL_CROSS_VERSION:=4.6.4};
+: ${PKG_GCC_FULL_CROSS_BASE_DIR:=${BUILD_WORKDIR}/gcc-cross-${DEFAULT_TARGET}};
+: ${PKG_GCC_FULL_CROSS_BUILD_DIR:="cbb-gcc-4.6.4-cross-x86_64-nt64-midipix"};
+: ${PKG_GCC_FULL_CROSS_GITROOT:=${DEFAULT_GITROOT}};
+: ${PKG_GCC_FULL_CROSS_NO_CLEAN_BASE_DIR:=1};
+: ${PKG_GCC_FULL_CROSS_PREFIX:=${PREFIX_LOCAL}};
+: ${PKG_GCC_FULL_CROSS_VARS_FILE:="vars/gcc.vars"};
+
+ex_pkg_register "gcc_full_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,10 @@
+: ${PKG_PSXTYPES_CROSS_PREFIX:="${PREFIX_CROSS}"};
+: ${PKG_PSXTYPES_CROSS_DEPENDS:="gcc_stage1_cross"};
+: ${PKG_PSXTYPES_CROSS_URLS_GIT:=psxtypes=${DEFAULT_GITROOT}/psxtypes};
+: ${PKG_PSXTYPES_CROSS_BUILD_STEPS_DISABLE:=build};
+: ${PKG_PSXTYPES_CROSS_CONFIGURE_ARGS:="--disable-nls --prefix="};
+: ${PKG_PSXTYPES_CROSS_IN_TREE:=1};
+
+ex_pkg_register "psxtypes_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

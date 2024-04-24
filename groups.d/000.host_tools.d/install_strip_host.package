@@ -1,0 +1,9 @@
+: ${PKG_INSTALL_STRIP_HOST_BUILD_STEPS_DISABLE:="build install_make install_rpm"};
+: ${PKG_INSTALL_STRIP_HOST_NO_LOG_VARS:=1};
+: ${PKG_INSTALL_STRIP_HOST_INSTALL_FILES_V2:="
+	+%[_files]/bin/\%[_target]-install-strip=bin/%[_target]-install-strip
+	m0755=bin/%[_target]-install-strip"};
+
+ex_pkg_register "install_strip_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

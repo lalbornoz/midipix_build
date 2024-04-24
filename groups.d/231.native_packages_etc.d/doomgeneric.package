@@ -1,0 +1,12 @@
+: ${PKG_DOOMGENERIC_DEPENDS:="w32api w32lib"};
+: ${PKG_DOOMGENERIC_URLS_GIT:=doomgeneric=https://github.com/Redfoxymoon/doomgeneric.git@midipix};
+: ${PKG_DOOMGENERIC_BUILD_DIR:=doomgeneric/doomgeneric};
+: ${PKG_DOOMGENERIC_MAKEFLAGS_BUILD_EXTRA:=-f Makefile.midipix};
+: ${PKG_DOOMGENERIC_CFLAGS_BUILD_EXTRA:="-DWINAPI_ANSI_DEFAULT -I${PREFIX_NATIVE}/include/w32api.ports"};
+: ${PKG_DOOMGENERIC_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
+: ${PKG_DOOMGENERIC_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_DOOMGENERIC_INSTALL_FILES_V2:="+../doomgeneric/doomgeneric/doomgeneric=bin/%[FNAME]"};
+
+ex_pkg_register "doomgeneric" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

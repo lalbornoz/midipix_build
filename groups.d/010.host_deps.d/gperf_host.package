@@ -1,0 +1,7 @@
+: ${PKG_GPERF_HOST_SHA256SUM:=588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2};
+: ${PKG_GPERF_HOST_VERSION:=3.1};
+: ${PKG_GPERF_HOST_URL:=https://ftp.gnu.org/gnu/gperf/gperf-${PKG_GPERF_HOST_VERSION}.tar.gz};
+
+ex_pkg_register "gperf_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

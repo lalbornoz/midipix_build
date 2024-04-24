@@ -1,0 +1,10 @@
+: ${PKG_PSXSTUB_HOST_PREFIX:="${PREFIX_NATIVE}"};
+: ${PKG_PSXSTUB_HOST_DEPENDS:="gcc_stage1_host"};
+: ${PKG_PSXSTUB_HOST_URLS_GIT:="psxstub=${DEFAULT_GITROOT}/psxstub"};
+: ${PKG_PSXSTUB_HOST_BUILD_STEPS_DISABLE:=build};
+: ${PKG_PSXSTUB_HOST_ENV_VARS_EXTRA:=TARGET=${DEFAULT_TARGET}};
+: ${PKG_PSXSTUB_HOST_IN_TREE:=1};
+
+ex_pkg_register "psxstub_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_toolchain";
+
+# vim:filetype=sh textwidth=0

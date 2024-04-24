@@ -1,0 +1,9 @@
+: ${PKG_LIBXAW_DEPENDS:="libX11 libXext libXmu libXpm libXt xorgproto"};
+: ${PKG_LIBXAW_SHA256SUM:=76aef98ea3df92615faec28004b5ce4e5c6855e716fa16de40c32030722a6f8e};
+: ${PKG_LIBXAW_VERSION:=1.0.14};
+: ${PKG_LIBXAW_URL:=https://www.x.org/releases/individual/lib/libXaw-${PKG_LIBXAW_VERSION}.tar.bz2};
+: ${PKG_LIBXAW_CONFIGURE_ARGS_EXTRA:="--without-fop"};
+
+ex_pkg_register "libxaw" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

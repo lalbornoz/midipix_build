@@ -1,0 +1,10 @@
+: ${PKG_CPARSER_DEPENDS:="libfirm"};
+: ${PKG_CPARSER_URLS_GIT:="cparser=http://github.com/Lucía Andrea Illanes Albornoz/cparser.git@main bcparser=${DEFAULT_GITROOT}/compilers/bcparser@main"};
+: ${PKG_CPARSER_BUILD_DIR:=build/cparser};
+: ${PKG_CPARSER_CONFIGURE:=bcparser/configure};
+: ${PKG_CPARSER_CONFIGURE_ARGS:="--source-dir=../../cparser --prefix="};
+: ${PKG_CPARSER_VARS_FILE:="vars/libfirm.vars"}
+
+ex_pkg_register "cparser" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

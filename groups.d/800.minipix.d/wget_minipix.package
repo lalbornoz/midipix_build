@@ -1,0 +1,5 @@
+: ${PKG_WGET_MINIPIX_INHERIT_FROM:=wget};
+
+ex_pkg_register "wget_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

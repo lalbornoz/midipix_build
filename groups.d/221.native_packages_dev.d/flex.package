@@ -1,0 +1,9 @@
+: ${PKG_FLEX_SHA256SUM:=e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995};
+: ${PKG_FLEX_VERSION:=2.6.4};
+: ${PKG_FLEX_URL:=https://github.com/westes/flex/releases/download/v${PKG_FLEX_VERSION}/flex-${PKG_FLEX_VERSION}.tar.gz};
+: ${PKG_FLEX_CFLAGS_CONFIGURE_EXTRA:="-D_GNU_SOURCE"};
+: ${PKG_FLEX_CONFIGURE_ARGS_EXTRA:=--disable-libfl};
+
+ex_pkg_register "flex" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,10 @@
+: ${PKG_CURL_DEPENDS:="gnutls libpsl libidn2 libz zstd"};
+: ${PKG_CURL_SHA256SUM:=6fea2aac6a4610fbd0400afb0bcddbe7258a64c63f1f68e5855ebc0c659710cd};
+: ${PKG_CURL_VERSION:=8.7.1};
+: ${PKG_CURL_URL:=https://curl.haxx.se/download/curl-${PKG_CURL_VERSION}.tar.xz};
+: ${PKG_CURL_CONFIGURE_ARGS_EXTRA:="--disable-symbol-hiding --enable-shared --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-ca-path=/etc/ssl/certs --with-gnutls --with-libssh --without-openssl --without-librtmp --without-hyper --without-brotli --without-gssapi --disable-socketpair --disable-unix-sockets --with-libidn2"};
+: ${PKG_CURL_FORCE_AUTORECONF:=1};
+
+ex_pkg_register "curl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

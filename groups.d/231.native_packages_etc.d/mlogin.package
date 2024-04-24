@@ -1,0 +1,7 @@
+: ${PKG_MLOGIN_URLS_GIT:="mlogin=https://dev.midipix.org/env/mlogin.git@main"};
+: ${PKG_MLOGIN_BUILD_DIR:=mlogin};
+: ${PKG_MLOGIN_FORCE_AUTORECONF:=1};
+
+ex_pkg_register "mlogin" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

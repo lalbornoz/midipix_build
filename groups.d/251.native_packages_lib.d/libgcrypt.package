@@ -1,0 +1,13 @@
+: ${PKG_LIBGCRYPT_DEPENDS:="libgpg_error"};
+: ${PKG_LIBGCRYPT_SHA256SUM:=8b0870897ac5ac67ded568dcfadf45969cfa8a6beb0fd60af2a9eadc2a3272aa};
+: ${PKG_LIBGCRYPT_VERSION:=1.10.3};
+: ${PKG_LIBGCRYPT_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${PKG_LIBGCRYPT_VERSION}.tar.bz2};
+: ${PKG_LIBGCRYPT_CONFIG_CACHE_EXTRA:="
+gcry_cv_broken_visibility_attribute=no
+gcry_cv_visibility_attribute=yes
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
+: ${PKG_LIBGCRYPT_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE} --disable-asm --disable-padlock-support --disable-aesni-support --disable-pclmul-support --disable-sse41-support --disable-drng-support --disable-avx-support --disable-avx2-support --disable-amd64-as-feature-detection};
+
+ex_pkg_register "libgcrypt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

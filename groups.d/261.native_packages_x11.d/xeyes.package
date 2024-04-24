@@ -1,0 +1,8 @@
+: ${PKG_XEYES_DEPENDS:="libX11 libXext libXmu libXt Xrender"};
+: ${PKG_XEYES_SHA256SUM:=57bcec0d2d167af9e5d44d0dbd74c6d7c0f0591cd0608952b23c749fdd910553};
+: ${PKG_XEYES_VERSION:=1.1.2};
+: ${PKG_XEYES_URL:=https://www.x.org/releases/individual/app/xeyes-${PKG_XEYES_VERSION}.tar.bz2};
+
+ex_pkg_register "xeyes" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

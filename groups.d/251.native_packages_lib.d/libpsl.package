@@ -1,0 +1,8 @@
+: ${PKG_LIBPSL_DEPENDS:="libidn2 libunistring libiconv"}
+: ${PKG_LIBPSL_SHA256SUM:=e35991b6e17001afa2c0ca3b10c357650602b92596209b7492802f3768a6285f};
+: ${PKG_LIBPSL_VERSION:=0.21.2};
+: ${PKG_LIBPSL_URL:=https://github.com/rockdaboot/libpsl/releases/download/${PKG_LIBPSL_VERSION}/libpsl-${PKG_LIBPSL_VERSION}.tar.gz};
+
+ex_pkg_register "libpsl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

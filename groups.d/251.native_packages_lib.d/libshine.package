@@ -1,0 +1,8 @@
+: ${PKG_LIBSHINE_SHA256SUM:=58e61e70128cf73f88635db495bfc17f0dde3ce9c9ac070d505a0cd75b93d384};
+: ${PKG_LIBSHINE_VERSION:=3.1.1};
+: ${PKG_LIBSHINE_URL:=https://github.com/toots/shine/releases/download/${PKG_LIBSHINE_VERSION}/shine-${PKG_LIBSHINE_VERSION}.tar.gz};
+: ${PKG_LIBSHINE_IN_TREE:=1};
+
+ex_pkg_register "libshine" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

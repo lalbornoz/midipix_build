@@ -1,0 +1,8 @@
+: ${PKG_LESS_DEPENDS:="ncurses ncursesw"};
+: ${PKG_LESS_SHA256SUM:=2911b5432c836fa084c8a2e68f6cd6312372c026a58faaa98862731c8b6052e8};
+: ${PKG_LESS_VERSION:=643};
+: ${PKG_LESS_URL:=http://www.greenwoodsoftware.com/less/less-${PKG_LESS_VERSION}.tar.gz};
+
+ex_pkg_register "less" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

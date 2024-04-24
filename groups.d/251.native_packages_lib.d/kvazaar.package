@@ -1,0 +1,7 @@
+: ${PKG_KVAZAAR_SHA256SUM:=ca30575026d2f1a1201af4b94697bb0fcd05913388008631dc3332bae94122bd};
+: ${PKG_KVAZAAR_VERSION:=2.3.1};
+: ${PKG_KVAZAAR_URL:=https://github.com/ultravideo/kvazaar/releases/download/v${PKG_KVAZAAR_VERSION}/kvazaar-${PKG_KVAZAAR_VERSION}.tar.xz};
+
+ex_pkg_register "kvazaar" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

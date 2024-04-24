@@ -1,0 +1,11 @@
+: ${PKG_SCREEN_DEPENDS:="ncursesw"};
+: ${PKG_SCREEN_SHA256SUM:=f9335281bb4d1538ed078df78a20c2f39d3af9a4e91c57d084271e0289c730f4};
+: ${PKG_SCREEN_VERSION:=4.9.0};
+: ${PKG_SCREEN_URL:=https://ftp.gnu.org/gnu/screen/screen-${PKG_SCREEN_VERSION}.tar.gz};
+: ${PKG_SCREEN_CONFIGURE_ARGS_EXTRA:="--disable-pam"};
+: ${PKG_SCREEN_IN_TREE:=1};
+: ${PKG_SCREEN_MAKEFLAGS_PARALLELISE:="-j1"};
+
+ex_pkg_register "screen" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

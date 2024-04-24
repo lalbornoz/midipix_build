@@ -1,0 +1,11 @@
+: ${PKG_WEECHAT_DEPENDS:="aspell curl gnutls libgcrypt libz ncursesw perl"};
+: ${PKG_WEECHAT_SHA256SUM:=d9d27fac127c724564cf28c6179fa6ecc79a61f9dad09a3b251500f2b0755409};
+: ${PKG_WEECHAT_VERSION:=3.8};
+: ${PKG_WEECHAT_URL:=https://weechat.org/files/src/weechat-${PKG_WEECHAT_VERSION}.tar.gz};
+: ${PKG_WEECHAT_CONFIGURE_ARGS_EXTRA:="--disable-guile --disable-javascript --disable-python --disable-ruby --disable-tcl --enable-perl PERL_CFLAGS=-I${PREFIX_NATIVE}/lib/perl5/5.36.0/${DEFAULT_TARGET}/CORE PERL_LFLAGS=-lperl"};
+: ${PKG_WEECHAT_ENV_VARS_EXTRA:="CURL_CONFIG=${PREFIX_NATIVE}/bin/curl-config:LIBGCRYPT_CONFIG=${PREFIX_NATIVE}/bin/libgcrypt-config:PKGCONFIG=${DEFAULT_TARGET}-pkg-config"};
+: ${PKG_WEECHAT_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/lua5.4 -I${PREFIX_NATIVE}/include/php -I${PREFIX_NATIVE}/include/php/main -I${PREFIX_NATIVE}/include/php/Zend -I${PREFIX_NATIVE}/include/php/TSRM"};
+
+ex_pkg_register "weechat" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

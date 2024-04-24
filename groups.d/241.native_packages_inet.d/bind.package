@@ -1,0 +1,10 @@
+: ${PKG_BIND_DEPENDS:="curl libressl libz"};
+: ${PKG_BIND_SHA256SUM:=6c044e9ea81add9dbbd2f5dfc224964cc6b6e364e43a8d6d8b574d9282651802};
+: ${PKG_BIND_VERSION:=9.13.2};
+: ${PKG_BIND_URL:=https://ftp.isc.org/isc/bind/${PKG_BIND_VERSION}/bind-${PKG_BIND_VERSION}.tar.gz};
+: ${PKG_BIND_CONFIGURE_ARGS_EXTRA:="--with-libtool --disable-backtrace --with-eddsa=no --with-ecdsa=yes --with-gssapi=no --with-libxml2=no --with-libjson=no --with-openssl=${PREFIX_NATIVE} --without-lmdb BUILD_CC=gcc"};
+: ${PKG_BIND_MAKEFLAGS_PARALLELISE:="-j1"};
+
+ex_pkg_register "bind" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

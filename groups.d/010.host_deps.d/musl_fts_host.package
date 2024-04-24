@@ -1,0 +1,7 @@
+: ${PKG_MUSL_FTS_HOST_SHA256SUM:=32dfe02768f1d3d91ab04df4fbdb7922cd34cd529ce7081a78c3ca8b8652d1ee};
+: ${PKG_MUSL_FTS_HOST_VERSION:=1.2.7};
+: ${PKG_MUSL_FTS_HOST_URL:=https://midipix.org/mirror/musl-fts/musl-fts-${PKG_MUSL_FTS_HOST_VERSION}.tar.xz};
+
+ex_pkg_register "musl_fts_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

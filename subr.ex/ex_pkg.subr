@@ -257,7 +257,7 @@ ex_pkg_load_groups() {
 		_eplg_pkg_names="";
 
 	for _eplg_fname in $(find ./groups.d -name *.group | sort); do
-		rtl_fileop source_opt "${_eplg_fname}";
+		rtl_fileop source "${_eplg_fname}";
 
 		_eplg_group="${_eplg_fname##*/}";
 		_eplg_group="${_eplg_group%.group}";
@@ -305,6 +305,10 @@ ex_pkg_load_groups() {
 		fi;
 	done;
 
+	for _eplg_fname in $(find ./groups.d -mindepth 2 -name *.package | sort); do
+		rtl_fileop source_with_fnamevar "${_eplg_fname}";
+	done;
+
 	_eplg_build_groups="$(rtl_uniq "${_eplg_build_groups}")";
 	eval ${_eplg_rgroups}=\"${_eplg_build_groups}\";
 
@@ -312,6 +316,33 @@ ex_pkg_load_groups() {
 		_eplg_build_groups_noauto="$(rtl_uniq "${_eplg_build_groups_noauto}")";
 		eval ${_eplg_rgroups_noauto}=\"${_eplg_build_groups_noauto}\";
 	fi;
+
+	return 0;
+};
+
+#
+# ex_pkg_register() - register single package
+# @_pkg_name:		single package name
+# @_fname:		pathname to file package is defined in, relative to midipix_build root
+# @[_group_name]:	optional build group name; inferred from @_fname if not specified
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure.
+#
+ex_pkg_register() {
+	local	_epr_pkg_name="${1}" _epr_fname="${2}" _epr_group_name="${3:-}"	\
+		_epr_group_name_uc="" _epr_group_noautofl=0;
+
+	if [ "${_epr_group_name:+1}" != 1 ]; then
+		_epr_group_name="${_epr_fname#./*/}";
+		_epr_group_name="${_epr_group_name%%/*}";
+		_epr_group_name="${_epr_group_name%.d}";
+		_epr_group_name="${_epr_group_name#*.}";
+	fi;
+
+	rtl_toupper2 \$_epr_group_name \$_epr_group_name_uc;
+	rtl_lconcat "\$${_epr_group_name_uc}_PACKAGES" "${_epr_pkg_name}";
+	rtl_set_var_unsafe -u "PKG_${_epr_pkg_name}_GROUP" "${_epr_group_name}";
+	rtl_set_var_unsafe -u "PKG_${_epr_pkg_name}_GROUP_FNAME" "${_epr_fname}";
 
 	return 0;
 };

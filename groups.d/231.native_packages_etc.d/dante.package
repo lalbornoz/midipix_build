@@ -1,0 +1,10 @@
+: ${PKG_DANTE_DEPENDS:="libtirpc"};
+: ${PKG_DANTE_SHA256SUM:=418a065fe1a4b8ace8fbf77c2da269a98f376e7115902e76cda7e741e4846a5d};
+: ${PKG_DANTE_VERSION:=1.4.3};
+: ${PKG_DANTE_URL:=http://www.inet.no/dante/files/dante-${PKG_DANTE_VERSION}.tar.gz};
+: ${PKG_DANTE_CONFIGURE_ARGS_EXTRA:="ac_cv_func_sched_setscheduler=no --without-libwrap LIBS=-ltirpc"};
+: ${PKG_DANTE_IN_TREE:=1};
+
+ex_pkg_register "dante" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

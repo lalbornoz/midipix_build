@@ -1,0 +1,9 @@
+: ${PKG_POSIX_CC_DEPENDS:="musl_compat"};
+: ${PKG_POSIX_CC_SHA256SUM:=bd90442d98714f874b6e7e62fa8376ddca282c2174dc582917ecab773f96c095};
+: ${PKG_POSIX_CC_VERSION:=1.4};
+: ${PKG_POSIX_CC_URL:=https://mirror.midipix.org/posix_cc/posix_cc-${PKG_POSIX_CC_VERSION}.tar.bz2};
+: ${PKG_POSIX_CC_FORCE_AUTORECONF:=1};
+
+ex_pkg_register "posix_cc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

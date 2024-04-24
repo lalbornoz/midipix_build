@@ -1,0 +1,8 @@
+: ${PKG_LIBMETALINK_DEPENDS:="expat"};
+: ${PKG_LIBMETALINK_SHA256SUM:=0753ae1152d970dc3bf327d0ce5cfefeca2f1ab13294b115e64811163a68fd4f};
+: ${PKG_LIBMETALINK_VERSION:=0.1.3};
+: ${PKG_LIBMETALINK_URL:=https://launchpad.net/libmetalink/trunk/libmetalink-${PKG_LIBMETALINK_VERSION}/+download/libmetalink-${PKG_LIBMETALINK_VERSION}.tar.bz2};
+
+ex_pkg_register "libmetalink" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

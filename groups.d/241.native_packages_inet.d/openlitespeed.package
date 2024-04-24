@@ -1,0 +1,14 @@
+: ${PKG_OPENLITESPEED_SHA256SUM:=11cea34ebb0d72e5c620c61dce9ee4982474311dc5f35e0737a6b6d760bcf577};
+: ${PKG_OPENLITESPEED_VERSION:=1.4.27};
+: ${PKG_OPENLITESPEED_URL:=http://open.litespeedtech.com/packages/openlitespeed-${PKG_OPENLITESPEED_VERSION}.tgz};
+: ${PKG_OPENLITESPEED_CONFIGURE_ARGS:="-C --host=${DEFAULT_TARGET} --prefix=/usr/lsws --target=${DEFAULT_TARGET} --with-expat=${PREFIX_NATIVE} --with-openssl=${PREFIX_NATIVE} --with-zlib=${PREFIX_NATIVE}" --enable-spdy=no};
+: ${PKG_OPENLITESPEED_CXXFLAGS_CONFIGURE_EXTRA:="-D_GNU_SOURCE"};
+: ${PKG_OPENLITESPEED_DESTDIR:=destdir/lsws};
+: ${PKG_OPENLITESPEED_DISABLED:=1};
+: ${PKG_OPENLITESPEED_IN_TREE:=1};
+: ${PKG_OPENLITESPEED_MAKEFLAGS_PARALLELISE:="-j1"};
+: ${PKG_OPENLITESPEED_PREFIX:=${PREFIX_NATIVE}/lsws};
+
+ex_pkg_register "openlitespeed" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

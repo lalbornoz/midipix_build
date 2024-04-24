@@ -1,0 +1,9 @@
+: ${PKG_CHEROKEE_DEPENDS:="libz"};
+: ${PKG_CHEROKEE_URLS_GIT:=cherokee=https://github.com/cherokee/webserver.git@master};
+: ${PKG_CHEROKEE_CONFIGURE_ARGS_EXTRA:="--with-python=${PREFIX}/bin/python2 --without-epoll --without-php --without-ffmpeg --without-libssl"};
+: ${PKG_CHEROKEE_IN_TREE:=1};
+: ${PKG_CHEROKEE_DISABLED:=1};
+
+ex_pkg_register "cherokee" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

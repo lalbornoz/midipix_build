@@ -1,0 +1,10 @@
+: ${PKG_NASM_HOST_SHA256SUM:=c77745f4802375efeee2ec5c0ad6b7f037ea9c87c92b149a9637ff099f162558};
+: ${PKG_NASM_HOST_VERSION:=2.16.01};
+: ${PKG_NASM_HOST_URL:=http://www.nasm.us/pub/nasm/releasebuilds/${PKG_NASM_HOST_VERSION}/nasm-${PKG_NASM_HOST_VERSION}.tar.xz};
+: ${PKG_NASM_HOST_CFLAGS_CONFIGURE_EXTRA:=-DCOFF_MIDIPIX};
+: ${PKG_NASM_HOST_INSTALL_FILES_V2:="!bin/%<*>=bin/%[_target]-%[FNAME]"};
+: ${PKG_NASM_HOST_PREFIX:=${PREFIX}};
+
+ex_pkg_register "nasm_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_toolchain";
+
+# vim:filetype=sh textwidth=0

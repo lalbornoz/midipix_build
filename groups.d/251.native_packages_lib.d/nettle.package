@@ -1,0 +1,11 @@
+: ${PKG_NETTLE_SHA256SUM:=364f3e2b77cd7dcde83fd7c45219c834e54b0c75e428b6f894a23d12dd41cbfe};
+: ${PKG_NETTLE_VERSION:=3.8.1};
+: ${PKG_NETTLE_URL:=https://ftp.gnu.org/gnu/nettle/nettle-${PKG_NETTLE_VERSION}.tar.gz};
+: ${PKG_NETTLE_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
+: ${PKG_NETTLE_CONFIG_CACHE_EXTRA:="nettle_cv_asm_underscore=no"};
+: ${PKG_NETTLE_INSTALL_FILES_V2:="m0755=lib/%<lib*.so>"};
+: ${PKG_NETTLE_MAKEFLAGS_PARALLELISE:="-j1"};
+
+ex_pkg_register "nettle" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

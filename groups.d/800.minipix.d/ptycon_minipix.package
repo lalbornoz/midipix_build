@@ -1,0 +1,7 @@
+: ${PKG_PTYCON_MINIPIX_INHERIT_FROM:=ptycon};
+: ${PKG_PTYCON_MINIPIX_CONFIGURE_ARGS:="--prefix= --strict --host=${DEFAULT_TARGET}"};
+: ${PKG_PTYCON_MINIPIX_ENV_VARS_EXTRA:="CFLAGS_PATH=-I${PREFIX_NATIVE}/include:LDFLAGS_PATH=-L${PREFIX_NATIVE}/lib"};
+
+ex_pkg_register "ptycon_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,6 @@
+: ${PKG_INFOUNZIP_HOST_URLS_GIT:=infounzip-host=https://github.com/Redfoxmoon3/infounzip.git@master};
+: ${PKG_INFOUNZIP_HOST_IN_TREE:=1};
+
+ex_pkg_register "infounzip_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

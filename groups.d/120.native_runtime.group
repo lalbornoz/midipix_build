@@ -7,69 +7,6 @@ NATIVE_RUNTIME_CXXFLAGS_CONFIGURE="${DEFAULT_CXXFLAGS_RUNTIME}";
 NATIVE_RUNTIME_CONFIGURE_ARGS="--prefix= --strict --host=${DEFAULT_TARGET}";
 NATIVE_RUNTIME_ENV_VARS_EXTRA="CFLAGS_PATH=-I${PREFIX_NATIVE}/include:LDFLAGS_PATH=-L${PREFIX_NATIVE}/lib";
 NATIVE_RUNTIME_GROUP_DEPENDS="host_deps host_deps_rpm cross_toolchain host_toolchain host_tools native_toolchain native_tools";
-NATIVE_RUNTIME_PACKAGES="
-dalist ldso ntapi ntcon ntctty ntux pemagine psxscl psxscl_strace psxtypes ptycon toksvc sltdl u16ports";
 NATIVE_RUNTIME_PREFIX="${PREFIX_NATIVE}";
-: ${PKG_DALIST_DEPENDS:="ldso psxtypes"};
-: ${PKG_DALIST_URLS_GIT:=dalist=${DEFAULT_GITROOT}/dalist};
-: ${PKG_DALIST_INSTALL_TARGET_EXTRA:=install-lib};
-: ${PKG_LDSO_DEPENDS:="psxtypes"};
-: ${PKG_LDSO_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
-: ${PKG_LDSO_CFLAGS_CONFIGURE_EXTRA:="-O0 -DPE_LDSO"};
-: ${PKG_LDSO_CONFIGURE_ARGS_EXTRA:=--disable-shared};
-: ${PKG_LDSO_INSTALL_FILES_V2:="
-	/=${DEFAULT_TARGET}/lib
-	@../../lib/libldso.a=${DEFAULT_TARGET}/lib/libldso.a"};
-: ${PKG_LDSO_MAKEFLAGS_BUILD_EXTRA:=STATIC_LIB_NAME=libldso.a};
-: ${PKG_LDSO_MAKEFLAGS_INSTALL_EXTRA:=STATIC_LIB_NAME=libldso.a};
-: ${PKG_NTAPI_DEPENDS:="dalist ldso pemagine psxtypes"};
-: ${PKG_NTAPI_URLS_GIT:=ntapi=${DEFAULT_GITROOT}/ntapi};
-: ${PKG_NTAPI_INSTALL_TARGET_EXTRA:=install-lib};
-: ${PKG_NTCON_DEPENDS:="ldso pemagine"};
-: ${PKG_NTCON_URLS_GIT:=ntcon=${DEFAULT_GITROOT}/ntcon};
-: ${PKG_NTCON_INSTALL_TARGET_EXTRA:=install-lib};
-: ${PKG_NTCTTY_DEPENDS:="dalist ldso ntapi pemagine"};
-: ${PKG_NTCTTY_URLS_GIT:=ntctty=${DEFAULT_GITROOT_HEAD}/ntctty};
-: ${PKG_NTCTTY_CFLAGS_CONFIGURE_EXTRA:=-O0};
-: ${PKG_NTCTTY_MIRRORS_GIT:="skip"};
-: ${PKG_NTUX_DEPENDS:="dalist ldso ntapi pemagine psxscl"};
-: ${PKG_NTUX_URLS_GIT:=ntux=${DEFAULT_GITROOT}/ntux};
-: ${PKG_NTUX_CFLAGS_CONFIGURE_EXTRA:=-O0};
-: ${PKG_NTUX_HOST_INSTALL_FILES_V2:="+ntux/bin/ntux=bin/%[FNAME]"};
-: ${PKG_PEMAGINE_DEPENDS:="ldso psxtypes"};
-: ${PKG_PEMAGINE_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
-: ${PKG_PEMAGINE_CFLAGS_CONFIGURE_EXTRA:=-O0};
-: ${PKG_PEMAGINE_INSTALL_TARGET_EXTRA:=install-lib};
-: ${PKG_PSXSCL_DEPENDS:="dalist ldso ntapi pemagine psxtypes"};
-: ${PKG_PSXSCL_URLS_GIT:=psxscl=${DEFAULT_GITROOT_HEAD}/psxscl};
-: ${PKG_PSXSCL_CFLAGS_CONFIGURE_EXTRA:=-O0};
-: ${PKG_PSXSCL_INSTALL_TARGET_EXTRA:=install-lib};
-: ${PKG_PSXSCL_MIRRORS_GIT:="skip"};
-: ${PKG_PSXSCL_STRACE_DEPENDS:="dalist ldso ntapi pemagine psxtypes"};
-: ${PKG_PSXSCL_STRACE_URLS_GIT:=psxscl=${DEFAULT_GITROOT_HEAD}/psxscl};
-: ${PKG_PSXSCL_STRACE_BUILD_STEPS_DISABLE:=install_make};
-: ${PKG_PSXSCL_STRACE_CFLAGS_CONFIGURE_EXTRA:="-DPSX_EXTENDED_STRACE -O0"};
-: ${PKG_PSXSCL_STRACE_INSTALL_FILES_V2:="
-	/=lib/debug
-	+../obj/lib/libpsxscl.so=lib/debug/%[FNAME]"};
-: ${PKG_PSXSCL_STRACE_MIRRORS_GIT:="skip"};
-: ${PKG_PSXTYPES_URLS_GIT:=psxtypes=${DEFAULT_GITROOT}/psxtypes};
-: ${PKG_PSXTYPES_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
-: ${PKG_PSXTYPES_IN_TREE:=1};
-: ${PKG_PTYCON_DEPENDS:="dalist ldso ntapi ntcon psxscl"};
-: ${PKG_PTYCON_URLS_GIT:=ptycon=${DEFAULT_GITROOT}/ptycon};
-: ${PKG_PTYCON_CFLAGS_CONFIGURE_EXTRA:=-O0};
-: ${PKG_PTYCON_INSTALL_TARGET_EXTRA:="install-app install-lib"};
-: ${PKG_TOKSVC_DEPENDS:="dalist ldso ntapi ntcon psxscl"};
-: ${PKG_TOKSVC_URLS_GIT:=toksvc=${DEFAULT_GITROOT}/toksvc};
-: ${PKG_TOKSVC_CFLAGS_CONFIGURE_EXTRA:=-O0};
-: ${PKG_SLTDL_DEPENDS:="ldso"};
-: ${PKG_SLTDL_URLS_GIT:=sltdl=${DEFAULT_GITROOT}/sltdl};
-: ${PKG_SLTDL_CONFIGURE_ARGS_EXTRA:=--as-ltdl-drop-in-replacement};
-: ${PKG_SLTDL_INSTALL_TARGET_EXTRA:=install-lib};
-: ${PKG_U16PORTS_DEPENDS:="ldso"};
-: ${PKG_U16PORTS_URLS_GIT:=u16ports=${DEFAULT_GITROOT}/u16ports};
-: ${PKG_U16PORTS_CFLAGS_CONFIGURE_EXTRA:="--sysroot=${PREFIX_NATIVE} -Wno-missing-field-initializers"};
-: ${PKG_U16PORTS_INSTALL_TARGET_EXTRA:=install-lib};
 
 # vim:filetype=sh textwidth=0

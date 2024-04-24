@@ -1,0 +1,8 @@
+: ${PKG_NTUX_DEPENDS:="dalist ldso ntapi pemagine psxscl"};
+: ${PKG_NTUX_URLS_GIT:=ntux=${DEFAULT_GITROOT}/ntux};
+: ${PKG_NTUX_CFLAGS_CONFIGURE_EXTRA:=-O0};
+: ${PKG_NTUX_HOST_INSTALL_FILES_V2:="+ntux/bin/ntux=bin/%[FNAME]"};
+
+ex_pkg_register "ntux" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

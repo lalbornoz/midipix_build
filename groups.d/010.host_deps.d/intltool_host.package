@@ -1,0 +1,7 @@
+: ${PKG_INTLTOOL_HOST_SHA256SUM:=67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd};
+: ${PKG_INTLTOOL_HOST_VERSION:=0.51.0};
+: ${PKG_INTLTOOL_HOST_URL:=https://launchpad.net/intltool/trunk/${PKG_INTLTOOL_HOST_VERSION}/+download/intltool-${PKG_INTLTOOL_HOST_VERSION}.tar.gz};
+
+ex_pkg_register "intltool_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

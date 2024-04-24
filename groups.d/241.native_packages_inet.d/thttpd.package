@@ -1,0 +1,11 @@
+: ${PKG_THTTPD_SHA256SUM:=99c09f47da326b1e7b5295c45549d2b65534dce27c44812cf7eef1441681a397};
+: ${PKG_THTTPD_VERSION:=2.29};
+: ${PKG_THTTPD_URL:=https://acme.com/software/thttpd/thttpd-${PKG_THTTPD_VERSION}.tar.gz};
+: ${PKG_THTTPD_CONFIGURE_ARGS:="--disable-nls --host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
+: ${PKG_THTTPD_IN_TREE:=1};
+: ${PKG_THTTPD_MAKEFLAGS_PARALLELISE:="-j1"};
+: ${PKG_THTTPD_MAKE_INSTALL_VNAME:=prefix};
+
+ex_pkg_register "thttpd" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

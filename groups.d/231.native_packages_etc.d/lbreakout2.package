@@ -1,0 +1,12 @@
+: ${PKG_LBREAKOUT2_DEPENDS:="sdl1 libz libpng"};
+: ${PKG_LBREAKOUT2_SHA256SUM:=9104d6175553da3442dc6a5fc407a669e2f5aff3eedc5d30409eb003b7a78d6f};
+: ${PKG_LBREAKOUT2_VERSION:=2.6.5};
+: ${PKG_LBREAKOUT2_URL:=http://sources.buildroot.net/lbreakout2/lbreakout2-${PKG_LBREAKOUT2_VERSION}.tar.gz};
+: ${PKG_LBREAKOUT2_CONFIGURE_ARGS_EXTRA:=--with-sdl-prefix=${PREFIX_NATIVE}};
+: ${PKG_LBREAKOUT2_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib/w32lib};
+: ${PKG_LBREAKOUT2_ENV_VARS_EXTRA:="SDL_CONFIG=${PREFIX_NATIVE}/bin/sdl-config --prefix=${PREFIX_NATIVE}"};
+: ${PKG_LBREAKOUT2_IN_TREE:=1};
+
+ex_pkg_register "lbreakout2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

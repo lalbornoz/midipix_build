@@ -1,0 +1,10 @@
+: ${PKG_LIBMP3SPLT_SHA256SUM:=30eed64fce58cb379b7cc6a0d8e545579cb99d0f0f31eb00b9acc8aaa1b035dc};
+: ${PKG_LIBMP3SPLT_DEPENDS:="pcre libflac libogg libvorbis libmad"};
+: ${PKG_LIBMP3SPLT_VERSION:=0.9.2};
+: ${PKG_LIBMP3SPLT_URL:=https://ftp.fau.de/macports/distfiles/libmp3splt/libmp3splt-${PKG_LIBMP3SPLT_VERSION}.tar.gz};
+: ${PKG_LIBMP3SPLT_CONFIGURE_ARGS_EXTRA:="--disable-cutter --disable-id3tag --disable-optimise --with-ogg=${PREFIX_NATIVE} --with-vorbis=${PREFIX_NATIVE} --with-mad=${PREFIX_NATIVE}"};
+: ${PKG_LIBMP3SPLT_FORCE_AUTORECONF:=1};
+
+ex_pkg_register "libmp3splt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

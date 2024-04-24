@@ -1,0 +1,9 @@
+: ${PKG_LIBXPM_DEPENDS:="libX11 xorgproto"};
+: ${PKG_LIBXPM_SHA256SUM:=60bb906c5c317a6db863e39b69c4a83fdbd2ae2154fcf47640f8fefc9fdfd1c1};
+: ${PKG_LIBXPM_VERSION:=3.5.15};
+: ${PKG_LIBXPM_URL:=https://www.x.org/releases/individual/lib/libXpm-${PKG_LIBXPM_VERSION}.tar.xz};
+: ${PKG_LIBXPM_CONFIGURE_ARGS_EXTRA:="--disable-open-zfile --disable-stat-zfile --disable-unit-tests"};
+
+ex_pkg_register "libxpm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

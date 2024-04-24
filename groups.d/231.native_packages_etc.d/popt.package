@@ -1,0 +1,8 @@
+: ${PKG_POPT_DEPENDS:="libiconv"};
+: ${PKG_POPT_SHA256SUM:=5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1};
+: ${PKG_POPT_VERSION:=1.18};
+: ${PKG_POPT_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/popt/popt-${PKG_POPT_VERSION}.tar.gz};
+
+ex_pkg_register "popt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

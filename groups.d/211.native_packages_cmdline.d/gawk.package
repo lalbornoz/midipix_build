@@ -1,0 +1,8 @@
+: ${PKG_GAWK_DEPENDS:="readline"};
+: ${PKG_GAWK_SHA256SUM:=d87629386e894bbea11a5e00515fc909dc9b7249529dad9e6a3a2c77085f7ea2};
+: ${PKG_GAWK_VERSION:=5.1.1};
+: ${PKG_GAWK_URL:=https://ftp.gnu.org/gnu/gawk/gawk-${PKG_GAWK_VERSION}.tar.xz};
+
+ex_pkg_register "gawk" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

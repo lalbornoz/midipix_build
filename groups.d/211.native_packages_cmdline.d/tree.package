@@ -1,0 +1,10 @@
+: ${PKG_TREE_SHA256SUM:=d3c3d55f403af7c76556546325aa1eca90b918cbaaf6d3ab60a49d8367ab90d5};
+: ${PKG_TREE_VERSION:=2.1.1};
+: ${PKG_TREE_URL:=http://mama.indstate.edu/users/ice/tree/src/tree-${PKG_TREE_VERSION}.tgz};
+: ${PKG_TREE_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
+: ${PKG_TREE_CFLAGS_BUILD_EXTRA:="-std=c99"};
+: ${PKG_TREE_IN_TREE:=1};
+
+ex_pkg_register "tree" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

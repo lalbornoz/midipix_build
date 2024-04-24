@@ -1,0 +1,15 @@
+: ${PKG_AUTOMAKE_1_11_6_HOST_DEPENDS:="autoconf_2_64_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOMAKE_1_11_6_HOST_SHA256SUM:=1ffbc6cc41f0ea6c864fbe9485b981679dc5e350f6c4bc6c3512f5a4226936b5};
+: ${PKG_AUTOMAKE_1_11_6_HOST_VERSION:=1.11.6};
+: ${PKG_AUTOMAKE_1_11_6_HOST_URL:=https://ftp.gnu.org/gnu/automake/automake-${PKG_AUTOMAKE_1_11_6_HOST_VERSION}.tar.xz};
+: ${PKG_AUTOMAKE_1_11_6_HOST_INSTALL_FILES_V2:="
+	-=bin/%<*-1.11>
+	!bin/%<*>=bin/%[FNAME]-1.11
+	-=share/info/dir
+	!share/doc/automake=share/doc/automake-1.11.6
+	!share/info/%<*.info*>=share/info/%[FNAME%.info*]-1.11.6.%[FNAME#*.]
+	!share/man/man1/%<*.1>=share/man/man1/%[FNAME%.1]-1.11.6.1"};
+
+ex_pkg_register "automake_1_11_6_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

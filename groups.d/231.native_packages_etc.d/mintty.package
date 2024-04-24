@@ -1,0 +1,9 @@
+: ${PKG_MINTTY_DEPENDS:="w32api w32lib"};
+: ${PKG_MINTTY_URLS_GIT:="mintty=https://github.com/midipix-ports/mintty.git@midipix bmintty=https://github.com/midipix-ports/bmintty.git@main"};
+: ${PKG_MINTTY_CONFIGURE:=bmintty/configure};
+: ${PKG_MINTTY_CONFIGURE_ARGS:="--debug --strict --target=${DEFAULT_TARGET} --source-dir=../mintty --prefix="};
+: ${PKG_MINTTY_LDFLAGS_CONFIGURE_EXTRA:=-L${PREFIX_NATIVE}/lib/w32lib};
+
+ex_pkg_register "mintty" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

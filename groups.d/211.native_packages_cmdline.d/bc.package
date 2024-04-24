@@ -1,0 +1,7 @@
+: ${PKG_BC_SHA256SUM:=62adfca89b0a1c0164c2cdca59ca210c1d44c3ffc46daf9931cf4942664cb02a};
+: ${PKG_BC_VERSION:=1.07.1};
+: ${PKG_BC_URL:=https://ftp.gnu.org/gnu/bc/bc-${PKG_BC_VERSION}.tar.gz};
+
+ex_pkg_register "bc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

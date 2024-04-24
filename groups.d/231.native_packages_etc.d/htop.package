@@ -1,0 +1,9 @@
+: ${PKG_HTOP_DEPENDS:="ncursesw"};
+: ${PKG_HTOP_SHA256SUM:=a69acf9b42ff592c4861010fce7d8006805f0d6ef0e8ee647a6ee6e59b743d5c};
+: ${PKG_HTOP_VERSION:=3.3.0};
+: ${PKG_HTOP_URL:=https://github.com/htop-dev/htop/releases/download/${PKG_HTOP_VERSION}/htop-${PKG_HTOP_VERSION}.tar.xz};
+: ${PKG_HTOP_CONFIGURE_ARGS_EXTRA:="--enable-unicode"};
+
+ex_pkg_register "htop" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,8 @@
+: ${PKG_U16PORTS_DEPENDS:="ldso"};
+: ${PKG_U16PORTS_URLS_GIT:=u16ports=${DEFAULT_GITROOT}/u16ports};
+: ${PKG_U16PORTS_CFLAGS_CONFIGURE_EXTRA:="--sysroot=${PREFIX_NATIVE} -Wno-missing-field-initializers"};
+: ${PKG_U16PORTS_INSTALL_TARGET_EXTRA:=install-lib};
+
+ex_pkg_register "u16ports" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

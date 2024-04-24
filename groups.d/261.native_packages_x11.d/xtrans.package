@@ -1,0 +1,9 @@
+: ${PKG_XTRANS_DEPENDS:="util_macros"};
+: ${PKG_XTRANS_SHA256SUM:=377c4491593c417946efcd2c7600d1e62639f7a8bbca391887e2c4679807d773};
+: ${PKG_XTRANS_VERSION:=1.4.0};
+: ${PKG_XTRANS_URL:=https://www.x.org/releases/individual/lib/xtrans-${PKG_XTRANS_VERSION}.tar.bz2};
+: ${PKG_XTRANS_CONFIGURE_ARGS_EXTRA:="--without-fop"};
+
+ex_pkg_register "xtrans" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

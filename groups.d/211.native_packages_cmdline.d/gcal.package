@@ -1,0 +1,10 @@
+: ${PKG_GCAL_DEPENDS:="ncurses libunistring"};
+: ${PKG_GCAL_SHA256SUM:=91b56c40b93eee9bda27ec63e95a6316d848e3ee047b5880ed71e5e8e60f61ab};
+: ${PKG_GCAL_VERSION:=4.1};
+: ${PKG_GCAL_URL:=https://ftp.gnu.org/gnu/gcal/gcal-${PKG_GCAL_VERSION}.tar.xz};
+: ${PKG_GCAL_CONFIGURE_ARGS_EXTRA:="--enable-unicode"};
+: ${PKG_GCAL_ENV_VARS_EXTRA:="LIBS=-lunistring"};
+
+ex_pkg_register "gcal" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

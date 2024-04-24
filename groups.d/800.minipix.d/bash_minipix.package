@@ -1,0 +1,10 @@
+: ${PKG_BASH_MINIPIX_INHERIT_FROM:=bash};
+: ${PKG_BASH_MINIPIX_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_BASH_MINIPIX_INSTALL_FILES_V2:="
+	+../obj/bash=bin/%[FNAME]
+	+../obj/bashbug=bin/%[FNAME]"};
+: ${PKG_BASH_MINIPIX_VARS_FILE:="vars/bash.vars"};
+
+ex_pkg_register "bash_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

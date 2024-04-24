@@ -1,0 +1,9 @@
+: ${PKG_NGIRCD_DEPENDS:="gnutls"};
+: ${PKG_NGIRCD_SHA256SUM:=55c16fd26009f6fc6a007df4efac87a02e122f680612cda1ce26e17a18d86254};
+: ${PKG_NGIRCD_VERSION:=26.1};
+: ${PKG_NGIRCD_URL:=https://arthur.barton.de/pub/ngircd/ngircd-${PKG_NGIRCD_VERSION}.tar.xz};
+: ${PKG_NGIRCD_CONFIGURE_ARGS_EXTRA:="--with-gnutls"};
+
+ex_pkg_register "ngircd" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,30 @@
+: ${PKG_SDL2_DEPENDS:="w32api w32lib"};
+: ${PKG_SDL2_SHA256SUM:=349268f695c02efbc9b9148a70b85e58cefbbf704abd3e91be654db7f1e2c863};
+: ${PKG_SDL2_VERSION:=2.0.12};
+: ${PKG_SDL2_URL:=https://www.libsdl.org/release/SDL2-${PKG_SDL2_VERSION}.tar.gz};
+: ${PKG_SDL2_CONFIG_CACHE_EXTRA:="ac_cv_func_strtod=yes"};
+: ${PKG_SDL2_CONFIGURE_ARGS_EXTRA:="--disable-video-vulkan --disable-video-opengles2 --disable-alsa --disable-static --disable-power"};
+: ${PKG_SDL2_CFLAGS_CONFIGURE_EXTRA:="-DWINAPI_UTF16_DEFAULT -DUNICODE -DWINVER=0x0601 -I${PREFIX_NATIVE}/include/w32api.ports -DSDL_DISABLE_WINDOWS_IME"};
+: ${PKG_SDL2_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lkernel32 -luser32 -lgdi32 -limm32 -lshell32 -lu16ports"};
+: ${PKG_SDL2_MAKEFLAGS_PARALLELISE:="-j1"};
+: ${PKG_SDL2_IN_TREE:=1};
+: ${PKG_SDL2_FORCE_AUTORECONF:=1};
+: ${PKG_SDL2_IMAGE_DEPENDS:="sdl2 libz libpng libjpeg_turbo tiff"};
+: ${PKG_SDL2_IMAGE_SHA256SUM:=bdd5f6e026682f7d7e1be0b6051b209da2f402a2dd8bd1c4bd9c25ad263108d0};
+: ${PKG_SDL2_IMAGE_VERSION:=2.0.5};
+: ${PKG_SDL2_IMAGE_URL:=https://www.libsdl.org/projects/SDL_image/release/SDL2_image-${PKG_SDL2_IMAGE_VERSION}.tar.gz};
+: ${PKG_SDL2_TTF_DEPENDS:="sdl2 freetype"};
+: ${PKG_SDL2_TTF_SHA256SUM:=a9eceb1ad88c1f1545cd7bd28e7cbc0b2c14191d40238f531a15b01b1b22cd33};
+: ${PKG_SDL2_TTF_VERSION:=2.0.15};
+: ${PKG_SDL2_TTF_URL:=https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-${PKG_SDL2_TTF_VERSION}.tar.gz};
+: ${PKG_SDL2_TTF_CONFIGURE_ARGS_EXTRA:="--without-x"};
+: ${PKG_SDL2_TTF_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2"};
+: ${PKG_SDL2_NET_DEPENDS:="sdl2"};
+: ${PKG_SDL2_NET_SHA256SUM:=15ce8a7e5a23dafe8177c8df6e6c79b6749a03fff1e8196742d3571657609d21};
+: ${PKG_SDL2_NET_VERSION:=2.0.1};
+: ${PKG_SDL2_NET_URL:=https://www.libsdl.org/projects/SDL_net/release/SDL2_net-${PKG_SDL2_NET_VERSION}.tar.gz};
+: ${PKG_SDL2_NET_CONFIGURE_ARGS_EXTRA:="--disable-gui"};
+
+ex_pkg_register "sdl2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

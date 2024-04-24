@@ -1,0 +1,9 @@
+: ${PKG_LIBICE_DEPENDS:="xorgproto xtrans"};
+: ${PKG_LIBICE_SHA256SUM:=03e77afaf72942c7ac02ccebb19034e6e20f456dcf8dddadfeb572aa5ad3e451};
+: ${PKG_LIBICE_VERSION:=1.1.1};
+: ${PKG_LIBICE_URL:=https://www.x.org/releases/individual/lib/libICE-${PKG_LIBICE_VERSION}.tar.xz};
+: ${PKG_LIBICE_CONFIGURE_ARGS_EXTRA:="--disable-unix-transport"};
+
+ex_pkg_register "libice" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

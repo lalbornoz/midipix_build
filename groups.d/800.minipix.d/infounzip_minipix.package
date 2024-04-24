@@ -1,0 +1,6 @@
+: ${PKG_INFOUNZIP_MINIPIX_INHERIT_FROM:=infounzip};
+: ${PKG_INFOUNZIP_MINIPIX_LDFLAGS_BUILD_EXTRA:=${MINIPIX_LDFLAGS_CONFIGURE}};
+
+ex_pkg_register "infounzip_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

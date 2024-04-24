@@ -1,0 +1,9 @@
+: ${PKG_MP3SPLT_DEPENDS:="libmp3splt"};
+: ${PKG_MP3SPLT_SHA256SUM:=3ec32b10ddd8bb11af987b8cd1c76382c48d265d0ffda53041d9aceb1f103baa};
+: ${PKG_MP3SPLT_VERSION:=2.6.2};
+: ${PKG_MP3SPLT_URL:=https://ftp.fau.de/macports/distfiles/mp3splt/mp3splt-${PKG_MP3SPLT_VERSION}.tar.gz};
+: ${PKG_MP3SPLT_CONFIGURE_ARGS_EXTRA:="--enable-oggsplt_symlink --enable-flacsplt_symlink"};
+
+ex_pkg_register "mp3splt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

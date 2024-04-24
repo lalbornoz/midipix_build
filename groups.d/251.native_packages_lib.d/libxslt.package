@@ -1,0 +1,10 @@
+: ${PKG_LIBXSLT_DEPENDS:="libxml2 libgcrypt"};
+: ${PKG_LIBXSLT_SHA256SUM:=2a20ad621148339b0759c4d4e96719362dee64c9a096dbba625ba053846349f0};
+: ${PKG_LIBXSLT_VERSION:=1.1.39};
+: ${PKG_LIBXSLT_URL:=https://sources.voidlinux.org/libxslt-${PKG_LIBXSLT_VERSION}/libxslt-${PKG_LIBXSLT_VERSION}.tar.xz};
+: ${PKG_LIBXSLT_CONFIGURE_ARGS_EXTRA:="--without-python"};
+: ${PKG_LIBXSLT_FORCE_AUTORECONF:=1};
+
+ex_pkg_register "libxslt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

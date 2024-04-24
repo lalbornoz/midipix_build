@@ -1,0 +1,8 @@
+: ${PKG_SLTDL_DEPENDS:="ldso"};
+: ${PKG_SLTDL_URLS_GIT:=sltdl=${DEFAULT_GITROOT}/sltdl};
+: ${PKG_SLTDL_CONFIGURE_ARGS_EXTRA:=--as-ltdl-drop-in-replacement};
+: ${PKG_SLTDL_INSTALL_TARGET_EXTRA:=install-lib};
+
+ex_pkg_register "sltdl" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

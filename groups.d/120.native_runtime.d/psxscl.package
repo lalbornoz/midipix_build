@@ -1,0 +1,17 @@
+: ${PKG_PSXSCL_DEPENDS:="dalist ldso ntapi pemagine psxtypes"};
+: ${PKG_PSXSCL_URLS_GIT:=psxscl=${DEFAULT_GITROOT_HEAD}/psxscl};
+: ${PKG_PSXSCL_CFLAGS_CONFIGURE_EXTRA:=-O0};
+: ${PKG_PSXSCL_INSTALL_TARGET_EXTRA:=install-lib};
+: ${PKG_PSXSCL_MIRRORS_GIT:="skip"};
+: ${PKG_PSXSCL_STRACE_DEPENDS:="dalist ldso ntapi pemagine psxtypes"};
+: ${PKG_PSXSCL_STRACE_URLS_GIT:=psxscl=${DEFAULT_GITROOT_HEAD}/psxscl};
+: ${PKG_PSXSCL_STRACE_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_PSXSCL_STRACE_CFLAGS_CONFIGURE_EXTRA:="-DPSX_EXTENDED_STRACE -O0"};
+: ${PKG_PSXSCL_STRACE_INSTALL_FILES_V2:="
+	/=lib/debug
+	+../obj/lib/libpsxscl.so=lib/debug/%[FNAME]"};
+: ${PKG_PSXSCL_STRACE_MIRRORS_GIT:="skip"};
+
+ex_pkg_register "psxscl" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

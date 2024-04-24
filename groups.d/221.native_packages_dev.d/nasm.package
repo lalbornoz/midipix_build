@@ -1,0 +1,8 @@
+: ${PKG_NASM_SHA256SUM:=c77745f4802375efeee2ec5c0ad6b7f037ea9c87c92b149a9637ff099f162558};
+: ${PKG_NASM_VERSION:=2.16.01};
+: ${PKG_NASM_URL:=http://www.nasm.us/pub/nasm/releasebuilds/${PKG_NASM_VERSION}/nasm-${PKG_NASM_VERSION}.tar.xz};
+: ${PKG_NASM_CFLAGS_CONFIGURE_EXTRA:=-DCOFF_MIDIPIX};
+
+ex_pkg_register "nasm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

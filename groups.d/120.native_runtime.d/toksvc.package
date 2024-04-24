@@ -1,0 +1,7 @@
+: ${PKG_TOKSVC_DEPENDS:="dalist ldso ntapi ntcon psxscl"};
+: ${PKG_TOKSVC_URLS_GIT:=toksvc=${DEFAULT_GITROOT}/toksvc};
+: ${PKG_TOKSVC_CFLAGS_CONFIGURE_EXTRA:=-O0};
+
+ex_pkg_register "toksvc" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

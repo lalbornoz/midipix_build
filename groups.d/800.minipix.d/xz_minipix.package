@@ -1,0 +1,5 @@
+: ${PKG_XZ_MINIPIX_INHERIT_FROM:=xz};
+
+ex_pkg_register "xz_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

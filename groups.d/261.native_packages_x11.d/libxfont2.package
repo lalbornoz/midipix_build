@@ -1,0 +1,9 @@
+: ${PKG_LIBXFONT2_DEPENDS:="freetype libfontenc libz xorgproto xtrans"};
+: ${PKG_LIBXFONT2_SHA256SUM:=0e8ab7fd737ccdfe87e1f02b55f221f0bd4503a1c5f28be4ed6a54586bac9c4e};
+: ${PKG_LIBXFONT2_VERSION:=2.0.3};
+: ${PKG_LIBXFONT2_URL:=https://x.org/releases/individual/lib/libXfont2-${PKG_LIBXFONT2_VERSION}.tar.bz2};
+: ${PKG_LIBXFONT2_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
+
+ex_pkg_register "libxfont2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,8 @@
+: ${PKG_LIBRESSL_HOST_SHA256SUM:=acfac61316e93b919c28d62d53037ca734de85c46b4d703f19fd8395cf006774};
+: ${PKG_LIBRESSL_HOST_VERSION:=3.6.1};
+: ${PKG_LIBRESSL_HOST_URL:=http://ftp.eu.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${PKG_LIBRESSL_HOST_VERSION}.tar.gz};
+: ${PKG_LIBRESSL_HOST_LDFLAGS_CONFIGURE:="-Wl,-rpath,${PREFIX}/lib"};
+
+ex_pkg_register "libressl_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

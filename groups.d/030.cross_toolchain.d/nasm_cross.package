@@ -1,0 +1,10 @@
+: ${PKG_NASM_CROSS_SHA256SUM:=c77745f4802375efeee2ec5c0ad6b7f037ea9c87c92b149a9637ff099f162558};
+: ${PKG_NASM_CROSS_VERSION:=2.16.01};
+: ${PKG_NASM_CROSS_URL:=http://www.nasm.us/pub/nasm/releasebuilds/${PKG_NASM_CROSS_VERSION}/nasm-${PKG_NASM_CROSS_VERSION}.tar.xz};
+: ${PKG_NASM_CROSS_CFLAGS_CONFIGURE_EXTRA:=-DCOFF_MIDIPIX};
+: ${PKG_NASM_CROSS_INSTALL_FILES_V2:="!bin/%<*>=bin/%[_target]-%[FNAME]"};
+: ${PKG_NASM_CROSS_PREFIX:=${PREFIX_LOCAL}};
+
+ex_pkg_register "nasm_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

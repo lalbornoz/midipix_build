@@ -1,0 +1,9 @@
+: ${PKG_OPENJAZZ_DEPENDS:="sdl1"};
+: ${PKG_OPENJAZZ_URLS_GIT:=openjazz=https://github.com/AlisterT/openjazz.git@master};
+: ${PKG_OPENJAZZ_CONFIG_CACHE_EXTRA:="ac_cv_prog_POD2MAN="};
+: ${PKG_OPENJAZZ_FORCE_AUTORECONF:=1};
+: ${PKG_OPENJAZZ_DISABLED:=1};
+
+ex_pkg_register "openjazz" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

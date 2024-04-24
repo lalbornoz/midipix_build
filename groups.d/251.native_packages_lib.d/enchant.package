@@ -1,0 +1,9 @@
+: ${PKG_ENCHANT_DEPENDS:="glib hunspell aspell"};
+: ${PKG_ENCHANT_SHA256SUM:=3da12103f11cf49c3cf2fd2ce3017575c5321a489e5b9bfa81dd91ec413f3891};
+: ${PKG_ENCHANT_VERSION:=2.3.3};
+: ${PKG_ENCHANT_URL:=https://github.com/AbiWord/enchant/releases/download/v${PKG_ENCHANT_VERSION}/enchant-${PKG_ENCHANT_VERSION}.tar.gz};
+: ${PKG_ENCHANT_CXXFLAGS_CONFIGURE_EXTRA:="-std=c++0x"};
+
+ex_pkg_register "enchant" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

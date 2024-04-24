@@ -1,0 +1,9 @@
+: ${PKG_PERK_HOST_DEPENDS:="mdso_host"};
+: ${PKG_PERK_HOST_URLS_GIT:="perk=${DEFAULT_GITROOT}/perk"};
+: ${PKG_PERK_HOST_CONFIGURE_ARGS:="--prefix="};
+: ${PKG_PERK_HOST_INSTALL_FILES_V2:="@perk=bin/${DEFAULT_TARGET}-perk"};
+: ${PKG_PERK_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include"};
+
+ex_pkg_register "perk_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

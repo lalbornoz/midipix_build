@@ -1,0 +1,13 @@
+: ${PKG_LIBKSBA_DEPENDS:="libgpg_error"};
+: ${PKG_LIBKSBA_SHA256SUM:=bbb43f032b9164d86c781ffe42213a83bf4f2fee91455edfa4654521b8b03b6b};
+: ${PKG_LIBKSBA_VERSION:=1.6.4};
+: ${PKG_LIBKSBA_URL:=https://www.gnupg.org/ftp/gcrypt/libksba/libksba-${PKG_LIBKSBA_VERSION}.tar.bz2};
+: ${PKG_LIBKSBA_CONFIG_CACHE_EXTRA:="
+ksba_cv_broken_visibility_attribute=no
+ksba_cv_visibility_attribute=yes
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
+: ${PKG_LIBKSBA_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE}};
+
+ex_pkg_register "libksba" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

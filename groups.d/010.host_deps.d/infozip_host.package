@@ -1,0 +1,6 @@
+: ${PKG_INFOZIP_HOST_URLS_GIT:=infozip-host=https://github.com/Redfoxmoon3/infozip.git@master};
+: ${PKG_INFOZIP_HOST_IN_TREE:=1};
+
+ex_pkg_register "infozip_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

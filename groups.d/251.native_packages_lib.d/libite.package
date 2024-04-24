@@ -1,0 +1,6 @@
+: ${PKG_LIBITE_URLS_GIT:=libite=https://github.com/troglobit/libite.git@master};
+: ${PKG_LIBITE_SUBDIR:=libite};
+
+ex_pkg_register "libite" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

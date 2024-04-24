@@ -1,0 +1,6 @@
+: ${PKG_SLIBTOOL_URLS_GIT:="slibtool=https://git.midipix.org/slibtool"};
+: ${PKG_SLIBTOOL_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
+
+ex_pkg_register "slibtool" "${RTL_FILEOP_SOURCE_FNAME}" "native_tools";
+
+# vim:filetype=sh textwidth=0

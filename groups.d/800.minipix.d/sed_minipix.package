@@ -1,0 +1,5 @@
+: ${PKG_SED_MINIPIX_INHERIT_FROM:=sed};
+
+ex_pkg_register "sed_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

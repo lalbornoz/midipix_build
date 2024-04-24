@@ -1,0 +1,9 @@
+: ${PKG_CLZIP_HOST_SHA256SUM:=d9d51212afa80371dc2546d278ef8ebbb3cd57c06fdd761b7b204497586d24c0};
+: ${PKG_CLZIP_HOST_VERSION:=1.11};
+: ${PKG_CLZIP_HOST_URL:=http://download.savannah.gnu.org/releases/lzip/clzip/clzip-${PKG_CLZIP_HOST_VERSION}.tar.gz};
+: ${PKG_CLZIP_HOST_IN_TREE:=1};
+: ${PKG_CLZIP_HOST_INSTALL_FILES_V2:="@clzip=bin/lzip"};
+
+ex_pkg_register "clzip_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

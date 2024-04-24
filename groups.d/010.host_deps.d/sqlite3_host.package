@@ -1,0 +1,8 @@
+: ${PKG_SQLITE3_HOST_DEPENDS:="readline_host ncurses_host"};
+: ${PKG_SQLITE3_HOST_SHA256SUM:=bd90c3eb96bee996206b83be7065c9ce19aef38c3f4fb53073ada0d0b69bbce3};
+: ${PKG_SQLITE3_HOST_VERSION:=3360000};
+: ${PKG_SQLITE3_HOST_URL:=https://sqlite.org/2021/sqlite-autoconf-${PKG_SQLITE3_HOST_VERSION}.tar.gz};
+
+ex_pkg_register "sqlite3_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,9 @@
+: ${PKG_SQLITE3_DEPENDS:="ncurses readline libz"};
+: ${PKG_SQLITE3_SHA256SUM:=2c5dea207fa508d765af1ef620b637dcb06572afa6f01f0815bd5bbf864b33d9};
+: ${PKG_SQLITE3_VERSION:=3400100};
+: ${PKG_SQLITE3_URL:=https://sqlite.org/2022/sqlite-autoconf-${PKG_SQLITE3_VERSION}.tar.gz};
+: ${PKG_SQLITE3_CONFIGURE_ARGS_EXTRA:=--disable-static-shell};
+
+ex_pkg_register "sqlite3" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

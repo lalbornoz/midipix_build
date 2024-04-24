@@ -1,0 +1,30 @@
+: ${PKG_BINUTILS_HOST_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
+: ${PKG_BINUTILS_HOST_VERSION:=2.24.51};
+: ${PKG_BINUTILS_HOST_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_HOST_VERSION}.tar.bz2};
+: ${PKG_BINUTILS_HOST_AUTOCONF_CONFIG_GUESS:="keep"};
+: ${PKG_BINUTILS_HOST_CFLAGS_CONFIGURE:="-I${PREFIX}/include -g2 -O0"};
+: ${PKG_BINUTILS_HOST_CONFIGURE_ARGS:="--disable-werror --enable-deterministic-archives --prefix=${PREFIX} --target=${DEFAULT_TARGET} --with-sysroot=${PREFIX_NATIVE}"};
+: ${PKG_BINUTILS_HOST_INSTALL_FILES_V2:="
+	@%[_target]-windmc=bin/windmc
+	@%[_target]-windres=bin/windres"};
+: ${PKG_BINUTILS_HOST_LDFLAGS_CONFIGURE:="-L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib"};
+: ${PKG_BINUTILS_HOST_LIBTOOL:=slibtool-static};
+: ${PKG_BINUTILS_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= prefix="};
+: ${PKG_BINUTILS_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/binutils/binutils-${PKG_BINUTILS_HOST_VERSION}.midipix.patch"};
+: ${PKG_BINUTILS_HOST_PREFIX:=${PREFIX}};
+: ${PKG_BINUTILS_HOST_VARS_FILE:="vars/binutils.vars"};
+: ${PKG_BINUTILS_HOST_MINGW32_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
+: ${PKG_BINUTILS_HOST_MINGW32_VERSION:=2.24.51};
+: ${PKG_BINUTILS_HOST_MINGW32_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_HOST_MINGW32_VERSION}.tar.bz2};
+: ${PKG_BINUTILS_HOST_MINGW32_AUTOCONF_CONFIG_GUESS:="keep"};
+: ${PKG_BINUTILS_HOST_MINGW32_CONFIGURE_ARGS:="--disable-nls --disable-werror --enable-deterministic-archives --prefix=${PREFIX} --target=x86_64-w64-mingw32 --with-sysroot=${PREFIX_MINGW32}"};
+: ${PKG_BINUTILS_HOST_MINGW32_LIBTOOL:=slibtool-static};
+: ${PKG_BINUTILS_HOST_MINGW32_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
+: ${PKG_BINUTILS_HOST_MINGW32_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/binutils/binutils-${PKG_BINUTILS_HOST_MINGW32_VERSION}.midipix.patch"};
+: ${PKG_BINUTILS_HOST_MINGW32_PREFIX:=${PREFIX}};
+: ${PKG_BINUTILS_HOST_MINGW32_TARGET:="x86_64-w64-mingw32"};
+: ${PKG_BINUTILS_HOST_MINGW32_VARS_FILE:="vars/binutils.vars"};
+
+ex_pkg_register "binutils_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_toolchain";
+
+# vim:filetype=sh textwidth=0

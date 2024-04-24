@@ -1,0 +1,14 @@
+: ${PKG_TERMINALLY_TETRIS_DEPENDS:="ncurses"};
+: ${PKG_TERMINALLY_TETRIS_URLS_GIT:=terminally_tetris=https://github.com/thecardkid/terminally-tetris.git@master};
+: ${PKG_TERMINALLY_TETRIS_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_TERMINALLY_TETRIS_CFLAGS_BUILD_EXTRA:="-std=gnu99 -g3 -O0 -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncurses"};
+: ${PKG_TERMINALLY_TETRIS_INSTALL_FILES_V2:="
+	../terminally_tetris/build/ttetris=bin/%[FNAME]
+	../terminally_tetris/man/ttetris.1=share/man/man1/%[FNAME]"};
+: ${PKG_TERMINALLY_TETRIS_IN_TREE:=1};
+: ${PKG_TERMINALLY_TETRIS_LDFLAGS_BUILD_EXTRA:="-lncurses -Wl,--as-needed -ltinfo -Wl,--no-as-needed"};
+: ${PKG_TERMINALLY_TETRIS_MAKEFLAGS_BUILD_EXTRA_LIST:=C=${DEFAULT_NATIVE_CC}};
+
+ex_pkg_register "terminally_tetris" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

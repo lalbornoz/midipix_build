@@ -1,0 +1,13 @@
+: ${PKG_OPENBSD_BASEUTILS_DEPENDS:="musl_compat"};
+: ${PKG_OPENBSD_BASEUTILS_URLS_GIT:="baseutils=https://github.com/ibara/baseutils.git@master"};
+: ${PKG_OPENBSD_BASEUTILS_BUILD_DIR:=baseutils};
+: ${PKG_OPENBSD_BASEUTILS_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_OPENBSD_BASEUTILS_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
+: ${PKG_OPENBSD_BASEUTILS_INSTALL_FILES_V2:="
+	+../baseutils/pax/pax=bin/%[FNAME]
+	+../baseutils/pax/%<*.1>=share/man/man1/%[FNAME]"};
+: ${PKG_OPENBSD_BASEUTILS_MAKE_SUBDIRS:="libopenbsd pax"};
+
+ex_pkg_register "openbsd_baseutils" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,10 @@
+: ${PKG_DOSBOX_DEPENDS:="sdl1"};
+: ${PKG_DOSBOX_SHA256SUM:=c0d13dd7ed2ed363b68de615475781e891cd582e8162b5c3669137502222260a};
+: ${PKG_DOSBOX_VERSION:=0.74-3};
+: ${PKG_DOSBOX_URL:=https://fossies.org/linux/privat/dosbox-${PKG_DOSBOX_VERSION}.tar.gz};
+: ${PKG_DOSBOX_CONFIGURE_ARGS_EXTRA:="--disable-opengl --disable-alsa-midi --with-sdl-prefix=${PREFIX_NATIVE}"};
+: ${PKG_DOSBOX_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_ANSI_DEFAULT"};
+
+ex_pkg_register "dosbox" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

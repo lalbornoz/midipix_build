@@ -1,0 +1,7 @@
+: ${PKG_ONIG_SHA256SUM:=60162bd3b9fc6f4886d4c7a07925ffd374167732f55dce8c491bfd9cd818a6cf};
+: ${PKG_ONIG_VERSION:=6.9.9};
+: ${PKG_ONIG_URL:=https://github.com/kkos/oniguruma/releases/download/v${PKG_ONIG_VERSION}/onig-${PKG_ONIG_VERSION}.tar.gz};
+
+ex_pkg_register "onig" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

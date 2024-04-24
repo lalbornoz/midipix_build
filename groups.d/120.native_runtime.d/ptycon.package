@@ -1,0 +1,8 @@
+: ${PKG_PTYCON_DEPENDS:="dalist ldso ntapi ntcon psxscl"};
+: ${PKG_PTYCON_URLS_GIT:=ptycon=${DEFAULT_GITROOT}/ptycon};
+: ${PKG_PTYCON_CFLAGS_CONFIGURE_EXTRA:=-O0};
+: ${PKG_PTYCON_INSTALL_TARGET_EXTRA:="install-app install-lib"};
+
+ex_pkg_register "ptycon" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

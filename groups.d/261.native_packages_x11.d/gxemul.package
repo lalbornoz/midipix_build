@@ -1,0 +1,12 @@
+: ${PKG_GXEMUL_DEPENDS:="libX11"};
+: ${PKG_GXEMUL_SHA256SUM:=79c4437c6f8ca904f46d33ac36062a65fdcf4a92a248478e408ab11295cf8e83};
+: ${PKG_GXEMUL_VERSION:=0.7.0};
+: ${PKG_GXEMUL_URL:=http://gavare.se/gxemul/src/gxemul-${PKG_GXEMUL_VERSION}.tar.gz};
+: ${PKG_GXEMUL_CONFIGURE_ARGS:=""};
+: ${PKG_GXEMUL_CFLAGS_CONFIGURE_EXTRA:="-std=gnu99"};
+: ${PKG_GXEMUL_ENV_VARS_EXTRA:="XLIB=-lX11"};
+: ${PKG_GXEMUL_IN_TREE:=1};
+
+ex_pkg_register "gxemul" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

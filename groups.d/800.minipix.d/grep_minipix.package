@@ -1,0 +1,5 @@
+: ${PKG_GREP_MINIPIX_INHERIT_FROM:=grep};
+
+ex_pkg_register "grep_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

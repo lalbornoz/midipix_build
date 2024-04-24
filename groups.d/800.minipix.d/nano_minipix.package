@@ -1,0 +1,5 @@
+: ${PKG_NANO_MINIPIX_INHERIT_FROM:=nano};
+
+ex_pkg_register "nano_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

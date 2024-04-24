@@ -1,0 +1,6 @@
+: ${PKG_TPAX_URLS_GIT:="tpax=https://git.midipix.org/tpax@main"};
+: ${PKG_TPAX_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
+
+ex_pkg_register "tpax" "${RTL_FILEOP_SOURCE_FNAME}" "native_tools";
+
+# vim:filetype=sh textwidth=0

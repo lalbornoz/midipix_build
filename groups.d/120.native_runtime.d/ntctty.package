@@ -1,0 +1,8 @@
+: ${PKG_NTCTTY_DEPENDS:="dalist ldso ntapi pemagine"};
+: ${PKG_NTCTTY_URLS_GIT:=ntctty=${DEFAULT_GITROOT_HEAD}/ntctty};
+: ${PKG_NTCTTY_CFLAGS_CONFIGURE_EXTRA:=-O0};
+: ${PKG_NTCTTY_MIRRORS_GIT:="skip"};
+
+ex_pkg_register "ntctty" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,9 @@
+: ${PKG_GIFLIB_SHA256SUM:=be7ffbd057cadebe2aa144542fd90c6838c6a083b5e8a9048b8ee3b66b29d5fb};
+: ${PKG_GIFLIB_VERSION:=5.2.2};
+: ${PKG_GIFLIB_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/giflib/giflib-${PKG_GIFLIB_VERSION}.tar.gz};
+: ${PKG_GIFLIB_CFLAGS_BUILD_EXTRA:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE} -std=gnu99 -DHAVE_REALLOCARRAY"};
+: ${PKG_GIFLIB_BUILD_DIR:=giflib-${PKG_GIFLIB_VERSION}};
+
+ex_pkg_register "giflib" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

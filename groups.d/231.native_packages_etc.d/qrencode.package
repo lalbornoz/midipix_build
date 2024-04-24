@@ -1,0 +1,9 @@
+: ${PKG_QRENCODE_DEPENDS:="libpng"};
+: ${PKG_QRENCODE_SHA256SUM:=da448ed4f52aba6bcb0cd48cac0dd51b8692bccc4cd127431402fca6f8171e8e};
+: ${PKG_QRENCODE_VERSION:=4.1.1};
+: ${PKG_QRENCODE_URL:=https://fukuchi.org/works/qrencode/qrencode-${PKG_QRENCODE_VERSION}.tar.gz};
+: ${PKG_QRENCODE_CONFIGURE_ARGS_EXTRA:=--disable-sdltest};
+
+ex_pkg_register "qrencode" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,18 @@
+: ${PKG_READLINE_DEPENDS:="ncurses ncursestw ncursesw"};
+: ${PKG_READLINE_SHA256SUM:=3feb7171f16a84ee82ca18a36d7b9be109a52c04f492a053331d7d1095007c35};
+: ${PKG_READLINE_VERSION:=8.2};
+: ${PKG_READLINE_URL:=https://ftp.gnu.org/gnu/readline/readline-${PKG_READLINE_VERSION}.tar.gz};
+: ${PKG_READLINE_CFLAGS_CONFIGURE:="${DEFAULT_CFLAGS:+${DEFAULT_CFLAGS} }-I${PREFIX_NATIVE}/include"};
+: ${PKG_READLINE_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
+: ${PKG_READLINE_CONFIGURE_ARGS:="-C --disable-nls --host=${DEFAULT_TARGET} --prefix= --program-prefix= --target=${DEFAULT_TARGET} --with-curses"};
+: ${PKG_READLINE_LDFLAGS_CONFIGURE:="${DEFAULT_LDFLAGS:+${DEFAULT_LDFLAGS} }-L${PREFIX_NATIVE}/lib"};
+: ${PKG_READLINE_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
+: ${PKG_READLINE_CONFIG_CACHE_EXTRA:="
+bash_cv_func_strcoll_broken=yes
+bash_cv_func_ctype_nonascii=no
+bash_cv_must_reinstall_sighandlers=no
+bash_cv_func_sigsetjmp=yes"};
+
+ex_pkg_register "readline" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,8 @@
+: ${PKG_XCALC_DEPENDS:="libX11 libXt libXaw"};
+: ${PKG_XCALC_SHA256SUM:=8578dfa1457e94289f6d6ed6146714307d8a73a1b54d2f42af1321b625fc1cd4};
+: ${PKG_XCALC_VERSION:=1.1.2};
+: ${PKG_XCALC_URL:=https://www.x.org/releases/individual/app/xcalc-${PKG_XCALC_VERSION}.tar.xz};
+
+ex_pkg_register "xcalc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,9 @@
+: ${PKG_TIFF_DEPENDS:="libjpeg_turbo libz xz zstd"};
+: ${PKG_TIFF_SHA256SUM:=d6da35c9986a4ec845eb96258b3693f8df515f7eb4c1e597ceb03e22788f305b};
+: ${PKG_TIFF_VERSION:=4.6.0t};
+: ${PKG_TIFF_URL:=http://www.libtiff.org/downloads/tiff-${PKG_TIFF_VERSION}.tar.xz};
+: ${PKG_TIFF_CONFIGURE_ARGS_EXTRA:=--disable-cxx};
+
+ex_pkg_register "tiff" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,12 @@
+: ${PKG_HEXER_DEPENDS:="ncurses"};
+: ${PKG_HEXER_SHA256SUM:=e6b84ace5283825943f88ce7ec4ae836ec15ba41978b3a858d6d478cfe09ff94};
+: ${PKG_HEXER_VERSION:=1.0.6};
+: ${PKG_HEXER_URL:=https://devel.ringlet.net/files/editors/hexer/hexer-${PKG_HEXER_VERSION}.tar.xz};
+: ${PKG_HEXER_CFLAGS_BUILD_EXTRA:="-isystem${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncurses"};
+: ${PKG_HEXER_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib"};
+: ${PKG_HEXER_ENV_VARS_EXTRA:="CC_FOR_BUILD=gcc"};
+: ${PKG_HEXER_IN_TREE:=1};
+
+ex_pkg_register "hexer" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

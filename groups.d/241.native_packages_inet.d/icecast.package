@@ -1,0 +1,11 @@
+: ${PKG_ICECAST_DEPENDS:="curl expat libvorbis libxml2 libxslt wolfssl"};
+: ${PKG_ICECAST_SHA256SUM:=49b5979f9f614140b6a38046154203ee28218d8fc549888596a683ad604e4d44};
+: ${PKG_ICECAST_VERSION:=2.4.4};
+: ${PKG_ICECAST_URL:=http://downloads.xiph.org/releases/icecast/icecast-${PKG_ICECAST_VERSION}.tar.gz};
+: ${PKG_ICECAST_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/libxml2"};
+: ${PKG_ICECAST_LDFLAGS_CONFIGURE_EXTRA:="-lwolfssl"};
+: ${PKG_ICECAST_CONFIGURE_ARGS_EXTRA:="--with-curl=${PREFIX_NATIVE} --with-ogg=${PREFIX_NATIVE} --with-theora=${PREFIX_NATIVE} --with-vorbis=${PREFIX_NATIVE} --with-xslt-config=${PREFIX}/bin/xslt-config --with-curl-config=${PREFIX_NATIVE}/bin/curl-config --without-speex"};
+
+ex_pkg_register "icecast" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

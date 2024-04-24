@@ -1,0 +1,6 @@
+: ${PKG_GDB_MINIPIX_INHERIT_FROM:=gdb};
+: ${PKG_GDB_MINIPIX_DISABLED:=1};
+
+ex_pkg_register "gdb_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

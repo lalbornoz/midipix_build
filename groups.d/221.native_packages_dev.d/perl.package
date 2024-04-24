@@ -1,0 +1,17 @@
+: ${PKG_PERL_SHA256SUM:=e26085af8ac396f62add8a533c3a0ea8c8497d836f0689347ac5abd7b7a4e00a};
+: ${PKG_PERL_VERSION:=5.36.0};
+: ${PKG_PERL_URL:=http://www.cpan.org/src/5.0/perl-${PKG_PERL_VERSION}.tar.gz};
+: ${PKG_PERL_URLS_GIT:="perl-cross=https://github.com/Redfoxymoon/perl-cross@master"};
+: ${PKG_PERL_BASE_DIR:=${BUILD_WORKDIR}/perl-native-${DEFAULT_TARGET}};
+: ${PKG_PERL_CONFIGURE_ARGS:="-A ccflags=-I${PREFIX_NATIVE}/include -Duseshrplib -Darchname=${DEFAULT_TARGET} -Darchlib=/usr/lib/perl5/${PKG_PERL_VERSION}/${DEFAULT_TARGET} -Dsitearch=/usr/lib/perl5/site_perl/${PKG_PERL_VERSION}/${DEFAULT_TARGET} --sysroot=${PREFIX_NATIVE} --target=${DEFAULT_TARGET}"};
+: ${PKG_PERL_CFLAGS_CONFIGURE_EXTRA:="-std=gnu99"};
+: ${PKG_PERL_ENV_VARS_EXTRA:="TARGET=${DEFAULT_TARGET}"};
+: ${PKG_PERL_MAKEFLAGS_BUILD:="PERL_ARCHIVE_AFTER=${PREFIX}/tmp/perl-native-${DEFAULT_TARGET}/perl-${PKG_PERL_VERSION}/libperl.so OTHERLDFLAGS=--sysroot=${PREFIX_NATIVE}"};
+: ${PKG_PERL_MAKEFLAGS_PARALLELISE:="-j1"};
+: ${PKG_PERL_INSTALL_FILES_V2:="+%[_subdir]/libperl.so=lib/libperl.so"};
+: ${PKG_PERL_SUBDIR:=perl-${PKG_PERL_VERSION}};
+: ${PKG_PERL_IN_TREE:=1};
+
+ex_pkg_register "perl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

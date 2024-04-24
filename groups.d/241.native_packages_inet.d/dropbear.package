@@ -1,0 +1,9 @@
+: ${PKG_DROPBEAR_DEPENDS:="libz"};
+: ${PKG_DROPBEAR_SHA256SUM:=48235d10b37775dbda59341ac0c4b239b82ad6318c31568b985730c788aac53b};
+: ${PKG_DROPBEAR_VERSION:=2020.81};
+: ${PKG_DROPBEAR_URL:=http://repository.timesys.com/buildsources/d/dropbear/dropbear-${PKG_DROPBEAR_VERSION}/dropbear-${PKG_DROPBEAR_VERSION}.tar.bz2};
+: ${PKG_DROPBEAR_CONFIGURE_ARGS_EXTRA:=--disable-loginfunc};
+
+ex_pkg_register "dropbear" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

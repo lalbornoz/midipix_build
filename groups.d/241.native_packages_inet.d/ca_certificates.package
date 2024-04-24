@@ -1,0 +1,11 @@
+: ${PKG_CA_CERTIFICATES_DEPENDS:="libressl"};
+: ${PKG_CA_CERTIFICATES_URLS_GIT:="cacerts=https://dev.midipix.org/distro/cacerts.git@main"};
+: ${PKG_CA_CERTIFICATES_IN_TREE:=1};
+: ${PKG_CA_CERTIFICATES_CFLAGS_BUILD_EXTRA:=${DEFAULT_CFLAGS}};
+: ${PKG_CA_CERTIFICATES_LDFLAGS_BUILD_EXTRA:=${DEFAULT_LDFLAGS}};
+: ${PKG_CA_CERTIFICATES_ENV_VARS_EXTRA:="HOST_CC=gcc"};
+: ${PKG_CA_CERTIFICATES_VARS_FILE:="vars/ca_certificates.vars"};
+
+ex_pkg_register "ca_certificates" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

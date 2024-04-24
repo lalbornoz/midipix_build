@@ -1,0 +1,12 @@
+: ${PKG_LIBFETCH_DEPENDS:="libressl"};
+: ${PKG_LIBFETCH_SHA256SUM:=3226f53d5ad29cc27510db968ef0d37bf4554b8aaaeadcd56e23067213b08943};
+: ${PKG_LIBFETCH_VERSION:=2.33};
+: ${PKG_LIBFETCH_URL:=https://sources.archlinux.org/other/libfetch/libfetch-${PKG_LIBFETCH_VERSION}.tar.gz};
+: ${PKG_LIBFETCH_ENV_VARS_EXTRA:=CFLAGS=--sysroot=${PREFIX_NATIVE}:LDFLAGS=--sysroot=${PREFIX_NATIVE}};
+: ${PKG_LIBFETCH_IN_TREE:=1};
+: ${PKG_LIBFETCH_MAKEFLAGS_BUILD_EXTRA_LIST:="E=echo:Q=:AR=${DEFAULT_TARGET}-ar:CC=${DEFAULT_NATIVE_CC}:LD=${DEFAULT_NATIVE_CCLD}"};
+: ${PKG_LIBFETCH_MAKEFLAGS_INSTALL_EXTRA:="E=echo Q="};
+
+ex_pkg_register "libfetch" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,9 @@
+: ${PKG_P2C_SHA256SUM:=8c806babe964f34ebc686fdd945b1bf14f98d88020acabe434fa8764284af282};
+: ${PKG_P2C_VERSION:=2.02};
+: ${PKG_P2C_URL:=https://mirror.midipix.org/p2c/p2c-${PKG_P2C_VERSION}.tar.xz};
+: ${PKG_P2C_ENV_VARS_EXTRA:="HOST_CC=gcc"};
+: ${PKG_P2C_BUILD_DIR:=p2c-${PKG_P2C_VERSION}};
+
+ex_pkg_register "p2c" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

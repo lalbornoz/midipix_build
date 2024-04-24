@@ -1,0 +1,8 @@
+: ${PKG_HEXCURSE_DEPENDS:="ncurses"};
+: ${PKG_HEXCURSE_URLS_GIT:="hexcurse=https://github.com/LonnyGomes/hexcurse@master"};
+: ${PKG_HEXCURSE_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/ncurses};
+: ${PKG_HEXCURSE_MAKEFLAGS_BUILD:="LIBS=-Wl,-lncurses,-ltinfo"};
+
+ex_pkg_register "hexcurse" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

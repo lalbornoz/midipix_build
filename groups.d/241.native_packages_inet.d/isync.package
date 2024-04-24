@@ -1,0 +1,9 @@
+: ${PKG_ISYNC_DEPENDS:="libressl"};
+: ${PKG_ISYNC_SHA256SUM:=7c3273894f22e98330a330051e9d942fd9ffbc02b91952c2f1896a5c37e700ff};
+: ${PKG_ISYNC_VERSION:=1.4.4};
+: ${PKG_ISYNC_URL:=https://sources.voidlinux.org/isync-${PKG_ISYNC_VERSION}/isync-${PKG_ISYNC_VERSION}.tar.gz};
+: ${PKG_ISYNC_CFLAGS_CONFIGURE_EXTRA:=-std=c99};
+
+ex_pkg_register "isync" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

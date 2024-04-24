@@ -1,0 +1,12 @@
+: ${PKG_RUBY_HOST_SHA256SUM:=ba5ba60e5f1aa21b4ef8e9bf35b9ddb57286cb546aac4b5a28c71f459467e507};
+: ${PKG_RUBY_HOST_VERSION:=2.3.0};
+: ${PKG_RUBY_HOST_URL:=https://cache.ruby-lang.org/pub/ruby/${PKG_RUBY_HOST_VERSION%.*}/ruby-${PKG_RUBY_HOST_VERSION}.tar.gz};
+: ${PKG_RUBY_HOST_BUILD_STEPS_DISABLE:=configure_patch};
+: ${PKG_RUBY_HOST_CFLAGS_CONFIGURE:="-g0 -O1 -DHAVE_RL_USERNAME_COMPLETION_FUNCTION=1"};
+: ${PKG_RUBY_HOST_CONFIGURE_ARGS_EXTRA:="--disable-install-rdoc --with-out-ext=fiddle,openssl"};
+: ${PKG_RUBY_HOST_MAKEFLAGS_VERBOSITY:="none"};
+: ${PKG_RUBY_HOST_VARS_FILE:="vars/ruby.vars"}
+
+ex_pkg_register "ruby_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

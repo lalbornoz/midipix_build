@@ -1,0 +1,7 @@
+: ${PKG_GENGETOPT_SHA256SUM:=b941aec9011864978dd7fdeb052b1943535824169d2aa2b0e7eae9ab807584ac};
+: ${PKG_GENGETOPT_VERSION:=2.23};
+: ${PKG_GENGETOPT_URL:=https://ftp.gnu.org/gnu/gengetopt/gengetopt-${PKG_GENGETOPT_VERSION}.tar.xz};
+
+ex_pkg_register "gengetopt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

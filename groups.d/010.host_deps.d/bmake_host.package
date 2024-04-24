@@ -1,0 +1,10 @@
+: ${PKG_BMAKE_HOST_VERSION:=20240401};
+: ${PKG_BMAKE_HOST_URL:=https://srcbase.foss21.org/base/bmake/srcbase.bmake-${PKG_BMAKE_HOST_VERSION}.tar.xz};
+: ${PKG_BMAKE_HOST_SHA256SUM:=4b760506cd1fdada8c1012558e78530ccd2deaa29aeb463411bc9d8755a40a7e};
+: ${PKG_BMAKE_HOST_SUBDIR:=bmake-20240401};
+: ${PKG_BMAKE_HOST_CONFIGURE_TYPE:="sofort"};
+: ${PKG_BMAKE_HOST_CONFIGURE_ARGS:="--prefix= --with-default-sys-path=${PREFIX}/share/mk"};
+
+ex_pkg_register "bmake_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

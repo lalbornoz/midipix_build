@@ -1,0 +1,5 @@
+: ${PKG_CA_CERTIFICATES_MINIPIX_INHERIT_FROM:=ca_certificates};
+
+ex_pkg_register "ca_certificates_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

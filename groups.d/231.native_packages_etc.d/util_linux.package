@@ -1,0 +1,15 @@
+: ${PKG_UTIL_LINUX_DEPENDS:="ncursesw"};
+: ${PKG_UTIL_LINUX_SHA256SUM:=6a0764c1aae7fb607ef8a6dd2c0f6c47d5e5fd27aa08820abaad9ec14e28e9d9};
+: ${PKG_UTIL_LINUX_VERSION:=2.37.2};
+: ${PKG_UTIL_LINUX_URL:=https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${PKG_UTIL_LINUX_VERSION%.*}/util-linux-${PKG_UTIL_LINUX_VERSION}.tar.xz};
+: ${PKG_UTIL_LINUX_CONFIGURE_ARGS_EXTRA:=--disable-agetty --disable-lslogins --disable-wall --disable-write --disable-nologin --disable-sulogin --disable-hwclock --disable-schedutils --enable-more};
+: ${PKG_UTIL_LINUX_CFLAGS_CONFIGURE_EXTRA:=-std=c99};
+: ${PKG_UTIL_LINUX_CONFIG_CACHE_EXTRA:="
+ac_cv_func_timer_create=no
+ac_cv_lib_rt_timer_create=no
+ac_cv_search_timer_create=no
+ac_cv_prog_NCURSESW6_CONFIG=%PREFIX%/bin/ncursesw6-config"};
+
+ex_pkg_register "util_linux" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

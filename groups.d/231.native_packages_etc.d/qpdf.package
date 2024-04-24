@@ -1,0 +1,10 @@
+: ${PKG_QPDF_DEPENDS:="libz pcre"};
+: ${PKG_QPDF_SHA256SUM:=a9fdc7e94d38fcd3831f37b6e0fe36492bf79aa6d54f8f66062cf7f9c4155233};
+: ${PKG_QPDF_VERSION:=6.0.0};
+: ${PKG_QPDF_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/qpdf/qpdf-${PKG_QPDF_VERSION}.tar.gz};
+: ${PKG_QPDF_CONFIGURE_ARGS_EXTRA:=--with-random=/dev/urandom};
+: ${PKG_QPDF_IN_TREE:=1};
+
+ex_pkg_register "qpdf" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

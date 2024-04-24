@@ -1,0 +1,7 @@
+: ${PKG_W32API_URLS_GIT:="w32api=https://github.com/midipix-ports/w32api.ports@main"};
+: ${PKG_W32API_IN_TREE:=1};
+: ${PKG_W32API_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
+
+ex_pkg_register "w32api" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

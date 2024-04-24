@@ -1,0 +1,12 @@
+: ${PKG_XPDF_DEPENDS:="fontconfig libz"};
+: ${PKG_XPDF_SHA256SUM:=0fe4274374c330feaadcebb7bd7700cb91203e153b26aa95952f02bf130be846};
+: ${PKG_XPDF_VERSION:=4.03};
+: ${PKG_XPDF_URL:=https://dl.xpdfreader.com/xpdf-${PKG_XPDF_VERSION}.tar.gz};
+: ${PKG_XPDF_CMAKE_ARGS_EXTRA:="
+	-DFREETYPE_LIBRARY=${PREFIX_NATIVE}/lib/libfreetype.lib.a
+	-DFREETYPE_INCLUDE_DIR_ft2build=${PREFIX_NATIVE}/include/ft2build
+	-DFONTCONFIG_LIBRARY=${PREFIX_NATIVE}/lib/libfontconfig.lib.a"};
+
+ex_pkg_register "xpdf" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

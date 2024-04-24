@@ -1,0 +1,12 @@
+: ${PKG_MC_DEPENDS:="glib libX11 ncursesw"};
+: ${PKG_MC_SHA256SUM:=31be59225ffa9920816e9a8b3be0ab225a16d19e4faf46890f25bdffa02a4ff4};
+: ${PKG_MC_VERSION:=4.8.27};
+: ${PKG_MC_URL:=http://ftp.midnight-commander.org/mc-${PKG_MC_VERSION}.tar.xz};
+: ${PKG_MC_CFLAGS_CONFIGURE_EXTRA:="-DNCURSES_INTERNALS -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncursesw"};
+: ${PKG_MC_CONFIG_CACHE_EXTRA:="ac_list_mounted_fs=found"};
+: ${PKG_MC_CONFIGURE_ARGS_EXTRA:="--with-screen=ncurses --x-includes=${PREFIX_NATIVE}/include/X11 --x-libraries=${PREFIX_NATIVE}/lib"};
+: ${PKG_MC_LDFLAGS_BUILD_EXTRA:=-ltinfow};
+
+ex_pkg_register "mc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,8 @@
+: ${PKG_LIBCACA_DEPENDS:="freetype ncursesw"};
+: ${PKG_LIBCACA_URLS_GIT:=libcaca=https://github.com/cacalabs/libcaca@main};
+: ${PKG_LIBCACA_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -std=gnu99"};
+: ${PKG_LIBCACA_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfow -Wl,--as-needed"};
+
+ex_pkg_register "libcaca" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

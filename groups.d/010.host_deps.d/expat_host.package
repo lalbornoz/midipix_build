@@ -1,0 +1,10 @@
+: ${PKG_EXPAT_HOST_SHA256SUM:=cb5f5a8ea211e1cabd59be0a933a52e3c02cc326e86a4d387d8d218e7ee47a3e};
+: ${PKG_EXPAT_HOST_VERSION:=2.6.0};
+: ${PKG_EXPAT_HOST_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_HOST_VERSION}.tar.xz};
+: ${PKG_EXPAT_HOST_CONFIGURE_ARGS_EXTRA:="--without-docbook"};
+: ${PKG_EXPAT_HOST_CONFIGURE_TYPE:="autotools"};
+: ${PKG_EXPAT_HOST_LDFLAGS_CONFIGURE:="-Wl,-rpath,${PREFIX}/lib"};
+
+ex_pkg_register "expat_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

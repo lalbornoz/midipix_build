@@ -1,0 +1,7 @@
+: ${PKG_BDWGC_DEPENDS:="libatomic_ops"};
+: ${PKG_BDWGC_URLS_GIT:="bdwgc=https://github.com/ivmai/bdwgc@master"};
+: ${PKG_BDWGC_CONFIGURE_ARGS_EXTRA:="--enable-threads=posix --enable-parallel-mark --enable-handle-fork"};
+
+ex_pkg_register "bdwgc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

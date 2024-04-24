@@ -1,0 +1,9 @@
+: ${PKG_GLIB_DEPENDS:="libffi libz pcre libiconv"};
+: ${PKG_GLIB_SHA256SUM:=d64abd16813501c956c4e123ae79f47f1b58de573df9fdd3b0795f1e2c1aa789};
+: ${PKG_GLIB_VERSION:=2.56.2};
+: ${PKG_GLIB_URL:="https://download.gnome.org/sources/glib/${PKG_GLIB_VERSION%.[0-9]}/glib-${PKG_GLIB_VERSION}.tar.xz https://ftp.pieskovisko.sk/slackware/slackware-current/source/l/glib2/glib-${PKG_GLIB_VERSION}.tar.xz"};
+: ${PKG_GLIB_CONFIGURE_ARGS_EXTRA:="--disable-dtrace --disable-libelf --disable-libmount --with-python=${PREFIX}/bin/python3 --with-libiconv=gnu"};
+
+ex_pkg_register "glib" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

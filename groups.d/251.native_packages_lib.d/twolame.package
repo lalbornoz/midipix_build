@@ -1,0 +1,8 @@
+: ${PKG_TWOLAME_DEPENDS:="libsndfile"};
+: ${PKG_TWOLAME_SHA256SUM:=cc35424f6019a88c6f52570b63e1baf50f62963a3eac52a03a800bb070d7c87d};
+: ${PKG_TWOLAME_VERSION:=0.4.0};
+: ${PKG_TWOLAME_URL:=https://github.com/njh/twolame/releases/download/${PKG_TWOLAME_VERSION}/twolame-${PKG_TWOLAME_VERSION}.tar.gz};
+
+ex_pkg_register "twolame" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

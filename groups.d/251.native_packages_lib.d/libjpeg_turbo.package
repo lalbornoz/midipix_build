@@ -1,0 +1,10 @@
+: ${PKG_LIBJPEG_TURBO_SHA256SUM:=22429507714ae147b3acacd299e82099fce5d9f456882fc28e252e4579ba2a75};
+: ${PKG_LIBJPEG_TURBO_VERSION:=3.0.1};
+: ${PKG_LIBJPEG_TURBO_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libjpeg-turbo/libjpeg-turbo-${PKG_LIBJPEG_TURBO_VERSION}.tar.gz};
+: ${PKG_LIBJPEG_TURBO_CMAKE_ARGS_EXTRA:="
+	-DWITH_SIMD=OFF
+	-DWITH_JPEG8=ON"};
+
+ex_pkg_register "libjpeg_turbo" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

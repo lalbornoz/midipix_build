@@ -1,0 +1,13 @@
+: ${PKG_NULLMAILER_DEPENDS:="gnutls"};
+: ${PKG_NULLMAILER_SHA256SUM:=6d277f69f1999c86df0ca9a97a4f14f9bb431c50fd4e016918290b84ff679241}
+: ${PKG_NULLMAILER_VERSION:=2.2}
+: ${PKG_NULLMAILER_URL:=https://github.com/bruceg/nullmailer/archive/${PKG_NULLMAILER_VERSION}.tar.gz};
+: ${PKG_NULLMAILER_CONFIG_CACHE_EXTRA:="local_cv_flag_NAMEDPIPEBUG=no"};
+: ${PKG_NULLMAILER_CONFIGURE_ARGS_EXTRA:="--enable-tls"}
+: ${PKG_NULLMAILER_FORCE_AUTORECONF:=1};
+: ${PKG_NULLMAILER_IN_TREE:=1}
+: ${PKG_NULLMAILER_SUBDIR:=nullmailer-${PKG_NULLMAILER_VERSION}};
+
+ex_pkg_register "nullmailer" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,12 @@
+: ${PKG_GHOSTPDL_DEPENDS:="libpng tiff fontconfig libz libXt libX11 freetype expat openjpeg"};
+: ${PKG_GHOSTPDL_SHA256SUM:=9059bf9c0685e88206d34b702f5a15f148451959f73ab2d01d44a5b12088a762};
+: ${PKG_GHOSTPDL_VERSION:=9.52};
+: ${PKG_GHOSTPDL_URL:=https://mirror.midipix.org/ghostpdl/ghostpdl-${PKG_GHOSTPDL_VERSION}.tar.xz};
+: ${PKG_GHOSTPDL_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
+: ${PKG_GHOSTPDL_CONFIGURE_ARGS_EXTRA:="--with-system-libtiff --with-memory-alignment=8 --without-x --without-local-zlib"};
+: ${PKG_GHOSTPDL_ENV_VARS_EXTRA:="CCAUX=cc:CFLAGSAUX=${DEFAULT_CFLAGS} -L${PREFIX}/lib:LDFLAGSAUX=-L${PREFIX}/lib:SHARE_ZLIB=-lz:ZLIBDIR=${PREFIX}/include"};
+: ${PKG_GHOSTPDL_MAKEFLAGS_BUILD_EXTRA:="TARGET_ARCH_FILE=${BUILD_WORKDIR}/ghostpdl-native-${DEFAULT_TARGET}/ghostpdl-${PKG_GHOSTPDL_VERSION}/arch/${DEFAULT_TARGET}.h"};
+
+ex_pkg_register "ghostpdl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

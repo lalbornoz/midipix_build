@@ -1,0 +1,9 @@
+: ${PKG_LIBGPG_ERROR_SHA256SUM:=64b078b45ac3c3003d7e352a5e05318880a5778c42331ce1ef33d1a0d9922742};
+: ${PKG_LIBGPG_ERROR_VERSION:=1.41};
+: ${PKG_LIBGPG_ERROR_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${PKG_LIBGPG_ERROR_VERSION}.tar.bz2};
+: ${PKG_LIBGPG_ERROR_FORCE_AUTORECONF:=1};
+: ${PKG_LIBGPG_ERROR_IN_TREE:=1};
+
+ex_pkg_register "libgpg_error" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

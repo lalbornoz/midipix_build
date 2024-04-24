@@ -1,0 +1,10 @@
+: ${PKG_XTERM_DEPENDS:="libX11 libXaw libXmu libXpm ncurses"};
+: ${PKG_XTERM_SHA256SUM:=9ae856a30fd93046be93952a6898ba47f6f88ad6a988a7c949c4c80d5199ef10};
+: ${PKG_XTERM_VERSION:=331};
+: ${PKG_XTERM_URL:=ftp://ftp.invisible-island.net/xterm/xterm-${PKG_XTERM_VERSION}.tgz};
+: ${PKG_XTERM_CONFIGURE_ARGS_EXTRA:="--disable-setuid --disable-setgid --disable-full-tgetent --enable-ansi-color --enable-88-color --enable-256-color --enable-broken-osc --enable-broken-st --enable-load-vt-fonts --enable-i18n --enable-doublechars --enable-warnings --enable-tcap-query --enable-logging --enable-dabbrev --enable-freetype --enable-luit --enable-mini-luit --enable-narrowproto --enable-exec-xterm --enable-sixel-graphics --with-utempter"};
+: ${PKG_XTERM_ENV_VARS_EXTRA:=LIBS=-lncurses -ltinfo};
+
+ex_pkg_register "xterm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

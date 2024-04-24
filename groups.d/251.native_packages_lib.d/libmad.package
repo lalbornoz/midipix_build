@@ -1,0 +1,8 @@
+: ${PKG_LIBMAD_SHA256SUM:=bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690};
+: ${PKG_LIBMAD_VERSION:=0.15.1b};
+: ${PKG_LIBMAD_URL:=ftp://ftp.mars.org/pub/mpeg/libmad-${PKG_LIBMAD_VERSION}.tar.gz};
+: ${PKG_LIBMAD_CONFIGURE_ARGS_EXTRA:="--enable-fpm=64bit --enable-accuracy"};
+
+ex_pkg_register "libmad" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

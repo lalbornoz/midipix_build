@@ -1,0 +1,12 @@
+: ${PKG_PROXYTUNNEL_DEPENDS:="libressl"};
+: ${PKG_PROXYTUNNEL_SHA256SUM:=acc111ba4ef47a61878eb480636941add36edb38defae22dd54288bcf036cdc4};
+: ${PKG_PROXYTUNNEL_VERSION:=1.12.1}
+: ${PKG_PROXYTUNNEL_URL:=https://github.com/proxytunnel/proxytunnel/archive/v${PKG_PROXYTUNNEL_VERSION}.tar.gz};
+: ${PKG_PROXYTUNNEL_SUBDIR:=proxytunnel-${PKG_PROXYTUNNEL_VERSION}};
+: ${PKG_PROXYTUNNEL_BUILD_DIR:=${PKG_PROXYTUNNEL_SUBDIR}};
+: ${PKG_PROXYTUNNEL_CFLAGS_BUILD_EXTRA:=${DEFAULT_CFLAGS}};
+: ${PKG_PROXYTUNNEL_LDFLAGS_BUILD_EXTRA:="-lssl -lcrypto"};
+
+ex_pkg_register "proxytunnel" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

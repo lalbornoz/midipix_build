@@ -1,0 +1,7 @@
+: ${PKG_LZO_SHA256SUM:=c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072};
+: ${PKG_LZO_VERSION:=2.10};
+: ${PKG_LZO_URL:=https://www.oberhumer.com/opensource/lzo/download/lzo-${PKG_LZO_VERSION}.tar.gz};
+
+ex_pkg_register "lzo" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

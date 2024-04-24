@@ -1,0 +1,9 @@
+: ${PKG_RXVT_UNICODE_DEPENDS:="libX11 libXmu libXft Xrender"};
+: ${PKG_RXVT_UNICODE_SHA256SUM:=e94628e9bcfa0adb1115d83649f898d6edb4baced44f5d5b769c2eeb8b95addd};
+: ${PKG_RXVT_UNICODE_VERSION:=9.22};
+: ${PKG_RXVT_UNICODE_URL:=http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PKG_RXVT_UNICODE_VERSION}.tar.bz2};
+: ${PKG_RXVT_UNICODE_CONFIGURE_ARGS_EXTRA:=--disable-perl --disable-lastlog --disable-utmp --disable-wtmp --disable-xft --disable-pixbuf};
+
+ex_pkg_register "rxvt_unicode" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

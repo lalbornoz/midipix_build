@@ -1,0 +1,7 @@
+: ${PKG_LIBUV_SHA256SUM:=7cbcf2017e7116cf9da8ec1c6a146d578536b1e479458438873c991f984a53d7};
+: ${PKG_LIBUV_VERSION:=1.19.2};
+: ${PKG_LIBUV_URL:=https://dist.libuv.org/dist/v${PKG_LIBUV_VERSION}/libuv-v${PKG_LIBUV_VERSION}.tar.gz};
+
+ex_pkg_register "libuv" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

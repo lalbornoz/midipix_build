@@ -1,0 +1,10 @@
+: ${PKG_GMP_CROSS_SHA256SUM:=5275bb04f4863a13516b2f39392ac5e272f5e1bb8057b18aec1c9b79d73d8fb2};
+: ${PKG_GMP_CROSS_VERSION:=6.1.2};
+: ${PKG_GMP_CROSS_URL:=https://gmplib.org/download/gmp/gmp-${PKG_GMP_CROSS_VERSION}.tar.bz2};
+: ${PKG_GMP_CROSS_CONFIGURE_ARGS:="--disable-assembly --disable-nls --prefix="};
+: ${PKG_GMP_CROSS_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/gmp/gmp-${PKG_GMP_CROSS_VERSION}.midipix.patch"};
+: ${PKG_GMP_CROSS_PREFIX:=${PREFIX_LOCAL}};
+
+ex_pkg_register "gmp_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

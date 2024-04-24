@@ -1,0 +1,10 @@
+: ${PKG_FONTCONFIG_DEPENDS:="expat freetype util_linux"};
+: ${PKG_FONTCONFIG_SHA256SUM:=298e883f6e11d2c5e6d53c8a8394de58d563902cfab934e6be12fb5a5f361ef0};
+: ${PKG_FONTCONFIG_VERSION:=2.14.1};
+: ${PKG_FONTCONFIG_URL:=https://www.freedesktop.org/software/fontconfig/release/fontconfig-${PKG_FONTCONFIG_VERSION}.tar.xz};
+: ${PKG_FONTCONFIG_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
+: ${PKG_FONTCONFIG_CONFIGURE_ARGS_EXTRA:="PYTHON=${PREFIX}/bin/python3 --enable-iconv --disable-docs"};
+
+ex_pkg_register "fontconfig" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

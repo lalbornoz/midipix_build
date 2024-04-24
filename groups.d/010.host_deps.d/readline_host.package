@@ -1,0 +1,11 @@
+: ${PKG_READLINE_HOST_DEPENDS:="ncurses_host ncursestw_host ncursesw_host"};
+: ${PKG_READLINE_HOST_SHA256SUM:=3feb7171f16a84ee82ca18a36d7b9be109a52c04f492a053331d7d1095007c35};
+: ${PKG_READLINE_HOST_VERSION:=8.2};
+: ${PKG_READLINE_HOST_URL:=https://ftp.gnu.org/gnu/readline/readline-${PKG_READLINE_HOST_VERSION}.tar.gz};
+: ${PKG_READLINE_HOST_CONFIG_CACHE_LOCAL:="${CONFIG_CACHE_GNULIB}"};
+: ${PKG_READLINE_HOST_CONFIGURE_ARGS_EXTRA:="--with-curses"};
+: ${PKG_READLINE_HOST_MAKEFLAGS_INSTALL:="PREFIX= prefix="};
+
+ex_pkg_register "readline_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

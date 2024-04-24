@@ -1,0 +1,7 @@
+: ${PKG_SED_SHA256SUM:=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181};
+: ${PKG_SED_VERSION:=4.9};
+: ${PKG_SED_URL:=https://ftp.gnu.org/gnu/sed/sed-${PKG_SED_VERSION}.tar.xz};
+
+ex_pkg_register "sed" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,6 @@
+: ${PKG_LOLCODE_URLS_GIT:="lci=https://github.com/justinmeza/lci.git@main"};
+: ${PKG_LOLCODE_BUILD_DIR:=lci};
+
+ex_pkg_register "lolcode" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,7 @@
+: ${PKG_DALIST_DEPENDS:="ldso psxtypes"};
+: ${PKG_DALIST_URLS_GIT:=dalist=${DEFAULT_GITROOT}/dalist};
+: ${PKG_DALIST_INSTALL_TARGET_EXTRA:=install-lib};
+
+ex_pkg_register "dalist" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

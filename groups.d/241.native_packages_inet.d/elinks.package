@@ -1,0 +1,12 @@
+: ${PKG_ELINKS_DEPENDS:="gnutls libgcrypt libevent expat xz bzip2 ncurses zstd libz"};
+: ${PKG_ELINKS_SHA256SUM:=bf2e9d752921f2d83a7dcac1062c37ae6c8d7c4057d8537abe1c42fbac946fb3};
+: ${PKG_ELINKS_VERSION:=0.15.0};
+: ${PKG_ELINKS_URL:=https://github.com/rkd77/elinks/releases/download/v${PKG_ELINKS_VERSION}/elinks-${PKG_ELINKS_VERSION}.tar.xz};
+: ${PKG_ELINKS_CCLD:="${DEFAULT_NATIVE_LD}"};
+: ${PKG_ELINKS_CONFIGURE_ARGS_EXTRA:="--enable-fastmem --enable-88-colors --enable-256-colors --enable-true-color --enable-leds --enable-gemini --enable-gopher --enable-html-highlight --enable-fsp --with-terminfo --with-libevent --with-lzma --with-gnutls --without-spidermonkey --without-x"};
+: ${PKG_ELINKS_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/ncurses"};
+: ${PKG_ELINKS_MAKEFLAGS_PARALLELISE:="-j1"};
+
+ex_pkg_register "elinks" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,10 @@
+: ${PKG_MDSO_CROSS_URLS_GIT:="mdso=${DEFAULT_GITROOT}/mdso"};
+: ${PKG_MDSO_CROSS_CONFIGURE_ARGS:="--prefix="};
+: ${PKG_MDSO_CROSS_INSTALL_FILES_V2:="
+	@mdso=bin/${DEFAULT_TARGET}-mdso
+	/=${DEFAULT_TARGET}/bin
+	+bin/mdso=${DEFAULT_TARGET}/bin/mdso"};
+
+ex_pkg_register "mdso_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

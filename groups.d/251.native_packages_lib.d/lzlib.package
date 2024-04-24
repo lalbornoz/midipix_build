@@ -1,0 +1,9 @@
+: ${PKG_LZLIB_SHA256SUM:=5acac8714ed4f306020bae660dddce706e5f8a795863679037da9fe6bf4dcf6f};
+: ${PKG_LZLIB_VERSION:=1.14};
+: ${PKG_LZLIB_URL:=http://download.savannah.gnu.org/releases/lzip/lzlib/lzlib-${PKG_LZLIB_VERSION}.tar.gz};
+: ${PKG_LZLIB_CONFIGURE_ARGS_LIST:="--prefix=:CC=${DEFAULT_NATIVE_CC}:AR=${DEFAULT_TARGET}-ar"};
+: ${PKG_LZLIB_CFLAGS_BUILD:=${DEFAULT_CFLAGS}};
+
+ex_pkg_register "lzlib" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

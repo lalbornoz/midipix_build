@@ -1,0 +1,8 @@
+: ${PKG_LCMS_DEPENDS:="libz libjpeg_turbo tiff"};
+: ${PKG_LCMS_SHA256SUM:=d873d34ad8b9b4cea010631f1a6228d2087475e4dc5e763eb81acc23d9d45a51};
+: ${PKG_LCMS_VERSION:=2.16};
+: ${PKG_LCMS_URL:=https://github.com/mm2/Little-CMS/releases/download/lcms${PKG_LCMS_VERSION}/lcms2-${PKG_LCMS_VERSION}.tar.gz};
+
+ex_pkg_register "lcms" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

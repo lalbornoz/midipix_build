@@ -1,0 +1,9 @@
+: ${PKG_CLIPBOARD_UTILS_DEPENDS:="w32lib"};
+: ${PKG_CLIPBOARD_UTILS_URLS_GIT:=clipboard-utils=https://github.com/redfoxymoon/clipboard-utils.git@master};
+: ${PKG_CLIPBOARD_UTILS_BUILD_DIR:=clipboard-utils};
+: ${PKG_CLIPBOARD_UTILS_CFLAGS_BUILD_EXTRA:="-g2 -O0"};
+: ${PKG_CLIPBOARD_UTILS_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
+
+ex_pkg_register "clipboard_utils" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

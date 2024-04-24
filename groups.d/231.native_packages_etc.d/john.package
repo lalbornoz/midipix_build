@@ -1,0 +1,25 @@
+: ${PKG_JOHN_SHA256SUM:=952cf68369fb5b27f2d112ce7ca1eb16b975c85cbce8c658abb8bc5a20e1b266};
+: ${PKG_JOHN_VERSION:=1.8.0};
+: ${PKG_JOHN_URL:=http://www.openwall.com/john/j/john-${PKG_JOHN_VERSION}.tar.xz};
+: ${PKG_JOHN_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_JOHN_DISABLED_NT32:=1};
+: ${PKG_JOHN_IN_TREE:=1};
+: ${PKG_JOHN_INSTALL_FILES_V2:="
+	/=share/john
+	+../john-${PKG_JOHN_VERSION}/run/john=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/mailer=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/makechr=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/relbench=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/unafs=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/unique=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/unshadow=bin/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/ascii.chr=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/digits.chr=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/john.conf=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/lm_ascii.chr=share/john/%[FNAME]
+	+../john-${PKG_JOHN_VERSION}/run/password.lst=share/john/%[FNAME]"};
+: ${PKG_JOHN_MAKEFLAGS_BUILD_EXTRA:="-C src midipix-x86-64"};
+
+ex_pkg_register "john" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

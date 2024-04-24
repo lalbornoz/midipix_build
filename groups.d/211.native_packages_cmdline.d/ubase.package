@@ -1,0 +1,10 @@
+: ${PKG_UBASE_URLS_GIT:="ubase=http://git.suckless.org/ubase@master"};
+: ${PKG_UBASE_DESTDIR:=destdir/suckless};
+: ${PKG_UBASE_CFLAGS_BUILD_EXTRA:="-std=c99 --include=sys/sysmacros.h"};
+: ${PKG_UBASE_IN_TREE:=1};
+: ${PKG_UBASE_MAKE_INSTALL_VNAME:=PREFIX};
+: ${PKG_UBASE_PREFIX:=${PREFIX_NATIVE}/suckless};
+
+ex_pkg_register "ubase" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

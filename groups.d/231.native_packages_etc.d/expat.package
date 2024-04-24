@@ -1,0 +1,8 @@
+: ${PKG_EXPAT_SHA256SUM:=0c00d2760ad12efef6e26efc8b363c8eb28eb8c8de719e46d5bb67b40ba904a3};
+: ${PKG_EXPAT_VERSION:=2.6.1};
+: ${PKG_EXPAT_URL:=http://download.openpkg.org/components/cache/expat/expat-${PKG_EXPAT_VERSION}.tar.xz};
+: ${PKG_EXPAT_CONFIGURE_ARGS_EXTRA:="--with-getrandom --with-sys-getrandom --without-docbook --without-tests"};
+
+ex_pkg_register "expat" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,7 @@
+: ${PKG_MUSL_COMPAT_URLS_GIT:=musl_compat=https://dev.midipix.org/compat/musl-compat.git@main};
+: ${PKG_MUSL_COMPAT_BUILD_DIR:=musl_compat};
+: ${PKG_MUSL_COMPAT_CFLAGS_BUILD_EXTRA:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
+
+ex_pkg_register "musl_compat" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

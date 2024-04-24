@@ -1,0 +1,9 @@
+: ${PKG_GREP_DEPENDS:="pcre2"};
+: ${PKG_GREP_SHA256SUM:=1db2aedde89d0dea42b16d9528f894c8d15dae4e190b59aecc78f5a951276eab};
+: ${PKG_GREP_VERSION:=3.11};
+: ${PKG_GREP_URL:=https://ftp.gnu.org/gnu/grep/grep-${PKG_GREP_VERSION}.tar.xz};
+: ${PKG_GREP_CONFIGURE_ARGS_EXTRA:=--enable-perl-regexp};
+
+ex_pkg_register "grep" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

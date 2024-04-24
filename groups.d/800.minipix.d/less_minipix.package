@@ -1,0 +1,5 @@
+: ${PKG_LESS_MINIPIX_INHERIT_FROM:=less};
+
+ex_pkg_register "less_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

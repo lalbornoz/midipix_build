@@ -1,0 +1,9 @@
+: ${PKG_LIBARCHIVE_HOST_SHA256SUM:=f0b19ff39c3c9a5898a219497ababbadab99d8178acc980155c7e1271089b5a0};
+: ${PKG_LIBARCHIVE_HOST_VERSION:=3.5.2};
+: ${PKG_LIBARCHIVE_HOST_URL:=http://www.libarchive.org/downloads/libarchive-${PKG_LIBARCHIVE_HOST_VERSION}.tar.xz};
+: ${PKG_LIBARCHIVE_HOST_CONFIGURE_ARGS_EXTRA:="--without-xml2"};
+: ${PKG_LIBARCHIVE_HOST_LIBTOOL:=rdlibtool};
+
+ex_pkg_register "libarchive_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps_rpm";
+
+# vim:filetype=sh textwidth=0

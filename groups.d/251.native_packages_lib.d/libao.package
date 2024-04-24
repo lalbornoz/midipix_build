@@ -1,0 +1,11 @@
+: ${PKG_LIBAO_DEPENDS:="w32api w32lib"};
+: ${PKG_LIBAO_SHA256SUM:=03ad231ad1f9d64b52474392d63c31197b0bc7bd416e58b1c10a329a5ed89caf};
+: ${PKG_LIBAO_VERSION:=1.2.0};
+: ${PKG_LIBAO_URL:=http://downloads.xiph.org/releases/ao/libao-${PKG_LIBAO_VERSION}.tar.gz};
+: ${PKG_LIBAO_CONFIGURE_ARGS_EXTRA:="--enable-wmm --disable-esd --without-x"};
+: ${PKG_LIBAO_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_ANSI_DEFAULT"};
+: ${PKG_LIBAO_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lwinmm"}
+
+ex_pkg_register "libao" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

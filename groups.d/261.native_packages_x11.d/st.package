@@ -1,0 +1,16 @@
+: ${PKG_ST_DEPENDS:="freetype fontconfig libX11 libXft"};
+: ${PKG_ST_SHA256SUM:=f7870d906ccc988926eef2cc98950a99cc78725b685e934c422c03c1234e6000};
+: ${PKG_ST_VERSION:=0.7};
+: ${PKG_ST_URL:=https://dl.suckless.org/st/st-${PKG_ST_VERSION}.tar.gz};
+: ${PKG_ST_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_ST_CFLAGS_BUILD_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -I${PREFIX_NATIVE}/include"};
+: ${PKG_ST_IN_TREE:=1};
+: ${PKG_ST_INSTALL_FILES_V2:="
+	+../st-${PKG_ST_VERSION}/st=bin/%[FNAME]
+	+../st-${PKG_ST_VERSION}/st.info=share/info/%[FNAME]
+	+../st-${PKG_ST_VERSION}/st.1=share/man/man1/%[FNAME]"};
+: ${PKG_ST_LDFLAGS_BUILD_EXTRA:=-L${PREFIX_NATIVE}/lib -lX11 -lXft -lfreetype -lfontconfig};
+
+ex_pkg_register "st" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

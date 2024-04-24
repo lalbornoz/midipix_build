@@ -17,6 +17,12 @@ rtlp_fileop_log() {
 };
 
 #
+# Public globals
+#
+
+RTL_FILEOP_SOURCE_FNAME="";
+
+#
 # Public subroutines
 #
 
@@ -125,7 +131,7 @@ rtl_fileop() {
 			touch ${2:+-t "${2}"} -- "${1}"; _rf_rc="${?}";
 		fi; ;;
 
-	mkdir|mkfifo|rm|source|source_opt|test)
+	mkdir|mkfifo|rm|source|source_with_fnamevar|source_opt|source_opt_with_fnamevar|test)
 		while [ \( "${?}" -eq 0 \) -a \( ""${#}"" -gt 0 \) ]; do
 			if [ "${1:+1}" != 1 ]; then
 				rtl_log_msgV "fatalexit" "${MSG_rtl_fileop_invparm}" "${_rf_op}" "${*}";
@@ -154,10 +160,21 @@ rtl_fileop() {
 			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				rtlp_fileop_log "Sourcing file \`${1}'.";
 				. "${1}"; _rf_rc="${?}";
+			elif [ "${_rf_op}" = source_with_fnamevar ]\
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
+				rtlp_fileop_log "Sourcing file \`${1}'.";
+				RTL_FILEOP_SOURCE_FNAME="${1}";
+				. "${1}"; _rf_rc="${?}";
 			elif [ "${_rf_op}" = source_opt ]\
 			&& rtl_fileop test "${1}"\
 			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
 				rtlp_fileop_log "Sourcing file \`${1}'.";
+				. "${1}"; _rf_rc="${?}";
+			elif [ "${_rf_op}" = source_opt_with_fnamevar ]\
+			&& rtl_fileop test "${1}"\
+			&& rtlp_fileop_check "${PREFIX:-}" "${1}"; then
+				rtlp_fileop_log "Sourcing file \`${1}'.";
+				RTL_FILEOP_SOURCE_FNAME="${1}";
 				. "${1}"; _rf_rc="${?}";
 			elif [ "${_rf_op}" = test ]\
 			&& rtlp_fileop_check "${PREFIX:-}" "${1}"\

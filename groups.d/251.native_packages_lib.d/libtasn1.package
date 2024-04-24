@@ -1,0 +1,12 @@
+: ${PKG_LIBTASN1_SHA256SUM:=1613f0ac1cf484d6ec0ce3b8c06d56263cc7242f1c23b30d82d23de345a63f7a};
+: ${PKG_LIBTASN1_VERSION:=4.19.0};
+: ${PKG_LIBTASN1_URL:=https://ftp.gnu.org/gnu/libtasn1/libtasn1-${PKG_LIBTASN1_VERSION}.tar.gz};
+: ${PKG_LIBTASN1_CONFIGURE_ARGS_EXTRA:="--disable-static"};
+: ${PKG_LIBTASN1_CFLAGS_CONFIGURE_EXTRA:=-std=c99};
+: ${PKG_LIBTASN1_LIBTOOL=rdlibtool};
+: ${PKG_LIBTASN1_CONFIG_CACHE_EXTRA:="
+gl_cv_ld_output_def=no"};
+
+ex_pkg_register "libtasn1" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

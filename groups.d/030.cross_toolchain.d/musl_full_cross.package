@@ -1,0 +1,17 @@
+: ${PKG_MUSL_FULL_CROSS_DEPENDS:="gcc_stage1_cross gcc_runtime_cross"};
+: ${PKG_MUSL_FULL_CROSS_SHA256SUM:=a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4};
+: ${PKG_MUSL_FULL_CROSS_VERSION:=1.2.5};
+: ${PKG_MUSL_FULL_CROSS_URL:="http://www.musl-libc.org/releases/musl-${PKG_MUSL_FULL_CROSS_VERSION}.tar.gz"}
+: ${PKG_MUSL_FULL_CROSS_URLS_GIT:="mmglue=${DEFAULT_GITROOT}/mmglue@main"};
+: ${PKG_MUSL_FULL_CROSS_BASE_DIR:=${BUILD_WORKDIR}/musl_full-cross-${DEFAULT_TARGET}};
+: ${PKG_MUSL_FULL_CROSS_BUILD_DIR:=build/musl};
+: ${PKG_MUSL_FULL_CROSS_BUILD_TYPE:=cross};
+: ${PKG_MUSL_FULL_CROSS_CONFIGURE:=build/mmglue/configure};
+: ${PKG_MUSL_FULL_CROSS_CONFIGURE_ARGS:="--source-dir=../../musl-${PKG_MUSL_FULL_CROSS_VERSION} --prefix= --target=${DEFAULT_TARGET}"};
+: ${PKG_MUSL_FULL_CROSS_INSTALL_FILES_V2:="-=include/iconv.h"};
+: ${PKG_MUSL_FULL_CROSS_SUBDIR:=musl-${PKG_MUSL_FULL_CROSS_VERSION}};
+: ${PKG_MUSL_FULL_CROSS_VARS_FILE:="vars/musl.vars"};
+
+ex_pkg_register "musl_full_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

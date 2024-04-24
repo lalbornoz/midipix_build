@@ -1,0 +1,8 @@
+: ${PKG_M4_HOST_DEPENDS:="pkgconf_host slibtool_host"};
+: ${PKG_M4_HOST_SHA256SUM:=63aede5c6d33b6d9b13511cd0be2cac046f2e70fd0a07aa9573a04a82783af96};
+: ${PKG_M4_HOST_VERSION:=1.4.19};
+: ${PKG_M4_HOST_URL:=https://ftp.gnu.org/gnu/m4/m4-${PKG_M4_HOST_VERSION}.tar.xz};
+
+ex_pkg_register "m4_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

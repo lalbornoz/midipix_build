@@ -1,0 +1,9 @@
+: ${PKG_CSSC_SHA256SUM:=d1bed0c80246ee4cd49d0aa45307c075d0876fe531057bb1c8b28f5330d651ef};
+: ${PKG_CSSC_VERSION:=1.4.1};
+: ${PKG_CSSC_URL:=https://ftp.gnu.org/gnu/cssc/CSSC-${PKG_CSSC_VERSION}.tar.gz};
+: ${PKG_CSSC_CONFIGURE_ARGS_EXTRA:="--enable-binary"};
+: ${PKG_CSSC_CXXFLAGS_CONFIGURE_EXTRA:="-std=gnu++0x"};
+
+ex_pkg_register "cssc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

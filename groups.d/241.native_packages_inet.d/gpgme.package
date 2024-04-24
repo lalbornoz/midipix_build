@@ -1,0 +1,12 @@
+: ${PKG_GPGME_DEPENDS:="libassuan libgpg_error"};
+: ${PKG_GPGME_SHA256SUM:=361d4eae47ce925dba0ea569af40e7b52c645c4ae2e65e5621bf1b6cdd8b0e9e};
+: ${PKG_GPGME_VERSION:=1.18.0};
+: ${PKG_GPGME_URL:=https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-${PKG_GPGME_VERSION}.tar.bz2};
+: ${PKG_GPGME_CONFIGURE_ARGS_EXTRA:="--disable-g13-test --disable-gpgconf-test --disable-gpgsm-test --disable-gpg-test --with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE} --enable-languages=cl"};
+: ${PKG_GPGME_CFLAGS_CONFIGURE_EXTRA:=-std=gnu99};
+: ${PKG_GPGME_CONFIG_CACHE_EXTRA:="
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
+
+ex_pkg_register "gpgme" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

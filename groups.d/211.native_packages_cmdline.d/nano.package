@@ -1,0 +1,10 @@
+: ${PKG_NANO_DEPENDS:="file libz ncursesw"};
+: ${PKG_NANO_SHA256SUM:=b4edaab0a037b5760484907c674e980053896f33759e43f834a212145fd085f1};
+: ${PKG_NANO_VERSION:=7.2};
+: ${PKG_NANO_URL:=https://www.nano-editor.org/dist/v${PKG_NANO_VERSION%.[0-9]}/nano-${PKG_NANO_VERSION}.tar.gz};
+: ${PKG_NANO_CFLAGS_CONFIGURE_EXTRA:="-std=gnu99"};
+: ${PKG_NANO_MAKEFLAGS_BUILD:="LIBS=-Wl,-lz,-lmagic,-lncursesw,-ltinfow"};
+
+ex_pkg_register "nano" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

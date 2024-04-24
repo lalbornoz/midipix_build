@@ -1,0 +1,8 @@
+: ${PKG_LIBTELNET_DEPENDS:="libz"};
+: ${PKG_LIBTELNET_SHA256SUM:=d2f01a9dc0cc01777844b6d27f0f836dad9a4b9a32a31c7bbde0762480262f25};
+: ${PKG_LIBTELNET_VERSION:=0.23};
+: ${PKG_LIBTELNET_URL:=https://github.com/seanmiddleditch/libtelnet/releases/download/${PKG_LIBTELNET_VERSION}/libtelnet-${PKG_LIBTELNET_VERSION}.tar.gz};
+
+ex_pkg_register "libtelnet" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

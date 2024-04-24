@@ -1,0 +1,12 @@
+: ${PKG_SHARUTILS_SHA256SUM:=2b05cff7de5d7b646dc1669bc36c35fdac02ac6ae4b6c19cb3340d87ec553a9a};
+: ${PKG_SHARUTILS_VERSION:=4.15.2};
+: ${PKG_SHARUTILS_URL:=https://ftp.gnu.org/gnu/sharutils/sharutils-${PKG_SHARUTILS_VERSION}.tar.xz};
+: ${PKG_SHARUTILS_CONFIG_CACHE_EXTRA:="
+libopts_cv_test_dev_zero=yes
+libopts_cv_run_realpath=yes
+libopts_cv_run_strftime=yes
+libopts_cv_run_fopen_binary=yes"};
+
+ex_pkg_register "sharutils" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

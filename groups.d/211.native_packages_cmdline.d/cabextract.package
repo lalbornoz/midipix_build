@@ -1,0 +1,9 @@
+: ${PKG_CABEXTRACT_DEPENDS:="libiconv libmspack"};
+: ${PKG_CABEXTRACT_SHA256SUM:=b5546db1155e4c718ff3d4b278573604f30dd64c3c5bfd4657cd089b823a3ac6};
+: ${PKG_CABEXTRACT_VERSION:=1.11};
+: ${PKG_CABEXTRACT_URL:=https://www.cabextract.org.uk/cabextract-${PKG_CABEXTRACT_VERSION}.tar.gz};
+: ${PKG_CABEXTRACT_CONFIGURE_ARGS_EXTRA:=--with-external-libmspack};
+
+ex_pkg_register "cabextract" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

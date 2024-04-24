@@ -1,0 +1,12 @@
+: ${PKG_GCC_STAGE1_CROSS_DEPENDS:="binutils_cross gmp_cross mpc_cross mpfr_cross"};
+: ${PKG_GCC_STAGE1_CROSS_VERSION:=4.6.4};
+: ${PKG_GCC_STAGE1_CROSS_BASE_DIR:=${BUILD_WORKDIR}/gcc-cross-${DEFAULT_TARGET}};
+: ${PKG_GCC_STAGE1_CROSS_CFLAGS_CONFIGURE:="-I${PREFIX_LOCAL}/include -g3 -O0"};
+: ${PKG_GCC_STAGE1_CROSS_GITROOT:=${DEFAULT_GITROOT}};
+: ${PKG_GCC_STAGE1_CROSS_LDFLAGS_CONFIGURE:="-L${PREFIX_LOCAL}/lib -Wl,-rpath,${PREFIX_LOCAL}/lib"};
+: ${PKG_GCC_STAGE1_CROSS_PREFIX:=${PREFIX_LOCAL}};
+: ${PKG_GCC_STAGE1_CROSS_VARS_FILE:="vars/gcc.vars"};
+
+ex_pkg_register "gcc_stage1_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

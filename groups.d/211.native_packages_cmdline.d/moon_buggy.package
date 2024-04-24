@@ -1,0 +1,11 @@
+: ${PKG_MOON_BUGGY_DEPENDS:="ncurses"};
+: ${PKG_MOON_BUGGY_SHA256SUM:=352dc16ccae4c66f1e87ab071e6a4ebeb94ff4e4f744ce1b12a769d02fe5d23f};
+: ${PKG_MOON_BUGGY_VERSION:=1.0.51};
+: ${PKG_MOON_BUGGY_URL:=https://m.seehuhn.de/programs/moon-buggy-${PKG_MOON_BUGGY_VERSION}.tar.gz};
+: ${PKG_MOON_BUGGY_CONFIGURE_ARGS_EXTRA:="--sharedstatedir=/etc"};
+: ${PKG_MOON_BUGGY_IN_TREE:=1};
+: ${PKG_MOON_BUGGY_MAKEFLAGS_BUILD:="LIBS=-Wl,-lncurses,-ltinfo"};
+
+ex_pkg_register "moon_buggy" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

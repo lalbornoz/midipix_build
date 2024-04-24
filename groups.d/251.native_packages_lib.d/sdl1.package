@@ -1,0 +1,35 @@
+: ${PKG_SDL1_DEPENDS:="w32api w32lib"};
+: ${PKG_SDL1_SHA256SUM:=d6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00};
+: ${PKG_SDL1_VERSION:=1.2.15};
+: ${PKG_SDL1_URL:=https://www.libsdl.org/release/SDL-${PKG_SDL1_VERSION}.tar.gz};
+: ${PKG_SDL1_CFLAGS_CONFIGURE_EXTRA:="-DWINAPI_ANSI_DEFAULT -I${PREFIX_NATIVE}/include/w32api.ports"};
+: ${PKG_SDL1_IN_TREE:=1};
+: ${PKG_SDL1_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
+: ${PKG_SDL1_NET_DEPENDS:="sdl1"};
+: ${PKG_SDL1_NET_SHA256SUM:=5f4a7a8bb884f793c278ac3f3713be41980c5eedccecff0260411347714facb4};
+: ${PKG_SDL1_NET_VERSION:=1.2.8};
+: ${PKG_SDL1_NET_URL:=https://www.libsdl.org/projects/SDL_net/release/SDL_net-${PKG_SDL1_NET_VERSION}.tar.gz};
+: ${PKG_SDL1_NET_CONFIGURE_ARGS_EXTRA:="--disable-gui"};
+: ${PKG_SDL1_MIXER_DEPENDS:="sdl1"};
+: ${PKG_SDL1_MIXER_SHA256SUM:=1644308279a975799049e4826af2cfc787cad2abb11aa14562e402521f86992a};
+: ${PKG_SDL1_MIXER_VERSION:=1.2.12};
+: ${PKG_SDL1_MIXER_URL:=https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PKG_SDL1_MIXER_VERSION}.tar.gz};
+: ${PKG_SDL1_MIXER_CONFIGURE_ARGS_EXTRA:="--enable-music-mod=no --enable-music-mod-modplug=no --enable-music-midi=no --enable-music-fluidsynth-midi=no --enable-music-mp3=no"};
+: ${PKG_SDL1_MIXER_LDFLAGS_CONFIGURE:=-L${PREFIX_NATIVE}/lib};
+: ${PKG_SDL1_IMAGE_DEPENDS:="libz sdl1 libpng libjpeg_turbo tiff"};
+: ${PKG_SDL1_IMAGE_SHA256SUM:=0b90722984561004de84847744d566809dbb9daf732a9e503b91a1b5a84e5699};
+: ${PKG_SDL1_IMAGE_VERSION:=1.2.12};
+: ${PKG_SDL1_IMAGE_URL:=https://www.libsdl.org/projects/SDL_image/release/SDL_image-${PKG_SDL1_IMAGE_VERSION}.tar.gz};
+: ${PKG_SDL1_IMAGE_CONFIGURE_ARGS_EXTRA:="--enable-jpg-shared --enable-png-shared --enable-tif-shared --disable-webp --disable-webp-shared"};
+: ${PKG_SDL1_TTF_DEPENDS:="sdl1 freetype libiconv"};
+: ${PKG_SDL1_TTF_SHA256SUM:=724cd895ecf4da319a3ef164892b72078bd92632a5d812111261cde248ebcdb7};
+: ${PKG_SDL1_TTF_VERSION:=2.0.11};
+: ${PKG_SDL1_TTF_URL:=https://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-${PKG_SDL1_TTF_VERSION}.tar.gz};
+: ${PKG_SDL1_TTF_CONFIGURE_ARGS_EXTRA:="--with-freetype-prefix=${PREFIX_NATIVE} --without-x"};
+: ${PKG_SDL1_TTF_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2"};
+: ${PKG_SDL1_TTF_LDFLAGS_CONFIGURE_EXTRA:="-liconv"};
+: ${PKG_SDL1_TTF_IN_TREE:=1};
+
+ex_pkg_register "sdl1" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

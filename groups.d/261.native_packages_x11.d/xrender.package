@@ -1,0 +1,8 @@
+: ${PKG_XRENDER_DEPENDS:="libX11 xorgproto"};
+: ${PKG_XRENDER_SHA256SUM:=c06d5979f86e64cabbde57c223938db0b939dff49fdb5a793a1d3d0396650949};
+: ${PKG_XRENDER_VERSION:=0.9.10};
+: ${PKG_XRENDER_URL:=https://www.x.org/releases/individual/lib/libXrender-${PKG_XRENDER_VERSION}.tar.bz2};
+
+ex_pkg_register "xrender" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

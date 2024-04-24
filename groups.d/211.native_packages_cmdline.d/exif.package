@@ -1,0 +1,8 @@
+: ${PKG_EXIF_DEPENDS:="libexif popt"};
+: ${PKG_EXIF_SHA256SUM:=0fe268736e0ca0538d4af941022761a438854a64c8024a4175e57bf0418117b9};
+: ${PKG_EXIF_VERSION:=0.6.22};
+: ${PKG_EXIF_URL:=https://github.com/libexif/exif/releases/download/exif-0_6_22-release/exif-${PKG_EXIF_VERSION}.tar.xz};
+
+ex_pkg_register "exif" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

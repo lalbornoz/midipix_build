@@ -1,0 +1,6 @@
+: ${PKG_W32LIB_URLS_GIT:="w32lib=https://git.midipix.org/w32lib"};
+: ${PKG_W32LIB_CONFIGURE_ARGS:="--host=${DEFAULT_TARGET} --prefix= --target=${DEFAULT_TARGET}"};
+
+ex_pkg_register "w32lib" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

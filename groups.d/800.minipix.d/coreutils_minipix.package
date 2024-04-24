@@ -1,0 +1,7 @@
+: ${PKG_COREUTILS_MINIPIX_INHERIT_FROM:=coreutils};
+: ${PKG_COREUTILS_MINIPIX_INSTALL_TARGET:=install-binPROGRAMS};
+: ${PKG_COREUTILS_MINIPIX_MAKEFLAGS_INSTALL_EXTRA:=INSTALL_PROGRAM=${DEFAULT_TARGET}-install-strip};
+
+ex_pkg_register "coreutils_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

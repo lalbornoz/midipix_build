@@ -1,0 +1,16 @@
+: ${PKG_PYTHON2_DEPENDS:="bzip2 curl expat gdbm libffi libressl libz ncursesw readline sqlite3"};
+: ${PKG_PYTHON2_SHA256SUM:=b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43};
+: ${PKG_PYTHON2_VERSION:=2.7.18};
+: ${PKG_PYTHON2_URL:="https://www.python.org/ftp/python/${PKG_PYTHON2_VERSION}/Python-${PKG_PYTHON2_VERSION}.tar.xz"};
+: ${PKG_PYTHON2_URLS_GIT:="build/sbpython2=${DEFAULT_GITROOT}/python/sbpython2@main"};
+: ${PKG_PYTHON2_BASE_DIR:=${BUILD_WORKDIR}/python2-native-${DEFAULT_TARGET}};
+: ${PKG_PYTHON2_BUILD_DIR:=build/python2};
+: ${PKG_PYTHON2_CONFIGURE:=build/sbpython2/configure};
+: ${PKG_PYTHON2_CONFIGURE_ARGS:="--source-dir=../../Python-${PKG_PYTHON2_VERSION} --sysroot=${PREFIX_NATIVE} --prefix= --target=${DEFAULT_TARGET}"};
+: ${PKG_PYTHON2_CONFIGURE_TYPE:="sofort"};
+: ${PKG_PYTHON2_SOFORT_NATIVE_CFLAGS_EXTRA:="-std=c99 -D_XOPEN_SOURCE=700"};
+: ${PKG_PYTHON2_SUBDIR:=Python-${PKG_PYTHON2_VERSION}};
+
+ex_pkg_register "python2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

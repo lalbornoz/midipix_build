@@ -1,0 +1,7 @@
+: ${PKG_FINDUTILS_SHA256SUM:=a2bfb8c09d436770edc59f50fa483e785b161a3b7b9d547573cb08065fd462fe};
+: ${PKG_FINDUTILS_VERSION:=4.9.0};
+: ${PKG_FINDUTILS_URL:=https://ftp.gnu.org/gnu/findutils/findutils-${PKG_FINDUTILS_VERSION}.tar.xz};
+
+ex_pkg_register "findutils" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

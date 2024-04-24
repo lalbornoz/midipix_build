@@ -1,0 +1,6 @@
+: ${PKG_TOILET_DEPENDS:="libcaca"};
+: ${PKG_TOILET_URLS_GIT:=toilet=https://github.com/cacalabs/toilet@master};
+
+ex_pkg_register "toilet" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

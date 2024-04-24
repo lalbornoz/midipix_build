@@ -1,0 +1,11 @@
+: ${PKG_LIBZIP_HOST_DEPENDS:="cmake_host libz_host"};
+: ${PKG_LIBZIP_HOST_SHA256SUM:=a020dc1b17a79faa748e43a05f8605d65e403813e8e97ad3a300a90ddba097ac};
+: ${PKG_LIBZIP_HOST_VERSION:=1.7.1};
+: ${PKG_LIBZIP_HOST_URL:=https://libzip.org/download/libzip-${PKG_LIBZIP_HOST_VERSION}.tar.xz};
+: ${PKG_LIBZIP_HOST_CMAKE_ARGS_EXTRA:="
+	-DENABLE_GNUTLS=:BOOL=OFF
+	-DENABLE_MBEDTLS=:BOOL=OFF"};
+
+ex_pkg_register "libzip_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

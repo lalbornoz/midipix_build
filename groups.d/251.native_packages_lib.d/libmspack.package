@@ -1,0 +1,7 @@
+: ${PKG_LIBMSPACK_SHA256SUM:=70dd1fb2f0aecc36791b71a1e1840e62173079eadaa081192d1c323a0eeea21b};
+: ${PKG_LIBMSPACK_VERSION:=0.11alpha};
+: ${PKG_LIBMSPACK_URL:=https://www.cabextract.org.uk/libmspack/libmspack-${PKG_LIBMSPACK_VERSION}.tar.gz};
+
+ex_pkg_register "libmspack" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

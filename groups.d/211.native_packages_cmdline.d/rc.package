@@ -1,0 +1,14 @@
+: ${PKG_RC_DEPENDS:="ncurses readline"};
+: ${PKG_RC_SHA256SUM:=5ed26334dd0c1a616248b15ad7c90ca678ae3066fa02c5ddd0e6936f9af9bfd8};
+: ${PKG_RC_VERSION:=1.7.4};
+: ${PKG_RC_URL:=https://mirror.midipix.org/rc/rc-${PKG_RC_VERSION}.tar.gz};
+: ${PKG_RC_CONFIG_CACHE_EXTRA:="
+ac_cv_func_setpgrp_void=yes
+rc_cv_sys_dev_fd=yes
+rc_cv_sysv_sigcld=no"};
+: ${PKG_RC_CONFIGURE_ARGS_EXTRA:=--with-edit=readline};
+: ${PKG_RC_IN_TREE=1};
+
+ex_pkg_register "rc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

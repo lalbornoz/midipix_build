@@ -1,0 +1,12 @@
+: ${PKG_XWIN_SHA256SUM:=59c99fe86fe75b8164c6567bfc6e982aecc2e4a51e6fbac1b842d5d00549e918};
+: ${PKG_XWIN_VERSION:=1.20.1};
+: ${PKG_XWIN_URL:=https://x.org/releases/individual/xserver/xorg-server-${PKG_XWIN_VERSION}.tar.bz2};
+: ${PKG_XWIN_CFLAGS_BUILD_EXTRA:=-Wno-redundant-decls};
+: ${PKG_XWIN_CFLAGS_CONFIGURE_EXTRA:="-DWINAPI_ANSI_DEFAULT -I${PREFIX_NATIVE}/include/w32api.ports/"};
+: ${PKG_XWIN_CONFIGURE_ARGS_EXTRA:="--enable-xwin --disable-xorg --disable-dri --disable-dri2 --disable-dri3 --disable-pciaccess --disable-glx"};
+: ${PKG_XWIN_DISABLED:=1};
+: ${PKG_XWIN_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib/"};
+
+ex_pkg_register "xwin" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

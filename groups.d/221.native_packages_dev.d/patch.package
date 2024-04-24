@@ -1,0 +1,10 @@
+: ${PKG_PATCH_SHA256SUM:=ac610bda97abe0d9f6b7c963255a11dcb196c25e337c61f94e4778d632f1d8fd};
+: ${PKG_PATCH_VERSION:=2.7.6};
+: ${PKG_PATCH_URL:=https://ftp.gnu.org/gnu/patch/patch-${PKG_PATCH_VERSION}.tar.xz};
+: ${PKG_PATCHUTILS_SHA256SUM:=8875b0965fe33de62b890f6cd793be7fafe41a4e552edbf641f1fed5ebbf45ed};
+: ${PKG_PATCHUTILS_VERSION:=0.4.2};
+: ${PKG_PATCHUTILS_URL:=http://cyberelk.net/tim/data/patchutils/stable/patchutils-${PKG_PATCHUTILS_VERSION}.tar.xz};
+
+ex_pkg_register "patch" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

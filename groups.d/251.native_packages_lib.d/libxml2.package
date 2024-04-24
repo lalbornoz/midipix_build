@@ -1,0 +1,12 @@
+: ${PKG_LIBXML2_DEPENDS:="libz xz libiconv"};
+: ${PKG_LIBXML2_SHA256SUM:=889c593a881a3db5fdd96cc9318c87df34eb648edfc458272ad46fd607353fbb};
+: ${PKG_LIBXML2_VERSION:=2.12.6};
+: ${PKG_LIBXML2_URL:=https://download.gnome.org/sources/libxml2/${PKG_LIBXML2_VERSION%.*}/libxml2-${PKG_LIBXML2_VERSION}.tar.xz};
+: ${PKG_LIBXML2_CONFIGURE_ARGS_EXTRA:="--with-python=no"};
+: ${PKG_LIBXML2_INSTALL_FILES_V2:="
+	+%[_files]/bin/\%[_target]-xml2-config=bin/%[_target]-xml2-config
+	m0755=bin/%[_target]-xml2-config"};
+
+ex_pkg_register "libxml2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

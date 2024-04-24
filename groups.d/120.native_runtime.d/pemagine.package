@@ -1,0 +1,8 @@
+: ${PKG_PEMAGINE_DEPENDS:="ldso psxtypes"};
+: ${PKG_PEMAGINE_URLS_GIT:=pemagine=${DEFAULT_GITROOT}/pemagine};
+: ${PKG_PEMAGINE_CFLAGS_CONFIGURE_EXTRA:=-O0};
+: ${PKG_PEMAGINE_INSTALL_TARGET_EXTRA:=install-lib};
+
+ex_pkg_register "pemagine" "${RTL_FILEOP_SOURCE_FNAME}" "native_runtime";
+
+# vim:filetype=sh textwidth=0

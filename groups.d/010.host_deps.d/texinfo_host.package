@@ -1,0 +1,12 @@
+: ${PKG_TEXINFO_HOST_SHA256SUM:=988403c1542d15ad044600b909997ba3079b10e03224c61188117f3676b02caa};
+: ${PKG_TEXINFO_HOST_VERSION:=6.7};
+: ${PKG_TEXINFO_HOST_URL:=https://ftp.gnu.org/gnu/texinfo/texinfo-${PKG_TEXINFO_HOST_VERSION}.tar.xz};
+: ${PKG_TEXINFO_HOST_INSTALL_FILES_V2:="
+	!bin/makeinfo=bin/makeinfo.dist
+	+%[_files]/bin/makeinfo=bin/makeinfo
+	m0755=bin/makeinfo"};
+: ${PKG_TEXINFO_HOST_LIBTOOL:=rdlibtool};
+
+ex_pkg_register "texinfo_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

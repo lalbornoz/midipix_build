@@ -1,0 +1,7 @@
+: ${PKG_LIBFASTJSON_SHA256SUM:=3544c757668b4a257825b3cbc26f800f59ef3c1ff2a260f40f96b48ab1d59e07};
+: ${PKG_LIBFASTJSON_VERSION:=0.99.8};
+: ${PKG_LIBFASTJSON_URL:=http://download.rsyslog.com/libfastjson/libfastjson-${PKG_LIBFASTJSON_VERSION}.tar.gz};
+
+ex_pkg_register "libfastjson" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

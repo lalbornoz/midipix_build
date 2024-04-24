@@ -1,0 +1,11 @@
+: ${PKG_TK_DEPENDS:="libX11 tcl"};
+: ${PKG_TK_SHA256SUM:=131e4bae43a15dff0324c0479358bb42cfd7b8de0e1ca8d93c9207643c7144dd};
+: ${PKG_TK_VERSION:=8.7a1};
+: ${PKG_TK_URL:=http://kuiper.mirrorservice.org/sites/ftp.tcl.tk/pub/tcl/tcl8_7/tk${PKG_TK_VERSION}-src.tar.gz};
+: ${PKG_TK_CONFIGURE:="tk${PKG_TK_VERSION}/unix/configure"};
+: ${PKG_TK_CONFIGURE_ARGS_EXTRA:="tcl_cv_strtod_buggy=no --with-tcl=${PREFIX_NATIVE}/lib"};
+: ${PKG_TK_SUBDIR:=tk${PKG_TK_VERSION}};
+
+ex_pkg_register "tk" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

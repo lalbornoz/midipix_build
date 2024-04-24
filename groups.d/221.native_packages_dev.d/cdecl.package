@@ -1,0 +1,10 @@
+: ${PKG_CDECL_DEPENDS:="ncurses readline"};
+: ${PKG_CDECL_SHA256SUM:=04d1f4ecc9868771843e0ba55c72100c805ee4de2d0618a69d9dbf853df7eefd};
+: ${PKG_CDECL_VERSION:=13.0};
+: ${PKG_CDECL_URL:=https://github.com/paul-j-lucas/cdecl/releases/download/cdecl-${PKG_CDECL_VERSION}/cdecl-${PKG_CDECL_VERSION}.tar.gz};
+: ${PKG_CDECL_CONFIGURE_ARGS_EXTRA:="--with-readline=${PREFIX_NATIVE}"};
+: ${PKG_CDECL_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/ncurses"};
+
+ex_pkg_register "cdecl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

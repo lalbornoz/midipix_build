@@ -1,0 +1,10 @@
+: ${PKG_MDSO_URLS_GIT:="mdso=${DEFAULT_GITROOT}/mdso"};
+: ${PKG_MDSO_CONFIGURE_ARGS:="--prefix= --target=${DEFAULT_TARGET}"};
+: ${PKG_MDSO_INSTALL_FILES_V2:="
+	@mdso=bin/${DEFAULT_TARGET}-mdso
+	/=${DEFAULT_TARGET}/bin
+	@../../bin/mdso=${DEFAULT_TARGET}/bin/mdso"};
+
+ex_pkg_register "mdso" "${RTL_FILEOP_SOURCE_FNAME}" "native_tools";
+
+# vim:filetype=sh textwidth=0

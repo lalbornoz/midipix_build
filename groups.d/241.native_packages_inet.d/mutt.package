@@ -1,0 +1,13 @@
+: ${PKG_MUTT_DEPENDS:="gnutls libz ncursesw libiconv"};
+: ${PKG_MUTT_SHA256SUM:=eb23faddc1cc97d867693f3a4a9f30949ad93765ad5b6fdae2797a4001c58efb};
+: ${PKG_MUTT_VERSION:=2.2.13};
+: ${PKG_MUTT_URL:=http://ftp.mutt.org/pub/mutt/mutt-${PKG_MUTT_VERSION}.tar.gz};
+: ${PKG_MUTT_CONFIG_CACHE_EXTRA:="
+mutt_cv_c99_snprintf=yes
+mutt_cv_c99_vsnprintf=yes
+mutt_cv_regex_broken=no"};
+: ${PKG_MUTT_CONFIGURE_ARGS_EXTRA:="--enable-imap --enable-pop --enable-smtp --enable-sidebar --with-curses --with-mailpath=/var/spool/mail --with-gnutls --disable-doc"};
+
+ex_pkg_register "mutt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

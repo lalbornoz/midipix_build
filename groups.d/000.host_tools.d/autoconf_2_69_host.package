@@ -1,0 +1,24 @@
+: ${PKG_AUTOCONF_2_69_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOCONF_2_69_HOST_SHA256SUM:=64ebcec9f8ac5b2487125a86a7760d2591ac9e1d3dbd59489633f9de62a57684};
+: ${PKG_AUTOCONF_2_69_HOST_VERSION:=2.69};
+: ${PKG_AUTOCONF_2_69_HOST_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_2_69_HOST_VERSION}.tar.xz};
+: ${PKG_AUTOCONF_2_69_HOST_INSTALL_FILES_V2:="
+	/=libexec/autoconf-2.69
+	!bin/%<*>=libexec/autoconf-2.69/%[FNAME]
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoconf-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoheader-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autom4te-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoreconf-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoscan-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/autoupdate-2.69
+	+%[_files]/bin/\%[FNAME]-2.69=bin/ifnames-2.69
+	!share/autoconf-2.69/autom4te.cfg=share/autoconf/autom4te.cfg
+	-=share/autoconf-2.69/
+	!share/autoconf=share/autoconf-2.69/
+	-=share/info/dir
+	!share/info/%<*.info>=share/info/%[FNAME%.info]-2.69.info
+	!share/man/man1/%<*.1>=share/man/man1/%[FNAME%.1]-2.69.1"}
+
+ex_pkg_register "autoconf_2_69_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

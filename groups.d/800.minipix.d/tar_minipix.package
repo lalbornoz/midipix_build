@@ -1,0 +1,6 @@
+: ${PKG_TAR_MINIPIX_INHERIT_FROM:=tar};
+: ${PKG_TAR_MINIPIX_MAKEFLAGS_INSTALL:="-C src install-binPROGRAMS"};
+
+ex_pkg_register "tar_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

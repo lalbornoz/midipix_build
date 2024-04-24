@@ -1,0 +1,12 @@
+: ${PKG_WHOIS_DEPENDS:="libidn2"};
+: ${PKG_WHOIS_SHA256SUM:=b7de4288700951b141420e2b4408f0906eaf4e97409cf5043aee80ef4d31e2b4};
+: ${PKG_WHOIS_VERSION:=5.5.22};
+: ${PKG_WHOIS_URL:=https://github.com/rfc1036/whois/archive/v${PKG_WHOIS_VERSION}.tar.gz};
+: ${PKG_WHOIS_IN_TREE:=1};
+: ${PKG_WHOIS_CFLAGS_BUILD:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
+: ${PKG_WHOIS_MAKE_INSTALL_VNAME:=BASEDIR};
+: ${PKG_WHOIS_SUBDIR:=whois-${PKG_WHOIS_VERSION}};
+
+ex_pkg_register "whois" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

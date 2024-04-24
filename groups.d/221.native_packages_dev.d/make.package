@@ -1,0 +1,10 @@
+: ${PKG_MAKE_SHA256SUM:=e40b8f018c1da64edd1cc9a6fce5fa63b2e707e404e20cad91fbae337c98a5b7};
+: ${PKG_MAKE_VERSION:=4.2.1};
+: ${PKG_MAKE_URL:=https://ftp.gnu.org/gnu/make/make-${PKG_MAKE_VERSION}.tar.gz};
+: ${PKG_MAKE_CONFIG_CACHE_EXTRA:="
+ac_cv_func_gettimeofday=yes
+make_cv_synchronous_posix_spawn=yes"};
+
+ex_pkg_register "make" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

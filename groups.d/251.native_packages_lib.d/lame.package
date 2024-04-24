@@ -1,0 +1,9 @@
+: ${PKG_LAME_SHA256SUM:=ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e};
+: ${PKG_LAME_VERSION:=3.100};
+: ${PKG_LAME_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/lame/lame-${PKG_LAME_VERSION}.tar.gz};
+: ${PKG_LAME_CONFIGURE_ARGS_EXTRA:="--enable-nasm"};
+: ${PKG_LAME_LDFLAGS_CONFIGURE_EXTRA:="-Wl,--as-needed -ltinfo -Wl,--no-as-needed"};
+
+ex_pkg_register "lame" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

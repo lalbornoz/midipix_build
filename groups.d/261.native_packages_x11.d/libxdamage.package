@@ -1,0 +1,8 @@
+: ${PKG_LIBXDAMAGE_DEPENDS:="libX11 libXfixes xorgproto"};
+: ${PKG_LIBXDAMAGE_SHA256SUM:=52733c1f5262fca35f64e7d5060c6fcd81a880ba8e1e65c9621cf0727afb5d11};
+: ${PKG_LIBXDAMAGE_VERSION:=1.1.6};
+: ${PKG_LIBXDAMAGE_URL:=https://x.org/releases/individual/lib/libXdamage-${PKG_LIBXDAMAGE_VERSION}.tar.xz};
+
+ex_pkg_register "libxdamage" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

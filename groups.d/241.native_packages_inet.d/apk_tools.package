@@ -1,0 +1,12 @@
+: ${PKG_APK_TOOLS_DEPENDS:="libfetch libressl libz"};
+: ${PKG_APK_TOOLS_SHA256SUM:=def2b2c23cd12fd2a9c19be49653b0d1bf9d81a26dac5a0ee79a1351d674f93b};
+: ${PKG_APK_TOOLS_VERSION:=2.6.8};
+: ${PKG_APK_TOOLS_URL:=http://git.alpinelinux.org/cgit/apk-tools/snapshot/apk-tools-${PKG_APK_TOOLS_VERSION}.tar.bz2};
+: ${PKG_APK_TOOLS_ENV_VARS_EXTRA:=CFLAGS=--sysroot=${PREFIX_NATIVE}:CROSS_COMPILE=${DEFAULT_TARGET}-:LUAAPK=:VERBOSE=1:PREFIX=${PREFIX_NATIVE}:OPENSSL_LIBS=-L${PREFIX_NATIVE}/lib -lssl -lcrypto:ZLIB_LIBS=-L${PREFIX_NATIVE}/lib -lz};
+: ${PKG_APK_TOOLS_IN_TREE:=1};
+: ${PKG_APK_TOOLS_MAKEFLAGS_INSTALL_EXTRA:="PREFIX=${PREFIX_NATIVE} MANDIR=/share/man DOCDIR=/share/doc/apk"};
+: ${PKG_APK_TOOLS_DISABLED:=1};
+
+ex_pkg_register "apk_tools" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

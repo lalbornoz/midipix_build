@@ -1,0 +1,7 @@
+: ${PKG_INFOUNZIP_URLS_GIT:=infounzip=https://github.com/Redfoxmoon3/infounzip.git@master};
+: ${PKG_INFOUNZIP_IN_TREE:=1};
+: ${PKG_INFOUNZIP_CFLAGS_BUILD_EXTRA:=${NATIVE_PACKAGES_CFLAGS_CONFIGURE}};
+
+ex_pkg_register "infounzip" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,7 @@
+: ${PKG_GZIP_SHA256SUM:=7454eb6935db17c6655576c2e1b0fabefd38b4d0936e0f87f48cd062ce91a057};
+: ${PKG_GZIP_VERSION:=1.13};
+: ${PKG_GZIP_URL:=https://ftp.gnu.org/gnu/gzip/gzip-${PKG_GZIP_VERSION}.tar.xz};
+
+ex_pkg_register "gzip" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

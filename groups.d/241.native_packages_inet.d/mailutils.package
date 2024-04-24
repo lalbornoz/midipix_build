@@ -1,0 +1,11 @@
+: ${PKG_MAILUTILS_DEPENDS:="gnutls ncurses libunistring"};
+: ${PKG_MAILUTILS_SHA256SUM:=b7d0c286c352fcc7da7978cfd617cc66736b21fa891aa4f88855f516354f2ddb};
+: ${PKG_MAILUTILS_VERSION:=3.15};
+: ${PKG_MAILUTILS_URL:=https://ftp.gnu.org/gnu/mailutils/mailutils-${PKG_MAILUTILS_VERSION}.tar.xz};
+: ${PKG_MAILUTILS_CONFIGURE_ARGS_EXTRA:="mu_cv_lib_gnutls=yes --disable-python --with-gnutls --without-fribidi --without-gssapi"};
+: ${PKG_MAILUTILS_LDFLAGS_BUILD_EXTRA:="-lgnutls -lunistring"};
+: ${PKG_MAILUTILS_IN_TREE=1};
+
+ex_pkg_register "mailutils" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

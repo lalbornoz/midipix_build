@@ -1,0 +1,6 @@
+: ${PKG_LIBGLOB_URLS_GIT:=libglob=https://github.com/void-linux/libglob.git@master};
+: ${PKG_LIBGLOB_BUILD_DIR:=libglob};
+
+ex_pkg_register "libglob" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

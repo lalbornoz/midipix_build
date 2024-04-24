@@ -1,0 +1,8 @@
+: ${PKG_LIBREDWG_SHA256SUM:=dd906f59d71b26c13fd2420f50fc50bea666fd54acc764d8c344f7f89d5ab94e};
+: ${PKG_LIBREDWG_VERSION:=0.13};
+: ${PKG_LIBREDWG_URL:=https://ftp.gnu.org/gnu/libredwg/libredwg-${PKG_LIBREDWG_VERSION}.tar.xz};
+: ${PKG_LIBREDWG_CONFIGURE_ARGS_EXTRA:="--disable-python --disable-bindings --disable-werror --enable-compile-warnings=yes"};
+
+ex_pkg_register "libredwg" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

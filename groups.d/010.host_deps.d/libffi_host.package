@@ -1,0 +1,11 @@
+: ${PKG_LIBFFI_HOST_SHA256SUM:=d06ebb8e1d9a22d19e38d63fdb83954253f39bedc5d46232a05645685722ca37};
+: ${PKG_LIBFFI_HOST_VERSION:=3.2.1};
+: ${PKG_LIBFFI_HOST_URL:=ftp://sourceware.org/pub/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.tar.gz};
+: ${PKG_LIBFFI_HOST_INSTALL_FILES_V2:="
+	@../lib/libffi-3.2.1/include/ffi.h=include/ffi.h
+	@../lib/libffi-3.2.1/include/ffitarget.h=include/ffitarget.h"};
+: ${PKG_LIBFFI_HOST_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/libffi/libffi-${PKG_LIBFFI_HOST_VERSION}.midipix.patch"};
+
+ex_pkg_register "libffi_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

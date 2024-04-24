@@ -1,0 +1,9 @@
+: ${PKG_FIGLET_SHA256SUM:=bf88c40fd0f077dab2712f54f8d39ac952e4e9f2e1882f1195be9e5e4257417d};
+: ${PKG_FIGLET_VERSION:=2.2.5};
+: ${PKG_FIGLET_URL:=ftp://ftp.figlet.org/pub/figlet/program/unix/figlet-${PKG_FIGLET_VERSION}.tar.gz};
+: ${PKG_FIGLET_IN_TREE:=1};
+: ${PKG_FIGLET_MAKEFLAGS_BUILD_LIST:=CC=${DEFAULT_NATIVE_CC}:LD=${DEFAULT_NATIVE_CCLD}};
+
+ex_pkg_register "figlet" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

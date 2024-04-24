@@ -1,0 +1,13 @@
+: ${PKG_GNUTLS_DEPENDS:="libunistring libtasn1 nettle zstd"};
+: ${PKG_GNUTLS_SHA256SUM:=66269a2cfe0e1c2dabec87bdbbd8ab656f396edd9a40dd006978e003cfa52bfc};
+: ${PKG_GNUTLS_VERSION:=3.8.5};
+: ${PKG_GNUTLS_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v${PKG_GNUTLS_VERSION%.*}/gnutls-${PKG_GNUTLS_VERSION}.tar.xz};
+: ${PKG_GNUTLS_CONFIG_CACHE_EXTRA:="
+gl_cv_func_working_getdelim=yes
+gl_cv_ld_output_def=no"};
+: ${PKG_GNUTLS_CONFIGURE_ARGS_EXTRA:="PYTHON=python3 --disable-static --disable-ssl3-support --disable-ssl2-support --disable-cxx --enable-local-libopts --without-p11-kit --disable-hardware-acceleration --enable-guile=no --with-default-trust-store-dir=/etc/ssl/certs"};
+: ${PKG_GNUTLS_LIBTOOL:=rlibtool};
+
+ex_pkg_register "gnutls" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

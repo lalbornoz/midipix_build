@@ -1,0 +1,11 @@
+: ${PKG_CA_CERTIFICATES_HOST_DEPENDS:="libressl_host"};
+: ${PKG_CA_CERTIFICATES_HOST_URLS_GIT:="ca-certificates=https://github.com/Redfoxmoon3/ca-certificates@master"};
+: ${PKG_CA_CERTIFICATES_HOST_IN_TREE:=1};
+: ${PKG_CA_CERTIFICATES_HOST_CFLAGS_BUILD_EXTRA:=-I${PREFIX}/include};
+: ${PKG_CA_CERTIFICATES_HOST_LDFLAGS_BUILD_EXTRA:=-L${PREFIX}/lib};
+: ${PKG_CA_CERTIFICATES_HOST_ENV_VARS_EXTRA:="HOST_CC=gcc"};
+: ${PKG_CA_CERTIFICATES_HOST_VARS_FILE:="vars/ca_certificates.vars"};
+
+ex_pkg_register "ca_certificates_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

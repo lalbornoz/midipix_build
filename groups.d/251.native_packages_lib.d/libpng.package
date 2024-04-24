@@ -1,0 +1,8 @@
+: ${PKG_LIBPNG_DEPENDS:="libz"};
+: ${PKG_LIBPNG_SHA256SUM:=6a5ca0652392a2d7c9db2ae5b40210843c0bbc081cbd410825ab00cc59f14a6c};
+: ${PKG_LIBPNG_VERSION:=1.6.43};
+: ${PKG_LIBPNG_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/libpng/libpng-${PKG_LIBPNG_VERSION}.tar.xz};
+
+ex_pkg_register "libpng" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

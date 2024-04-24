@@ -1,0 +1,14 @@
+: ${PKG_CMAKE_HOST_DEPENDS:="bzip2_host musl_fts_host ncurses_host"};
+: ${PKG_CMAKE_HOST_SHA256SUM:=dc1246c4e6d168ea4d6e042cfba577c1acd65feea27e56f5ff37df920c30cae0};
+: ${PKG_CMAKE_HOST_VERSION:=3.7.2};
+: ${PKG_CMAKE_HOST_URL:=https://cmake.org/files/v${PKG_CMAKE_HOST_VERSION%.*}/cmake-${PKG_CMAKE_HOST_VERSION}.tar.gz};
+: ${PKG_CMAKE_HOST_CONFIGURE_TYPE:="cmake"};
+: ${PKG_CMAKE_HOST_CMAKE_ARGS_EXTRA:="
+	-DCURSES_NCURSES_LIBRARY=${PREFIX}/lib/libncurses.so
+	-DLIBMD_LIBRARY=
+"};
+: ${PKG_CMAKE_HOST_INSTALL_FILES_V2:="+../cmake-${PKG_CMAKE_HOST_VERSION}/Modules/Platform/BSDOS.cmake=share/cmake-${PKG_CMAKE_HOST_VERSION%.*}/Modules/Platform/Midipix.cmake"};
+
+ex_pkg_register "cmake_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

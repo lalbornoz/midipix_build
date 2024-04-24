@@ -1,0 +1,7 @@
+: ${PKG_JANSSON_SHA256SUM:=f4f377da17b10201a60c1108613e78ee15df6b12016b116b6de42209f47a474f};
+: ${PKG_JANSSON_VERSION:=2.13.1};
+: ${PKG_JANSSON_URL:=https://digip.org/jansson/releases/jansson-${PKG_JANSSON_VERSION}.tar.gz};
+
+ex_pkg_register "jansson" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

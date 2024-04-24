@@ -1,0 +1,9 @@
+: ${PKG_UTIL_LINUX_HOST_DEPENDS:="ncursesw_host"};
+: ${PKG_UTIL_LINUX_HOST_SHA256SUM:=37de03dbb98cdeffdf9e754122b0aca2a9bbdc19769f6570dfcb6f123643bf53};
+: ${PKG_UTIL_LINUX_HOST_VERSION:=2.36.1};
+: ${PKG_UTIL_LINUX_HOST_URL:=https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${PKG_UTIL_LINUX_HOST_VERSION%.*}/util-linux-${PKG_UTIL_LINUX_HOST_VERSION}.tar.gz};
+: ${PKG_UTIL_LINUX_HOST_CONFIGURE_ARGS_EXTRA:="--disable-all-programs --enable-libuuid"};
+
+ex_pkg_register "util_linux" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

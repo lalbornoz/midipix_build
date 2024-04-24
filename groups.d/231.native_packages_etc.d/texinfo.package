@@ -1,0 +1,7 @@
+: ${PKG_TEXINFO_SHA256SUM:=988403c1542d15ad044600b909997ba3079b10e03224c61188117f3676b02caa};
+: ${PKG_TEXINFO_VERSION:=6.7};
+: ${PKG_TEXINFO_URL:=https://ftp.gnu.org/gnu/texinfo/texinfo-${PKG_TEXINFO_VERSION}.tar.xz};
+
+ex_pkg_register "texinfo" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

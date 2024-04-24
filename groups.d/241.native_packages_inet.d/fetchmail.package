@@ -1,0 +1,9 @@
+: ${PKG_FETCHMAIL_DEPENDS:="libressl"};
+: ${PKG_FETCHMAIL_SHA256SUM:=c7500bed3b0bb85722f7cf2d980e74a879ac57b13cfd225d278179d671c0f5e8};
+: ${PKG_FETCHMAIL_VERSION:=6.4.0.beta4};
+: ${PKG_FETCHMAIL_URL:=http://krusty.dt.e-technik.tu-dortmund.de/~ma/fetchmail/fetchmail-${PKG_FETCHMAIL_VERSION}.tar.xz};
+: ${PKG_FETCHMAIL_CONFIGURE_ARGS_EXTRA:="--with-kerberos5=no --with-kerberos=no --with-ssl=${PREFIX_NATIVE}"};
+
+ex_pkg_register "fetchmail" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

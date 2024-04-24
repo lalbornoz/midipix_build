@@ -1,0 +1,10 @@
+: ${PKG_LIBTHEORA_DEPENDS:="libvorbis"};
+: ${PKG_LIBTHEORA_SHA256SUM:=b6ae1ee2fa3d42ac489287d3ec34c5885730b1296f0801ae577a35193d3affbc};
+: ${PKG_LIBTHEORA_VERSION:=1.1.1};
+: ${PKG_LIBTHEORA_URL:=http://downloads.xiph.org/releases/theora/libtheora-${PKG_LIBTHEORA_VERSION}.tar.bz2};
+: ${PKG_LIBTHEORA_IN_TREE:=1};
+: ${PKG_LIBTHEORA_MAKEFLAGS_PARALLELISE:="-j1"};
+
+ex_pkg_register "libtheora" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

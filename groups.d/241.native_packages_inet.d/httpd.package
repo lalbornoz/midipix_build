@@ -1,0 +1,11 @@
+: ${PKG_HTTPD_SHA256SUM:=0127f7dc497e9983e9c51474bed75e45607f2f870a7675a86dc90af6d572f5c9};
+: ${PKG_HTTPD_VERSION:=2.4.52};
+: ${PKG_HTTPD_URL:=https://archive.apache.org/dist/httpd/httpd-${PKG_HTTPD_VERSION}.tar.bz2};
+: ${PKG_HTTPD_CONFIG_CACHE_EXTRA:="ap_cv_void_ptr_lt_long=no"};
+: ${PKG_HTTPD_CONFIGURE_ARGS_EXTRA:="--with-apr=${PREFIX_NATIVE}/bin/${DEFAULT_TARGET}-apr-1-config --with-apr-util=${PREFIX_NATIVE}/bin/apu-1-config --with-z=${PREFIX_NATIVE} --with-ssl=${PREFIX_NATIVE} --with-pcre=${PREFIX}/bin/pcre-config --enable-mods-static=all --disable-ext-filter --disable-lua --sysconfdir=/etc/apache2 --localstatedir=/var/lib/apache2 --datadir=/srv/www"};
+: ${PKG_HTTPD_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/lua5.4"};
+: ${PKG_HTTPD_DISABLED:=1};
+
+ex_pkg_register "httpd" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

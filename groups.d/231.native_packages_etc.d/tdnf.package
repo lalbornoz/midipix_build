@@ -1,0 +1,11 @@
+: ${PKG_TDNF_DEPENDS:="libmetalink libressl curl gpgme libsolv"};
+: ${PKG_TDNF_SHA256SUM:=1ca20b176939f32c212f8dec7bfacd99995f1cb16c7f176b90394378ea854b0b};
+: ${PKG_TDNF_VERSION:=2.1.1};
+: ${PKG_TDNF_URL:=https://github.com/vmware/tdnf/archive/v${PKG_TDNF_VERSION}/tdnf-${PKG_TDNF_VERSION}.tar.gz};
+: ${PKG_TDNF_CMAKE_ARGS_EXTRA:="-DOPENSSL_LIBRARY=${PREFIX_NATIVE}/lib/libcrypto.so"};
+: ${PKG_TDNF_IN_TREE:=1};
+: ${PKG_TDNF_SUBDIR:=tdnf-${PKG_TDNF_VERSION}};
+
+ex_pkg_register "tdnf" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

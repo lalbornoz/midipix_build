@@ -1,0 +1,10 @@
+: ${PKG_SHARED_MIME_INFO_DEPENDS:="glib libxml2"};
+: ${PKG_SHARED_MIME_INFO_SHA256SUM:=2af55ef1a0319805b74ab40d331a3962c905477d76c086f49e34dc96363589e9};
+: ${PKG_SHARED_MIME_INFO_VERSION:=1.8};
+: ${PKG_SHARED_MIME_INFO_URL:=http://freedesktop.org/~hadess/shared-mime-info-${PKG_SHARED_MIME_INFO_VERSION}.tar.xz};
+: ${PKG_SHARED_MIME_INFO_CONFIGURE_ARGS_EXTRA:=--disable-update-mimedb};
+: ${PKG_SHARED_MIME_INFO_MAKEFLAGS_PARALLELISE:="-j1"};
+
+ex_pkg_register "shared" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

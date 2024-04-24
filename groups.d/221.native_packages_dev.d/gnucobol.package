@@ -1,0 +1,10 @@
+: ${PKG_GNUCOBOL_DEPENDS:="ncursesw"}
+: ${PKG_GNUCOBOL_SHA256SUM:=597005d71fd7d65b90cbe42bbfecd5a9ec0445388639404662e70d53ddf22574};
+: ${PKG_GNUCOBOL_VERSION:=3.1.2};
+: ${PKG_GNUCOBOL_URL:=https://ftp.gnu.org/gnu/gnucobol/gnucobol-${PKG_GNUCOBOL_VERSION}.tar.xz};
+: ${PKG_GNUCOBOL_CONFIGURE_ARGS_EXTRA:="--without-db --without-json --with-math=gmp"};
+: ${PKG_GNUCOBOL_LDFLAGS_CONFIGURE_EXTRA:="-ltinfow"};
+
+ex_pkg_register "gnucobol" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,6 @@
+: ${PKG_PYTHON2_MINIPIX_INHERIT_FROM:=python2};
+: ${PKG_PYTHON2_MINIPIX_BASE_DIR:=${BUILD_WORKDIR}/python2-minipix-${DEFAULT_TARGET}};
+
+ex_pkg_register "python2_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

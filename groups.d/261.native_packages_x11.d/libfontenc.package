@@ -1,0 +1,8 @@
+: ${PKG_LIBFONTENC_DEPENDS:="libz xorgproto"};
+: ${PKG_LIBFONTENC_SHA256SUM:=c0d36991faee06551ddbaf5d99266e97becdc05edfae87a833c3ff7bf73cfec2};
+: ${PKG_LIBFONTENC_VERSION:=1.1.7};
+: ${PKG_LIBFONTENC_URL:=https://x.org/releases/individual/lib/libfontenc-${PKG_LIBFONTENC_VERSION}.tar.xz};
+
+ex_pkg_register "libfontenc" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

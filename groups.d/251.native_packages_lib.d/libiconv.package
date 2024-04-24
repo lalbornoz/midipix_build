@@ -1,0 +1,11 @@
+: ${PKG_LIBICONV_SHA256SUM:=8f74213b56238c85a50a5329f77e06198771e70dd9a739779f4c02f65d971313};
+: ${PKG_LIBICONV_VERSION:=1.17};
+: ${PKG_LIBICONV_URL:=https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PKG_LIBICONV_VERSION}.tar.gz};
+: ${PKG_LIBICONV_CONFIGURE_ARGS_EXTRA:="--enable-extra-encodings"};
+: ${PKG_LIBICONV_INSTALL_FILES_V2:="
+	@../../native/include/iconv.h=%[_prefix]/../x86_64-nt64-midipix/include/iconv.v
+	+%[_files]/lib/pkgconfig/iconv.pc=lib/pkgconfig/iconv.pc"};
+
+ex_pkg_register "libiconv" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,9 @@
+: ${PKG_MPFR_DEPENDS:="gmp"};
+: ${PKG_MPFR_SHA256SUM:=79c73f60af010a30a5c27a955a1d2d01ba095b72537dab0ecaad57f5a7bb1b6b};
+: ${PKG_MPFR_VERSION:=3.1.2};
+: ${PKG_MPFR_URL:=ftp://ftp.gnu.org/gnu/mpfr/mpfr-${PKG_MPFR_VERSION}.tar.bz2};
+: ${PKG_MPFR_CONFIGURE_ARGS_EXTRA:="--disable-assembly --with-gmp=${PREFIX_NATIVE}"};
+
+ex_pkg_register "mpfr" "${RTL_FILEOP_SOURCE_FNAME}" "native_toolchain";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,18 @@
+: ${PKG_BINUTILS_SHA256SUM:=250d3b2925c6b211fb16173b0b25bc091c58829fbcad3eb849645e0af52cf7fa};
+: ${PKG_BINUTILS_VERSION:=2.24.51};
+: ${PKG_BINUTILS_URL:=ftp://sourceware.org/pub/binutils/snapshots/binutils-${PKG_BINUTILS_VERSION}.tar.bz2};
+: ${PKG_BINUTILS_AUTOCONF_CONFIG_GUESS:="keep"};
+: ${PKG_BINUTILS_CONFIGURE_ARGS_EXTRA:="--enable-deterministic-archives --with-libelf=${PREFIX_NATIVE} --with-gmp=${PREFIX_NATIVE} --with-mpc=${PREFIX_NATIVE} --with-mpfr=${PREFIX_NATIVE} --with-sysroot=/"};
+: ${PKG_BINUTILS_CFLAGS_CONFIGURE:="-isystem ${PREFIX_NATIVE}/include -Wno-error=cpp"};
+: ${PKG_BINUTILS_LDFLAGS_CONFIGURE:="-L${PREFIX_NATIVE}/lib"};
+: ${PKG_BINUTILS_INSTALL_FILES_V2:="
+	+%[_builddir]/bfd/bfd.h=include/%[FNAME]
+	+%[_builddir]/bfd/.libs/libbfd.a=lib/%[FNAME]
+	+%[_subdir]/include/ansidecl.h=include/%[FNAME]
+	+%[_subdir]/include/symcat.h=include/%[FNAME]"};
+: ${PKG_BINUTILS_PATCHES_EXTRA:="${BUILD_WORKDIR}/chainport/patches/binutils/binutils-${PKG_BINUTILS_VERSION}.midipix.patch"};
+: ${PKG_BINUTILS_LIBTOOL:=slibtool-static};
+
+ex_pkg_register "binutils" "${RTL_FILEOP_SOURCE_FNAME}" "native_toolchain";
+
+# vim:filetype=sh textwidth=0

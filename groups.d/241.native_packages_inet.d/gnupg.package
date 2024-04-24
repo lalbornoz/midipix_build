@@ -1,0 +1,11 @@
+: ${PKG_GNUPG_DEPENDS:="libassuan libgcrypt libgpg_error libksba npth sqlite3"};
+: ${PKG_GNUPG_SHA256SUM:=540b7a40e57da261fb10ef521a282e0021532a80fd023e75fb71757e8a4969ed};
+: ${PKG_GNUPG_VERSION:=2.3.8};
+: ${PKG_GNUPG_URL:=https://www.gnupg.org/ftp/gcrypt/gnupg/gnupg-${PKG_GNUPG_VERSION}.tar.bz2};
+: ${PKG_GNUPG_CONFIGURE_ARGS_EXTRA:="--with-libgpg-error-prefix=${PREFIX_NATIVE} --with-libgcrypt-prefix=${PREFIX_NATIVE} --with-libassuan-prefix=${PREFIX_NATIVE} --with-ksba-prefix=${PREFIX_NATIVE} --with-npth-prefix=${PREFIX_NATIVE}"};
+: ${PKG_GNUPG_CONFIG_CACHE_EXTRA:="
+ac_cv_path_GPGRT_CONFIG=${PREFIX_NATIVE}/bin/gpgrt-config"};
+
+ex_pkg_register "gnupg" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

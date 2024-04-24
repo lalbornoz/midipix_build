@@ -1,0 +1,10 @@
+: ${PKG_MOE_DEPENDS:="ncurses ncursesw"};
+: ${PKG_MOE_SHA256SUM:=43a557bc512f89d6c718e5f41029cfe3a055682620eb8dbece6302f34a26146b};
+: ${PKG_MOE_VERSION:=1.13};
+: ${PKG_MOE_URL:=https://ftp.gnu.org/gnu/moe/moe-${PKG_MOE_VERSION}.tar.lz};
+: ${PKG_MOE_CONFIGURE_ARGS_LIST:="--prefix=:CXX=${DEFAULT_NATIVE_CXX}"};
+: ${PKG_MOE_ENV_VARS_EXTRA:="CXXFLAGS=${DEFAULT_CXXFLAGS}"};
+
+ex_pkg_register "moe" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

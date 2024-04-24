@@ -1,0 +1,9 @@
+: ${PKG_FILE_DEPENDS:="xz bzip2 libz zstd"};
+: ${PKG_FILE_SHA256SUM:=fc97f51029bb0e2c9f4e3bffefdaf678f0e039ee872b9de5c002a6d09c784d82};
+: ${PKG_FILE_VERSION:=5.45};
+: ${PKG_FILE_URL:=http://ftp.astron.com/pub/file/file-${PKG_FILE_VERSION}.tar.gz};
+: ${PKG_FILE_CFLAGS_CONFIGURE_EXTRA:=-std=c99};
+
+ex_pkg_register "file" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

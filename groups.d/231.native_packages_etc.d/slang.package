@@ -1,0 +1,10 @@
+: ${PKG_SLANG_DEPENDS:="libpng ncursesw pcre"};
+: ${PKG_SLANG_SHA256SUM:=f9145054ae131973c61208ea82486d5dd10e3c5cdad23b7c4a0617743c8f5a18};
+: ${PKG_SLANG_VERSION:=2.3.3};
+: ${PKG_SLANG_URL:=https://www.jedsoft.org/releases/slang/slang-${PKG_SLANG_VERSION}.tar.bz2};
+: ${PKG_SLANG_IN_TREE:=1};
+: ${PKG_SLANG_MAKEFLAGS_PARALLELISE:="-j1"};
+
+ex_pkg_register "slang" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

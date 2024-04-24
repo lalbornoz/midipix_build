@@ -1,0 +1,8 @@
+: ${PKG_POTRACE_DEPENDS:="libz"};
+: ${PKG_POTRACE_SHA256SUM:=be8248a17dedd6ccbaab2fcc45835bb0502d062e40fbded3bc56028ce5eb7acc};
+: ${PKG_POTRACE_VERSION:=1.16};
+: ${PKG_POTRACE_URL:=https://ftp.osuosl.org/pub/blfs/conglomeration/potrace/potrace-${PKG_POTRACE_VERSION}.tar.gz};
+
+ex_pkg_register "potrace" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

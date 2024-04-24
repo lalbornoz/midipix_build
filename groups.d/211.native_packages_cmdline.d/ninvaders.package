@@ -1,0 +1,15 @@
+: ${PKG_NINVADERS_DEPENDS:="ncurses"};
+: ${PKG_NINVADERS_SHA256SUM:=bfbc5c378704d9cf5e7fed288dac88859149bee5ed0850175759d310b61fd30b};
+: ${PKG_NINVADERS_VERSION:=0.1.1};
+: ${PKG_NINVADERS_URL:=http://http.debian.net/debian/pool/main/n/ninvaders/ninvaders_${PKG_NINVADERS_VERSION}.orig.tar.gz};
+: ${PKG_NINVADERS_BUILD_DIR:=ninvaders-${PKG_NINVADERS_VERSION}};
+: ${PKG_NINVADERS_BUILD_STEPS_DISABLE:=install_make};
+: ${PKG_NINVADERS_CFLAGS_BUILD_EXTRA:="-g3 -O0 -I${PREFIX_NATIVE}/include -I${PREFIX_NATIVE}/include/ncurses"};
+: ${PKG_NINVADERS_INSTALL_FILES_V2:="+../ninvaders-${PKG_NINVADERS_VERSION}/nInvaders=bin/%[FNAME]"};
+: ${PKG_NINVADERS_IN_TREE:=1};
+: ${PKG_NINVADERS_MAKEFLAGS_BUILD:="CC=${DEFAULT_TARGET}-gcc LIBS=-Wl,-lncurses,-ltinfo"};
+: ${PKG_NINVADERS_SUBDIR:=ninvaders-${PKG_NINVADERS_VERSION}};
+
+ex_pkg_register "ninvaders" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

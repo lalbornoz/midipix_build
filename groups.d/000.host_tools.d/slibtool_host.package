@@ -1,0 +1,6 @@
+: ${PKG_SLIBTOOL_HOST_URLS_GIT:="slibtool=${DEFAULT_GITROOT}/slibtool"};
+: ${PKG_SLIBTOOL_HOST_CONFIGURE_ARGS:=--prefix=};
+
+ex_pkg_register "slibtool_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

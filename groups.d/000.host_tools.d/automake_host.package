@@ -1,0 +1,8 @@
+: ${PKG_AUTOMAKE_HOST_DEPENDS:="autoconf_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOMAKE_HOST_SHA256SUM:=ff2bf7656c4d1c6fdda3b8bebb21f09153a736bcba169aaf65eab25fa113bf3a};
+: ${PKG_AUTOMAKE_HOST_VERSION:=1.16.3};
+: ${PKG_AUTOMAKE_HOST_URL:=https://ftp.gnu.org/gnu/automake/automake-${PKG_AUTOMAKE_HOST_VERSION}.tar.xz};
+
+ex_pkg_register "automake_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,7 @@
+: ${PKG_LIBPTHREAD_STUBS_SHA256SUM:=e4d05911a3165d3b18321cc067fdd2f023f06436e391c6a28dff618a78d2e733};
+: ${PKG_LIBPTHREAD_STUBS_VERSION:=0.4};
+: ${PKG_LIBPTHREAD_STUBS_URL:=https://xcb.freedesktop.org/dist/libpthread-stubs-${PKG_LIBPTHREAD_STUBS_VERSION}.tar.bz2};
+
+ex_pkg_register "libpthread_stubs" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,6 @@
+: ${PKG_TPAX_HOST_URLS_GIT:="tpax=https://git.midipix.org/tpax@main"};
+: ${PKG_TPAX_HOST_CONFIGURE_ARGS:=--prefix=};
+
+ex_pkg_register "tpax_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

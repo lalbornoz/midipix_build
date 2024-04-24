@@ -1,0 +1,8 @@
+: ${PKG_LIBXCURSOR_DEPENDS:="libX11 libXfixes xorgproto Xrender"};
+: ${PKG_LIBXCURSOR_SHA256SUM:=77f96b9ad0a3c422cfa826afabaf1e02b9bfbfc8908c5fa1a45094faad074b98};
+: ${PKG_LIBXCURSOR_VERSION:=1.2.1};
+: ${PKG_LIBXCURSOR_URL:=https://www.x.org/releases/individual/lib/libXcursor-${PKG_LIBXCURSOR_VERSION}.tar.gz};
+
+ex_pkg_register "libxcursor" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

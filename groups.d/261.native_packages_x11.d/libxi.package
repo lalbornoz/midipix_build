@@ -1,0 +1,8 @@
+: ${PKG_LIBXI_DEPENDS:="libX11 libXext libXfixes util_macros xorgproto"};
+: ${PKG_LIBXI_SHA256SUM:=463cc5370191404bc0f8a450fdbf6d9159efbbf274e5e0f427a60191fed9cf4b};
+: ${PKG_LIBXI_VERSION:=1.7.9};
+: ${PKG_LIBXI_URL:=https://x.org/releases/individual/lib/libXi-${PKG_LIBXI_VERSION}.tar.gz};
+
+ex_pkg_register "libxi" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,10 @@
+: ${PKG_SBSIGNTOOLS_HOST_DEPENDS:="binutils_build libressl_host util_linux_host"};
+: ${PKG_SBSIGNTOOLS_HOST_URLS_GIT:=sbsigntools-master=https://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git@master};
+: ${PKG_SBSIGNTOOLS_HOST_SUBDIR:=sbsigntools-master};
+: ${PKG_SBSIGNTOOLS_HOST_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX}/opt/include"};
+: ${PKG_SBSIGNTOOLS_HOST_IN_TREE:=1};
+: ${PKG_SBSIGNTOOLS_HOST_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX}/opt/lib"};
+
+ex_pkg_register "sbsigntools_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,9 @@
+: ${PKG_RSYNC_DEPENDS:="libressl"};
+: ${PKG_RSYNC_SHA256SUM:=6f761838d08052b0b6579cf7f6737d93e47f01f4da04c5d24d3447b7f2a5fad1};
+: ${PKG_RSYNC_VERSION:=3.2.4};
+: ${PKG_RSYNC_URL:=https://download.samba.org/pub/rsync/src/rsync-${PKG_RSYNC_VERSION}.tar.gz};
+: ${PKG_RSYNC_CONFIGURE_ARGS_EXTRA:="--with-included-zlib --disable-simd --disable-xxhash --disable-lz4 --disable-zstd"};
+
+ex_pkg_register "rsync" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

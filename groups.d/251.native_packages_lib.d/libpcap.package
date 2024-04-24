@@ -1,0 +1,9 @@
+: ${PKG_LIBPCAP_SHA256SUM:=8ac670de8dd6eff39441580c67f0520f326773422bbf89fdffcd269bd0cfddde};
+: ${PKG_LIBPCAP_VERSION:=1.9.1};
+: ${PKG_LIBPCAP_URL:=https://github.com/the-tcpdump-group/libpcap/archive/libpcap-${PKG_LIBPCAP_VERSION}.tar.gz};
+: ${PKG_LIBPCAP_CONFIG_CACHE_EXTRA:="ac_cv_lbl_unaligned_fail=no"};
+: ${PKG_LIBPCAP_SUBDIR:="libpcap-libpcap-${PKG_LIBPCAP_VERSION}"};
+
+ex_pkg_register "libpcap" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

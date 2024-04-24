@@ -1,0 +1,21 @@
+: ${PKG_VIM_DEPENDS:="ncursesw libiconv"};
+: ${PKG_VIM_SHA256SUM:=2b17989c6258f422276c6df9b72626947027a8b98e3a8eca2b2649c6ddc33765};
+: ${PKG_VIM_VERSION:=9.0.1927};
+: ${PKG_VIM_URL:=https://github.com/vim/vim/archive/v${PKG_VIM_VERSION}.tar.gz};
+: ${PKG_VIM_CONFIGURE_ARGS_EXTRA:="--enable-gui=no --with-tlib=tinfow --without-x --disable-canberra --disable-libsodium --disable-motif-check --disable-sysmouse --disable-gpm"};
+: ${PKG_VIM_IN_TREE:=1};
+: ${PKG_VIM_INSTALL_FILES_V2:="@vim=bin/vi"};
+: ${PKG_VIM_MAKEFLAGS_INSTALL_EXTRA:=STRIP=/bin/true};
+: ${PKG_VIM_SUBDIR:=vim-${PKG_VIM_VERSION}};
+: ${PKG_VIM_CONFIG_CACHE_EXTRA:="
+vim_cv_tgetent=zero
+vim_cv_toupper_broken=no
+vim_cv_terminfo=yes
+vim_cv_getcwd_broken=no
+vim_cv_stat_ignores_slash=yes
+vim_cv_memmove_handles_overlap=yes
+vim_cv_timer_create=yes"};
+
+ex_pkg_register "vim" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

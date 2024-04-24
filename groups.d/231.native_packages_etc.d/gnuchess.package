@@ -1,0 +1,8 @@
+: ${PKG_GNUCHESS_DEPENS:="ncurses"};
+: ${PKG_GNUCHESS_SHA256SUM:=ddfcc20bdd756900a9ab6c42c7daf90a2893bf7f19ce347420ce36baebc41890};
+: ${PKG_GNUCHESS_VERSION:=6.2.9};
+: ${PKG_GNUCHESS_URL:=https://ftp.gnu.org/gnu/chess/gnuchess-${PKG_GNUCHESS_VERSION}.tar.gz};
+
+ex_pkg_register "gnuchess" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

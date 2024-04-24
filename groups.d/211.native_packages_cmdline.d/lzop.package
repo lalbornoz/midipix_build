@@ -1,0 +1,8 @@
+: ${PKG_LZOP_DEPENDS:="lzo"};
+: ${PKG_LZOP_SHA256SUM:=7e72b62a8a60aff5200a047eea0773a8fb205caf7acbe1774d95147f305a2f41};
+: ${PKG_LZOP_VERSION:=1.04};
+: ${PKG_LZOP_URL:=https://www.lzop.org/download/lzop-${PKG_LZOP_VERSION}.tar.gz};
+
+ex_pkg_register "lzop" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

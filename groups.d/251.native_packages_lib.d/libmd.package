@@ -1,0 +1,7 @@
+: ${PKG_LIBMD_SHA256SUM:=1bd6aa42275313af3141c7cf2e5b964e8b1fd488025caf2f971f43b00776b332};
+: ${PKG_LIBMD_VERSION:=1.1.0};
+: ${PKG_LIBMD_URL:=https://archive.hadrons.org/software/libmd/libmd-${PKG_LIBMD_VERSION}.tar.xz};
+
+ex_pkg_register "libmd" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

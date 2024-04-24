@@ -1,0 +1,12 @@
+: ${PKG_CVS_SHA256SUM:=4734971a59471744e4ad8665c1dca54cb3ebf9fc66ce9c2dff3d04670d3f7312};
+: ${PKG_CVS_VERSION:=1.12.13};
+: ${PKG_CVS_URL:=https://deb.debian.org/debian/pool/main/c/cvs/cvs_${PKG_CVS_VERSION}+real.orig.tar.gz};
+: ${PKG_CVS_SUBDIR:=cvs-${PKG_CVS_VERSION}};
+: ${PKG_CVS_CONFIGURE_ARGS_EXTRA:="--disable-pam --enable-client --enable-password-authenticated-client --enable-server -enable-proxy --enable-case-sensitivity --disable-lock-compatibility --enable-rootcommit --disable-old-info-format-support --enable-config-override=no --with-rsh=ssh --with-editor=vi --with-tmpdir=/tmp --with-umask=002 --with-external-zlib"};
+: ${PKG_CVS_CONFIG_CACHE_EXTRA:="
+cvs_cv_func_printf_ptr=yes
+ac_cv_path_PS2PDF=false"};
+
+ex_pkg_register "cvs" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

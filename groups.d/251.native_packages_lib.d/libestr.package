@@ -1,0 +1,7 @@
+: ${PKG_LIBESTR_SHA256SUM:=46632b2785ff4a231dcf241eeb0dcb5fc0c7d4da8ee49cf5687722cdbe8b2024};
+: ${PKG_LIBESTR_VERSION:=0.1.11};
+: ${PKG_LIBESTR_URL:=http://libestr.adiscon.com/files/download/libestr-${PKG_LIBESTR_VERSION}.tar.gz};
+
+ex_pkg_register "libestr" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

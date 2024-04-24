@@ -1,0 +1,9 @@
+: ${PKG_BEARSSL_SHA256SUM:=6705bba1714961b41a728dfc5debbe348d2966c117649392f8c8139efc83ff14};
+: ${PKG_BEARSSL_VERSION:=0.6};
+: ${PKG_BEARSSL_URL:=https://bearssl.org/bearssl-${PKG_BEARSSL_VERSION}.tar.gz};
+: ${PKG_BEARSSL_IN_TREE:=1};
+: ${PKG_BEARSSL_MAKEFLAGS_BUILD:="DESTDIR=${PREFIX_NATIVE}"};
+
+ex_pkg_register "bearssl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

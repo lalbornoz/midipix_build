@@ -1,0 +1,12 @@
+: ${PKG_WOLFSSL_DEPENDS:="libz"};
+: ${PKG_WOLFSSL_SHA256SUM:=2de93e8af588ee856fe67a6d7fce23fc1b226b74d710b0e3946bc8061f6aa18f};
+: ${PKG_WOLFSSL_VERSION:=5.7.0};
+: ${PKG_WOLFSSL_URL:=https://github.com/wolfSSL/wolfssl/archive/v${PKG_WOLFSSL_VERSION}-stable.tar.gz};
+: ${PKG_WOLFSSL_CONFIGURE_ARGS_EXTRA:="--enable-distro --disable-examples --enable-reproducible-build --enable-ed25519 --enable-ed25519-stream --with-libz=${PREFIX_NATIVE}"};
+: ${PKG_WOLFSSL_SUBDIR:=wolfssl-${PKG_WOLFSSL_VERSION}-stable};
+: ${PKG_WOLFSSL_INSTALL_FILES_V2:="
+	+../obj/wolfssl/options.h=include/wolfssl/%[FNAME]"};
+
+ex_pkg_register "wolfssl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

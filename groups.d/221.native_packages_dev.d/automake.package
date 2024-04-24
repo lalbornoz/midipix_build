@@ -1,0 +1,7 @@
+: ${PKG_AUTOMAKE_SHA256SUM:=f01d58cd6d9d77fbdca9eb4bbd5ead1988228fdb73d6f7a201f5f8d6b118b469};
+: ${PKG_AUTOMAKE_VERSION:=1.16.5};
+: ${PKG_AUTOMAKE_URL:=https://ftp.gnu.org/gnu/automake/automake-${PKG_AUTOMAKE_VERSION}.tar.xz};
+
+ex_pkg_register "automake" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

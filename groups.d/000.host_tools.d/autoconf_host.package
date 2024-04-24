@@ -1,0 +1,8 @@
+: ${PKG_AUTOCONF_HOST_DEPENDS:="m4_host pkgconf_host slibtool_host"};
+: ${PKG_AUTOCONF_HOST_SHA256SUM:=f14c83cfebcc9427f2c3cea7258bd90df972d92eb26752da4ddad81c87a0faa4};
+: ${PKG_AUTOCONF_HOST_VERSION:=2.71};
+: ${PKG_AUTOCONF_HOST_URL:=https://ftp.gnu.org/gnu/autoconf/autoconf-${PKG_AUTOCONF_HOST_VERSION}.tar.xz};
+
+ex_pkg_register "autoconf_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_tools";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,11 @@
+: ${PKG_LIBSNDFILE_DEPENDS:="mpg123 lame libflac libogg libzip opus sqlite3"};
+: ${PKG_LIBSNDFILE_SHA256SUM:=0e30e7072f83dc84863e2e55f299175c7e04a5902ae79cfb99d4249ee8f6d60a};
+: ${PKG_LIBSNDFILE_VERSION:=1.2.0};
+: ${PKG_LIBSNDFILE_URL:=https://github.com/libsndfile/libsndfile/releases/download/${PKG_LIBSNDFILE_VERSION}/libsndfile-${PKG_LIBSNDFILE_VERSION}.tar.xz};
+: ${PKG_LIBSNDFILE_CONFIGURE_ARGS_EXTRA:="--disable-alsa"};
+: ${PKG_LIBSNDFILE_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/w32api.ports -DWINAPI_ANSI_DEFAULT"};
+: ${PKG_LIBSNDFILE_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib -lkernel32 -lwinmm"};
+
+ex_pkg_register "libsndfile" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

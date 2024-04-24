@@ -1,0 +1,9 @@
+: ${PKG_XORRISO_DEPENDS:="libiconv"};
+: ${PKG_XORRISO_SHA256SUM:=3b69f5c93ae7c40c5bbe4a847fa3963f5efc9c565551622f77121c5792fc17e7};
+: ${PKG_XORRISO_VERSION:=1.5.2};
+: ${PKG_XORRISO_URL:=https://www.gnu.org/software/xorriso/xorriso-${PKG_XORRISO_VERSION}.tar.gz};
+: ${PKG_XORRISO_IN_TREE:=1};
+
+ex_pkg_register "xorriso" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,8 @@
+: ${PKG_NCDU_DEPENDS:="ncursesw"};
+: ${PKG_NCDU_SHA256SUM:=3c37a1a96580c9c5d2cc352dc3c5eef0d909158c05f1cc29db4712544c8b9f95};
+: ${PKG_NCDU_VERSION:=1.18};
+: ${PKG_NCDU_URL:=https://dev.yorhel.nl/download/ncdu-${PKG_NCDU_VERSION}.tar.gz};
+
+ex_pkg_register "ncdu" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

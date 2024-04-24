@@ -1,0 +1,15 @@
+: ${PKG_BOCHS_DEPENDS:="curl ncurses sdl1"};
+: ${PKG_BOCHS_SHA256SUM:=a85b13aff7d8411f7a9f356ba6c33b5f5dc1fbb107eb5018cc23a62639da0059};
+: ${PKG_BOCHS_VERSION:=2.8};
+: ${PKG_BOCHS_URL:=https://fossies.org/linux/misc/bochs-${PKG_BOCHS_VERSION}.tar.gz};
+: ${PKG_BOCHS_CONFIGURE_ARGS_EXTRA:="--disable-docbook --without-x11 --without-wx --without-sdl2 --with-term --with-sdl --enable-idle-hack"};
+: ${PKG_BOCHS_CXXFLAGS_CONFIGURE_EXTRA:="-D_LARGEFILE64_SOURCE -I${PREFIX_NATIVE}/include/ncurses"};
+: ${PKG_BOCHS_INSTALL_FILES_V2:="
+	+../obj/.libs/bochs=bin/%[FNAME]
+	+../obj/.libs/bximage=bin/%[FNAME]"};
+: ${PKG_BOCHS_LDFLAGS_CONFIGURE_EXTRA:="-L${PREFIX_NATIVE}/lib"};
+: ${PKG_BOCHS_MAKEFLAGS_BUILD:="LIBS=-Wl,-ltinfo"};
+
+ex_pkg_register "bochs" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -1,0 +1,11 @@
+: ${PKG_TCL_SHA256SUM:=2bbd4e0bbdebeaf5dc6cc823d0805afb45c764292f6667d9ce2b9fcf5399e0dc};
+: ${PKG_TCL_VERSION:=8.7a1};
+: ${PKG_TCL_URL:=http://kuiper.mirrorservice.org/sites/ftp.tcl.tk/pub/tcl/tcl8_7/tcl${PKG_TCL_VERSION}-src.tar.gz};
+: ${PKG_TCL_CONFIG_CACHE_EXTRA:="
+tcl_cv_strtod_buggy=false
+tcl_cv_strtod_unbroken=true"};
+: ${PKG_TCL_SUBDIR:=tcl${PKG_TCL_VERSION}/unix};
+
+ex_pkg_register "tcl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

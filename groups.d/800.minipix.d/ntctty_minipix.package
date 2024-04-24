@@ -1,0 +1,7 @@
+: ${PKG_NTCTTY_MINIPIX_INHERIT_FROM:=ntctty};
+: ${PKG_NTCTTY_MINIPIX_ENV_VARS_EXTRA:="CFLAGS_PATH=-I${PREFIX_NATIVE}/include:LDFLAGS_PATH=-L${PREFIX_NATIVE}/lib"};
+: ${PKG_NTCTTY_MINIPIX_CONFIGURE_ARGS:="--prefix= --strict --host=${DEFAULT_TARGET}"};
+
+ex_pkg_register "ntctty_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

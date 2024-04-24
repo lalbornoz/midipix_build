@@ -1,0 +1,5 @@
+: ${PKG_PERK_MINIPIX_INHERIT_FROM:=perk};
+
+ex_pkg_register "perk_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

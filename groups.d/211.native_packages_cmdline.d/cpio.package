@@ -1,0 +1,7 @@
+: ${PKG_CPIO_SHA256SUM:=937610b97c329a1ec9268553fb780037bcfff0dcffe9725ebc4fd9c1aa9075db};
+: ${PKG_CPIO_VERSION:=2.15};
+: ${PKG_CPIO_URL:=https://ftp.gnu.org/gnu/cpio/cpio-${PKG_CPIO_VERSION}.tar.bz2};
+
+ex_pkg_register "cpio" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

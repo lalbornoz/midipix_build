@@ -1,0 +1,17 @@
+: ${PKG_PYTHON3_HOST_DEPENDS:="bzip2_host expat_host gdbm_host libffi_host readline_host libressl_host libz_host ncurses_host ncursesw_host sqlite3_host xz_host"};
+: ${PKG_PYTHON3_HOST_SHA256SUM:=f8d82e7572c86ec9d55c8627aae5040124fd2203af400c383c821b980306ee6b};
+: ${PKG_PYTHON3_HOST_VERSION:=3.7.10};
+: ${PKG_PYTHON3_HOST_URL:="https://www.python.org/ftp/python/${PKG_PYTHON3_HOST_VERSION}/Python-${PKG_PYTHON3_HOST_VERSION}.tar.xz"};
+: ${PKG_PYTHON3_HOST_URLS_GIT:="build/sbpython3=${DEFAULT_GITROOT}/python/sbpython3@main"};
+: ${PKG_PYTHON3_HOST_BASE_DIR:=${BUILD_WORKDIR}/python3_host-host-${DEFAULT_TARGET}};
+: ${PKG_PYTHON3_HOST_BUILD_DIR:=build/python3};
+: ${PKG_PYTHON3_HOST_CONFIGURE:=build/sbpython3/configure};
+: ${PKG_PYTHON3_HOST_CONFIGURE_ARGS:="--source-dir=../../Python-${PKG_PYTHON3_HOST_VERSION} --prefix=${PREFIX}"};
+: ${PKG_PYTHON3_HOST_CONFIGURE_TYPE:="sofort"};
+: ${PKG_PYTHON3_HOST_INSTALL_FILES_V2:="@python3=bin/python"};
+: ${PKG_PYTHON3_HOST_MAKEFLAGS_INSTALL_EXTRA:="PREFIX= EXEC_PREFIX= BINDIR=/bin SBINDIR=/sbin LIBDIR=/lib INCLUDEDIR=/include OLDINCLUDEDIR=/include MANDIR=/share/man DOCDIR=/share/doc LIBEXECDIR=/libexec"};
+: ${PKG_PYTHON3_HOST_SUBDIR:=Python-${PKG_PYTHON3_HOST_VERSION}};
+
+ex_pkg_register "python3_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+
+# vim:filetype=sh textwidth=0

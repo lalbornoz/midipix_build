@@ -1,0 +1,9 @@
+: ${PKG_ALGOL68G_SHA256SUM:=bd26e3dd89720ace1b003a43ab10247120b556ca106768fe8c829ee7bed6b435};
+: ${PKG_ALGOL68G_VERSION:=3.3.24};
+: ${PKG_ALGOL68G_URL:=https://jmvdveer.home.xs4all.nl/algol68g-${PKG_ALGOL68G_VERSION}.tar.gz}
+: ${PKG_ALGOL68G_CONFIGURE_ARGS_EXTRA:="--disable-mathlib --disable-plotutils --disable-postgresql --disable-gsl --disable-curl"};
+: ${PKG_ALGOL68G_CFLAGS_CONFIGURE_EXTRA:="--sysroot=${PREFIX_NATIVE} -DHAVE_FLT80=1 -DBUILD_UNIX=1"};
+
+ex_pkg_register "algol68g" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

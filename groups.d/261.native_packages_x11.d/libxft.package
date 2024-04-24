@@ -1,0 +1,9 @@
+: ${PKG_LIBXFT_DEPENDS:="fontconfig freetype libX11 util_macros Xrender"};
+: ${PKG_LIBXFT_SHA256SUM:=7fce32b92dcb7b2869bed567af2abc7bbad0d5d6fcf471b8a3e137964a31bbbd};
+: ${PKG_LIBXFT_VERSION:=2.3.1};
+: ${PKG_LIBXFT_URL:=https://www.x.org/releases/individual/lib/libXft-${PKG_LIBXFT_VERSION}.tar.bz2};
+: ${PKG_LIBXFT_CFLAGS_BUILD_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
+
+ex_pkg_register "libxft" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

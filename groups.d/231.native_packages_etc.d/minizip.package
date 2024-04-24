@@ -1,0 +1,20 @@
+: ${PKG_MINIZIP_DEPENDS:="bzip2 libressl libz xz"};
+: ${PKG_MINIZIP_SHA256SUM:=f4c8e7afdd45a093f69d7d338652996766d5473e63ad97a2c5cf89c0787773a0};
+: ${PKG_MINIZIP_VERSION:=2.10.4};
+: ${PKG_MINIZIP_URL:=https://github.com/nmoinvaz/minizip/archive/${PKG_MINIZIP_VERSION}.tar.gz};
+: ${PKG_MINIZIP_CMAKE_ARGS_EXTRA:="
+	-DBUILD_SHARED_LIBS=ON
+	-DBZIP2_LIBRARIES=${PREFIX_NATIVE}/lib/libbz2.lib.a
+	-DPKG_CONFIG_EXECUTABLE=${PREFIX}/bin/${DEFAULT_TARGET}-pkg-config
+	-DMZ_BUILD_TEST=ON
+	-DMZ_LIBBSD=OFF
+	-DMZ_LZMA=ON
+	-DMZ_OPENSSL=ON
+	-DMZ_ZSTD=OFF
+	-DZLIB_INCLUDE_DIR=${PREFIX_NATIVE}/include
+	-DZLIB_LIBRARY_DEBUG=${PREFIX_NATIVE}/lib/libz.lib.a"};
+: ${PKG_MINIZIP_SUBDIR:=minizip-ng-${PKG_MINIZIP_VERSION}};
+
+ex_pkg_register "minizip" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

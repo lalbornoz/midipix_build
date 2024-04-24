@@ -1,0 +1,6 @@
+: ${PKG_DROPBEAR_MINIPIX_INHERIT_FROM:=dropbear};
+: ${PKG_DROPBEAR_MINIPIX_INSTALL_FILES_V2:="+sbin/dropbear=bin/%[FNAME]"};
+
+ex_pkg_register "dropbear_minipix" "${RTL_FILEOP_SOURCE_FNAME}" "minipix";
+
+# vim:filetype=sh textwidth=0

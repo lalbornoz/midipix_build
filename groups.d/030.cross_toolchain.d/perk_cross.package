@@ -1,0 +1,9 @@
+: ${PKG_PERK_CROSS_DEPENDS:="mdso_cross"};
+: ${PKG_PERK_CROSS_URLS_GIT:="perk=${DEFAULT_GITROOT}/perk"};
+: ${PKG_PERK_CROSS_CONFIGURE_ARGS:="--prefix="};
+: ${PKG_PERK_CROSS_INSTALL_FILES_V2:="@perk=bin/${DEFAULT_TARGET}-perk"};
+: ${PKG_PERK_CROSS_CFLAGS_CONFIGURE:="-I${PREFIX_LOCAL}/include"};
+
+ex_pkg_register "perk_cross" "${RTL_FILEOP_SOURCE_FNAME}" "cross_toolchain";
+
+# vim:filetype=sh textwidth=0

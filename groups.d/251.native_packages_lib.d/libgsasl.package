@@ -1,0 +1,9 @@
+: ${PKG_LIBGSASL_DEPENDS:="libgcrypt"};
+: ${PKG_LIBGSASL_SHA256SUM:=f1b553384dedbd87478449775546a358d6f5140c15cccc8fb574136fdc77329f};
+: ${PKG_LIBGSASL_VERSION:=1.10.0};
+: ${PKG_LIBGSASL_URL:=https://ftp.gnu.org/gnu/gsasl/libgsasl-${PKG_LIBGSASL_VERSION}.tar.gz};
+: ${PKG_LIBGSASL_CONFIGURE_ARGS_EXTRA:="--disable-ntlm --disable-gssapi --disable-gs2 --disable-kerberos_v5 --disable-obsolete --with-libgcrypt --with-libgcrypt-prefix=${PREFIX_NATIVE}"};
+
+ex_pkg_register "libgsasl" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

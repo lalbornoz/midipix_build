@@ -1,0 +1,11 @@
+: ${PKG_EMACS_DEPENDS:="freetype gnutls libjpeg_turbo libz ncurses"};
+: ${PKG_EMACS_SHA256SUM:=1cf4fc240cd77c25309d15e18593789c8dbfba5c2b44d8f77c886542300fd32c};
+: ${PKG_EMACS_VERSION:=26.1};
+: ${PKG_EMACS_URL:=http://www.gutscheinrausch.de/mirror/gnu/emacs/emacs-${PKG_EMACS_VERSION}.tar.xz};
+: ${PKG_EMACS_CFLAGS_CONFIGURE_EXTRA:="-I${PREFIX_NATIVE}/include/freetype2 -O1 -g2"};
+: ${PKG_EMACS_CONFIGURE_ARGS_EXTRA:="--with-modules --with-sound=no --with-x-toolkit=no --without-dbus --without-x --without-mailutils --without-pop"};
+: ${PKG_EMACS_ENV_VARS_EXTRA:="BUILDCC=gcc"};
+
+ex_pkg_register "emacs" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0
