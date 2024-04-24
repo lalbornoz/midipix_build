@@ -321,7 +321,7 @@ ex_pkg_register_group() {
 	if rtl_get_var_unsafe \$_eprg_pkg_names -u "${_eprg_group_name}_PACKAGES"\
 	&& [ "${_eprg_pkg_names:+1}" = 1 ]; then
 		case "${_eprg_autofl}" in
-		noauto)
+		auto)
 			for _eprg_pkg_name in ${_eprg_pkg_names}; do
 				rtl_set_var_unsafe -u "PKG_${_eprg_pkg_name}_GROUP" "${_eprg_group_name}";
 				rtl_set_var_unsafe -u "PKG_${_eprg_pkg_name}_GROUP_FNAME" "${_eprg_fname}";
