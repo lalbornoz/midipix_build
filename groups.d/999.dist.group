@@ -4,6 +4,9 @@
 DIST_FORCE=1;
 DIST_NO_LOG_VARS=1;
 DIST_PACKAGES="dist_gitref dist_minipix dist_zipdist";
+
 : ${PKG_DIST_ZIPDIST_DEPENDS:="dist_minipix"};
+
+ex_pkg_register_group "dist" "${RTL_FILEOP_SOURCE_FNAME}";
 
 # vim:filetype=sh textwidth=0

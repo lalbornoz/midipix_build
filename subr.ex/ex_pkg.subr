@@ -3,6 +3,7 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
+
 #
 # ex_pkg_check_depends() - check single named package for unsatisfied dependencies
 # @_checkfl:		enable (1) or inhibit (0) dependency expansion
@@ -249,73 +250,20 @@ ex_pkg_load_vars() {
 # Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_load_groups() {
-	local	_eplg_rgroups="${1#\$}" _eplg_rgroups_noauto="${2#\$}"		\
-		_eplg_build_groups="" _eplg_build_groups_noauto=""		\
-		_eplg_fname="" _eplg_group="" _eplg_group_noautofl=0		\
-		_eplg_group_target="" _eplg_group_target_uc=""			\
-		_eplg_group_target_appendfl=0 _eplg_groups="" _eplg_pkg_name=""	\
-		_eplg_pkg_names="";
+	local	_eplg_rgroups="${1#\$}" _eplg_rgroups_noauto="${2#\$}"	\
+		_eplg_build_groups="" _eplg_build_groups_noauto="" _eplg_fname="";
 
+	EXP_PKG_REGISTER_GROUP_RGROUPS="${_eplg_rgroups}";
+	EXP_PKG_REGISTER_GROUP_RGROUPS_NOAUTO="${_eplg_rgroups_noauto}";
 	for _eplg_fname in $(find ./groups.d -name *.group | sort); do
-		rtl_fileop source "${_eplg_fname}";
-
-		_eplg_group="${_eplg_fname##*/}";
-		_eplg_group="${_eplg_group%.group}";
-		_eplg_group="${_eplg_group#*.}";
-
-		if [ "${GROUP_TARGET_APPEND:+1}" = 1 ]; then
-			_eplg_group_target="${GROUP_TARGET_APPEND}";
-			_eplg_group_target_appendfl=1;
-			unset GROUP_TARGET_APPEND;
-		else
-			_eplg_group_target="${_eplg_group}";
-			_eplg_group_target_appendfl=0;
-		fi;
-
-		_eplg_group_noautofl=0;
-		if ! rtl_lmatch \$_eplg_groups "${_eplg_group_target}"; then
-			rtl_lconcat \$_eplg_groups "${_eplg_group_target}";
-			if eval [ \"\${GROUP_AUTO:+1}\" = 1 ]; then
-				if eval [ \"\${GROUP_AUTO:-0}\" -ne 0 ]; then
-					_eplg_group_noautofl=0;
-					rtl_lconcat \$_eplg_build_groups "${_eplg_group_target}";
-				else
-					_eplg_group_noautofl=1;
-					rtl_lconcat \$_eplg_build_groups_noauto "${_eplg_group_target}";
-				fi;
-				unset GROUP_AUTO;
-			else
-				rtl_lconcat \$_eplg_build_groups "${_eplg_group_target}";
-			fi;
-		fi;
-
-		if rtl_get_var_unsafe \$_eplg_pkg_names -u "${_eplg_group}_PACKAGES"\
-		&& [ "${_eplg_pkg_names:+1}" = 1 ]; then
-			if [ "${_eplg_group_target_appendfl}" -eq 1 ]; then
-				rtl_toupper2 \$_eplg_group_target \$_eplg_group_target_uc;
-				rtl_lconcat "\$${_eplg_group_target_uc}_PACKAGES" "${_eplg_pkg_names}";
-			fi;
-
-			if [ "${_eplg_group_noautofl}" -eq 0 ]; then
-				for _eplg_pkg_name in ${_eplg_pkg_names}; do
-					rtl_set_var_unsafe -u "PKG_${_eplg_pkg_name}_GROUP" "${_eplg_group}";
-					rtl_set_var_unsafe -u "PKG_${_eplg_pkg_name}_GROUP_FNAME" "${_eplg_fname}";
-				done;
-			fi;
-		fi;
+		rtl_fileop source_with_fnamevar "${_eplg_fname}";
 	done;
+	unset EXP_PKG_REGISTER_GROUP_RGROUPS;
+	unset EXP_PKG_REGISTER_GROUP_RGROUPS_NOAUTO;
 
 	for _eplg_fname in $(find ./groups.d -mindepth 2 -name *.package | sort); do
 		rtl_fileop source_with_fnamevar "${_eplg_fname}";
 	done;
-
-	_eplg_build_groups="$(rtl_uniq "${_eplg_build_groups}")";
-	eval ${_eplg_rgroups}=\"${_eplg_build_groups}\";
-
-	if [ "${_eplg_rgroups_noauto:+1}" = 1 ]; then
-		_eplg_build_groups_noauto="$(rtl_uniq "${_eplg_build_groups_noauto}")";
-		eval ${_eplg_rgroups_noauto}=\"${_eplg_build_groups_noauto}\";
-	fi;
 
 	return 0;
 };
@@ -343,6 +291,44 @@ ex_pkg_register() {
 	rtl_lconcat "\$${_epr_group_name_uc}_PACKAGES" "${_epr_pkg_name}";
 	rtl_set_var_unsafe -u "PKG_${_epr_pkg_name}_GROUP" "${_epr_group_name}";
 	rtl_set_var_unsafe -u "PKG_${_epr_pkg_name}_GROUP_FNAME" "${_epr_fname}";
+
+	return 0;
+};
+
+#
+# ex_pkg_register_group() - register single group
+# @_group_name:					single group name
+# @_fname:					pathname to file group is defined in, relative to midipix_build root
+# @[_autofl]:					"auto" for groups to build by default, "noauto" for optional groups only built when requested
+# ${EXP_PKG_REGISTER_GROUP_RGROUPS}:		inout reference to variable of build groups
+# ${EXP_PKG_REGISTER_GROUP_RGROUPS_NOAUTO}:	inout reference to variable of build groups only built when requested
+#
+# Returns:		zero (0) on success, non-zero (>0) on failure.
+#
+ex_pkg_register_group() {
+	local	_eprg_group_name="${1}" _eprg_fname="${2}" _eprg_autofl="${3:-auto}"	\
+		_eprg_pkg_name="" _eprg_pkg_names="" _eprg_rgroups="";
+
+	case "${_eprg_autofl}" in
+	auto)	_eprg_rgroups="${EXP_PKG_REGISTER_GROUP_RGROUPS}"; ;;
+	noauto)	_eprg_rgroups="${EXP_PKG_REGISTER_GROUP_RGROUPS_NOAUTO}"; ;;
+	*)	;;
+	esac;
+	if ! rtl_lmatch "${_eprg_rgroups}" "${_eprg_group_name}"; then
+		rtl_lconcat "${_eprg_rgroups}" "${_eprg_group_name}";
+	fi;
+
+	if rtl_get_var_unsafe \$_eprg_pkg_names -u "${_eprg_group_name}_PACKAGES"\
+	&& [ "${_eprg_pkg_names:+1}" = 1 ]; then
+		case "${_eprg_autofl}" in
+		noauto)
+			for _eprg_pkg_name in ${_eprg_pkg_names}; do
+				rtl_set_var_unsafe -u "PKG_${_eprg_pkg_name}_GROUP" "${_eprg_group_name}";
+				rtl_set_var_unsafe -u "PKG_${_eprg_pkg_name}_GROUP_FNAME" "${_eprg_fname}";
+			done;
+			;;
+		esac;
+	fi;
 
 	return 0;
 };

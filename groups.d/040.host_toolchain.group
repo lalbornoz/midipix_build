@@ -9,4 +9,6 @@ HOST_TOOLCHAIN_PKG_CONFIG="${PREFIX}/bin/pkgconf";
 HOST_TOOLCHAIN_PREFIX="${PREFIX_CROSS}";
 HOST_TOOLCHAIN_RPM_DISABLE=1;
 
+ex_pkg_register_group "host_toolchain" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0

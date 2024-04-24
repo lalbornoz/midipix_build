@@ -1,7 +1,6 @@
 #
 # Build group dev_packages
 #
-GROUP_AUTO=0;
 rtl_lconcat2 \$DEV_PACKAGES_CFLAGS_CONFIGURE \$DEFAULT_CFLAGS "--sysroot=${PREFIX_NATIVE}";
 rtl_lconcat2 \$DEV_PACKAGES_CXXFLAGS_CONFIGURE \$DEFAULT_CXXFLAGS "--sysroot=${PREFIX_NATIVE}";
 DEV_PACKAGES_CONFIG_CACHE_LOCAL="${CONFIG_CACHE_GNULIB}";
@@ -15,5 +14,7 @@ diffutils patch patchutils gzip tar dos2unix nano vim";
 DEV_PACKAGES_PKG_CONFIG_LIBDIR="${PREFIX_NATIVE}/lib/pkgconfig";
 DEV_PACKAGES_PREFIX="${PREFIX_NATIVE}";
 DEV_PACKAGES_PYTHON="${PREFIX}/bin/python2";
+
+ex_pkg_register_group "dev_packages" "${RTL_FILEOP_SOURCE_FNAME}" "noauto";
 
 # vim:filetype=sh textwidth=0

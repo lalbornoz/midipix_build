@@ -14,4 +14,6 @@ NATIVE_PACKAGES_PKG_CONFIG_LIBDIR="${PREFIX_NATIVE}/lib/pkgconfig";
 NATIVE_PACKAGES_PREFIX="${PREFIX_NATIVE}";
 NATIVE_PACKAGES_PYTHON="${PREFIX}/bin/python2";
 
+ex_pkg_register_group "native_packages" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0

@@ -9,4 +9,6 @@ NATIVE_RUNTIME_ENV_VARS_EXTRA="CFLAGS_PATH=-I${PREFIX_NATIVE}/include:LDFLAGS_PA
 NATIVE_RUNTIME_GROUP_DEPENDS="host_deps host_deps_rpm cross_toolchain host_toolchain host_tools native_toolchain native_tools";
 NATIVE_RUNTIME_PREFIX="${PREFIX_NATIVE}";
 
+ex_pkg_register_group "native_runtime" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0

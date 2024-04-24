@@ -7,4 +7,6 @@ HOST_TOOLS_MAKEFLAGS_INSTALL="prefix= PREFIX=";
 HOST_TOOLS_PREFIX="${PREFIX}";
 HOST_TOOLS_RPM_DISABLE=1;
 
+ex_pkg_register_group "host_tools" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0

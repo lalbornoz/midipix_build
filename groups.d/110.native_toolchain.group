@@ -5,4 +5,6 @@ NATIVE_TOOLCHAIN_CONFIGURE_ARGS="--disable-nls --host=${DEFAULT_TARGET} --progra
 NATIVE_TOOLCHAIN_GROUP_DEPENDS="host_deps host_deps_rpm cross_toolchain host_toolchain host_tools native_tools";
 NATIVE_TOOLCHAIN_PREFIX="${PREFIX_NATIVE}";
 
+ex_pkg_register_group "native_toolchain" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0

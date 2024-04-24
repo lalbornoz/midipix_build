@@ -15,4 +15,6 @@ MINIPIX_PKGLIST_DISABLE=1;
 MINIPIX_PREFIX="${PREFIX}/minipix_dist";
 MINIPIX_RPM_DISABLE=1;
 
+ex_pkg_register_group "minipix" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0

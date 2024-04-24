@@ -13,4 +13,6 @@ HOST_DEPS_RPM_PKG_CONFIG="${PREFIX}/bin/pkgconf";
 HOST_DEPS_RPM_PREFIX="${PREFIX}";
 HOST_DEPS_RPM_RPM_DISABLE=1;
 
+ex_pkg_register_group "host_deps_rpm" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0

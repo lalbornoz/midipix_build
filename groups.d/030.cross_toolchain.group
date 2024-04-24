@@ -9,4 +9,6 @@ CROSS_TOOLCHAIN_PKG_CONFIG="${PREFIX}/bin/pkgconf";
 CROSS_TOOLCHAIN_PREFIX="${PREFIX_LOCAL}";
 CROSS_TOOLCHAIN_RPM_DISABLE=1;
 
+ex_pkg_register_group "cross_toolchain" "${RTL_FILEOP_SOURCE_FNAME}";
+
 # vim:filetype=sh textwidth=0
