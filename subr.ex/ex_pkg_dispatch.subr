@@ -302,7 +302,7 @@ ex_pkg_dispatch() {
 		_epd_checkfl=1 _epd_forcefl=0 _epd_perc_group=0								\
 		_epd_pkg_disabled="" _epd_pkg_finished="" _epd_pkg_names="" _epd_pkg_name=""				\
 		_epd_pkg_dispatch_count=0 _epd_pkg_dispatch_count_cur=0 _epd_pkg_dispatch_count_max=0			\
-		_epd_pkg_dispatch_group_cur=0 _epd_pkg_dispatch_group_max=0						\
+		_epd_pkg_dispatch_group_cur=1 _epd_pkg_dispatch_group_max=0						\
 		_epd_pkg_dispatch_njobs=0										\
 		_epd_rc=0 _epd_reversefl=0;
 
