@@ -4,6 +4,6 @@
 : ${PKG_UTIL_LINUX_HOST_URL:=https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${PKG_UTIL_LINUX_HOST_VERSION%.*}/util-linux-${PKG_UTIL_LINUX_HOST_VERSION}.tar.gz};
 : ${PKG_UTIL_LINUX_HOST_CONFIGURE_ARGS_EXTRA:="--disable-all-programs --enable-libuuid"};
 
-ex_pkg_register "util_linux" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
+ex_pkg_register "util_linux_host" "${RTL_FILEOP_SOURCE_FNAME}" "host_deps";
 
 # vim:filetype=sh textwidth=0
