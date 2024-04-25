@@ -1,0 +1,9 @@
+: ${PKG_LIBASSUAN_DEPENDS:="libgpg_error"};
+: ${PKG_LIBASSUAN_SHA256SUM:=8e8c2fcc982f9ca67dcbb1d95e2dc746b1739a4668bc20b3a3c5be632edb34e4};
+: ${PKG_LIBASSUAN_VERSION:=2.5.5};
+: ${PKG_LIBASSUAN_URL:=https://www.gnupg.org/ftp/gcrypt/libassuan/libassuan-${PKG_LIBASSUAN_VERSION}.tar.bz2};
+: ${PKG_LIBASSUAN_CONFIGURE_ARGS_EXTRA:=--with-libgpg-error-prefix=${PREFIX_NATIVE}};
+
+ex_pkg_register "libassuan" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0
