@@ -3,7 +3,6 @@
 # set +o errexit -o noglob -o nounset is assumed.
 #
 
-
 #
 # ex_pkg_check_depends() - check single named package for unsatisfied dependencies
 # @_checkfl:		enable (1) or inhibit (0) dependency expansion
@@ -14,25 +13,15 @@
 # @_workdir:		pathname to build-specific temporary directory
 #
 # Returns:		zero (0) given no outstanding dependencies, non-zero (>0) otherwise
-# Side effects:		${PKG_${_PKG_NAME}_DEPENDS_FULL} may be mutated
 #
 ex_pkg_check_depends() {
 	local	_epcd_checkfl="${1}" _epcd_rpkg_disabled="${2}" _epcd_rpkg_finished="${3#\$}"	\
 		_epcd_pkg_name="${4}" _epcd_rpkg_names="${5#\$}" _epcd_workdir="${6}"		\
 		_epcd_dependfl=0 _epcd_depends="" _epcd_pkg_name_depend="";
 
-	if [ "${_epcd_checkfl}" -eq 1 ]; then
-		if ! rtl_get_var_unsafe \$_epcd_depends -u "PKG_"${_epcd_pkg_name}"_DEPENDS_FULL"\
-		|| [ "${_epcd_depends:+1}" != 1 ];
-		then
-			if rtl_get_var_unsafe \$_epcd_depends -u "PKG_"${_epcd_pkg_name}"_DEPENDS";
-			then
-				eval PKG_"${_epcd_pkg_name}"_DEPENDS_FULL='$(rtl_uniq ${_epcd_depends})';
-			else
-				return 0;
-			fi;
-		fi;
-
+	if [ "${_epcd_checkfl}" -eq 1 ]\
+	&& rtl_get_var_unsafe \$_epcd_depends -u "PKG_"${_epcd_pkg_name}"_DEPENDS"\
+	&& [ "${_epcd_depends:+1}" = 1 ]; then
 		for _epcd_pkg_name_depend in ${_epcd_depends}; do
 			if ! rtl_lmatch "${_epcd_rpkg_disabled}" "${_epcd_pkg_name_depend}"\
 			&& ! ex_pkg_state_test2 "${_epcd_workdir}" "${_epcd_pkg_name_depend}" finish;
