@@ -1,0 +1,8 @@
+: ${PKG_LIBIDN2_DEPENDS:="libunistring libiconv"};
+: ${PKG_LIBIDN2_SHA256SUM:=93caba72b4e051d1f8d4f5a076ab63c99b77faee019b72b9783b267986dbb45f};
+: ${PKG_LIBIDN2_VERSION:=2.3.4};
+: ${PKG_LIBIDN2_URL:=https://ftp.gnu.org/gnu/libidn/libidn2-${PKG_LIBIDN2_VERSION}.tar.gz};
+
+ex_pkg_register "libidn2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

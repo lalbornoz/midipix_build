@@ -3,12 +3,6 @@
 : ${PKG_FREETYPE_VERSION:=2.11.1};
 : ${PKG_FREETYPE_URL:=http://download.savannah.gnu.org/releases/freetype/freetype-${PKG_FREETYPE_VERSION}.tar.xz};
 : ${PKG_FREETYPE_CONFIGURE_ARGS_EXTRA:="--with-bzip2=yes --with-harfbuzz=yes --with-png=yes --with-zlib=yes"};
-: ${PKG_FREETYPE_PRE_DEPENDS:="bzip2 libpng libz"};
-: ${PKG_FREETYPE_PRE_SHA256SUM:=3333ae7cfda88429c97a7ae63b7d01ab398076c3b67182e960e5684050f2c5c8};
-: ${PKG_FREETYPE_PRE_VERSION:=2.11.1};
-: ${PKG_FREETYPE_PRE_URL:=http://download.savannah.gnu.org/releases/freetype/freetype-${PKG_FREETYPE_PRE_VERSION}.tar.xz};
-: ${PKG_FREETYPE_PRE_CONFIGURE_ARGS_EXTRA:="--with-bzip2=yes --with-harfbuzz=no --with-png=yes --with-zlib=yes"};
-: ${PKG_FREETYPE_PRE_RPM_DISABLE:=1};
 
 ex_pkg_register "freetype" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 

@@ -3,6 +3,6 @@
 : ${PKG_XRENDER_VERSION:=0.9.10};
 : ${PKG_XRENDER_URL:=https://www.x.org/releases/individual/lib/libXrender-${PKG_XRENDER_VERSION}.tar.bz2};
 
-ex_pkg_register "xrender" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "Xrender" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

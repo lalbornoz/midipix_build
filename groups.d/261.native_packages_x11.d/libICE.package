@@ -4,6 +4,6 @@
 : ${PKG_LIBICE_URL:=https://www.x.org/releases/individual/lib/libICE-${PKG_LIBICE_VERSION}.tar.xz};
 : ${PKG_LIBICE_CONFIGURE_ARGS_EXTRA:="--disable-unix-transport"};
 
-ex_pkg_register "libice" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libICE" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

@@ -4,6 +4,6 @@
 : ${PKG_LIBSM_URL:=https://www.x.org/releases/individual/lib/libSM-${PKG_LIBSM_VERSION}.tar.xz};
 : ${PKG_LIBSM_CONFIGURE_ARGS_EXTRA:="--disable-unix-transport"};
 
-ex_pkg_register "libsm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libSM" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

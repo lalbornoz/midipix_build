@@ -1,0 +1,8 @@
+: ${PKG_XCB_UTIL_DEPENDS:="xcb"};
+: ${PKG_XCB_UTIL_SHA256SUM:=5abe3bbbd8e54f0fa3ec945291b7e8fa8cfd3cccc43718f8758430f94126e512};
+: ${PKG_XCB_UTIL_VERSION:=0.4.1};
+: ${PKG_XCB_UTIL_URL:=https://x.org/releases/individual/xcb/xcb-util-${PKG_XCB_UTIL_VERSION}.tar.xz};
+
+ex_pkg_register "xcb_util" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

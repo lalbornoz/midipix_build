@@ -1,0 +1,8 @@
+: ${PKG_XCB_UTIL_WM_DEPENDS:="xcb"};
+: ${PKG_XCB_UTIL_WM_SHA256SUM:=62c34e21d06264687faea7edbf63632c9f04d55e72114aa4a57bb95e4f888a0b};
+: ${PKG_XCB_UTIL_WM_VERSION:=0.4.2};
+: ${PKG_XCB_UTIL_WM_URL:=https://x.org/releases/individual/xcb/xcb-util-wm-${PKG_XCB_UTIL_WM_VERSION}.tar.xz};
+
+ex_pkg_register "xcb_util_wm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

@@ -6,21 +6,6 @@
 : ${PKG_XCB_CONFIG_CACHE_EXTRA:="ac_cv_search_sendmsg=no"};
 : ${PKG_XCB_CONFIGURE_ARGS_EXTRA:="--disable-randr PYTHON=${PREFIX}/bin/python3"};
 : ${PKG_XCB_ENV_VARS_EXTRA:="XCBPROTO_XCBPYTHONDIR=${PREFIX_NATIVE}/lib/python2.7/site-packages:XCBPROTO_XCBINCLUDEDIR=${PREFIX_NATIVE}/share/xcb"};
-: ${PKG_XCB_PROTO_SHA256SUM:=a75a1848ad2a89a82d841a51be56ce988ff3c63a8d6bf4383ae3219d8d915119};
-: ${PKG_XCB_PROTO_VERSION:=1.16.0};
-: ${PKG_XCB_PROTO_URL:=https://www.x.org/releases/individual/proto/xcb-proto-${PKG_XCB_PROTO_VERSION}.tar.xz};
-: ${PKG_XCB_UTIL_DEPENDS:="xcb"};
-: ${PKG_XCB_UTIL_SHA256SUM:=5abe3bbbd8e54f0fa3ec945291b7e8fa8cfd3cccc43718f8758430f94126e512};
-: ${PKG_XCB_UTIL_VERSION:=0.4.1};
-: ${PKG_XCB_UTIL_URL:=https://x.org/releases/individual/xcb/xcb-util-${PKG_XCB_UTIL_VERSION}.tar.xz};
-: ${PKG_XCB_UTIL_IMAGE_DEPENDS:="xcb xcb_util"};
-: ${PKG_XCB_UTIL_IMAGE_SHA256SUM:=ccad8ee5dadb1271fd4727ad14d9bd77a64e505608766c4e98267d9aede40d3d};
-: ${PKG_XCB_UTIL_IMAGE_VERSION:=0.4.1};
-: ${PKG_XCB_UTIL_IMAGE_URL:=https://x.org/releases/individual/xcb/xcb-util-image-${PKG_XCB_UTIL_IMAGE_VERSION}.tar.xz};
-: ${PKG_XCB_UTIL_WM_DEPENDS:="xcb"};
-: ${PKG_XCB_UTIL_WM_SHA256SUM:=62c34e21d06264687faea7edbf63632c9f04d55e72114aa4a57bb95e4f888a0b};
-: ${PKG_XCB_UTIL_WM_VERSION:=0.4.2};
-: ${PKG_XCB_UTIL_WM_URL:=https://x.org/releases/individual/xcb/xcb-util-wm-${PKG_XCB_UTIL_WM_VERSION}.tar.xz};
 
 ex_pkg_register "xcb" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
