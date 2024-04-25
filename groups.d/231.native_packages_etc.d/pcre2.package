@@ -1,0 +1,9 @@
+: ${PKG_PCRE2_DEPENDS:="bzip2 libz"};
+: ${PKG_PCRE2_SHA256SUM:=8d36cd8cb6ea2a4c2bb358ff6411b0c788633a2a45dabbf1aeb4b701d1b5e840};
+: ${PKG_PCRE2_VERSION:=10.42};
+: ${PKG_PCRE2_URL:=https://github.com/PCRE2Project/pcre2/releases/download/pcre2-${PKG_PCRE2_VERSION}/pcre2-${PKG_PCRE2_VERSION}.tar.bz2};
+: ${PKG_PCRE2_CONFIGURE_ARGS_EXTRA:="--enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2-16 --enable-pcre2-32 --disable-jit --enable-unicode"};
+
+ex_pkg_register "pcre2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0
