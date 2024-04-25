@@ -3,6 +3,6 @@
 : ${PKG_LIBXFIXES_VERSION:=5.0.3};
 : ${PKG_LIBXFIXES_URL:=https://x.org/releases/individual/lib/libXfixes-${PKG_LIBXFIXES_VERSION}.tar.gz};
 
-ex_pkg_register "libxfixes" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXfixes" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

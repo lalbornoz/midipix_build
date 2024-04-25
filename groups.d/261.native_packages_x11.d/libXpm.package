@@ -4,6 +4,6 @@
 : ${PKG_LIBXPM_URL:=https://www.x.org/releases/individual/lib/libXpm-${PKG_LIBXPM_VERSION}.tar.xz};
 : ${PKG_LIBXPM_CONFIGURE_ARGS_EXTRA:="--disable-open-zfile --disable-stat-zfile --disable-unit-tests"};
 
-ex_pkg_register "libxpm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXpm" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

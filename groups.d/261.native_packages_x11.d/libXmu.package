@@ -4,6 +4,6 @@
 : ${PKG_LIBXMU_URL:=https://www.x.org/releases/individual/lib/libXmu-${PKG_LIBXMU_VERSION}.tar.xz};
 : ${PKG_LIBXMU_CONFIGURE_ARGS_EXTRA:="--without-fop --disable-unix-transport"};
 
-ex_pkg_register "libxmu" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXmu" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

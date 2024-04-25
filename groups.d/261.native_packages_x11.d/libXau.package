@@ -3,6 +3,6 @@
 : ${PKG_LIBXAU_VERSION:=1.0.11};
 : ${PKG_LIBXAU_URL:=https://www.x.org/releases/individual/lib/libXau-${PKG_LIBXAU_VERSION}.tar.xz};
 
-ex_pkg_register "libxau" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXau" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

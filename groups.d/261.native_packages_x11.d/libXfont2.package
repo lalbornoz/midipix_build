@@ -4,6 +4,6 @@
 : ${PKG_LIBXFONT2_URL:=https://x.org/releases/individual/lib/libXfont2-${PKG_LIBXFONT2_VERSION}.tar.bz2};
 : ${PKG_LIBXFONT2_CFLAGS_CONFIGURE_EXTRA:=-I${PREFIX_NATIVE}/include/freetype2};
 
-ex_pkg_register "libxfont2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXfont2" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

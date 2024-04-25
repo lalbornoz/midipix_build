@@ -4,6 +4,6 @@
 : ${PKG_LIBXEXT_URL:=https://www.x.org/releases/individual/lib/libXext-${PKG_LIBXEXT_VERSION}.tar.xz};
 : ${PKG_LIBXEXT_CONFIGURE_ARGS_EXTRA:="--without-fop"};
 
-ex_pkg_register "libxext" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXext" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

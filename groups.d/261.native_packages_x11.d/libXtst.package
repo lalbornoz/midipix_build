@@ -1,0 +1,9 @@
+: ${PKG_LIBXTST_DEPENDS:="libX11 libXext libXi xorgproto"};
+: ${PKG_LIBXTST_SHA256SUM:=84f5f30b9254b4ffee14b5b0940e2622153b0d3aed8286a3c5b7eeb340ca33c8};
+: ${PKG_LIBXTST_VERSION:=1.2.4};
+: ${PKG_LIBXTST_URL:=http://www.x.org/releases/individual/lib/libXtst-${PKG_LIBXTST_VERSION}.tar.xz};
+: ${PKG_LIBXTST_CONFIGURE_ARGS_EXTRA:="--without-fop"};
+
+ex_pkg_register "libXtst" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0

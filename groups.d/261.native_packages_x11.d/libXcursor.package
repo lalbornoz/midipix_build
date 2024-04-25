@@ -3,6 +3,6 @@
 : ${PKG_LIBXCURSOR_VERSION:=1.2.1};
 : ${PKG_LIBXCURSOR_URL:=https://www.x.org/releases/individual/lib/libXcursor-${PKG_LIBXCURSOR_VERSION}.tar.gz};
 
-ex_pkg_register "libxcursor" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXcursor" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

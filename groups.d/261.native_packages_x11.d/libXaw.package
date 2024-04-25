@@ -4,6 +4,6 @@
 : ${PKG_LIBXAW_URL:=https://www.x.org/releases/individual/lib/libXaw-${PKG_LIBXAW_VERSION}.tar.bz2};
 : ${PKG_LIBXAW_CONFIGURE_ARGS_EXTRA:="--without-fop"};
 
-ex_pkg_register "libxaw" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXaw" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

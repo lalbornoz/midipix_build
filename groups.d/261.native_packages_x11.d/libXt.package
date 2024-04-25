@@ -10,6 +10,6 @@
 : ${PKG_LIBXTST_URL:=http://www.x.org/releases/individual/lib/libXtst-${PKG_LIBXTST_VERSION}.tar.xz};
 : ${PKG_LIBXTST_CONFIGURE_ARGS_EXTRA:="--without-fop"};
 
-ex_pkg_register "libxt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXt" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

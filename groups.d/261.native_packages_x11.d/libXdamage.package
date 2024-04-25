@@ -3,6 +3,6 @@
 : ${PKG_LIBXDAMAGE_VERSION:=1.1.6};
 : ${PKG_LIBXDAMAGE_URL:=https://x.org/releases/individual/lib/libXdamage-${PKG_LIBXDAMAGE_VERSION}.tar.xz};
 
-ex_pkg_register "libxdamage" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXdamage" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0

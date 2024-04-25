@@ -3,6 +3,6 @@
 : ${PKG_LIBXI_VERSION:=1.7.9};
 : ${PKG_LIBXI_URL:=https://x.org/releases/individual/lib/libXi-${PKG_LIBXI_VERSION}.tar.gz};
 
-ex_pkg_register "libxi" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "libXi" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0
