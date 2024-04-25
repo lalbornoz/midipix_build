@@ -222,6 +222,54 @@ rtl_llift2() {
 };
 
 #
+# rtl_llift_set() - convert list w/ separator to set
+# @_rlist:	in reference to list
+# @_rset_new:	out reference to new set
+# @_sep:	single non-zero, possibly multi-character, separator
+#
+# Notate bene:	all list items in @_rlist must form valid shell parameter name substrings;
+#		no list item must be named "__000000__"
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+rtl_llift_set() {
+	local	_rls3_rlist="${1#\$}" _rls3_rset_new="${2#\$}" _rls3_sep="${3:-}"	\
+		_rls3_litem="";
+
+	if [ "${_rls3_sep:+1}" = 1 ]; then
+		local IFS="${_rls3_sep}";
+	else
+		local _rls3_sep=" " IFS="${RTL_IFS_ORIG}";
+	fi;
+
+	eval set -- '${'"${_rls3_rlist}"'}';
+	eval "${_rls3_rset_new}___000000__=\${${_rls3_rlist}}";
+	for _rls3_litem in "${@}"; do
+		eval "${_rls3_rset_new}_${_rls3_litem}=1";
+	done;
+	return 0;
+};
+
+#
+# rtl_llift_unset() - unset set previously created w/ rtl_llift_set()
+# @_rset:	in reference to set
+#
+# Returns:	zero (0) on success, non-zero (>0) on failure
+#
+rtl_llift_unset() {
+	local	_rlu_rset="${1#\$}"	\
+		_rlu_index="" _rlu_item="";
+
+	if rtl_get_var_unsafe \$_rlu_index "${_rlu_rset}___000000__"; then
+		for _rlu_item in ${_rlu_index}; do
+			unset "${_rlu_rset}_${_rlu_item}";
+		done;
+		unset "${_rlu_rset}___000000__";
+	fi;
+
+	return 0;
+};
+
+#
 # rtl_lmatch() - check if item(s) in list
 # @_rlist:	in reference to list
 # @_item:	item(s) to search for

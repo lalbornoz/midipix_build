@@ -39,6 +39,34 @@ ex_pkg_check_depends() {
 };
 
 #
+# ex_pkg_check_depends_unknown() - check single named package for unknown dependencies
+# @_pkg_name:		single package name
+# @_rpkg_names_set:	in reference to variable of set of package names
+# @_rpkg_unknown:	out reference to variable of list of finished packages
+#
+# Returns:		zero (0) given no unknown dependencies, non-zero (>0) otherwise
+#
+ex_pkg_check_depends_unknown() {
+	local	_epcdu_pkg_name="${1}" _epcdu_rpkg_names_set="${2#\$}"		\
+		_epcdu_rpkg_unknown="${3#\$}"					\
+		_epcdu_defined=0 _epcdu_depends="" _epcdu_pkg_name_depend=""	\
+		_epcdu_rc=0;
+
+	if rtl_get_var_unsafe \$_epcdu_depends -u "PKG_"${_epcdu_pkg_name}"_DEPENDS"\
+	&& [ "${_epcdu_depends:+1}" = 1 ]; then
+		for _epcdu_pkg_name_depend in ${_epcdu_depends}; do
+			if ! rtl_get_var_unsafe \$_epcdu_defined "${_epcdu_rpkg_names_set}_${_epcdu_pkg_name_depend}"\
+			|| [ "${_epcdu_defined:-0}" -eq 0 ]; then
+				rtl_lconcat "${_epcdu_rpkg_unknown}" "${_epcdu_pkg_name_depend}";
+				_epcdu_rc=1;
+			fi;
+		done;
+	fi;
+
+	return "${_epcdu_rc}";
+};
+
+#
 # ex_pkg_copy_group_vars() - copy build group variables into build group
 # @_group_name_src:		single source build group name
 # @_group_name_dst:		single destination build group name
@@ -372,8 +400,9 @@ ex_pkg_unfold_depends() {
 		_epud_checkfl="${4}" _epud_forcefl="${5}" _epud_group_name="${6}"		\
 		_epud_pkg_names="${7}" _epud_restart="${8}" _epud_test_finished="${9}"		\
 		_epud_workdir="${10}"								\
-		_epud_pkg_disabled="" _epud_pkg_force="" _epud_pkg_name=""			\
-		_epud_pkg_names_new=""	_epud_restartfl=0;
+		_epud_depends="" _epud_pkg_disabled="" _epud_pkg_force="" _epud_pkg_name=""	\
+		_epud_pkg_name_depend="" _epud_pkg_names_new="" _epud_pkg_names_set=""		\
+		_epud_pkg_unknown="" _epud_restartfl=0 _epud_unknown_depends=0;
 
 	if [ "${_epud_restart:+1}" = 1 ]\
 	&& ! rtl_lmatch \$_epud_restart "ALL LAST"; then
@@ -385,7 +414,19 @@ ex_pkg_unfold_depends() {
 		_epud_pkg_names="$(rtl_uniq ${_epud_pkg_names})";
 	fi;
 
+	rtl_llift_set \$_epud_pkg_names \$_epud_pkg_names_set;
 	for _epud_pkg_name in ${_epud_pkg_names}; do
+		if rtl_get_var_unsafe \$_epud_depends -u "PKG_"${_epud_pkg_name}"_DEPENDS"\
+		&& [ "${_epud_depends:+1}" = 1 ]; then
+			_epud_pkg_unknown="";
+			if ! ex_pkg_check_depends_unknown "${_epud_pkg_name}" \$_epud_pkg_names_set \$_epud_pkg_unknown; then
+				for _epud_pkg_name_depend in ${_epud_pkg_unknown}; do
+					rtl_log_msgV "fatal" "${MSG_build_unknown_dep}" "${_epud_pkg_name_depend}" "${_epud_pkg_name}";
+				done;
+				_epud_unknown_depends=1;
+			fi;
+		fi;
+
 		if [ "${_epud_restart}" = "ALL" ]\
 		|| rtl_lmatch \$_epud_restart "${_epud_pkg_name}"; then
 			_epud_restartfl=1;
@@ -411,6 +452,11 @@ ex_pkg_unfold_depends() {
 			rtl_lconcat \$_epud_pkg_names_new "${_epud_pkg_name}";
 		fi;
 	done;
+	rtl_llift_unset \$_epud_pkg_names_set;
+
+	if [ "${_epud_unknown_depends}" -eq 1 ]; then
+		rtl_log_msgV "fatalexit" "${MSG_build_unknown_deps}";
+	fi;
 
 	eval ${_epud_rdisabled}='$(rtl_uniq2 "${_epud_rdisabled}")';
 	eval ${_epud_rfinished}='$(rtl_uniq2 "${_epud_rfinished}")';

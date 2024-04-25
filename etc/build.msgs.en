@@ -13,6 +13,7 @@ MSG_build_reset_pkg_state="1;Reset package state for: %s";
 MSG_build_resolved_deps="1;Resolved \`%s' dependencies.";
 MSG_build_resolving_deps="1;Resolving \`%s' dependencies...";
 MSG_build_unknown_dep="2;Error: dependency \`%s' of \`%s' unknown.";
+MSG_build_unknown_deps="0;Error: packages with unknown dependencies.";
 
 MSG_group_begin="4;[%3d%%     ] [%03d/%03d] Starting \`%s' build group...";
 MSG_group_finish="4;[%3d%%     ] [%03d/%03d] Finished \`%s' build group.";
