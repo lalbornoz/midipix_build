@@ -421,7 +421,7 @@ ex_pkg_unfold_depends() {
 			_epud_pkg_unknown="";
 			if ! ex_pkg_check_depends_unknown "${_epud_pkg_name}" \$_epud_pkg_names_set \$_epud_pkg_unknown; then
 				for _epud_pkg_name_depend in ${_epud_pkg_unknown}; do
-					rtl_log_msgV "fatal" "${MSG_build_unknown_dep}" "${_epud_pkg_name_depend}" "${_epud_pkg_name}";
+					rtl_log_msgV "warning" "${MSG_build_unknown_dep}" "${_epud_pkg_name_depend}" "${_epud_pkg_name}";
 				done;
 				_epud_unknown_depends=1;
 			fi;
@@ -455,7 +455,7 @@ ex_pkg_unfold_depends() {
 	rtl_llift_unset \$_epud_pkg_names_set;
 
 	if [ "${_epud_unknown_depends}" -eq 1 ]; then
-		rtl_log_msgV "fatalexit" "${MSG_build_unknown_deps}";
+		rtl_log_msgV "warning" "${MSG_build_unknown_deps}";
 	fi;
 
 	eval ${_epud_rdisabled}='$(rtl_uniq2 "${_epud_rdisabled}")';
