@@ -5,6 +5,6 @@
 : ${PKG_SHARED_MIME_INFO_CONFIGURE_ARGS_EXTRA:=--disable-update-mimedb};
 : ${PKG_SHARED_MIME_INFO_MAKEFLAGS_PARALLELISE:="-j1"};
 
-ex_pkg_register "shared" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+ex_pkg_register "shared_mime_info" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
 
 # vim:filetype=sh textwidth=0
