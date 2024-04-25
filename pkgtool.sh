@@ -56,24 +56,22 @@ pkgtoolp_init_args() {
 	   + ${ARG_MIRROR:-0}
 	   + ${ARG_PROFILE:-0}
 	   + ${ARG_RDEPENDS:-0}
-	   + ${ARG_RDEPENDS_FULL:-0}
 	   + ${ARG_TARBALL:-0}))" -gt 1 ];
 	then
 		cat etc/pkgtool.usage;
 		_ppia_rc=1;
-		rtl_setrstatus "${_ppia_rstatus}" 'only one of -e, -f, -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
+		rtl_setrstatus "${_ppia_rstatus}" 'only one of -e, -f, -i, -m and/or -M, -p, -r, -s, or -t must be specified.';
 	elif [ "$((${ARG_INFO:-0}
 	     + ${ARG_EDIT:-0}
 	   + ${ARG_FILES:-0}
 	     + ${ARG_MIRROR:-0}
 	     + ${ARG_PROFILE:-0}
 	     + ${ARG_RDEPENDS:-0}
-	     + ${ARG_RDEPENDS_FULL:-0}
 	     + ${ARG_TARBALL:-0}))" -eq 0 ];
 	then
 		cat etc/pkgtool.usage;
 		_ppia_rc=1;
-		rtl_setrstatus "${_ppia_rstatus}" 'one of -e, -f, -i, -m and/or -M, -p, -r, -R, -s, or -t must be specified.';
+		rtl_setrstatus "${_ppia_rstatus}" 'one of -e, -f, -i, -m and/or -M, -p, -r, -s, or -t must be specified.';
 	else
 		_ppia_rc=0;
 		export TMP="${BUILD_WORKDIR}" TMPDIR="${BUILD_WORKDIR}";
@@ -93,8 +91,8 @@ pkgtoolp_init_getopts_fn() {
 		: ${ARCH:="nt64"};
 		: ${BUILD_KIND:="debug"};
 
-		ARG_INFO=0; ARG_EDIT=0; ARG_MIRROR=0; ARG_RDEPENDS=0;
-		ARG_RDEPENDS_FULL=0; ARG_TARBALL=0; ARG_VERBOSE=0;
+		ARG_INFO=0; ARG_EDIT=0; ARG_MIRROR=0;
+		ARG_RDEPENDS=0; ARG_TARBALL=0; ARG_VERBOSE=0;
 		;;
 
 	longopt)
@@ -148,7 +146,6 @@ pkgtoolp_init_getopts_fn() {
 			fi;
 			_ppigf_shiftfl=2; ;;
 		r)	ARG_RDEPENDS=1; _ppigf_shiftfl=1; ;;
-		R)	ARG_RDEPENDS_FULL=1; _ppigf_shiftfl=1; ;;
 		t)	ARG_TARBALL=1; _ppigf_shiftfl=1; ;;
 		v)	ARG_VERBOSE=1; _ppigf_shiftfl=1; ;;
 		*)	cat etc/pkgtool.usage; exit 1; ;;
@@ -619,9 +616,9 @@ pkgtoolp_profile() {
 	return "${_ppp_rc}";
 };
 # }}}
-# {{{ pkgtoolp_rdepends($_rstatus, $_pkg_name, $_full_rdependsfl)
+# {{{ pkgtoolp_rdepends($_rstatus, $_pkg_name)
 pkgtoolp_rdepends() {
-	local	_ppr_rstatus="${1}" _ppr_pkg_name="${2}" _ppr_full_rdependsfl="${3}"	\
+	local	_ppr_rstatus="${1}" _ppr_pkg_name="${2}"				\
 		_ppr_depends="" _ppr_group_name="" _ppr_groups="" _ppr_groups_noauto=""	\
 		_ppr_pkg_depends="" _ppr_pkg_disabled="" _ppr_pkg_finished=""		\
 		_ppr_pkg_name_rdepend="" _ppr_pkg_names="" _ppr_pkg_rdepends=""		\
@@ -640,7 +637,8 @@ pkgtoolp_rdepends() {
 			\$_ppr_pkg_disabled \$_ppr_pkg_finished		\
 			\$_ppr_pkg_rdepends_direct			\
 			"${_ppr_group_name}" "${_ppr_pkg_names}"	\
-			"${_ppr_pkg_name}" 1 "${BUILD_WORKDIR}";
+			"${_ppr_pkg_name}" 1 "${BUILD_WORKDIR}"		\
+			"norecurse";
 	then
 		_ppr_rc=1;
 		rtl_setrstatus "${_ppr_rstatus}" 'Error: failed to unfold reverse dependency-expanded package name list for \`'"${_ppr_pkg_name}'"'.';
@@ -654,23 +652,19 @@ pkgtoolp_rdepends() {
 				${_ppr_pkg_finished}		\
 				${_ppr_pkg_rdepends_direct});
 		do
-			rtl_lconcat \$_ppr_pkg_rdepends "${_ppr_pkg_name_rdepend}";
-
-			if [ "${_ppr_full_rdependsfl}" -eq 1 ]; then
-				rtl_get_var_unsafe \$_ppr_depends -u "PKG_"${_ppr_pkg_name}"_DEPENDS";
+			if rtl_get_var_unsafe \$_ppr_depends -u "PKG_"${_ppr_pkg_name_rdepend}"_DEPENDS"\
+			&& [ "${_ppr_depends:+1}" = 1 ]; then
 				if rtl_lunfold_dependsV 'PKG_${_rld_name}_DEPENDS' \$_ppr_pkg_depends ${_ppr_depends}\
+				&& rtl_lfilter \$_ppr_pkg_depends "${_ppr_pkg_name}"\
 				&& [ "${_ppr_pkg_depends:+1}" = 1 ]; then
-					rtl_lconcat \$_ppr_pkg_rdepends "[33m${_ppr_pkg_depends}[93m";
+					rtl_lconcat \$_ppr_pkg_rdepends "[33m$(rtl_uniq "$(rtl_lsortV ${_ppr_pkg_depends})")[93m";
 				fi;
 			fi;
+			rtl_lconcat \$_ppr_pkg_rdepends "${_ppr_pkg_name_rdepend}";
 		done;
 
 		if [ "${_ppr_pkg_rdepends:+1}" = 1 ]; then
-			if [ "${_ppr_full_rdependsfl}" -eq 1 ]; then
-				rtl_log_msgV "info" "${MSG_rdepends_pkgs_deps_rev_recurse}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
-			else
-				rtl_log_msgV "info" "${MSG_rdepends_pkgs_deps_rev}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
-			fi;
+			rtl_log_msgV "info" "${MSG_rdepends_pkgs_deps_rev_recurse}" "${_ppr_pkg_name}" "${_ppr_pkg_rdepends}";
 		fi;
 
 		if [ "${_ppr_pkg_disabled:+1}" = 1 ]; then
@@ -746,8 +740,7 @@ pkgtool() {
 		"${ARG_INFO:-0}")		pkgtoolp_info \$_status "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_MIRROR:-0}")		pkgtoolp_mirror \$_status "${ARG_MIRROR_DNAME}" "${ARG_MIRROR_DNAME_GIT}"; ;;
 		"${ARG_PROFILE:-0}")		pkgtoolp_profile \$_status "${ARG_PROFILE_LOG_FNAME}"; ;;
-		"${ARG_RDEPENDS:-0}")		pkgtoolp_rdepends \$_status "${PKGTOOL_PKG_NAME}" 0; ;;
-		"${ARG_RDEPENDS_FULL:-0}")	pkgtoolp_rdepends \$_status "${PKGTOOL_PKG_NAME}" 1; ;;
+		"${ARG_RDEPENDS:-0}")		pkgtoolp_rdepends \$_status "${PKGTOOL_PKG_NAME}"; ;;
 		"${ARG_TARBALL:-0}")		pkgtoolp_tarball \$_status "${PKGTOOL_PKG_NAME}"; ;;
 		esac; _rc="${?}";
 	fi;

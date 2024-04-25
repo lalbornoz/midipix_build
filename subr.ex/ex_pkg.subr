@@ -382,8 +382,8 @@ ex_pkg_register_group() {
 
 #
 # ex_pkg_unfold_depends() - unfold list of package names into dependency-expanded set of complete, disabled, finished, and outstanding package names
-# @_rdisabled:		in reference toout variable of disabled packages
-# @_rfinished:		in reference toout variable of finished packages
+# @_rdisabled:		in reference to out variable of disabled packages
+# @_rfinished:		in reference to out variable of finished packages
 # @_rnames:		out reference to variable of package names
 # @_checkfl:		enable (1) or inhibit (0) dependency expansion
 # @_forcefl:		enable (1) or inhibit (0) forcibly rebuilding finished packages
@@ -467,24 +467,25 @@ ex_pkg_unfold_depends() {
 
 #
 # ex_pkg_unfold_rdepends() - unfold list of package names into reverse dependency-expanded set of complete, disabled, finished, and outstanding package names
-# @_rdisabled:		in reference toout variable of disabled packages
-# @_rfinished:		in reference toout variable of finished packages
+# @_rdisabled:		in reference to out variable of disabled packages
+# @_rfinished:		in reference to out variable of finished packages
 # @_rnames:		out reference to variable of package names
 # @_group_name:		build group name
 # @_pkg_names:		list of package names
 # @_restart:		optional whitespace-separated list of package names to rebuild
 # @_test_finished:	only exclude disabled packages (0,) split finished packages
 # @_workdir:		pathname to build-specific temporary directory
+# @_recursefl:		resolve recursively ("recurse") or non-recursively ("norecurse")
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure.
 #
 ex_pkg_unfold_rdepends() {
 	local	_epur_rdisabled="${1#\$}" _epur_rfinished="${2#\$}" _epur_rnames="${3#\$}"	\
 		_epur_group_name="${4}" _epur_pkg_names="${5}" _epur_restart="${6}"		\
-		_epur_test_finished="${7}" _epur_workdir="${8}"					\
+		_epur_test_finished="${7}" _epur_workdir="${8}" _epur_recursefl="${9}"		\
 		_epur_depends="" _epur_disabled=0 _epur_force=0 _epur_pkg_depends=""		\
 		_epur_pkg_name="" _epur_pkg_names_new="" _epur_pkg_name_depend=""		\
-		_epur_pkg_rdepends="";
+		_epur_pkg_name_rdepend="" _epur_pkg_rdepends="";
 
 	for _epur_pkg_name_depend in ${_epur_restart}; do
 		for _epur_pkg_name in ${_epur_pkg_names}; do
@@ -496,25 +497,32 @@ ex_pkg_unfold_rdepends() {
 			  && [ "${_epur_pkg_depends:+1}" = 1 ]\
 			  && rtl_lmatch \$_epur_pkg_depends "${_epur_pkg_name_depend}";
 			then
-				if rtl_get_var_unsafe \$_epur_disabled -u "PKG_${_epur_pkg_name}_DISABLED"\
-				&& [ "${_epur_disabled}" = 1 ];
-				then
-					rtl_lconcat "${_epur_rdisabled}" "${_epur_pkg_name}";
+				case "${_epur_recursefl}" in
+				recurse)	_epur_pkg_rdepends="${_epur_pkg_name} ${_epur_pkg_depends}"; ;;
+				norecurse)	_epur_pkg_rdepends="${_epur_pkg_name}"; ;;
+				esac;
 
-				elif [ "${_epur_test_finished}" -eq 1 ]\
-				&&   ex_pkg_state_test2 "${_epur_workdir}" "${_epur_pkg_name}" finish\
-				&&   rtl_get_var_unsafe \$_epur_force -u "${_epur_group_name}_FORCE"\
-				&&   [ "${_epur_force}" != 1 ];
-				then
-					rtl_lconcat "${_epur_rfinished}" "${_epur_pkg_name}";
+				for _epur_pkg_name_rdepend in ${_epur_pkg_rdepends}; do
+					if rtl_get_var_unsafe \$_epur_disabled -u "PKG_${_epur_pkg_name_rdepend}_DISABLED"\
+					&& [ "${_epur_disabled}" = 1 ];
+					then
+						rtl_lconcat "${_epur_rdisabled}" "${_epur_pkg_name_rdepend}";
 
-				elif [ "${_epur_test_finished:-1}" -eq 0 ]\
-				||   ! ex_pkg_state_test2 "${_epur_workdir}" "${_epur_pkg_name}" finish\
-				||   ( rtl_get_var_unsafe \$_epur_force -u "${_epur_group_name}_FORCE"\
-				&&   [ "${_epur_force}" = 1 ] );
-				then
-					rtl_lconcat \$_epur_pkg_names_new "${_epur_pkg_name}";
-				fi;
+					elif [ "${_epur_test_finished}" -eq 1 ]\
+					&&   ex_pkg_state_test2 "${_epur_workdir}" "${_epur_pkg_name_rdepend}" finish\
+					&&   rtl_get_var_unsafe \$_epur_force -u "${_epur_group_name}_FORCE"\
+					&&   [ "${_epur_force}" != 1 ];
+					then
+						rtl_lconcat "${_epur_rfinished}" "${_epur_pkg_name_rdepend}";
+
+					elif [ "${_epur_test_finished:-1}" -eq 0 ]\
+					||   ! ex_pkg_state_test2 "${_epur_workdir}" "${_epur_pkg_name_rdepend}" finish\
+					||   ( rtl_get_var_unsafe \$_epur_force -u "${_epur_group_name}_FORCE"\
+					&&   [ "${_epur_force}" = 1 ] );
+					then
+						rtl_lconcat \$_epur_pkg_names_new "${_epur_pkg_name_rdepend}";
+					fi;
+				done;
 			fi;
 		done;
 	done;

@@ -64,7 +64,7 @@ exp_pkg_dispatch_expand_packages() {
 				"${_epdep_rdisabled}" "${_epdep_rfinished}"	\
 				"${_epdep_rnames}" "${_epdep_group_name}"	\
 				"${_epdep_pkg_names}" "${_epdep_restart}" 1	\
-				"${_epdep_workdir}";
+				"${_epdep_workdir}" "recurse";
 		fi;
 	fi;
 
@@ -77,16 +77,16 @@ exp_pkg_dispatch_expand_packages() {
 
 #
 # exp_pkg_dispatch_group() - dispatch a single build group
-# @_rdispatch_count:		in reference toout variable of dispatcher count
-# @_rdispatch_count_cur:	in reference toout variable of current dispatcher count
+# @_rdispatch_count:		in reference to out variable of dispatcher count
+# @_rdispatch_count_cur:	in reference to out variable of current dispatcher count
 # @_dispatch_count_max:		maximum dispatcher count
 # @_dispatch_group_cur:		current group
 # @_dispatch_group_max:		maximum group
-# @_rdispatch_njobs:		in reference toout variable of dispatcher count
-# @_rdispatch_wait:		in reference toout variable of package names in a wait state
+# @_rdispatch_njobs:		in reference to out variable of dispatcher count
+# @_rdispatch_wait:		in reference to out variable of package names in a wait state
 # @_rpkg_disabled:		in reference to variable of list of disabled packages
-# @_rpkg_finished:		in reference toout variable of list of finished packages
-# @_rpkg_names:			in reference toout variable of list of package names
+# @_rpkg_finished:		in reference to out variable of list of finished packages
+# @_rpkg_names:			in reference to out variable of list of package names
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
 # @_checkfl:			enable (1) or inhibit (0) dependency expansion
@@ -213,16 +213,16 @@ exp_pkg_dispatch_group() {
 
 #
 # exp_pkg_dispatch_packages() - dispatch set of packages
-# @_rdispatch_count:		in reference toout variable of dispatcher count
+# @_rdispatch_count:		in reference to out variable of dispatcher count
 # @_dispatch_count_cur:		current dispatcher count
 # @_dispatch_count_max:		maximum dispatcher count
 # @_dispatch_group_cur:		current group
 # @_dispatch_group_max:		maximum group
-# @_rdispatch_njobs:		in reference toout variable of dispatcher count
-# @_rdispatch_wait:		in reference toout variable of package names in a wait state
+# @_rdispatch_njobs:		in reference to out variable of dispatcher count
+# @_rdispatch_wait:		in reference to out variable of package names in a wait state
 # @_rpkg_disabled:		in reference to variable of list of disabled packages
-# @_rpkg_finished:		in reference toout variable of list of finished packages
-# @_rpkg_names:			in reference toout variable of list of package names
+# @_rpkg_finished:		in reference to out variable of list of finished packages
+# @_rpkg_names:			in reference to out variable of list of package names
 # @_build_steps_default:	list of default build steps
 # @_build_vars_default:		list of default build variables
 # @_checkfl:			enable (1) or inhibit (0) dependency expansion

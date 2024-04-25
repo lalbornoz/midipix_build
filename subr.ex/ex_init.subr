@@ -321,7 +321,7 @@ ex_init_files() {
 #
 # ex_init_logging() - initialise build logging
 # @_rstatus:		out reference to variable of status string on failure
-# @_rverbose_tags:	in reference toout variable of -V argument value
+# @_rverbose_tags:	in reference to out variable of -V argument value
 # @_verbose:		-[vV] argument value
 #
 # Returns:		zero (0) on success, non-zero (>0) on failure

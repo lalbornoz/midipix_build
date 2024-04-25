@@ -962,7 +962,7 @@ usage: ./build.sh [-a nt32|nt64]  [-b debug|release]    [-C dir[,..]]  [-D kind[
 ## 4.6. ``pkgtool.sh``
 
 ```
-usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-e|-f|-i|-m <dname> -M <dname>|-p|-r|-R|-t]
+usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-e|-f|-i|-m <dname> -M <dname>|-p|-r|-t]
                     [--theme theme] [-v]
                     [<variable name>=<variable override>[ ..]] name[,name..]
 
@@ -976,8 +976,7 @@ usage: ./pkgtool.sh [-a nt32|nt64] [-b debug|release] [-e|-f|-i|-m <dname> -M <d
                           Specify "" or '' as <dname> to default to the defaults in
                           ${HOME}/pkgtool.vars, if present.
         -p <log_fname>    Profile last build.
-        -r                List reverse dependencies of single named package.
-        -R                List recursive reverse dependencies of single named package.
+        -r                List recursive reverse dependencies of single named package.
         -t                Produce tarball of package build root directory and build log
                           file for the purpose of distribution given build failure.
         -v                Increase verbosity.
