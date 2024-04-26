@@ -113,11 +113,11 @@ exp_pkg_expand_restart_at_spec_cmp() {
 			"${_eperasc_spec_at0%%,*}" \$_eperasc_spec_at0	\
 			"${_eperasc_rset}"				\
 	&& exp_pkg_check_restart_at "${_eperasc_rstatus}" \$_eperasc_spec_at0; then
-		if [ \( "${_eperasc_eqfl}" -eq 1 \) -a \( "${_eperasc_ltfl}" -eq 1 \) ]\
-		|| [ \( "${_eperasc_eqfl}" -eq 0 \) -a \( "${_eperasc_ltfl}" -eq 0 \) ]; then
+		if [ "${_eperasc_eqfl}" -eq 1 -a "${_eperasc_ltfl}" -eq 1 ]\
+		|| [ "${_eperasc_eqfl}" -eq 0 -a "${_eperasc_ltfl}" -eq 0 ]; then
 			_eperasc_spec_at0="${_eperasc_spec_at0##*,}";
-		elif [ \( "${_eperasc_eqfl}" -eq 1 \) -a \( "${_eperasc_ltfl}" -eq 0 \) ]\
-		||   [ \( "${_eperasc_eqfl}" -eq 0 \) -a \( "${_eperasc_ltfl}" -eq 1 \) ]; then
+		elif [ "${_eperasc_eqfl}" -eq 1 -a "${_eperasc_ltfl}" -eq 0 ]\
+		||   [ "${_eperasc_eqfl}" -eq 0 -a "${_eperasc_ltfl}" -eq 1 ]; then
 			_eperasc_spec_at0="${_eperasc_spec_at0%%,*}";
 		fi;
 
