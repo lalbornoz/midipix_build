@@ -1,0 +1,9 @@
+: ${PKG_MBLAZE_DEPENDS:="libiconv"};
+: ${PKG_MBLAZE_URLS_GIT:="mblaze=https://github.com/leahneukirchen/mblaze.git@master"};
+: ${PKG_MBLAZE_CFLAGS_BUILD:="${NATIVE_PACKAGES_CFLAGS_CONFIGURE}"};
+: ${PKG_MBLAZE_LDFLAGS_BUILD:="${NATIVE_PACKAGES_LDFLAGS_CONFIGURE}"};
+: ${PKG_MBLAZE_BUILD_DIR:=mblaze};
+
+ex_pkg_register "mblaze" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0
