@@ -1,6 +1,6 @@
 diff -ru mblaze.orig/GNUmakefile mblaze/GNUmakefile
---- mblaze.orig/GNUmakefile	2024-05-03 20:09:12.010066998 +0200
-+++ mblaze/GNUmakefile	2024-05-03 20:17:36.525513874 +0200
+--- mblaze.orig/GNUmakefile	2024-05-03 20:18:24.555511858 +0200
++++ mblaze/GNUmakefile	2024-05-04 14:37:13.290044003 +0200
 @@ -1,7 +1,7 @@
  CFLAGS?=-g -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=2
  override CFLAGS:=-Wall -Wno-switch -Wextra $(CFLAGS)
@@ -10,3 +10,19 @@ diff -ru mblaze.orig/GNUmakefile mblaze/GNUmakefile
  
  OS := $(shell uname)
  
+diff -ru mblaze.orig/seq.c mblaze/seq.c
+--- mblaze.orig/seq.c	2024-05-03 20:09:12.020066998 +0200
++++ mblaze/seq.c	2024-05-04 14:37:58.023375461 +0200
+@@ -207,12 +207,7 @@
+ 		d = 0;
+ 		b = a;
+ 	} else {
+-		errno = 0;
+ 		d = strtol(a, &b, 10);
+-		if (errno != 0) {
+-			perror("strtol");
+-			exit(2);
+-		}
+ 	}
+ 
+ 	*out = base + d;
