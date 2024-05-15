@@ -13,7 +13,7 @@ diff -ru libressl-3.7.1.orig/crypto/compat/arc4random_linux.h libressl-3.7.1/cry
  static inline void
  _getentropy_fail(void)
  {
-+	fprintf(stderr, "Couldn't obtain randomness from getentropy\n");
++	fprintf(stderr, "rebuild psxscl with devurandom patch\n");
  	raise(SIGKILL);
  }
  
