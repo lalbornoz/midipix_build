@@ -1,0 +1,11 @@
+: ${PKG_ATARI800_DEPENDS:="sdl1 libpng"};
+: ${PKG_ATARI800_SHA256SUM:=3874d02b89d83c8089f75391a4c91ecb4e94001da2020c2617be088eba1f461f};
+: ${PKG_ATARI800_VERSION:=5.2.0};
+: ${PKG_ATARI800_URL:=https://github.com/atari800/atari800/releases/download/ATARI800_5_2_0/atari800-${PKG_ATARI800_VERSION}-src.tgz};
+: ${PKG_ATARI800_SUBDIR:=atari800-${PKG_ATARI800_VERSION}};
+: ${PKG_ATARI800_CONFIGURE_ARGS_EXTRA:="--target=default --with-video=sdl --disable-riodevice --with-sdl-prefix=${PREFIX_NATIVE}"};
+: ${PKG_ATARI800_LDFLAGS_BUILD_EXTRA:="-L${PREFIX_NATIVE}/lib/w32lib"};
+
+ex_pkg_register "atari800" "${RTL_FILEOP_SOURCE_FNAME}" "native_packages";
+
+# vim:filetype=sh textwidth=0
